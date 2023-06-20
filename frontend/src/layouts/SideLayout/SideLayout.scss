@@ -1,0 +1,49 @@
+@use '@carbon/layout';
+
+.sidelayout-page-content {
+  overflow-x: hidden;
+  padding-top: 3rem;
+  padding-left: 16rem;
+}
+
+/* Extra small devices (up to 576px) */
+@media (max-width: 576px) {
+  .sidelayout-page-content {
+    /* Styles specific to extra small devices */
+    padding-top: 3rem;
+    padding-left: 0;
+  }
+}
+
+/* Small devices (between 577px and 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .sidelayout-page-content {
+    /* Styles specific to small devices */
+    padding-top: 3rem;
+    padding-left: 0;
+  }
+}
+
+/* Medium devices (between 769px and 992px) */
+@media (min-width: 769px) and (max-width: 992px) {
+  .sidelayout-page-content {
+    /* Styles specific to medium devices */
+    padding-top: 3rem;
+    padding-left: 0;
+  }
+}
+
+/* Large devices (between 993px and 1200px) */
+@media (min-width: 993px) and (max-width: 1054px) {
+  .sidelayout-page-content {
+    /* Styles specific to large devices */
+    padding-top: 3rem;
+    padding-left: 0;
+  }
+}
+
+
+
+
+
+
