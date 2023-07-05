@@ -23,7 +23,7 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<TopLayout pageContent={<Landing/>} />} />
+        <Route path="/" element={<Landing/>} />
         <Route path="/dashboard" element={
           <PostLoginRoute signed={true}>
               <SideLayout pageContent={<Dashboard/>} />

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { logout } from "../../services/AuthService";
 import { Button } from "@carbon/react";
 import { Asleep, Light } from '@carbon/icons-react';
@@ -7,9 +7,8 @@ import { toggleTheme } from "../../utils/ThemeFunction";
 
 
 const Dashboard: React.FC = () => {
-  useEffect(()=>{
-    //call some functions at the start of the Screen
-  },[])
+  
+  
   const { theme, setTheme } = useThemePreference();
     return (
       <>

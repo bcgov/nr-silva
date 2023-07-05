@@ -30,8 +30,11 @@ import React, {
    * @param {ReactNode} children with nodes to be rendered
    * @returns {JSX.Element} The Context Provider
    */
-  function ThemePreference({ children }:ThemePreferenceProps) {
-    const [theme, setTheme] = useState('g10');
+  function ThemePreference({ children }: ThemePreferenceProps) {
+    const [theme, setTheme] = useState(() => {
+      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return prefersDarkMode ? 'g100' : 'g10';
+    });
   
     const value = useMemo(() => ({
       theme,
@@ -43,12 +46,17 @@ import React, {
     }, [theme]);
   
     useEffect(() => {
-      if (currentMode === 'dark') {
-        setTheme('g100');
-      }
-      if (currentMode === 'light') {
-        setTheme('g10');
-      }
+      const handleColorSchemeChange = (event: MediaQueryListEvent) => {
+        const newTheme = event.matches ? 'g100' : 'g10';
+        setTheme(newTheme);
+      };
+  
+      const colorSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      colorSchemeMediaQuery.addEventListener('change', handleColorSchemeChange);
+  
+      return () => {
+        colorSchemeMediaQuery.removeEventListener('change', handleColorSchemeChange);
+      };
     }, []);
   
     return (
@@ -57,5 +65,6 @@ import React, {
       </ThemePreferenceContext.Provider>
     );
   }
+  
   
   export { ThemePreference, useThemePreference };  
