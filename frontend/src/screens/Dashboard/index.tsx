@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-6 border border-primary">
-              <div className="display-2">Hi There</div>
+              <div className="display-2">Hi There </div>
             </div>
             <div className="col-md-6">
               <div className="display-4">Welcome to the Dashboard Page</div>
