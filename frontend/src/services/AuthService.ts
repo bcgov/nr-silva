@@ -10,8 +10,21 @@ export interface FamLoginUser {
     authToken?: CognitoUserSession;
 }
 
-export const signIn = async () => {
-  Auth.federatedSignIn();
+export const signIn = async (provider:String) => {
+  if(provider.localeCompare('idir') === 0){
+    Auth.federatedSignIn({
+      customProvider:'DEV-IDIR'
+    });
+  }
+  else if(provider.localeCompare('bceid') === 0){
+    Auth.federatedSignIn({
+      customProvider:'DEV-BCEIDBUSINESS'
+    });
+  }
+  //else if invalid option passed logout the user
+  else{
+    logout();
+  }
 };
 
 export const isLoggedIn = () =>{

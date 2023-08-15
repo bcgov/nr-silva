@@ -12,7 +12,6 @@ import Help from "./screens/Help";
 import Reports from './screens/Reports';
 import TopLayout from './layouts/TopLayout';
 import SideLayout from './layouts/SideLayout';
-import Login from './screens/Login';
 import Dashboard from './screens/Dashboard';
 import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -29,7 +28,6 @@ const App: React.FC = () => {
               <SideLayout pageContent={<Dashboard/>} />
           </PostLoginRoute>
         } />
-        <Route path="/login" element={<TopLayout pageContent={<Login/>} />} />
         <Route path="/reports" element={
           <ProtectedRoute signed={true}>
             <SideLayout pageContent={<Reports/>} />
