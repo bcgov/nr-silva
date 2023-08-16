@@ -4,11 +4,16 @@ import { Button, Toggle, ToastNotification, InlineNotification } from "@carbon/r
 import { Login } from '@carbon/icons-react';
 import { signIn } from "../../services/AuthService";
 import './Landing.scss';
-import LottieLoader from "../../components/LottieLoader";
+import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
 
 const Landing: React.FC = () => {
-
+    // Adding the Lottie Loader and loading the View for lottie with initial options
+    const options = {
+      animationData: silvaLottie,
+      loop: true
+    };
+    const { View } = useLottie(options);
     return (
       <>
         <div className="container-fluid">
@@ -90,7 +95,7 @@ const Landing: React.FC = () => {
             </div>
             <div className="col-lg-5">
               <div className="lottie-container">
-                <LottieLoader animationData={silvaLottie}/>
+                {View}
               </div>
             </div>
           </div>
