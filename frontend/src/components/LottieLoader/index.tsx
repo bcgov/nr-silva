@@ -1,4 +1,4 @@
-import Lottie from "react-lottie";
+import Lottie from "lottie-react";
 export default function LottieLoader({animationData}:any) {
     const defaultOptions = {
       loop: true,
