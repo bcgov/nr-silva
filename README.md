@@ -1,12 +1,12 @@
 <!-- Project Shields -->
 
 ##### Project
-[![Issues](https://img.shields.io/github/issues/bcgov/nr-silva-frontend)](/../../issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/bcgov/nr-silva-frontend)](/../../pulls)
-[![MIT License](https://img.shields.io/github/license/bcgov/nr-silva-frontend.svg)](/LICENSE.md)
+[![Issues](https://img.shields.io/github/issues/bcgov/nr-silva)](/../../issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/bcgov/nr-silva)](/../../pulls)
+[![MIT License](https://img.shields.io/github/license/bcgov/nr-silva.svg)](/LICENSE.md)
 [![Lifecycle](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
-[![Merge to Main](https://github.com/bcgov/nr-silva-frontend/actions/workflows/merge-main.yml/badge.svg)](https://github.com/bcgov/nr-silva-frontend/actions/workflows/merge-main.yml)
-[![Unit Tests and Analysis](https://github.com/bcgov/nr-silva-frontend/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bcgov/nr-silva-frontend/actions/workflows/unit-tests.yml)
+[![Merge to Main](https://github.com/bcgov/nr-silva/actions/workflows/merge-main.yml/badge.svg)](https://github.com/bcgov/nr-silva/actions/workflows/merge-main.yml)
+[![Unit Tests and Analysis](https://github.com/bcgov/nr-silva/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bcgov/nr-silva/actions/workflows/unit-tests.yml)
 
 ##### Frontend (JavaScript/TypeScript)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=quickstart-openshift_frontend&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=quickstart-openshift_frontend)
@@ -38,7 +38,7 @@
 
 ## OpenShift, TypeScript, Go, Java, Python, Postges, PostGIS
 
-The is a fully functional set of workflows and a starter application stack intended to help Agile DevOps teams hit the ground running on OpenShift.  Pipelines are run using [GitHub Actions](https://github.com/bcgov/nr-silva-frontend/actions).
+The is a fully functional set of workflows and a starter application stack intended to help Agile DevOps teams hit the ground running on OpenShift.  Pipelines are run using [GitHub Actions](https://github.com/bcgov/nr-silva/actions).
 
 Features:
 * Pull Request-based pipeline
@@ -145,7 +145,7 @@ The following are required:
 
 Create a new repository using this repository as a template.
 
-* Select bcgov/nr-silva-frontend under Repository template
+* Select bcgov/nr-silva under Repository template
 * Check Codecov | Code Coverage to grant access
 * Jira cannot be unchecked (I try every time!)
 
@@ -271,7 +271,7 @@ Pull Requests:
 
 Packages are available from your repository (link on right).  All should have visibility set to public for the workflows to run successfully.
 
-E.g. https://github.com/bcgov/nr-silva-frontend/packages
+E.g. https://github.com/bcgov/nr-silva/packages
 
 ### Branch Protection
 
