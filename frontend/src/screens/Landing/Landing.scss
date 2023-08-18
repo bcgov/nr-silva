@@ -1,4 +1,5 @@
-@use '../../theme/colors.scss' as colors;
+@use '@bcgov-nr/nr-fsa-theme/design-tokens/colors.scss' as colors;
+
 .landing-grid{
     padding-right: 0;
     height: 100vh;
@@ -34,9 +35,14 @@
   .btn-landing {
     width: 100% !important;
   }
+
+  // SILVA addons
   .lottie-container {
     margin-top: 4rem;
     pointer-events: none;
+  }
+  .inline-notification {
+    max-width: 100%;
   }
 
   /* Small - Up to 320px */

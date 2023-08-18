@@ -4,6 +4,7 @@ import { Button, Toggle, ToastNotification, InlineNotification } from "@carbon/r
 import { Login } from '@carbon/icons-react';
 import { signIn } from "../../services/AuthService";
 import './Landing.scss';
+import '../../custom.scss';
 import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
 
@@ -18,17 +19,9 @@ const Landing: React.FC = () => {
       <>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-7 px-4">
-              <div className="d-flex flex-row justify-content-between align-items-center mt-4">
+            <div className=" col-xl-7 col-lg-7 px-4">
+              <div className="mt-4">
                 <BCGovLogo />
-                <Toggle
-                  size="md"
-                  labelA="Off"
-                  labelB="On"
-                  defaultToggled
-                  hideLabel
-                  id="toggle-1"
-                />
               </div>
 
               <div className="mt-3 ">
@@ -38,7 +31,7 @@ const Landing: React.FC = () => {
                   title={<span className="fw-bold">New Release!</span>}
                   kind="info"
                   lowContrast
-                  className = "w-100"
+                  className = "inline-notification"
                 />
               </div>
               <div className="mt-3 ">
@@ -48,7 +41,7 @@ const Landing: React.FC = () => {
                   title={<span className="fw-bold">Upcoming maintenance</span>}
                   kind="warning"
                   lowContrast
-                  className = "w-100"
+                  className = "inline-notification"
                 />
               </div>
               <div className="mt-3 ">
@@ -58,7 +51,7 @@ const Landing: React.FC = () => {
                   title={<span className="fw-bold">SILVA is down</span>}
                   kind="error"
                   lowContrast
-                  className = "w-100"
+                  className = "inline-notification"
                 />
               </div>
 
