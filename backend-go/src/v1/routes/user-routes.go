@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/bcgov/quickstart-openshift/backend-go/src/v1/services"
+	"github.com/bcgov/nr-silva-frontend/backend-go/src/v1/services"
 	"github.com/gofiber/fiber/v2"
 )
 

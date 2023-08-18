@@ -1,4 +1,4 @@
-module github.com/bcgov/quickstart-openshift/backend-go
+module github.com/bcgov/nr-silva-frontend/backend-go
 
 go 1.20
 

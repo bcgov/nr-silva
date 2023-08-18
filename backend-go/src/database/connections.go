@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"github.com/bcgov/quickstart-openshift/backend-go/src/utils"
+	"github.com/bcgov/nr-silva-frontend/backend-go/src/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"strconv"

@@ -2,9 +2,9 @@ package src
 
 import (
 	"fmt"
-	_ "github.com/bcgov/quickstart-openshift/backend-go/docs"
-	"github.com/bcgov/quickstart-openshift/backend-go/src/database"
-	"github.com/bcgov/quickstart-openshift/backend-go/src/v1/routes"
+	_ "github.com/bcgov/nr-silva-frontend/backend-go/docs"
+	"github.com/bcgov/nr-silva-frontend/backend-go/src/database"
+	"github.com/bcgov/nr-silva-frontend/backend-go/src/v1/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"

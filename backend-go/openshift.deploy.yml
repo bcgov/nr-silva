@@ -40,10 +40,10 @@ parameters:
     value: bcgov
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/quickstart-openshift/backend-go:test
+    value: bcgov/nr-silva-frontend/backend-go:test
   - name: PROMOTE_MIGRATION
     description: Image (namespace/name:tag) for migration to promote/import
-    value: bcgov/quickstart-openshift/database-migrations-go:test
+    value: bcgov/nr-silva-frontend/database-migrations-go:test
   - name: COMPONENT_DB_MIGRATION
     description: Component name for database migrations
     value: database-migrations-go
