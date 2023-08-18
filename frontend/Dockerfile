@@ -9,6 +9,7 @@ RUN npm install
 
 
 # User and startup
+USER app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/:3000
 
