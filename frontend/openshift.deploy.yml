@@ -37,7 +37,7 @@ parameters:
     value: ghcr.io
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
-    value: bcgov/nr-silva/frontend:prod
+    value: bcgov/quickstart-openshift/frontend:prod
   - name: LOG_LEVEL
     description: Caddy logging level DEBUG, INFO, WARN, ERROR, PANIC, and FATAL (https://github.com/caddyserver/caddy/blob/master/logging.go)
     value: "info"

@@ -1,0 +1,12 @@
+@use '@carbon/layout';
+
+.help-grid{
+    height: 80vh;
+    align-items: center;
+    text-align: center;
+}
+
+
+.help-back-btn {
+    margin-top: layout.$spacing-05;
+  }
