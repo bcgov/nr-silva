@@ -41,25 +41,15 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       packages: write
-    strategy:
-      matrix:
-        package: [frontend]
-        include:
-          - package: frontend
-            triggers: ('frontend/')
-            build_file: ./frontend/Dockerfile
-            build_context: ./frontend
     steps:
       - uses: actions/checkout@v3
       - uses: bcgov-nr/action-builder-ghcr@v1.2.0
         with:
-          package: ${{ matrix.package }}
+          package: frontend
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
-          build_file: ${{ matrix.build_file }}
-          build_context: ${{ matrix.build_context }}
+          triggers: ('frontend/')
 
   deploys:
     name: Deploys
@@ -67,27 +57,16 @@ jobs:
     needs:
       - builds
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        name:  [frontend]
-        include:
-          - name: frontend
-            file: frontend/openshift.deploy.yml
-            overwrite: true
-            parameters: -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
-            triggers: ('frontend/')
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.2.1
         with:
-          file: ${{ matrix.file }}
+          file: frontend/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: ${{ matrix.overwrite }}
-          penetration_test: false
+          overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/${{ matrix.name }}:${{ github.event.number }}
-            ${{ matrix.parameters }}
-          triggers: ${{ matrix.triggers }}
-          verification_path: ${{ matrix.verification_path }}
+            -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
+            -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
+          triggers: ('frontend/')
