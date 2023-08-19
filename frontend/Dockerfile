@@ -1,20 +1,22 @@
-FROM node:16.19.1-alpine3.17 AS build
+FROM node:alpine3.17 AS build
 
-# Build
-RUN apk add --no-cache python3 g++ make && \
-    npm ci && \
-    npm run build && \
-    npm rm -rf node_modules
+# Build static files
+WORKDIR /app
+COPY . .
+RUN npm ci --ignore-scripts && \
+    npm run build
 
 # Caddy
-FROM caddy:2.7.3-alpine
+FROM caddy:2.7.2-alpine
+ENV LOG_LEVEL=info
 
 # Copy static files and config
 COPY --from=build /app/build/ /app/dist
 COPY --from=build /app/Caddyfile /etc/caddy/Caddyfile
 
-# Caddy format
-RUN caddy fmt --overwrite /etc/caddy/Caddyfile
+# CA certs and Caddy format
+RUN apk add --no-cache ca-certificates && \
+    caddy fmt --overwrite /etc/caddy/Caddyfile
 
 # User, port and healthcheck
 USER 1001
