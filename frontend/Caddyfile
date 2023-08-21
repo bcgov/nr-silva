@@ -38,3 +38,9 @@
 
   file_server
 }
+
+:3001 {
+  handle /health {
+    respond "OK"
+  }
+}
