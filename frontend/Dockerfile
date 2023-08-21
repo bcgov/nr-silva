@@ -4,7 +4,8 @@ FROM node:alpine3.17 AS build
 WORKDIR /app
 COPY . .
 RUN npm ci --ignore-scripts && \
-    npm run build
+    npm run build && \
+    rm -rf node_modules
 
 # Caddy
 FROM caddy:2.7.2-alpine
@@ -12,7 +13,7 @@ ENV LOG_LEVEL=info
 
 # Copy static files and config
 COPY --from=build /app/build/ /srv
-COPY --from=build /app/Caddyfile /etc/caddy/Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
 
 # CA certs and Caddy format
 RUN apk add --no-cache ca-certificates && \
