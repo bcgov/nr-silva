@@ -1,21 +1,25 @@
-# Build
-FROM node:16.19.1-alpine3.17 AS build
+FROM node:alpine3.17 AS build
 
-# Dependencies and non-root user
-RUN apk add --no-cache python3 g++ make && \
-    adduser -S app
-
-# Copy and build
+# Build static files
 WORKDIR /app
 COPY . .
-RUN npm install && \
-    chown -R app .
+RUN npm ci --ignore-scripts && \
+    npm run build && \
+    rm -rf node_modules
 
-# Port and health check
-EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost/:3000
+# Caddy
+FROM caddy:2.7.2-alpine
+ENV LOG_LEVEL=info
 
-# Startup
-USER app
-CMD ["npm", "start"]
+# Copy static files and config
+COPY --from=build /app/build/ /srv
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# CA certs and Caddy format
+RUN apk add --no-cache ca-certificates && \
+    caddy fmt --overwrite /etc/caddy/Caddyfile
+
+# User, port and healthcheck
+USER 1001
+EXPOSE 3000 3001
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/:3001/health

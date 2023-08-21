@@ -57,6 +57,12 @@ Be aware of the required environment variables:
 
 To run the unit tests all you need is `npm run test`.
 
+And with Docker:
+
+```bash
+docker compose --env-file ./frontend/.env.local up -d
+```
+
 Before writing your first line of code, please take a moment and check out
 our [CONTRIBUTING](CONTRIBUTING.md) guide.
 

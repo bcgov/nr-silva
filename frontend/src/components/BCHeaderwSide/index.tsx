@@ -19,6 +19,7 @@ import * as Icons from '@carbon/icons-react';
 import './BCHeaderwSide.scss';
 
 import RightPanelTitle from '../RightPanelTitle';
+import { env } from '../../env';
 
 interface ListItem {
   name: string;
@@ -120,7 +121,7 @@ const BCHeaderwSide = () => {
   //can only be impored at component level
   const { theme, setTheme } = useThemePreference();
 
-  const version: string = `Version: ${process.env.REACT_APP_MAIN_VERSION}`;
+  const version: string = `Version: ${env.REACT_APP_MAIN_VERSION}`;
 
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
