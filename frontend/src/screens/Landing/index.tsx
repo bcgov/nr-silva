@@ -7,6 +7,7 @@ import './Landing.scss';
 import '../../custom.scss';
 import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
+import ThemeToggle from "../../components/ThemeToggle";
 
 const Landing: React.FC = () => {
     // Adding the Lottie Loader and loading the View for lottie with initial options
@@ -22,6 +23,10 @@ const Landing: React.FC = () => {
             <div className=" col-xl-7 col-lg-7 px-4">
               <div className="mt-4">
                 <BCGovLogo />
+              </div>
+
+              <div className="mt-4 bg-primary p-4">
+                <ThemeToggle/>
               </div>
 
               <div className="mt-3 ">

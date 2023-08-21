@@ -1,0 +1,65 @@
+@use '@bcgov-nr/nr-fsa-theme/design-tokens/colors.scss' as colors;
+.theme-toggle {
+    width: 62px;
+    height: 31px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  
+    &.off {
+      background-color: white;
+    }
+  
+    &.on {
+      background-color: black;
+    }
+  
+    .circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s, background-color 0.3s;
+      background-color: #0073E6; // Default background color
+    }
+  
+    &.off {
+      .circle {
+        transform: translateX(0);
+      }
+      .icon {
+        width: 16px;
+        height: 16px;
+        fill: white;
+      }
+    }
+  
+    &.on {
+      .circle {
+        transform: translateX(31px);
+        background-color: white;
+      }
+    }
+  
+    .icon {
+      width: 16px;
+      height: 16px;
+    }
+    &.on {
+        .icon {
+            fill: black;
+        }
+    }
+    &.off {
+        .icon {
+            fill: white;
+        }
+    }
+  }
+  
