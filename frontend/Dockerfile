@@ -11,7 +11,7 @@ FROM caddy:2.7.2-alpine
 ENV LOG_LEVEL=info
 
 # Copy static files and config
-COPY --from=build /app/build/ /app/dist
+COPY --from=build /app/build/ /srv
 COPY --from=build /app/Caddyfile /etc/caddy/Caddyfile
 
 # CA certs and Caddy format
