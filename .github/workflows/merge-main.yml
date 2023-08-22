@@ -1,11 +1,12 @@
 name: Merge to Main
 
 on:
-  workflow_run:
-    workflows: [ "Pull Request Closed" ]
-    types:
-      - completed
-  workflow_dispatch:
+  # workflow_run:
+  #   workflows: [ "Pull Request Closed" ]
+  #   types:
+  #     - completed
+  # workflow_dispatch:
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}
