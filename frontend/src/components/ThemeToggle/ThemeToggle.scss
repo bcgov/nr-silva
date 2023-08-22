@@ -33,11 +33,6 @@
       .circle {
         transform: translateX(0);
       }
-      .icon {
-        width: 16px;
-        height: 16px;
-        fill: white;
-      }
     }
   
     &.on {
@@ -48,8 +43,8 @@
     }
   
     .icon {
-      width: 16px;
-      height: 16px;
+      width: 24px;
+      height: 24px;
     }
     &.on {
         .icon {
