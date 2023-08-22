@@ -6,12 +6,12 @@ import { toggleTheme } from '../../utils/ThemeFunction';
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useThemePreference();
-  console.log("theme:"+theme)
   const [isToggled, setIsToggled] = useState(theme === 'g10'?false:true);
 
   useEffect(()=>{
-    setIsToggled(theme === 'g10'?false:true)
-  },[])
+    setIsToggled(theme === 'g10'?false:true);
+    console.log(`Theme updated: ${theme}`);
+  },[theme])
 
   const handleToggle = async () => {
     toggleTheme(theme,setTheme)

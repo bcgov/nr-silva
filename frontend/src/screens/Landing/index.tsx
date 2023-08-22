@@ -1,6 +1,6 @@
 import React from "react";
 import BCGovLogo from "../../components/BCGovLogo";
-import { Button, Toggle, ToastNotification, InlineNotification } from "@carbon/react";
+import { Button, InlineNotification } from "@carbon/react";
 import { Login } from '@carbon/icons-react';
 import { signIn } from "../../services/AuthService";
 import './Landing.scss';
@@ -31,9 +31,9 @@ const Landing: React.FC = () => {
 
               <div className="mt-3 ">
                 <InlineNotification
-                  iconDescription="describes the close button"
-                  subtitle={<span>See the release notes to find out what's new</span>}
-                  title={<span className="fw-bold">New Release!</span>}
+                  icondescription="describes the close button"
+                  subtitle="See the release notes to find out what's new"
+                  title="New Release!"
                   kind="info"
                   lowContrast
                   className = "inline-notification"
@@ -41,9 +41,9 @@ const Landing: React.FC = () => {
               </div>
               <div className="mt-3 ">
                 <InlineNotification
-                  iconDescription="describes the close button"
-                  subtitle={<span>SILVA will be offline for up to 4 hours time starting on June 30, 2023 at 9:00pm</span>}
-                  title={<span className="fw-bold">Upcoming maintenance</span>}
+                  icondescription="describes the close button"
+                  subtitle="SILVA will be offline for up to 4 hours time starting on June 30, 2023 at 9:00pm"
+                  title="Upcoming maintenance"
                   kind="warning"
                   lowContrast
                   className = "inline-notification"
@@ -51,9 +51,9 @@ const Landing: React.FC = () => {
               </div>
               <div className="mt-3 ">
                 <InlineNotification
-                  iconDescription="describes the close button"
-                  subtitle={<span>SILVA is expected to come back online on July 1, 2023 at 11:11am</span>}
-                  title={<span className="fw-bold">SILVA is down</span>}
+                  icondescription="describes the close button"
+                  subtitle="SILVA is expected to come back online on July 1, 2023 at 11:11am"
+                  title="SILVA is down"
                   kind="error"
                   lowContrast
                   className = "inline-notification"

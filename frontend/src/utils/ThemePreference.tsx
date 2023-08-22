@@ -9,7 +9,6 @@ interface ThemeContextData {
 }
 
 const ThemePreferenceContext = createContext<ThemeContextData>({} as ThemeContextData);
-const currentMode = localStorage.getItem('mode');
 
 /**
  * Create useThemePreference hook.

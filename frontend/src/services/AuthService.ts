@@ -42,7 +42,7 @@ export const isLoggedIn = () =>{
 
 export const handlePostLogin = async () => {
   try {
-    const userData = await Auth.currentAuthenticatedUser();
+    // const userData = await Auth.currentAuthenticatedUser();
     await refreshToken()
   } catch (error) {
     console.log("Authentication Error:", error);
@@ -113,7 +113,7 @@ function storeFamUser(famLoginUser: FamLoginUser | null | undefined) {
 export const isCurrentAuthUser = async () => {
   try {
     //checks if the user is authenticated
-    const userData = await Auth.currentAuthenticatedUser();
+    await Auth.currentAuthenticatedUser();
     //refreshes the token and stores it locally
     await refreshToken();
     return true;
