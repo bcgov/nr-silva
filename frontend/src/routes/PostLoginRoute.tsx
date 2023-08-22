@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { USER_DETAILS_REQUEST } from '../constants/userConstants';
 import { getUserDetails } from '../actions/userAction';
 import { Loading } from "@carbon/react";
 
