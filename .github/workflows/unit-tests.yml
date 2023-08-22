@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         # dir: [backend, frontend]
-        dir: frontend
+        dir: [frontend]
         include:
           # - dir: backend
           #   sonar_projectKey: quickstart-openshift_backend
