@@ -3,20 +3,20 @@ version: '3.9'
 services:
   frontend:
     container_name: frontend
+    entrypoint: sh -c "npm ci && npm run start"
     environment:
       REACT_APP_MAIN_VERSION : v1.0.0
       REACT_APP_COGNITO_REGION : ca-central-1
-      REACT_APP_USER_POOLS_ID: ${REACT_APP_USER_POOLS_ID}
-      REACT_APP_USER_POOLS_WEB_CLIENT_ID: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
+      REACT_APP_USER_POOLS_ID: ca-central-1_FxagSNQa7
+      REACT_APP_USER_POOLS_WEB_CLIENT_ID: 43hjhdf5dvi17opb0jgucfpvm7
       REACT_APP_AWS_DOMAIN: test-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
-    ports:
-      - "3000:3000"
+    image: node:18-bullseye
+    ports: ["3000:3000"]
+    volumes: ["./frontend:/app", "/app/node_modules"]
     restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     healthcheck:
       test: [ "CMD-SHELL", "curl http://localhost:3000" ]
       interval: 15s
       timeout: 5s
       retries: 5
+    working_dir: "/app"
