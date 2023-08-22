@@ -37,14 +37,12 @@ jobs:
 
   deploys-test:
     name: TEST Deployments
-    needs:
-      - codeql
     environment: test
     runs-on: ubuntu-22.04
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.2.1
         with:
-          file: frontend
+          file: frontend/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
@@ -57,8 +55,7 @@ jobs:
   deploys-prod:
     name: PROD Deployments
     needs:
-      - integration-tests
-      - cypress-e2e
+      - deploys-test
     environment: prod
     runs-on: ubuntu-22.04
     steps:
