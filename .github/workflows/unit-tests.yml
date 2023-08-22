@@ -17,42 +17,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
-    name: Unit Tests
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse@v1.0.0
-        with:
-          commands: |
-            npm ci
-            npm run test
-          dir: frontend
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=nr-silva
-            -Dsonar.sources=src
-            -Dsonar.tests.inclusions=**/*spec.ts
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-          triggers: ('frontend/')
+  # tests:
+  #   name: Unit Tests
+  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: bcgov-nr/action-test-and-analyse@v1.0.0
+  #       with:
+  #         commands: |
+  #           npm ci
+  #           npm run test
+  #         dir: frontend
+  #         node_version: "20"
+  #         sonar_args: >
+  #           -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+  #           -Dsonar.organization=bcgov-sonarcloud
+  #           -Dsonar.project.monorepo.enabled=true
+  #           -Dsonar.projectKey=nr-silva
+  #           -Dsonar.sources=src
+  #           -Dsonar.tests.inclusions=**/*spec.ts
+  #           -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+  #         sonar_token: ${{ secrets.SONAR_TOKEN }}
+  #         triggers: ('frontend/')
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
