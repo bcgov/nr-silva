@@ -44,7 +44,7 @@ parameters:
   - name: REACT_APP_USER_POOLS_ID
     description: React envar
     required: true
-  - name: REACT_APP_USER_TOOLS_WEB_CLIENT_ID
+  - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
     description: React envar
     required: true
 objects:
@@ -104,8 +104,8 @@ objects:
                   value: ${LOG_LEVEL}
                 - name: REACT_APP_USER_POOLS_ID
                   value: ${REACT_APP_USER_POOLS_ID}
-                - name: REACT_APP_USER_TOOLS_WEB_CLIENT_ID
-                  value: ${REACT_APP_USER_TOOLS_WEB_CLIENT_ID}
+                - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
+                  value: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
                 # - name: BACKEND_URL
                 #   value: https://${NAME}-${ZONE}-backend.${DOMAIN}:443
               ports:
