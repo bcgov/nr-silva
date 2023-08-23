@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+
 concurrency:
   # PR open and close use the same group, allowing only one at a time
   group: pr-${{ github.workflow }}-${{ github.event.number }}
@@ -58,7 +59,7 @@ jobs:
       - builds
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v1.2.1
+      - uses: bcgov-nr/action-deployer-openshift@v1.3.0
         with:
           file: frontend/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}

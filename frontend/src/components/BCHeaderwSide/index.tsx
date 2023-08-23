@@ -125,16 +125,13 @@ const BCHeaderwSide = () => {
 
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
-  const [overlay, setOverlay] = useState<boolean>(false);
   const [goToURL, setGoToURL] = useState<string>('');
   const [goTo, setGoTo] = useState<boolean>(false);
 
   const handleNotificationsPanel = useCallback((): void => {
     if (notifications) {
-      setOverlay(false);
       setNotifications(false);
     } else {
-      setOverlay(true);
       setNotifications(true);
     }
     setMyProfile(false);
@@ -142,22 +139,18 @@ const BCHeaderwSide = () => {
 
   const handleMyProfilePanel = useCallback((): void => {
     if (myProfile) {
-      setOverlay(false);
       setMyProfile(false);
     } else {
-      setOverlay(true);
       setMyProfile(true);
     }
     setNotifications(false);
   }, [myProfile]);
 
   const closeNotificationsPanel = useCallback((): void => {
-    setOverlay(false);
     setNotifications(false);
   }, []);
 
   const closeMyProfilePanel = useCallback((): void => {
-    setOverlay(false);
     setMyProfile(false);
   }, []);
 
@@ -168,7 +161,7 @@ const BCHeaderwSide = () => {
       setGoTo(false);
       navigate(goToURL);
     }
-  }, [goTo]);
+  }, [goTo, goToURL, navigate]);
 
   return (
     <HeaderContainer

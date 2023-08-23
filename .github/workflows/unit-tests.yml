@@ -17,28 +17,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # tests:
-  #   name: Unit Tests
-  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: bcgov-nr/action-test-and-analyse@v1.0.0
-  #       with:
-  #         commands: |
-  #           npm ci
-  #           npm run test
-  #         dir: frontend
-  #         node_version: "20"
-  #         sonar_args: >
-  #           -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
-  #           -Dsonar.organization=bcgov-sonarcloud
-  #           -Dsonar.project.monorepo.enabled=true
-  #           -Dsonar.projectKey=nr-silva
-  #           -Dsonar.sources=src
-  #           -Dsonar.tests.inclusions=**/*spec.ts
-  #           -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-  #         sonar_token: ${{ secrets.SONAR_TOKEN }}
-  #         triggers: ('frontend/')
+  # Note: uncomment code below once a backend is written
+  tests:
+    name: Unit Tests
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        # dir: [backend, frontend]
+        dir: [frontend]
+        include:
+          # - dir: backend
+          #   sonar_projectKey: quickstart-openshift_backend
+          #   token: SONAR_TOKEN_BACKEND
+          #   triggers: ('backend/')
+          - dir: frontend
+            sonar_projectKey: quickstart-openshift_frontend
+            token: SONAR_TOKEN_FRONTEND
+            triggers: ('frontend/')
+    steps:
+      - uses: bcgov-nr/action-test-and-analyse@v1.0.0
+        with:
+          commands: |
+            npm ci
+            npm run test
+          dir: frontend
+          node_version: "20"
+          sonar_args: >
+            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=${{ matrix.sonar_projectKey }}
+            -Dsonar.sources=src
+            -Dsonar.tests.inclusions=**/*spec.ts
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+          sonar_token: ${{ secrets[matrix.token] }}
+          triggers: ${{ matrix.triggers }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
