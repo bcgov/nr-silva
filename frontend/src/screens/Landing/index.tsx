@@ -25,10 +25,6 @@ const Landing: React.FC = () => {
                 <BCGovLogo />
               </div>
 
-              <div className="mt-4 bg-primary p-4">
-                <ThemeToggle/>
-              </div>
-
               <div className="mt-3 ">
                 <InlineNotification
                   icondescription="describes the close button"

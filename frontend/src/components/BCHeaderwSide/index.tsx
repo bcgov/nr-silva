@@ -20,6 +20,7 @@ import './BCHeaderwSide.scss';
 
 import RightPanelTitle from '../RightPanelTitle';
 import { env } from '../../env';
+import ThemeToggle from '../ThemeToggle';
 
 interface ListItem {
   name: string;
@@ -181,15 +182,8 @@ const BCHeaderwSide = () => {
             BCGOV
             <span className="header-full-name"> Quickstarter React Template </span>
           </Link>
-          <HeaderGlobalBar>
-           <HeaderGlobalAction
-                  aria-label={theme==='g10'?'Switch to Dark Mode':'Switch to Light Mode'}
-                  tooltipAlignment="end"
-                  onClick = {()=>{toggleTheme(theme,setTheme)}}
-                  >
-                  {/* Must have a child component */}
-                  <>{theme === 'g10'?<Icons.Asleep size={20} />:<Icons.Light size={20} />}</>
-            </HeaderGlobalAction>
+          <HeaderGlobalBar className="align-items-center">
+          <ThemeToggle/>
             <HeaderGlobalAction
               aria-label="Notifications"
               data-testid="header-button__notifications"
