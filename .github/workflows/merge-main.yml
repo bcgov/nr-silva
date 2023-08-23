@@ -37,14 +37,12 @@ jobs:
 
   deploys-test:
     name: TEST Deployments
-    needs:
-      - codeql
     environment: test
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v1.2.1
+      - uses: bcgov-nr/action-deployer-openshift@v1.3.0
         with:
-          file: frontend
+          file: frontend/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
@@ -52,17 +50,17 @@ jobs:
           parameters:
             -p ZONE=test -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
           penetration_test: true
 
   deploys-prod:
     name: PROD Deployments
     needs:
-      - integration-tests
-      - cypress-e2e
+      - deploys-test
     environment: prod
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v1.2.1
+      - uses: bcgov-nr/action-deployer-openshift@v1.3.0
         with:
           file: frontend/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -72,6 +70,7 @@ jobs:
           parameters:
             -p ZONE=prod -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
 
   image-promotions:
     name: Promote images to PROD
