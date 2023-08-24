@@ -50,6 +50,8 @@ jobs:
           parameters:
             -p ZONE=test -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_USER_POOLS_ID=${{ secrets.REACT_APP_USER_POOLS_ID }}
+            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
           penetration_test: true
 
   deploys-prod:
@@ -69,6 +71,8 @@ jobs:
           parameters:
             -p ZONE=prod -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_USER_POOLS_ID=${{ secrets.REACT_APP_USER_POOLS_ID }}
+            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
 
   image-promotions:
     name: Promote images to PROD
