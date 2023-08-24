@@ -41,6 +41,13 @@ parameters:
   - name: LOG_LEVEL
     description: Caddy logging level DEBUG, INFO, WARN, ERROR, PANIC, and FATAL (https://github.com/caddyserver/caddy/blob/master/logging.go)
     value: "info"
+  - name: REACT_APP_USER_POOLS_ID
+    description: React envar
+    required: true
+  - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
+    description: React envar
+    required: true
+objects:
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -94,10 +101,12 @@ objects:
               imagePullPolicy: Always
               name: ${NAME}
               env:
-                - name: BACKEND_URL
-                  value: https://${NAME}-${ZONE}-backend.${DOMAIN}:443
                 - name: LOG_LEVEL
                   value: ${LOG_LEVEL}
+                - name: REACT_APP_USER_POOLS_ID
+                  value: ${REACT_APP_USER_POOLS_ID}
+                - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
+                  value: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
                 - name: REACT_APP_URL
                   value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
               ports:
