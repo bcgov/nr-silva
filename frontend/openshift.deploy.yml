@@ -47,6 +47,9 @@ parameters:
   - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
     description: React envar
     required: true
+  - name: REACT_APP_AWS_DOMAIN
+    description: AWS Cognito address
+    required: true
 objects:
 objects:
   - apiVersion: v1
@@ -109,6 +112,8 @@ objects:
                   value: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
                 - name: REACT_APP_URL
                   value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
+                - name: REACT_APP_AWS_DOMAIN
+                  value: ${REACT_APP_AWS_DOMAIN}
               ports:
                 - containerPort: 3000
                   protocol: TCP

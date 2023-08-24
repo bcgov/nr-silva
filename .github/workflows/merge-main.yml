@@ -52,6 +52,7 @@ jobs:
             -p NAME=${{ github.event.repository.name }}
             -p REACT_APP_USER_POOLS_ID=${{ secrets.REACT_APP_USER_POOLS_ID }}
             -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
+            -p REACT_APP_AWS_DOMAIN=${{ vars.REACT_APP_AWS_DOMAIN }}
           penetration_test: true
 
   deploys-prod:
@@ -73,6 +74,7 @@ jobs:
             -p NAME=${{ github.event.repository.name }}
             -p REACT_APP_USER_POOLS_ID=${{ secrets.REACT_APP_USER_POOLS_ID }}
             -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
+            -p REACT_APP_AWS_DOMAIN=${{ vars.REACT_APP_AWS_DOMAIN }}
 
   image-promotions:
     name: Promote images to PROD
