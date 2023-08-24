@@ -98,6 +98,8 @@ objects:
                   value: https://${NAME}-${ZONE}-backend.${DOMAIN}:443
                 - name: LOG_LEVEL
                   value: ${LOG_LEVEL}
+                - name: REACT_APP_URL
+                  value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
               ports:
                 - containerPort: 3000
                   protocol: TCP
