@@ -10,14 +10,14 @@ concurrency:
   group: pr-${{ github.workflow }}-${{ github.event.number }}
   cancel-in-progress: true
 
-env:
-  DOMAIN: apps.silver.devops.gov.bc.ca
-  PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
 
 jobs:
   pr-greeting:
     if: "!github.event.pull_request.head.repo.fork"
     name: PR Greeting
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
@@ -71,5 +71,4 @@ jobs:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
             -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
-            -p REACT_APP_URL=https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }}
           triggers: ('frontend/')
