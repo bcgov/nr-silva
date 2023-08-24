@@ -49,7 +49,6 @@ head to http://localhost:3000.
 
 Be aware of the required environment variables:
 
-- REACT_APP_MAIN_VERSION
 - REACT_APP_COGNITO_REGION
 - REACT_APP_USER_POOLS_ID
 - REACT_APP_USER_POOLS_WEB_CLIENT_ID
