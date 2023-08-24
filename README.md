@@ -1,5 +1,5 @@
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://github.com/bcgov/nr-spar-webapp)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bcgov_nr-spar-webapp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bcgov_nr-spar-webapp)
+
 
 # Natural Resources SILVA Front-End Starting Web Application
 
