@@ -122,8 +122,6 @@ const BCHeaderwSide = () => {
   //can only be impored at component level
   const { theme, setTheme } = useThemePreference();
 
-  const version: string = `Version: ${env.REACT_APP_MAIN_VERSION}`;
-
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
   const [goToURL, setGoToURL] = useState<string>('');
@@ -241,7 +239,6 @@ const BCHeaderwSide = () => {
                 <SideNavLink renderIcon={Icons.Help}>Need help?</SideNavLink>
               </div>
             </SideNavItems>
-            <p className=''>{version}</p>
           </SideNav>
         </Header>
       )}
