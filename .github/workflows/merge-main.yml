@@ -39,6 +39,9 @@ jobs:
     name: TEST Deployments
     environment: test
     runs-on: ubuntu-22.04
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}-test
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.3.0
         with:
@@ -50,12 +53,16 @@ jobs:
           parameters:
             -p ZONE=test -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_URL=https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }}
           penetration_test: true
 
   deploys-prod:
     name: PROD Deployments
     needs:
       - deploys-test
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}-prod
     environment: prod
     runs-on: ubuntu-22.04
     steps:
@@ -69,6 +76,7 @@ jobs:
           parameters:
             -p ZONE=prod -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
+            -p REACT_APP_URL=https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }}
 
   image-promotions:
     name: Promote images to PROD
