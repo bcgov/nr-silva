@@ -1,5 +1,6 @@
 import { Auth } from "aws-amplify";
 import type { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { env } from '../env';
 
 const FAM_LOGIN_USER = 'famLoginUser';
 
@@ -13,12 +14,12 @@ export interface FamLoginUser {
 export const signIn = async (provider:String) => {
   if(provider.localeCompare('idir') === 0){
     Auth.federatedSignIn({
-      customProvider:'DEV-IDIR'
+      customProvider:`${env.ZONE}-IDIR`
     });
   }
   else if(provider.localeCompare('bceid') === 0){
     Auth.federatedSignIn({
-      customProvider:'DEV-BCEIDBUSINESS'
+      customProvider:`${env.ZONE}-BCEIDBUSINESS`
     });
   }
   //else if invalid option passed logout the user
