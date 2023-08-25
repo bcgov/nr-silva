@@ -52,7 +52,7 @@ jobs:
             -p NAME=${{ github.event.repository.name }}
             -p REACT_APP_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
             -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
-            -p REACT_APP_REDIRECT_SIGN_OUT=${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}
+            -p REACT_APP_REDIRECT_SIGN_OUT="${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}"
             -p REACT_APP_AWS_DOMAIN=${{ vars.REACT_APP_AWS_DOMAIN }}
           penetration_test: true
 
@@ -75,7 +75,7 @@ jobs:
             -p NAME=${{ github.event.repository.name }}
             -p REACT_APP_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
             -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
-            -p REACT_APP_REDIRECT_SIGN_OUT=${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}
+            -p REACT_APP_REDIRECT_SIGN_OUT="${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}"
             -p REACT_APP_AWS_DOMAIN=${{ vars.REACT_APP_AWS_DOMAIN }}
 
   image-promotions:
