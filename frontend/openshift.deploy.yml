@@ -116,6 +116,8 @@ objects:
                   value: ${REACT_APP_AWS_DOMAIN}
                 - name: REACT_APP_REDIRECT_SIGN_OUT
                   value: ${REACT_APP_REDIRECT_SIGN_OUT}
+                - name: REACT_APP_ZONE
+                  value: ${ZONE}
               ports:
                 - containerPort: 3000
                   protocol: TCP
