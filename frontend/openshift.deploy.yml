@@ -51,8 +51,6 @@ parameters:
     description: AWS Cognito address
   - name: REACT_APP_REDIRECT_SIGN_OUT
     description: React envar
-    required: true
-objects:
 objects:
   - apiVersion: v1
     kind: ImageStream
