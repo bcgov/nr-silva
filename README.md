@@ -49,10 +49,8 @@ head to http://localhost:3000.
 
 Be aware of the required environment variables:
 
-- REACT_APP_COGNITO_REGION
 - REACT_APP_USER_POOLS_ID
 - REACT_APP_USER_POOLS_WEB_CLIENT_ID
-- REACT_APP_AWS_DOMAIN
 
 To run the unit tests all you need is `npm run test`.
 
