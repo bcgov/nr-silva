@@ -49,6 +49,8 @@ parameters:
     required: true
   - name: REACT_APP_AWS_DOMAIN
     description: AWS Cognito address
+  - name: REACT_APP_REDIRECT_SIGN_OUT
+    description: React envar
     required: true
 objects:
 objects:
@@ -110,10 +112,10 @@ objects:
                   value: ${REACT_APP_USER_POOLS_ID}
                 - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
                   value: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
-                - name: REACT_APP_URL
-                  value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
                 - name: REACT_APP_AWS_DOMAIN
                   value: ${REACT_APP_AWS_DOMAIN}
+                - name: REACT_APP_REDIRECT_SIGN_OUT
+                  value: ${REACT_APP_REDIRECT_SIGN_OUT}
               ports:
                 - containerPort: 3000
                   protocol: TCP
