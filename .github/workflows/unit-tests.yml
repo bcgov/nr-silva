@@ -28,11 +28,11 @@ jobs:
         dir: [frontend]
         include:
           # - dir: backend
-          #   sonar_projectKey: quickstart-openshift_backend
+          #   sonar_projectKey: nr-silva_backend
           #   token: SONAR_TOKEN_BACKEND
           #   triggers: ('backend/')
           - dir: frontend
-            sonar_projectKey: quickstart-openshift_frontend
+            sonar_projectKey: nr-silva_frontend
             token: SONAR_TOKEN_FRONTEND
             triggers: ('frontend/')
     steps:
@@ -42,7 +42,7 @@ jobs:
             npm ci
             npm run test
           dir: frontend
-          node_version: "20"
+          node_version: "18"
           sonar_args: >
             -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
             -Dsonar.organization=bcgov-sonarcloud
