@@ -1,7 +1,0 @@
-organization=bcgov-sonarcloud
-projectKey=nr-silva_frontend
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.45690
-dashboardUrl=https://sonarcloud.io/dashboard?id=nr-silva_frontend
-ceTaskId=AYo9fSZDj9SfC1ZUM2A-
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYo9fSZDj9SfC1ZUM2A-
