@@ -1,4 +1,4 @@
-FROM node:alpine3.17 AS build
+FROM node:18-slim AS build
 
 # Build static files
 WORKDIR /app
