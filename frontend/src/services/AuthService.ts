@@ -12,14 +12,16 @@ export interface FamLoginUser {
 }
 
 export const signIn = async (provider:String) => {
+  const appEnv = env.REACT_APP_ZONE ?? 'DEV';
+
   if(provider.localeCompare('idir') === 0){
     Auth.federatedSignIn({
-      customProvider:`${(env.REACT_APP_ZONE).toLocaleUpperCase()}-IDIR`
+      customProvider:`${(appEnv).toLocaleUpperCase()}-IDIR`
     });
   }
   else if(provider.localeCompare('bceid') === 0){
     Auth.federatedSignIn({
-      customProvider:`${(env.REACT_APP_ZONE).toLocaleUpperCase()}-BCEIDBUSINESS`
+      customProvider:`${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS`
     });
   }
   //else if invalid option passed logout the user
