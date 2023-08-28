@@ -28,11 +28,11 @@ jobs:
         dir: [frontend]
         include:
           # - dir: backend
-          #   sonar_projectKey: nr-silva_backend
+          #   sonar_projectKey: nr-silva-backend
           #   token: SONAR_TOKEN_BACKEND
           #   triggers: ('backend/')
           - dir: frontend
-            sonar_projectKey: nr-silva_frontend
+            sonar_projectKey: nr-silva-frontend
             token: SONAR_TOKEN_FRONTEND
             triggers: ('frontend/')
     steps:
