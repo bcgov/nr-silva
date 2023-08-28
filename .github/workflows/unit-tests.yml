@@ -42,7 +42,7 @@ jobs:
             npm ci
             npm run test
           dir: frontend
-          node_version: "20"
+          node_version: "18"
           sonar_args: >
             -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
             -Dsonar.organization=bcgov-sonarcloud
