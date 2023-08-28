@@ -5,9 +5,9 @@ services:
     container_name: frontend
     entrypoint: sh -c "npm ci && npm run start"
     environment:
-      REACT_APP_USER_POOLS_ID: ca-central-1_FxagSNQa7
-      REACT_APP_USER_POOLS_WEB_CLIENT_ID: 43hjhdf5dvi17opb0jgucfpvm7
-      REACT_APP_AWS_DOMAIN: test-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
+      REACT_APP_USER_POOLS_ID: ca-central-1_t2HSZBHurS
+      REACT_APP_USER_POOLS_WEB_CLIENT_ID: 37798cpec8d4u1a2njt02nonp7
+      REACT_APP_AWS_DOMAIN: prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
     image: node:18-bullseye
     ports: ["3000:3000"]
     volumes: ["./frontend:/app", "/app/node_modules"]
