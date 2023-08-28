@@ -1,10 +1,9 @@
 name: Pull Request
 
 on:
-  workflow_dispatch:
-  # pull_request:
-  #   branches:
-  #     - main
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   # PR open and close use the same group, allowing only one at a time
