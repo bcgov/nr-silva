@@ -57,7 +57,10 @@
     ]
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^0.34.3",
+    "jsdom": "^22.1.0",
     "sass": "^1.62.1",
-    "sass-loader": "^13.2.2"
+    "sass-loader": "^13.2.2",
+    "vitest": "^0.34.3"
   }
 }
