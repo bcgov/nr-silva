@@ -52,7 +52,8 @@ jobs:
             -Dsonar.tests.inclusions=**/*spec.ts
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
           sonar_token: ${{ secrets[matrix.token] }}
-          triggers: ${{ matrix.triggers }}
+          # Only use triggers for PRs
+          triggers: ${{ github.event_name == 'pull_request' && matrix.triggers || "" }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
