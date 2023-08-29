@@ -40,7 +40,7 @@ jobs:
         with:
           commands: |
             npm ci
-            npm run test:cov
+            npm run test:coverage
           dir: frontend
           node_version: "20"
           sonar_args: >

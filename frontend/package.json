@@ -33,8 +33,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "test": "react-scripts test",
-    "test:cov": "npm run test -- --coverage --watchAll=false",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage --watch=false",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix"
   },
