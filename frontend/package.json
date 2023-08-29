@@ -30,11 +30,11 @@
     "web-vitals": "^3.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
     "test": "react-scripts test",
     "test:cov": "npm run test -- --coverage --watchAll=false",
-    "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix"
   },
