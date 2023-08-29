@@ -30,6 +30,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:cov": "npm run test -- --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix"
