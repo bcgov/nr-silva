@@ -1,6 +1,6 @@
 {
 	auto_https off
-	admin off
+	# admin off
 }
 
 :3000 {
@@ -29,7 +29,7 @@
 
 	handle /env.js {
 		header Content-Type "text/javascript"
-		respond `window.config = {"REACT_APP_USER_POOLS_ID":"{$REACT_APP_USER_POOLS_ID}","REACT_APP_USER_POOLS_WEB_CLIENT_ID":"{$REACT_APP_USER_POOLS_WEB_CLIENT_ID}","REACT_APP_REDIRECT_SIGN_OUT":"{$REACT_APP_REDIRECT_SIGN_OUT}","REACT_APP_ZONE":"{$REACT_APP_ZONE}"};`
+		respond `window.config = {"REACT_APP_USER_POOLS_ID":"{$REACT_APP_USER_POOLS_ID}","REACT_APP_USER_POOLS_WEB_CLIENT_ID":"{$REACT_APP_USER_POOLS_WEB_CLIENT_ID}","REACT_APP_ZONE":"{$REACT_APP_ZONE}"};`
 	}
 
 	handle_path /* {

@@ -4,8 +4,6 @@ const ZONE = env.REACT_APP_ZONE.toLocaleLowerCase();
 const retUrl = window.location.origin;
 const logoutDomain = `https://logon${ZONE === "prod"?'':'test'}7.gov.bc.ca`;
 
-
-
 const awsconfig = {
     aws_cognito_region: env.REACT_APP_COGNITO_REGION || "ca-central-1",
     aws_user_pools_id: env.REACT_APP_USER_POOLS_ID,
