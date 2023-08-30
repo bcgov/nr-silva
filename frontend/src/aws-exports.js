@@ -9,7 +9,7 @@ const awsconfig = {
         domain: env.REACT_APP_AWS_DOMAIN || "prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com",
         scope: ['openid'],
         redirectSignIn: `${window.location.origin}/dashboard`,
-        redirectSignOut: env.REACT_APP_REDIRECT_SIGN_OUT || "https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl=https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout?redirect_uri=http://localhost:3000/",
+        redirectSignOut: env.REACT_APP_REDIRECT_SIGN_OUT || `https://logon${env.REACT_APP_ZONE.toLocaleLowerCase() === "prod"?'':'test'}7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl=https://${env.REACT_APP_ZONE.toLocaleLowerCase()}.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout?redirect_uri=${window.location.origin}/`,
         responseType: 'code',
     },
     federationTarget: 'COGNITO_USER_POOLS',
