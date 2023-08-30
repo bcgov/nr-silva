@@ -1,20 +1,31 @@
 version: '3.9'
 
+x-common: &common
+  environment:
+    REACT_APP_USER_POOLS_ID: ca-central-1_t2HSZBHurS
+    REACT_APP_USER_POOLS_WEB_CLIENT_ID: 37798cpec8d4u1a2njt02nonp7
+    REACT_APP_AWS_DOMAIN: prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
+  healthcheck:
+    test: [ "CMD-SHELL", "curl http://localhost:3000" ]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+  restart: always
+
 services:
   frontend:
     container_name: frontend
     entrypoint: sh -c "npm ci && npm run start"
-    environment:
-      REACT_APP_USER_POOLS_ID: ca-central-1_t2HSZBHurS
-      REACT_APP_USER_POOLS_WEB_CLIENT_ID: 37798cpec8d4u1a2njt02nonp7
-      REACT_APP_AWS_DOMAIN: prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
     image: node:20-bullseye
     ports: ["3000:3000"]
     volumes: ["./frontend:/app", "/app/node_modules"]
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "curl http://localhost:3000" ]
-      interval: 15s
-      timeout: 5s
-      retries: 5
     working_dir: "/app"
+    <<: *common
+
+  caddy:
+    container_name: caddy
+    profiles: ["caddy"]
+    build: ./frontend
+    ports: ["3005:3000"]
+    volumes: ["./frontend/Caddyfile:/etc/caddy/Caddyfile"]
+    <<: *common
