@@ -11,7 +11,7 @@ export interface FamLoginUser {
   authToken?: CognitoUserSession
 }
 
-export const signIn = async (provider: string) => {
+export const signIn = async (provider: string): Promise<any> => {
   const appEnv = env.REACT_APP_ZONE ?? 'DEV'
 
   if (provider.localeCompare('idir') === 0) {

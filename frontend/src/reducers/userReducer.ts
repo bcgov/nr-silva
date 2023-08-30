@@ -1,6 +1,6 @@
 import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_RESET, USER_DETAILS_FAIL } from '../constants/userConstants'
 
-export const userDetailsReducer = (state = { user: {} }, action: any) => {
+export const userDetailsReducer = (state = { user: {} }, action: any): any => {
   switch (action.type) {
     case USER_DETAILS_REQUEST:
       return { ...state, loading: true }

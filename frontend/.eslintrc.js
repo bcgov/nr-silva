@@ -5,6 +5,7 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended"
     ],
     "overrides": [
@@ -20,18 +21,16 @@ module.exports = {
             }
         }
     ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest",
+        "parser": 'vue-eslint-parser',
+        // "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
+        "@typescript-eslint",
         "react"
     ],
     "rules": {
-    },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
     }
 }
