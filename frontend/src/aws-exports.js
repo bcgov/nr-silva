@@ -2,7 +2,7 @@ import { env } from './env';
 
 const ZONE = env.REACT_APP_ZONE.toLocaleLowerCase();
 const retUrl = window.location.origin;
-const logoutDomain = `https://logon${ZONE === "prod"?'':'test'}7.gov.bc.ca/`;
+const logoutDomain = `https://logon${ZONE === "prod"?'':'test'}7.gov.bc.ca`;
 
 
 const awsconfig = {
