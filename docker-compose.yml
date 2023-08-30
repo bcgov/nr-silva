@@ -2,9 +2,10 @@ version: '3.9'
 
 x-common: &common
   environment:
-    REACT_APP_USER_POOLS_ID: ca-central-1_t2HSZBHurS
-    REACT_APP_USER_POOLS_WEB_CLIENT_ID: 37798cpec8d4u1a2njt02nonp7
+    REACT_APP_USER_POOLS_ID: ca-central-1_t2HSZBHur
+    REACT_APP_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
     REACT_APP_AWS_DOMAIN: prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
+    REACT_APP_ZONE: DEV
   healthcheck:
     test: [ "CMD-SHELL", "curl http://localhost:3000" ]
     interval: 15s
