@@ -50,8 +50,8 @@ jobs:
           parameters:
             -p ZONE=test -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
-            -p REACT_APP_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
-            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
+            -p VITE_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
+            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
           penetration_test: true
 
   deploys-prod:
@@ -71,9 +71,9 @@ jobs:
           parameters:
             -p ZONE=prod -p PROMOTE=${{ github.repository }}/frontend:test
             -p NAME=${{ github.event.repository.name }}
-            -p REACT_APP_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
-            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
-            -p REACT_APP_REDIRECT_SIGN_OUT="${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}"
+            -p VITE_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
+            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
+            -p VITE_REDIRECT_SIGN_OUT="${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}"
 
   image-promotions:
     name: Promote images to PROD

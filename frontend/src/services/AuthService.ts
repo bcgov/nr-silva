@@ -12,7 +12,7 @@ export interface FamLoginUser {
 }
 
 export const signIn = async (provider: string): Promise<any> => {
-  const appEnv = env.REACT_APP_ZONE ?? 'DEV'
+  const appEnv = env.VITE_ZONE ?? 'DEV'
 
   if (provider.localeCompare('idir') === 0) {
     Auth.federatedSignIn({
