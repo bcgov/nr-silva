@@ -27,6 +27,5 @@
   "exclude": [
     "**/*.test.*",
     "**/__tests__/*"
-  ],
-  "extends": "@tsconfig/node18/tsconfig.json"
+  ]
 }
