@@ -1,5 +1,12 @@
 .profile-image {
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: #c7d4e7; 
+  color: #072251; 
+  font-size: 1.4rem; 
 }
 
 .small {

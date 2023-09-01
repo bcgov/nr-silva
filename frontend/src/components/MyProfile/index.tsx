@@ -16,7 +16,7 @@ import { logout } from '../../services/AuthService';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
-  const userData = {firstName:'Jazz', lastName:"Grewal", idirUsername:"Jasgrewal", email:"jazz@test.com"};
+  const userData = {firstName:'Catherine', lastName:"Meng", idirUsername:"Jasgrewal", email:"jazz@test.com"};
 
   const [goToURL, setGoToURL] = useState<string>('');
   const [goTo, setGoTo] = useState<boolean>(false);

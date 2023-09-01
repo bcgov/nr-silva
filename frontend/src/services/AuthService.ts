@@ -90,14 +90,26 @@ async function refreshToken(): Promise<FamLoginUser | undefined> {
 function parseToken(authToken: CognitoUserSession): FamLoginUser {
   const decodedIdToken = authToken.getIdToken().decodePayload();
   const decodedAccessToken = authToken.getAccessToken().decodePayload();
+  
+  // Extract the first name and last name from the displayName and remove unwanted part
+  const displayName = decodedIdToken['custom:idp_display_name'];
+  const [lastName, firstName] = displayName.split(', ');
+  const sanitizedFirstName = firstName.split(' ')[0].trim(); // Remove unwanted part
+
   const famLoginUser = {
-      username: decodedIdToken['custom:idp_username'],
-      idpProvider: decodedIdToken['identities']['providerName'],
-      roles: decodedAccessToken['cognito:groups'],
-      authToken: authToken,
+    userName: decodedIdToken['custom:idp_username'],
+    displayName,
+    email: decodedIdToken['email'],
+    idpProvider: decodedIdToken['identities']['providerName'],
+    roles: decodedAccessToken['cognito:groups'],
+    authToken: authToken,
+    firstName: sanitizedFirstName,
+    lastName,  // Add lastName field
   };
+
   return famLoginUser;
 }
+
 
 function removeFamUser() {
   storeFamUser(undefined);
