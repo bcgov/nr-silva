@@ -4,7 +4,6 @@ x-common: &common
   environment:
     VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
     VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
-    VITE_AWS_DOMAIN: prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com
     VITE_ZONE: DEV
   healthcheck:
     test: [ "CMD-SHELL", "curl http://localhost:3000" ]
