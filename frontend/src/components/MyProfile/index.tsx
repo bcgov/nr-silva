@@ -18,6 +18,7 @@ const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
   const userData = {firstName:'Catherine', lastName:"Meng", idirUsername:"Jasgrewal", email:"jazz@test.com"};
   const userDetails = useSelector((state:any) => state.userDetails)
+    
   const [goToURL, setGoToURL] = useState<string>('');
   const [goTo, setGoTo] = useState<boolean>(false);
 
@@ -51,6 +52,7 @@ const MyProfile = () => {
           <p className="user-name">{`${userDetails.user.firstName} ${userDetails.user.lastName}`}</p>
           <p>{`IDIR: ${userDetails.user.userName}`}</p>
           <p>{`Email:${userDetails.user.email}`}</p>
+
         </div>
       </div>
       <hr className="divisory" />

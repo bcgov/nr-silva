@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './AvatarImage.scss';
 
 type Size = 'small' | 'large';
