@@ -95,7 +95,6 @@ function parseToken(authToken: CognitoUserSession): FamLoginUser {
   const displayName = decodedIdToken['custom:idp_display_name'];
   const [lastName, firstName] = displayName.split(', ');
   const sanitizedFirstName = firstName.split(' ')[0].trim(); // Remove unwanted part
-
   const famLoginUser = {
     userName: decodedIdToken['custom:idp_username'],
     displayName,
