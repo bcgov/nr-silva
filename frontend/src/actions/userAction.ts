@@ -1,5 +1,5 @@
-import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL } from '../constants/userConstants';
-import { isCurrentAuthUser } from "../services/AuthService";
+import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL } from '../constants/userConstants'
+import { isCurrentAuthUser } from '../services/AuthService'
 
 const FAM_LOGIN_USER = 'famLoginUser';
 export const getUserDetails = () => async (dispatch: any) => {

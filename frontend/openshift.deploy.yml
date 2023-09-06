@@ -41,13 +41,13 @@ parameters:
   - name: LOG_LEVEL
     description: Caddy logging level DEBUG, INFO, WARN, ERROR, PANIC, and FATAL (https://github.com/caddyserver/caddy/blob/master/logging.go)
     value: "info"
-  - name: REACT_APP_USER_POOLS_ID
+  - name: VITE_USER_POOLS_ID
     description: React envar
     required: true
-  - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
+  - name: VITE_USER_POOLS_WEB_CLIENT_ID
     description: React envar
     required: true
-  - name: REACT_APP_REDIRECT_SIGN_OUT
+  - name: VITE_REDIRECT_SIGN_OUT
     description: React envar
 objects:
   - apiVersion: v1
@@ -104,13 +104,13 @@ objects:
               env:
                 - name: LOG_LEVEL
                   value: ${LOG_LEVEL}
-                - name: REACT_APP_USER_POOLS_ID
-                  value: ${REACT_APP_USER_POOLS_ID}
-                - name: REACT_APP_USER_POOLS_WEB_CLIENT_ID
-                  value: ${REACT_APP_USER_POOLS_WEB_CLIENT_ID}
-                - name: REACT_APP_REDIRECT_SIGN_OUT
-                  value: ${REACT_APP_REDIRECT_SIGN_OUT}
-                - name: REACT_APP_ZONE
+                - name: VITE_USER_POOLS_ID
+                  value: ${VITE_USER_POOLS_ID}
+                - name: VITE_USER_POOLS_WEB_CLIENT_ID
+                  value: ${VITE_USER_POOLS_WEB_CLIENT_ID}
+                - name: VITE_REDIRECT_SIGN_OUT
+                  value: ${VITE_REDIRECT_SIGN_OUT}
+                - name: VITE_ZONE
                   value: ${ZONE}
               ports:
                 - containerPort: 3000

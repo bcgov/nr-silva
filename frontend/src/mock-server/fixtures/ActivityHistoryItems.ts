@@ -1,4 +1,4 @@
-const ActivityHistoryItems:any = {
+const ActivityHistoryItems: any = {
   id: 12345,
   steps: [
     {
@@ -26,6 +26,6 @@ const ActivityHistoryItems:any = {
       date: '2022-11-24'
     }
   ]
-};
+}
 
-export default ActivityHistoryItems;
+export default ActivityHistoryItems

@@ -70,7 +70,7 @@ jobs:
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
-            -p REACT_APP_USER_POOLS_ID=${{ vars.REACT_APP_USER_POOLS_ID }}
-            -p REACT_APP_USER_POOLS_WEB_CLIENT_ID=${{ vars.REACT_APP_USER_POOLS_WEB_CLIENT_ID }}
+            -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
             -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
           triggers: ('frontend/')

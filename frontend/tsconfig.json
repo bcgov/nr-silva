@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,9 +18,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx",
+    "outDir": "./build/"
   },
   "include": [
-    "src"
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.test.*",
+    "**/__tests__/*"
   ]
 }
