@@ -11,7 +11,7 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ClassPrefix prefix='bcgov'>
+    <ClassPrefix prefix='bx'>
       <ThemePreference>
         <Provider store={store}>
           <App />
