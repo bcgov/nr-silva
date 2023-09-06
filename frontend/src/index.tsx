@@ -1,3 +1,4 @@
+window.global ||= window;
 import React from 'react';
 import './index.css';
 import { ClassPrefix } from '@carbon/react';
