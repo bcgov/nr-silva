@@ -1,11 +1,11 @@
 @use '@bcgov-nr/nr-fsa-theme/design-tokens/colors.scss' as colors;
 .theme-toggle {
-    width: 62px;
-    height: 31px;
+    width: 48px;
+    height: 24px;
     border-radius: 15px;
     display: flex;
     align-items: center;
-    padding: 2px;
+    padding: 3px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -19,8 +19,8 @@
     }
   
     .circle {
-      width: 26px;
-      height: 26px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -37,14 +37,15 @@
   
     &.on {
       .circle {
-        transform: translateX(31px);
+        transform: translateX(24px);
         background-color: white;
       }
     }
   
     .icon {
-      width: 23px;
-      height: 23px;
+      width: 16px;
+      height: 16px;
+      padding: 1px;
     }
     &.on {
         .icon {

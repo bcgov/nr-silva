@@ -128,7 +128,9 @@ const BCHeaderwSide = () => {
             <span className="header-full-name"> Quickstarter React Template </span>
           </Link>
           <HeaderGlobalBar className="align-items-center">
-          <ThemeToggle/>
+            <div className="mx-2">
+              <ThemeToggle/>
+            </div>
             <HeaderGlobalAction
               aria-label="Notifications"
               data-testid="header-button__notifications"
