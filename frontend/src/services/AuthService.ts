@@ -63,13 +63,11 @@ export const handlePostLogin = async () => {
 async function refreshToken (): Promise<FamLoginUser | undefined> {
   try {
     console.log('Refreshing Token...')
-    const currentAuthToken: CognitoUserSession =
-          await Auth.currentSession()
-    console.log('currentAuthToken: ', currentAuthToken)
+    const currentAuthToken: CognitoUserSession = await Auth.currentSession()
+    const famLoginUser = parseToken(currentAuthToken);
+    await storeFamUser(famLoginUser);
+    return famLoginUser;
 
-    const famLoginUser = parseToken(currentAuthToken)
-    storeFamUser(famLoginUser)
-    return famLoginUser
   } catch (error) {
     console.error(
       'Problem refreshing token or token is invalidated:',
@@ -86,20 +84,33 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 * Note, current user data return for 'userData.username' is matched to "cognito:username" on Cognito.
 * Which isn't what we really want to display. The display username is "custom:idp_username" from token.
 */
-function parseToken (authToken: CognitoUserSession): FamLoginUser {
-  const decodedIdToken = authToken.getIdToken().decodePayload()
-  const decodedAccessToken = authToken.getAccessToken().decodePayload()
+
+function parseToken(authToken: CognitoUserSession): FamLoginUser {
+  const decodedIdToken = authToken.getIdToken().decodePayload();
+  const decodedAccessToken = authToken.getAccessToken().decodePayload();
+  
+  // Extract the first name and last name from the displayName and remove unwanted part
+  const displayName = decodedIdToken['custom:idp_display_name'];
+  const [lastName, firstName] = displayName.split(', ');
+  const sanitizedFirstName = firstName.split(' ')[0].trim(); // Remove unwanted part
   const famLoginUser = {
-    username: decodedIdToken['custom:idp_username'],
-    idpProvider: decodedIdToken.identities.providerName,
+    userName: decodedIdToken['custom:idp_username'],
+    displayName,
+    email: decodedIdToken['email'],
+    idpProvider: decodedIdToken['identities']['providerName'],
     roles: decodedAccessToken['cognito:groups'],
-    authToken
-  }
-  return famLoginUser
+    authToken: authToken,
+    firstName: sanitizedFirstName,
+    lastName,  // Add lastName field
+  };
+
+  return famLoginUser;
 }
 
-function removeFamUser () {
-  storeFamUser(undefined)
+
+function removeFamUser() {
+  storeFamUser(undefined);
+
   // clean up local storage for selected application
 }
 

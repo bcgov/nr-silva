@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import {
   SideNavLink
 } from '@carbon/react';
@@ -16,8 +16,9 @@ import { logout } from '../../services/AuthService';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
-  const userData = {firstName:'Jazz', lastName:"Grewal", idirUsername:"Jasgrewal", email:"jazz@test.com"};
-
+  const userData = {firstName:'Catherine', lastName:"Meng", idirUsername:"Jasgrewal", email:"jazz@test.com"};
+  const userDetails = useSelector((state:any) => state.userDetails)
+    
   const [goToURL, setGoToURL] = useState<string>('');
   const [goTo, setGoTo] = useState<boolean>(false);
 
@@ -45,12 +46,13 @@ const MyProfile = () => {
     <>
       <div className="user-info-section">
         <div className="user-image">
-          <AvatarImage userName={`${userData.firstName} ${userData.lastName}`} size="large" />
+          <AvatarImage userName={`${userDetails.user.firstName} ${userDetails.user.lastName}`} size="large" />
         </div>
         <div className="user-data">
-          <p className="user-name">{`${userData.firstName} ${userData.lastName}`}</p>
-          <p>{`IDIR: ${userData.idirUsername}`}</p>
-          <p>{userData.email}</p>
+          <p className="user-name">{`${userDetails.user.firstName} ${userDetails.user.lastName}`}</p>
+          <p>{`IDIR: ${userDetails.user.userName}`}</p>
+          <p>{`Email:${userDetails.user.email}`}</p>
+
         </div>
       </div>
       <hr className="divisory" />
