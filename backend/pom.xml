@@ -129,33 +129,12 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Authentication and Security -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-client</artifactId>
-    </dependency>
-
     <!-- DevOps -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- Database -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    
     <!-- Testing -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -163,8 +142,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-test</artifactId>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- Documentation -->
@@ -479,4 +459,28 @@
     </plugins>
   </build>
 
+  <!-- 
+    Issue:
+    - spring-boot-starter-oauth2-client (v3.1.1-latest) depends on
+      - spring-security-oauth2-client (v6.1.1-latest) depends on
+        - oauth2-oidc-sdk (v10.10.1-latest) depends on
+          - nimbus-jose-jwt (v9.30.2 NOT THE LATESTE)
+
+    conficts with:
+    - spring-boot-starter-oauth2-client (v3.1.1-latest) depends on
+      - spring-security-oauth2-jose (v6.1.1-latest) depends on
+        - nimbus-jose-jwt (v9.31 LATEST)
+
+    Forcing oauth2-oidc-sdk to update its dependency nimbus-jose-jwt to version 9.31
+    solves the issue, for now.
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>9.31</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
