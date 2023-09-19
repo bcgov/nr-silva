@@ -39,6 +39,8 @@ jobs:
     name: TEST Deployments
     environment: test
     runs-on: ubuntu-22.04
+    permissions:
+      issues: write
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
