@@ -53,8 +53,8 @@ jobs:
             -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
           penetration_test: true
-          penetration_test_artifact: ${{ matrix.name }}
-          penetration_test_issue: ${{ matrix.name }}
+          penetration_test_artifact: frontend
+          penetration_test_issue: frontend
           penetration_test_token: ${{ secrets.GITHUB_SECRET }}
 
   deploys-prod:
