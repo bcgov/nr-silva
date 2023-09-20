@@ -22,48 +22,59 @@ and [our Rocket Chat](https://chat.developer.gov.bc.ca/) channel.
 # Stack
 
 Here you will find a comprehensive list of all the languages and tools that are
-been used in this app. And also everything you need to get started, build,
+been used on SILVA. And also everything you need to get started, build,
 test and deploy.
 
-- React Progressive Web Application
-  - TypeScript
-  - Context API
-  - React Testing Library
-  - Jest
+## Front end
+- Progressive Web Application
+  - [React](https://react.dev/)
+  - [React Redux](https://react-redux.js.org/)
+  - [TypeScript](https://www.typescriptlang.org/)
+  - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+  - [Vitest](https://vitest.dev/)
+  - [Vite](https://vitejs.dev/)
+  - [Node 20](https://nodejs.org/download/release/v20.7.0/)
 - Lint
-  - Airbnb ESLint
+  - [Standard TS ESLint](https://github.com/standard/eslint-config-standard-with-typescript)
 - Tools
-  - Docker
-  - Microsoft Visual Studio Code
+  - Docker & Docker compose
+  - Microsoft VS Code
 - Styling
-  - Carbon Design System
-  - Bootstrap
-- Authentication
-  - AWS Cognito (FAM)
+  - [Carbon Design System](https://github.com/bcgov/nr-fsa-theme)
+  - [Bootstrap CSS](https://getbootstrap.com/)
+- Authentication & Authorization
+  - [FAM (AWS Cognito)](https://github.com/bcgov/nr-forests-access-management)
+
+## Back end
+- REST API
+  - [Java 17 with GraalVM](https://www.graalvm.org/)
+  - [Spring Boot Web](https://spring.io/guides/gs/spring-boot/)
+  - [Apache Maven](https://maven.apache.org/)
+  - [Hibernate ORM](https://hibernate.org/orm/)
+  - [Oracle JDBC](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
+- Lint
+  - [Google Java Checkstyle ](https://checkstyle.org/styleguides/google-java-style-20180523/javaguide.html)
+- IDE
+  - [VSCode](https://code.visualstudio.com/) can be a great choice
+- Authentication & Authorization
+  - OAuth 2.0 with JWT Token-based requests.
 
 # Getting started
 
 Once you have cloned this repository, you can get the app running by typing
-`npm install` and then `npm run start` from the project root directory. Then
-head to http://localhost:3000.
+at the project root directory:
 
-Be aware of the required environment variables:
-
-- VITE_USER_POOLS_ID
-- VITE_USER_POOLS_WEB_CLIENT_ID
-
-To run the unit tests all you need is `npm run test`.
-
-And with Docker:
-
-```bash
-docker compose --env-file ./frontend/.env.local up -d
+```sh
+docker compose up -d
 ```
+
+Then head to http://localhost:3000 too see SILVA running. You can see the REST API working at http://localhost:8080
 
 Before writing your first line of code, please take a moment and check out
 our [CONTRIBUTING](CONTRIBUTING.md) guide.
 
 ## Getting help
 
-As mentioned, we're here to help. Feel free to start a conversation
-on Rocket chat, you can search for `@jazz.grewal`.
+As mentioned, we're here to help. Feel free to reach out and 
+start a conversation on Rocket chat, you can search for
+`@jazz.grewal` or `@ricardo.campos`.
