@@ -39,6 +39,8 @@ jobs:
     name: TEST Deployments
     environment: test
     runs-on: ubuntu-22.04
+    permissions:
+      issues: write
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
@@ -53,6 +55,9 @@ jobs:
             -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
           penetration_test: true
+          penetration_test_artifact: frontend
+          penetration_test_issue: frontend
+          penetration_test_token: ${{ secrets.GITHUB_SECRET }}
 
   deploys-prod:
     name: PROD Deployments
