@@ -39,6 +39,7 @@
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <oci.revision>${project.version}</oci.revision>
+    <snakeyaml.version>2.2</snakeyaml.version>
   </properties>
 
   <profiles>
