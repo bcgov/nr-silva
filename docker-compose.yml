@@ -29,3 +29,16 @@ services:
     ports: ["3005:3000"]
     volumes: ["./frontend/Caddyfile:/etc/caddy/Caddyfile"]
     <<: *common
+
+  backend:
+    container_name: backend
+    ports: ["8080:8080", "5005:5005"]
+    image: maven:3.9.4-amazoncorretto-21
+    entrypoint: mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5005"
+    working_dir: /app
+    volumes: ["./backend:/app"]
+    healthcheck:
+      test: curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
+      interval: 5s
+      timeout: 5s
+      retries: 5
