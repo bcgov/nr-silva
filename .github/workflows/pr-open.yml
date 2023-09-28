@@ -43,15 +43,23 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       packages: write
+    strategy:
+      matrix:
+        package: [backend, frontend]
+        include:
+          - package: backend
+            triggers: ('backend/')
+          - package: frontend
+            triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v4
       - uses: bcgov-nr/action-builder-ghcr@v1.2.1
         with:
-          package: frontend
+          package: ${{ matrix.package }}
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ('frontend/')
+          triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys
