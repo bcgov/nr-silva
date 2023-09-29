@@ -41,22 +41,30 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       issues: write
+    strategy:
+      matrix:
+        name: [backend, frontend]
+        include:
+          - name: backend
+          - name: frontend
+            parameters:
+              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
-          file: frontend/openshift.deploy.yml
+          file: ${{ matrix.name }}/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=test -p PROMOTE=${{ github.repository }}/frontend:test
+            -p ZONE=test -p PROMOTE=${{ github.repository }}/${{ matrix.name }}:test
             -p NAME=${{ github.event.repository.name }}
-            -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
-            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+            ${{ matrix.parameters }}
           penetration_test: true
-          penetration_test_artifact: frontend
-          penetration_test_issue: frontend
+          penetration_test_artifact: ${{ matrix.name }}
+          penetration_test_issue: ${{ matrix.name }}
           penetration_test_token: ${{ secrets.GITHUB_SECRET }}
 
   deploys-prod:
@@ -65,20 +73,27 @@ jobs:
       - deploys-test
     environment: prod
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        name: [backend, frontend]
+        include:
+          - name: backend
+            paratemeters:
+              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+              -p VITE_REDIRECT_SIGN_OUT="${{ vars.VITE_REDIRECT_SIGN_OUT }}"
+          - name: frontend
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
-          file: frontend/openshift.deploy.yml
+          file: ${{ matrix.name }}/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=prod -p PROMOTE=${{ github.repository }}/frontend:test
+            -p ZONE=prod -p PROMOTE=${{ github.repository }}/${{ matrix.name }}:test
             -p NAME=${{ github.event.repository.name }}
-            -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
-            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-            -p VITE_REDIRECT_SIGN_OUT="${{ vars.VITE_REDIRECT_SIGN_OUT }}"
 
   image-promotions:
     name: Promote images to PROD

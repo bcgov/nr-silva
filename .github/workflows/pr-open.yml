@@ -45,17 +45,17 @@ jobs:
       packages: write
     strategy:
       matrix:
-        package: [backend, frontend]
+        name: [backend, frontend]
         include:
-          - package: backend
+          - name: backend
             triggers: ('backend/')
-          - package: frontend
+          - name: frontend
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v4
       - uses: bcgov-nr/action-builder-ghcr@v1.2.1
         with:
-          package: ${{ matrix.package }}
+          package: ${{ matrix.name }}
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,18 +68,21 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        package: [backend, frontend]
+        name: [backend, frontend]
         include:
-          - package: backend
+          - name: backend
             file: backend/openshift.deploy.yml
             triggers: ('backend/' 'frontend/')
-          - package: frontend
+          - name: frontend
             file: frontend/openshift.deploy.yml
             triggers: ('backend/' 'frontend/')
+            parameters:
+              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
-          file: ${{ matrix.file }}
+          file: ${{ matrix.name }}/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
@@ -87,7 +90,6 @@ jobs:
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
-            -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
-            -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
             -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
+            ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
