@@ -11,74 +11,74 @@ concurrency:
 
 
 jobs:
-  pr-greeting:
-    if: "!github.event.pull_request.head.repo.fork"
-    name: PR Greeting
-    env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
-      PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
-    runs-on: ubuntu-22.04
-    permissions:
-      pull-requests: write
-    steps:
-      - name: PR Greeting
-        uses: bcgov-nr/action-pr-description-add@v1.1.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          add_markdown: |
-            ---
+  # pr-greeting:
+  #   if: "!github.event.pull_request.head.repo.fork"
+  #   name: PR Greeting
+  #   env:
+  #     DOMAIN: apps.silver.devops.gov.bc.ca
+  #     PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
+  #   runs-on: ubuntu-22.04
+  #   permissions:
+  #     pull-requests: write
+  #   steps:
+  #     - name: PR Greeting
+  #       uses: bcgov-nr/action-pr-description-add@v1.1.0
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         add_markdown: |
+  #           ---
 
-            Thanks for the PR!
+  #           Thanks for the PR!
 
-            Any successful deployments (not always required) will be available below.
-            [Backend](https://${{ env.PREFIX }}-backend.${{ env.DOMAIN }})
-            [Frontend](https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }})
+  #           Any successful deployments (not always required) will be available below.
+  #           [Backend](https://${{ env.PREFIX }}-backend.${{ env.DOMAIN }})
+  #           [Frontend](https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }})
 
-            Once merged, code will be promoted and handed off to following workflow run.
-            [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
+  #           Once merged, code will be promoted and handed off to following workflow run.
+  #           [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
-  builds:
-    name: Builds
-    if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        name: [backend, frontend]
-        include:
-          - name: backend
-            triggers: ('backend/')
-          - name: frontend
-            triggers: ('frontend/')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: bcgov-nr/action-builder-ghcr@v1.2.1
-        with:
-          package: ${{ matrix.name }}
-          tag: ${{ github.event.number }}
-          tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
+  # builds:
+  #   name: Builds
+  #   if: "!github.event.pull_request.head.repo.fork"
+  #   runs-on: ubuntu-22.04
+  #   permissions:
+  #     packages: write
+  #   strategy:
+  #     matrix:
+  #       name: [backend, frontend]
+  #       include:
+  #         - name: backend
+  #           triggers: ('backend/')
+  #         - name: frontend
+  #           triggers: ('frontend/')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: bcgov-nr/action-builder-ghcr@v1.2.1
+  #       with:
+  #         package: ${{ matrix.name }}
+  #         tag: ${{ github.event.number }}
+  #         tag_fallback: test
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds]
+    # needs: [builds]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend]
+        # name: [backend, frontend]
         include:
           - name: backend
             file: backend/openshift.deploy.yml
             triggers: ('backend/' 'frontend/')
-          - name: frontend
-            file: frontend/openshift.deploy.yml
-            triggers: ('backend/' 'frontend/')
-            parameters:
-              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
-              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          # - name: frontend
+          #   file: frontend/openshift.deploy.yml
+          #   triggers: ('backend/' 'frontend/')
+          #   parameters:
+          #     -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+          #     -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
