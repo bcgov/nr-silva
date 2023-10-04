@@ -46,7 +46,7 @@ jobs:
           commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
-          java-distribution: temurin
+          java-distribution: oracle
           java-version: 21
           sonar_args: >
             -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
