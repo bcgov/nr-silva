@@ -57,6 +57,52 @@ jobs:
           sonar_project_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
           triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
+codeql:
+    name: CodeQL
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        language: [java, javascript]
+        include:
+          - language: "java"
+            working-directory: backend-java
+            build: ./mvnw package -DskipTests
+          - language: "javascript"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Autobuild
+        if: ${{ ! matrix.build }}
+        uses: github/codeql-action/autobuild@v2
+
+      - uses: actions/setup-java@v3
+        if: ${{ matrix.build && matrix.language == 'java' }}
+        with:
+          distribution: "oracle"
+          java-version: "21"
+
+      - uses: actions/cache@v3
+        if: ${{ matrix.build && matrix.language == 'java' }}
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build
+        if: ${{ matrix.build }}
+        run: ${{ matrix.build }}
+        working-directory: ${{ matrix.working-directory }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
+
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
     name: Trivy Security Scan
