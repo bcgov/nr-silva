@@ -1,15 +1,10 @@
-name: Unit Tests and Analysis
+name: Analysis
 
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+    types: [opened, reopened, synchronize, ready_for_review]
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -17,24 +12,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Note: uncomment code below once a backend is written
-  tests:
-    name: Unit Tests
+  frontend:
+    name: Frontend Tests
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        # dir: [backend, frontend]
-        dir: [frontend]
-        include:
-          # - dir: backend
-          #   sonar_projectKey: nr-silva-backend
-          #   token: SONAR_TOKEN_BACKEND
-          #   triggers: ('backend/')
-          - dir: frontend
-            sonar_projectKey: nr-silva-frontend
-            token: SONAR_TOKEN_FRONTEND
-            triggers: ('frontend/')
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.1.0
         with:
@@ -47,13 +28,34 @@ jobs:
             -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=${{ matrix.sonar_projectKey }}
+            -Dsonar.projectKey=nr-silva-frontend
             -Dsonar.sources=src
             -Dsonar.tests.inclusions=**/*spec.ts
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-          sonar_token: ${{ secrets[matrix.token] }}
+          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
           # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && matrix.triggers || '' }}
+          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+
+  backend:
+    name: Backend Tests
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: bcgov-nr/actoin-test-and-analyse-java@v0.2.0
+        with:
+          commands: mvn clean package
+          dir: backend
+          java-cache: maven
+          java-distribution: temurin
+          java-version: 17
+          sonar_args: >
+            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=nr-silva-backend
+            -Dsonar.sources=src
+          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
