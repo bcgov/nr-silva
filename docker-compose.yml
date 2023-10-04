@@ -2,11 +2,11 @@ version: '3.9'
 
 x-frontend: &frontend
   environment:
-    VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
+    VITE_USER_POOLS_ID: ca-central-1_FxagSNQa7
     VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
     VITE_ZONE: DEV
   healthcheck:
-    test: [ "CMD-SHELL", "curl http://localhost:3000" ]
+    test: curl http://localhost:3000"
     interval: 15s
     timeout: 5s
     retries: 5
@@ -19,6 +19,7 @@ x-backend: &backend
     interval: 5s
     timeout: 5s
     retries: 5
+  restart: always
 
 services:
   frontend:
