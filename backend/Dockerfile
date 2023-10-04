@@ -16,6 +16,6 @@ EXPOSE 8080
 HEALTHCHECK --interval=300s --timeout=3s CMD curl -f http://localhost:8080
 
 # Startup
-COPY --chown=1001:root --from=build /project/target/*-runner /app
+COPY --chown=1001:root --from=build /project/target/results /app
 USER 1001
 CMD ["/app", "-Dquarkus.http.host=0.0.0.0"]
