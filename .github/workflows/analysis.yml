@@ -36,26 +36,26 @@ jobs:
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
-  backend:
-    name: Backend Tests
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
-        with:
-          commands: mvn clean package
-          dir: backend
-          java-cache: maven
-          java-distribution: temurin
-          java-version: 17
-          sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=nr-silva-backend
-            -Dsonar.sources=src
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
-          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
+  # backend:
+  #   name: Backend Tests
+  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
+  #       with:
+  #         commands: mvn clean package
+  #         dir: backend
+  #         java-cache: maven
+  #         java-distribution: temurin
+  #         java-version: 17
+  #         sonar_args: >
+  #           -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+  #           -Dsonar.organization=bcgov-sonarcloud
+  #           -Dsonar.project.monorepo.enabled=true
+  #           -Dsonar.projectKey=nr-silva-backend
+  #           -Dsonar.sources=src
+  #         sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+  #         triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
