@@ -25,7 +25,7 @@ const Landing: React.FC = () => {
                 <BCGovLogo />
               </div>
 
-              <div className="mt-3 ">
+              {/* <div className="mt-3 ">
                 <InlineNotification
                   icondescription="describes the close button"
                   subtitle="See the release notes to find out what's new"
@@ -54,13 +54,15 @@ const Landing: React.FC = () => {
                   lowContrast
                   className = "inline-notification"
                 />
-              </div>
+              </div> */}
 
               {/* Welcome - Title and Subtitle */}
-              <h1 data-testid="landing-title" className="landing-title">Welcome to SILVA</h1>
-              <h2 data-testid="landing-subtitle" className="landing-subtitle">
-                Plan, report and analyze your silviculture activities
-              </h2>
+              <div className="mt-5">
+                <h1 data-testid="landing-title" className="landing-title mt-5">Welcome to SILVA</h1>
+                <h2 data-testid="landing-subtitle" className="landing-subtitle">
+                  Plan, report, and analyze your silviculture activities
+                </h2>
+              </div>
               {/* Button Group */}
               <div className="row gy-3">
                 <div className="col-xl-5 col-lg-6">
@@ -90,6 +92,9 @@ const Landing: React.FC = () => {
             <div className="col-lg-5">
               <div className="lottie-container">
                 {View}
+              </div>
+              <div className="text-end mx-5">
+                <a className="mx-3" href="https://lottiefiles.com/animations/grow-your-forest-DywVyvml06">Animation by Sara Figueroa</a>
               </div>
             </div>
           </div>
