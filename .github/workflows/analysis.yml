@@ -47,7 +47,7 @@ jobs:
           dir: backend
           java-cache: maven
           java-distribution: temurin
-          java-version: 17
+          java-version: 21
           sonar_args: >
             -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
             -Dsonar.organization=bcgov-sonarcloud
