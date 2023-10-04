@@ -49,11 +49,11 @@ jobs:
           java-distribution: oracle
           java-version: 21
           sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
-            -Dsonar.sources=src
           sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
           triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
