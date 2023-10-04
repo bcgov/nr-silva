@@ -1,10 +1,9 @@
-name: Merge to Main
+name: Merge
 
 on:
   workflow_run:
     workflows: [ "Pull Request Closed" ]
-    types:
-      - completed
+    types: [completed]
   workflow_dispatch:
 
 concurrency:
@@ -69,8 +68,7 @@ jobs:
 
   deploys-prod:
     name: PROD Deployments
-    needs:
-      - deploys-test
+    needs: [deploys-test]
     environment: prod
     runs-on: ubuntu-22.04
     strategy:
@@ -97,8 +95,7 @@ jobs:
 
   image-promotions:
     name: Promote images to PROD
-    needs:
-      - deploys-prod
+    needs: [deploys-prod]
     runs-on: ubuntu-22.04
     permissions:
       packages: write

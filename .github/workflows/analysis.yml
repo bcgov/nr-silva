@@ -41,7 +41,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/actoin-test-and-analyse-java@v0.2.0
+      - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
         with:
           commands: mvn clean package
           dir: backend
