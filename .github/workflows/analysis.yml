@@ -54,7 +54,7 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          sonar_project_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
           triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
