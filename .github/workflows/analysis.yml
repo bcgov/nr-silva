@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
         with:
-          commands: mvn clean package
+          commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
           java-distribution: temurin
