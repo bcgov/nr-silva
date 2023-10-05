@@ -138,7 +138,8 @@ objects:
         app: "${NAME}-${ZONE}"
       name: "${NAME}-${ZONE}-${COMPONENT}"
     spec:
-      host: "${NAME}-${COMPONENT}.${DOMAIN}/${ZONE}"
+      host: "${NAME}-${COMPONENT}.${DOMAIN}"
+      path: "${ZONE}"
       port:
         targetPort: 8080-tcp
       to:
