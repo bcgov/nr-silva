@@ -164,7 +164,7 @@ objects:
       name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
       host: ${NAME}-${COMPONENT}.${DOMAIN}
-      path: ${ZONE}
+      path: /${ZONE}
       port:
         targetPort: 3000-tcp
       to:
