@@ -163,7 +163,7 @@ objects:
         app: ${NAME}-${ZONE}
       name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
-      host: ${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
+      host: ${NAME}-${COMPONENT}.${DOMAIN}/${ZONE}
       port:
         targetPort: 3000-tcp
       to:
