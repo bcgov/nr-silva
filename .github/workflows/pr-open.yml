@@ -16,7 +16,7 @@ jobs:
     name: PR Greeting
     env:
       DOMAIN: apps.silver.devops.gov.bc.ca
-      PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
+      PREFIX: https://${{ github.event.repository.name }}
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
