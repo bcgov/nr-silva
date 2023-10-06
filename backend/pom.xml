@@ -125,7 +125,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.28</version>
+      <version>1.18.30</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -420,7 +420,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.12.2</version>
+            <version>10.12.4</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -466,7 +466,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.31</version>
+        <version>9.35</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
