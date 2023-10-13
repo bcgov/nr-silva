@@ -41,12 +41,12 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
+      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
         with:
           commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
-          java-distribution: oracle
+          java-distribution: temurin
           java-version: 21
           sonar_args: >
             -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
@@ -54,8 +54,9 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
-          sonar_project_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
-  #         triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
+          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          # Only use triggers for PRs
+          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
   codeql:
     name: CodeQL
