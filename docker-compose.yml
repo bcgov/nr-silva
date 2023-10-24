@@ -1,13 +1,22 @@
 version: '3.9'
 
-x-common: &common
+x-frontend: &frontend
   environment:
     VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
     VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
     VITE_ZONE: DEV
   healthcheck:
-    test: [ "CMD-SHELL", "curl http://localhost:3000" ]
+    test: curl http://localhost:3000"
     interval: 15s
+    timeout: 5s
+    retries: 5
+  restart: always
+
+x-backend: &backend
+  ports: ["8080:8080"]
+  healthcheck:
+    test: curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
+    interval: 5s
     timeout: 5s
     retries: 5
   restart: always
@@ -20,7 +29,7 @@ services:
     ports: ["3000:3000"]
     volumes: ["./frontend:/app", "/app/node_modules"]
     working_dir: "/app"
-    <<: *common
+    <<: *frontend
 
   caddy:
     container_name: caddy
@@ -28,4 +37,18 @@ services:
     build: ./frontend
     ports: ["3005:3000"]
     volumes: ["./frontend/Caddyfile:/etc/caddy/Caddyfile"]
-    <<: *common
+    <<: *frontend
+
+  backend:
+    container_name: backend
+    entrypoint: mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n"
+    image: maven:3.9.4-amazoncorretto-21
+    volumes: ["./backend:/app"]
+    working_dir: /app
+    <<: *backend
+
+  backend-native:
+    container_name: backend-native
+    profiles: ["native"]
+    build: ./backend
+    <<: *backend
