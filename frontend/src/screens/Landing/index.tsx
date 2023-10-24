@@ -21,11 +21,11 @@ const Landing: React.FC = () => {
         <div className="container-fluid">
           <div className="row">
             <div className=" col-xl-7 col-lg-7 px-4">
-              <div className="mt-4">
+              <div className="mt-4 pb-5">
                 <BCGovLogo />
               </div>
 
-              {/* <div className="mt-3 ">
+              <div className="">
                 <InlineNotification
                   icondescription="describes the close button"
                   subtitle="See the release notes to find out what's new"
@@ -35,7 +35,7 @@ const Landing: React.FC = () => {
                   className = "inline-notification"
                 />
               </div>
-              <div className="mt-3 ">
+              <div className="">
                 <InlineNotification
                   icondescription="describes the close button"
                   subtitle="SILVA will be offline for up to 4 hours time starting on June 30, 2023 at 9:00pm"
@@ -45,7 +45,7 @@ const Landing: React.FC = () => {
                   className = "inline-notification"
                 />
               </div>
-              <div className="mt-3 ">
+              <div className="">
                 <InlineNotification
                   icondescription="describes the close button"
                   subtitle="SILVA is expected to come back online on July 1, 2023 at 11:11am"
@@ -54,11 +54,11 @@ const Landing: React.FC = () => {
                   lowContrast
                   className = "inline-notification"
                 />
-              </div> */}
+              </div>
 
               {/* Welcome - Title and Subtitle */}
               <div className="mt-5">
-                <h1 data-testid="landing-title" className="landing-title mt-5">Welcome to SILVA</h1>
+                <h1 data-testid="landing-title" className="landing-title">Welcome to SILVA</h1>
                 <h2 data-testid="landing-subtitle" className="landing-subtitle">
                   Plan, report, and analyze your silviculture activities
                 </h2>
