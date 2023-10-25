@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^5.0.0",
-    "@bcgov-nr/nr-fsa-theme": "^1.0.10",
+    "@bcgov-nr/nr-theme": "^1.6.0",
     "@carbon/react": "^1.27.0",
     "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
