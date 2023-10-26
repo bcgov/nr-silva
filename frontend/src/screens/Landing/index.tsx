@@ -93,8 +93,8 @@ const Landing: React.FC = () => {
               <div className="lottie-container">
                 {View}
               </div>
-              <div className="text-end mx-5">
-                <a className="mx-3" href="https://lottiefiles.com/animations/grow-your-forest-DywVyvml06">Animation by Sara Figueroa</a>
+              <div className="text-end fixed-bottom py-2 pe-3">
+                <a href="https://lottiefiles.com/animations/grow-your-forest-DywVyvml06">Animation by Sara Figueroa</a>
               </div>
             </div>
           </div>

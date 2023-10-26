@@ -40,7 +40,7 @@ test and deploy.
   - Docker & Docker compose
   - Microsoft VS Code
 - Styling
-  - [Carbon Design System](https://github.com/bcgov/nr-fsa-theme)
+  - [Carbon Design System](https://github.com/bcgov/nr-theme)
   - [Bootstrap CSS](https://getbootstrap.com/)
 - Authentication & Authorization
   - [FAM (AWS Cognito)](https://github.com/bcgov/nr-forests-access-management)
