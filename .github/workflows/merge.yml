@@ -2,7 +2,7 @@ name: Merge
 
 on:
   workflow_run:
-    workflows: [ "Pull Request Closed" ]
+    workflows: [PR Closed]
     types: [completed]
   workflow_dispatch:
 
