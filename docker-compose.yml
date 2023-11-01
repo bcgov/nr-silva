@@ -21,6 +21,11 @@ x-backend: &backend
     retries: 5
   restart: always
 
+x-db-vars: &db-vars
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: default
+  POSTGRES_DB: postgres
+
 services:
   frontend:
     container_name: frontend
@@ -41,10 +46,16 @@ services:
 
   backend:
     container_name: backend
+    depends_on:
+      database:
+        condition: service_healthy
     entrypoint: mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n"
     image: maven:3.9.4-amazoncorretto-21
     volumes: ["./backend:/app"]
     working_dir: /app
+    environment:
+      POSTGRES_HOST: database
+      <<: *db-vars
     <<: *backend
 
   backend-native:
@@ -52,3 +63,16 @@ services:
     profiles: ["native"]
     build: ./backend
     <<: *backend
+
+  database:
+    container_name: database
+    environment:
+      <<: *db-vars
+    volumes: ["/pgdata"]
+    ports: ["5432:5432"]
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    image: postgis/postgis:13-master
