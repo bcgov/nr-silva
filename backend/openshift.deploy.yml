@@ -3,7 +3,7 @@ kind: Template
 parameters:
   - name: NAME
     description: Module name
-    value: quickstart-openshift-backends
+    value: nr-silva
   - name: COMPONENT
     description: Component name
     value: backend
@@ -38,6 +38,15 @@ parameters:
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
     value: bcgov/quickstart-openshift-backends/backend:test
+  - name: DB_POOL_CONN_TIMEOUT
+    description: Maximum number of milliseconds that a client will wait for a connection from the pool.
+    value: "90000"
+  - name: DB_POOL_IDLE_TIMEOUT
+    description: Maximum amount of milliseconds that a connection is allowed to sit idle in the pool.
+    value: "0"
+  - name: DB_POOL_MAX_LIFETIME
+    description: Maximum lifetime of a connection in the pool.
+    value: "1800000"
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -87,6 +96,30 @@ objects:
             - image: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
               imagePullPolicy: Always
               name: "${NAME}"
+              env:
+                - name: POSTGRES_HOST
+                  value: ${NAME}-${ZONE}-database
+                - name: POSTGRES_DB
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-name
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-password
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-user
+                - name: DB_POOL_CONN_TIMEOUT
+                  value: ${DB_POOL_CONN_TIMEOUT}
+                - name: DB_POOL_IDLE_TIMEOUT
+                  value: ${DB_POOL_IDLE_TIMEOUT}
+                - name: DB_POOL_MAX_LIFETIME
+                  value: ${DB_POOL_MAX_LIFETIME}
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -103,13 +136,13 @@ objects:
                   port: 8080
                   scheme: HTTP
                 initialDelaySeconds: 5
-                periodSeconds: 2
-                timeoutSeconds: 2
+                periodSeconds: 5
+                timeoutSeconds: 10
                 successThreshold: 1
-                failureThreshold: 30
+                failureThreshold: 5
               livenessProbe:
                 successThreshold: 1
-                failureThreshold: 3
+                failureThreshold: 5
                 httpGet:
                   path: /actuator/health
                   port: 8080

@@ -34,17 +34,36 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
+  init-test:
+    name: TEST Init
+    environment: test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: OpenShift Init
+        uses: bcgov-nr/action-deployer-openshift@v1.0.4
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: common/openshift.init.yml
+          overwrite: false
+          parameters:
+            -p ZONE=test -p NAME=${{ github.event.repository.name }}
+
   deploys-test:
     name: TEST Deployments
+    needs: [init-test]
     environment: test
     runs-on: ubuntu-22.04
     permissions:
       issues: write
     strategy:
       matrix:
-        name: [backend, frontend]
+        name: [database, backend, frontend]
         include:
+          - name: database
           - name: backend
+            verification_path: "actuator/health"
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
@@ -66,15 +85,33 @@ jobs:
           penetration_test_issue: ${{ matrix.name }}
           penetration_test_token: ${{ secrets.GITHUB_SECRET }}
 
+  init-prod:
+    name: PROD Init
+    needs: [deploys-test]
+    environment: prod
+    runs-on: ubuntu-22.04
+    steps:
+      - name: OpenShift Init
+        uses: bcgov-nr/action-deployer-openshift@v1.0.4
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: common/openshift.init.yml
+          overwrite: false
+          parameters:
+            -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+
   deploys-prod:
     name: PROD Deployments
-    needs: [deploys-test]
+    needs: [init-prod]
     environment: prod
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend]
+        name: [database, backend, frontend]
         include:
+          - name: database
           - name: backend
             paratemeters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
@@ -99,10 +136,13 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       packages: write
+    strategy:
+      matrix:
+        component: [database, backend, frontend]
     steps:
       - uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
-          repository: ${{ github.repository }}/frontend
+          repository: ${{ github.repository }}/${{ matrix.component }}
           target: test
           tags: prod
