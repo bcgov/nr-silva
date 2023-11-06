@@ -37,16 +37,32 @@ jobs:
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
+      - name: OpenShift Init
+        uses: bcgov-nr/action-deployer-openshift@v1.1.1
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: common/openshift.init.yml
+          overwrite: false
+          parameters:
+            -p ZONE=${{ github.event.number }}
+            -p NAME=${{ github.event.repository.name }}
+          triggers: ('common/' 'database/' 'backend/' 'frontend/')
+
   builds:
     name: Builds
+    needs: [pr-greeting]
     if: "!github.event.pull_request.head.repo.fork"
     runs-on: ubuntu-22.04
     permissions:
       packages: write
     strategy:
       matrix:
-        name: [backend, frontend]
+        name: [database, backend, frontend]
         include:
+          - package: database
+            triggers: ('database/')
           - name: backend
             triggers: ('backend/')
           - name: frontend
@@ -64,22 +80,35 @@ jobs:
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds]
+    needs: [builds, pr-greeting]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend]
+        name: [database, backend, frontend]
         include:
+          - name: database
+            file: database/openshift.deploy.yml
+            parameters:
+              -p DB_PVC_SIZE=128Mi
+            overwrite: false
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
           - name: backend
             file: backend/openshift.deploy.yml
-            triggers: ('backend/' 'frontend/')
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
             verification_path: /actuator/health
+            parameters:
+              -p PROMOTE=${{ github.repository }}/backend:${{ github.event.number }}
+              -p MIN_REPLICAS=1
+              -p MAX_REPLICAS=2
           - name: frontend
             file: frontend/openshift.deploy.yml
-            triggers: ('backend/' 'frontend/')
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+              -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
+              -p MIN_REPLICAS=1
+              -p MAX_REPLICAS=2
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
@@ -89,9 +118,8 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/${{ matrix.name }}:${{ github.event.number }}
-            -p MIN_REPLICAS=1 -p MAX_REPLICAS=2
+            -p ZONE=${{ github.event.number }}
+            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
           verification_path: ${{ matrix.verification_path }}
