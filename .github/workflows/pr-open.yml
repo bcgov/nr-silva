@@ -97,7 +97,6 @@ jobs:
             triggers: ('common/' 'database/' 'backend/' 'frontend/')
             verification_path: /actuator/health
             parameters:
-              -p PROMOTE=${{ github.repository }}/backend:${{ github.event.number }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
           - name: frontend
@@ -106,7 +105,6 @@ jobs:
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-              -p PROMOTE=${{ github.repository }}/frontend:${{ github.event.number }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
     steps:
