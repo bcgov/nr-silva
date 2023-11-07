@@ -69,7 +69,7 @@ jobs:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v1.4.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
           file: ${{ matrix.name }}/openshift.deploy.yml
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -80,10 +80,6 @@ jobs:
             -p ZONE=test
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
-          penetration_test: true
-          penetration_test_artifact: ${{ matrix.name }}
-          penetration_test_issue: ${{ matrix.name }}
-          penetration_test_token: ${{ secrets.GITHUB_SECRET }}
 
   init-prod:
     name: PROD Init
