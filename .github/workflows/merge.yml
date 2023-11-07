@@ -118,7 +118,7 @@ jobs:
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-              -p VITE_REDIRECT_SIGN_OUT="${{ vars.VITE_REDIRECT_SIGN_OUT }}"
+              -p PROMOTE=${{ github.repository }}/frontend:test
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v1.4.0
         with:
