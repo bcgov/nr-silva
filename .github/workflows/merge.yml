@@ -80,6 +80,7 @@ jobs:
             -p ZONE=test
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
+          verification_path: ${{ matrix.verification_path }}
 
   init-prod:
     name: PROD Init
