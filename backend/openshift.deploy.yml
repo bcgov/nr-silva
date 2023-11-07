@@ -35,9 +35,6 @@ parameters:
   - name: ORG_NAME
     description: Organization name, e.g. bcgov
     value: bcgov
-  - name: PROMOTE
-    description: Image (namespace/name:tag) to promote/import
-    value: bcgov/quickstart-openshift-backends/backend:test
   - name: DB_POOL_CONN_TIMEOUT
     description: Maximum number of milliseconds that a client will wait for a connection from the pool.
     value: "90000"
@@ -61,7 +58,7 @@ objects:
         - name: "${IMAGE_TAG}"
           from:
             kind: DockerImage
-            name: "${REGISTRY}/${PROMOTE}"
+            name: ${REGISTRY}/${ORG_NAME}/${NAME}/${COMPONENT}:${ZONE}
           referencePolicy:
             type: Local
   - apiVersion: v1
