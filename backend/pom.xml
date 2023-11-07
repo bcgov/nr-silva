@@ -90,6 +90,7 @@
         <skip.integration.tests>true</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
         <jacoco.skip>true</jacoco.skip>
+        <quarkus.native.additional-build-args>-march=compatibility</quarkus.native.additional-build-args>
       </properties>
       <build>
         <plugins>
