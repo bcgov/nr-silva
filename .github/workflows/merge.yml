@@ -63,7 +63,7 @@ jobs:
         include:
           - name: database
           - name: backend
-            verification_path: "actuator/health"
+            verification_path: actuator/health
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
@@ -109,7 +109,7 @@ jobs:
         include:
           - name: database
           - name: backend
-            verification_path: "actuator/health"
+            verification_path: actuator/health
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
@@ -126,6 +126,7 @@ jobs:
             -p ZONE=prod
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
+          verification_path: ${{ matrix.verification_path }}
 
   image-promotions:
     name: Promote images to PROD
