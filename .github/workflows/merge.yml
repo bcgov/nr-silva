@@ -68,7 +68,6 @@ jobs:
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_=USER_POOLS_WEB_CLIENT_ID }}
-          verification_path: ${{ matrix.verification_path }}
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
@@ -81,6 +80,7 @@ jobs:
             -p ZONE=test
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
+          verification_path: ${{ matrix.verification_path }}
 
   init-prod:
     name: PROD Init
