@@ -1,21 +1,27 @@
-# Quarkus Images
-# https://github.com/quarkusio/quarkus-images
+### Builder
+FROM ghcr.io/graalvm/native-image:ol8-java17-22 AS build
 
-# "Provides the native-image executable. Used by the Maven and Gradle plugin from Quarkus to build linux64 executables"
-FROM quay.io/quarkus/ubi-quarkus-graalvmce-builder-image:jdk-21 AS build
+# Copy
+WORKDIR /app
+COPY pom.xml mvnw ./
+COPY src ./src
+COPY .mvn/ ./.mvn
 
-# Image defaults to /project; copy controlled by .dockerignore
-COPY --chown=quarkus:quarkus . ./
+# Build
 RUN ./mvnw package -Pnative -DskipTests
 
-# "A base image to run Quarkus native application using UBI Micro"
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+### Deployer
+FROM gcr.io/distroless/java-base:nonroot AS deploy
+ARG PORT=8080
+
+# Copy
+WORKDIR /app
+COPY --from=build /app/target/results ./results
 
 # Port and health check
-EXPOSE 8080
-HEALTHCHECK --interval=300s --timeout=3s CMD curl -f http://localhost:8080
+USER 1001
+EXPOSE ${PORT}
+HEALTHCHECK CMD curl -f http://localhost:${PORT}/actuator/health | grep '"status":"UP"'
 
 # Startup
-COPY --chown=1001:root --from=build /project/target/results /app
-USER 1001
-CMD ["/app", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["/app/results"]
