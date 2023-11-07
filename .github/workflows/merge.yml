@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v1.0.4
+        uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
