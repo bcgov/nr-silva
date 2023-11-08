@@ -62,6 +62,7 @@ jobs:
         name: [database, backend, frontend]
         include:
           - name: database
+            overwrite: false
           - name: backend
             verification_path: actuator/health
           - name: frontend
@@ -75,7 +76,7 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: true
+          overwrite: ${{ matrix.overwrite }}
           parameters:
             -p ZONE=test
             -p NAME=${{ github.event.repository.name }}
@@ -99,39 +100,9 @@ jobs:
           parameters:
             -p ZONE=prod -p NAME=${{ github.event.repository.name }}
 
-  deploys-prod:
-    name: PROD Deployments
-    needs: [init-prod]
-    environment: prod
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        name: [database, backend, frontend]
-        include:
-          - name: database
-          - name: backend
-            verification_path: actuator/health
-          - name: frontend
-            parameters:
-              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
-              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-    steps:
-      - uses: bcgov-nr/action-deployer-openshift@v1.4.0
-        with:
-          file: ${{ matrix.name }}/openshift.deploy.yml
-          oc_namespace: ${{ vars.OC_NAMESPACE }}
-          oc_server: ${{ vars.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: true
-          parameters:
-            -p ZONE=prod
-            -p NAME=${{ github.event.repository.name }}
-            ${{ matrix.parameters }}
-          verification_path: ${{ matrix.verification_path }}
-
   image-promotions:
     name: Promote images to PROD
-    needs: [deploys-prod]
+    needs: [deploys-test]
     runs-on: ubuntu-22.04
     permissions:
       packages: write
@@ -145,3 +116,34 @@ jobs:
           repository: ${{ github.repository }}/${{ matrix.component }}
           target: test
           tags: prod
+
+  deploys-prod:
+    name: PROD Deployments
+    needs: [init-prod, image-promotions]
+    environment: prod
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        name: [database, backend, frontend]
+        include:
+          - name: database
+            overwrite: false
+          - name: backend
+            verification_path: actuator/health
+          - name: frontend
+            parameters:
+              -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
+              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+    steps:
+      - uses: bcgov-nr/action-deployer-openshift@v1.4.0
+        with:
+          file: ${{ matrix.name }}/openshift.deploy.yml
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: ${{ matrix.overwite }}
+          parameters:
+            -p ZONE=prod
+            -p NAME=${{ github.event.repository.name }}
+            ${{ matrix.parameters }}
+          verification_path: ${{ matrix.verification_path }}
