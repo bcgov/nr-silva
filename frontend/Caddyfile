@@ -23,13 +23,12 @@
 		Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate"
 		X-Content-Type-Options "nosniff"
 		Strict-Transport-Security "max-age=31536000"
-		Content-Security-Policy "base-uri 'self'; connect-src 'self' https://*.gov.bc.ca https://*.amazoncognito.com https://cognito-idp.ca-central-1.amazonaws.com; default-src 'self'; font-src 'self'; frame-src 'self' https://*.gov.bc.ca; img-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; script-src 'unsafe-inline' 'report-sample' 'self' https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js; style-src 'report-sample' 'self' https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css; worker-src 'none';"
+		Content-Security-Policy "base-uri 'self'; connect-src 'self' https://*.gov.bc.ca https://*.amazoncognito.com https://*.cloudfront.net https://cognito-idp.ca-central-1.amazonaws.com https://results-ques.netlify.app/api?file=*; default-src 'self'; font-src 'self'; frame-src 'self' https://*.gov.bc.ca; img-src 'self' http://www.w3.org/; manifest-src 'self'; media-src 'self'; object-src 'none'; script-src 'unsafe-inline' 'report-sample' 'self' https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js; style-src 'report-sample' 'self' https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css; worker-src 'none';"
 		Referrer-Policy "same-origin"
 	}
-
 	handle /env.js {
 		header Content-Type "text/javascript"
-		respond `window.config = {"VITE_USER_POOLS_ID":"{$VITE_USER_POOLS_ID}","VITE_USER_POOLS_WEB_CLIENT_ID":"{$VITE_USER_POOLS_WEB_CLIENT_ID}","VITE_REDIRECT_SIGN_OUT":"{$VITE_REDIRECT_SIGN_OUT}","VITE_ZONE":"{$VITE_ZONE}"};`
+    respond `window.config = {"VITE_USER_POOLS_WEB_CLIENT_ID":"{$VITE_USER_POOLS_WEB_CLIENT_ID}","VITE_ZONE":"{$VITE_ZONE}","VITE_BACKEND_URL":"{$VITE_BACKEND_URL}","VITE_QUESTIONS_API_KEY":"{$VITE_QUESTIONS_API_KEY}"};`
 	}
 
 	handle_path /* {
