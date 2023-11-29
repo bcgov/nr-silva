@@ -1,9 +1,9 @@
 export const StatusColourMap = {
-  Approved: 'green',
+  Completed: 'green',
   Cancelled: 'magenta',
-  Complete: 'blue',
+  Active: 'blue',
   Expired: 'high-contrast',
-  Incomplete: 'purple',
+  'Free growing': 'purple',
   Pending: 'gray',
   Submitted: 'cyan',
   Unkown: 'outline'

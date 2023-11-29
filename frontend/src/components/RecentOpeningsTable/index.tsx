@@ -11,14 +11,26 @@ interface TableProps {
   clickFn: Function;
 }
 
-const RecentActivitiesTable = ({ elements, headers, clickFn }: TableProps) => {
+const RecentOpeningsTable = ({ elements, headers, clickFn }: TableProps) => {
   const iconSize = '18';
 
   const createTableCell = (obj: any, key: string, index: number) => {
     const mapKey = `${key}-${index}`;
+    let cellContent;
+  
+    switch (key) {
+      case 'status':
+        cellContent = <StatusTag type={obj[key]} />;
+        break;
+      // Add more cases for other keys if needed
+      default:
+        cellContent = obj[key];
+        break;
+    }
+  
     return (
       <TableCell key={mapKey} className="activities-table-cell">
-        {obj[key]}
+        {cellContent}
       </TableCell>
     );
   };
@@ -65,4 +77,4 @@ const RecentActivitiesTable = ({ elements, headers, clickFn }: TableProps) => {
   );
 };
 
-export default RecentActivitiesTable;
+export default RecentOpeningsTable;

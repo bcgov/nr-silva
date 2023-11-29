@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import StandardCard from "../../components/StandardCard";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
-import RecentActivitiesTable from "../../components/RecentActivitiesTable";
+import RecentOpeningsTable from "../../components/RecentOpeningsTable";
 import { recentOpeningItems, recentOpeningsHeader } from "../../mock-data/constants";
 
 
@@ -45,7 +45,7 @@ const Opening: React.FC = () => {
       </div>
 
       <div className="container-fluid">
-        <RecentActivitiesTable
+        <RecentOpeningsTable
           headers={recentOpeningsHeader}
           elements={recentOpeningItems}
           clickFn={goToActivity}
