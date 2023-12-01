@@ -4,7 +4,7 @@ import StandardCard from "../../components/StandardCard";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import RecentOpeningsTable from "../../components/RecentOpeningsTable";
-import { recentOpeningItems, recentOpeningsHeader } from "../../mock-data/constants";
+import { recentOpeningItems, recentOpeningItems1, recentOpeningsHeader } from "../../mock-data/constants";
 
 
 const Opening: React.FC = () => {
@@ -47,7 +47,7 @@ const Opening: React.FC = () => {
       <div className="container-fluid">
         <RecentOpeningsTable
           headers={recentOpeningsHeader}
-          elements={recentOpeningItems}
+          elements={recentOpeningItems1}
           clickFn={goToActivity}
         />
       </div>

@@ -3,6 +3,7 @@ import { hashObject } from 'react-hash-string';
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell, Button } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import StatusTag from '../StatusTag';
+import EmptySection from '../EmptySection';
 import './styles.scss';
 
 interface TableProps {
@@ -36,44 +37,59 @@ const RecentOpeningsTable = ({ elements, headers, clickFn }: TableProps) => {
   };
 
   return (
-    <Table size="lg" className="activity-table">
-      <TableHead>
-        <TableRow>
-          {headers.map((header) => (
-            <TableHeader key={header} className="activities-table-header">
-              {header}
-            </TableHeader>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody aria-live="off">
-        {elements.map((item, idx) => (
-          <TableRow key={hashObject(item)} id={`row${idx}`}>
-            {Object.keys(item).map((key) => createTableCell(item, key, idx))}
-            <TableCell className="activities-table-action" tabIndex={0} aria-label="View more">
-              <Button
-                hasIconOnly
-                iconDescription="View"
-                tooltipPosition="bottom"
-                kind="ghost"
-                onClick={() => clickFn(item.id)}
-                renderIcon={Icons.DataViewAlt}
-                size="md"
-              />
-              <Button
-                hasIconOnly
-                iconDescription="Download"
-                tooltipPosition="bottom"
-                kind="ghost"
-                onClick={() => null}
-                renderIcon={Icons.Download}
-                size="md"
-              />
-            </TableCell>
+    <>
+      <Table size="lg" className="activity-table">
+        <TableHead>
+          <TableRow>
+            {headers.map((header) => (
+              <TableHeader key={header} className="activities-table-header">
+                {header}
+              </TableHeader>
+            ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        {/* Check if the table has some elements */}
+        {elements.length>0?(
+          <TableBody aria-live="off">
+          {elements.map((item, idx) => (
+            <TableRow key={hashObject(item)} id={`row${idx}`}>
+              {Object.keys(item).map((key) => createTableCell(item, key, idx))}
+              <TableCell className="activities-table-action" tabIndex={0} aria-label="View more">
+                <Button
+                  hasIconOnly
+                  iconDescription="View"
+                  tooltipPosition="bottom"
+                  kind="ghost"
+                  onClick={() => clickFn(item.id)}
+                  renderIcon={Icons.DataViewAlt}
+                  size="md"
+                />
+                <Button
+                  hasIconOnly
+                  iconDescription="Download"
+                  tooltipPosition="bottom"
+                  kind="ghost"
+                  onClick={() => null}
+                  renderIcon={Icons.Download}
+                  size="md"
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        ):null}
+      </Table>
+      
+      {/* Check if therer are no elements in the table, if not then print the Empty */}
+      {elements.length<=0?(
+        <EmptySection
+        pictogram="Magnify"
+        title={'There are no openings to show yet'}
+        description={'Your recent openings will appear here once you generate one'}
+        fill = {'#0073E6'}
+      />
+      ):null}
+    </>
   );
 };
 

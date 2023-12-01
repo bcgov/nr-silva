@@ -95,5 +95,21 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-26'
     }
   ];
+  export const recentOpeningItems1 = [
+    {
+      id: '0',
+      openingID: '114207',
+      fileID: 'TFL47',
+      cuttingPermit: '12S',
+      timberMark: '47/12S',
+      cutBlock: '12-69',
+      grossAreaHa: '12.9',
+      status: 'Free growing',
+      category: 'FTML',
+      disturbanceStart: '-',
+      createdAt: '2022-10-27',
+      lastViewed: '2022-10-27'
+    }
+  ];
   
   
