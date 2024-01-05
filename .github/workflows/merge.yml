@@ -65,6 +65,8 @@ jobs:
             overwrite: false
           - name: backend
             verification_path: actuator/health
+            parameters:
+              -p RESULTS_ENV_OPENSEARCH=test
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
@@ -130,6 +132,8 @@ jobs:
             overwrite: false
           - name: backend
             verification_path: actuator/health
+            parameters:
+              -p RESULTS_ENV_OPENSEARCH=production
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
