@@ -12,13 +12,9 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap }) => {
 
   return (
     <MapContainer
-      center={position}
-      zoom={13}
-      scrollWheelZoom={false}
       style={{ height: "400px", width: "100%" }}
     >
       <TileLayer
-        attribution={selectedBasemap.attribution}
         url={selectedBasemap.url}
       />
       <Marker position={position}>
