@@ -31,7 +31,7 @@ const Opening: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-light p-4">
+      <div className="favourite-activities">
         <div className="row">
           <div className="col-md-6 col-lg-4 col-xl-3">
             <FavouriteCard index={1} title={'Search opening'} link={'/'} icon={'Dashboard'} description={'Search for a opening to update or consult using advance filters such as activities, standards, codes or links'}/>
@@ -73,7 +73,7 @@ const Opening: React.FC = () => {
       <div className="container-fluid">
         <RecentOpeningsTable
           headers={recentOpeningsHeader}
-          elements={recentOpeningItems1}
+          elements={recentOpeningItems}
           clickFn={goToActivity}
         />
       </div>
