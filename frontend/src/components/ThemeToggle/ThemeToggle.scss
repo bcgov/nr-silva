@@ -1,62 +1,61 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 .theme-toggle {
-  width: 48px;
-  height: 24px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  padding: 3px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-
-  &.off {
-    background-color: white;
-  }
-
-  &.on {
-    background-color: black;
-  }
-
-  .circle {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+    width: 48px;
+    height: 24px;
+    border-radius: 15px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    transition: transform 0.3s, background-color 0.3s;
-    background-color: #0073E6; // Default background color
-  }
-
-  &.off {
-    .circle {
-      transform: translateX(0);
-    }
-  }
-
-  &.on {
-    .circle {
-      transform: translateX(24px);
+    padding: 3px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  
+    &.off {
       background-color: white;
     }
-  }
-
-  .icon {
-    width: 18px;
-    height: 18px;
-    padding: 1px;
-  }
-  &.on {
-      .icon {
-          fill: black;
+  
+    &.on {
+      background-color: black;
+    }
+  
+    .circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s, background-color 0.3s;
+      background-color: #0073E6; // Default background color
+    }
+  
+    &.off {
+      .circle {
+        transform: translateX(0);
       }
-  }
-  &.off {
-      .icon {
-          fill: white;
+    }
+  
+    &.on {
+      .circle {
+        transform: translateX(24px);
+        background-color: white;
       }
-
+    }
+  
+    .icon {
+      width: 18px;
+      height: 18px;
+      padding: 1px;
+    }
+    &.on {
+        .icon {
+            fill: black;
+        }
+    }
+    &.off {
+        .icon {
+            fill: white;
+        }
+    }
   }
-}
   

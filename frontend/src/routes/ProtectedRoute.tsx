@@ -18,7 +18,6 @@ const ProtectedRoute = ({ signed, children }: IProps): JSX.Element => {
     ):(
       (() => {
         if(user?.isLoggedIn){
-          console.log("User:", user);
           return children;  
         }
         else if(user?.isLoggedIn === false){

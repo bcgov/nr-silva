@@ -43,7 +43,7 @@ const BCHeader: React.FC = () => {
               />
               <Link to="/" className="header-link" data-testid="header-name">
                 BCGOV
-                <span className="header-full-name"> Quickstarter React Template</span>
+                <span className="header-full-name"> RESULTS EXAM</span>
               </Link>
               <HeaderNavigation aria-label="BC-Gov Starter">
                 <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
