@@ -10,13 +10,11 @@ const ThemeToggle = () => {
 
   useEffect(()=>{
     setIsToggled(theme === 'g10'?false:true);
-    console.log(`Theme updated: ${theme}`);
   },[theme])
 
   const handleToggle = async () => {
     toggleTheme(theme,setTheme)
     // keep the logic opposite at the time of sending the toggle
-    setIsToggled(theme === 'g10'?true:false);
   };
 
   return (

@@ -25,4 +25,5 @@ const awsconfig = {
     federationTarget: 'COGNITO_USER_POOLS',
 };
 
+
 export default awsconfig;

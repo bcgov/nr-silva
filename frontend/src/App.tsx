@@ -13,6 +13,7 @@ import SideLayout from './layouts/SideLayout';
 import Dashboard from './screens/Dashboard';
 import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
+import Opening from './screens/Opening';
 
 Amplify.configure(awsconfig);
 
@@ -25,6 +26,11 @@ const App: React.FC = () => {
           <PostLoginRoute signed={true}>
               <SideLayout pageContent={<Dashboard/>} />
           </PostLoginRoute>
+        } />
+        <Route path="/opening" element={
+          <ProtectedRoute signed={true}>
+            <SideLayout pageContent={<Opening/>} />
+          </ProtectedRoute>
         } />
         <Route path="/reports" element={
           <ProtectedRoute signed={true}>

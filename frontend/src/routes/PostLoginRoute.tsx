@@ -35,7 +35,6 @@ const PostLoginRoute = ({ signed, children }: IProps): JSX.Element => {
     ):(
       (() => {
         if(user?.isLoggedIn === true){
-          console.log("User:", user);
           return children;  
         }
         else if(user?.isLoggedIn === false){

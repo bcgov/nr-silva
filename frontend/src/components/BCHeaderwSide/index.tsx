@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useThemePreference } from '../../utils/ThemePreference';
-import { toggleTheme } from '../../utils/ThemeFunction';
 import {
   HeaderContainer,
   Header,
@@ -12,14 +11,12 @@ import {
   HeaderPanel,
   SideNav,
   SideNavItems,
-  SideNavLink,
-  Button
+  SideNavLink
 } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import './BCHeaderwSide.scss';
 
 import RightPanelTitle from '../RightPanelTitle';
-import { env } from '../../env';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
 
@@ -42,6 +39,12 @@ const listItems = [
         name: 'Dashboard',
         icon: 'Dashboard',
         link: '/dashboard',
+        disabled: false
+      },
+      {
+        name: 'Opening',
+        icon: 'MapBoundaryVegetation',
+        link: '/opening',
         disabled: false
       },
     ]
@@ -125,20 +128,13 @@ const BCHeaderwSide = () => {
           />
           <Link to="/" className="header-link" data-testid="header-name">
             BCGOV
-            <span className="header-full-name"> Quickstarter React Template </span>
+            <span className="header-full-name"> RESULTS EXAM </span>
           </Link>
           <HeaderGlobalBar className="align-items-center">
             <div className="mx-2">
               <ThemeToggle/>
             </div>
-            <HeaderGlobalAction
-              aria-label="Notifications"
-              data-testid="header-button__notifications"
-              onClick={handleNotificationsPanel}
-              isActive={notifications}
-            >
-              <Icons.Notification size={20} />
-            </HeaderGlobalAction>
+            
             <HeaderGlobalAction
               aria-label="User Settings"
               tooltipAlignment="end"
@@ -149,12 +145,6 @@ const BCHeaderwSide = () => {
               <Icons.UserAvatar size={20} />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
-          <HeaderPanel aria-label="Notifications Tab" expanded={notifications} className="notifications-panel">
-            <RightPanelTitle
-              title="Notifications"
-              closeFn={closeNotificationsPanel}
-            />
-          </HeaderPanel>
           <HeaderPanel aria-label="User Profile Tab" expanded={myProfile} className="notifications-panel">
             <RightPanelTitle
               title="My Profile"
@@ -166,6 +156,9 @@ const BCHeaderwSide = () => {
             <SideNavItems>
               {listItems.map((item: ListItems) => (
                 <div key={item.name}>
+                  <SideNavLink className="side-nav-category-name">
+                    {item.name}
+                  </SideNavLink>
                   {item.items.map((subItem: ListItem) => {
                     const IconComponent = Icons[subItem.icon];
                     return (
@@ -184,9 +177,6 @@ const BCHeaderwSide = () => {
                   })}
                 </div>
               ))}
-              <div className="support-section">
-                <SideNavLink renderIcon={Icons.Help}>Need help?</SideNavLink>
-              </div>
             </SideNavItems>
           </SideNav>
         </Header>
