@@ -5,7 +5,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-*/.DS_Store
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -122,4 +121,5 @@ test-report.xml
 # VSCode
 .vscode/
 
+# System (thumbnails)
 */.DS_Store
