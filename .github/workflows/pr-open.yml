@@ -54,6 +54,10 @@ jobs:
           parameters:
             -p ZONE=${{ steps.tag.outputs.tag }}
             -p NAME=${{ github.event.repository.name }}
+            -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
+            -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
+            -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
           triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
   builds:

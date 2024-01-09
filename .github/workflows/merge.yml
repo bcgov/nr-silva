@@ -49,6 +49,11 @@ jobs:
           overwrite: false
           parameters:
             -p ZONE=test -p NAME=${{ github.event.repository.name }}
+            -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
+            -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
+            -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+          triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
   deploys-test:
     name: TEST Deployments
@@ -100,6 +105,11 @@ jobs:
           overwrite: false
           parameters:
             -p ZONE=prod -p NAME=${{ github.event.repository.name }}
+            -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
+            -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
+            -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+          triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
   image-promotions:
     name: Promote images to PROD
