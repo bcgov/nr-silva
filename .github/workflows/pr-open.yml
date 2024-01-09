@@ -54,6 +54,10 @@ jobs:
           parameters:
             -p ZONE=${{ steps.tag.outputs.tag }}
             -p NAME=${{ github.event.repository.name }}
+            -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
+            -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
+            -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
           triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
   builds:
@@ -90,7 +94,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [database, backend, frontend]
+        name: [database, backend, frontend, fluentbit]
         include:
           - name: database
             file: database/openshift.deploy.yml
@@ -112,10 +116,14 @@ jobs:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
+          - name: fluentbit
+            file: common/openshift.fluentbit.yml
+            overwrite: true
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
-          file: ${{ matrix.name }}/openshift.deploy.yml
+          file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}

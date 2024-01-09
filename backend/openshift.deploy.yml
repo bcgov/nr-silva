@@ -44,6 +44,10 @@ parameters:
   - name: DB_POOL_MAX_LIFETIME
     description: Maximum lifetime of a connection in the pool.
     value: "1800000"
+  - name: RESULTS_ENV_OPENSEARCH
+    description: Environment name for OpenSearch. # One of: development, test, production
+    required: true
+    value: development
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -93,6 +97,9 @@ objects:
             - image: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
               imagePullPolicy: Always
               name: "${NAME}"
+              volumeMounts:
+                - name: ${NAME}-${ZONE}-fluentbit-logs
+                  mountPath: /logs
               env:
                 - name: POSTGRES_HOST
                   value: ${NAME}-${ZONE}-database
@@ -117,6 +124,8 @@ objects:
                   value: ${DB_POOL_IDLE_TIMEOUT}
                 - name: DB_POOL_MAX_LIFETIME
                   value: ${DB_POOL_MAX_LIFETIME}
+                - name: RESULTS_ENV_OPENSEARCH
+                  value: ${RESULTS_ENV_OPENSEARCH}
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -147,6 +156,10 @@ objects:
                 initialDelaySeconds: 60
                 periodSeconds: 30
                 timeoutSeconds: 5
+          volumes:
+            - name: ${NAME}-${ZONE}-fluentbit-logs
+              persistentVolumeClaim:
+                claimName: ${NAME}-${ZONE}-fluentbit-logs
   - apiVersion: v1
     kind: Service
     metadata:
