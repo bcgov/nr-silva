@@ -14,7 +14,6 @@ jobs:
   init:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
-    name: PR Greeting
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
