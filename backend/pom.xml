@@ -172,7 +172,7 @@
   </dependencies>
 
   <build>
-    <finalName>nr-results-backend</finalName>
+    <finalName>nr-silva-backend</finalName>
 
     <plugins>
       <!--

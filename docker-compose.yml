@@ -2,7 +2,7 @@ version: '3.9'
 
 x-frontend: &frontend
   environment:
-    VITE_ZONE: DEV
+    VITE_ZONE: TEST
   healthcheck:
     test: curl http://localhost:3000"
     interval: 15s
