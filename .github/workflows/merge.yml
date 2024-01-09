@@ -64,7 +64,7 @@ jobs:
       issues: write
     strategy:
       matrix:
-        name: [database, backend, frontend]
+        name: [database, backend, frontend, fluentbit]
         include:
           - name: database
             overwrite: false
@@ -75,6 +75,9 @@ jobs:
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          - name: fluentbit
+            file: common/openshift.fluentbit.yml
+            overwrite: true
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
@@ -135,7 +138,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [database, backend, frontend]
+        name: [database, backend, frontend, fluentbit]
         include:
           - name: database
             overwrite: false
@@ -146,6 +149,9 @@ jobs:
           - name: frontend
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          - name: fluentbit
+            file: common/openshift.fluentbit.yml
+            overwrite: true
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:

@@ -132,18 +132,12 @@ objects:
                     path: outputs.conf
                   - key: parsers.conf
                     path: parsers.conf
-                  - key: spar_filter_filters.conf
-                    path: spar/filter/filters.conf
-                  - key: spar-oracle_filter_filters.conf
-                    path: spar-oracle/filter/filters.conf
-                  - key: spar_input_inputs.conf
-                    path: spar/input/inputs.conf
-                  - key: spar-oracle_input_inputs.conf
-                    path: spar-oracle/input/inputs.conf
-                  - key: spar_parser_parsers.conf
-                    path: spar/parser/parsers.conf
-                  - key: spar-oracle_parser_parsers.conf
-                    path: spar-oracle/parser/parsers.conf
+                  - key: results_filter_filters.conf
+                    path: results/filter/filters.conf
+                  - key: results_input_inputs.conf
+                    path: results/input/inputs.conf
+                  - key: results_parser_parsers.conf
+                    path: results/parser/parsers.conf
                   - key: timestamp.lua
                     path: timestamp.lua
                 defaultMode: 0644
@@ -292,11 +286,8 @@ objects:
 
       outputs.conf: |
         [OUTPUT]
-            Name  kinesis_streams
+            Name  stdout
             Match *
-            region ca-central-1
-            stream ${STREAM_NAME}
-            role_arn ${ROLE_ARN}
             Retry_Limit 3
 
       parsers.conf: |
