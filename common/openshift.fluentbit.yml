@@ -172,7 +172,7 @@ objects:
 
         [FILTER]
             Name lua
-            Match spar
+            Match results
             script ${FLUENT_CONF_HOME}/timestamp.lua
             time_as_table True
             call append_event_created
@@ -294,7 +294,7 @@ objects:
         @INCLUDE generic_json_parsers.conf
         @INCLUDE results/parser/parsers.conf
 
-      spar_filter_filters.conf: |
+      results_filter_filters.conf: |
         [FILTER]
             Name lua
             Match results.*
