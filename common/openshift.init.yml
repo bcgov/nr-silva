@@ -67,7 +67,7 @@ objects:
     metadata:
       name: allow-same-namespace
       labels:
-        template: nr-spar-backend-network-security-policy
+        template: nr-results-backend-network-security-policy
     spec:
       ingress:
         - from:
