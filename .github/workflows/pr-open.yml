@@ -14,6 +14,8 @@ jobs:
   init:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
