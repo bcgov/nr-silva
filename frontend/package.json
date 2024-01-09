@@ -7,7 +7,7 @@
     "@bcgov-nr/nr-theme": "^1.7.0",
     "@carbon/pictograms-react": "^11.49.0",
     "@carbon/react": "^1.27.0",
-    "@testing-library/jest-dom": "^6.1.2",
+    "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/jest": "^29.5.4",
