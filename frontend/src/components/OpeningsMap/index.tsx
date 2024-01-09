@@ -12,6 +12,8 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap }) => {
 
   return (
     <MapContainer
+      center={position} 
+      zoom={13}
       style={{ height: "400px", width: "100%" }}
     >
       <TileLayer
