@@ -13,9 +13,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  init:
+    name: Initialize
+    if: "!github.event.pull_request.head.repo.fork"
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Get PR Number Mod 50
+        id: tag
+        run: echo "tag=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
+
   # Clean up OpenShift when PR closed, no conditions
   cleanup-openshift:
     name: Cleanup OpenShift
+    needs: [init]
     if: '!github.event.pull_request.head.repo.fork'
     runs-on: ubuntu-22.04
     steps:
@@ -25,11 +39,12 @@ jobs:
           oc project ${{ vars.OC_NAMESPACE }}
 
           # Remove old build runs, build pods and deployment pods
-          oc delete all,pvc,secret -l app=${{ github.event.repository.name }}-${{ github.event.number }}
+          oc delete all,pvc,secret -l app=${{ github.event.repository.name }}-${{ needs.init.outputs.tag }}
 
   # If merged into main, then handle any image promotions
   image-promotions:
     name: Image Promotions
+    needs: [init]
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-22.04
     strategy:
@@ -38,13 +53,9 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Get PR Number Mod 50
-        id: tag
-        run: echo "tag=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
-
       - uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
           repository: ${{ github.repository }}/${{ matrix.package }}
-          target: ${{ steps.tag.outputs.tag }}
+          target: ${{ needs.init.outputs.tag }}
           tags: test
