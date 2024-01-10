@@ -15,19 +15,19 @@ jobs:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
-      tag: ${{ steps.tag.outputs.tag }}
+      tag: ${{ steps.route.outputs.route }}
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
     steps:
       - name: Get PR Number Mod 50
-        id: tag
-        run: echo "tag=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
+        id: route
+        run: echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
 
       - name: PR Greeting
         env:
           DOMAIN: apps.silver.devops.gov.bc.ca
-          PREFIX: ${{ github.event.repository.name }}-${{ steps.tag.outputs.tag }}
+          PREFIX: ${{ github.event.repository.name }}-${{ steps.route.outputs.route }}
         uses: bcgov-nr/action-pr-description-add@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=${{ steps.tag.outputs.tag }}
+            -p ZONE=${{ github.event.number }}
             -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
@@ -82,7 +82,7 @@ jobs:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: ${{ matrix.name }}
-          tag: ${{ needs.init.outputs.tag }}
+          tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
@@ -129,7 +129,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=${{ needs.init.outputs.tag }}
+            -p ZONE=${{ github.event.number }}
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
