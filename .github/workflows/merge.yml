@@ -77,6 +77,7 @@ jobs:
             file: frontend/openshift.deploy.yml
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+              -p FAM_ROUTE=test
           - name: fluentbit
             file: common/openshift.fluentbit.yml
             overwrite: true
@@ -153,6 +154,7 @@ jobs:
             file: frontend/openshift.deploy.yml
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+              -p FAM_ROUTE=prod
           - name: fluentbit
             file: common/openshift.fluentbit.yml
             overwrite: true
