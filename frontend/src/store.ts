@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import { composeWithDevTools } from '@redux-devtools/extension'
 import type { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { userDetailsReducer } from './reducers/userReducer'
