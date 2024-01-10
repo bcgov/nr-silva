@@ -48,7 +48,7 @@ services:
       database:
         condition: service_healthy
     entrypoint: mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n"
-    image: maven:3.9.5-amazoncorretto-21
+    image: maven:3.9.6-amazoncorretto-21
     volumes: ["./backend:/app"]
     working_dir: /app
     environment:
