@@ -72,13 +72,13 @@ jobs:
           - language: "javascript"
     steps:
       - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v2
+      - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
       - name: Autobuild
         if: ${{ ! matrix.build }}
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - uses: actions/setup-java@v4
         if: ${{ matrix.build && matrix.language == 'java' }}
@@ -100,7 +100,7 @@ jobs:
         working-directory: ${{ matrix.working-directory }}
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
 
@@ -123,6 +123,6 @@ jobs:
           severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
