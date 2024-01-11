@@ -114,7 +114,7 @@ jobs:
             triggers: ('common/' 'database/' 'backend/' 'frontend/')
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-              -p FAM_ROUTE=${{ steps.init.outputs.route }}
+              -p FAM_ROUTE=${{ needs.init.outputs.route }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
           - name: fluentbit
