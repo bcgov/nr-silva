@@ -11,6 +11,9 @@ x-frontend: &frontend
     timeout: 5s
     retries: 5
   restart: always
+  depends_on:
+    backend:
+      condition: service_healthy
 
 x-backend: &backend
   ports: ["8080:8080"]
