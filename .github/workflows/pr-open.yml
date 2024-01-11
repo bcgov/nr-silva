@@ -60,37 +60,38 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
           triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
-  builds:
-    name: Builds
-    needs: [init]
-    if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        name: [database, backend, frontend]
-        include:
-          - package: database
-            triggers: ('database/')
-          - name: backend
-            triggers: ('backend/')
-          - name: frontend
-            triggers: ('frontend/')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.1
-        with:
-          package: ${{ matrix.name }}
-          tag: ${{ github.event.number }}
-          tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
+  # builds:
+  #   name: Builds
+  #   needs: [init]
+  #   if: "!github.event.pull_request.head.repo.fork"
+  #   runs-on: ubuntu-22.04
+  #   permissions:
+  #     packages: write
+  #   strategy:
+  #     matrix:
+  #       name: [database, backend, frontend]
+  #       include:
+  #         - package: database
+  #           triggers: ('database/')
+  #         - name: backend
+  #           triggers: ('backend/')
+  #         - name: frontend
+  #           triggers: ('frontend/')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: bcgov-nr/action-builder-ghcr@v2.0.1
+  #       with:
+  #         package: ${{ matrix.name }}
+  #         tag: ${{ github.event.number }}
+  #         tag_fallback: test
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds, init]
+    # needs: [builds, init]
+    needs: [init]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -114,7 +115,6 @@ jobs:
             triggers: ('common/' 'database/' 'backend/' 'frontend/')
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-              -p FAM_ROUTE=${{ needs.init.outputs.route }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
           - name: fluentbit
@@ -132,6 +132,7 @@ jobs:
           parameters:
             -p ZONE=${{ github.event.number }}
             -p NAME=${{ github.event.repository.name }}
+            -p FAM_ROUTE=${{ needs.init.outputs.route }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
           verification_path: ${{ matrix.verification_path }}
