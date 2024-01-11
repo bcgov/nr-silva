@@ -10,6 +10,9 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
+  - name: FAM_ROUTE
+    description: Custom route ZONE for FAM
+    required: true
   - name: IMAGE_TAG
     description: Image tag to use
     value: latest
@@ -155,7 +158,7 @@ objects:
         app: "${NAME}-${ZONE}"
       name: "${NAME}-${ZONE}-${COMPONENT}"
     spec:
-      host: "${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}"
+      host: "${NAME}-${FAM_ROUTE}-${COMPONENT}.${DOMAIN}"
       port:
         targetPort: 3000-tcp
       to:
