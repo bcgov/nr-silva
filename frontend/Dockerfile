@@ -1,6 +1,6 @@
 ## Use this section once builds are fixed
 
-FROM node:20.10.0-bullseye-slim AS build
+FROM node:20.11.0-bullseye-slim AS build
 
 # Build static files
 WORKDIR /app
