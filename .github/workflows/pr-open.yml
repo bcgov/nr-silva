@@ -26,41 +26,41 @@ jobs:
           echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
           echo "route=$(( ${{ github.event.number }} % 50 ))"
 
-      # - name: PR Greeting
-      #   env:
-      #     DOMAIN: apps.silver.devops.gov.bc.ca
-      #     PREFIX: ${{ github.event.repository.name }}-${{ steps.route.outputs.route }}
-      #   uses: bcgov-nr/action-pr-description-add@v1.1.0
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     add_markdown: |
-      #       ---
+      - name: PR Greeting
+        env:
+          DOMAIN: apps.silver.devops.gov.bc.ca
+          PREFIX: ${{ github.event.repository.name }}-${{ steps.route.outputs.route }}
+        uses: bcgov-nr/action-pr-description-add@v1.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          add_markdown: |
+            ---
 
-      #       Thanks for the PR!
+            Thanks for the PR!
 
-      #       Any successful deployments (not always required) will be available below.
-      #       [Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health)
-      #       [Frontend](https://${{ github.event.repository.name }}-${{ steps.route.outputs.route }}-frontend.${{ env.DOMAIN }})
+            Any successful deployments (not always required) will be available below.
+            [Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health)
+            [Frontend](https://${{ github.event.repository.name }}-${{ steps.route.outputs.route }}-frontend.${{ env.DOMAIN }})
 
-      #       Once merged, code will be promoted and handed off to following workflow run.
-      #       [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
+            Once merged, code will be promoted and handed off to following workflow run.
+            [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
-      # - name: OpenShift Init
-      #   uses: bcgov-nr/action-deployer-openshift@v2.0.0
-      #   with:
-      #     oc_namespace: ${{ vars.OC_NAMESPACE }}
-      #     oc_server: ${{ vars.OC_SERVER }}
-      #     oc_token: ${{ secrets.OC_TOKEN }}
-      #     file: common/openshift.init.yml
-      #     overwrite: false
-      #     parameters:
-      #       -p ZONE=${{ github.event.number }}
-      #       -p NAME=${{ github.event.repository.name }}
-      #       -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
-      #       -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
-      #       -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-      #       -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
-      #     triggers: ('common/' 'database/' 'backend/' 'frontend/')
+      - name: OpenShift Init
+        uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: common/openshift.init.yml
+          overwrite: false
+          parameters:
+            -p ZONE=${{ github.event.number }}
+            -p NAME=${{ github.event.repository.name }}
+            -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
+            -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
+            -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+          triggers: ('common/' 'database/' 'backend/' 'frontend/')
 
   # builds:
   #   name: Builds
@@ -89,61 +89,52 @@ jobs:
   #         token: ${{ secrets.GITHUB_TOKEN }}
   #         triggers: ${{ matrix.triggers }}
 
-  route-test:
-    name: Test Route
+  deploys:
+    name: Deploys
+    if: "!github.event.pull_request.head.repo.fork"
+    # needs: [builds, init]
     needs: [init]
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        name: [database, backend, frontend, fluentbit]
+        include:
+          - name: database
+            file: database/openshift.deploy.yml
+            parameters:
+              -p DB_PVC_SIZE=128Mi
+            overwrite: false
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
+          - name: backend
+            file: backend/openshift.deploy.yml
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
+            verification_path: /actuator/health
+            parameters:
+              -p MIN_REPLICAS=1
+              -p MAX_REPLICAS=2
+          - name: frontend
+            file: frontend/openshift.deploy.yml
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
+            parameters:
+              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+              -p MIN_REPLICAS=1
+              -p MAX_REPLICAS=2
+          - name: fluentbit
+            file: common/openshift.fluentbit.yml
+            overwrite: true
+            triggers: ('common/' 'database/' 'backend/' 'frontend/')
     steps:
-      - name: Test Route
-        run: |
-          echo "FAM_ROUTE=${{ needs.init.outputs.route }}"
-
-  # deploys:
-  #   name: Deploys
-  #   if: "!github.event.pull_request.head.repo.fork"
-  #   # needs: [builds, init]
-  #   needs: [init]
-  #   runs-on: ubuntu-22.04
-  #   strategy:
-  #     matrix:
-  #       name: [database, backend, frontend, fluentbit]
-  #       include:
-  #         - name: database
-  #           file: database/openshift.deploy.yml
-  #           parameters:
-  #             -p DB_PVC_SIZE=128Mi
-  #           overwrite: false
-  #           triggers: ('common/' 'database/' 'backend/' 'frontend/')
-  #         - name: backend
-  #           file: backend/openshift.deploy.yml
-  #           triggers: ('common/' 'database/' 'backend/' 'frontend/')
-  #           verification_path: /actuator/health
-  #           parameters:
-  #             -p MIN_REPLICAS=1
-  #             -p MAX_REPLICAS=2
-  #         - name: frontend
-  #           file: frontend/openshift.deploy.yml
-  #           triggers: ('common/' 'database/' 'backend/' 'frontend/')
-  #           parameters:
-  #             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-  #             -p MIN_REPLICAS=1
-  #             -p MAX_REPLICAS=2
-  #         - name: fluentbit
-  #           file: common/openshift.fluentbit.yml
-  #           overwrite: true
-  #           triggers: ('common/' 'database/' 'backend/' 'frontend/')
-  #   steps:
-  #     - uses: bcgov-nr/action-deployer-openshift@v2.0.0
-  #       with:
-  #         file: ${{ matrix.file }}
-  #         oc_namespace: ${{ vars.OC_NAMESPACE }}
-  #         oc_server: ${{ vars.OC_SERVER }}
-  #         oc_token: ${{ secrets.OC_TOKEN }}
-  #         overwrite: true
-  #         parameters:
-  #           -p ZONE=${{ github.event.number }}
-  #           -p NAME=${{ github.event.repository.name }}
-  #           -p FAM_ROUTE=${{ needs.init.outputs.route }}
-  #           ${{ matrix.parameters }}
-  #         triggers: ${{ matrix.triggers }}
-  #         verification_path: ${{ matrix.verification_path }}
+      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        with:
+          file: ${{ matrix.file }}
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: true
+          parameters:
+            -p ZONE=${{ github.event.number }}
+            -p NAME=${{ github.event.repository.name }}
+            -p FAM_ROUTE=${{ needs.init.outputs.route }}
+            ${{ matrix.parameters }}
+          triggers: ${{ matrix.triggers }}
+          verification_path: ${{ matrix.verification_path }}
