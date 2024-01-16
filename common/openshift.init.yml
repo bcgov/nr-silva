@@ -16,16 +16,16 @@ parameters:
     generate: expression
   - name: AWS_ACCESS_KEY_ID
     description: AWS Access Key ID
-    value: default-value-for-now
+    required: true
   - name: AWS_ACCESS_KEY_SECRET
     description: AWS Access Key Secret
-    value: default-value-for-now
+    required: true
   - name: AWS_KINESIS_STREAM
     description: AWS Kinesis stream name
-    value: default-value-for-now
+    required: true
   - name: AWS_KINESIS_ROLE_ARN
     description: AWS Kinesis Role ARN
-    value: default-value-for-now
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
