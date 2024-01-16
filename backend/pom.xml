@@ -281,6 +281,7 @@
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/RestExceptionEndpoint.*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
+            <exclude>**/Controller.*</exclude>
           </excludes>
         </configuration>
         <executions>
