@@ -9,6 +9,8 @@ import { recentOpeningItems, recentOpeningItems1, recentOpeningsHeader } from ".
 import './Opening.scss'
 import { ViewFilled } from '@carbon/icons-react';
 import OpeningsMap from "../../components/OpeningsMap";
+import OpeningScreenDataTable from "../../components/OpeningScreenDataTable/index";
+import { headers, rows } from "../../components/OpeningScreenDataTable/testData";
 
 
 const Opening: React.FC = () => {
@@ -50,7 +52,7 @@ const Opening: React.FC = () => {
 
       <div className="container-fluid">
         <div className="row p-4">
-            <PageTitle title="Recent Openings" subtitle="Track your recent openings and select to check spatial activity" />
+            <PageTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
             <Button className="h-100 my-auto" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
               {showSpatial?'Hide Spatial':'Show Spatial'}
             </Button>
@@ -75,6 +77,10 @@ const Opening: React.FC = () => {
           headers={recentOpeningsHeader}
           elements={recentOpeningItems}
           clickFn={goToActivity}
+        />
+        <OpeningScreenDataTable
+        headers={headers}
+        rows={rows}
         />
       </div>
       </>

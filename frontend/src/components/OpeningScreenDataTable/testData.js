@@ -1,29 +1,6 @@
-export const activitiesHeaders: string[] = [
-    'Activity type',
-    'Status',
-    'Request ID',
-    'Created at',
-    'Last viewed',
-    'View'
-  ];
-  
-  export const recentOpeningsHeader: string[] = [
-    'OpeningID',
-    'FileID',
-    'CuttingPermit',
-    'TimberMark',
-    'CutBlock',
-    'GrossAreaHa',
-    'Status',
-    'Category',
-    'DisturbanceStart',
-    'Created At',
-    'Last Updated',
-    'Actions'
-  ];
-  
-  export const recentOpeningItems = [
+export const rows = [
     {
+      id: '114207',
       openingID: '114207',
       fileID: 'TFL47',
       cuttingPermit: '12S',
@@ -37,6 +14,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-27'
     },
     {
+      id: '114206',
       openingID: '114206',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -50,6 +28,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-27'
     },
     {
+      id: '114205',
       openingID: '114205',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -63,6 +42,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-27'
     },
     {
+      id: '114204',
       openingID: '114204',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -76,6 +56,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-26'
     },
     {
+      id: '114203',
       openingID: '114203',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -89,6 +70,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-26'
     },
     {
+      id: '114202',
       openingID: '114202',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -102,6 +84,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-25'
     },
     {
+      id: '114201',
       openingID: '114201',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -115,6 +98,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-25'
     },
     {
+      id: '114200',
       openingID: '114200',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -128,6 +112,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-24'
     },
     {
+      id: '114199',
       openingID: '114199',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -141,6 +126,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-24'
     },
     {
+      id: '114198',
       openingID: '114198',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -154,6 +140,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-23'
     },
     {
+      id: '114197',
       openingID: '114197',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -167,6 +154,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-23'
     },
     {
+      id: '114196',
       openingID: '114196',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -180,6 +168,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-22'
     },
     {
+      id: '114195',
       openingID: '114195',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -193,6 +182,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-22'
     },
     {
+      id: '114194',
       openingID: '114194',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -206,6 +196,7 @@ export const activitiesHeaders: string[] = [
       lastViewed: '2022-10-21'
     },
     {
+      id: '114193',
       openingID: '114193',
       fileID: 'TFL47',
       cuttingPermit: '12T',
@@ -217,12 +208,56 @@ export const activitiesHeaders: string[] = [
       disturbanceStart: '-',
       createdAt: '2021-07-10',
       lastViewed: '2022-10-21'
-    }
-  ];
-
-
-  export const recentOpeningItems1 = [
-    
+    },
   ];
   
-  
+  export const headers = [
+    {
+      key: 'openingID',
+      header: 'OpeningID',
+    },
+    {
+      key: 'fileID',
+      header: 'FileID',
+    },
+    {
+      key: 'cuttingPermit',
+      header: 'CuttingPermit',
+    },
+    {
+      key: 'timberMark',
+      header: 'TimberMark',
+    },
+    {
+      key: 'cutBlock',
+      header: 'CutBlock',
+    },
+    {
+      key: 'grossAreaHa',
+      header: 'GrossAreaHa',
+    },
+    {
+      key: 'status',
+      header: 'Status',
+    },
+    {
+      key: 'category',
+      header: 'Category',
+    },
+    {
+      key: 'disturbanceStart',
+      header: 'DisturbanceStart',
+    },
+    {
+      key: 'createdAt',
+      header: 'CreatedAt',
+    },
+    {
+      key: 'lastViewed',
+      header: 'LastViewed',
+    },
+    {
+    key: 'actions',
+    header: 'Actions',
+    },
+  ];
