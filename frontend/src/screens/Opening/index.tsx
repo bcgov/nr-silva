@@ -72,7 +72,7 @@ const Opening: React.FC = () => {
       </div>
       
 
-      <div className="container-fluid">
+      <div className="container-fluid p-0">
         <OpeningScreenDataTable
         headers={headers}
         rows={rows}

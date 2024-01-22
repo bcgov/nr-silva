@@ -18,6 +18,7 @@ import {
   TableSelectAll,
   TableSelectRow,
   Button,
+  Pagination
 } from '@carbon/react';
 import { TrashCan, Save, Download, Add } from '@carbon/icons-react';
 import * as Icons from '@carbon/icons-react'
@@ -51,8 +52,55 @@ export const buttonsCol = (
   </>
 )
 
+// A custom hook to handle pagination logic
+const usePagination = (data, initialItemsPerPage) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+
+  // Get the total number of pages
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  // Get the current page data
+  const currentData = () => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return data.slice(start, end);
+  };
+
+  // Update the current page when the user changes the page
+  const handlePageChange = (event) => {
+    setCurrentPage(event.page);
+  };
+
+  // Update the items per page when the user changes the value
+  const handleItemsPerPageChange = (event) => {
+    setCurrentPage(1);
+    setItemsPerPage(event.pageSize);
+  };
+
+  return {
+    currentData,
+    currentPage,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    itemsPerPage, // Expose the current itemsPerPage value
+  };
+};
+
+
 export default function OpeningScreenDataTable({ rows, headers }) {
   const [filteredRows, setFilteredRows] = useState(rows);
+  const {
+    currentData,
+    currentPage,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    itemsPerPage, // Use itemsPerPage from the hook
+  } = usePagination(filteredRows, 10);
+
+  
 
   const handleSearchChange = (searchTerm) => {
     const filtered = rows.filter((item) =>
@@ -65,7 +113,8 @@ export default function OpeningScreenDataTable({ rows, headers }) {
   };
 
   return (
-    <DataTable rows={filteredRows} headers={headers}>
+    <div>
+      <DataTable rows={currentData()} headers={headers}>
       {({
         rows,
         headers,
@@ -154,5 +203,18 @@ export default function OpeningScreenDataTable({ rows, headers }) {
         );
       }}
     </DataTable>
+    <Pagination
+  totalItems={filteredRows.length}
+  backwardText="Previous page"
+  forwardText="Next page"
+  pageSize={itemsPerPage} // Use the current itemsPerPage value from the hook
+  pageSizes={[10, 50, 100]}
+  itemsPerPageText="Items per page"
+  onChange={({ page, pageSize }) => {
+    handlePageChange({ page, pageSize });
+    handleItemsPerPageChange({ pageSize });
+  }}
+/>
+    </div>
   );
 }

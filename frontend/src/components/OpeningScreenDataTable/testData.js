@@ -214,27 +214,27 @@ export const rows = [
   export const headers = [
     {
       key: 'openingID',
-      header: 'OpeningID',
+      header: 'Opening ID',
     },
     {
       key: 'fileID',
-      header: 'FileID',
+      header: 'File ID',
     },
     {
       key: 'cuttingPermit',
-      header: 'CuttingPermit',
+      header: 'Cutting Permit',
     },
     {
       key: 'timberMark',
-      header: 'TimberMark',
+      header: 'Timber Mark',
     },
     {
       key: 'cutBlock',
-      header: 'CutBlock',
+      header: 'Cut Block',
     },
     {
       key: 'grossAreaHa',
-      header: 'GrossAreaHa',
+      header: 'Gross AreaHa',
     },
     {
       key: 'status',
@@ -246,15 +246,15 @@ export const rows = [
     },
     {
       key: 'disturbanceStart',
-      header: 'DisturbanceStart',
+      header: 'Disturbance Start',
     },
     {
       key: 'createdAt',
-      header: 'CreatedAt',
+      header: 'Created At',
     },
     {
       key: 'lastViewed',
-      header: 'LastViewed',
+      header: 'Last Viewed',
     },
     {
     key: 'actions',
