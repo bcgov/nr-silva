@@ -84,20 +84,40 @@ export default function OpeningScreenDataTable({ rows, headers }) {
 
         return (
           <TableContainer
-            title="DataTable 1"
-            description="This is just a sample test to show the usage of the Data Table with multiple row selection in the carbon design system using React."
             {...getTableContainerProps()}
           >
-            <TableToolbar {...getToolbarProps()}>
-              {/* ... (existing code) */}
-              <TableToolbarContent
-                aria-hidden={batchActionProps.shouldShowBatchActions}
-              >
+            <TableToolbar aria-label="data table toolbar">
+              <TableToolbarContent>
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
                   onChange={(e) => handleSearchChange(e.target.value)}
+                  placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
+                  persistent
                 />
-                {/* ... (existing code) */}
+                <Button
+                  hasIconOnly
+                  iconDescription="Download"
+                  tooltipPosition="bottom"
+                  kind="ghost"
+                  onClick={() => console.log('Download Click')}
+                  disabled={selectedRows.length === 0}
+                  renderIcon={Icons.Download}
+                  size="md"
+                />
+                <Button
+                  hasIconOnly
+                  iconDescription="Print"
+                  tooltipPosition="bottom"
+                  kind="ghost"
+                  onClick={() => {
+                    batchActionClick(selectedRows);
+                    batchActionProps.onCancel();
+                    console.log('Clicked print')
+                  }}
+                  disabled={selectedRows.length === 0}
+                  renderIcon={Icons.Printer}
+                  size="md"
+                />
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()} aria-label="sample table">

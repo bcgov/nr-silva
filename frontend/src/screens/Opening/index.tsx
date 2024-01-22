@@ -73,11 +73,6 @@ const Opening: React.FC = () => {
       
 
       <div className="container-fluid">
-        <RecentOpeningsTable
-          headers={recentOpeningsHeader}
-          elements={recentOpeningItems}
-          clickFn={goToActivity}
-        />
         <OpeningScreenDataTable
         headers={headers}
         rows={rows}
