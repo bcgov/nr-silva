@@ -50,11 +50,11 @@ services:
     volumes: ["./backend:/app"]
     working_dir: /app
     environment:
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_HOST: nrcdb03.bcgov
+      DATABASE_PORT: "1543"
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      SERVICE_NAME: ${SERVICE_NAME}
+      SERVICE_NAME: dbq01.nrs.bcgov
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
     <<: *backend
