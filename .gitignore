@@ -129,3 +129,8 @@ test-report.xml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# oracle certs
+*.der
+*.pem
+backend/jssecacerts
