@@ -222,19 +222,19 @@ export const rows = [
     },
     {
       key: 'cuttingPermit',
-      header: 'Cutting Permit',
+      header: 'Cutting permit',
     },
     {
       key: 'timberMark',
-      header: 'Timber Mark',
+      header: 'Timber mark',
     },
     {
       key: 'cutBlock',
-      header: 'Cut Block',
+      header: 'Cut block',
     },
     {
       key: 'grossAreaHa',
-      header: 'Gross AreaHa',
+      header: 'Gross area (ha)',
     },
     {
       key: 'status',
@@ -246,7 +246,7 @@ export const rows = [
     },
     {
       key: 'disturbanceStart',
-      header: 'Disturbance Start',
+      header: 'Disturbance start',
     },
     {
       key: 'createdAt',
