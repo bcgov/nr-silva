@@ -11,6 +11,7 @@ import { ViewFilled } from '@carbon/icons-react';
 import OpeningsMap from "../../components/OpeningsMap";
 import OpeningScreenDataTable from "../../components/OpeningScreenDataTable/index";
 import { headers, rows } from "../../components/OpeningScreenDataTable/testData";
+import SectionTitle from "../../components/SectionTitle";
 
 
 const Opening: React.FC = () => {
@@ -28,7 +29,7 @@ const Opening: React.FC = () => {
     return (
       <>
       <div className="container-fluid">
-        <div className="row p-4">
+        <div className="row px-0 py-4 p-md-4">
           <PageTitle title="Openings" subtitle="Create, manage or check opening information " />
         </div>
       </div>
@@ -51,9 +52,9 @@ const Opening: React.FC = () => {
       </div>
 
       <div className="container-fluid">
-        <div className="row p-4">
-            <PageTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
-            <Button className="h-100 my-auto" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
+        <div className="row px-0 py-4 p-md-4">
+            <SectionTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
+            <Button className="h-100 my-auto d-none d-md-block" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
               {showSpatial?'Hide Spatial':'Show Spatial'}
             </Button>
         </div>
