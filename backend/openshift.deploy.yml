@@ -48,6 +48,18 @@ parameters:
     description: Environment name for OpenSearch. # One of: development, test, production
     required: true
     value: development
+  - name: DATABASE_HOST
+    description: Where the database is hosted
+    value: nrcdb03.bcgov
+  - name: DATABASE_PORT
+    description: The port to be used for the connection to the database
+    value: "1543"
+  - name: SERVICE_NAME
+    description: The database's name
+    value: dbq01.nrs.bcgov
+  - name: ORACLEDB_KEYSTORE
+    description: Keystore location path
+    value: /usr/share/service/jssecacerts
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -101,23 +113,6 @@ objects:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
               env:
-                - name: POSTGRES_HOST
-                  value: ${NAME}-${ZONE}-database
-                - name: POSTGRES_DB
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-name
-                - name: POSTGRES_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-password
-                - name: POSTGRES_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-user
                 - name: DB_POOL_CONN_TIMEOUT
                   value: ${DB_POOL_CONN_TIMEOUT}
                 - name: DB_POOL_IDLE_TIMEOUT
@@ -126,6 +121,24 @@ objects:
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
+                - name: DATABASE_HOST
+                  value: ${DATABASE_HOST}
+                - name: DATABASE_PORT
+                  value: ${DATABASE_PORT}
+                - name: SERVICE_NAME
+                  value: ${SERVICE_NAME}
+                - name: DATABASE_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-user
+                - name: DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-password
+                - name: ORACLEDB_KEYSTORE
+                  value: ${ORACLEDB_KEYSTORE}
               ports:
                 - containerPort: 8080
                   protocol: TCP

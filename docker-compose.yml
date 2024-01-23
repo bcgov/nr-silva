@@ -16,18 +16,12 @@ x-frontend: &frontend
       condition: service_healthy
 
 x-backend: &backend
-  ports: ["8080:8080"]
   healthcheck:
     test: curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
     interval: 5s
     timeout: 5s
     retries: 5
   restart: always
-
-x-db-vars: &db-vars
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: default
-  POSTGRES_DB: postgres
 
 services:
   frontend:
@@ -49,33 +43,25 @@ services:
 
   backend:
     container_name: backend
-    depends_on:
-      database:
-        condition: service_healthy
-    entrypoint: mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n"
-    image: maven:3.9.6-amazoncorretto-21
+    entrypoint: sh -c './startup.sh && mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5006"'
+    #image: maven:3.9.6-amazoncorretto-21
+    image: maven:3.9.6-eclipse-temurin-17
+    network_mode: host
     volumes: ["./backend:/app"]
     working_dir: /app
     environment:
-      POSTGRES_HOST: database
-      <<: *db-vars
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      SERVICE_NAME: ${SERVICE_NAME}
+      ORACLEDB_KEYSTORE: /app/jssecacerts
+      ORACLEDB_SECRET: changeit
     <<: *backend
 
   backend-native:
     container_name: backend-native
     profiles: ["native"]
     build: ./backend
+    ports: ["8080:8080"]
     <<: *backend
-
-  database:
-    container_name: database
-    environment:
-      <<: *db-vars
-    volumes: ["/pgdata"]
-    ports: ["5432:5432"]
-    healthcheck:
-      test: pg_isready -U postgres
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    image: postgis/postgis:13-master
