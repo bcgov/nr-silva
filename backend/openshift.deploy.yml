@@ -16,11 +16,11 @@ parameters:
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
-    value: "25m"
+    value: "100m"
   - name: MEMORY_REQUEST
-    value: "225Mi"
+    value: "250Mi"
   - name: CPU_LIMIT
-    value: "75m"
+    value: "150m"
   - name: MEMORY_LIMIT
     value: "300Mi"
   - name: MIN_REPLICAS
@@ -154,7 +154,7 @@ objects:
                   path: /actuator/health
                   port: 8080
                   scheme: HTTP
-                initialDelaySeconds: 150
+                initialDelaySeconds: 240
                 periodSeconds: 5
                 timeoutSeconds: 10
                 successThreshold: 1
