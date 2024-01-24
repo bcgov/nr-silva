@@ -38,7 +38,7 @@ jobs:
             Thanks for the PR!
 
             Any successful deployments (not always required) will be available below.
-            [Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health)
+            [Backend](https://${{ github.event.repository.name }}-${{ steps.route.outputs.route }}-backend.${{ env.DOMAIN }}/actuator/health)
             [Frontend](https://${{ github.event.repository.name }}-${{ steps.route.outputs.route }}-frontend.${{ env.DOMAIN }})
 
             Once merged, code will be promoted and handed off to following workflow run.
@@ -53,7 +53,7 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=${{ github.event.number }}
+            -p ZONE=${{ steps.route.outputs.route }}
             -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
@@ -83,7 +83,7 @@ jobs:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: ${{ matrix.name }}
-          tag: ${{ github.event.number }}
+          tag: ${{ needs.init.output.route }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
@@ -125,7 +125,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=${{ github.event.number }}
+            -p ZONE=${{ needs.init.output.route }}
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
