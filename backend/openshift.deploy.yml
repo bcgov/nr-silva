@@ -113,6 +113,8 @@ objects:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
               env:
+                - name: JAVA_OPTS
+                  value: "-Xms256m -Xmx2048m"
                 - name: DB_POOL_CONN_TIMEOUT
                   value: ${DB_POOL_CONN_TIMEOUT}
                 - name: DB_POOL_IDLE_TIMEOUT
