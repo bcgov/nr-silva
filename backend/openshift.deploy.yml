@@ -18,11 +18,11 @@ parameters:
   - name: CPU_REQUEST
     value: "25m"
   - name: MEMORY_REQUEST
-    value: "50Mi"
+    value: "100Mi"
   - name: CPU_LIMIT
     value: "75m"
   - name: MEMORY_LIMIT
-    value: "150Mi"
+    value: "300Mi"
   - name: MIN_REPLICAS
     description: The minimum amount of replicas for the horizontal pod autoscaler.
     value: "3"
@@ -59,7 +59,7 @@ parameters:
     value: dbq01.nrs.bcgov
   - name: ORACLEDB_KEYSTORE
     description: Keystore location path
-    value: /usr/share/service/jssecacerts
+    value: /app/jssecacerts
 objects:
   - apiVersion: v1
     kind: ImageStream
