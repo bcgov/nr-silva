@@ -16,13 +16,13 @@ parameters:
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
-    value: "25m"
+    value: "50m"
   - name: MEMORY_REQUEST
-    value: "100Mi"
+    value: "200Mi"
   - name: CPU_LIMIT
-    value: "75m"
+    value: "150m"
   - name: MEMORY_LIMIT
-    value: "300Mi"
+    value: "600Mi"
   - name: MIN_REPLICAS
     description: The minimum amount of replicas for the horizontal pod autoscaler.
     value: "3"
@@ -152,7 +152,7 @@ objects:
               readinessProbe:
                 httpGet:
                   path: /actuator/health
-                  port: 80
+                  port: 8080
                   scheme: HTTP
                 initialDelaySeconds: 5
                 periodSeconds: 5
@@ -164,7 +164,7 @@ objects:
                 failureThreshold: 5
                 httpGet:
                   path: /actuator/health
-                  port: 80
+                  port: 8080
                   scheme: HTTP
                 initialDelaySeconds: 60
                 periodSeconds: 30
