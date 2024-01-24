@@ -67,7 +67,7 @@ p.fav-card-title-small {
 .fav-card-content > p.fav-card-content-description {
   @include type.type-style('body-compact-01');
   color: var(--#{vars.$bcgov-prefix}-text-secondary);
-  display: -webkit-box;
+  display: block;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   text-overflow: clip; /* Change text-overflow property */
@@ -156,8 +156,7 @@ p.fav-card-title-small {
   .fav-card-content > p.fav-card-content-description {
     display: block;
     width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     margin: 0; /* Reset margin */
   }
