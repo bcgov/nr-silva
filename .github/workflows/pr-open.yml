@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend, fluentbit]
+        # name: [backend, frontend, fluentbit]
         include:
           - name: backend
             file: backend/openshift.deploy.yml
@@ -104,18 +104,18 @@ jobs:
             parameters:
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
-          - name: frontend
-            file: frontend/openshift.deploy.yml
-            triggers: ('common/' 'backend/' 'frontend/')
-            parameters:
-              -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-              -p MIN_REPLICAS=1
-              -p MAX_REPLICAS=2
-              -p FAM_ROUTE=${{ needs.init.outputs.route }}
-          - name: fluentbit
-            file: common/openshift.fluentbit.yml
-            overwrite: true
-            triggers: ('common/' 'backend/' 'frontend/')
+          # - name: frontend
+          #   file: frontend/openshift.deploy.yml
+          #   triggers: ('common/' 'backend/' 'frontend/')
+          #   parameters:
+          #     -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          #     -p MIN_REPLICAS=1
+          #     -p MAX_REPLICAS=2
+          #     -p FAM_ROUTE=${{ needs.init.outputs.route }}
+          # - name: fluentbit
+          #   file: common/openshift.fluentbit.yml
+          #   overwrite: true
+          #   triggers: ('common/' 'backend/' 'frontend/')
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
