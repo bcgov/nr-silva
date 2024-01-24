@@ -14,7 +14,6 @@ RUN ./mvnw package -Pnative -DskipTests -Dskip.unit.tests=true -Dspring-boot.run
 
 ### Deployer
 FROM eclipse-temurin:17.0.9_9-jdk-jammy AS deploy
-ARG PORT=8080
 
 # Copy
 WORKDIR /app
@@ -27,8 +26,8 @@ RUN mkdir config dump public && \
 
 # Port and health check
 USER 1001
-EXPOSE ${PORT}
-HEALTHCHECK CMD curl -f http://localhost:${PORT}/actuator/health | grep '"status":"UP"'
+EXPOSE 8080
+HEALTHCHECK CMD curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
 
 # Startup
 ENTRYPOINT ["/app/dockerfile-entrypoint.sh"]
