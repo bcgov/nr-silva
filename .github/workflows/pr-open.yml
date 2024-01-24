@@ -62,35 +62,36 @@ jobs:
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
           triggers: ('common/' 'backend/' 'frontend/')
 
-  builds:
-    name: Builds
-    needs: [init]
-    if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        name: [backend, frontend]
-        include:
-          - name: backend
-            triggers: ('backend/')
-          - name: frontend
-            triggers: ('frontend/')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.1
-        with:
-          package: ${{ matrix.name }}
-          tag: ${{ needs.init.outputs.route }}
-          tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
+  # builds:
+  #   name: Builds
+  #   needs: [init]
+  #   if: "!github.event.pull_request.head.repo.fork"
+  #   runs-on: ubuntu-22.04
+  #   permissions:
+  #     packages: write
+  #   strategy:
+  #     matrix:
+  #       name: [backend, frontend]
+  #       include:
+  #         - name: backend
+  #           triggers: ('backend/')
+  #         - name: frontend
+  #           triggers: ('frontend/')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: bcgov-nr/action-builder-ghcr@v2.0.1
+  #       with:
+  #         package: ${{ matrix.name }}
+  #         tag: ${{ needs.init.outputs.route }}
+  #         tag_fallback: test
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds, init]
+    # needs: [builds, init]
+    needs: [init]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
