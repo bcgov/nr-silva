@@ -168,7 +168,7 @@ objects:
                   path: /actuator/health
                   port: 8080
                   scheme: HTTP
-                initialDelaySeconds: 60
+                initialDelaySeconds: 300
                 periodSeconds: 30
                 timeoutSeconds: 5
           volumes:
