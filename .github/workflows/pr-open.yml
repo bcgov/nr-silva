@@ -21,9 +21,7 @@ jobs:
     steps:
       - name: Get PR Number Mod 50
         id: route
-        run: |
-          echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
-          echo "route=$(( ${{ github.event.number }} % 50 ))"
+        run: echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
 
       - name: PR Greeting
         env:
@@ -83,7 +81,7 @@ jobs:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: ${{ matrix.name }}
-          tag: ${{ needs.init.output.route }}
+          tag: ${{ needs.init.outputs.route }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
@@ -125,7 +123,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=${{ needs.init.output.route }}
+            -p ZONE=${{ needs.init.outputs.route }}
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
