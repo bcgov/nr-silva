@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.silva;
+package ca.bc.gov.restapi.results;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.silva;
+package ca.bc.gov.restapi.results;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the task**
-basic description of the task, is it focuse on research with users or the business area? is it design focused on either co-design or wireframing? is it User Testing or compiling silva?
+basic description of the task, is it focuse on research with users or the business area? is it design focused on either co-design or wireframing? is it User Testing or compiling results?
 
 **Acceptance Criteria**
 - [ ] what is required for this task to be complete?

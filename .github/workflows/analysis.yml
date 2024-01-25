@@ -49,7 +49,7 @@ jobs:
           java-distribution: temurin
           java-version: 21
           sonar_args: >
-            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/SilvaApplication.*
+            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
             -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
@@ -116,13 +116,13 @@ jobs:
         uses: aquasecurity/trivy-action@0.16.1
         with:
           format: "sarif"
-          output: "trivy-silva.sarif"
+          output: "trivy-results.sarif"
           ignore-unfixed: true
           scan-type: "fs"
           scanners: "vuln,secret,config"
           severity: "CRITICAL,HIGH"
 
-      - name: Upload Trivy scan silva to GitHub Security tab
+      - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: "trivy-silva.sarif"
+          sarif_file: "trivy-results.sarif"

@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.silva;
+package ca.bc.gov.restapi.results;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

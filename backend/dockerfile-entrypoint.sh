@@ -9,4 +9,4 @@ java \
     ${JAVA_OPTS} \
     -jar \
     -Dspring.profiles.active=prod \
-    /app/artifacts/nr-silva-backend.jar
+    /app/artifacts/nr-results-backend.jar

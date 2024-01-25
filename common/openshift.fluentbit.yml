@@ -132,12 +132,12 @@ objects:
                     path: outputs.conf
                   - key: parsers.conf
                     path: parsers.conf
-                  - key: silva_filter_filters.conf
-                    path: silva/filter/filters.conf
-                  - key: silva_input_inputs.conf
-                    path: silva/input/inputs.conf
-                  - key: silva_parser_parsers.conf
-                    path: silva/parser/parsers.conf
+                  - key: results_filter_filters.conf
+                    path: results/filter/filters.conf
+                  - key: results_input_inputs.conf
+                    path: results/input/inputs.conf
+                  - key: results_parser_parsers.conf
+                    path: results/parser/parsers.conf
                   - key: timestamp.lua
                     path: timestamp.lua
                 defaultMode: 0644
@@ -172,7 +172,7 @@ objects:
 
         [FILTER]
             Name lua
-            Match silva
+            Match results
             script ${FLUENT_CONF_HOME}/timestamp.lua
             time_as_table True
             call append_event_created
@@ -194,8 +194,8 @@ objects:
             Log_Level       info
             Parsers_File    parsers.conf
 
-        @INCLUDE silva/input/inputs.conf
-        @INCLUDE silva/filter/filters.conf
+        @INCLUDE results/input/inputs.conf
+        @INCLUDE results/filter/filters.conf
         @INCLUDE filters.conf
         @INCLUDE outputs.conf
 
@@ -295,39 +295,39 @@ objects:
 
       parsers.conf: |
         @INCLUDE generic_json_parsers.conf
-        @INCLUDE silva/parser/parsers.conf
+        @INCLUDE results/parser/parsers.conf
 
-      silva_filter_filters.conf: |
+      results_filter_filters.conf: |
         [FILTER]
             Name lua
-            Match silva.*
+            Match results.*
             script ${FLUENT_CONF_HOME}/timestamp.lua
             time_as_table True
             call append_timestamp
 
         [FILTER]
             Name modify
-            Match silva.*
-            Add service.name silva
-            Add service.type silva_api
+            Match results.*
+            Add service.name results
+            Add service.type results_api
             Add @metadata.keyAsPath true
 
-      silva_input_inputs.conf: |
+      results_input_inputs.conf: |
         [INPUT]
             Name tail
-            Tag silva.log
+            Tag results.log
             Buffer_Max_Size 1024k
-            Parser silva.json
-            Path /logs/silva-api.log
+            Parser results.json
+            Path /logs/results-api.log
             Path_Key log_file_path
             Offset_Key event_sequence
             DB /logs/fluent-bit-logs.db
             Read_from_Head True
             Refresh_Interval 15
 
-      silva_parser_parsers.conf: |
+      results_parser_parsers.conf: |
         [PARSER]
-            Name silva.json
+            Name results.json
             Match *
             Format json
             Time_Key @timestamp
