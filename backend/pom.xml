@@ -9,10 +9,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
-  <artifactId>results</artifactId>
+  <artifactId>silva</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>results</name>
-  <description>RESULTS REST API</description>
+  <name>silva</name>
+  <description>SILVA REST API</description>
 
   <licenses>
     <license>
@@ -172,7 +172,7 @@
   </dependencies>
 
   <build>
-    <finalName>nr-results-backend</finalName>
+    <finalName>nr-silva-backend</finalName>
 
     <plugins>
       <!--
@@ -280,7 +280,7 @@
             <exclude>**/response/**</exclude>
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/RestExceptionEndpoint.*</exclude>
-            <exclude>**/ResultsApplication.*</exclude>
+            <exclude>**/SilvaApplication.*</exclude>
             <exclude>**/Controller.*</exclude>
           </excludes>
         </configuration>

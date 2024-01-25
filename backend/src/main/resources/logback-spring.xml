@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <property name="LOGS" value="/logs" />
-  <springProperty scope="context" name="serviceEnv" source="nr-results-backend-env-opensearch" />
+  <springProperty scope="context" name="serviceEnv" source="nr-silva-backend-env-opensearch" />
   <springProperty scope="context" name="applicationName" source="spring.application.name" />
-  <springProperty scope="context" name="teamEmail" source="nr-results-team-email-address" />
-  <springProperty scope="context" name="ecsVersion" source="nr-results-ecs-version" />
+  <springProperty scope="context" name="teamEmail" source="nr-silva-team-email-address" />
+  <springProperty scope="context" name="ecsVersion" source="nr-silva-ecs-version" />
 
   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
     <!-- https://logback.qos.ch/manual/layouts.html -->
@@ -22,13 +22,13 @@
   </appender>
 
   <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${LOGS}/results-api.log</file>
+    <file>${LOGS}/silva-api.log</file>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <Pattern>{%nopex"labels.project":"${applicationName}","service.environment":"${serviceEnv}","@timestamp":"%date{yyyy-MM-dd HH:mm:ss.SSS}","log.level":"%p","log.logger":"%logger{36}","message":"%replace(%msg){'\"','\\"'}","ecs.version":"${ecsVersion}","event.category":"web","event.dataset":"application.log.utc","event.ingested":"diagnostic","event.kind":"event","organization.id":"${teamEmail}","organization.name":"TeamSILVA"}%n</Pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- rollover daily and when the file reaches 10 MegaBytes -->
-      <fileNamePattern>${LOGS}/archived/results-api-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <fileNamePattern>${LOGS}/archived/silva-api-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>10MB</maxFileSize>
       </timeBasedFileNamingAndTriggeringPolicy>
@@ -40,8 +40,8 @@
     <root level="info">
       <appender-ref ref="Console" />
     </root>
-    <!-- LOG "ca.bc.gov.restapi.results*" at TRACE level -->
-    <logger name="ca.bc.gov.restapi.results" level="trace" additivity="false">
+    <!-- LOG "ca.bc.gov.restapi.silva*" at TRACE level -->
+    <logger name="ca.bc.gov.restapi.silva" level="trace" additivity="false">
       <appender-ref ref="Console" />
     </logger>
   </springProfile>
@@ -52,8 +52,8 @@
       <appender-ref ref="RollingFile" />
       <appender-ref ref="Console" />
     </root>
-    <!-- LOG "ca.bc.gov.restapi.results*" at TRACE level -->
-    <logger name="ca.bc.gov.restapi.results" level="trace" additivity="false">
+    <!-- LOG "ca.bc.gov.restapi.silva*" at TRACE level -->
+    <logger name="ca.bc.gov.restapi.silva" level="trace" additivity="false">
       <appender-ref ref="RollingFile" />
       <appender-ref ref="Console" />
     </logger>
