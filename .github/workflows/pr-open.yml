@@ -109,7 +109,7 @@ jobs:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
-              -p FAM_ROUTE=${{ env.FAM_ROUTE }}
+              -p FAM_ROUTE="$(( ${{ github.event.number }} % 50 ))"
           - name: fluentbit
             file: common/openshift.fluentbit.yml
             overwrite: true
