@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  route_number: "$(( ${{ github.event.number }} % 50 ))"
+  FAM_ROUTE: "$(( ${{ github.event.number }} % 50 ))"
 
 jobs:
   init:
@@ -36,8 +36,8 @@ jobs:
 
             Any successful deployments (not always required) will be available below.
             Deployment number, if any: ${{ github.event.number }}
-            [Backend](https://${{ github.event.repository.name }}-${{ env.route_number }}-backend.${{ env.DOMAIN }}/actuator/health)
-            [Frontend](https://${{ github.event.repository.name }}-${{ env.route_number }}-frontend.${{ env.DOMAIN }})
+            [Backend](https://${{ github.event.repository.name }}-${{ env.FAM_ROUTE }}-backend.${{ env.DOMAIN }}/actuator/health)
+            [Frontend](https://${{ github.event.repository.name }}-${{ env.FAM_ROUTE }}-frontend.${{ env.DOMAIN }})
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
@@ -81,7 +81,7 @@ jobs:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: ${{ matrix.name }}
-          tag: ${{ needs.init.outputs.route }}
+          tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
@@ -89,7 +89,7 @@ jobs:
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds, init]
+    needs: [builds]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -109,7 +109,7 @@ jobs:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
-              -p FAM_ROUTE=${{ needs.init.outputs.route }}
+              -p FAM_ROUTE=${{ env.FAM_ROUTE }}
           - name: fluentbit
             file: common/openshift.fluentbit.yml
             overwrite: true
@@ -123,7 +123,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           parameters:
-            -p ZONE=${{ needs.init.outputs.route }}
+            -p ZONE=${{ github.event.number }}
             -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           triggers: ${{ matrix.triggers }}
