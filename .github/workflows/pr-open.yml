@@ -20,11 +20,15 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Get FAM Route
+        id: fam-route
+        run: |
+          echo "FAM_ROUTE=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_ENV
+
       - name: PR Greeting
         env:
-          FAM_ROUTE: "$(( ${{ github.event.number }} % 50 ))"
           DOMAIN: apps.silver.devops.gov.bc.ca
-          PREFIX: ${{ github.event.repository.name }}
+          PREFIX: ${{ github.event.repository.name }}-${FAM_ROUTE}
         uses: bcgov-nr/action-pr-description-add@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -35,8 +39,8 @@ jobs:
 
             Any successful deployments (not always required) will be available below.
             
-            Backend: [https://${{ env.PREFIX }}${{ env.FAM_ROUTE }}-backend.${{ env.DOMAIN }}/actuator/health]()
-            Frontend: [https://${{ env.PREFIX }}-${{ env.FAM_ROUTE }}-frontend.${{ env.DOMAIN }}]()
+            Backend: [https://${{ env.PREFIX }}${FAM_ROUTE}-backend.${{ env.DOMAIN }}/actuator/health]()
+            Frontend: [https://${{ env.PREFIX }}-${FAM_ROUTE}-frontend.${{ env.DOMAIN }}]()
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
