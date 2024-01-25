@@ -9,6 +9,9 @@ concurrency:
   group: pr-${{ github.workflow }}-${{ github.event.number }}
   cancel-in-progress: true
 
+env:
+  route_number: "$(( ${{ github.event.number }} % 50 ))"
+
 jobs:
   init:
     name: Initialize
@@ -18,15 +21,13 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
-    env:
-      test: "$(( ${{ github.event.number }} % 50 ))"
     steps:
       - name: Get PR Number Mod 50
         id: route
         run: |
           echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
           echo "route=$(( ${{ github.event.number }} % 50 ))"
-          echo "test=${{ env.test }}"
+          echo "route_number=${{ env.route_number }}"
 
   #     - name: PR Greeting
   #       env:
