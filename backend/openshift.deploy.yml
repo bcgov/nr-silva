@@ -18,11 +18,11 @@ parameters:
   - name: CPU_REQUEST
     value: "100m"
   - name: MEMORY_REQUEST
-    value: "250Mi"
+    value: "300Mi"
   - name: CPU_LIMIT
     value: "150m"
   - name: MEMORY_LIMIT
-    value: "300Mi"
+    value: "350Mi"
   - name: MIN_REPLICAS
     description: The minimum amount of replicas for the horizontal pod autoscaler.
     value: "3"
@@ -114,7 +114,7 @@ objects:
                   mountPath: /logs
               env:
                 - name: JAVA_OPTS
-                  value: "-Xms256m -Xmx2048m"
+                  value: "-Xms256m -Xmx256m"
                 - name: DB_POOL_CONN_TIMEOUT
                   value: ${DB_POOL_CONN_TIMEOUT}
                 - name: DB_POOL_IDLE_TIMEOUT
