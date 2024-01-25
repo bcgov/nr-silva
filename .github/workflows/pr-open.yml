@@ -23,7 +23,7 @@ jobs:
       - name: Get FAM Route
         id: route
         run: |
-          echo "FAM_ROUTE=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
+          echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
 
       - name: PR Greeting
         env:
