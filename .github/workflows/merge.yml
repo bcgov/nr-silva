@@ -53,6 +53,8 @@ jobs:
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+            -p ORACLE_DB_USER=${{ secrets.DB_USER }}
+            -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
 
   deploys-test:
     name: TEST Deployments
@@ -63,11 +65,8 @@ jobs:
       issues: write
     strategy:
       matrix:
-        name: [database, backend, frontend, fluentbit]
+        name: [backend, frontend, fluentbit]
         include:
-          - name: database
-            overwrite: false
-            file: database/openshift.deploy.yml
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
@@ -115,6 +114,8 @@ jobs:
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+            -p ORACLE_DB_USER=${{ secrets.DB_USER }}
+            -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
 
   image-promotions:
     name: Promote images to PROD
@@ -124,7 +125,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        component: [database, backend, frontend]
+        component: [backend, frontend]
     steps:
       - uses: shrink/actions-docker-registry-tag@v3
         with:
@@ -140,11 +141,8 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [database, backend, frontend, fluentbit]
+        name: [backend, frontend, fluentbit]
         include:
-          - name: database
-            overwrite: false
-            file: database/openshift.deploy.yml
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml

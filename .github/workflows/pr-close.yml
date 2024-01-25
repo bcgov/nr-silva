@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        package: [database, backend, frontend]
+        package: [backend, frontend]
     permissions:
       packages: write
     steps:

@@ -16,13 +16,13 @@ parameters:
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
-    value: "25m"
+    value: "10m"
   - name: MEMORY_REQUEST
-    value: "50Mi"
+    value: "290Mi"
   - name: CPU_LIMIT
-    value: "75m"
+    value: "100m"
   - name: MEMORY_LIMIT
-    value: "150Mi"
+    value: "350Mi"
   - name: MIN_REPLICAS
     description: The minimum amount of replicas for the horizontal pod autoscaler.
     value: "3"
@@ -48,6 +48,18 @@ parameters:
     description: Environment name for OpenSearch. # One of: development, test, production
     required: true
     value: development
+  - name: DATABASE_HOST
+    description: Where the database is hosted
+    value: nrcdb03.bcgov
+  - name: DATABASE_PORT
+    description: The port to be used for the connection to the database
+    value: "1543"
+  - name: SERVICE_NAME
+    description: The database's name
+    value: dbq01.nrs.bcgov
+  - name: ORACLEDB_KEYSTORE
+    description: Keystore location path
+    value: /app/jssecacerts
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -101,23 +113,8 @@ objects:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
               env:
-                - name: POSTGRES_HOST
-                  value: ${NAME}-${ZONE}-database
-                - name: POSTGRES_DB
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-name
-                - name: POSTGRES_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-password
-                - name: POSTGRES_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-database
-                      key: database-user
+                - name: JAVA_OPTS
+                  value: "-Xms256m"
                 - name: DB_POOL_CONN_TIMEOUT
                   value: ${DB_POOL_CONN_TIMEOUT}
                 - name: DB_POOL_IDLE_TIMEOUT
@@ -126,6 +123,24 @@ objects:
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
+                - name: DATABASE_HOST
+                  value: ${DATABASE_HOST}
+                - name: DATABASE_PORT
+                  value: ${DATABASE_PORT}
+                - name: SERVICE_NAME
+                  value: ${SERVICE_NAME}
+                - name: DATABASE_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-user
+                - name: DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-password
+                - name: ORACLEDB_KEYSTORE
+                  value: ${ORACLEDB_KEYSTORE}
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -141,7 +156,7 @@ objects:
                   path: /actuator/health
                   port: 8080
                   scheme: HTTP
-                initialDelaySeconds: 5
+                initialDelaySeconds: 120
                 periodSeconds: 5
                 timeoutSeconds: 10
                 successThreshold: 1
@@ -153,7 +168,7 @@ objects:
                   path: /actuator/health
                   port: 8080
                   scheme: HTTP
-                initialDelaySeconds: 60
+                initialDelaySeconds: 150
                 periodSeconds: 30
                 timeoutSeconds: 5
           volumes:

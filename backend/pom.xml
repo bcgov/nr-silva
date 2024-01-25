@@ -147,8 +147,8 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc11</artifactId>
     </dependency>
 
     <!-- Testing -->
@@ -172,7 +172,7 @@
   </dependencies>
 
   <build>
-    <finalName>nr-silva-backend</finalName>
+    <finalName>nr-results-backend</finalName>
 
     <plugins>
       <!--
