@@ -46,7 +46,7 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -118,7 +118,7 @@ jobs:
             overwrite: true
             triggers: ('common/' 'backend/' 'frontend/')
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
