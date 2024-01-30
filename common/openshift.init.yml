@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 parameters:
   - name: NAME
-    description: Product name
+    description: Module name
     value: nr-silva
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod

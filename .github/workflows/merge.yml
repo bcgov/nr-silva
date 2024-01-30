@@ -48,13 +48,13 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=test -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p ZONE=test
 
   deploys-test:
     name: TEST Deployments
@@ -90,7 +90,6 @@ jobs:
           overwrite: ${{ matrix.overwrite }}
           parameters:
             -p ZONE=test
-            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           verification_path: ${{ matrix.verification_path }}
 
@@ -109,13 +108,13 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=prod -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p ZONE=prod
 
   image-promotions:
     name: Promote images to PROD
@@ -166,6 +165,5 @@ jobs:
           overwrite: ${{ matrix.overwite }}
           parameters:
             -p ZONE=prod
-            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           verification_path: ${{ matrix.verification_path }}
