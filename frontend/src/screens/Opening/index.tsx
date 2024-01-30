@@ -65,7 +65,7 @@ const Opening: React.FC = () => {
                 id: 1,
                 name: "Google Maps Satelite",
                 attribution: '&copy; Google Maps',
-                url: "https://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
+                url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
               }}/>
             </div>
           </div>

@@ -28,7 +28,7 @@ jobs:
       - name: PR Greeting
         env:
           DOMAIN: apps.silver.devops.gov.bc.ca
-          PREFIX: ${{ github.event.repository.name }}-${{ steps.route.outputs.route }}
+          PREFIX: ${{ github.event.repository.name }}
         uses: bcgov-nr/action-pr-description-add@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,8 +39,8 @@ jobs:
 
             Any successful deployments (not always required) will be available below.
             
-            Backend: https://${{ env.PREFIX }}-backend.${{ env.DOMAIN }}/actuator/health
-            Frontend: https://${{ env.PREFIX }}-frontend.${{ env.DOMAIN }}
+            Backend: https://${{ env.PREFIX }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health
+            Frontend: https://${{ env.PREFIX }}-${{ steps.route.outputs.route }}-frontend.${{ env.DOMAIN }}
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
@@ -55,7 +55,6 @@ jobs:
           overwrite: false
           parameters:
             -p ZONE=${{ github.event.number }}
-            -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -100,14 +99,12 @@ jobs:
         include:
           - name: backend
             file: backend/openshift.deploy.yml
-            triggers: ('common/' 'backend/' 'frontend/')
             verification_path: /actuator/health
             parameters:
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=2
           - name: frontend
             file: frontend/openshift.deploy.yml
-            triggers: ('common/' 'backend/' 'frontend/')
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p MIN_REPLICAS=1
@@ -115,8 +112,6 @@ jobs:
               -p FAM_ROUTE="$(( ${{ github.event.number }} % 50 ))"
           - name: fluentbit
             file: common/openshift.fluentbit.yml
-            overwrite: true
-            triggers: ('common/' 'backend/' 'frontend/')
     steps:
       - uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
@@ -127,7 +122,6 @@ jobs:
           overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }}
-            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
-          triggers: ${{ matrix.triggers }}
+          triggers: ('common/' 'backend/' 'frontend/')
           verification_path: ${{ matrix.verification_path }}
