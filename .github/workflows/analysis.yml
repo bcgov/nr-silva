@@ -81,6 +81,7 @@ jobs:
           # Exclude file and build
           rm InstallCert.java
           ./mvnw package -DskipTests
+          ls -la
         working-directory: backend
 
       - uses: github/codeql-action/analyze@v3
