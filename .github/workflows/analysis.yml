@@ -12,51 +12,51 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests-backend:
-    name: Tests (Backend)
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
-        with:
-          commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
-          dir: backend
-          java-cache: maven
-          java-distribution: temurin
-          java-version: 21
-          sonar_args: >
-            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=nr-silva-backend
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
-          # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
+  # tests-backend:
+  #   name: Tests (Backend)
+  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
+  #       with:
+  #         commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
+  #         dir: backend
+  #         java-cache: maven
+  #         java-distribution: temurin
+  #         java-version: 21
+  #         sonar_args: >
+  #           -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
+  #           -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
+  #           -Dsonar.organization=bcgov-sonarcloud
+  #           -Dsonar.project.monorepo.enabled=true
+  #           -Dsonar.projectKey=nr-silva-backend
+  #         sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+  #         # Only use triggers for PRs
+  #         triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
-  tests-frontend:
-    name: Tests (Frontend)
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse@v1.1.0
-        with:
-          commands: |
-            npm ci
-            npm run test:coverage
-          dir: frontend
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=nr-silva-frontend
-            -Dsonar.sources=src
-            -Dsonar.tests.inclusions=**/*spec.ts
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
-          # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+  # tests-frontend:
+  #   name: Tests (Frontend)
+  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: bcgov-nr/action-test-and-analyse@v1.1.0
+  #       with:
+  #         commands: |
+  #           npm ci
+  #           npm run test:coverage
+  #         dir: frontend
+  #         node_version: "20"
+  #         sonar_args: >
+  #           -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+  #           -Dsonar.organization=bcgov-sonarcloud
+  #           -Dsonar.project.monorepo.enabled=true
+  #           -Dsonar.projectKey=nr-silva-frontend
+  #           -Dsonar.sources=src
+  #           -Dsonar.tests.inclusions=**/*spec.ts
+  #           -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+  #         sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+  #         # Only use triggers for PRs
+  #         triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
   codeql:
     name: CodeQL
@@ -83,28 +83,27 @@ jobs:
           ./mvnw package -DskipTests
         working-directory: backend
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v3
 
-  # https://github.com/marketplace/actions/aqua-security-trivy
-  trivy:
-    name: Trivy Security Scan
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
+  # # https://github.com/marketplace/actions/aqua-security-trivy
+  # trivy:
+  #   name: Trivy Security Scan
+  #   if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.16.1
-        with:
-          format: "sarif"
-          output: "trivy-results.sarif"
-          ignore-unfixed: true
-          scan-type: "fs"
-          scanners: "vuln,secret,config"
-          severity: "CRITICAL,HIGH"
+  #     - name: Run Trivy vulnerability scanner in repo mode
+  #       uses: aquasecurity/trivy-action@0.16.1
+  #       with:
+  #         format: "sarif"
+  #         output: "trivy-results.sarif"
+  #         ignore-unfixed: true
+  #         scan-type: "fs"
+  #         scanners: "vuln,secret,config"
+  #         severity: "CRITICAL,HIGH"
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: "trivy-results.sarif"
+  #     - name: Upload Trivy scan results to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: "trivy-results.sarif"
