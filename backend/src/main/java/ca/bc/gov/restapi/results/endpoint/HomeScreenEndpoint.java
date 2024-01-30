@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.endpoint;
 
 import ca.bc.gov.restapi.results.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.service.OpeningService;
@@ -8,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class HomeScreenEndpoint {
             description = "An array with all recent openings, ordered by the most recent ones.")
       })
   @PaginatedViaQuery
-  public List<RecentOpeningDto> getRecentOpenings(
+  public PaginatedResult<RecentOpeningDto> getRecentOpenings(
       @Valid PaginationParameters paginationParameters) {
     return openingService.getRecentOpenings(paginationParameters);
   }

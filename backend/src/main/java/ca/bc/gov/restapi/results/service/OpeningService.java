@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.service;
 
 import ca.bc.gov.restapi.results.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.repository.OpeningRepository;
 import java.util.ArrayList;
@@ -20,32 +22,73 @@ public class OpeningService {
 
   private final OpeningRepository openingRepository;
 
+  private final CutBlockOpenAdminService cutBlockOpenAdminService;
+
   /**
    * Gets all recent openings for the Home Screen.
    *
    * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
    */
-  public List<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
+  public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
     log.info(
         "Getting recent openings with page index {} and page size {}",
         pagination.page(),
         pagination.pageSize());
 
+    // Openings
     Pageable pageable = PageRequest.of(pagination.page(), pagination.pageSize());
     Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
 
+    PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setCurrentPage(pagination.page());
+    paginatedResult.setPageSize(pagination.pageSize());
+
     if (openingPage.getContent().isEmpty()) {
       log.info("No recent openings given page index and size");
-      return List.of();
+      paginatedResult.setData(List.of());
+      paginatedResult.setPages(0);
+      paginatedResult.setHasNextPage(false);
+      return paginatedResult;
+    }
+
+    // Cut Block Open Admin
+    List<CutBlockOpenAdminEntity> cutBlocks = cutBlockOpenAdminService.getAllByOpeningId(null);
+
+    List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
+    paginatedResult.setData(list);
+    paginatedResult.setPages(openingPage.getTotalPages());
+    paginatedResult.setHasNextPage(openingPage.hasNext());
+
+    return paginatedResult;
+  }
+
+  private List<RecentOpeningDto> createDtoFromEntity(
+      List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> clutBloks) {
+    if (openings.size() != clutBloks.size()) {
+      log.warn("Different number of records for the Opening x Cut Block Open Admin relationship");
     }
 
     List<RecentOpeningDto> recentOpeningDtos = new ArrayList<>();
-    openingPage.getContent().forEach(e -> recentOpeningDtos.add(createDtoFromEntity(e)));
-    return recentOpeningDtos;
-  }
 
-  private RecentOpeningDto createDtoFromEntity(OpeningEntity entity) {
-    return new RecentOpeningDto(
-        entity.getId(), "", "", "", "", "", entity.getStatus(), entity.getCategory(), null);
+    for (int i = 0; i < openings.size(); i++) {
+      OpeningEntity opening = openings.get(i);
+      CutBlockOpenAdminEntity cutBlockOpenAdmin = clutBloks.get(i);
+
+      RecentOpeningDto openingDto =
+          new RecentOpeningDto(
+              opening.getId(),
+              cutBlockOpenAdmin.getForestFileId(),
+              cutBlockOpenAdmin.getCuttingPermitId(),
+              cutBlockOpenAdmin.getTimberMark(),
+              cutBlockOpenAdmin.getCutBlockId(),
+              cutBlockOpenAdmin.getOpeningGrossArea(),
+              opening.getStatus(),
+              opening.getCategory(),
+              cutBlockOpenAdmin.getDisturbanceStartDate());
+
+      recentOpeningDtos.add(openingDto);
+    }
+
+    return recentOpeningDtos;
   }
 }

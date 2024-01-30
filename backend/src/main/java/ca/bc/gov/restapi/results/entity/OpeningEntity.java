@@ -16,8 +16,8 @@ import lombok.Setter;
 public class OpeningEntity {
 
   @Id
-  @Column(name = "OPENING_ID", length = 10)
-  private String id;
+  @Column(name = "OPENING_ID")
+  private Long id;
 
   @Column(name = "OPENING_STATUS_CODE", length = 3)
   private OpeningStatusEnum status;
