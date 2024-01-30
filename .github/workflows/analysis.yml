@@ -2,7 +2,7 @@ name: Analysis
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
   push:
     branches: [main]
   workflow_dispatch:
@@ -62,13 +62,16 @@ jobs:
     name: CodeQL
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     strategy:
       matrix:
         language: [java, javascript]
         include:
           - language: "java"
-            working-directory: backend
-            build: ./mvnw package -DskipTests
+            build: cd backend && ./mvnw package -DskipTests
           - language: "javascript"
     steps:
       - uses: actions/checkout@v4
@@ -97,12 +100,11 @@ jobs:
       - name: Build
         if: ${{ matrix.build }}
         run: ${{ matrix.build }}
-        working-directory: ${{ matrix.working-directory }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{matrix.language}}"
+          category: "/language:${{ matrix.language }}"
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
