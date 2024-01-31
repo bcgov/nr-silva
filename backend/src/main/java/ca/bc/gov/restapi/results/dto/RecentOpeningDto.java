@@ -62,5 +62,4 @@ public record RecentOpeningDto(
             example = "FTML")
         OpeningCategoryEnum category,
     @Schema(description = "Actual date that harvesting started on the cut block.")
-        LocalDate disturbanceStart,
-        String entryUserId) {}
+        LocalDate disturbanceStart) {}

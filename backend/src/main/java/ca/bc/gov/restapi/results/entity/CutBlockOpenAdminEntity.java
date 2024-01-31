@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
+/** This class represents a CUT_BLOCK_OPEN_ADMIN entity in the database. */
 @Getter
 @Setter
 @Table(name = "CUT_BLOCK_OPEN_ADMIN")

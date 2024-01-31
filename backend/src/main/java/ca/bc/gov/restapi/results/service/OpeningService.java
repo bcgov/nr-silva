@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -106,8 +107,7 @@ public class OpeningService {
               openingGrossArea,
               opening.getStatus(),
               opening.getCategory(),
-              disturbanceStartDate,
-              opening.getEntryUserId());
+              disturbanceStartDate);
 
       recentOpeningDtos.add(openingDto);
     }

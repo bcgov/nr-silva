@@ -8,6 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/** This class represents a pagination documentation. */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(

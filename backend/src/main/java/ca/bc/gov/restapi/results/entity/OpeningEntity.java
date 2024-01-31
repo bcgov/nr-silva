@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/** This class represents an Opening in the database. */
 @Getter
 @Setter
 @Entity
