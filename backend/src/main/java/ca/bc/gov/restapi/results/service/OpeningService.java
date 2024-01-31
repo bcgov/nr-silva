@@ -6,6 +6,8 @@ import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.repository.OpeningRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +37,11 @@ public class OpeningService {
         pagination.page(),
         pagination.pageSize());
 
+    String entryUserId = "idir-here";
+
     // Openings
     Pageable pageable = PageRequest.of(pagination.page(), pagination.pageSize());
-    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
+    Page<OpeningEntity> openingPage = openingRepository.findAllByEntryUserId(entryUserId, pageable);
 
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
     paginatedResult.setCurrentPage(pagination.page());
@@ -52,7 +56,9 @@ public class OpeningService {
     }
 
     // Cut Block Open Admin
-    List<CutBlockOpenAdminEntity> cutBlocks = cutBlockOpenAdminService.getAllByOpeningId(null);
+    List<Long> openingIds = openingPage.getContent().stream().map(OpeningEntity::getId).toList();
+    List<CutBlockOpenAdminEntity> cutBlocks =
+        cutBlockOpenAdminService.findAllByOpeningIdIn(openingIds);
 
     List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
     paginatedResult.setData(list);
@@ -72,19 +78,36 @@ public class OpeningService {
 
     for (int i = 0; i < openings.size(); i++) {
       OpeningEntity opening = openings.get(i);
-      CutBlockOpenAdminEntity cutBlockOpenAdmin = clutBloks.get(i);
+
+      String forestFileId = "";
+      String cuttingPermitId = "";
+      String timberMark = "";
+      String cuttingBlockId = "";
+      BigDecimal openingGrossArea = BigDecimal.ZERO;
+      LocalDate disturbanceStartDate = null;
+
+      if (clutBloks.size() - 1 >= i) {
+        CutBlockOpenAdminEntity cutBlockOpenAdmin = clutBloks.get(i);
+        forestFileId = cutBlockOpenAdmin.getForestFileId();
+        cuttingPermitId = cutBlockOpenAdmin.getCuttingPermitId();
+        timberMark = cutBlockOpenAdmin.getTimberMark();
+        cuttingBlockId = cutBlockOpenAdmin.getCutBlockId();
+        openingGrossArea = cutBlockOpenAdmin.getOpeningGrossArea();
+        disturbanceStartDate = cutBlockOpenAdmin.getDisturbanceEndDate();
+      }
 
       RecentOpeningDto openingDto =
           new RecentOpeningDto(
               opening.getId(),
-              cutBlockOpenAdmin.getForestFileId(),
-              cutBlockOpenAdmin.getCuttingPermitId(),
-              cutBlockOpenAdmin.getTimberMark(),
-              cutBlockOpenAdmin.getCutBlockId(),
-              cutBlockOpenAdmin.getOpeningGrossArea(),
+              forestFileId,
+              cuttingPermitId,
+              timberMark,
+              cuttingBlockId,
+              openingGrossArea,
               opening.getStatus(),
               opening.getCategory(),
-              cutBlockOpenAdmin.getDisturbanceStartDate());
+              disturbanceStartDate,
+              opening.getEntryUserId());
 
       recentOpeningDtos.add(openingDto);
     }

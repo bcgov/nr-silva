@@ -24,4 +24,7 @@ public class OpeningEntity {
 
   @Column(name = "OPEN_CATEGORY_CODE", length = 7)
   private OpeningCategoryEnum category;
+
+  @Column(name = "ENTRY_USERID", length = 30)
+  private String entryUserId;
 }
