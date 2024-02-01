@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** This class holds endpoints for the Home Screen. */
 @RestController
-@RequestMapping(path = "/api/home", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/opening", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Tag(name = "HomeScreenEndpoint", description = "Endpoints for the Home Screen")
-public class HomeScreenEndpoint {
+@Tag(name = "Opening", description = "Endpoints for the fetching and saving Openings")
+public class OpeningEndpoint {
 
   private final OpeningService openingService;
 
@@ -30,7 +30,7 @@ public class HomeScreenEndpoint {
    * @param paginationParameters {@link PaginationParameters} parameters
    * @return List of {@link RecentOpeningDto} or empty list.
    */
-  @GetMapping("/recent-openings")
+  @GetMapping(path = "/recent-openings", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
       summary = "Fetches all recent openings for the home screen.",
       description =

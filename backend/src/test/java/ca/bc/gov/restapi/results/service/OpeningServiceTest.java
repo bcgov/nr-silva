@@ -66,4 +66,24 @@ class OpeningServiceTest {
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
+
+  @Test
+  @DisplayName("Get an empty list of recent openings for the home screen")
+  void getRecentOpenings_emptyPages_shouldSucceed() {
+    Page<OpeningEntity> openingsPage = new PageImpl<>(new ArrayList<>());
+    when(openingRepository.findAllByEntryUserId(any(), any())).thenReturn(openingsPage);
+
+    when(cutBlockOpenAdminService.findAllByOpeningIdIn(any())).thenReturn(List.of());
+
+    int currentPage = 0;
+    int pages = 1;
+    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
+    PaginatedResult<RecentOpeningDto> paginatedResult =
+        openingService.getRecentOpenings(pagination);
+
+    Assertions.assertNotNull(paginatedResult);
+    Assertions.assertEquals(currentPage, paginatedResult.getCurrentPage());
+    Assertions.assertEquals(0, paginatedResult.getPages());
+    Assertions.assertTrue(paginatedResult.getData().isEmpty());
+  }
 }
