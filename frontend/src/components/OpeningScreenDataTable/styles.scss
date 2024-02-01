@@ -41,6 +41,7 @@
 .#{vars.$bcgov-prefix}--data-table tr td {
   background-color: white;
   color:black;
+  height: 64px;
 }
 .#{vars.$bcgov-prefix}--data-table tr:hover td {
   background-color: #F3F3F5;
