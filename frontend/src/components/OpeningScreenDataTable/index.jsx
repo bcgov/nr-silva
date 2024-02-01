@@ -23,6 +23,7 @@ import {
 import { TrashCan, Save, Download, Add } from '@carbon/icons-react';
 import * as Icons from '@carbon/icons-react'
 import StatusTag from '../StatusTag'; // Import the StatusTag component
+import './styles.scss'
 
 export const batchActionClick = (selectedRows) => () => {
   console.log('Batch action clicked with selected rows:', selectedRows);
@@ -57,7 +58,7 @@ const usePagination = (data, initialItemsPerPage) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
 
-  // Get the total number of pages
+  // Update the total number of pages when itemsPerPage changes
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   // Get the current page data
@@ -68,15 +69,18 @@ const usePagination = (data, initialItemsPerPage) => {
   };
 
   // Update the current page when the user changes the page
-  const handlePageChange = (event) => {
-    setCurrentPage(event.page);
+  const handlePageChange = ({ page }) => {
+    setCurrentPage(page);
   };
+  
 
   // Update the items per page when the user changes the value
   const handleItemsPerPageChange = (event) => {
-    setCurrentPage(1);
+    setCurrentPage(event.page);
     setItemsPerPage(event.pageSize);
   };
+
+  
 
   return {
     currentData,
@@ -89,6 +93,7 @@ const usePagination = (data, initialItemsPerPage) => {
 };
 
 
+
 export default function OpeningScreenDataTable({ rows, headers }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
@@ -98,7 +103,7 @@ export default function OpeningScreenDataTable({ rows, headers }) {
     handlePageChange,
     handleItemsPerPageChange,
     itemsPerPage, // Use itemsPerPage from the hook
-  } = usePagination(filteredRows, 10);
+  } = usePagination(filteredRows, 5);
 
   
 
@@ -143,36 +148,52 @@ export default function OpeningScreenDataTable({ rows, headers }) {
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />
-                <Button
-                  hasIconOnly
-                  iconDescription="Download"
-                  tooltipPosition="bottom"
-                  kind="ghost"
-                  onClick={() => console.log('Download Click')}
-                  disabled={selectedRows.length === 0}
-                  renderIcon={Icons.Download}
-                  size="md"
-                />
-                <Button
-                  hasIconOnly
-                  iconDescription="Print"
-                  tooltipPosition="bottom"
-                  kind="ghost"
-                  onClick={() => {
+                <TableToolbarMenu iconDescription="More" tooltipPosition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
+                  <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
+                    Print
+                  </TableToolbarAction>
+                  <TableToolbarAction onClick={() => {
                     batchActionClick(selectedRows);
                     batchActionProps.onCancel();
                     console.log('Clicked print')
                   }}
                   disabled={selectedRows.length === 0}
-                  renderIcon={Icons.Printer}
-                  size="md"
-                />
+                  >
+                    Download
+                  </TableToolbarAction>
+                </TableToolbarMenu>
+                <div className="d-none d-sm-flex">
+                  <Button
+                    hasIconOnly
+                    iconDescription="Download"
+                    tooltipPosition="bottom"
+                    kind="ghost"
+                    onClick={() => console.log('Download Click')}
+                    disabled={selectedRows.length === 0}
+                    renderIcon={Icons.Download}
+                    size="md"
+                  />
+                  <Button
+                    hasIconOnly
+                    iconDescription="Print"
+                    tooltipPosition="bottom"
+                    kind="ghost"
+                    onClick={() => {
+                      batchActionClick(selectedRows);
+                      batchActionProps.onCancel();
+                      console.log('Clicked print')
+                    }}
+                    disabled={selectedRows.length === 0}
+                    renderIcon={Icons.Printer}
+                    size="md"
+                  />
+                </div>
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()} aria-label="sample table">
               <TableHead>
                 <TableRow>
-                  <TableSelectAll {...getSelectionProps()} />
+                  <th id='blank'></th>
                   {headers.map((header, i) => (
                     <TableHeader key={i} {...getHeaderProps({ header })}>
                       {header.header}
@@ -204,17 +225,19 @@ export default function OpeningScreenDataTable({ rows, headers }) {
       }}
     </DataTable>
     <Pagination
-  totalItems={filteredRows.length}
-  backwardText="Previous page"
-  forwardText="Next page"
-  pageSize={itemsPerPage} // Use the current itemsPerPage value from the hook
-  pageSizes={[10, 50, 100]}
-  itemsPerPageText="Items per page"
-  onChange={({ page, pageSize }) => {
-    handlePageChange({ page, pageSize });
-    handleItemsPerPageChange({ pageSize });
-  }}
-/>
+      totalItems={filteredRows.length}
+      backwardText="Previous page"
+      forwardText="Next page"
+      pageSize={itemsPerPage}
+      pageSizes={[5, 20, 50]}
+      itemsPerPageText="Items per page"
+      onChange={({ page, pageSize }) => {
+        handlePageChange({ page, pageSize });
+        handleItemsPerPageChange({ page,pageSize });
+      }}
+      
+    />
+
     </div>
   );
 }

@@ -55,7 +55,7 @@
 
 p.fav-card-title-large,
 p.fav-card-title-small {
-  @include type.type-style('heading-02');
+  @include type.type-style('heading-01');
   font-weight: 700;
   display: block;
   white-space: nowrap;
@@ -115,14 +115,14 @@ p.fav-card-title-small {
   display: none;
 }
 
-@media only screen and (max-width: 672px) {
+@media only screen and (max-width: 671px) {
   .fav-card-main,
   .fav-card-main-highlighted {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 16px;
     border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
-    height: auto; /* Remove minimum height for small devices */
+    height: 0px; /* Remove minimum height for small devices */
   }
 
   .fav-card-header {
@@ -137,8 +137,8 @@ p.fav-card-title-small {
     padding-left: 1rem;
     display: block;
     width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    text-overflow:inherit;
+    white-space:inherit;
     overflow: hidden;
     margin: 0; /* Reset margin */
   }
@@ -154,10 +154,10 @@ p.fav-card-title-small {
   }
 
   .fav-card-content > p.fav-card-content-description {
-    display: block;
+    display: none;
     width: 100%;
     white-space: normal;
-    overflow: hidden;
+    overflow:auto;
     margin: 0; /* Reset margin */
   }
 }

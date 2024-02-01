@@ -13,3 +13,10 @@
     background-color: var(--#{vars.$bcgov-prefix}-layer-01);
     padding: 2rem;
   }
+
+  @media only screen and (max-width: 671px) {
+    .favourite-activities {
+      background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+      padding: 16px;
+    }
+  }

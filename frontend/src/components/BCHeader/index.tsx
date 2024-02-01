@@ -42,8 +42,7 @@ const BCHeader: React.FC = () => {
                 isActive={isSideNavExpanded}
               />
               <Link to="/" className="header-link" data-testid="header-name">
-                BCGOV
-                <span className="header-full-name"> RESULTS EXAM</span>
+                SILVA
               </Link>
               <HeaderNavigation aria-label="BC-Gov Starter">
                 <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
