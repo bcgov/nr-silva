@@ -274,6 +274,7 @@
           <skip>${jacoco.skip}</skip>
           <excludes>
             <exclude>**/config/**</exclude>
+            <exclude>**/converter/**</exclude>
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
@@ -281,7 +282,6 @@
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/RestExceptionEndpoint.*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
-            <exclude>**/Controller.*</exclude>
           </excludes>
         </configuration>
         <executions>
