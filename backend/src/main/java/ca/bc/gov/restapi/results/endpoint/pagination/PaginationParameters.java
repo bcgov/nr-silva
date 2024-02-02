@@ -24,9 +24,4 @@ public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integ
       pageSize = 5;
     }
   }
-
-  /** Get the number of results to be skipped by the search. Useful for SQL queries. */
-  public int skip() {
-    return page * pageSize;
-  }
 }

@@ -15,4 +15,9 @@ class OpeningStatusEnumTest {
     Assertions.assertEquals(code, app.getCode());
     Assertions.assertFalse(app.getDescription().isBlank());
   }
+
+  @Test
+  void getByNonExistingCodeTest() {
+    Assertions.assertNull(OpeningStatusEnum.of("RESULTS"));
+  }
 }

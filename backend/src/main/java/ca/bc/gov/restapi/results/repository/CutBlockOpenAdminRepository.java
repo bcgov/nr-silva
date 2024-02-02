@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface CutBlockOpenAdminRepository extends JpaRepository<CutBlockOpenAdminEntity, Long> {
 
-  @Query("from CutBlockOpenAdminEntity where id in ?1")
+  @Query("from CutBlockOpenAdminEntity where openingId in ?1")
   List<CutBlockOpenAdminEntity> findAllByOpeningIdIn(List<Long> openingIdList);
 }

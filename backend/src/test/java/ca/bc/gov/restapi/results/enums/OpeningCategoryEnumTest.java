@@ -15,4 +15,9 @@ class OpeningCategoryEnumTest {
     Assertions.assertEquals(code, ftml.getCode());
     Assertions.assertFalse(ftml.getDescription().isBlank());
   }
+
+  @Test
+  void getByNonExistingCodeTest() {
+    Assertions.assertNull(OpeningCategoryEnum.of("RESULTS"));
+  }
 }

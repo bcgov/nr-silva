@@ -32,7 +32,7 @@ public class CutBlockOpenAdminEntity {
   @Column(name = "CUT_BLOCK_ID", length = 10, nullable = true)
   private String cutBlockId;
 
-  @Column(name = "OPENING_GROSS_AREA", nullable = true, precision = 4)
+  @Column(name = "OPENING_GROSS_AREA", nullable = true, precision = 11, scale = 4)
   private BigDecimal openingGrossArea;
 
   @Column(name = "DISTURBANCE_START_DATE", nullable = true)
@@ -41,6 +41,6 @@ public class CutBlockOpenAdminEntity {
   @Column(name = "DISTURBANCE_END_DATE", nullable = true)
   private LocalDate disturbanceEndDate;
 
-  @Column(name = "OPENING_ID", length = 10)
+  @Column(name = "OPENING_ID", nullable = true)
   private Long openingId;
 }
