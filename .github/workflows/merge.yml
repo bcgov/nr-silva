@@ -11,36 +11,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  codeql:
-    name: Semantic Code Analysis
-    runs-on: ubuntu-22.04
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Initialize
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-
   init-test:
     name: TEST Init
     environment: test
     runs-on: ubuntu-22.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -48,11 +25,13 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=test -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+            -p ORACLE_DB_USER=${{ secrets.DB_USER }}
+            -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p ZONE=test
 
   deploys-test:
     name: TEST Deployments
@@ -79,7 +58,7 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -88,7 +67,6 @@ jobs:
           overwrite: ${{ matrix.overwrite }}
           parameters:
             -p ZONE=test
-            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           verification_path: ${{ matrix.verification_path }}
 
@@ -99,7 +77,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -107,11 +85,13 @@ jobs:
           file: common/openshift.init.yml
           overwrite: false
           parameters:
-            -p ZONE=prod -p NAME=${{ github.event.repository.name }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
             -p AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
+            -p ORACLE_DB_USER=${{ secrets.DB_USER }}
+            -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p ZONE=prod
 
   image-promotions:
     name: Promote images to PROD
@@ -123,7 +103,7 @@ jobs:
       matrix:
         component: [backend, frontend]
     steps:
-      - uses: shrink/actions-docker-registry-tag@v3
+      - uses: shrink/actions-docker-registry-tag@v4
         with:
           registry: ghcr.io
           repository: ${{ github.repository }}/${{ matrix.component }}
@@ -153,7 +133,7 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -162,6 +142,5 @@ jobs:
           overwrite: ${{ matrix.overwite }}
           parameters:
             -p ZONE=prod
-            -p NAME=${{ github.event.repository.name }}
             ${{ matrix.parameters }}
           verification_path: ${{ matrix.verification_path }}

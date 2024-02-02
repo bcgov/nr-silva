@@ -3,7 +3,7 @@ kind: Template
 parameters:
   - name: NAME
     description: Module name
-    required: true
+    value: nr-silva
   - name: COMPONENT
     description: Component name
     value: frontend

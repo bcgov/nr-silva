@@ -2,7 +2,7 @@ name: Analysis
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
   push:
     branches: [main]
   workflow_dispatch:
@@ -12,8 +12,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend:
-    name: Frontend Tests
+  tests-backend:
+    name: Tests (Backend)
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
+        with:
+          commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
+          dir: backend
+          java-cache: maven
+          java-distribution: temurin
+          java-version: 21
+          sonar_args: >
+            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=nr-silva-backend
+          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          # Only use triggers for PRs
+          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
+
+  tests-frontend:
+    name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
     steps:
@@ -36,73 +58,33 @@ jobs:
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
-  backend:
-    name: Backend Tests
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
-        with:
-          commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
-          dir: backend
-          java-cache: maven
-          java-distribution: temurin
-          java-version: 21
-          sonar_args: >
-            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=nr-silva-backend
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
-          # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
-
   codeql:
     name: CodeQL
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        language: [java, javascript]
-        include:
-          - language: "java"
-            working-directory: backend
-            build: ./mvnw package -DskipTests
-          - language: "javascript"
     steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-
-      - name: Autobuild
-        if: ${{ ! matrix.build }}
-        uses: github/codeql-action/autobuild@v3
-
       - uses: actions/setup-java@v4
-        if: ${{ matrix.build && matrix.language == 'java' }}
         with:
           distribution: "oracle"
           java-version: "21"
 
-      - uses: actions/cache@v3
-        if: ${{ matrix.build && matrix.language == 'java' }}
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build
-        if: ${{ matrix.build }}
-        run: ${{ matrix.build }}
-        working-directory: ${{ matrix.working-directory }}
+      - run: |
+          # Exclude file and build
+          rm InstallCert.java
+          ./mvnw package -DskipTests
+          ls -la
+        working-directory: backend
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:${{matrix.language}}"
+      - uses: github/codeql-action/analyze@v3
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
