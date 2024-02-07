@@ -29,32 +29,32 @@ const Opening: React.FC = () => {
     return (
       <>
       <div className="container-fluid">
-        <div className="row px-0 py-4 p-md-4">
+        <div className="row px-0 py-4 p-sm-4">
           <PageTitle title="Openings" subtitle="Create, manage or check opening information " />
         </div>
       </div>
 
       <div className="favourite-activities">
-        <div className="row">
-          <div className="col-md-6 col-lg-6 col-xl-6 col-xxl-3">
+        <div className="row gy-0 gy-sm-4 ">
+          <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
             <FavouriteCard index={1} title={'Search opening'} link={'/'} icon={'SearchLocate'} description={'Search for a opening to update or consult using advance filters such as activities, standards, codes or links'}/>
           </div>
-          <div className="col-md-6 col-lg-6 col-xl-6 col-xxl-3">
+          <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
             <FavouriteCard index={1} title={'Create a new opening'} link={'/'} icon={'MapBoundary'} description={'Register a opening for tracking silviculture treatments'}/>
           </div>
-          <div className="col-md-6 col-lg-6 col-xl-6 col-xxl-3">
+          <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
             <FavouriteCard index={1} title={'Reports'} link={'/'} icon={'ReportData'} description={'Consult and manage opening reports'}/>
           </div>
-          <div className="col-md-6 col-lg-6 col-xl-6 col-xxl-3">
+          <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
             <FavouriteCard index={1} title={'Upcoming activities'} link={'/'} icon={'Activity'} description={'Track opening activities and milestones'}/>
           </div>
         </div>
       </div>
 
       <div className="container-fluid">
-        <div className="row px-0 py-4 p-md-4">
+        <div className="row px-0 py-4 p-sm-4">
             <SectionTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
-            <Button className="h-100 my-auto d-none d-md-block" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
+            <Button className="h-100 my-auto d-none d-sm-block" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
               {showSpatial?'Hide Spatial':'Show Spatial'}
             </Button>
         </div>
@@ -73,7 +73,7 @@ const Opening: React.FC = () => {
       </div>
       
 
-      <div className="container-fluid p-0">
+      <div className="container-fluid p-0 pb-5">
         <OpeningScreenDataTable
         headers={headers}
         rows={rows}

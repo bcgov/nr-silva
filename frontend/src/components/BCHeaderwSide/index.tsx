@@ -127,8 +127,7 @@ const BCHeaderwSide = () => {
             isActive={isSideNavExpanded}
           />
           <Link to="/" className="header-link" data-testid="header-name">
-            BCGOV
-            <span className="header-full-name"> RESULTS EXAM </span>
+            SILVA
           </Link>
           <HeaderGlobalBar className="align-items-center">
             <div className="mx-2">
