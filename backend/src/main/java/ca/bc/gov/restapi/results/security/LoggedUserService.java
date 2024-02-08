@@ -78,19 +78,10 @@ public class LoggedUserService {
     }
 
     UserInfo userInfo = userInfoOp.get();
-    switch (userInfo.identityProvider()) {
-      case IDIR:
-        {
-          return userInfo.idirUsername();
-        }
-      case BUSINESS_BCEID:
-        {
-          return userInfo.businessName();
-        }
-      default:
-        {
-          return "";
-        }
+    if (IdentityProvider.IDIR.equals(userInfo.identityProvider())) {
+      return userInfo.idirUsername();
     }
+
+    return userInfo.businessName();
   }
 }
