@@ -57,6 +57,7 @@ services:
       SERVICE_NAME: dbq01.nrs.bcgov
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
+      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
     <<: *backend
 
   backend-native:
