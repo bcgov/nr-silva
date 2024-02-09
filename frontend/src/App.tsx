@@ -14,6 +14,7 @@ import Dashboard from './screens/Dashboard';
 import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
+import OpeningMetrics from './screens/OpeningMetrics';
 
 Amplify.configure(awsconfig);
 
@@ -30,6 +31,11 @@ const App: React.FC = () => {
         <Route path="/opening" element={
           <ProtectedRoute signed={true}>
             <SideLayout pageContent={<Opening/>} />
+          </ProtectedRoute>
+        } />
+        <Route path="/openings-metrics" element={
+          <ProtectedRoute signed={true}>
+            <SideLayout pageContent={<OpeningMetrics/>} />
           </ProtectedRoute>
         } />
         <Route path="/reports" element={

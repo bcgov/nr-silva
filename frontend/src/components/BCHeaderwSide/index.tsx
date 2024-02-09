@@ -47,6 +47,12 @@ const listItems = [
         link: '/opening',
         disabled: false
       },
+      {
+        name: 'Opening Metrics',
+        icon: 'Dashboard',
+        link: '/openings-metrics',
+        disabled: false
+      },
     ]
   },
   {

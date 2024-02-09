@@ -5,6 +5,7 @@
   "dependencies": {
     "@aws-amplify/ui-react": "^5.3.3",
     "@bcgov-nr/nr-theme": "^1.7.0",
+    "@carbon/charts-react": "^1.13.32",
     "@carbon/pictograms-react": "^11.49.0",
     "@carbon/react": "^1.27.0",
     "@redux-devtools/extension": "^3.3.0",
