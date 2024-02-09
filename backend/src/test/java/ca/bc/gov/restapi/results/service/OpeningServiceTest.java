@@ -9,6 +9,7 @@ import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.security.LoggedUserService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +31,14 @@ class OpeningServiceTest {
 
   @Mock CutBlockOpenAdminService cutBlockOpenAdminService;
 
+  @Mock LoggedUserService loggedUserService;
+
   private OpeningService openingService;
 
   @BeforeEach
   void setup() {
-    openingService = new OpeningService(openingRepository, cutBlockOpenAdminService);
+    openingService =
+        new OpeningService(openingRepository, cutBlockOpenAdminService, loggedUserService);
   }
 
   @Test

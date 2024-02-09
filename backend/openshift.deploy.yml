@@ -60,6 +60,9 @@ parameters:
   - name: ORACLEDB_KEYSTORE
     description: Keystore location path
     value: /app/jssecacerts
+  - name: AWS_COGNITO_ISSUER_URI
+    description: AWS Cognito JWT Server URI
+    required: true
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -129,6 +132,8 @@ objects:
                   value: ${DATABASE_PORT}
                 - name: SERVICE_NAME
                   value: ${SERVICE_NAME}
+                - name: AWS_COGNITO_ISSUER_URI
+                  value: ${AWS_COGNITO_ISSUER_URI}
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:

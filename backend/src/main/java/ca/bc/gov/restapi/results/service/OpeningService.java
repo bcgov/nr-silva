@@ -6,6 +6,7 @@ import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.security.LoggedUserService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class OpeningService {
 
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
 
+  private final LoggedUserService loggedUserService;
+
   /**
    * Gets all recent openings for the Home Screen.
    *
@@ -38,7 +41,7 @@ public class OpeningService {
         pagination.page(),
         pagination.pageSize());
 
-    String entryUserId = "idir-here";
+    String entryUserId = loggedUserService.getLoggedUserId();
 
     // Openings
     Pageable pageable = PageRequest.of(pagination.page(), pagination.pageSize());
