@@ -43,6 +43,11 @@ public class OpeningEndpoint {
   @PaginatedViaQuery
   public PaginatedResult<RecentOpeningDto> getRecentOpenings(
       @Valid PaginationParameters paginationParameters) {
+    PaginatedResult<RecentOpeningDto> userOpenings =
+        openingService.getRecentOpeningsCurrentUser(paginationParameters);
+    if (!userOpenings.getData().isEmpty()) {
+      return userOpenings;
+    }
     return openingService.getRecentOpenings(paginationParameters);
   }
 }
