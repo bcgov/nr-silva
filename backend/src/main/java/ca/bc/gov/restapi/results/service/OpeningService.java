@@ -34,7 +34,8 @@ public class OpeningService {
   /**
    * Gets all recent openings for the Home Screen.
    *
-   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
+   * @param pagination A {@link PaginationParameters} with pagination settings.
+   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings for that user.
    */
   public PaginatedResult<RecentOpeningDto> getRecentOpeningsCurrentUser(
       PaginationParameters pagination) {
@@ -74,6 +75,12 @@ public class OpeningService {
     return paginatedResult;
   }
 
+  /**
+   * Get recent openings given the opening creation date.
+   *
+   * @param pagination A {@link PaginationParameters} with pagination settings.
+   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
+   */
   public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
     log.info(
         "Getting recent openings, user independnt, with page index {} and page size {}",

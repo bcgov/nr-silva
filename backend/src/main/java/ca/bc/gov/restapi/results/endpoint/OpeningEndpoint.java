@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** This class holds endpoints for the Home Screen. */
 @RestController
-@RequestMapping(path = "/api/opening", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "Opening", description = "Endpoints for the fetching and saving Openings")
 public class OpeningEndpoint {
