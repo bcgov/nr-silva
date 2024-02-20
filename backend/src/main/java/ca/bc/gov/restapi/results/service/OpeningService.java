@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
@@ -33,11 +34,13 @@ public class OpeningService {
   /**
    * Gets all recent openings for the Home Screen.
    *
-   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
+   * @param pagination A {@link PaginationParameters} with pagination settings.
+   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings for that user.
    */
-  public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
+  public PaginatedResult<RecentOpeningDto> getRecentOpeningsCurrentUser(
+      PaginationParameters pagination) {
     log.info(
-        "Getting recent openings with page index {} and page size {}",
+        "Getting recent openings to logged user with page index {} and page size {}",
         pagination.page(),
         pagination.pageSize());
 
@@ -52,7 +55,50 @@ public class OpeningService {
     paginatedResult.setPageSize(pagination.pageSize());
 
     if (openingPage.getContent().isEmpty()) {
-      log.info("No recent openings given page index and size");
+      log.info("No recent openings for this user given page index and size!");
+      paginatedResult.setData(List.of());
+      paginatedResult.setPages(0);
+      paginatedResult.setHasNextPage(false);
+      return paginatedResult;
+    }
+
+    // Cut Block Open Admin
+    List<Long> openingIds = openingPage.getContent().stream().map(OpeningEntity::getId).toList();
+    List<CutBlockOpenAdminEntity> cutBlocks =
+        cutBlockOpenAdminService.findAllByOpeningIdIn(openingIds);
+
+    List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
+    paginatedResult.setData(list);
+    paginatedResult.setPages(openingPage.getTotalPages());
+    paginatedResult.setHasNextPage(openingPage.hasNext());
+
+    return paginatedResult;
+  }
+
+  /**
+   * Get recent openings given the opening creation date.
+   *
+   * @param pagination A {@link PaginationParameters} with pagination settings.
+   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
+   */
+  public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
+    log.info(
+        "Getting recent openings, user independnt, with page index {} and page size {}",
+        pagination.page(),
+        pagination.pageSize());
+
+    // Openings
+    Pageable pageable =
+        PageRequest.of(
+            pagination.page(), pagination.pageSize(), Sort.by("entryTimestamp").descending());
+    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
+
+    PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setCurrentPage(pagination.page());
+    paginatedResult.setPageSize(pagination.pageSize());
+
+    if (openingPage.getContent().isEmpty()) {
+      log.info("No recent openings given page index and size!");
       paginatedResult.setData(List.of());
       paginatedResult.setPages(0);
       paginatedResult.setHasNextPage(false);

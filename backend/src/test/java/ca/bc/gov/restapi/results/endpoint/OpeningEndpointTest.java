@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.endpoint;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -9,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.service.OpeningService;
@@ -56,11 +56,13 @@ class OpeningEndpointTest {
             now);
     paginatedResult.setData(List.of(recentOpeningDto));
 
-    when(openingService.getRecentOpenings(any())).thenReturn(paginatedResult);
+    PaginationParameters params = new PaginationParameters(0, 5);
+
+    when(openingService.getRecentOpeningsCurrentUser(params)).thenReturn(paginatedResult);
 
     mockMvc
         .perform(
-            get("/api/opening/recent-openings")
+            get("/api/openings/recent-openings")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

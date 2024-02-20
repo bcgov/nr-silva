@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,4 +29,10 @@ public class OpeningEntity {
 
   @Column(name = "ENTRY_USERID", length = 30)
   private String entryUserId;
+
+  @Column(name = "UPDATE_TIMESTAMP")
+  private LocalDate updateTimestamp;
+
+  @Column(name = "ENTRY_TIMESTAMP")
+  private LocalDate entryTimestamp;
 }
