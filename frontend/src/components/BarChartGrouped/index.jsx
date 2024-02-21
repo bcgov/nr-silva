@@ -1,75 +1,72 @@
-import React from "react";
-import ReactDOM from "react-dom";
 import { GroupedBarChart } from "@carbon/charts-react";
 import "@carbon/charts/styles.css";
 
 const BarChartGrouped = () => {
   const colors = {
-    "Dataset 1": "red",
-    "Dataset 2": "green",
+    "Openings": "#1192E8",
   };
 
   const data = [
     {
-      group: "Dataset 1",
+      group: "Openings",
+      key: "Mar",
+      value: 70,
+    },
+    {
+      group: "Openings",
+      key: "Apr",
+      value: 300,
+    },
+    {
+      group: "Openings",
+      key: "May",
+      value: 200,
+    },
+    {
+      group: "Openings",
+      key: "Jun",
+      value: 140,
+    },
+    {
+      group: "Openings",
       key: "Jul",
-      value: 65000,
+      value: 180,
     },
     {
-      group: "Dataset 1",
+      group: "Openings",
       key: "Aug",
-      value: 51213,
+      value: 100,
     },
     {
-      group: "Dataset 1",
-      key: "Sept",
-      value: 16932,
+      group: "Openings",
+      key: "Sep",
+      value: 40,
     },
     {
-      group: "Dataset 1",
+      group: "Openings",
       key: "Oct",
-      value: 17932,
+      value: 90,
     },
     {
-      group: "Dataset 1",
+      group: "Openings",
       key: "Nov",
-      value: 17932,
+      value: 160,
     },
     {
-      group: "Dataset 1",
+      group: "Openings",
       key: "Dec",
-      value: 17932,
+      value: 70,
     },
     {
-      group: "Dataset 2",
-      key: "Jul",
-      value: 42678,
+      group: "Openings",
+      key: "Jan",
+      value: 125,
     },
     {
-      group: "Dataset 2",
-      key: "Aug",
-      value: 29384,
-    },
-    {
-      group: "Dataset 2",
-      key: "Sept",
-      value: 45678,
-    },
-    {
-      group: "Dataset 2",
-      key: "Oct",
-      value: 28765,
-    },
-    {
-      group: "Dataset 2",
-      key: "Nov",
-      value: 34890,
-    },
-    {
-      group: "Dataset 2",
-      key: "Dec",
-      value: 21456,
-    },
+      group: "Openings",
+      key: "Feb",
+      value: 250,
+    }
   ];
 
   const options = {
@@ -86,7 +83,7 @@ const BarChartGrouped = () => {
     color: {
       scale: colors,
     },
-    height: "400px",
+    height: "23.5rem",
   };
 
   return (

@@ -4,7 +4,6 @@ import { Button } from "@carbon/react";
 import StandardCard from "../../components/StandardCard";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
-import RecentOpeningsTable from "../../components/RecentOpeningsTable";
 import { recentOpeningItems, recentOpeningItems1, recentOpeningsHeader } from "../../mock-data/constants";
 import './Opening.scss'
 import { ViewFilled } from '@carbon/icons-react';

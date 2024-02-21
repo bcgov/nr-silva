@@ -7,10 +7,15 @@ import './Opening.scss'
 import { ViewFilled } from '@carbon/icons-react';
 import OpeningsMap from "../../components/OpeningsMap";
 import OpeningScreenDataTable from "../../components/OpeningScreenDataTable/index";
-import { headers, rows } from "../../components/OpeningScreenDataTable/testData";
+import { headers, rows } from "../../components/ActionsTable/testData";
 import SectionTitle from "../../components/SectionTitle";
 import BarChartGrouped from "../../components/BarChartGrouped";
 import ChartContainer from "../../components/ChartContainer";
+import { DonutChart } from "@carbon/charts-react";
+import DonutChartView from "../../components/DonutChartView";
+import OpeningHistory from "../../components/OpeningHistory";
+import OpeningHistoryItems from "../../mock-data/OpeningHistoryItems";
+import ActionsTable from "../../components/ActionsTable";
 
 
 const OpeningMetrics: React.FC = () => {
@@ -49,13 +54,31 @@ const OpeningMetrics: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="container-fluid ">
-        <div className="row">
+      <div className="container-fluid p-3">
+        <div className="row gy-3">
           <div className="col-md-6">
-          <ChartContainer title="Recent Openings" description="This is it">
-            <BarChartGrouped/>
-          </ChartContainer>
+            <ChartContainer title="Openings per year" description="Check openings and submissions per year">
+              <BarChartGrouped/>
+            </ChartContainer>
           </div>
+          <div className="col-md-6">
+            <ChartContainer title="Track Openings" description="Follow your favouirite openings">
+              <OpeningHistory 
+                histories={OpeningHistoryItems}
+              />
+            </ChartContainer>
+          </div>
+          <div className="col-md-6">
+            <ChartContainer title="Free grow milestone declarations" description="Check opening standards unit for inspections purposes">
+              <DonutChartView/>
+            </ChartContainer>
+          </div>
+          <div className="col-md-6">
+            <ChartContainer title="Free grow milestone declarations" description="Check opening standards unit for inspections purposes">
+              <ActionsTable />
+            </ChartContainer>
+          </div>
+          
         </div>
       </div>
       </>

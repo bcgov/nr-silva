@@ -1,0 +1,17 @@
+@use '@carbon/type';
+
+.section-title {
+  margin: 0;
+  padding: 16px;
+}
+
+.section-title h1 {
+  @include type.type-style('heading-02');
+  margin-bottom: 0.3rem;
+}
+
+.title-favourite {
+  display: flex;
+  align-items: center;
+}
+

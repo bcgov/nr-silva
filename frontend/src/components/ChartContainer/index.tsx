@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionTitle from '../SectionTitle';
 import './ChartContainer.scss'
+import ChartTitle from '../ChartTitle';
 
 type Props = {
   children?: React.ReactNode;
@@ -11,7 +12,7 @@ type Props = {
 export default function ChartContainer({ children, title, description }: Props) {
   return (
     <div className='chart-container'>
-        <SectionTitle title={title} subtitle={description} />
+        <ChartTitle title={title} subtitle={description} />
         <div className="content">
             {children}
         </div>
