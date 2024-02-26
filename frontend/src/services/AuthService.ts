@@ -143,8 +143,7 @@ function storeFamUser (famLoginUser: FamLoginUser | null | undefined) {
 export const isCurrentAuthUser = async () => {
   try {
     // checks if the user is authenticated
-    const { username } = await getCurrentUser()
-    // username: dev-idir_d4c2c0d1ebe34a11996bb0a506ab705b@idir
+    await getCurrentUser()
     // refreshes the token and stores it locally
     await refreshToken()
     return true
