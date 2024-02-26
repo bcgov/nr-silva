@@ -49,6 +49,7 @@ jobs:
             file: backend/openshift.deploy.yml
             parameters:
               -p RESULTS_ENV_OPENSEARCH=test
+              -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:
@@ -124,6 +125,7 @@ jobs:
             file: backend/openshift.deploy.yml
             parameters:
               -p RESULTS_ENV_OPENSEARCH=production
+              -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:
