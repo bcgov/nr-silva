@@ -74,7 +74,7 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
     const { tokens } = await fetchAuthSession()
     const famLoginUser = parseToken(tokens?.idToken, tokens?.accessToken);
     await storeFamUser(famLoginUser);
-    return {}; //famLoginUser;
+    return famLoginUser;
 
   } catch (error) {
     console.error(
