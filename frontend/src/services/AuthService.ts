@@ -1,5 +1,10 @@
-import { Auth } from 'aws-amplify'
-import type { CognitoUserSession } from 'amazon-cognito-identity-js'
+import {
+  JWT,
+  fetchAuthSession,
+  getCurrentUser,
+  signInWithRedirect,
+  signOut
+} from 'aws-amplify/auth'
 import { env } from '../env'
 
 const FAM_LOGIN_USER = 'famLoginUser'
@@ -8,19 +13,19 @@ export interface FamLoginUser {
   username?: string
   idpProvider?: string
   roles?: string[]
-  authToken?: CognitoUserSession
+  exp?: number
 }
 
 export const signIn = async (provider: string): Promise<any> => {
   const appEnv = env.VITE_ZONE ?? 'DEV'
 
   if (provider.localeCompare('idir') === 0) {
-    Auth.federatedSignIn({
-      customProvider: `${(appEnv).toLocaleUpperCase()}-IDIR`
+    signInWithRedirect({
+      provider: { custom:`${(appEnv).toLocaleUpperCase()}-IDIR` }
     })
   } else if (provider.localeCompare('bceid') === 0) {
-    Auth.federatedSignIn({
-      customProvider: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS`
+    signInWithRedirect({
+      provider: { custom: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS` }
     })
   }
   // else if invalid option passed logout the user
@@ -37,7 +42,12 @@ export const isLoggedIn = () => {
             | undefined
             | null)
   // check if the user is logged in
-  const loggedIn = !!stateInfo?.authToken // TODO check if token expired later?
+  let loggedIn = false;
+  if (stateInfo?.exp) {
+    const expirationDate = new Date(stateInfo?.exp)
+    const currentDate = new Date()
+    loggedIn = expirationDate < currentDate;
+  }
   return loggedIn
 }
 
@@ -61,10 +71,10 @@ export const handlePostLogin = async () => {
  */
 async function refreshToken (): Promise<FamLoginUser | undefined> {
   try {
-    const currentAuthToken: CognitoUserSession = await Auth.currentSession()
-    const famLoginUser = parseToken(currentAuthToken);
+    const { tokens } = await fetchAuthSession()
+    const famLoginUser = parseToken(tokens?.idToken, tokens?.accessToken);
     await storeFamUser(famLoginUser);
-    return famLoginUser;
+    return {}; //famLoginUser;
 
   } catch (error) {
     console.error(
@@ -83,9 +93,9 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 * Which isn't what we really want to display. The display username is "custom:idp_username" from token.
 */
 
-function parseToken(authToken: CognitoUserSession): FamLoginUser {
-  const decodedIdToken = authToken.getIdToken().decodePayload();
-  const decodedAccessToken = authToken.getAccessToken().decodePayload();
+function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
+  const decodedIdToken = idToken?.payload as any;
+  const decodedAccessToken = accessToken?.payload as any;
   // Extract the first name and last name from the displayName and remove unwanted part
   const displayName = decodedIdToken['custom:idp_display_name'];
   const hasComma = displayName.includes(',');
@@ -107,7 +117,7 @@ function parseToken(authToken: CognitoUserSession): FamLoginUser {
     email: decodedIdToken['email'],
     idpProvider: decodedIdToken['identities']['providerName'],
     roles: decodedAccessToken['cognito:groups'],
-    authToken: authToken,
+    exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
     lastName,  // Add lastName field
   };
@@ -133,7 +143,8 @@ function storeFamUser (famLoginUser: FamLoginUser | null | undefined) {
 export const isCurrentAuthUser = async () => {
   try {
     // checks if the user is authenticated
-    await Auth.currentAuthenticatedUser()
+    const { username } = await getCurrentUser()
+    // username: dev-idir_d4c2c0d1ebe34a11996bb0a506ab705b@idir
     // refreshes the token and stores it locally
     await refreshToken()
     return true
@@ -143,7 +154,7 @@ export const isCurrentAuthUser = async () => {
 }
 
 export const logout = async () => {
-  Auth.signOut()
+  await signOut()
   removeFamUser()
   console.log('User logged out.')
 }

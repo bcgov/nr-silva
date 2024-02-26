@@ -2,7 +2,7 @@ import {
   BrowserRouter, Routes, Route
 } from 'react-router-dom';
 import { Amplify } from 'aws-amplify';
-import awsconfig from './aws-exports';
+import amplifyconfig from './amplifyconfiguration';
 
 import './custom.scss';
 
@@ -15,7 +15,7 @@ import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
 
-Amplify.configure(awsconfig);
+Amplify.configure(amplifyconfig);
 
 const App: React.FC = () => {
   return (
