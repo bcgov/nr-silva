@@ -44,6 +44,12 @@ parameters:
   - name: DB_POOL_MAX_LIFETIME
     description: Maximum lifetime of a connection in the pool.
     value: "1800000"
+  - name: DB_POOL_MAX_SIZE
+    description: Maximum number of connections per pod
+    value: "3"
+  - name: DB_POOL_MIN_IDLE
+    description: Minimum number of connections per pod
+    value: "1"
   - name: RESULTS_ENV_OPENSEARCH
     description: Environment name for OpenSearch. # One of: development, test, production
     required: true
@@ -122,6 +128,10 @@ objects:
                   value: ${DB_POOL_CONN_TIMEOUT}
                 - name: DB_POOL_IDLE_TIMEOUT
                   value: ${DB_POOL_IDLE_TIMEOUT}
+                - name: DB_POOL_MAX_SIZE
+                  value: ${DB_POOL_MAX_SIZE}
+                - name: DB_POOL_MIN_IDLE
+                  value: ${DB_POOL_MIN_IDLE}
                 - name: DB_POOL_MAX_LIFETIME
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
