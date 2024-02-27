@@ -28,7 +28,7 @@
 	}
 	handle /env.js {
 		header Content-Type "text/javascript"
-    respond `window.config = {"VITE_USER_POOLS_WEB_CLIENT_ID":"{$VITE_USER_POOLS_WEB_CLIENT_ID}","VITE_ZONE":"{$VITE_ZONE}","VITE_BACKEND_URL":"{$VITE_BACKEND_URL}","VITE_QUESTIONS_API_KEY":"{$VITE_QUESTIONS_API_KEY}"};`
+    respond `window.config = {"VITE_USER_POOLS_WEB_CLIENT_ID":"{$VITE_USER_POOLS_WEB_CLIENT_ID}","VITE_ZONE":"{$VITE_ZONE}","VITE_BACKEND_URL":"{$VITE_BACKEND_URL}"};`
 	}
 
 	handle_path /* {
