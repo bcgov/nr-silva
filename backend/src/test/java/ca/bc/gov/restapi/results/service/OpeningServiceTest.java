@@ -67,8 +67,8 @@ class OpeningServiceTest {
         openingService.getRecentOpeningsCurrentUser(pagination);
 
     Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getCurrentPage());
-    Assertions.assertEquals(pages, paginatedResult.getPages());
+    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
+    Assertions.assertEquals(pages, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
@@ -107,8 +107,8 @@ class OpeningServiceTest {
         openingService.getRecentOpeningsCurrentUser(pagination);
 
     Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getCurrentPage());
-    Assertions.assertEquals(pages, paginatedResult.getPages());
+    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
+    Assertions.assertEquals(pages, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
@@ -128,8 +128,8 @@ class OpeningServiceTest {
         openingService.getRecentOpeningsCurrentUser(pagination);
 
     Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getCurrentPage());
-    Assertions.assertEquals(0, paginatedResult.getPages());
+    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
+    Assertions.assertEquals(0, paginatedResult.getTotalPages());
     Assertions.assertTrue(paginatedResult.getData().isEmpty());
   }
 
@@ -167,8 +167,8 @@ class OpeningServiceTest {
         openingService.getRecentOpenings(pagination);
 
     Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getCurrentPage());
-    Assertions.assertEquals(pages, paginatedResult.getPages());
+    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
+    Assertions.assertEquals(pages, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }

@@ -12,13 +12,13 @@ import lombok.Setter;
 public class PaginatedResult<T> {
 
   @Schema(description = "Current page index, zero-based.", example = "2")
-  private int currentPage;
+  private int pageIndex;
 
   @Schema(description = "The amount of records per page.", example = "15")
-  private int pageSize;
+  private int perPage;
 
   @Schema(description = "The amount of pages", example = "3")
-  private int pages;
+  private int totalPages;
 
   @Schema(description = "Defines if there's more records to fetch", example = "false")
   private boolean hasNextPage;

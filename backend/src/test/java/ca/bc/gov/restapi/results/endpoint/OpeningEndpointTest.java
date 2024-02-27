@@ -36,9 +36,9 @@ class OpeningEndpointTest {
   @DisplayName("Request a list of recent openings for the home screen")
   void getRecentOpenings_fetchPaginated_shouldSucceed() throws Exception {
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setCurrentPage(0);
-    paginatedResult.setPageSize(5);
-    paginatedResult.setPages(1);
+    paginatedResult.setPageIndex(0);
+    paginatedResult.setPerPage(5);
+    paginatedResult.setTotalPages(1);
     paginatedResult.setHasNextPage(false);
 
     LocalDate now = LocalDate.now();
@@ -67,9 +67,9 @@ class OpeningEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.currentPage").value("0"))
-        .andExpect(jsonPath("$.pageSize").value("5"))
-        .andExpect(jsonPath("$.pages").value("1"))
+        .andExpect(jsonPath("$.pageIndex").value("0"))
+        .andExpect(jsonPath("$.perPage").value("5"))
+        .andExpect(jsonPath("$.totalPages").value("1"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
         .andExpect(jsonPath("$.data[0].openingId").value("114207"))
         .andExpect(jsonPath("$.data[0].fileId").value("TFL47"))
