@@ -40,6 +40,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
+    <hibernate.version>6.4.2.Final</hibernate.version>
   </properties>
 
   <profiles>
