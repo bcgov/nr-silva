@@ -1,10 +1,12 @@
 package ca.bc.gov.restapi.results.service;
 
+import ca.bc.gov.restapi.results.config.ConstantsConfig;
 import ca.bc.gov.restapi.results.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.security.LoggedUserService;
 import java.math.BigDecimal;
@@ -42,22 +44,26 @@ public class OpeningService {
     log.info(
         "Getting recent openings to logged user with page index {} and page size {}",
         pagination.page(),
-        pagination.pageSize());
+        pagination.perPage());
+
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException();
+    }
 
     String entryUserId = loggedUserService.getLoggedUserId();
 
     // Openings
-    Pageable pageable = PageRequest.of(pagination.page(), pagination.pageSize());
+    Pageable pageable = PageRequest.of(pagination.page(), pagination.perPage());
     Page<OpeningEntity> openingPage = openingRepository.findAllByEntryUserId(entryUserId, pageable);
 
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setCurrentPage(pagination.page());
-    paginatedResult.setPageSize(pagination.pageSize());
+    paginatedResult.setPageIndex(pagination.page());
+    paginatedResult.setPerPage(pagination.perPage());
 
     if (openingPage.getContent().isEmpty()) {
       log.info("No recent openings for this user given page index and size!");
       paginatedResult.setData(List.of());
-      paginatedResult.setPages(0);
+      paginatedResult.setTotalPages(0);
       paginatedResult.setHasNextPage(false);
       return paginatedResult;
     }
@@ -69,7 +75,7 @@ public class OpeningService {
 
     List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
     paginatedResult.setData(list);
-    paginatedResult.setPages(openingPage.getTotalPages());
+    paginatedResult.setTotalPages(openingPage.getTotalPages());
     paginatedResult.setHasNextPage(openingPage.hasNext());
 
     return paginatedResult;
@@ -85,22 +91,22 @@ public class OpeningService {
     log.info(
         "Getting recent openings, user independnt, with page index {} and page size {}",
         pagination.page(),
-        pagination.pageSize());
+        pagination.perPage());
 
     // Openings
     Pageable pageable =
         PageRequest.of(
-            pagination.page(), pagination.pageSize(), Sort.by("entryTimestamp").descending());
+            pagination.page(), pagination.perPage(), Sort.by("entryTimestamp").descending());
     Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
 
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setCurrentPage(pagination.page());
-    paginatedResult.setPageSize(pagination.pageSize());
+    paginatedResult.setPageIndex(pagination.page());
+    paginatedResult.setPerPage(pagination.perPage());
 
     if (openingPage.getContent().isEmpty()) {
       log.info("No recent openings given page index and size!");
       paginatedResult.setData(List.of());
-      paginatedResult.setPages(0);
+      paginatedResult.setTotalPages(0);
       paginatedResult.setHasNextPage(false);
       return paginatedResult;
     }
@@ -112,7 +118,7 @@ public class OpeningService {
 
     List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
     paginatedResult.setData(list);
-    paginatedResult.setPages(openingPage.getTotalPages());
+    paginatedResult.setTotalPages(openingPage.getTotalPages());
     paginatedResult.setHasNextPage(openingPage.hasNext());
 
     return paginatedResult;

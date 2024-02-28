@@ -8,10 +8,10 @@ import jakarta.validation.constraints.PositiveOrZero;
  * Pagination parameters to be used in the processing of HTTP GET requests.
  *
  * @param page The page to be returned. Zero-based, and must be non-negative; defaults to 0
- * @param pageSize The maximum number of results in each page. Defaults to 20
+ * @param perPage The maximum number of results in each page. Defaults to 20
  */
 @Hidden
-public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integer pageSize) {
+public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integer perPage) {
   /**
    * Build an instance of {@link PaginationParameters}, using the default values for {@code page}
    * and {@code perPage} if they're null.
@@ -20,8 +20,8 @@ public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integ
     if (page == null) {
       page = 0;
     }
-    if (pageSize == null) {
-      pageSize = 5;
+    if (perPage == null) {
+      perPage = 5;
     }
   }
 }

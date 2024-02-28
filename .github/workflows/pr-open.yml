@@ -30,7 +30,7 @@ jobs:
         env:
           DOMAIN: apps.silver.devops.gov.bc.ca
           PREFIX: ${{ github.event.repository.name }}
-        uses: bcgov-nr/action-pr-description-add@v1.1.0
+        uses: bcgov-nr/action-pr-description-add@v1.1.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -81,7 +81,7 @@ jobs:
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v4
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.1
+      - uses: bcgov-nr/action-builder-ghcr@v2.0.2
         with:
           package: ${{ matrix.name }}
           tag: ${{ github.event.number }}
@@ -102,15 +102,16 @@ jobs:
             file: backend/openshift.deploy.yml
             verification_path: /actuator/health
             parameters:
+              -p MAX_REPLICAS=1
               -p MIN_REPLICAS=1
-              -p MAX_REPLICAS=2
+              -p DB_POOL_MAX_SIZE=1
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p MIN_REPLICAS=1
-              -p MAX_REPLICAS=2
+              -p MAX_REPLICAS=1
               -p FAM_ROUTE="$(( ${{ github.event.number }} % 50 ))"
           - name: fluentbit
             file: common/openshift.fluentbit.yml
