@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.service.OpeningService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,8 @@ class OpeningEndpointTest {
     paginatedResult.setHasNextPage(false);
 
     LocalDate now = LocalDate.now();
+    LocalDateTime entryLastYear = LocalDateTime.now().minusYears(1L);
+    LocalDateTime updateLastMonth = entryLastYear.plusMonths(11L);
 
     RecentOpeningDto recentOpeningDto =
         new RecentOpeningDto(
@@ -53,7 +56,9 @@ class OpeningEndpointTest {
             new BigDecimal("12.9"),
             OpeningStatusEnum.APP,
             OpeningCategoryEnum.FTML,
-            now);
+            now,
+            entryLastYear,
+            updateLastMonth);
     paginatedResult.setData(List.of(recentOpeningDto));
 
     PaginationParameters params = new PaginationParameters(0, 5);
@@ -85,6 +90,8 @@ class OpeningEndpointTest {
             jsonPath("$.data[0].category.description")
                 .value(OpeningCategoryEnum.FTML.getDescription()))
         .andExpect(jsonPath("$.data[0].disturbanceStart").value(now.toString()))
+        .andExpect(jsonPath("$.data[0].entryTimestamp").value(entryLastYear.toString()))
+        .andExpect(jsonPath("$.data[0].updateTimestamp").value(updateLastMonth.toString()))
         .andReturn();
   }
 }

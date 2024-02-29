@@ -53,7 +53,9 @@ public class OpeningService {
     String entryUserId = loggedUserService.getLoggedUserId();
 
     // Openings
-    Pageable pageable = PageRequest.of(pagination.page(), pagination.perPage());
+    Pageable pageable =
+        PageRequest.of(
+            pagination.page(), pagination.perPage(), Sort.by("updateTimestamp").descending());
     Page<OpeningEntity> openingPage = openingRepository.findAllByEntryUserId(entryUserId, pageable);
 
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
@@ -96,7 +98,7 @@ public class OpeningService {
     // Openings
     Pageable pageable =
         PageRequest.of(
-            pagination.page(), pagination.perPage(), Sort.by("entryTimestamp").descending());
+            pagination.page(), pagination.perPage(), Sort.by("updateTimestamp").descending());
     Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
 
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
@@ -162,7 +164,9 @@ public class OpeningService {
               openingGrossArea,
               opening.getStatus(),
               opening.getCategory(),
-              disturbanceStartDate);
+              disturbanceStartDate,
+              opening.getEntryTimestamp(),
+              opening.getUpdateTimestamp());
 
       recentOpeningDtos.add(openingDto);
     }
