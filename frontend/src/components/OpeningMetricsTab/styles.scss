@@ -14,10 +14,6 @@
     padding: 2rem;
   }
 
-  .tab-content {
-    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
-  }
-
   @media only screen and (max-width: 671px) {
     .favourite-activities {
       background-color: var(--#{vars.$bcgov-prefix}-layer-01);

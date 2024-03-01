@@ -20,7 +20,7 @@ const ChartTitle = ({
  
 
   return (
-    <Column className="section-title">
+    <Column className="chart-title">
       <div className="title-favourite">
         <h1>{title}</h1>
       </div>

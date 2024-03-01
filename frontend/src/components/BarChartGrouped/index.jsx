@@ -70,7 +70,7 @@ const BarChartGrouped = () => {
   ];
 
   const options = {
-    title: "",
+    title:"Openings",
     axes: {
       left: {
         mapsTo: "value",
@@ -84,7 +84,20 @@ const BarChartGrouped = () => {
       scale: colors,
     },
     height: "23.5rem",
+    toolbar: {
+      enabled: true,
+      numberOfIcons: 2,
+      controls: [
+        {
+          type: "Make fullscreen"
+        },
+        {
+          type: "Make fullscreen"
+        },
+      ]
+    }
   };
+
 
   return (
     <GroupedBarChart
