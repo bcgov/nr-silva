@@ -5,6 +5,7 @@
     border: 1px solid #DFDFE1;
     border-radius: 4px;
     height: 100%;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
 }
 .chart-container .content{
     padding: 1.25rem;
