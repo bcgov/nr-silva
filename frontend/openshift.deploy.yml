@@ -42,7 +42,6 @@ parameters:
     description: Caddy logging level DEBUG, INFO, WARN, ERROR, PANIC, and FATAL (https://github.com/caddyserver/caddy/blob/master/logging.go)
     value: "info"
   - name: VITE_USER_POOLS_WEB_CLIENT_ID
-  - name: VITE_QUESTIONS_API_KEY
   - name: VITE_ZONE
     value: DEV
 objects:
@@ -103,8 +102,6 @@ objects:
                   value: "https://${NAME}-${ZONE}-backend.${DOMAIN}:443"
                 - name: VITE_USER_POOLS_WEB_CLIENT_ID
                   value: "${VITE_USER_POOLS_WEB_CLIENT_ID}"
-                - name: VITE_QUESTIONS_API_KEY
-                  value: "${VITE_QUESTIONS_API_KEY}"
                 - name: VITE_ZONE
                   value: "${ZONE}"
               ports:

@@ -6,7 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,8 +31,8 @@ public class OpeningEntity {
   private String entryUserId;
 
   @Column(name = "UPDATE_TIMESTAMP")
-  private LocalDate updateTimestamp;
+  private LocalDateTime updateTimestamp;
 
   @Column(name = "ENTRY_TIMESTAMP")
-  private LocalDate entryTimestamp;
+  private LocalDateTime entryTimestamp;
 }

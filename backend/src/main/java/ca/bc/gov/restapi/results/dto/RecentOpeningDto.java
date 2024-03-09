@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.enums.OpeningStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /** Represents an Recent Opening in the Home screen. */
 @Schema(description = "Represents an Recent Opening in the Home screen.")
@@ -62,4 +63,8 @@ public record RecentOpeningDto(
             example = "FTML")
         OpeningCategoryEnum category,
     @Schema(description = "Actual date that harvesting started on the cut block.")
-        LocalDate disturbanceStart) {}
+        LocalDate disturbanceStart,
+    @Schema(description = "The date and time the information was entered.")
+        LocalDateTime entryTimestamp,
+    @Schema(description = "The date and time of the last update.")
+        LocalDateTime updateTimestamp) {}

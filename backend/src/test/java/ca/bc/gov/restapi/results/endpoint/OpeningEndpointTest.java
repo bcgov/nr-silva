@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.service.OpeningService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,12 +37,14 @@ class OpeningEndpointTest {
   @DisplayName("Request a list of recent openings for the home screen")
   void getRecentOpenings_fetchPaginated_shouldSucceed() throws Exception {
     PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setCurrentPage(0);
-    paginatedResult.setPageSize(5);
-    paginatedResult.setPages(1);
+    paginatedResult.setPageIndex(0);
+    paginatedResult.setPerPage(5);
+    paginatedResult.setTotalPages(1);
     paginatedResult.setHasNextPage(false);
 
     LocalDate now = LocalDate.now();
+    LocalDateTime entryLastYear = LocalDateTime.now().minusYears(1L);
+    LocalDateTime updateLastMonth = entryLastYear.plusMonths(11L);
 
     RecentOpeningDto recentOpeningDto =
         new RecentOpeningDto(
@@ -53,7 +56,9 @@ class OpeningEndpointTest {
             new BigDecimal("12.9"),
             OpeningStatusEnum.APP,
             OpeningCategoryEnum.FTML,
-            now);
+            now,
+            entryLastYear,
+            updateLastMonth);
     paginatedResult.setData(List.of(recentOpeningDto));
 
     PaginationParameters params = new PaginationParameters(0, 5);
@@ -67,9 +72,9 @@ class OpeningEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.currentPage").value("0"))
-        .andExpect(jsonPath("$.pageSize").value("5"))
-        .andExpect(jsonPath("$.pages").value("1"))
+        .andExpect(jsonPath("$.pageIndex").value("0"))
+        .andExpect(jsonPath("$.perPage").value("5"))
+        .andExpect(jsonPath("$.totalPages").value("1"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
         .andExpect(jsonPath("$.data[0].openingId").value("114207"))
         .andExpect(jsonPath("$.data[0].fileId").value("TFL47"))
@@ -85,6 +90,8 @@ class OpeningEndpointTest {
             jsonPath("$.data[0].category.description")
                 .value(OpeningCategoryEnum.FTML.getDescription()))
         .andExpect(jsonPath("$.data[0].disturbanceStart").value(now.toString()))
+        .andExpect(jsonPath("$.data[0].entryTimestamp").value(entryLastYear.toString()))
+        .andExpect(jsonPath("$.data[0].updateTimestamp").value(updateLastMonth.toString()))
         .andReturn();
   }
 }
