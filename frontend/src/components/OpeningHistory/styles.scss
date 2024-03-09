@@ -7,8 +7,14 @@ p.activity-history-header {
 }
 
 .activity-history-box {
-  width: 11rem;
   height: '23.5rem';
+}
+.activity-history-col{
+  min-width: 11rem;
+  height: 100%;
+}
+.activity-history-container{
+  overflow-x: scroll;
 }
 
 .activity-history-box > li.#{vars.$bcgov-prefix}--progress-step,

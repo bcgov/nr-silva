@@ -59,8 +59,8 @@ const Opening: React.FC = () => {
 
       <Tabs>
         <TabList contained>
-          <Tab>Recent Openings</Tab>
-          <Tab>Dashboard</Tab>
+          <Tab><div className="tab-header">Recent Openings</div></Tab>
+          <Tab><div className="tab-header">Dashboard</div></Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">

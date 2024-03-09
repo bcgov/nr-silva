@@ -2,7 +2,8 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
 .chart-container{
-    border: 1px solid #DFDFE1;
+    border: 1px solid;
+    border-color: var(--#{vars.$bcgov-prefix}-border-subtle-02);
     border-radius: 4px;
     height: 100%;
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);

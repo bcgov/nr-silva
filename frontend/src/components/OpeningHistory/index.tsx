@@ -18,10 +18,10 @@ interface OpeningHistoryProps {
 
 const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
   <>
-    <div className="row">
+    <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (
-        <div key={index} className="col-md-4">
-          <div>
+        <div key={index} className="col-4">
+          <div className='activity-history-col'>
             <p className="activity-history-header">{`Opening Id ${history.id}`}</p>
             <ProgressIndicator vertical className="activity-history-box">
               {history.steps.map((step) => {
