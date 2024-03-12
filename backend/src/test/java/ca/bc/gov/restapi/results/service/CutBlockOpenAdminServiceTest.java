@@ -3,8 +3,9 @@ package ca.bc.gov.restapi.results.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.repository.CutBlockOpenAdminRepository;
+import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
+import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
+import ca.bc.gov.restapi.results.oracle.service.CutBlockOpenAdminService;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -42,8 +42,11 @@ jobs:
       issues: write
     strategy:
       matrix:
-        name: [backend, frontend, fluentbit]
+        name: [database, backend, frontend, fluentbit]
         include:
+          - name: database
+            overwrite: false
+            file: database/openshift.deploy.yml
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
@@ -102,7 +105,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        component: [backend, frontend]
+        component: [database, backend, frontend]
     steps:
       - uses: shrink/actions-docker-registry-tag@v4
         with:
@@ -118,8 +121,11 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend, fluentbit]
+        name: [database, backend, frontend, fluentbit]
         include:
+          - name: database
+            overwrite: false
+            file: database/openshift.deploy.yml
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml

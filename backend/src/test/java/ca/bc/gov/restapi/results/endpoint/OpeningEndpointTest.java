@@ -6,12 +6,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ca.bc.gov.restapi.results.dto.RecentOpeningDto;
-import ca.bc.gov.restapi.results.endpoint.pagination.PaginatedResult;
-import ca.bc.gov.restapi.results.endpoint.pagination.PaginationParameters;
-import ca.bc.gov.restapi.results.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.enums.OpeningStatusEnum;
-import ca.bc.gov.restapi.results.service.OpeningService;
+import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.oracle.endpoint.OpeningEndpoint;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
