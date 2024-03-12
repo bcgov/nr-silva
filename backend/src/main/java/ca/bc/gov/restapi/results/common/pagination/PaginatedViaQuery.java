@@ -19,6 +19,6 @@ import java.lang.annotation.Target;
 @Parameter(
     in = ParameterIn.QUERY,
     description = "The maximum number of results in a page.",
-    name = "pageSize",
+    name = "perPage",
     schema = @Schema(type = "integer", defaultValue = "5", minimum = "1"))
 public @interface PaginatedViaQuery {}

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/** This class gets configuration from the application.properties file for both databases. */
 @Getter
 @Setter
 @Configuration

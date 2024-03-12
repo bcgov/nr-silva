@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/** This class holds persistence configurations for the Oracle database. */
 @Configuration
 public class OraclePersistenceConfig {
 

@@ -1,7 +1,6 @@
-package ca.bc.gov.restapi.results.repository.oracle;
+package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.service;
+package ca.bc.gov.restapi.results.oracle.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -10,8 +10,6 @@ import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.service.CutBlockOpenAdminService;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

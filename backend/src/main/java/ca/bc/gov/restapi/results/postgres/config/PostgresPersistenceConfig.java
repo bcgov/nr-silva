@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** This class holds persistence configurations for the Postgres database. */
 @Configuration
 public class PostgresPersistenceConfig {
 

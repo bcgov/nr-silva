@@ -40,6 +40,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     transactionManagerRef = "oracleTransactionManager")
 public class OracleJpaConfig {
 
+  /**
+   * Creates the EntityManagerFactory for the oracle database.
+   *
+   * @param dataSource The Oracle DataSource.
+   * @param builder The EntityManagerFactory builder
+   * @return LocalContainerEntityManagerFactoryBean
+   */
   @Bean
   @Primary
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(

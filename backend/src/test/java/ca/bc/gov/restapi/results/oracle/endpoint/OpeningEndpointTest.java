@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.endpoint;
+package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
-import ca.bc.gov.restapi.results.oracle.endpoint.OpeningEndpoint;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** This class holds resources for exposing user openings saved as favourites. */
 @RestController
 @RequestMapping(path = "/api/user-openings", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserOpeningEndpoint {

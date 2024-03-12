@@ -1,7 +1,6 @@
-package ca.bc.gov.restapi.results.repository.oracle;
+package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

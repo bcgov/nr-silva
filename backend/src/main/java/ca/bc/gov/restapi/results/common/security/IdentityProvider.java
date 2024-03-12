@@ -17,7 +17,7 @@ public enum IdentityProvider {
   /**
    * Extract the identity provider from a Jwt.
    *
-   * @param token a JSON web token to extract the provider from
+   * @param provider The provider name
    * @return the identity provider, if one is found
    */
   public static Optional<IdentityProvider> fromClaim(String provider) {
