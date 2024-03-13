@@ -1,6 +1,7 @@
 import { GroupedBarChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import "@carbon/charts/styles.css";
+import "./BarChartGrouped.scss"
 import { useState } from "react";
 
 const BarChartGrouped = () => {
@@ -90,7 +91,19 @@ const BarChartGrouped = () => {
     color: {
       scale: colors,
     },
-    height: "23.5rem",
+    height: "18.5rem",
+    grid: {
+      x: {
+        enabled: false, // Enable or disable the grid
+        color: '#d3d3d3', // Set the color of the grid lines
+        strokeDashArray: '2,2' // Set the style of the grid lines
+      },
+      y: {
+        enabled: true, // Enable or disable the grid
+        color: '#d3d3d3', // Set the color of the grid lines
+        strokeDashArray: '2,2' // Set the style of the grid lines
+      }
+    },
     toolbar: {
       enabled: false,
       numberOfIcons: 2,
@@ -117,7 +130,7 @@ const BarChartGrouped = () => {
 
   return (
     <>
-      <div className="row gy-2">
+      <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
           <Dropdown id="default" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
         </div>

@@ -20,7 +20,7 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
   <>
     <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (
-        <div key={index} className="col-4">
+        <div key={index} className="col-12 col-sm-4">
           <div className='activity-history-col'>
             <p className="activity-history-header">{`Opening Id ${history.id}`}</p>
             <ProgressIndicator vertical className="activity-history-box">

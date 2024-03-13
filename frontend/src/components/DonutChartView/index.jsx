@@ -47,7 +47,7 @@ const DonutChartView = () => {
     color: {
       scale: colors,
     },
-    height: "24.5rem",
+    height: "18.5rem",
     toolbar:{
       enabled:false
     }
@@ -64,7 +64,7 @@ const DonutChartView = () => {
 
   return (
     <div className="">
-      <div className="row gy-2">
+      <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
           <Dropdown id="default" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
         </div>

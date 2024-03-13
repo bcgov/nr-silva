@@ -3,3 +3,14 @@
 .bx--date-picker.bx--date-picker--single .bx--date-picker__input {
     inline-size: 100%;
 }
+.cds--cc--chart-wrapper text {
+    fill: var(--#{vars.$bcgov-prefix}-text-primary);
+}
+
+.cds--cc--chart-wrapper p {
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+}
+
+text.pie-label {
+    font-weight: 700;
+}

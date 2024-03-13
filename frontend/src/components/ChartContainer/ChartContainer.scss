@@ -11,3 +11,7 @@
 .chart-container .content{
     padding: 1.25rem;
 }
+
+.bx--list-box__label {
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+}
