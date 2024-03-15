@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Tag(name = "Opening", description = "Endpoints for the fetching and saving Openings")
+@Tag(name = "Openings (THE)", description = "Endpoints to handle Openings in the `THE` schema.")
 public class OpeningEndpoint {
 
   private final OpeningService openingService;

@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-  private static final String DESCRIPTION = "A REST API to serve the new RESULTS application.";
+  private static final String DESCRIPTION =
+      "A REST service API to provide SILVA Application database and backend capabilities.";
   private static final String TERMS_OF_SERVICE =
       "https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information";
   private static final String LICENSE_URL =
@@ -30,7 +31,7 @@ public class SwaggerConfig {
   @Bean
   public OpenAPI theRestApi() {
     Info info = new Info();
-    info.setTitle("RESULTS backend REST API");
+    info.setTitle("SILVA Back-end REST API");
     info.setDescription(DESCRIPTION);
     info.setVersion("0.0.1");
     info.setTermsOfService(TERMS_OF_SERVICE);
