@@ -2,7 +2,11 @@ package ca.bc.gov.restapi.results.security;
 
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.exception.UserNotFoundException;
+import ca.bc.gov.restapi.results.common.exception.UserNotFoundException;
+import ca.bc.gov.restapi.results.common.security.IdentityProvider;
+import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.common.security.UserAuthenticationHelper;
+import ca.bc.gov.restapi.results.common.security.UserInfo;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;

@@ -21,7 +21,12 @@ x-backend: &backend
     interval: 5s
     timeout: 5s
     retries: 5
-  restart: always
+  #restart: always
+
+x-db-vars: &db-vars
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: default
+  POSTGRES_DB: postgres
 
 services:
   frontend:
@@ -43,11 +48,13 @@ services:
 
   backend:
     container_name: backend
-    entrypoint: sh -c './startup.sh && mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5006"'
+    entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
     image: maven:3.9.6-eclipse-temurin-17
     network_mode: host
-    volumes: ["./backend:/app"]
+    volumes: 
+      - ./backend:/app
+      - $HOME/zscaler-certs:/certs
     working_dir: /app
     environment:
       DATABASE_HOST: nrcdb03.bcgov
@@ -58,7 +65,22 @@ services:
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
       AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
+      POSTGRES_HOST: localhost
+      <<: *db-vars
     <<: *backend
+
+  database:
+    container_name: database
+    environment:
+      <<: *db-vars
+    volumes: ["/pgdata"]
+    ports: ["5432:5432"]
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    image: postgis/postgis:13-master
 
   backend-native:
     container_name: backend-native
