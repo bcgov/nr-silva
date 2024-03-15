@@ -156,6 +156,23 @@ objects:
                       key: oracle-password
                 - name: ORACLEDB_KEYSTORE
                   value: ${ORACLEDB_KEYSTORE}
+                - name: POSTGRES_HOST
+                  value: ${NAME}-${ZONE}-database
+                - name: POSTGRES_DB
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-name
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-password
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-database
+                      key: database-user
               ports:
                 - containerPort: 8080
                   protocol: TCP
