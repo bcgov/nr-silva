@@ -31,20 +31,31 @@
 
 .#{vars.$bcgov-prefix}--data-table thead tr th  {
   background-color: #F3F3F5;
-  border-top: 1px solid #DFDFE1;
+  border-top: 1px solid;
+  border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01);
 }
 
 .#{vars.$bcgov-prefix}--data-table thead tr th {
   min-width:158px;
 }
 
-.#{vars.$bcgov-prefix}--data-table tr td {
-  background-color: white;
-  color:black;
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(even) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01);
+  height: 64px;
+}
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(odd) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01);
   height: 64px;
 }
 .#{vars.$bcgov-prefix}--data-table tr:hover td {
-  background-color: #F3F3F5;
+  background-color: var(--#{vars.$bcgov-prefix}-layer-04);
+  cursor: pointer;
+}
+
+.table-toolbar{
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+  
 }
 
 @media only screen and (max-width: 672px) {

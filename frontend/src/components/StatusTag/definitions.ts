@@ -6,5 +6,7 @@ export const StatusColourMap = {
   'Free growing': 'purple',
   Pending: 'gray',
   Submitted: 'cyan',
-  Unkown: 'outline'
+  Unkown: 'outline',
+  Approved:'green',
+  'In progress':'purple',
 };

@@ -24,6 +24,7 @@ import { TrashCan, Save, Download, Add } from '@carbon/icons-react';
 import * as Icons from '@carbon/icons-react'
 import StatusTag from '../StatusTag'; // Import the StatusTag component
 import './styles.scss'
+import EmptySection from '../EmptySection';
 
 export const batchActionClick = (selectedRows) => () => {
   console.log('Batch action clicked with selected rows:', selectedRows);
@@ -141,7 +142,7 @@ export default function OpeningScreenDataTable({ rows, headers }) {
             {...getTableContainerProps()}
           >
             <TableToolbar aria-label="data table toolbar">
-              <TableToolbarContent>
+              <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
                   onChange={(e) => handleSearchChange(e.target.value)}
@@ -224,19 +225,37 @@ export default function OpeningScreenDataTable({ rows, headers }) {
         );
       }}
     </DataTable>
-    <Pagination
-      totalItems={filteredRows.length}
-      backwardText="Previous page"
-      forwardText="Next page"
-      pageSize={itemsPerPage}
-      pageSizes={[5, 20, 50]}
-      itemsPerPageText="Items per page"
-      onChange={({ page, pageSize }) => {
-        handlePageChange({ page, pageSize });
-        handleItemsPerPageChange({ page,pageSize });
-      }}
-      
-    />
+
+    {/* Check if there are no elements in the table, if not then print the Empty */}
+    {filteredRows.length <= 0 ? (
+        <EmptySection
+          pictogram="Magnify"
+          title={'There are no openings to show yet'}
+          description={
+            'Your recent openings will appear here once you generate one'
+          }
+          fill="#0073E6"
+        />
+      ) : null}
+
+      {/* Check if there are no elements in the table, if not then print the Empty */}
+      {filteredRows.length > 0 ? (
+          <Pagination
+          totalItems={filteredRows.length}
+          backwardText="Previous page"
+          forwardText="Next page"
+          pageSize={itemsPerPage}
+          pageSizes={[5, 20, 50]}
+          itemsPerPageText="Items per page"
+          onChange={({ page, pageSize }) => {
+            handlePageChange({ page, pageSize });
+            handleItemsPerPageChange({ page,pageSize });
+          }}
+        />
+        ) : null}
+
+
+    
 
     </div>
   );

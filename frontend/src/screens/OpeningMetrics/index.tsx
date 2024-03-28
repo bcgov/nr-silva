@@ -1,26 +1,24 @@
 import React, {useState} from "react";
 import { useSelector } from "react-redux";
 import { Button } from "@carbon/react";
-import StandardCard from "../../components/StandardCard";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
-import { recentOpeningItems, recentOpeningItems1, recentOpeningsHeader } from "../../mock-data/constants";
 import './Opening.scss'
 import { ViewFilled } from '@carbon/icons-react';
 import OpeningsMap from "../../components/OpeningsMap";
 import OpeningScreenDataTable from "../../components/OpeningScreenDataTable/index";
-import { headers, rows } from "../../components/OpeningScreenDataTable/testData";
+import { headers, rows } from "../../components/ActionsTable/testData";
 import SectionTitle from "../../components/SectionTitle";
-import { TabList } from "@carbon/react";
-import { Tabs } from "@carbon/react";
-import { Tab } from "@carbon/react";
-import { TabPanels } from "@carbon/react";
-import { TabPanel } from "@carbon/react";
-import OpeningsTab from "../../components/OpeningsTab";
-import OpeningMetricsTab from "../../components/OpeningMetricsTab";
+import BarChartGrouped from "../../components/BarChartGrouped";
+import ChartContainer from "../../components/ChartContainer";
+import { DonutChart } from "@carbon/charts-react";
+import DonutChartView from "../../components/DonutChartView";
+import OpeningHistory from "../../components/OpeningHistory";
+import OpeningHistoryItems from "../../mock-data/OpeningHistoryItems";
+import ActionsTable from "../../components/ActionsTable";
 
 
-const Opening: React.FC = () => {
+const OpeningMetrics: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
 
   const toggleSpatial = () => {
@@ -36,7 +34,7 @@ const Opening: React.FC = () => {
       <>
       <div className="container-fluid">
         <div className="row px-0 py-4 p-sm-4">
-          <PageTitle title="Openings" subtitle="Create, manage or check opening information " />
+          <PageTitle title="Openings Metrics" subtitle="Create, manage or check opening information " />
         </div>
       </div>
 
@@ -56,25 +54,35 @@ const Opening: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <Tabs>
-        <TabList contained>
-          <Tab><div className="tab-header">Recent Openings</div></Tab>
-          <Tab><div className="tab-header">Dashboard</div></Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel className="tab-content">
-            <OpeningsTab />
-          </TabPanel>
-          <TabPanel className="tab-content">
-            <OpeningMetricsTab />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-
-      
+      <div className="container-fluid p-3">
+        <div className="row gy-3">
+          <div className="col-md-6">
+            <ChartContainer title="Openings per year" description="Check openings and submissions per year">
+              <BarChartGrouped/>
+            </ChartContainer>
+          </div>
+          <div className="col-md-6">
+            <ChartContainer title="Track Openings" description="Follow your favouirite openings">
+              <OpeningHistory 
+                histories={OpeningHistoryItems}
+              />
+            </ChartContainer>
+          </div>
+          <div className="col-md-6">
+            <ChartContainer title="Free grow milestone declarations" description="Check opening standards unit for inspections purposes">
+              <DonutChartView/>
+            </ChartContainer>
+          </div>
+          <div className="col-md-6">
+            <ChartContainer title="Free grow milestone declarations" description="Check opening standards unit for inspections purposes">
+              <ActionsTable />
+            </ChartContainer>
+          </div>
+          
+        </div>
+      </div>
       </>
     );
   };
 
-export default Opening;
+export default OpeningMetrics;
