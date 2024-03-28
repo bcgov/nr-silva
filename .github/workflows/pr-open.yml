@@ -73,8 +73,10 @@ jobs:
       packages: write
     strategy:
       matrix:
-        name: [backend, frontend]
+        name: [database, backend, frontend]
         include:
+          - package: database
+            triggers: ('database/')
           - name: backend
             triggers: ('backend/')
           - name: frontend
@@ -96,8 +98,13 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        name: [backend, frontend, fluentbit]
+        name: [database, backend, frontend, fluentbit]
         include:
+          - name: database
+            file: database/openshift.deploy.yml
+            parameters:
+              -p DB_PVC_SIZE=128Mi
+            overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
             verification_path: /actuator/health
