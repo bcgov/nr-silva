@@ -1,8 +1,8 @@
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "@carbon/react";
 import StatusTag from "../StatusTag";
-import { rows, headers } from "./testData";
+
 import ActivityTag from "../ActivityTag";
-const ActionsTable = () => {
+const ActionsTable = ({rows,headers}) => {
   return (
     <Table size="lg" useZebraStyles={false} aria-label="sample table">
       <TableHead>
@@ -20,8 +20,11 @@ const ActionsTable = () => {
             {key === "status" ? (
               <StatusTag type={row[key]} />
             ):
-            key === "activityType" ? (
+            key === "activityType" && !row["fileFormat"] ? (
               <ActivityTag type={row[key]} />
+            ):
+            key === "activityType" && row["fileFormat"] ? (
+              <ActivityTag type={row[key]} fileFormat={row["fileFormat"]} />
             ):
             row[key]}
           </TableCell>
@@ -32,5 +35,10 @@ const ActionsTable = () => {
     </Table>
   );
 };
+
+ActionsTable.defaultProps = {
+  rows:[],
+  headers:[]
+}
 
 export default ActionsTable;

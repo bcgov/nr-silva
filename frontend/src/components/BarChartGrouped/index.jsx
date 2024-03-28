@@ -129,7 +129,7 @@ const BarChartGrouped = () => {
 
 
   return (
-    <>
+    <div className="px-3">
       <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
           <Dropdown id="default" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
@@ -152,7 +152,7 @@ const BarChartGrouped = () => {
         options={options}
       >
       </GroupedBarChart>
-    </>
+    </div>
   );
 };
 

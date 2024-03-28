@@ -17,7 +17,7 @@ interface OpeningHistoryProps {
 }
 
 const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
-  <>
+  <div className='px-3'>
     <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (
         <div key={index} className="col-12 col-sm-4">
@@ -44,7 +44,7 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
         </div>
       ))}
     </div>
-  </>
+  </div>
 );
 
 export default OpeningHistory;

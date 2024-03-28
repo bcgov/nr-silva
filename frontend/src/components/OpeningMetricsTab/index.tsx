@@ -9,6 +9,7 @@ import DonutChartView from "../DonutChartView";
 import OpeningHistory from "../OpeningHistory";
 import OpeningHistoryItems from "../../mock-data/OpeningHistoryItems";
 import ActionsTable from "../ActionsTable";
+import MyRecentActions from "../MyRecentActions";
 
 
 const OpeningMetricsTab: React.FC = () => {
@@ -46,7 +47,7 @@ const OpeningMetricsTab: React.FC = () => {
           </div>
           <div className="col-xxl-6">
             <ChartContainer title="My recent actions" description="Check your recent requests and files">
-              <ActionsTable />
+              <MyRecentActions/>
             </ChartContainer>
           </div>
           
