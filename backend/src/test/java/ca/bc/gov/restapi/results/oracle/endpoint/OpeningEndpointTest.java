@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,6 +73,7 @@ class OpeningEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
+        .andExpect(header().exists("x-opening-source"))
         .andExpect(jsonPath("$.pageIndex").value("0"))
         .andExpect(jsonPath("$.perPage").value("5"))
         .andExpect(jsonPath("$.totalPages").value("1"))

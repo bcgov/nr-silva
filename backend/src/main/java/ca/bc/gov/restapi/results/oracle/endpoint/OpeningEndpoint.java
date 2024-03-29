@@ -10,7 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,13 +44,20 @@ public class OpeningEndpoint {
             description = "An array with all recent openings, ordered by the most recent ones.")
       })
   @PaginatedViaQuery
-  public PaginatedResult<RecentOpeningDto> getRecentOpenings(
+  @CrossOrigin(exposedHeaders = "x-opening-source")
+  public ResponseEntity<PaginatedResult<RecentOpeningDto>> getRecentOpenings(
       @Valid PaginationParameters paginationParameters) {
     PaginatedResult<RecentOpeningDto> userOpenings =
         openingService.getRecentOpeningsCurrentUser(paginationParameters);
+
+    HttpHeaders headers = new HttpHeaders();
     if (!userOpenings.getData().isEmpty()) {
-      return userOpenings;
+      headers.set("x-opening-source", "user-based");
+      return ResponseEntity.ok().headers(headers).body(userOpenings);
     }
-    return openingService.getRecentOpenings(paginationParameters);
+
+    headers.set("x-opening-source", "not-user-based");
+    userOpenings = openingService.getRecentOpenings(paginationParameters);
+    return ResponseEntity.ok().headers(headers).body(userOpenings);
   }
 }
