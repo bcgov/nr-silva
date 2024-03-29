@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
+/** This class represents a record in the database for the openings_last_year table. */
 @Getter
 @Setter
 @Entity

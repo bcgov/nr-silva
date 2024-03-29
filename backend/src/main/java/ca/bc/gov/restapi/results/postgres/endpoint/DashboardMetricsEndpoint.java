@@ -9,13 +9,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/** This class holds resources for the dashboard metrics page. */
 @RestController
 @RequestMapping("/api/dashboard-metrics")
 @Tag(name = "Dashboard Metrics")
@@ -24,8 +25,17 @@ public class DashboardMetricsEndpoint {
 
   private final DashboardMetricsService dashboardMetricsService;
 
+  /**
+   * Get data for the Submission Trends Chart, Openings per Year.
+   *
+   * @param orgUnitCode The district code to filter.
+   * @param statusCode The opening status code to filter.
+   * @param entryDateStart The opening entry timestamp start date filter.
+   * @param entryDateEnd The opening entry timestamp end date filter.
+   * @return A list of values to populate the chart or 204 no content if no data.
+   */
   @GetMapping("/submission-trends")
-  public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(
+  public ResponseEntity<List<OpeningsPerYearDto>> getOpeningsSubmissionTrends(
       @RequestParam(value = "orgUnit", required = false) String orgUnitCode,
       @RequestParam(value = "status", required = false) String statusCode,
       @RequestParam(value = "entryDateStart", required = false) String entryDateStart,
@@ -33,7 +43,7 @@ public class DashboardMetricsEndpoint {
     LocalDateTime entryDateStartDate = null;
     LocalDateTime entryDateEndDate = null;
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    
+
     if (!Objects.isNull(entryDateStart)) {
       LocalDate entryDateStartLd = LocalDate.parse(entryDateStart, fmt);
       entryDateStartDate = entryDateStartLd.atStartOfDay();
@@ -47,6 +57,14 @@ public class DashboardMetricsEndpoint {
     OpeningsPerYearFiltersDto filtersDto =
         new OpeningsPerYearFiltersDto(
             orgUnitCode, statusCode, entryDateStartDate, entryDateEndDate);
-    return dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
+
+    List<OpeningsPerYearDto> resultList =
+        dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
+
+    if (resultList.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.ok(resultList);
   }
 }
