@@ -24,7 +24,7 @@ class DashboardMetricsServiceTest {
 
   private DashboardMetricsService dashboardMetricsService;
 
-  private static final Sort SORT = Sort.by("entryTimestamp").descending();
+  private static final Sort SORT = Sort.by("entryTimestamp").ascending();
 
   private List<OpeningsLastYearEntity> mockOpeningsEntityList() {
     LocalDateTime entryTimestamp = LocalDateTime.now();
