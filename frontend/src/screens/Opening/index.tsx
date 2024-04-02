@@ -4,7 +4,6 @@ import { Button } from "@carbon/react";
 import StandardCard from "../../components/StandardCard";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
-import RecentOpeningsTable from "../../components/RecentOpeningsTable";
 import { recentOpeningItems, recentOpeningItems1, recentOpeningsHeader } from "../../mock-data/constants";
 import './Opening.scss'
 import { ViewFilled } from '@carbon/icons-react';
@@ -12,6 +11,13 @@ import OpeningsMap from "../../components/OpeningsMap";
 import OpeningScreenDataTable from "../../components/OpeningScreenDataTable/index";
 import { headers, rows } from "../../components/OpeningScreenDataTable/testData";
 import SectionTitle from "../../components/SectionTitle";
+import { TabList } from "@carbon/react";
+import { Tabs } from "@carbon/react";
+import { Tab } from "@carbon/react";
+import { TabPanels } from "@carbon/react";
+import { TabPanel } from "@carbon/react";
+import OpeningsTab from "../../components/OpeningsTab";
+import OpeningMetricsTab from "../../components/OpeningMetricsTab";
 
 
 const Opening: React.FC = () => {
@@ -51,34 +57,22 @@ const Opening: React.FC = () => {
         </div>
       </div>
 
-      <div className="container-fluid">
-        <div className="row px-0 py-4 p-sm-4">
-            <SectionTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
-            <Button className="h-100 my-auto d-none d-sm-block" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
-              {showSpatial?'Hide Spatial':'Show Spatial'}
-            </Button>
-        </div>
-        {showSpatial?(
-          <div className="row px-2">
-            <div className="leaflet-container">
-              <OpeningsMap selectedBasemap={{
-                id: 1,
-                name: "Google Maps Satelite",
-                attribution: '&copy; Google Maps',
-                url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
-              }}/>
-            </div>
-          </div>
-        ):null}
-      </div>
-      
+      <Tabs>
+        <TabList contained>
+          <Tab><div className="tab-header">Recent Openings</div></Tab>
+          <Tab><div className="tab-header">Dashboard</div></Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel className="tab-content">
+            <OpeningsTab />
+          </TabPanel>
+          <TabPanel className="tab-content">
+            <OpeningMetricsTab />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
 
-      <div className="container-fluid p-0 pb-5">
-        <OpeningScreenDataTable
-        headers={headers}
-        rows={rows}
-        />
-      </div>
+      
       </>
     );
   };
