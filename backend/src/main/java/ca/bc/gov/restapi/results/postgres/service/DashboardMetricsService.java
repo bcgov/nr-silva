@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearFiltersDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
@@ -96,5 +97,18 @@ public class DashboardMetricsService {
     }
 
     return chartData;
+  }
+
+  /**
+   * Get free growing milestone declarations data for the chart.
+   *
+   * @param filtersDto Possible filter, see {@link OpeningsPerYearFiltersDto} for more.
+   * @return A list of {@link FreeGrowingMilestonesDto} for the chart.
+   */
+  public List<FreeGrowingMilestonesDto> getFreeGrowingMilestoneChartData(
+      OpeningsPerYearFiltersDto filtersDto) {
+    // keep going from here
+    // rename OpeningsPerYearFiltersDto record to a generic name
+    return List.of();
   }
 }

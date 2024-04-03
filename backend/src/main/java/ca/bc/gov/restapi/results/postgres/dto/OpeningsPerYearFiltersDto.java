@@ -4,4 +4,8 @@ import java.time.LocalDateTime;
 
 /** This record contains all possible filters for the dashboard openings per years api. */
 public record OpeningsPerYearFiltersDto(
-    String orgUnit, String status, LocalDateTime entryDateStart, LocalDateTime entryDateEnd) {}
+    String orgUnit,
+    String status,
+    LocalDateTime entryDateStart,
+    LocalDateTime entryDateEnd,
+    String clientNumber) {}
