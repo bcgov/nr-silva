@@ -124,7 +124,7 @@ jobs:
           - name: fluentbit
             file: common/openshift.fluentbit.yml
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@fix/emptyTimeout
+      - uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
