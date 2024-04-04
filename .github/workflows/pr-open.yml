@@ -107,6 +107,7 @@ jobs:
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
+            timeout: 15m
             verification_path: /actuator/health
             parameters:
               -p MAX_REPLICAS=1
@@ -133,5 +134,6 @@ jobs:
           parameters:
             -p ZONE=${{ github.event.number }}
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout }}
           triggers: ('common/' 'backend/' 'frontend/')
           verification_path: ${{ matrix.verification_path }}
