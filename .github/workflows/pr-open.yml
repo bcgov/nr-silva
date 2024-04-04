@@ -123,6 +123,7 @@ jobs:
               -p FAM_ROUTE="$(( ${{ github.event.number }} % 50 ))"
           - name: fluentbit
             file: common/openshift.fluentbit.yml
+            timeout: 1m
     steps:
       - uses: bcgov-nr/action-deployer-openshift@fix/emptyTimeout
         with:
