@@ -64,37 +64,37 @@ jobs:
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
           triggers: ('common/' 'backend/' 'frontend/')
 
-  builds:
-    name: Builds
-    needs: [init]
-    if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        name: [database, backend, frontend]
-        include:
-          - package: database
-            triggers: ('database/')
-          - name: backend
-            triggers: ('backend/')
-          - name: frontend
-            triggers: ('frontend/')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.2
-        with:
-          package: ${{ matrix.name }}
-          tag: ${{ github.event.number }}
-          tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
+  # builds:
+  #   name: Builds
+  #   needs: [init]
+  #   if: "!github.event.pull_request.head.repo.fork"
+  #   runs-on: ubuntu-22.04
+  #   permissions:
+  #     packages: write
+  #   strategy:
+  #     matrix:
+  #       name: [database, backend, frontend]
+  #       include:
+  #         - package: database
+  #           triggers: ('database/')
+  #         - name: backend
+  #           triggers: ('backend/')
+  #         - name: frontend
+  #           triggers: ('frontend/')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: bcgov-nr/action-builder-ghcr@v2.0.2
+  #       with:
+  #         package: ${{ matrix.name }}
+  #         tag: ${{ github.event.number }}
+  #         tag_fallback: test
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds]
+    # needs: [builds]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -123,7 +123,6 @@ jobs:
               -p FAM_ROUTE="$(( ${{ github.event.number }} % 50 ))"
           - name: fluentbit
             file: common/openshift.fluentbit.yml
-            timeout: 1m
     steps:
       - uses: bcgov-nr/action-deployer-openshift@fix/emptyTimeout
         with:
