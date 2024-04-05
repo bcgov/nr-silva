@@ -173,9 +173,6 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-database
                       key: database-user
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
               resources:
                 requests:
                   cpu: "${CPU_REQUEST}"
@@ -183,26 +180,26 @@ objects:
                 limits:
                   cpu: "${CPU_LIMIT}"
                   memory: "${MEMORY_LIMIT}"
+              ports:
+                - name: probe-port
+                  containerPort: 8080
+                  protocol: TCP
+              startupProbe:
+                httpGet:
+                  path: /actuator/health
+                  port: probe-port
+                initialDelaySeconds: 120
+                failureThreshold: 30
               readinessProbe:
                 httpGet:
                   path: /actuator/health
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: 120
-                periodSeconds: 5
-                timeoutSeconds: 10
-                successThreshold: 1
+                  port: probe-port
                 failureThreshold: 5
               livenessProbe:
-                successThreshold: 1
-                failureThreshold: 5
                 httpGet:
                   path: /actuator/health
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: 150
-                periodSeconds: 30
-                timeoutSeconds: 5
+                  port: probe-port
+                failureThreshold: 10
           volumes:
             - name: ${NAME}-${ZONE}-fluentbit-logs
               persistentVolumeClaim:
