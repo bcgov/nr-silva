@@ -50,6 +50,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=test
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
@@ -72,6 +73,7 @@ jobs:
           parameters:
             -p ZONE=test
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout }}
           verification_path: ${{ matrix.verification_path }}
 
   init-prod:
@@ -129,6 +131,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=production
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
@@ -147,8 +150,9 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: ${{ matrix.overwite }}
+          overwrite: ${{ matrix.overwrite }}
           parameters:
             -p ZONE=prod
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout }}
           verification_path: ${{ matrix.verification_path }}
