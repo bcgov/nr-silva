@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 /** This class holds resources for the dashboard metrics page. */
 @RestController
 @RequestMapping("/api/dashboard-metrics")
-@Tag(name = "Dashboard Metrics", description = "Resources fot the Dashboard metrics charts")
+@Tag(
+    name = "Dashboard Metrics",
+    description = "Endpoints fot the Dashboard metrics charts in the `SILVA` schema")
 @RequiredArgsConstructor
 public class DashboardMetricsEndpoint {
 
@@ -48,7 +50,7 @@ public class DashboardMetricsEndpoint {
             description = "An array with twelve objects for the last 12 months."),
         @ApiResponse(
             responseCode = "204",
-            description = "No data found in the dable. No response body."),
+            description = "No data found on the table. No response body."),
         @ApiResponse(
             responseCode = "401",
             description = "Access token is missing or invalid",

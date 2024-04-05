@@ -51,7 +51,8 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto = new OpeningsPerYearFiltersDto(null, null, null, null);
+    OpeningsPerYearFiltersDto filtersDto =
+        new OpeningsPerYearFiltersDto(null, null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -71,7 +72,8 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto = new OpeningsPerYearFiltersDto("AAA", null, null, null);
+    OpeningsPerYearFiltersDto filtersDto =
+        new OpeningsPerYearFiltersDto("AAA", null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -91,7 +93,8 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto = new OpeningsPerYearFiltersDto(null, "APP", null, null);
+    OpeningsPerYearFiltersDto filtersDto =
+        new OpeningsPerYearFiltersDto(null, "APP", null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -115,7 +118,7 @@ class DashboardMetricsServiceTest {
     LocalDateTime oneMonthLater = now.plusMonths(1L);
 
     OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(null, null, oneMonthBefore, oneMonthLater);
+        new OpeningsPerYearFiltersDto(null, null, oneMonthBefore, oneMonthLater, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
