@@ -46,7 +46,7 @@ parameters:
     value: "30000"
   - name: DB_POOL_MAX_SIZE
     description: Maximum number of connections per pod
-    value: "3"
+    value: "1"
   - name: DB_POOL_MIN_IDLE
     description: Minimum number of connections per pod
     value: "1"
