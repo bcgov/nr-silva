@@ -43,7 +43,7 @@ parameters:
     value: "60000"
   - name: DB_POOL_MAX_LIFETIME
     description: Maximum lifetime of a connection in the pool.
-    value: "30000"
+    value: "120000"
   - name: DB_POOL_MAX_SIZE
     description: Maximum number of connections per pod
     value: "1"
