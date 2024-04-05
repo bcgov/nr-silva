@@ -36,6 +36,7 @@ public class PostgresPersistenceConfig {
     config.setPoolName(postgresHikariConfig.getPoolName());
     config.setMinimumIdle(postgresHikariConfig.getMinimumIdle());
     config.setMaximumPoolSize(postgresHikariConfig.getMaximumPoolSize());
+    config.setLeakDetectionThreshold(postgresHikariConfig.getLeakDetectionThreshold());
 
     return new HikariDataSource(config);
   }

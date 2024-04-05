@@ -23,4 +23,5 @@ public class OracleHikariConfig {
   private String poolName;
   private int minimumIdle;
   private int maximumPoolSize;
+  private long leakDetectionThreshold;
 }

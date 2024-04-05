@@ -38,6 +38,7 @@ public class OraclePersistenceConfig {
     config.setPoolName(oracleHikariConfig.getPoolName());
     config.setMinimumIdle(oracleHikariConfig.getMinimumIdle());
     config.setMaximumPoolSize(oracleHikariConfig.getMaximumPoolSize());
+    config.setLeakDetectionThreshold(oracleHikariConfig.getLeakDetectionThreshold());
 
     return new HikariDataSource(config);
   }
