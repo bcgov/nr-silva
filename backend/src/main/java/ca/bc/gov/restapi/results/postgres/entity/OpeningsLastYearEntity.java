@@ -33,4 +33,7 @@ public class OpeningsLastYearEntity {
 
   @Column(name = "org_unit_code", nullable = false)
   private String orgUnitCode;
+
+  @Column(name = "client_number", nullable = false)
+  private String clientNumber;
 }

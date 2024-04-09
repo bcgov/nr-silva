@@ -2,8 +2,8 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearFiltersDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.time.LocalDateTime;
@@ -51,8 +51,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(null, null, null, null, null);
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -72,8 +71,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto("AAA", null, null, null, null);
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto("AAA", null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -93,8 +91,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
 
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(null, "APP", null, null, null);
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, "APP", null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -117,8 +114,8 @@ class DashboardMetricsServiceTest {
     LocalDateTime oneMonthBefore = now.minusMonths(1L);
     LocalDateTime oneMonthLater = now.plusMonths(1L);
 
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(null, null, oneMonthBefore, oneMonthLater, null);
+    DashboardFiltesDto filtersDto =
+        new DashboardFiltesDto(null, null, oneMonthBefore, oneMonthLater, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();

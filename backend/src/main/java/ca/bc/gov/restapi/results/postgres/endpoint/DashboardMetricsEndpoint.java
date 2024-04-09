@@ -1,9 +1,9 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearFiltersDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,18 +32,19 @@ public class DashboardMetricsEndpoint {
   private final DashboardMetricsService dashboardMetricsService;
 
   /**
-   * Get data for the Submission Trends Chart, Openings per Year.
+   * Gets data for the Opening submission trends Chart (Openings per year) on the Dashboard SILVA
+   * page.
    *
-   * @param orgUnitCode The district code to filter.
-   * @param statusCode The opening status code to filter.
-   * @param entryDateStart The opening entry timestamp start date filter.
-   * @param entryDateEnd The opening entry timestamp end date filter.
+   * @param orgUnitCode Optional district code filter.
+   * @param statusCode Optional opening status code filter.
+   * @param entryDateStart Optional opening entry timestamp start date filter.
+   * @param entryDateEnd Optional opening entry timestamp end date filter.
    * @return A list of values to populate the chart or 204 no content if no data.
    */
   @GetMapping("/submission-trends")
   @Operation(
-      summary = "Get data for the Submission Trends Chart, Openings per Year",
-      description = "Fetches data from the last years for the openings per year chart.",
+      summary = "Gets data for the Opening submission trends Chart (Openings per year).",
+      description = "Fetches data from the last twelve months for the openings per year chart.",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -89,8 +90,8 @@ public class DashboardMetricsEndpoint {
               required = false,
               example = "2024-03-11")
           String entryDateEnd) {
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(
+    DashboardFiltesDto filtersDto =
+        new DashboardFiltesDto(
             orgUnitCode,
             statusCode,
             TimestampUtil.parseDateString(entryDateStart),
@@ -107,8 +108,31 @@ public class DashboardMetricsEndpoint {
     return ResponseEntity.ok(resultList);
   }
 
-  // add open api docs here
+  /**
+   * Gets data for the Free growing Chart on the Dashboard SILVA page.
+   *
+   * @param orgUnitCode Optional district code filter.
+   * @param clientNumber Optional client number filter.
+   * @param entryDateStart Optional opening entry timestamp start date filter.
+   * @param entryDateEnd Optional opening entry timestamp end date filter.
+   * @return A list of values to populate the chart or 204 no content if no data.
+   */
   @GetMapping("/free-growing-milestones")
+  @Operation(
+      summary = "Gets data for the Free growing Chart on the Dashboard SILVA page.",
+      description = "Fetches data from the last twelve months for the Free growing chart.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "An array with four objects, one for each piece of the chart."),
+        @ApiResponse(
+            responseCode = "204",
+            description = "No data found on the table. No response body."),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
+      })
   public ResponseEntity<List<FreeGrowingMilestonesDto>> getFreeGrowingMilestonesData(
       @RequestParam(value = "orgUnitCode", required = false)
           @Parameter(
@@ -142,8 +166,8 @@ public class DashboardMetricsEndpoint {
               required = false,
               example = "2024-03-11")
           String entryDateEnd) {
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(
+    DashboardFiltesDto filtersDto =
+        new DashboardFiltesDto(
             orgUnitCode,
             null,
             TimestampUtil.parseDateString(entryDateStart),

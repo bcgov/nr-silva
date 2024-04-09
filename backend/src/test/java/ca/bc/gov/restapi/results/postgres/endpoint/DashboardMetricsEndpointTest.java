@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearFiltersDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -31,8 +31,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Opening submission trends with no filters should succeed")
   void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto(null, null, null, null, null);
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
 
     OpeningsPerYearDto dto = new OpeningsPerYearDto(1, "Jan", 70);
     when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of(dto));
@@ -54,8 +53,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Opening submission trends with no data should succeed")
   void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
-    OpeningsPerYearFiltersDto filtersDto =
-        new OpeningsPerYearFiltersDto("DCR", null, null, null, null);
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto("DCR", null, null, null, null);
 
     when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of());
 
