@@ -47,7 +47,7 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.1.0
+        uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -107,6 +107,7 @@ jobs:
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
+            timeout: 15m
             verification_path: /actuator/health
             parameters:
               -p MAX_REPLICAS=1
@@ -123,7 +124,7 @@ jobs:
           - name: fluentbit
             file: common/openshift.fluentbit.yml
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -133,5 +134,6 @@ jobs:
           parameters:
             -p ZONE=${{ github.event.number }}
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout }}
           triggers: ('common/' 'backend/' 'frontend/')
           verification_path: ${{ matrix.verification_path }}

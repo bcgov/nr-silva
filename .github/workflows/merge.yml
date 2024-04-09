@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.1.0
+        uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -50,6 +50,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=test
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
@@ -62,7 +63,7 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -72,6 +73,7 @@ jobs:
           parameters:
             -p ZONE=test
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout || '10m' }}
           verification_path: ${{ matrix.verification_path }}
 
   init-prod:
@@ -81,7 +83,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v2.1.0
+        uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -129,6 +131,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=production
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
@@ -141,14 +144,15 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v2.1.0
+      - uses: bcgov-nr/action-deployer-openshift@v2.3.0
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: ${{ matrix.overwite }}
+          overwrite: ${{ matrix.overwrite }}
           parameters:
             -p ZONE=prod
             ${{ matrix.parameters }}
+          timeout: ${{ matrix.timeout || '10m' }}
           verification_path: ${{ matrix.verification_path }}
