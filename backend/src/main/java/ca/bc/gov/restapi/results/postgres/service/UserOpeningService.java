@@ -1,18 +1,20 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.postgres.dto.UserOpeningCreateDto;
-import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
+import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
+import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
-import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
+import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
+import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.stereotype.Service;
 
 /** This class contains methods for handling User favourite Openings. */
@@ -25,79 +27,97 @@ public class UserOpeningService {
 
   private final UserOpeningRepository userOpeningRepository;
 
-  private final OpeningsLastYearRepository openingsLastYearRepository;
+  private final OpeningsActivityRepository openingsActivityRepository;
 
   /**
-   * Gets all openings saved for an user.
+   * Gets user's tracked Openings.
    *
-   * @return A list of {@link UserOpeningEntity} containing the found records.
+   * @return A list of {@link MyRecentActionsRequestsDto} containing the found records.
    */
-  public List<UserOpeningEntity> getAllUserOpenings() {
+  public List<MyRecentActionsRequestsDto> getUserTrackedOpenings() {
+    log.info("Getting all user openings for the Track openings table");
+
     String userId = loggedUserService.getLoggedUserId();
-    return userOpeningRepository.findAllByUserId(userId);
+    List<UserOpeningEntity> userList = userOpeningRepository.findAllByUserId(userId);
+
+    if (userList.isEmpty()) {
+      log.info("No saved openings for the current user!");
+      return List.of();
+    }
+
+    List<Long> openingIds = userList.stream().map(UserOpeningEntity::getOpeningId).toList();
+    List<OpeningsActivityEntity> openingActivities =
+        openingsActivityRepository.findAllById(openingIds);
+
+    if (openingActivities.isEmpty()) {
+      log.info("No records found on the opening activity table for the opening ID list!");
+      return List.of();
+    }
+
+    List<MyRecentActionsRequestsDto> resultList = new ArrayList<>();
+
+    PrettyTime prettyTime = new PrettyTime();
+
+    for (OpeningsActivityEntity activityEntity : openingActivities) {
+      MyRecentActionsRequestsDto requestsDto =
+          new MyRecentActionsRequestsDto(
+              activityEntity.getActivityTypeDesc(),
+              activityEntity.getOpeningId(),
+              activityEntity.getStatusCode(),
+              activityEntity.getStatusDesc(),
+              prettyTime.format(activityEntity.getLastUpdated()),
+              activityEntity.getLastUpdated());
+
+      resultList.add(requestsDto);
+
+      if (resultList.size() == 3) {
+        break;
+      }
+    }
+
+    return resultList;
   }
 
   /**
    * Saves one or more Openings IDs to an user.
    *
-   * @param createDtos List with one ore more opening IDs.
+   * @param openingId The opening ID.
    */
   @Transactional
-  public void saveOpeningsToUser(List<UserOpeningCreateDto> createDtos) {
-    log.info("{} Opening IDs to save in the favourites!", createDtos.size());
-
-    // validate all openings
-    List<Long> openingIdList = createDtos.stream().map(UserOpeningCreateDto::openingId).toList();
-
-    log.info("Looking for Openings in the spar.openings_last_year table!");
-    List<OpeningsLastYearEntity> entities =
-        openingsLastYearRepository.findAllByOpeningIdInList(openingIdList);
-
-    if (entities.size() < createDtos.size()) {
-      log.info(
-          "Result list ({}) contains less records than Openings IDs received ({})!",
-          entities.size(),
-          createDtos.size());
-      throw new OpeningNotFoundException();
-    }
+  public void saveOpeningToUser(Long openingId) {
+    log.info("Opening ID to save in the user favourites: {}", openingId);
 
     final String userId = loggedUserService.getLoggedUserId();
 
-    List<UserOpeningEntity> entitiesToSave = new ArrayList<>();
-    createDtos.forEach(
-        dto -> {
-          UserOpeningEntity entity = new UserOpeningEntity();
-          entity.setUserId(userId);
-          entity.setOpeningId(dto.openingId());
-          entitiesToSave.add(entity);
-        });
+    UserOpeningEntity entity = new UserOpeningEntity();
+    entity.setUserId(userId);
+    entity.setOpeningId(openingId);
 
-    userOpeningRepository.saveAllAndFlush(entitiesToSave);
-    log.info("Opening IDs saved in the favourites!");
+    userOpeningRepository.saveAndFlush(entity);
+    log.info("Opening ID saved in the user's favourites!");
   }
 
   /**
    * Deletes one or more user opening from favourite.
    *
-   * @param openingIds List with opening IDs to be deleted.
+   * @param openingId The opening ID.
    */
   @Transactional
-  public void deleteOpeningsFromUserFavourite(List<String> openingIds) {
-    log.info("{} Opening IDs to delete from the favourites!", openingIds.size());
+  public void deleteOpeningFromUserFavourite(Long openingId) {
+    log.info("Opening ID to delete from the user's favourites: {}", openingId);
     String userId = loggedUserService.getLoggedUserId();
 
-    List<UserOpeningEntity> userOpenings =
-        userOpeningRepository.findAllByOpeningIdInAndUserId(openingIds, userId);
+    UserOpeningEntityId openingPk = new UserOpeningEntityId(userId, openingId);
 
-    if (userOpenings.size() < openingIds.size()) {
-      log.info(
-          "UserOpeningEntity result list ({}) contains less records than IDs received ({})!",
-          userOpenings.size(),
-          openingIds.size());
+    Optional<UserOpeningEntity> userOpeningsOp = userOpeningRepository.findById(openingPk);
+
+    if (userOpeningsOp.isEmpty()) {
+      log.info("Opening id {} not found in the user's favourite list!", openingId);
       throw new UserOpeningNotFoundException();
     }
 
-    userOpeningRepository.deleteAll(userOpenings);
-    log.info("Opening IDs deleted from the favourites!");
+    userOpeningRepository.delete(userOpeningsOp.get());
+    userOpeningRepository.flush();
+    log.info("Opening ID deleted from the favourites!");
   }
 }

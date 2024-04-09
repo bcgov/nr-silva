@@ -20,11 +20,9 @@ public class OpeningEntity {
   private Long id;
 
   @Column(name = "OPENING_STATUS_CODE", length = 3)
-  // private OpeningStatusEnum status;
   private String status;
 
   @Column(name = "OPEN_CATEGORY_CODE", length = 7)
-  // private OpeningCategoryEnum category;
   private String category;
 
   @Column(name = "ENTRY_USERID", length = 30)
