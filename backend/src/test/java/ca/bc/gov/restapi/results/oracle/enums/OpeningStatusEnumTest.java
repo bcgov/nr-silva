@@ -1,6 +1,5 @@
-package ca.bc.gov.restapi.results.enums;
+package ca.bc.gov.restapi.results.oracle.enums;
 
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -9,6 +9,8 @@ import java.util.Objects;
 /** This class contains useful methods for parsing and handling timestamps. */
 public class TimestampUtil {
 
+  private TimestampUtil() {}
+
   /**
    * Parses a date string to a {@link LocalDateTime} instance. Format: yyyy-MM-dd.
    *
