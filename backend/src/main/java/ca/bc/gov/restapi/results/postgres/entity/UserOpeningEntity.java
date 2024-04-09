@@ -26,5 +26,5 @@ public class UserOpeningEntity {
 
   @Id
   @Column(name = "opening_id")
-  private String openingId;
+  private Long openingId;
 }

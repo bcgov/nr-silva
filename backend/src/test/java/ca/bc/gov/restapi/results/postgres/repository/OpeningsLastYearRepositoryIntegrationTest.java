@@ -21,7 +21,7 @@ class OpeningsLastYearRepositoryIntegrationTest {
   @Test
   @DisplayName("find all by Opening ID in List")
   void findAllByOpeningIdInListTest() {
-    List<String> idList = List.of("7012511", "7012512", "7012513");
+    List<Long> idList = List.of(7012511L, 7012512L, 7012513L);
     List<OpeningsLastYearEntity> openingList =
         openingsLastYearRepository.findAllByOpeningIdInList(idList);
 
@@ -30,7 +30,7 @@ class OpeningsLastYearRepositoryIntegrationTest {
 
     OpeningsLastYearEntity first = openingList.get(0);
 
-    Assertions.assertEquals("7012511", first.getOpeningId());
+    Assertions.assertEquals(7012511L, first.getOpeningId());
     Assertions.assertEquals("TEST", first.getUserId());
     Assertions.assertEquals("APP", first.getStatus());
     Assertions.assertEquals("DCR", first.getOrgUnitCode());

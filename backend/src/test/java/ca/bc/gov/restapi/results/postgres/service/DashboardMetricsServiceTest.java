@@ -36,7 +36,7 @@ class DashboardMetricsServiceTest {
     LocalDateTime entryTimestamp = LocalDateTime.now();
 
     OpeningsLastYearEntity entity = new OpeningsLastYearEntity();
-    entity.setOpeningId("123456");
+    entity.setOpeningId(123456L);
     entity.setUserId("userId");
     entity.setEntryTimestamp(entryTimestamp);
     entity.setUpdateTimestamp(entryTimestamp);

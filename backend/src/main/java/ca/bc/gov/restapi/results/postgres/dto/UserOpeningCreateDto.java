@@ -7,4 +7,4 @@ public record UserOpeningCreateDto(
     @Schema(
             description = "System generated value uniquely identifying the opening.",
             example = "1541297")
-        String openingId) {}
+        Long openingId) {}

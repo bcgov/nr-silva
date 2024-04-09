@@ -17,7 +17,7 @@ public class OpeningsLastYearEntity {
 
   @Id
   @Column(name = "opening_id")
-  private String openingId;
+  private Long openingId;
 
   @Column(name = "opening_entry_userid", nullable = false, length = 30)
   private String userId;

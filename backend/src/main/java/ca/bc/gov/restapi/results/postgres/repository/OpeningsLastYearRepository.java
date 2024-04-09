@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /** This interface provides access to the database for the OpeningsLastYearEntity entity. */
-public interface OpeningsLastYearRepository extends JpaRepository<OpeningsLastYearEntity, String> {
+public interface OpeningsLastYearRepository extends JpaRepository<OpeningsLastYearEntity, Long> {
 
   @Query("from OpeningsLastYearEntity o where o.openingId in ?1")
-  List<OpeningsLastYearEntity> findAllByOpeningIdInList(List<String> openingIdList);
+  List<OpeningsLastYearEntity> findAllByOpeningIdInList(List<Long> openingIdList);
 }

@@ -47,7 +47,7 @@ public class UserOpeningService {
     log.info("{} Opening IDs to save in the favourites!", createDtos.size());
 
     // validate all openings
-    List<String> openingIdList = createDtos.stream().map(UserOpeningCreateDto::openingId).toList();
+    List<Long> openingIdList = createDtos.stream().map(UserOpeningCreateDto::openingId).toList();
 
     log.info("Looking for Openings in the spar.openings_last_year table!");
     List<OpeningsLastYearEntity> entities =
