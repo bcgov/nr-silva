@@ -129,6 +129,11 @@
       <version>1.18.30</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.ocpsoft.prettytime</groupId>
+      <artifactId>prettytime</artifactId>
+      <version>5.0.7.Final</version>
+    </dependency>
 
     <!-- DevOps -->
     <dependency>

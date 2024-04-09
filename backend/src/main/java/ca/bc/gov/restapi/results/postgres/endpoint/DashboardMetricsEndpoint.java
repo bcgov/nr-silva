@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
+import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/dashboard-metrics")
 @Tag(
-    name = "Dashboard Metrics",
+    name = "Dashboard Metrics (SILVA)",
     description = "Endpoints fot the Dashboard metrics charts in the `SILVA` schema")
 @RequiredArgsConstructor
 public class DashboardMetricsEndpoint {
@@ -48,7 +49,8 @@ public class DashboardMetricsEndpoint {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "An array with twelve objects for the last 12 months."),
+            description = "An array with twelve objects for the last 12 months.",
+            content = @Content(mediaType = "application/json")),
         @ApiResponse(
             responseCode = "204",
             description = "No data found on the table. No response body."),
@@ -124,7 +126,8 @@ public class DashboardMetricsEndpoint {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "An array with four objects, one for each piece of the chart."),
+            description = "An array with four objects, one for each piece of the chart.",
+            content = @Content(mediaType = "application/json")),
         @ApiResponse(
             responseCode = "204",
             description = "No data found on the table. No response body."),
@@ -181,5 +184,38 @@ public class DashboardMetricsEndpoint {
     }
 
     return ResponseEntity.ok(milestonesDto);
+  }
+
+  /**
+   * Gets the last 5 most recent updated openings for the request user.
+   *
+   * @return A list of values to populate the chart or 204 no content if no data.
+   */
+  @GetMapping("/my-recent-actions/requests")
+  @Operation(
+      summary = "Gets the last 5 most recent updated openings for the request user.",
+      description = "Fetches data for the My recent actions table, Requests tab",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "An array with five objects, one for opening row.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(
+            responseCode = "204",
+            description = "No data found for the user. No response body."),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
+      })
+  public ResponseEntity<List<MyRecentActionsRequestsDto>> getUserRecentOpeningsActions() {
+    List<MyRecentActionsRequestsDto> actionsDto =
+        dashboardMetricsService.getUserRecentOpeningsActions();
+
+    if (actionsDto.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.ok(actionsDto);
   }
 }

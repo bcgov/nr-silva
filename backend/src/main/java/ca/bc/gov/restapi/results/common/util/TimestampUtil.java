@@ -29,7 +29,7 @@ public class TimestampUtil {
    * Extract the number based on the difference between today and the day the Opening got created.
    *
    * @param entryLocalDateTime The LocalDateTime representing the opening creation timestamp.
-   * @return
+   * @return An integer representing the index
    */
   public static int getLocalDateTimeIndex(LocalDateTime entryLocalDateTime) {
     // index 0 -> 0 to 5 months
@@ -40,12 +40,12 @@ public class TimestampUtil {
     LocalDate now = LocalDate.now();
 
     Period diff = Period.between(entryLocalDate, now);
-    int months = diff.getMonths();
-    if (months <= 5) {
+    int totalMonths = diff.getMonths() + (diff.getYears() * 12);
+    if (totalMonths <= 5) {
       return 0;
-    } else if (months <= 11) {
+    } else if (totalMonths <= 11) {
       return 1;
-    } else if (months <= 17) {
+    } else if (totalMonths <= 17) {
       return 2;
     } else {
       return 3;

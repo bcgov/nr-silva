@@ -19,7 +19,7 @@ public class OpeningsLastYearEntity {
   @Column(name = "opening_id")
   private String openingId;
 
-  @Column(name = "opening_entry_userid", nullable = false)
+  @Column(name = "opening_entry_userid", nullable = false, length = 30)
   private String userId;
 
   @Column(name = "entry_timestamp", nullable = false)
@@ -28,12 +28,12 @@ public class OpeningsLastYearEntity {
   @Column(name = "update_timestamp", nullable = false)
   private LocalDateTime updateTimestamp;
 
-  @Column(name = "status_code", nullable = false)
+  @Column(name = "status_code", nullable = false, length = 3)
   private String status;
 
-  @Column(name = "org_unit_code", nullable = false)
+  @Column(name = "org_unit_code", nullable = false, length = 6)
   private String orgUnitCode;
 
-  @Column(name = "client_number", nullable = false)
+  @Column(name = "client_number", nullable = false, length = 8)
   private String clientNumber;
 }

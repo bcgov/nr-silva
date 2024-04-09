@@ -48,7 +48,7 @@ public class PostgresJpaConfig {
     Properties jpaProps = new Properties();
     jpaProps.setProperty("hibernate.default_schema", "silva");
     jpaProps.setProperty("hibernate.ddl-auto", "update");
-    jpaProps.setProperty("defer-datasource-initialization", "true");
+    jpaProps.setProperty("jpa.defer-datasource-initialization", "true");
     jpaProps.setProperty("sql.init.mode", "always");
 
     LocalContainerEntityManagerFactoryBean build =

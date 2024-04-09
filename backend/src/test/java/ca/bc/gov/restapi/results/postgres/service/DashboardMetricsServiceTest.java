@@ -2,9 +2,11 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
+import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +23,10 @@ import org.springframework.data.domain.Sort;
 class DashboardMetricsServiceTest {
 
   @Mock OpeningsLastYearRepository openingsLastYearRepository;
+
+  @Mock OpeningsActivityRepository openingsActivityRepository;
+
+  @Mock LoggedUserService loggedUserService;
 
   private DashboardMetricsService dashboardMetricsService;
 
@@ -41,7 +47,9 @@ class DashboardMetricsServiceTest {
 
   @BeforeEach
   void setup() {
-    dashboardMetricsService = new DashboardMetricsService(openingsLastYearRepository);
+    dashboardMetricsService =
+        new DashboardMetricsService(
+            openingsLastYearRepository, openingsActivityRepository, loggedUserService);
   }
 
   @Test
