@@ -184,16 +184,20 @@ public class DashboardMetricsService {
       String label = labelsMap.get(index);
       int value = groupList.size();
       log.info("{} openings of {} for label '{}'", value, totalRecordsFiltered, label);
-      BigDecimal percentage =
-          new BigDecimal(String.valueOf(value))
-              .divide(
-                  new BigDecimal(String.valueOf(totalRecordsFiltered)), 10, RoundingMode.HALF_UP)
-              .setScale(2, RoundingMode.HALF_UP)
-              .multiply(hundred);
+
+      BigDecimal percentage = BigDecimal.ZERO;
+      if (totalRecordsFiltered > 0) {
+        percentage =
+            new BigDecimal(String.valueOf(value))
+                .divide(
+                    new BigDecimal(String.valueOf(totalRecordsFiltered)), 10, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP)
+                .multiply(hundred);
+      }
 
       if (index < 3) {
         hundredSum = hundredSum.subtract(percentage);
-      } else {
+      } else if (index == 3 && totalRecordsFiltered > 0) {
         percentage = hundredSum;
       }
 
@@ -210,7 +214,7 @@ public class DashboardMetricsService {
    * @return A list of {@link MyRecentActionsRequestsDto} with 5 rows.
    */
   public List<MyRecentActionsRequestsDto> getUserRecentOpeningsActions() {
-    log.info("Getting the last 5 openings activities for the requests tab");
+    log.info("Getting up to the last 5 openings activities for the requests tab");
 
     String userId = loggedUserService.getLoggedUserId();
 
