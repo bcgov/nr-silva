@@ -287,7 +287,6 @@ class DashboardMetricsServiceTest {
 
     when(loggedUserService.getLoggedUserId()).thenReturn(userId);
 
-    Sort sort = Sort.by("lastUpdated").descending();
     OpeningsActivityEntity activity = new OpeningsActivityEntity();
     activity.setOpeningId(112233L);
     // If you're here looking for more codes and descriptions, you may want to take a look on
@@ -300,6 +299,7 @@ class DashboardMetricsServiceTest {
     activity.setLastUpdated(LocalDateTime.now().minusHours(2));
     activity.setEntryUserid(userId);
 
+    Sort sort = Sort.by("lastUpdated").descending();
     when(openingsActivityRepository.findAllByEntryUserid(userId, sort))
         .thenReturn(List.of(activity));
 
