@@ -122,7 +122,9 @@ public class DashboardMetricsEndpoint {
   @GetMapping("/free-growing-milestones")
   @Operation(
       summary = "Gets data for the Free growing Chart on the Dashboard SILVA page.",
-      description = "Fetches data from the last twelve months for the Free growing chart.",
+      description =
+          "Fetches data from the last 24 months and group them into periods for the Free growing"
+              + " chart.",
       responses = {
         @ApiResponse(
             responseCode = "200",

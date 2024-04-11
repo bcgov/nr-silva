@@ -104,8 +104,8 @@ public class UserOpeningEndpoint {
       description = "Allow users to remove saved Opening IDs from their favourite list.",
       responses = {
         @ApiResponse(
-            responseCode = "200",
-            description = "Opening successfully removed for the user."),
+            responseCode = "204",
+            description = "Opening successfully removed. No content body."),
         @ApiResponse(
             responseCode = "401",
             description = "Access token is missing or invalid",
