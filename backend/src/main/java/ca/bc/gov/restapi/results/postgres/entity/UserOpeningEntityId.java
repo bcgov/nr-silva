@@ -19,5 +19,5 @@ import lombok.ToString;
 public class UserOpeningEntityId {
 
   @NonNull private String userId;
-  @NonNull private String openingId;
+  @NonNull private Long openingId;
 }
