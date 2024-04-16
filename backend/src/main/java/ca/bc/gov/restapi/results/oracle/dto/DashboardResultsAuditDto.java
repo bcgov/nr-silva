@@ -16,4 +16,15 @@ public interface DashboardResultsAuditDto {
   Long getOpeningId();
 
   LocalDateTime getActionTimestamp();
+
+  default String toLogString() {
+    StringBuilder logDto = new StringBuilder("{");
+    logDto.append("resultsAuditActionCode='").append(getResultsAuditActionCode());
+    logDto.append("', actionDate='").append(getActionDate()).append(", ");
+    logDto.append("entryTimestamp='").append(getEntryTimestamp()).append("', ");
+    logDto.append("entryUserid='").append(getEntryUserid()).append("', ");
+    logDto.append("openingId=").append(getOpeningId()).append(", ");
+    logDto.append("actionTimestamp=").append(getActionTimestamp()).append("'}");
+    return logDto.toString();
+  }
 }

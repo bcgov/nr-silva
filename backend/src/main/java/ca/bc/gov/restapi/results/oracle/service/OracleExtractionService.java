@@ -36,16 +36,7 @@ public class OracleExtractionService {
     List<DashboardOpeningDto> mainOpenings = openingRepository.findAllDashboardOpenings(months);
     log.info("Openings main table query count: {}", mainOpenings.size());
     for (DashboardOpeningDto openingDto : mainOpenings) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("openingId=").append(openingDto.getOpeningId()).append(", ");
-      logDto.append("openingStatusCode='").append(openingDto.getOpeningStatusCode());
-      logDto.append("', entryUserId='").append(openingDto.getEntryUserId()).append("', ");
-      logDto.append("entryTimestamp='").append(openingDto.getEntryTimestamp()).append("', ");
-      logDto.append("updateTimestamp='").append(openingDto.getUpdateTimestamp());
-      logDto.append("', adminDistrictNo=").append(openingDto.getAdminDistrictNo());
-      logDto.append(", resultsSubmissionId=").append(openingDto.getResultsSubmissionId());
-      logDto.append(", actionTimestamp='").append(openingDto.getActionTimestamp()).append("'}");
-      log.info("DashboardOpeningDto={}", logDto.toString());
+      log.info("DashboardOpeningDto={}", openingDto.toLogString());
 
       count++;
       if (count == 3) {
@@ -63,10 +54,7 @@ public class OracleExtractionService {
 
     count = 0;
     for (DashboardOpeningSubmissionDto submissionDto : openingSubmissions) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("resultsSubmissionId=").append(submissionDto.getResultsSubmissionId());
-      logDto.append(", clientNumber='").append(submissionDto.getClientNumber()).append("'}");
-      log.info("DashboardOpeningSubmissionDto={}", logDto.toString());
+      log.info("DashboardOpeningSubmissionDto={}", submissionDto.toLogString());
 
       count++;
       if (count == 3) {
@@ -80,14 +68,7 @@ public class OracleExtractionService {
     log.info("Results Audit table count: {}", resultsAudits.size());
     count = 0;
     for (DashboardResultsAuditDto resultsAudit : resultsAudits) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("resultsAuditActionCode='").append(resultsAudit.getResultsAuditActionCode());
-      logDto.append("', actionDate='").append(resultsAudit.getActionDate()).append(", ");
-      logDto.append("entryTimestamp='").append(resultsAudit.getEntryTimestamp()).append("', ");
-      logDto.append("entryUserid='").append(resultsAudit.getEntryUserid()).append("', ");
-      logDto.append("openingId=").append(resultsAudit.getOpeningId()).append(", ");
-      logDto.append("actionTimestamp=").append(resultsAudit.getActionTimestamp()).append("'}");
-      log.info("DashboardResultsAuditDto={}", logDto.toString());
+      log.info("DashboardResultsAuditDto={}", resultsAudit.toLogString());
 
       count++;
       if (count == 3) {
@@ -101,15 +82,7 @@ public class OracleExtractionService {
     log.info("Stocking Event History table count: {}", stockingEvents.size());
     count = 0;
     for (DashboardStockingEventDto stockingEvent : stockingEvents) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("resultsAuditActionCode='").append(stockingEvent.getResultsAuditActionCode());
-      logDto.append("', entryUserid='").append(stockingEvent.getEntryUserid()).append("', ");
-      logDto.append("openingId=").append(stockingEvent.getOpeningId()).append(", ");
-      logDto.append("entryTimestamp='").append(stockingEvent.getEntryTimestamp()).append("', ");
-      logDto.append("amendEventTimestamp='").append(stockingEvent.getAmendEventTimestamp());
-      logDto.append("', actionTimestamp='").append(stockingEvent.getActionTimestamp());
-      logDto.append("}");
-      log.info("DashboardStockingEventDto={}", logDto.toString());
+      log.info("DashboardStockingEventDto={}", stockingEvent.toLogString());
 
       count++;
       if (count == 3) {
@@ -125,11 +98,7 @@ public class OracleExtractionService {
     log.info("Org Unit result count: {}", orgUnits.size());
     count = 0;
     for (DashboardOrgUnitDto orgUnit : orgUnits) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("orgUnitNo=").append(orgUnit.getOrgUnitNo()).append(", ");
-      logDto.append("orgUnitCode='").append(orgUnit.getOrgUnitCode()).append("', ");
-      logDto.append("orgUnitName='").append(orgUnit.getOrgUnitName()).append("'}");
-      log.info("DashboardOrgUnitDto={}", logDto.toString());
+      log.info("DashboardOrgUnitDto={}", orgUnit.toLogString());
 
       count++;
       if (count == 3) {
@@ -149,10 +118,7 @@ public class OracleExtractionService {
     log.info("Action Codes result count: {}", actionCodes.size());
     count = 0;
     for (DashboardActionCodeDto actionCode : actionCodes) {
-      StringBuilder logDto = new StringBuilder("{");
-      logDto.append("resultsAuditActionCode='").append(actionCode.getResultsAuditActionCode());
-      logDto.append("', getDescription='").append(actionCode.getDescription()).append("'}");
-      log.info("DashboardActionCodeDto={}", logDto.toString());
+      log.info("DashboardActionCodeDto={}", actionCode.toLogString());
 
       count++;
       if (count == 3) {

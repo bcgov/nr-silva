@@ -28,12 +28,15 @@ public class OpeningsLastYearEntity {
   @Column(name = "update_timestamp", nullable = false)
   private LocalDateTime updateTimestamp;
 
-  @Column(name = "status_code", nullable = false, length = 3)
+  @Column(name = "status_code", length = 3)
   private String status;
 
-  @Column(name = "org_unit_code", nullable = false, length = 6)
+  @Column(name = "org_unit_code", length = 6)
   private String orgUnitCode;
 
-  @Column(name = "client_number", nullable = false, length = 8)
+  @Column(name = "org_unit_name", length = 120)
+  private String orgUnitName;
+
+  @Column(name = "client_number", length = 8)
   private String clientNumber;
 }

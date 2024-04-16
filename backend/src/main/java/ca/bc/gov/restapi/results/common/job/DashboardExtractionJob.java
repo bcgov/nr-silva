@@ -18,7 +18,7 @@ public class DashboardExtractionJob {
   private final DashboardInsertionService dashboardInsertionService;
 
   // @Scheduled(cron = "0 0 */2 * * *", initialDelay = 1000 * 2)
-  @Scheduled(fixedDelay = 1000 * 5, initialDelay = 1000 * 2)
+  @Scheduled(fixedDelay = 1000 * 60 * 60 * 24, initialDelay = 1000 * 2)
   public void extractDataForTheDashboard() {
     log.info("Starting extraction!");
 

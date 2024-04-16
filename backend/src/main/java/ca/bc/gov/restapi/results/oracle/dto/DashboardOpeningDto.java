@@ -20,4 +20,17 @@ public interface DashboardOpeningDto {
   Long getResultsSubmissionId();
 
   LocalDateTime getActionTimestamp();
+
+  default String toLogString() {
+    StringBuilder logDto = new StringBuilder("{");
+    logDto.append("openingId=").append(getOpeningId()).append(", ");
+    logDto.append("openingStatusCode='").append(getOpeningStatusCode());
+    logDto.append("', entryUserId='").append(getEntryUserId()).append("', ");
+    logDto.append("entryTimestamp='").append(getEntryTimestamp()).append("', ");
+    logDto.append("updateTimestamp='").append(getUpdateTimestamp());
+    logDto.append("', adminDistrictNo=").append(getAdminDistrictNo());
+    logDto.append(", resultsSubmissionId=").append(getResultsSubmissionId());
+    logDto.append(", actionTimestamp='").append(getActionTimestamp()).append("'}");
+    return logDto.toString();
+  }
 }
