@@ -52,16 +52,16 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, String> 
   @Query(
       value =
           """
-          SELECT ra.RESULTS_AUDIT_ACTION_CODE
-            ,ra.ACTION_DATE
-            ,ra.ENTRY_TIMESTAMP
-            ,ra.ENTRY_USERID
-            ,ra.OPENING_ID
-            ,GREATEST(ra.ENTRY_TIMESTAMP,ra.ACTION_DATE) AS ACTION_TIMESTAMP
+          SELECT ra.RESULTS_AUDIT_ACTION_CODE AS resultsAuditActionCode
+            ,ra.ACTION_DATE AS actionDate
+            ,ra.ENTRY_TIMESTAMP AS entryTimestamp
+            ,ra.ENTRY_USERID AS entryUserid
+            ,ra.OPENING_ID AS openingId
+            ,GREATEST(ra.ENTRY_TIMESTAMP,ra.ACTION_DATE) AS actionTimestamp
           FROM THE.RESULTS_AUDIT_EVENT ra
           WHERE ra.ENTRY_TIMESTAMP >= ADD_MONTHS(SYSDATE, - ?1)
             OR ra.ACTION_DATE >= ADD_MONTHS(SYSDATE, - ?1)
-          ORDER BY ACTION_TIMESTAMP DESC
+          ORDER BY actionTimestamp DESC
         """,
       nativeQuery = true)
   List<DashboardResultsAuditDto> findAllDashboardAuditEvents(Integer months);
@@ -69,16 +69,16 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, String> 
   @Query(
       value =
           """
-          SELECT seh.RESULTS_AUDIT_ACTION_CODE
-            ,seh.ENTRY_USERID
-            ,seh.OPENING_ID
-            ,seh.ENTRY_TIMESTAMP
-            ,seh.AMEND_EVENT_TIMESTAMP
-            ,GREATEST(seh.ENTRY_TIMESTAMP,seh.AMEND_EVENT_TIMESTAMP) AS ACTION_TIMESTAMP
+          SELECT seh.RESULTS_AUDIT_ACTION_CODE AS resultsAuditActionCode
+            ,seh.ENTRY_USERID AS entryUserid
+            ,seh.OPENING_ID AS openingId
+            ,seh.ENTRY_TIMESTAMP AS entryTimestamp
+            ,seh.AMEND_EVENT_TIMESTAMP AS amendEventTimestamp
+            ,GREATEST(seh.ENTRY_TIMESTAMP,seh.AMEND_EVENT_TIMESTAMP) AS actionTimestamp
           FROM THE.STOCKING_EVENT_HISTORY seh
           WHERE seh.ENTRY_TIMESTAMP >= ADD_MONTHS(SYSDATE, - ?1)
             OR seh.AMEND_EVENT_TIMESTAMP  >= ADD_MONTHS(SYSDATE, - ?1)
-          ORDER BY ACTION_TIMESTAMP DESC
+          ORDER BY actionTimestamp DESC
         """,
       nativeQuery = true)
   List<DashboardStockingEventDto> findAllDashboardStockingEventHistory(Integer months);
@@ -86,9 +86,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, String> 
   @Query(
       value =
           """
-          SELECT ou.ORG_UNIT_NO
-            ,ou.ORG_UNIT_CODE
-            ,ou.ORG_UNIT_NAME
+          SELECT ou.ORG_UNIT_NO AS orgUnitNo
+            ,ou.ORG_UNIT_CODE AS orgUnitCode
+            ,ou.ORG_UNIT_NAME AS orgUnitName
           FROM THE.ORG_UNIT ou
           WHERE ou.ORG_UNIT_NO IN (?1)
         """,
@@ -98,8 +98,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, String> 
   @Query(
       value =
           """
-          SELECT raac.RESULTS_AUDIT_ACTION_CODE 
-            ,raac.DESCRIPTION 
+          SELECT raac.RESULTS_AUDIT_ACTION_CODE AS resultsAuditActionCode
+            ,raac.DESCRIPTION AS description
           FROM THE.RESULTS_AUDIT_ACTION_CODE raac 
           WHERE raac.RESULTS_AUDIT_ACTION_CODE IN (?1)
         """,

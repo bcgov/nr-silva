@@ -5,15 +5,15 @@ import java.time.LocalDateTime;
 /** This record holds columns for the results audit table. */
 public interface DashboardResultsAuditDto {
 
-  String RESULTS_AUDIT_ACTION_CODE();
+  String getResultsAuditActionCode();
 
-  LocalDateTime ACTION_DATE();
+  LocalDateTime getActionDate();
 
-  LocalDateTime ENTRY_TIMESTAMP();
+  LocalDateTime getEntryTimestamp();
 
-  String ENTRY_USERID();
+  String getEntryUserid();
 
-  Long OPENING_ID();
+  Long getOpeningId();
 
-  LocalDateTime ACTION_TIMESTAMP();
+  LocalDateTime getActionTimestamp();
 }
