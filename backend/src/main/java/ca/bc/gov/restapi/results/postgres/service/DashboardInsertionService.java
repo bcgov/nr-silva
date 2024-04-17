@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
+import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningSubmissionDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardResultsAuditDto;
@@ -8,9 +9,17 @@ import ca.bc.gov.restapi.results.oracle.dto.DashboardStockingEventDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
+import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
+import ca.bc.gov.restapi.results.postgres.repository.OracleExtractionLogsRepository;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +37,42 @@ public class DashboardInsertionService {
 
   private final OpeningsActivityRepository openingsActivityRepository;
 
+  private final OracleExtractionLogsRepository oracleExtractionLogsRepository;
+
   /**
    * Loads all data extraced from Oracle into Postgres.
    *
    * @param oracleDto A {@link OracleExtractionDto} containing all data
    */
   @Transactional(transactionManager = "postgresTransactionManager")
-  public void loadDashboardData(OracleExtractionDto oracleDto) {
+  public void loadDashboardData(OracleExtractionDto oracleDto, LocalDateTime startDateTime) {
     saveOpeningsLastYear(oracleDto);
     saveOpeningsActivities(oracleDto);
+
+    // Logs
+    saveLogs(oracleDto.logMessages(), startDateTime);
+  }
+
+  private void saveLogs(List<OracleLogDto> logMessages, LocalDateTime startDateTime) {
+    long starting = startDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
+    long ending = Instant.now().toEpochMilli();
+    long spent = ending - starting;
+    String message = "Extraction finished! Time spent in ms " + spent;
+    log.info(message);
+    logMessages.add(new OracleLogDto(message, LocalDateTime.now()));
+
+    List<OracleExtractionLogsEntity> entities = new ArrayList<>();
+    logMessages.forEach(
+        log -> {
+          OracleExtractionLogsEntity entity = new OracleExtractionLogsEntity();
+          entity.setLogMessage(log.message());
+          entity.setLoggedAt(log.eventTime());
+          entity.setManuallyTriggered(Boolean.FALSE);
+          entities.add(entity);
+        });
+
+    entities.sort(Comparator.comparing(OracleExtractionLogsEntity::getLoggedAt));
+    oracleExtractionLogsRepository.saveAll(entities);
   }
 
   private void saveOpeningsActivities(OracleExtractionDto oracleDto) {
@@ -132,7 +168,7 @@ public class DashboardInsertionService {
       openingEntity.setEntryTimestamp(openingDto.getEntryTimestamp());
       openingEntity.setUpdateTimestamp(openingDto.getUpdateTimestamp());
       openingEntity.setStatus(openingDto.getOpeningStatusCode());
-      
+
       String orgUnitCode = null;
       String orgUnitName = null;
       if (!Objects.isNull(openingDto.getAdminDistrictNo())) {

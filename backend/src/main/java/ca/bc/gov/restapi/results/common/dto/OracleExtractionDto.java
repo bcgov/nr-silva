@@ -15,4 +15,5 @@ public record OracleExtractionDto(
     List<DashboardResultsAuditDto> resultsAudits,
     List<DashboardStockingEventDto> stockingEvents,
     List<DashboardOrgUnitDto> orgUnits,
-    List<DashboardActionCodeDto> actionCodes) {}
+    List<DashboardActionCodeDto> actionCodes,
+    List<OracleLogDto> logMessages) {}
