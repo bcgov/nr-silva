@@ -95,7 +95,7 @@ const usePagination = (data, initialItemsPerPage) => {
 
 
 
-export default function OpeningScreenDataTable({ rows, headers }) {
+export default function OpeningScreenDataTable({ rows, headers, error }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
     currentData,
