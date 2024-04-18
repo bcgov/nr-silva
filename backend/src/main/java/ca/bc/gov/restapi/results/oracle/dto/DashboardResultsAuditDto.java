@@ -17,6 +17,7 @@ public interface DashboardResultsAuditDto {
 
   LocalDateTime getActionTimestamp();
 
+  /** Default method for logging the interface. */
   default String toLogString() {
     StringBuilder logDto = new StringBuilder("{");
     logDto.append("resultsAuditActionCode='").append(getResultsAuditActionCode());

@@ -17,6 +17,7 @@ public interface DashboardStockingEventDto {
 
   LocalDateTime getActionTimestamp();
 
+  /** Default method for logging the interface. */
   default String toLogString() {
     StringBuilder logDto = new StringBuilder("{");
     logDto.append("resultsAuditActionCode='").append(getResultsAuditActionCode());
@@ -27,4 +28,4 @@ public interface DashboardStockingEventDto {
     logDto.append("', actionTimestamp='").append(getActionTimestamp()).append("'}");
     return logDto.toString();
   }
-};
+}

@@ -1,38 +1,26 @@
 package ca.bc.gov.restapi.results.common.job;
 
-import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
-import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
-import ca.bc.gov.restapi.results.oracle.service.OracleExtractionService;
-import ca.bc.gov.restapi.results.postgres.service.DashboardInsertionService;
-import java.time.LocalDateTime;
+import ca.bc.gov.restapi.results.common.service.DashboardExtractionService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+/** This class contains the job responsible for extracting data from oracle for the dashboard. */
 @Component
 @RequiredArgsConstructor
 public class DashboardExtractionJob {
 
-  private final OracleExtractionService oracleExtractionService;
+  private final DashboardExtractionService dashboardExtractionService;
 
-  private final DashboardInsertionService dashboardInsertionService;
-
-  // @Scheduled(cron = "0 0 */2 * * *", initialDelay = 1000 * 2)
-  @Scheduled(fixedDelay = 1000 * 60 * 60 * 24, initialDelay = 1000 * 2)
+  /**
+   * Scheduled job for extracting data from oracle and adding into Postgres. Spring Boot uses a
+   * different cron expression, having: 1 - second (0-59), 2 - minute (0-59) 3, - hour (0-23), 4 -
+   * day of month (1-31), 5 - month (1-12) or (JAN-DEC), 6 - day of the week (0-7) [0 or 7 is
+   * Sunday] or (MON-SUN) More:
+   * https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-cron-expression
+   */
+  @Scheduled(cron = "0 0 23 * * MON-FRI")
   public void extractDataForTheDashboard() {
-    LocalDateTime startDateTime = LocalDateTime.now();
-    String message = "Starting extraction";
-    log.info("Starting extraction!");
-
-    OracleExtractionDto extactionDto =
-        oracleExtractionService.getOpeningActivities(24, Boolean.TRUE);
-
-    // Add first log
-    OracleLogDto logDto = new OracleLogDto(message, startDateTime);
-    extactionDto.logMessages().add(0, logDto);
-
-    dashboardInsertionService.loadDashboardData(extactionDto, startDateTime);
+    dashboardExtractionService.extractDataForTheDashboard(null, null, null);
   }
 }

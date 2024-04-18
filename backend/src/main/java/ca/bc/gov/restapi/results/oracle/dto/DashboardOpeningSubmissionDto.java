@@ -7,6 +7,7 @@ public interface DashboardOpeningSubmissionDto {
 
   String getClientNumber();
 
+  /** Default method for logging the interface. */
   default String toLogString() {
     StringBuilder logDto = new StringBuilder("{");
     logDto.append("resultsSubmissionId=").append(getResultsSubmissionId());

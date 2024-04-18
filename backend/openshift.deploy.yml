@@ -69,6 +69,9 @@ parameters:
   - name: AWS_COGNITO_ISSUER_URI
     description: AWS Cognito JWT Server URI
     required: true
+  - name: DASHBOARD_JOB_IDIR_USERS
+    description: List of IDIR usernames allowed to manually trigger jobs
+    required: true
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -144,6 +147,8 @@ objects:
                   value: ${SERVICE_NAME}
                 - name: AWS_COGNITO_ISSUER_URI
                   value: ${AWS_COGNITO_ISSUER_URI}
+                - name: DASHBOARD_JOB_IDIR_USERS
+                  value: ${DASHBOARD_JOB_IDIR_USERS}
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:

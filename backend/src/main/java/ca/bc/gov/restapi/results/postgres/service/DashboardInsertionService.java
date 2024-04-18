@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
+import ca.bc.gov.restapi.results.common.dto.OracleExtractionParamsDto;
 import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningSubmissionDto;
@@ -45,19 +46,23 @@ public class DashboardInsertionService {
    * @param oracleDto A {@link OracleExtractionDto} containing all data
    */
   @Transactional(transactionManager = "postgresTransactionManager")
-  public void loadDashboardData(OracleExtractionDto oracleDto, LocalDateTime startDateTime) {
-    saveOpeningsLastYear(oracleDto);
-    saveOpeningsActivities(oracleDto);
-
-    // Logs
-    saveLogs(oracleDto.logMessages(), startDateTime);
+  public void loadDashboardData(
+      OracleExtractionDto oracleDto,
+      LocalDateTime startDateTime,
+      OracleExtractionParamsDto params) {
+    saveOpeningsLastYear(oracleDto, params.debug());
+    saveOpeningsActivities(oracleDto, params.debug());
+    saveLogs(oracleDto.logMessages(), startDateTime, params);
   }
 
-  private void saveLogs(List<OracleLogDto> logMessages, LocalDateTime startDateTime) {
+  private void saveLogs(
+      List<OracleLogDto> logMessages,
+      LocalDateTime startDateTime,
+      OracleExtractionParamsDto params) {
     long starting = startDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
     long ending = Instant.now().toEpochMilli();
     long spent = ending - starting;
-    String message = "Extraction finished! Time spent in ms " + spent;
+    String message = "Extraction finished! All Postgres tables loaded! Time spent in ms " + spent;
     log.info(message);
     logMessages.add(new OracleLogDto(message, LocalDateTime.now()));
 
@@ -67,16 +72,21 @@ public class DashboardInsertionService {
           OracleExtractionLogsEntity entity = new OracleExtractionLogsEntity();
           entity.setLogMessage(log.message());
           entity.setLoggedAt(log.eventTime());
-          entity.setManuallyTriggered(Boolean.FALSE);
+          entity.setManuallyTriggered(params.manuallyTriggered());
           entities.add(entity);
         });
+
+    oracleExtractionLogsRepository.deleteAll();
+    oracleExtractionLogsRepository.flush();
 
     entities.sort(Comparator.comparing(OracleExtractionLogsEntity::getLoggedAt));
     oracleExtractionLogsRepository.saveAll(entities);
   }
 
-  private void saveOpeningsActivities(OracleExtractionDto oracleDto) {
-    // Cleaning table
+  private void saveOpeningsActivities(OracleExtractionDto oracleDto, Boolean debug) {
+    logAndSave(
+        oracleDto.logMessages(),
+        "Cleaning up opening acitivites (SILVA.OPENINGS_ACTIVITY on Postgres)");
     openingsActivityRepository.deleteAll();
     openingsActivityRepository.flush();
 
@@ -92,10 +102,18 @@ public class DashboardInsertionService {
     Map<OpeningsActivityEntityId, OpeningsActivityEntity> openingActivityMap = new HashMap<>();
 
     // Load from: resultsAudits
+    logAndSave(oracleDto.logMessages(), "Reading extracted data from the Audit table");
     Integer activityId = 0;
     for (DashboardResultsAuditDto resultsAudit : oracleDto.resultsAudits()) {
       if (Objects.isNull(resultsAudit.getOpeningId())) {
-        log.warn("Opening ID not found on audit! resultsAudit={}", resultsAudit.toLogString());
+        if (Boolean.TRUE.equals(debug)) {
+          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+
+          logAndSave(
+              oracleDto.logMessages(),
+              "Opening ID column is null on the audit table! resultsAudit={}",
+              resultsAudit.toLogString());
+        }
         continue;
       }
       OpeningsActivityEntityId openingActId =
@@ -116,9 +134,17 @@ public class DashboardInsertionService {
     }
 
     // Load from: stockingEvents
+    logAndSave(oracleDto.logMessages(), "Reading extracted data from the Stocking Events table");
     for (DashboardStockingEventDto stockingEvent : oracleDto.stockingEvents()) {
       if (Objects.isNull(stockingEvent.getOpeningId())) {
-        log.warn("Opening ID not found on stocking! stockingEvent={}", stockingEvent.toLogString());
+        if (Boolean.TRUE.equals(debug)) {
+          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+
+          logAndSave(
+              oracleDto.logMessages(),
+              "Opening ID column is null on the stocking events table! stockingEvent={}",
+              stockingEvent.toLogString());
+        }
         continue;
       }
       OpeningsActivityEntityId openingActId =
@@ -138,13 +164,19 @@ public class DashboardInsertionService {
       activityEntity.setEntryUserid(stockingEvent.getEntryUserid());
     }
 
-    log.info(
-        "Inserting {} records into openingsActivityRepository", openingActivityMap.values().size());
     openingsActivityRepository.saveAllAndFlush(openingActivityMap.values());
+
+    logAndSave(
+        oracleDto.logMessages(),
+        "Loaded {} records into the activities table (SILVA.openings_activity on Postgres)",
+        openingActivityMap.values().size());
   }
 
-  private void saveOpeningsLastYear(OracleExtractionDto oracleDto) {
-    // Cleaning table
+  private void saveOpeningsLastYear(OracleExtractionDto oracleDto, Boolean debug) {
+    logAndSave(
+        oracleDto.logMessages(),
+        "Cleaning up the past openings table (SILVA.OPENINGS_LAST_YEAR on Postgres)");
+
     openingsLastYearRepository.deleteAll();
     openingsLastYearRepository.flush();
 
@@ -186,13 +218,25 @@ public class DashboardInsertionService {
     for (DashboardOpeningSubmissionDto submissionDto : oracleDto.openingSubmissions()) {
       Long openingId = openingSubmissionMap.get(submissionDto.getResultsSubmissionId());
       if (Objects.isNull(openingId)) {
-        log.info("No opening ID for submission ID {}", submissionDto.getResultsSubmissionId());
+        if (Boolean.TRUE.equals(debug)) {
+          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(
+              oracleDto.logMessages(),
+              "No opening ID found for submission ID {}",
+              submissionDto.getResultsSubmissionId());
+        }
         continue;
       }
 
       OpeningsLastYearEntity openingEntity = openingsLastYearMap.get(openingId);
       if (Objects.isNull(openingId)) {
-        log.info("No opening for ID {}", openingId);
+        if (Boolean.TRUE.equals(debug)) {
+          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(
+              oracleDto.logMessages(),
+              "No opening for ID {} (from the submissions table)",
+              openingId);
+        }
         continue;
       }
 
@@ -200,9 +244,22 @@ public class DashboardInsertionService {
       openingEntity.setClientNumber(submissionDto.getClientNumber());
     }
 
-    log.info(
-        "Inserting {} records into openingsLastYearRepository",
-        openingsLastYearMap.values().size());
     openingsLastYearRepository.saveAllAndFlush(openingsLastYearMap.values());
+
+    logAndSave(
+        oracleDto.logMessages(),
+        "Loaded {} records into the opening table (SILVA.OPENINGS_LAST_YEAR on Postgres)",
+        openingsLastYearMap.values().size());
+  }
+
+  private void logAndSave(List<OracleLogDto> logMessages, String message, Object... params) {
+    log.info(message, params);
+
+    if (params.length > 0) {
+      for (int i = 0, len = params.length; i < len; i++) {
+        message = message.replaceFirst("\\{\\}", String.valueOf(params[i]));
+      }
+    }
+    logMessages.add(new OracleLogDto(message, LocalDateTime.now()));
   }
 }

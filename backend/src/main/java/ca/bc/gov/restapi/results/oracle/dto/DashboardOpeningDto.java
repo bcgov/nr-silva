@@ -21,6 +21,7 @@ public interface DashboardOpeningDto {
 
   LocalDateTime getActionTimestamp();
 
+  /** Default method for logging the interface. */
   default String toLogString() {
     StringBuilder logDto = new StringBuilder("{");
     logDto.append("openingId=").append(getOpeningId()).append(", ");

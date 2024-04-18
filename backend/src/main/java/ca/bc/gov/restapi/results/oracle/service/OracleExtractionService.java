@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
+import ca.bc.gov.restapi.results.common.dto.OracleExtractionParamsDto;
 import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardActionCodeDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningDto;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/** This class contains methods for extracting data from Oracle THE schema. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,18 +33,19 @@ public class OracleExtractionService {
    *
    * @return A {@link OracleExtractionDto} containing all data extracted.
    */
-  public OracleExtractionDto getOpeningActivities(Integer months, Boolean debug) {
+  public OracleExtractionDto getOpeningActivities(OracleExtractionParamsDto params) {
     List<OracleLogDto> logMessages = new ArrayList<>();
 
     // Openings main table
     logAndSave(
         logMessages,
         "Querying Openings (on THE.OPENING main table) from the last {} months",
-        months);
-    List<DashboardOpeningDto> mainOpenings = openingRepository.findAllDashboardOpenings(months);
+        params.months());
+    List<DashboardOpeningDto> mainOpenings =
+        openingRepository.findAllDashboardOpenings(params.months());
     logAndSave(logMessages, "{} record(s) found (on THE.OPENING main table)", mainOpenings.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging each found record on THE.OPENING");
       for (DashboardOpeningDto openingDto : mainOpenings) {
         logAndSave(logMessages, "DashboardOpeningDto={}", openingDto.toLogString());
@@ -51,12 +54,12 @@ public class OracleExtractionService {
 
     // Opening Submissions
     List<Long> submissionsIds =
-        mainOpenings
-        .stream()
-        .filter(x -> !Objects.isNull(x.getResultsSubmissionId()))
-        .map(DashboardOpeningDto::getResultsSubmissionId).toList();
+        mainOpenings.stream()
+            .filter(x -> !Objects.isNull(x.getResultsSubmissionId()))
+            .map(DashboardOpeningDto::getResultsSubmissionId)
+            .toList();
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging all Submission IDs for the next query");
 
       if (submissionsIds.size() > 800) {
@@ -96,7 +99,7 @@ public class OracleExtractionService {
         "{} record(s) found (on THE.RESULTS_ELECTRONIC_SUBMISSION table)",
         openingSubmissions.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(
           logMessages,
           "DEBUG mode ON! Logging each found record on THE.RESULTS_ELECTRONIC_SUBMISSION");
@@ -109,13 +112,13 @@ public class OracleExtractionService {
     logAndSave(
         logMessages,
         "Querying Audit Events (on THE.RESULTS_AUDIT_EVENT table) from the last {} months",
-        months);
+        params.months());
     List<DashboardResultsAuditDto> resultsAudits =
-        openingRepository.findAllDashboardAuditEvents(months);
+        openingRepository.findAllDashboardAuditEvents(params.months());
     logAndSave(
         logMessages, "{} record(s) found (on THE.RESULTS_AUDIT_EVENT table)", resultsAudits.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(
           logMessages, "DEBUG mode ON! Logging each found record on THE.RESULTS_AUDIT_EVENT");
       for (DashboardResultsAuditDto resultsAudit : resultsAudits) {
@@ -127,15 +130,15 @@ public class OracleExtractionService {
     logAndSave(
         logMessages,
         "Querying Stocking Events (on THE.STOCKING_EVENT_HISTORY table) from the last {} months",
-        months);
+        params.months());
     List<DashboardStockingEventDto> stockingEvents =
-        openingRepository.findAllDashboardStockingEventHistory(months);
+        openingRepository.findAllDashboardStockingEventHistory(params.months());
     logAndSave(
         logMessages,
         "{} record(s) found (on THE.STOCKING_EVENT_HISTORY table)",
         stockingEvents.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(
           logMessages, "DEBUG mode ON! Logging each found record on THE.STOCKING_EVENT_HISTORY");
       for (DashboardStockingEventDto stockingEvent : stockingEvents) {
@@ -151,7 +154,7 @@ public class OracleExtractionService {
         "Gathered {} district(s) (Org Units) found on the Openings",
         orgUnitIds.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging all Org Unit Codes for the next query");
 
       if (orgUnitIds.size() > 800) {
@@ -185,7 +188,7 @@ public class OracleExtractionService {
     List<DashboardOrgUnitDto> orgUnits = openingRepository.findAllDashboardOrgUnits(orgUnitIds);
     logAndSave(logMessages, "{} record(s) found (on THE.ORG_UNIT table)", orgUnits.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging all Org Units found");
 
       for (DashboardOrgUnitDto orgUnit : orgUnits) {
@@ -205,7 +208,7 @@ public class OracleExtractionService {
         "Gathered {} unique action codes found on both Results Audit and Stocking Events",
         codesSet.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging all Action Codes for the next query");
       logAndSave(logMessages, "Codes: {}", codesSet);
     }
@@ -223,7 +226,7 @@ public class OracleExtractionService {
         "{} record(s) found (on THE.RESULTS_AUDIT_ACTION_CODE table)",
         actionCodes.size());
 
-    if (Boolean.TRUE.equals(debug)) {
+    if (Boolean.TRUE.equals(params.debug())) {
       logAndSave(logMessages, "DEBUG mode ON! Logging all Action Codes found");
 
       for (DashboardActionCodeDto actionCode : actionCodes) {

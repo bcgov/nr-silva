@@ -9,6 +9,7 @@ public interface DashboardOrgUnitDto {
 
   String getOrgUnitName();
 
+  /** Default method for logging the interface. */
   default String toLogString() {
     StringBuilder logDto = new StringBuilder("{");
     logDto.append("orgUnitNo=").append(getOrgUnitNo()).append(", ");
