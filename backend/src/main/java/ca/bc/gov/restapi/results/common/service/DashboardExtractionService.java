@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,6 +32,7 @@ public class DashboardExtractionService {
    * @param debug Optional debug mode enabled.
    * @param manuallyTriggered Optional option.
    */
+  @Async
   public void extractDataForTheDashboard(Integer months, Boolean debug, Boolean manuallyTriggered) {
     OracleExtractionParamsDto params = getParams(months, debug, manuallyTriggered);
 
