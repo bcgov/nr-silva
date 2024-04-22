@@ -221,6 +221,19 @@ class DashboardInsertionServiceTest {
   @Test
   @DisplayName("Load dashboard data happy path should succeed")
   void loadDashboardData_happyPath_shouldSucceed() {
+    // openings last year
+    doNothing().when(openingsLastYearRepository).deleteAll();
+    doNothing().when(openingsLastYearRepository).flush();
+    when(openingsLastYearRepository.saveAllAndFlush(any())).thenReturn(List.of());
+
+    // opening activities
+    doNothing().when(openingsActivityRepository).deleteAll();
+    doNothing().when(openingsActivityRepository).flush();
+    when(openingsActivityRepository.saveAllAndFlush(any())).thenReturn(List.of());
+
+    LocalDateTime startDateTime = LocalDateTime.now();
+    OracleExtractionParamsDto paramsDto = new OracleExtractionParamsDto(24, true, false);
+
     // Params
     List<DashboardOpeningDto> mainOpenings = List.of(mockDashboardOpeningDto());
     List<DashboardOpeningSubmissionDto> openingSubmissions =
@@ -240,19 +253,6 @@ class DashboardInsertionServiceTest {
             orgUnits,
             actionCodes,
             logMessages);
-
-    // openings last year
-    doNothing().when(openingsLastYearRepository).deleteAll();
-    doNothing().when(openingsLastYearRepository).flush();
-    when(openingsLastYearRepository.saveAllAndFlush(any())).thenReturn(List.of());
-
-    // opening activities
-    doNothing().when(openingsActivityRepository).deleteAll();
-    doNothing().when(openingsActivityRepository).flush();
-    when(openingsActivityRepository.saveAllAndFlush(any())).thenReturn(List.of());
-
-    LocalDateTime startDateTime = LocalDateTime.now();
-    OracleExtractionParamsDto paramsDto = new OracleExtractionParamsDto(24, true, false);
 
     dashboardInsertionService.loadDashboardData(extractionDto, startDateTime, paramsDto);
 
