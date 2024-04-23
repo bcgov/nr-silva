@@ -40,6 +40,8 @@ public class DashboardInsertionService {
 
   private final OracleExtractionLogsRepository oracleExtractionLogsRepository;
 
+  private static final String INCONSISTENCY = "DEBUG mode ON! Possible data inconsistency found!";
+
   /**
    * Loads all data extraced from Oracle into Postgres.
    *
@@ -107,7 +109,7 @@ public class DashboardInsertionService {
     for (DashboardResultsAuditDto resultsAudit : oracleDto.resultsAudits()) {
       if (Objects.isNull(resultsAudit.getOpeningId())) {
         if (Boolean.TRUE.equals(debug)) {
-          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(oracleDto.logMessages(), INCONSISTENCY);
 
           logAndSave(
               oracleDto.logMessages(),
@@ -138,7 +140,7 @@ public class DashboardInsertionService {
     for (DashboardStockingEventDto stockingEvent : oracleDto.stockingEvents()) {
       if (Objects.isNull(stockingEvent.getOpeningId())) {
         if (Boolean.TRUE.equals(debug)) {
-          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(oracleDto.logMessages(), INCONSISTENCY);
 
           logAndSave(
               oracleDto.logMessages(),
@@ -216,32 +218,33 @@ public class DashboardInsertionService {
 
     // Load from: openingSubmissions
     for (DashboardOpeningSubmissionDto submissionDto : oracleDto.openingSubmissions()) {
+      OpeningsLastYearEntity openingEntity = null;
+
       Long openingId = openingSubmissionMap.get(submissionDto.getResultsSubmissionId());
       if (Objects.isNull(openingId)) {
         if (Boolean.TRUE.equals(debug)) {
-          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(oracleDto.logMessages(), INCONSISTENCY);
           logAndSave(
               oracleDto.logMessages(),
               "No opening ID found for submission ID {}",
               submissionDto.getResultsSubmissionId());
         }
-        continue;
+      } else {
+        openingEntity = openingsLastYearMap.get(openingId);
       }
 
-      OpeningsLastYearEntity openingEntity = openingsLastYearMap.get(openingId);
-      if (Objects.isNull(openingId)) {
+      if (Objects.isNull(openingEntity)) {
         if (Boolean.TRUE.equals(debug)) {
-          logAndSave(oracleDto.logMessages(), "DEBUG mode ON! Possible data inconsistency found!");
+          logAndSave(oracleDto.logMessages(), INCONSISTENCY);
           logAndSave(
               oracleDto.logMessages(),
-              "No opening for ID {} (from the submissions table)",
+              "No opening entity for ID {} (from the openings last year table map)",
               openingId);
         }
-        continue;
+      } else {
+        // clientNumber
+        openingEntity.setClientNumber(submissionDto.getClientNumber());
       }
-
-      // clientNumber
-      openingEntity.setClientNumber(submissionDto.getClientNumber());
     }
 
     openingsLastYearRepository.saveAllAndFlush(openingsLastYearMap.values());
