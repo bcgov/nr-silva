@@ -300,6 +300,7 @@
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
+            <exclude>**/job/**</exclude>
             <exclude>**/response/**</exclude>
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/RestExceptionEndpoint.*</exclude>

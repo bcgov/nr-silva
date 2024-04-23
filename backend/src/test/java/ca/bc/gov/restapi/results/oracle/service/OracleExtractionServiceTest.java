@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionParamsDto;
+import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardActionCodeDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningSubmissionDto;
@@ -238,11 +239,51 @@ class OracleExtractionServiceTest {
 
     Assertions.assertNotNull(extractionDto);
     Assertions.assertEquals(1, extractionDto.mainOpenings().size());
+    DashboardOpeningDto openingDto2 = extractionDto.mainOpenings().get(0);
+    Assertions.assertEquals(OPENING_ID, openingDto2.getOpeningId());
+    Assertions.assertEquals("APP", openingDto2.getOpeningStatusCode());
+    Assertions.assertEquals(TEST_USER, openingDto2.getEntryUserId());
+    Assertions.assertEquals(ADMIN_DISTRICT_NO, openingDto2.getAdminDistrictNo());
+    Assertions.assertEquals(22L, openingDto2.getResultsSubmissionId());
+    Assertions.assertFalse(openingDto2.toLogString().isBlank());
+
     Assertions.assertEquals(1, extractionDto.openingSubmissions().size());
+    DashboardOpeningSubmissionDto submissionDto2 = extractionDto.openingSubmissions().get(0);
+    Assertions.assertEquals(22L, submissionDto2.getResultsSubmissionId());
+    Assertions.assertEquals("0012797", submissionDto2.getClientNumber());
+    Assertions.assertFalse(submissionDto2.toLogString().isBlank());
+
     Assertions.assertEquals(1, extractionDto.resultsAudits().size());
+    DashboardResultsAuditDto auditDto2 = extractionDto.resultsAudits().get(0);
+    Assertions.assertEquals(AUDIT_ACTION_CODE, auditDto2.getResultsAuditActionCode());
+    Assertions.assertEquals(TEST_USER, auditDto2.getEntryUserid());
+    Assertions.assertEquals(OPENING_ID, auditDto2.getOpeningId());
+    Assertions.assertFalse(auditDto2.toLogString().isBlank());
+
     Assertions.assertEquals(1, extractionDto.stockingEvents().size());
+    DashboardStockingEventDto stockingEventDto2 = extractionDto.stockingEvents().get(0);
+    Assertions.assertEquals(AUDIT_ACTION_CODE, stockingEventDto2.getResultsAuditActionCode());
+    Assertions.assertEquals(AUDIT_ACTION_CODE, stockingEventDto2.getResultsAuditActionCode());
+    Assertions.assertEquals(OPENING_ID, stockingEventDto2.getOpeningId());
+    Assertions.assertFalse(stockingEventDto2.toLogString().isBlank());
+
     Assertions.assertEquals(1, extractionDto.orgUnits().size());
+    DashboardOrgUnitDto orgUnitDto2 = extractionDto.orgUnits().get(0);
+    Assertions.assertEquals(ADMIN_DISTRICT_NO, orgUnitDto2.getOrgUnitNo());
+    Assertions.assertEquals("DCR", orgUnitDto2.getOrgUnitCode());
+    Assertions.assertEquals("DCR Name", orgUnitDto2.getOrgUnitName());
+    Assertions.assertFalse(orgUnitDto2.toLogString().isBlank());
+
     Assertions.assertEquals(1, extractionDto.actionCodes().size());
+    DashboardActionCodeDto actionCodeDto2 = extractionDto.actionCodes().get(0);
+    Assertions.assertEquals(AUDIT_ACTION_CODE, actionCodeDto2.getResultsAuditActionCode());
+    Assertions.assertEquals(AUDIT_ACTION_CODE, actionCodeDto2.getDescription());
+    Assertions.assertFalse(actionCodeDto2.toLogString().isBlank());
+
     Assertions.assertFalse(extractionDto.logMessages().isEmpty());
+    OracleLogDto logDto = extractionDto.logMessages().get(0);
+    String message = "Querying Openings (on THE.OPENING main table) from the last 24 months";
+    Assertions.assertEquals(message, logDto.message());
+    Assertions.assertNotNull(logDto.eventTime());
   }
 }
