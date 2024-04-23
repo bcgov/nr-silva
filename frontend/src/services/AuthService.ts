@@ -85,9 +85,6 @@ export const handlePostLogin = async () => {
 async function refreshToken (): Promise<FamLoginUser | undefined> {
   try {
     const { tokens } = await fetchAuthSession();
-    console.log("The id token is here:");
-    console.log(tokens?.idToken?.toString());
-
     // Set the authIdToken variable
     setAuthIdToken(tokens?.idToken?.toString() || null);
 

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 
-
 export async function fetchRecentOpenings() {
     let authToken = await getAuthIdToken();
     try {
@@ -29,10 +28,6 @@ export async function fetchRecentOpenings() {
                 createdAt: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
                 lastViewed: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
             }));
-
-            // Logging the fetched rows
-            console.log(rows);
-
             // Returning the rows
             return rows;
         } else {

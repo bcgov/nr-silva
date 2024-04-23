@@ -36,7 +36,7 @@ export const buttonsCol = (
   <Button
     hasIconOnly
     iconDescription="View"
-    tooltipPosition="bottom"
+    tooltipposition="bottom"
     kind="ghost"
     onClick={() => clickFn(item.id)}
     renderIcon={Icons.DataViewAlt}
@@ -45,7 +45,7 @@ export const buttonsCol = (
   <Button
     hasIconOnly
     iconDescription="Download"
-    tooltipPosition="bottom"
+    tooltipposition="bottom"
     kind="ghost"
     onClick={() => null}
     renderIcon={Icons.Download}
@@ -95,7 +95,7 @@ const usePagination = (data, initialItemsPerPage) => {
 
 
 
-export default function OpeningScreenDataTable({ rows, headers, error }) {
+export default function OpeningScreenDataTable({ rows, headers }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
     currentData,
@@ -149,7 +149,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />
-                <TableToolbarMenu iconDescription="More" tooltipPosition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
+                <TableToolbarMenu iconDescription="More" tooltipposition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
                   <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
@@ -167,7 +167,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   <Button
                     hasIconOnly
                     iconDescription="Download"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => console.log('Download Click')}
                     disabled={selectedRows.length === 0}
@@ -177,7 +177,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   <Button
                     hasIconOnly
                     iconDescription="Print"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => {
                       batchActionClick(selectedRows);

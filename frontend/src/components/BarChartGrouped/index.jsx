@@ -132,10 +132,10 @@ const BarChartGrouped = () => {
     <div className="px-3">
       <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
-          <Dropdown id="default" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
+          <Dropdown id="default" titleText="Select District" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
         </div>
         <div className="col-md-4 p-0 px-md-1">
-          <Dropdown id="default" label={windowWidth<=1584?"Status":"Filter by status"} items={items} itemToString={item => item ? item.text : ''} />
+          <Dropdown id="default"  titleText="Select Client Number"label={windowWidth<=1584?"Status":"Filter by status"} items={items} itemToString={item => item ? item.text : ''} />
         </div>
         <div className="col-4 p-0 d-none d-md-block">
           <DatePicker datePickerType="single">
@@ -143,6 +143,7 @@ const BarChartGrouped = () => {
               id="date-picker-input-id"
               placeholder="mm/dd/yyyy"
               size="md"
+              labelText=""
             />
           </DatePicker>
         </div>

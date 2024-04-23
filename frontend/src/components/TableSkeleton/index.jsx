@@ -4,12 +4,10 @@ import {
 } from '@carbon/react';
 import './styles.scss'
 
-
-
 export default function TableSkeleton({ headers }) {
   return (
     <div>
-    <DataTableSkeleton  headers={headers} aria-label="sample table" />
+    <DataTableSkeleton  headers={headers} aria-label="loading table" />
     </div>
   );
 }
