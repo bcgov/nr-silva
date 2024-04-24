@@ -26,7 +26,7 @@ jobs:
           java-version: 21
           sonar_args: >
             -Dsonar.exclusions=**/config/**,**/converter/**,**/dto/**,**/entity/**,**/exception/**,**/job/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
-            -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/coverage-reports/merged-test-report/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
