@@ -89,7 +89,7 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
     console.log(tokens?.idToken?.toString());
 
     // Set the authIdToken variable
-    setAuthIdToken(tokens?.idToken?.toString());
+    setAuthIdToken(tokens?.idToken?.toString() ?? null);
 
     const famLoginUser = parseToken(tokens?.idToken, tokens?.accessToken);
     await storeFamUser(famLoginUser);
