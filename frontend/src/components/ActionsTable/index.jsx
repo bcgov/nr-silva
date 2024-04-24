@@ -4,7 +4,7 @@ import StatusTag from "../StatusTag";
 import ActivityTag from "../ActivityTag";
 const ActionsTable = ({rows,headers}) => {
   return (
-    <Table size="lg" useZebraStyles={false} aria-label="sample table">
+    <Table size="lg" useZebraStyles={false} aria-label="actions table">
       <TableHead>
         <TableRow>
           {headers.map(header => <TableHeader id={header.key} key={header.key}>
