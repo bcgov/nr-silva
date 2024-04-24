@@ -2,6 +2,7 @@
   "name": "frontend-react-starter",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@aws-amplify/ui-react": "^6.1.4",
     "@bcgov-nr/nr-theme": "^1.7.0",
