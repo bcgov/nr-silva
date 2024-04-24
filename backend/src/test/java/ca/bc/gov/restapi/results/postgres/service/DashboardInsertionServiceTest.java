@@ -91,12 +91,12 @@ class DashboardInsertionServiceTest {
     };
   }
 
-  private DashboardOpeningSubmissionDto mockDashboardOpeningSubmissionDto() {
+  private DashboardOpeningSubmissionDto mockDashboardOpeningSubmissionDto(Long id) {
     return new DashboardOpeningSubmissionDto() {
 
       @Override
       public Long getResultsSubmissionId() {
-        return 22L;
+        return id;
       }
 
       @Override
@@ -141,7 +141,7 @@ class DashboardInsertionServiceTest {
     };
   }
 
-  private DashboardStockingEventDto mockDashboardStockingEventDto() {
+  private DashboardStockingEventDto mockDashboardStockingEventDto(boolean nullOpening) {
     return new DashboardStockingEventDto() {
 
       @Override
@@ -156,7 +156,7 @@ class DashboardInsertionServiceTest {
 
       @Override
       public Long getOpeningId() {
-        return OPENING_ID;
+        return nullOpening ? null : OPENING_ID;
       }
 
       @Override
@@ -235,23 +235,62 @@ class DashboardInsertionServiceTest {
     OracleExtractionParamsDto paramsDto = new OracleExtractionParamsDto(24, true, false);
 
     // Params
-    List<DashboardOpeningDto> mainOpenings = List.of(mockDashboardOpeningDto());
-    List<DashboardOpeningSubmissionDto> openingSubmissions =
-        List.of(mockDashboardOpeningSubmissionDto());
-    List<DashboardResultsAuditDto> resultsAudits = List.of(mockDashboardResultsAuditDto());
-    List<DashboardStockingEventDto> stockingEvents = List.of(mockDashboardStockingEventDto());
-    List<DashboardOrgUnitDto> orgUnits = List.of(mockDashboardOrgUnitDto());
-    List<DashboardActionCodeDto> actionCodes = List.of(mockDashboardActionCodeDto());
+    DashboardOpeningDto mainOpenings = mockDashboardOpeningDto();
+    DashboardOpeningSubmissionDto submissionDto = mockDashboardOpeningSubmissionDto(22L);
+    DashboardResultsAuditDto resultsAudits = mockDashboardResultsAuditDto();
+    DashboardStockingEventDto stockingEvents = mockDashboardStockingEventDto(false);
+    DashboardOrgUnitDto orgUnits = mockDashboardOrgUnitDto();
+    DashboardActionCodeDto actionCodes = mockDashboardActionCodeDto();
     List<OracleLogDto> logMessages = new ArrayList<>();
     logMessages.add(new OracleLogDto("Hey", LocalDateTime.now()));
     OracleExtractionDto extractionDto =
         new OracleExtractionDto(
-            mainOpenings,
-            openingSubmissions,
-            resultsAudits,
-            stockingEvents,
-            orgUnits,
-            actionCodes,
+            List.of(mainOpenings),
+            List.of(submissionDto),
+            List.of(resultsAudits),
+            List.of(stockingEvents),
+            List.of(orgUnits),
+            List.of(actionCodes),
+            logMessages);
+
+    dashboardInsertionService.loadDashboardData(extractionDto, startDateTime, paramsDto);
+
+    Assertions.assertFalse(extractionDto.logMessages().isEmpty());
+  }
+
+  @Test
+  @DisplayName("Load dashboard data null values should succeed")
+  void loadDashboardData_nullValues_shouldSucceed() {
+    // openings last year
+    doNothing().when(openingsLastYearRepository).deleteAll();
+    doNothing().when(openingsLastYearRepository).flush();
+    when(openingsLastYearRepository.saveAllAndFlush(any())).thenReturn(List.of());
+
+    // opening activities
+    doNothing().when(openingsActivityRepository).deleteAll();
+    doNothing().when(openingsActivityRepository).flush();
+    when(openingsActivityRepository.saveAllAndFlush(any())).thenReturn(List.of());
+
+    LocalDateTime startDateTime = LocalDateTime.now();
+    OracleExtractionParamsDto paramsDto = new OracleExtractionParamsDto(24, true, false);
+
+    // Params
+    DashboardOpeningDto mainOpenings = mockDashboardOpeningDto();
+    DashboardOpeningSubmissionDto submissionDto = mockDashboardOpeningSubmissionDto(23L);
+    DashboardResultsAuditDto resultsAudits = mockDashboardResultsAuditDto();
+    DashboardStockingEventDto stockingEvents = mockDashboardStockingEventDto(true);
+    DashboardOrgUnitDto orgUnits = mockDashboardOrgUnitDto();
+    DashboardActionCodeDto actionCodes = mockDashboardActionCodeDto();
+    List<OracleLogDto> logMessages = new ArrayList<>();
+    logMessages.add(new OracleLogDto("Hey", LocalDateTime.now()));
+    OracleExtractionDto extractionDto =
+        new OracleExtractionDto(
+            List.of(mainOpenings),
+            List.of(submissionDto),
+            List.of(resultsAudits),
+            List.of(stockingEvents),
+            List.of(orgUnits),
+            List.of(actionCodes),
             logMessages);
 
     dashboardInsertionService.loadDashboardData(extractionDto, startDateTime, paramsDto);

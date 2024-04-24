@@ -79,6 +79,41 @@ class DashboardExtractionEnpointTest {
   }
 
   @Test
+  @DisplayName("Start extraction process manually empty users should fail")
+  void getLastExtractionLogs_emptyUsers_shouldFail() throws Exception {
+    Integer months = 24;
+    Boolean debug = Boolean.FALSE;
+
+    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of());
+
+    mockMvc
+        .perform(
+            post("/api/dashboard-extraction/start?months={months}&debug={debug}", months, debug)
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized())
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Start extraction process manually user not authorized should fail")
+  void getLastExtractionLogs_userNotAuthorized_shouldFail() throws Exception {
+    Integer months = 24;
+    Boolean debug = Boolean.FALSE;
+
+    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of("AA"));
+    when(loggedUserService.getLoggedUserIdirOrBceId()).thenReturn("BB");
+
+    mockMvc
+        .perform(
+            post("/api/dashboard-extraction/start?months={months}&debug={debug}", months, debug)
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized())
+        .andReturn();
+  }
+
+  @Test
   @DisplayName("Get last extraction logs happy path should succeed")
   void getLastExtractionLogs_happyPath_shouldSucceed() throws Exception {
     OracleExtractionLogsEntity extractionLogs = new OracleExtractionLogsEntity();
@@ -98,6 +133,20 @@ class DashboardExtractionEnpointTest {
         .andExpect(jsonPath("$[0].id").value("1"))
         .andExpect(jsonPath("$[0].logMessage").value("Test message"))
         .andExpect(jsonPath("$[0].manuallyTriggered").value("false"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get last extraction logs empty logs should succeed")
+  void getLastExtractionLogs_emptyLogs_shouldSucceed() throws Exception {
+    when(oracleExtractionLogsRepository.findAll(any(Sort.class))).thenReturn(List.of());
+
+    mockMvc
+        .perform(
+            get("/api/dashboard-extraction/logs")
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent())
         .andReturn();
   }
 }
