@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -11,9 +12,14 @@ import lombok.Setter;
 /** This class represents a record in the database for the openings_activity table. */
 @Getter
 @Setter
+@IdClass(OpeningsActivityEntityId.class)
 @Entity
 @Table(name = "openings_activity")
 public class OpeningsActivityEntity {
+
+  @Id
+  @Column(name = "activity_id")
+  private Integer activityId;
 
   @Id
   @Column(name = "opening_id")
@@ -25,10 +31,10 @@ public class OpeningsActivityEntity {
   @Column(name = "activity_type_desc", length = 120)
   private String activityTypeDesc;
 
-  @Column(name = "status_code", length = 3, nullable = false)
+  @Column(name = "status_code", length = 3)
   private String statusCode;
 
-  @Column(name = "status_desc", length = 120, nullable = false)
+  @Column(name = "status_desc", length = 120)
   private String statusDesc;
 
   @Column(name = "last_updated", nullable = false)

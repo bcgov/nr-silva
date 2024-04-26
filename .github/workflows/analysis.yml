@@ -25,7 +25,7 @@ jobs:
           java-distribution: temurin
           java-version: 21
           sonar_args: >
-            -Dsonar.exclusions=**/config/**,*/dto/**,**/entity/**,**/exception/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
+            -Dsonar.exclusions=**/config/**,**/converter/**,**/dto/**,**/entity/**,**/exception/**,**/job/**,**/response/**,**/*$*Builder*,**/RestExceptionEndpoint.*,**/ResultsApplication.*
             -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true

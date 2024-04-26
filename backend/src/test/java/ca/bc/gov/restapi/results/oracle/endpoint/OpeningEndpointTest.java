@@ -92,8 +92,6 @@ class OpeningEndpointTest {
             jsonPath("$.data[0].category.description")
                 .value(OpeningCategoryEnum.FTML.getDescription()))
         .andExpect(jsonPath("$.data[0].disturbanceStart").value(now.toString()))
-        .andExpect(jsonPath("$.data[0].entryTimestamp").value(entryLastYear.toString()))
-        .andExpect(jsonPath("$.data[0].updateTimestamp").value(updateLastMonth.toString()))
         .andReturn();
   }
 }

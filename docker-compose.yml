@@ -66,6 +66,7 @@ services:
       ORACLEDB_SECRET: changeit
       AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
       POSTGRES_HOST: localhost
+      DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
       <<: *db-vars
     <<: *backend
 

@@ -58,7 +58,7 @@ const Opening: React.FC = () => {
       </div>
 
       <Tabs>
-        <TabList contained>
+        <TabList aria-label="List of Tab" contained>
           <Tab><div className="tab-header">Recent Openings</div></Tab>
           <Tab><div className="tab-header">Dashboard</div></Tab>
         </TabList>

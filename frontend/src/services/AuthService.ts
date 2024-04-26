@@ -7,58 +7,71 @@ import {
 } from 'aws-amplify/auth'
 import { env } from '../env'
 
-const FAM_LOGIN_USER = 'famLoginUser'
+// Define a global variable to store the ID token
+let authIdToken: string | null = null;
+
+const FAM_LOGIN_USER = 'famLoginUser';
 
 export interface FamLoginUser {
-  username?: string
-  idpProvider?: string
-  roles?: string[]
-  exp?: number
+  username?: string;
+  idpProvider?: string;
+  roles?: string[];
+  exp?: number;
 }
 
+// Function to set the authIdToken variable
+const setAuthIdToken = (token: string | null) => {
+  authIdToken = token;
+};
+
+// Function to get the authIdToken variable
+export const getAuthIdToken = () => {
+  return authIdToken;
+};
+
 export const signIn = async (provider: string): Promise<any> => {
-  const appEnv = env.VITE_ZONE ?? 'DEV'
+  const appEnv = env.VITE_ZONE ?? 'DEV';
 
   if (provider.localeCompare('idir') === 0) {
     signInWithRedirect({
-      provider: { custom:`${(appEnv).toLocaleUpperCase()}-IDIR` }
-    })
+      provider: { custom: `${(appEnv).toLocaleUpperCase()}-IDIR` }
+    });
   } else if (provider.localeCompare('bceid') === 0) {
     signInWithRedirect({
       provider: { custom: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS` }
-    })
+    });
   }
   // else if invalid option passed logout the user
   else {
-    logout()
+    logout();
   }
-}
+};
 
 export const isLoggedIn = () => {
   // this will convert the locally stored string to FamLoginUser interface type
   // TODO add this to state once redux store is configured
   const stateInfo = (JSON.parse(localStorage.getItem(FAM_LOGIN_USER) as string) as
-            | FamLoginUser
-            | undefined
-            | null)
+    | FamLoginUser
+    | undefined
+    | null);
   // check if the user is logged in
   let loggedIn = false;
   if (stateInfo?.exp) {
-    const expirationDate = new Date(stateInfo?.exp)
-    const currentDate = new Date()
+    const expirationDate = new Date(stateInfo?.exp);
+    const currentDate = new Date();
     loggedIn = expirationDate < currentDate;
   }
-  return loggedIn
-}
+  return loggedIn;
+};
 
 export const handlePostLogin = async () => {
   try {
     // const userData = await Auth.currentAuthenticatedUser();
-    await refreshToken()
+    await refreshToken();
   } catch (error) {
-    console.log('Authentication Error:', error)
+    console.log('Authentication Error:', error);
   }
-}
+};
 
 /**
  * Amplify method currentSession() will automatically refresh the accessToken and idToken
@@ -71,7 +84,10 @@ export const handlePostLogin = async () => {
  */
 async function refreshToken (): Promise<FamLoginUser | undefined> {
   try {
-    const { tokens } = await fetchAuthSession()
+    const { tokens } = await fetchAuthSession();
+    // Set the authIdToken variable
+    setAuthIdToken(tokens?.idToken?.toString() || null);
+
     const famLoginUser = parseToken(tokens?.idToken, tokens?.accessToken);
     await storeFamUser(famLoginUser);
     return famLoginUser;
@@ -80,9 +96,9 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
     console.error(
       'Problem refreshing token or token is invalidated:',
       error
-    )
+    );
     // logout and redirect to login.
-    logout()
+    logout();
   }
 }
 
@@ -134,26 +150,26 @@ function removeFamUser() {
 
 function storeFamUser (famLoginUser: FamLoginUser | null | undefined) {
   if (famLoginUser) {
-    localStorage.setItem(FAM_LOGIN_USER, JSON.stringify(famLoginUser))
+    localStorage.setItem(FAM_LOGIN_USER, JSON.stringify(famLoginUser));
   } else {
-    localStorage.removeItem(FAM_LOGIN_USER)
+    localStorage.removeItem(FAM_LOGIN_USER);
   }
 }
 
 export const isCurrentAuthUser = async () => {
   try {
     // checks if the user is authenticated
-    await getCurrentUser()
+    await getCurrentUser();
     // refreshes the token and stores it locally
-    await refreshToken()
-    return true
+    await refreshToken();
+    return true;
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 export const logout = async () => {
-  await signOut()
-  removeFamUser()
-  console.log('User logged out.')
-}
+  await signOut();
+  removeFamUser();
+  console.log('User logged out.');
+};

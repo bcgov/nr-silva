@@ -20,7 +20,7 @@ export default function ChartContainer({ children, title, description }: Props) 
             <Button
               hasIconOnly
               iconDescription="Maximize"
-              tooltipPosition="bottom"
+              tooltipposition="bottom"
               kind="ghost"
               onClick={() => console.log('Download Click')}
               renderIcon={Icons.Maximize}
@@ -29,7 +29,7 @@ export default function ChartContainer({ children, title, description }: Props) 
             <Button
               hasIconOnly
               iconDescription="Overflow menu vertical"
-              tooltipPosition="bottom"
+              tooltipposition="bottom"
               kind="ghost"
               onClick={() => console.log('Download Click')}
               renderIcon={Icons.OverflowMenuVertical}
