@@ -72,6 +72,9 @@ parameters:
   - name: DASHBOARD_JOB_IDIR_USERS
     description: List of IDIR usernames allowed to manually trigger jobs
     required: true
+  - name: ALLOWED_ORIGINS
+    description: Sets all the allowed request origins
+    value: "http://localhost:300*,https://*.apps.silver.devops.gov.bc.ca"
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -149,6 +152,8 @@ objects:
                   value: ${AWS_COGNITO_ISSUER_URI}
                 - name: DASHBOARD_JOB_IDIR_USERS
                   value: ${DASHBOARD_JOB_IDIR_USERS}
+                - name: ALLOWED_ORIGINS
+                  value: ${ALLOWED_ORIGINS}
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:
