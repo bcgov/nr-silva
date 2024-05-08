@@ -39,3 +39,45 @@ export async function fetchRecentOpenings() {
         throw error;
     }
 }
+
+export async function fetchOpeningsPerYear(orgUnitCode, statusCode, entryDateStart, entryDateEnd) {
+    let authToken = await getAuthIdToken();
+    try {
+        // Construct URL with optional parameters
+        let url = 'https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/submission-trends';
+        if (orgUnitCode || statusCode || entryDateStart || entryDateEnd) {
+            url += '?';
+            if (orgUnitCode) url += `orgUnitCode=${orgUnitCode}&`;
+            if (statusCode) url += `statusCode=${statusCode}&`;
+            if (entryDateStart) url += `entryDateStart=${entryDateStart}&`;
+            if (entryDateEnd) url += `entryDateEnd=${entryDateEnd}&`;
+            // Remove trailing '&' if present
+            url = url.replace(/&$/, '');
+        }
+        
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${authToken}`
+            }
+        });
+
+        const { data } = response;
+
+        if (data && Array.isArray(data)) {
+            // Format data for BarChartGrouped component
+            const formattedData = data.map(item => ({
+                group: "Openings",
+                key: item.monthName,
+                value: item.amount
+            }));
+
+            return formattedData;
+        } else {
+            console.log('No data found in the response.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching openings per year:', error);
+        throw error;
+    }
+}

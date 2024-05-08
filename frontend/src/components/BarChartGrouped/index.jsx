@@ -1,82 +1,63 @@
+import React, { useState, useEffect } from "react";
 import { GroupedBarChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import "@carbon/charts/styles.css";
-import "./BarChartGrouped.scss"
-import { useState } from "react";
+import "./BarChartGrouped.scss";
+import { fetchOpeningsPerYear } from "../../services/OpeningService";
 
 const BarChartGrouped = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const handleResize = ()=>{
+  const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [orgUnitCode, setOrgUnitCode] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const handleResize = () => {
     setWindowWidth(window.innerWidth);
-  }
-  window.addEventListener('resize', handleResize);
+  };
+
+  useEffect(() => {
+    fetchChartData();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [orgUnitCode, statusCode, startDate, endDate]);
+  
+  const fetchChartData = async () => {
+    try {
+      setIsLoading(true);
+      let formattedStartDate = startDate;
+      let formattedEndDate = endDate;
+  
+      if (startDate) {
+        formattedStartDate = formatDateToString(startDate);
+      }
+      if (endDate) {
+        formattedEndDate = formatDateToString(endDate);
+      }
+  
+      const data = await fetchOpeningsPerYear(orgUnitCode, statusCode, formattedStartDate, formattedEndDate);
+      setChartData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+      setIsLoading(false);
+    }
+  };
+  
+
+  const formatDateToString = (dates) => {
+    const date = dates[0]
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const colors = {
     "Openings": "#1192E8",
   };
-
-  const data = [
-    {
-      group: "Openings",
-      key: "Mar",
-      value: 70,
-    },
-    {
-      group: "Openings",
-      key: "Apr",
-      value: 300,
-    },
-    {
-      group: "Openings",
-      key: "May",
-      value: 200,
-    },
-    {
-      group: "Openings",
-      key: "Jun",
-      value: 140,
-    },
-    {
-      group: "Openings",
-      key: "Jul",
-      value: 180,
-    },
-    {
-      group: "Openings",
-      key: "Aug",
-      value: 100,
-    },
-    {
-      group: "Openings",
-      key: "Sep",
-      value: 40,
-    },
-    {
-      group: "Openings",
-      key: "Oct",
-      value: 90,
-    },
-    {
-      group: "Openings",
-      key: "Nov",
-      value: 160,
-    },
-    {
-      group: "Openings",
-      key: "Dec",
-      value: 70,
-    },
-    {
-      group: "Openings",
-      key: "Jan",
-      value: 125,
-    },
-    {
-      group: "Openings",
-      key: "Feb",
-      value: 250,
-    }
-  ];
 
   const options = {
     axes: {
@@ -94,14 +75,14 @@ const BarChartGrouped = () => {
     height: "18.5rem",
     grid: {
       x: {
-        enabled: false, // Enable or disable the grid
-        color: '#d3d3d3', // Set the color of the grid lines
-        strokeDashArray: '2,2' // Set the style of the grid lines
+        enabled: false,
+        color: '#d3d3d3',
+        strokeDashArray: '2,2'
       },
       y: {
-        enabled: true, // Enable or disable the grid
-        color: '#d3d3d3', // Set the color of the grid lines
-        strokeDashArray: '2,2' // Set the style of the grid lines
+        enabled: true,
+        color: '#d3d3d3',
+        strokeDashArray: '2,2'
       }
     },
     toolbar: {
@@ -118,40 +99,74 @@ const BarChartGrouped = () => {
     }
   };
 
-  //sample data
-  const items = [
-    { value: 1, text: 'Option 1' },
-    { value: 2, text: 'Option 2' },
-    { value: 3, text: 'Option 3' },
-    { value: 4, text: 'Option 4' },
+  const orgUnitItems = [
+    { value: 'DCR', text: 'DCR' },
+    { value: 'XYZ', text: 'District 2' },
     // Add more options as needed
   ];
 
+  const statusItems = [
+    { value: 'APP', text: 'Approved' },
+    { value: 'NAN', text: 'Not Approved' },
+    // Add more options as needed
+  ];
 
   return (
     <div className="px-3">
       <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
-          <Dropdown id="default" label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
+          <Dropdown
+            id="district-dropdown"
+            label={windowWidth <= 1584 ? "District" : "Filter by district"}
+            items={orgUnitItems}
+            itemToString={item => item ? item.text : ''}
+            onChange={({ selectedItem }) => setOrgUnitCode(selectedItem.value)}
+          />
         </div>
         <div className="col-md-4 p-0 px-md-1">
-          <Dropdown id="default" label={windowWidth<=1584?"Status":"Filter by status"} items={items} itemToString={item => item ? item.text : ''} />
+          <Dropdown
+            id="status-dropdown"
+            label={windowWidth <= 1584 ? "Status" : "Filter by status"}
+            items={statusItems}
+            itemToString={item => item ? item.text : ''}
+            onChange={({ selectedItem }) => setStatusCode(selectedItem.value)}
+          />
         </div>
-        <div className="col-4 p-0 d-none d-md-block">
-          <DatePicker datePickerType="single">
+        <div className="col-2 px-md-1 d-none d-md-block">
+          <DatePicker
+            datePickerType="single"
+            onChange={date => setStartDate(date)}
+          >
             <DatePickerInput
-              id="date-picker-input-id"
-              placeholder="mm/dd/yyyy"
+              id="start-date-picker-input-id"
+              placeholder="yyyy-MM-dd"
               size="md"
+              labelText="Start Date"
+            />
+          </DatePicker>
+        </div>
+        <div className="col-2 px-md-1 d-none d-md-block">
+          <DatePicker
+            datePickerType="single"
+            onChange={date => setEndDate(date)}
+          >
+            <DatePickerInput
+              id="end-date-picker-input-id"
+              placeholder="yyyy-MM-dd"
+              size="md"
+              labelText="End Date"
             />
           </DatePicker>
         </div>
       </div>
-      <GroupedBarChart
-        data={data}
-        options={options}
-      >
-      </GroupedBarChart>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <GroupedBarChart
+          data={chartData}
+          options={options}
+        />
+      )}
     </div>
   );
 };
