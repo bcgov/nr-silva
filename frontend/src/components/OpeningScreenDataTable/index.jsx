@@ -50,7 +50,6 @@ const usePagination = (data, initialItemsPerPage) => {
   const handlePageChange = ({ page }) => {
     setCurrentPage(page);
   };
-  
   // Update the items per page when the user changes the value
   const handleItemsPerPageChange = (event) => {
     setCurrentPage(event.page);
@@ -124,7 +123,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />
-                <TableToolbarMenu iconDescription="More" tooltipPosition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
+                <TableToolbarMenu iconDescription="More" tooltipposition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
                   <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
@@ -142,7 +141,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                   <Button
                     hasIconOnly
                     iconDescription="Download"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => console.log('Download Click')}
                     disabled={selectedRows.length === 0}
@@ -152,7 +151,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                   <Button
                     hasIconOnly
                     iconDescription="Print"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => {
                       batchActionClick(selectedRows);
