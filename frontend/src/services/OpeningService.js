@@ -81,3 +81,47 @@ export async function fetchOpeningsPerYear(orgUnitCode, statusCode, entryDateSta
         throw error;
     }
 }
+
+export async function fetchFreeGrowingMilestones(orgUnitCode, clientNumber, entryDateStart, entryDateEnd) {
+    let authToken = await getAuthIdToken();
+    let url = 'https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/free-growing-milestones';
+
+    // Construct URL with optional parameters
+    if (orgUnitCode || clientNumber || entryDateStart || entryDateEnd) {
+        url += '?';
+        if (orgUnitCode) url += `orgUnitCode=${orgUnitCode}&`;
+        if (clientNumber) url += `clientNumber=${clientNumber}&`;
+        if (entryDateStart) url += `entryDateStart=${entryDateStart}&`;
+        if (entryDateEnd) url += `entryDateEnd=${entryDateEnd}&`;
+        // Remove trailing '&' if present
+        url = url.replace(/&$/, '');
+    }
+    console.log("the url being called:")
+    console.log(url)
+
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${authToken}`
+            }
+        });
+
+        const { data } = response;
+
+        if (data && Array.isArray(data)) {
+            // Transform data for DonutChartView component
+            const transformedData = data.map(item => ({
+                group: item.label,
+                value: item.amount
+            }));
+
+            return transformedData;
+        } else {
+            console.log('No data found in the response.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching free growing milestones:', error);
+        throw error;
+    }
+}

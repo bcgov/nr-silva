@@ -1,40 +1,50 @@
+import React, { useState, useEffect } from "react";
 import { DonutChart } from "@carbon/charts-react";
-import { useState } from "react";
-import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
-import "@carbon/charts/styles.css";
-import './DonutChartView.scss';
+import { Dropdown, DatePicker, DatePickerInput, TextInput } from "@carbon/react";
+import "./DonutChartView.scss";
+import { fetchFreeGrowingMilestones } from "../../services/OpeningService";
 
 const DonutChartView = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const handleResize = ()=>{
-    setWindowWidth(window.innerWidth);
-  }
-  window.addEventListener('resize', handleResize);
+  const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [orgUnitCode, setOrgUnitCode] = useState("");
+  const [clientNumber, setClientNumber] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
-  const colors = {
-    "0-5 months": "#A56EFF",
-    "6-11 months": "#002D9C",
-    "12-17 months": "#1192E8",
-    "18 months": "#FA4D56",
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
   };
-  const data = [
-    {
-      "group": "0-5 months",
-      "value": 200
-    },
-    {
-      "group": "6-11 months",
-      "value": 200
-    },
-    {
-      "group": "12-17 months",
-      "value": 200
-    },
-    {
-      "group": "18 months",
-      "value": 200
+
+  useEffect(() => {
+    fetchChartData();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [orgUnitCode, clientNumber, startDate, endDate]);
+
+  const fetchChartData = async () => {
+    try {
+      setIsLoading(true);
+      const formattedStartDate = formatDateToString(startDate);
+      const formattedEndDate = formatDateToString(endDate);
+      const data = await fetchFreeGrowingMilestones(orgUnitCode, clientNumber, formattedStartDate, formattedEndDate);
+      setChartData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+      setIsLoading(false);
     }
-  ];
+  };
+
+  const formatDateToString = (dates) => {
+    if (!dates) return null;
+    const date = dates[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const options = {
     title: "",
@@ -44,18 +54,15 @@ const DonutChartView = () => {
         label: "Standard units"
       }
     },
-    color: {
-      scale: colors,
-    },
     height: "18.5rem",
     toolbar:{
       enabled:false
     }
   };
 
-  //sample data
+  // Sample data for dropdowns
   const items = [
-    { value: 1, text: 'Option 1' },
+    { value: 'DCR', text: 'DCR' },
     { value: 2, text: 'Option 2' },
     { value: 3, text: 'Option 3' },
     { value: 4, text: 'Option 4' },
@@ -66,26 +73,46 @@ const DonutChartView = () => {
     <div className="px-3">
       <div className="row gy-2 pb-3">
         <div className="col-md-4 p-0">
-          <Dropdown id="default"  label={windowWidth<=1584?"District":"Filter by district"} items={items} itemToString={item => item ? item.text : ''} />
+          <Dropdown id="orgUnitCode" label={windowWidth <= 1584 ? "District" : "Filter by district"} items={items} itemToString={item => item ? item.text : ''} onChange={option => setOrgUnitCode(option.selectedItem.value)} />
         </div>
         <div className="col-md-4 p-0 px-md-1">
-          <Dropdown id="default"  label={windowWidth<=1584?"Client Number":"Filter by client number"} items={items} itemToString={item => item ? item.text : ''} />
+          <TextInput labelText="Client Number" id="clientNumber" onChange={event => setClientNumber(event.target.value)} />
         </div>
-        <div className="col-4 p-0 d-none d-md-block">
-          <DatePicker datePickerType="single">
+        <div className="col-2 px-md-1 d-none d-md-block">
+          <DatePicker
+            datePickerType="single"
+            onChange={date => setStartDate(date)}
+          >
             <DatePickerInput
-              id="date-picker-input-id"
-              placeholder="mm/dd/yyyy"
+              id="start-date-picker-input-id"
+              placeholder="yyyy-MM-dd"
               size="md"
-              labelText=""
+              labelText="Start Date"
+            />
+          </DatePicker>
+        </div>
+        <div className="col-2 px-md-1 d-none d-md-block">
+          <DatePicker
+            datePickerType="single"
+            onChange={date => setEndDate(date)}
+          >
+            <DatePickerInput
+              id="end-date-picker-input-id"
+              placeholder="yyyy-MM-dd"
+              size="md"
+              labelText="End Date"
             />
           </DatePicker>
         </div>
       </div>
-      <DonutChart
-        data={data}
-        options={options}>
-      </DonutChart>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <DonutChart
+          data={chartData}
+          options={options}>
+        </DonutChart>
+      )}
     </div>
   );
 };
