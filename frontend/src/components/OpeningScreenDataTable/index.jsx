@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   DataTable,
   TableBatchAction,
@@ -31,29 +31,6 @@ export const batchActionClick = (selectedRows) => () => {
   // Add your logic to handle batch actions here
 };
 
-export const buttonsCol = (
-  <>
-  <Button
-    hasIconOnly
-    iconDescription="View"
-    tooltipPosition="bottom"
-    kind="ghost"
-    onClick={() => clickFn(item.id)}
-    renderIcon={Icons.DataViewAlt}
-    size="md"
-  />
-  <Button
-    hasIconOnly
-    iconDescription="Download"
-    tooltipPosition="bottom"
-    kind="ghost"
-    onClick={() => null}
-    renderIcon={Icons.Download}
-    size="md"
-  />
-  </>
-)
-
 // A custom hook to handle pagination logic
 const usePagination = (data, initialItemsPerPage) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,14 +51,11 @@ const usePagination = (data, initialItemsPerPage) => {
     setCurrentPage(page);
   };
   
-
   // Update the items per page when the user changes the value
   const handleItemsPerPageChange = (event) => {
     setCurrentPage(event.page);
     setItemsPerPage(event.pageSize);
   };
-
-  
 
   return {
     currentData,
@@ -93,9 +67,7 @@ const usePagination = (data, initialItemsPerPage) => {
   };
 };
 
-
-
-export default function OpeningScreenDataTable({ rows, headers, error }) {
+export default function OpeningScreenDataTable({ rows, headers, error, setOpeningIds }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
     currentData,
@@ -106,8 +78,6 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
     itemsPerPage, // Use itemsPerPage from the hook
   } = usePagination(filteredRows, 5);
 
-  
-
   const handleSearchChange = (searchTerm) => {
     const filtered = rows.filter((item) =>
       Object.values(item)
@@ -117,6 +87,11 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
     );
     setFilteredRows(filtered);
   };
+
+  const clickFnItem = useCallback((id) => {
+    console.log('fetch id ', id);
+    setOpeningIds(id);
+  }, []);
 
   return (
     <div>
@@ -211,7 +186,26 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                         {cell.info.header === "status" ? (
                           <StatusTag type={cell.value} />
                         ) : cell.info.header === "actions" ? (
-                          buttonsCol
+                          <>
+                            <Button
+                              hasIconOnly
+                              iconDescription="View"
+                              tooltipPosition="bottom"
+                              kind="ghost"
+                              onClick={() => clickFnItem(row.id)}
+                              renderIcon={Icons.DataViewAlt}
+                              size="md"
+                            />
+                            <Button
+                              hasIconOnly
+                              iconDescription="Download"
+                              tooltipPosition="bottom"
+                              kind="ghost"
+                              onClick={() => null}
+                              renderIcon={Icons.Download}
+                              size="md"
+                            />
+                          </>
                         ) : (
                           cell.value
                         )}
@@ -253,10 +247,6 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
           }}
         />
         ) : null}
-
-
-    
-
     </div>
   );
 }

@@ -15,6 +15,7 @@ const OpeningsTab: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [openingRows, setOpeningRows] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loadId, setLoadId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +33,10 @@ const OpeningsTab: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log('Loading OpeningsTab components!');
+  }, [loadId]);
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial)
@@ -56,12 +61,15 @@ const OpeningsTab: React.FC = () => {
           {showSpatial ? (
             <div className="row px-2">
               <div className="leaflet-container">
-                <OpeningsMap selectedBasemap={{
-                  id: 1,
-                  name: "Google Maps Satelite",
-                  attribution: '&copy; Google Maps',
-                  url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
-                }} />
+                <OpeningsMap
+                  selectedBasemap={{
+                    id: 1,
+                    name: "Google Maps Satelite",
+                    attribution: '&copy; Google Maps',
+                    url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
+                  }}
+                  openingId={loadId}
+                />
               </div>
             </div>
           ) : null}
@@ -75,6 +83,7 @@ const OpeningsTab: React.FC = () => {
               headers={headers}
               rows={openingRows}
               error={error}
+              setOpeningIds={setLoadId}
             />
           )}
         </div>
