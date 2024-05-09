@@ -87,8 +87,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
     setFilteredRows(filtered);
   };
 
-  const clickFnItem = useCallback((id) => {
-    console.log('fetch id ', id);
+  const clickViewAction = useCallback((id) => {
     setOpeningIds(id);
   }, []);
 
@@ -191,7 +190,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                               iconDescription="View"
                               tooltipPosition="bottom"
                               kind="ghost"
-                              onClick={() => clickFnItem(row.id)}
+                              onClick={() => clickViewAction(row.id)}
                               renderIcon={Icons.DataViewAlt}
                               size="md"
                             />
