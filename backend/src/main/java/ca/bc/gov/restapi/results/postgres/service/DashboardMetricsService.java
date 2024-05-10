@@ -157,9 +157,16 @@ public class DashboardMetricsService {
       }
 
       // Client number
-      if (!Objects.isNull(filters.clientNumber())
-          && !filters.clientNumber().equals(entity.getClientNumber())) {
-        continue;
+      if (!Objects.isNull(filters.clientNumber())) {
+        int numericValue = 0;
+        if (!Objects.isNull(entity.getClientNumber())) {
+          numericValue = Integer.parseInt(entity.getClientNumber());
+        }
+        boolean onlyNumbers = filters.clientNumber().equals(String.valueOf(numericValue));
+        boolean wholeCode = filters.clientNumber().equals(entity.getClientNumber());
+        if (!onlyNumbers && !wholeCode) {
+          continue;
+        }
       }
 
       // Entry start date filter
