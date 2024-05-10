@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +47,10 @@ public class DashboardMetricsService {
   public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltesDto filters) {
     log.info("Getting Opening Submission Trends with filters {}", filters.toString());
 
+    LocalDateTime baseDateTime = LocalDateTime.now().minusMonths(12);
     List<OpeningsLastYearEntity> entities =
-        openingsLastYearRepository.findAll(Sort.by("entryTimestamp").ascending());
+        openingsLastYearRepository.findAllFromLastYear(
+            baseDateTime, Sort.by("entryTimestamp").ascending());
 
     if (entities.isEmpty()) {
       log.info("No Opening Submission Trends data found!");

@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
@@ -34,8 +35,6 @@ class DashboardMetricsServiceTest {
 
   private DashboardMetricsService dashboardMetricsService;
 
-  private static final Sort SORT = Sort.by("entryTimestamp").ascending();
-
   private static final Sort SORT_BY_ID = Sort.by("openingId").ascending();
 
   private List<OpeningsLastYearEntity> mockOpeningsEntityList() {
@@ -64,7 +63,7 @@ class DashboardMetricsServiceTest {
   void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
     DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
@@ -84,7 +83,7 @@ class DashboardMetricsServiceTest {
   void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
     DashboardFiltesDto filtersDto = new DashboardFiltesDto("AAA", null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
@@ -104,7 +103,7 @@ class DashboardMetricsServiceTest {
   void getOpeningsSubmissionTrends_statusFilter_shouldSucceed() {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
     DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, "APP", null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
@@ -123,7 +122,7 @@ class DashboardMetricsServiceTest {
   @DisplayName("Opening submission trends with Dates filter should succeed")
   void getOpeningsSubmissionTrends_datesFilter_shouldSucceed() {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAll(SORT)).thenReturn(entities);
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
     LocalDateTime now = LocalDateTime.now();
     LocalDateTime oneMonthBefore = now.minusMonths(1L);
@@ -323,8 +322,7 @@ class DashboardMetricsServiceTest {
     when(loggedUserService.getLoggedUserId()).thenReturn(userId);
 
     Sort sort = Sort.by("lastUpdated").descending();
-    when(openingsActivityRepository.findAllByEntryUserid(userId, sort))
-        .thenReturn(List.of());
+    when(openingsActivityRepository.findAllByEntryUserid(userId, sort)).thenReturn(List.of());
 
     List<MyRecentActionsRequestsDto> dtoList =
         dashboardMetricsService.getUserRecentOpeningsActions();
