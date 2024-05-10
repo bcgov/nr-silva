@@ -77,12 +77,12 @@ public class DashboardMetricsService {
     for (OpeningsLastYearEntity entity : entities) {
       // Org Unit filter - District
       if (!Objects.isNull(filters.orgUnit())
-          && !entity.getOrgUnitCode().equals(filters.orgUnit())) {
+          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
         continue;
       }
 
       // Status filter
-      if (!Objects.isNull(filters.status()) && !entity.getStatus().equals(filters.status())) {
+      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
         continue;
       }
 
@@ -149,13 +149,13 @@ public class DashboardMetricsService {
     for (OpeningsLastYearEntity entity : entities) {
       // Org Unit filter - District
       if (!Objects.isNull(filters.orgUnit())
-          && !entity.getOrgUnitCode().equals(filters.orgUnit())) {
+          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
         continue;
       }
 
       // Client number
       if (!Objects.isNull(filters.clientNumber())
-          && !entity.getClientNumber().equals(filters.clientNumber())) {
+          && !filters.clientNumber().equals(entity.getClientNumber())) {
         continue;
       }
 
