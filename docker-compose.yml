@@ -13,7 +13,7 @@ x-frontend: &frontend
   restart: always
   depends_on:
     backend:
-      condition: service_healthy
+      condition: service_started
 
 x-backend: &backend
   healthcheck:

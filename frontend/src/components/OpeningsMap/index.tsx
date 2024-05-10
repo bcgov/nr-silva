@@ -14,7 +14,7 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap, openingId }) => {
   //const position: [number, number] = [49.11941257871176, -122.83461402566606];
   const lastClickedLayerRef = useRef<any>(null); // Replace 'any' with the specific type if known
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
-  const [position, setPosition] = useState<number[]>([49.2568449, -123.1289342]);
+  const [position, setPosition] = useState<number[]>([48.43737, -123.35883]);
   const [reloadMap, setReloadMap] = useState<boolean>(false);
 
   const resultsStyle = {
@@ -60,25 +60,37 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap, openingId }) => {
         url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
         attribution={'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
       />
+
+      {/* Display Opening polygons, if any */}
       {openings.length && (
         openings.map((opening) => (
           <Polygon
             key={opening.key}
             positions={opening.bounds}
-            pathOptions={resultsStyle}
-          />
+            pathOptions={resultsStyle}  
+          >
+            <Popup maxWidth="700">
+              {opening.popupHtml}
+            </Popup>
+          </Polygon>
         ))
       )}
+
+      {/* Display a simple marker if no Opening */}
       {openings.length === 0 && (
         <Marker position={position}>
           <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable. This is a fixed Marker on Map load
+            Caffe Fantastico<br />965 Kings Rd, Victoria, BC
           </Popup>
         </Marker>
       )}
+
+      {/* Centers the map autimatically when a different opening get selected. */}
       {position && (
         <RecenterAutomatically lat={position[0]} long={position[1]} />
       )}
+
+      {/* Add layers and Layer controls */}
     </MapContainer>
   );
 };

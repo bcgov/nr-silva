@@ -5,4 +5,5 @@ export type OpeningPolygon = {
   id: string;
   positionLat: number;
   positionLong: number;
+  popupHtml: JSX.Element;
 };
