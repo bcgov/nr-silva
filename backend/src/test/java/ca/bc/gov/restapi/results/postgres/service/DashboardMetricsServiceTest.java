@@ -119,6 +119,31 @@ class DashboardMetricsServiceTest {
   }
 
   @Test
+  @DisplayName("Opening submission trends with Status filter not matching should succeed")
+  void getOpeningsSubmissionTrends_statusFilterDont_shouldSucceed() {
+    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
+
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, "UPD", null, null, null);
+    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
+
+    Assertions.assertFalse(list.isEmpty());
+    Assertions.assertEquals(12, list.size());
+    Assertions.assertEquals(0, list.get(0).amount());
+    Assertions.assertEquals(0, list.get(1).amount());
+    Assertions.assertEquals(0, list.get(2).amount());
+    Assertions.assertEquals(0, list.get(3).amount());
+    Assertions.assertEquals(0, list.get(4).amount());
+    Assertions.assertEquals(0, list.get(5).amount());
+    Assertions.assertEquals(0, list.get(6).amount());
+    Assertions.assertEquals(0, list.get(7).amount());
+    Assertions.assertEquals(0, list.get(8).amount());
+    Assertions.assertEquals(0, list.get(9).amount());
+    Assertions.assertEquals(0, list.get(10).amount());
+    Assertions.assertEquals(0, list.get(11).amount());
+  }
+
+  @Test
   @DisplayName("Opening submission trends with Dates filter should succeed")
   void getOpeningsSubmissionTrends_datesFilter_shouldSucceed() {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
@@ -140,6 +165,17 @@ class DashboardMetricsServiceTest {
     Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
     Assertions.assertEquals(monthName, list.get(0).monthName());
     Assertions.assertEquals(1, list.get(0).amount());
+  }
+
+  @Test
+  @DisplayName("Opening submission trends with no data should succeed")
+  void getOpeningsSubmissionTrends_noData_shouldSuceed() {
+    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(List.of());
+
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
+
+    Assertions.assertTrue(list.isEmpty());
   }
 
   @Test
@@ -239,6 +275,39 @@ class DashboardMetricsServiceTest {
     Assertions.assertEquals("18 months", list.get(3).label());
     Assertions.assertEquals(0, list.get(3).amount());
     Assertions.assertEquals(BigDecimal.ZERO, list.get(3).percentage());
+  }
+
+  @Test
+  @DisplayName("Free growing milestones with client numeric filter should succeed")
+  void getFreeGrowingMilestoneChartData_clientNumericFilter_shouldSucceed() {
+    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
+    when(openingsLastYearRepository.findAll(SORT_BY_ID)).thenReturn(entities);
+
+    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, "12797");
+    List<FreeGrowingMilestonesDto> list =
+        dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
+
+    Assertions.assertFalse(list.isEmpty());
+    Assertions.assertEquals(4, list.size());
+    Assertions.assertEquals(0, list.get(0).index());
+    Assertions.assertEquals("0 - 5 months", list.get(0).label());
+    Assertions.assertEquals(1, list.get(0).amount());
+    Assertions.assertEquals(new BigDecimal("100.00"), list.get(0).percentage());
+
+    Assertions.assertEquals(1, list.get(1).index());
+    Assertions.assertEquals("6 - 11 months", list.get(1).label());
+    Assertions.assertEquals(0, list.get(1).amount());
+    Assertions.assertEquals(new BigDecimal("0.00"), list.get(1).percentage());
+
+    Assertions.assertEquals(2, list.get(2).index());
+    Assertions.assertEquals("12 - 17 months", list.get(2).label());
+    Assertions.assertEquals(0, list.get(2).amount());
+    Assertions.assertEquals(new BigDecimal("0.00"), list.get(2).percentage());
+
+    Assertions.assertEquals(3, list.get(3).index());
+    Assertions.assertEquals("18 months", list.get(3).label());
+    Assertions.assertEquals(0, list.get(3).amount());
+    Assertions.assertEquals(new BigDecimal("0.00"), list.get(3).percentage());
   }
 
   @Test
