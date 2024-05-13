@@ -22,8 +22,6 @@ public class SwaggerConfig {
       "https://www2.gov.bc.ca/gov/content/data/open-data/api-terms-of-use-for-ogl-information";
   private static final String LICENSE_URL =
       "https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc";
-  private static final String GET_TOKEN_URL =
-      "https://github.com/bcgov/nr-silva/wiki/Getting-a-Bearer-JWT-Token";
 
   /**
    * Creates an {@link OpenAPI} with all needed and related information.
@@ -53,10 +51,6 @@ public class SwaggerConfig {
     externalDoc.setDescription("RESULTS Team Jira Board");
     externalDoc.setUrl("https://apps.nrs.gov.bc.ca/int/jira/projects/SILVA");
 
-    ExternalDocumentation getTokenDoc = new ExternalDocumentation();
-    externalDoc.setDescription("How to log in on Swagger");
-    externalDoc.setUrl(GET_TOKEN_URL);
-
     SecurityScheme securityScheme = new SecurityScheme();
     securityScheme.setType(Type.HTTP);
     securityScheme.setScheme("bearer");
@@ -64,6 +58,10 @@ public class SwaggerConfig {
 
     Components components = new Components();
     components.addSecuritySchemes("bearerAuth", securityScheme);
+
+    ExternalDocumentation getTokenDoc = new ExternalDocumentation();
+    externalDoc.setDescription("How to log in on Swagger");
+    externalDoc.setUrl("https://github.com/bcgov/nr-silva/wiki/Getting-a-Bearer-JWT-Token");
 
     OpenAPI openApi =
         new OpenAPI()
