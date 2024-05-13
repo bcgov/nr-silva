@@ -48,8 +48,8 @@ public class SwaggerConfig {
     info.setLicense(license);
 
     ExternalDocumentation externalDoc = new ExternalDocumentation();
-    externalDoc.setDescription("RESULTS Team Jira Board");
-    externalDoc.setUrl("https://apps.nrs.gov.bc.ca/int/jira/projects/SILVA");
+    externalDoc.setDescription("Swagger login How-To");
+    externalDoc.setUrl("https://github.com/bcgov/nr-silva/wiki/Getting-a-Bearer-JWT-Token");
 
     SecurityScheme securityScheme = new SecurityScheme();
     securityScheme.setType(Type.HTTP);
@@ -59,17 +59,11 @@ public class SwaggerConfig {
     Components components = new Components();
     components.addSecuritySchemes("bearerAuth", securityScheme);
 
-    ExternalDocumentation getTokenDoc = new ExternalDocumentation();
-    externalDoc.setDescription("How to log in on Swagger");
-    externalDoc.setUrl("https://github.com/bcgov/nr-silva/wiki/Getting-a-Bearer-JWT-Token");
-
-    OpenAPI openApi =
-        new OpenAPI()
-            .info(info)
-            .externalDocs(externalDoc)
-            .externalDocs(getTokenDoc)
-            .components(components)
-            .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+    OpenAPI openApi = new OpenAPI();
+    openApi.setInfo(info);
+    openApi.setExternalDocs(externalDoc);
+    openApi.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+    openApi.setComponents(components);
 
     return openApi;
   }
