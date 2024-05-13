@@ -48,8 +48,8 @@ public class SwaggerConfig {
     info.setLicense(license);
 
     ExternalDocumentation externalDoc = new ExternalDocumentation();
-    externalDoc.setDescription("RESULTS Team Jira Board");
-    externalDoc.setUrl("https://apps.nrs.gov.bc.ca/int/jira/projects/SILVA");
+    externalDoc.setDescription("Swagger login How-To");
+    externalDoc.setUrl("https://github.com/bcgov/nr-silva/wiki/Getting-a-Bearer-JWT-Token");
 
     SecurityScheme securityScheme = new SecurityScheme();
     securityScheme.setType(Type.HTTP);
