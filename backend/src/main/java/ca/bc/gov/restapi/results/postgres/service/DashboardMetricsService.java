@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,43 +47,47 @@ public class DashboardMetricsService {
   public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltesDto filters) {
     log.info("Getting Opening Submission Trends with filters {}", filters.toString());
 
+    LocalDateTime baseDateTime = LocalDateTime.now().minusMonths(12);
     List<OpeningsLastYearEntity> entities =
-        openingsLastYearRepository.findAll(Sort.by("entryTimestamp").ascending());
+        openingsLastYearRepository.findAllFromLastYear(
+            baseDateTime, Sort.by("entryTimestamp").ascending());
 
     if (entities.isEmpty()) {
       log.info("No Opening Submission Trends data found!");
       return List.of();
     }
 
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
     Map<Integer, String> monthNamesMap = new HashMap<>();
+    Map<Integer, List<OpeningsLastYearEntity>> resultMap =
+        createBaseMonthsMap(monthNamesMap, entities.get(0).getEntryTimestamp().getMonthValue());
 
-    // Fill with 12 months
-    Integer monthValue = entities.get(0).getEntryTimestamp().getMonthValue();
-    log.info("First month: {}", monthValue);
-    while (resultMap.size() < 12) {
-      resultMap.put(monthValue, new ArrayList<>());
+    filterOpeningSubmissions(resultMap, entities, filters);
 
-      String monthName = Month.of(monthValue).name().toLowerCase();
-      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-      monthNamesMap.put(monthValue, monthName);
-
-      monthValue += 1;
-      if (monthValue == 13) {
-        monthValue = 1;
-      }
+    List<OpeningsPerYearDto> chartData = new ArrayList<>();
+    for (Integer monthKey : resultMap.keySet()) {
+      List<OpeningsLastYearEntity> monthDataList = resultMap.get(monthKey);
+      String monthName = monthNamesMap.get(monthKey);
+      log.info("Value {} for the month: {}", monthDataList.size(), monthName);
+      chartData.add(new OpeningsPerYearDto(monthKey, monthName, monthDataList.size()));
     }
 
+    return chartData;
+  }
+
+  private void filterOpeningSubmissions(
+      Map<Integer, List<OpeningsLastYearEntity>> resultMap,
+      List<OpeningsLastYearEntity> entities,
+      DashboardFiltesDto filters) {
     // Iterate over the found records filtering and putting them into the right month
     for (OpeningsLastYearEntity entity : entities) {
       // Org Unit filter - District
       if (!Objects.isNull(filters.orgUnit())
-          && !entity.getOrgUnitCode().equals(filters.orgUnit())) {
+          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
         continue;
       }
 
       // Status filter
-      if (!Objects.isNull(filters.status()) && !entity.getStatus().equals(filters.status())) {
+      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
         continue;
       }
 
@@ -100,16 +105,28 @@ public class DashboardMetricsService {
 
       resultMap.get(entity.getEntryTimestamp().getMonthValue()).add(entity);
     }
+  }
 
-    List<OpeningsPerYearDto> chartData = new ArrayList<>();
-    for (Integer monthKey : resultMap.keySet()) {
-      List<OpeningsLastYearEntity> monthDataList = resultMap.get(monthKey);
-      String monthName = monthNamesMap.get(monthKey);
-      log.info("Value {} for the month: {}", monthDataList.size(), monthName);
-      chartData.add(new OpeningsPerYearDto(monthKey, monthName, monthDataList.size()));
+  private Map<Integer, List<OpeningsLastYearEntity>> createBaseMonthsMap(
+      Map<Integer, String> monthNamesMap, Integer firstMonth) {
+    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
+
+    // Fill with 12 months
+    log.info("First month: {}", firstMonth);
+    while (resultMap.size() < 12) {
+      resultMap.put(firstMonth, new ArrayList<>());
+
+      String monthName = Month.of(firstMonth).name().toLowerCase();
+      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
+      monthNamesMap.put(firstMonth, monthName);
+
+      firstMonth += 1;
+      if (firstMonth == 13) {
+        firstMonth = 1;
+      }
     }
 
-    return chartData;
+    return resultMap;
   }
 
   /**
@@ -149,14 +166,21 @@ public class DashboardMetricsService {
     for (OpeningsLastYearEntity entity : entities) {
       // Org Unit filter - District
       if (!Objects.isNull(filters.orgUnit())
-          && !entity.getOrgUnitCode().equals(filters.orgUnit())) {
+          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
         continue;
       }
 
       // Client number
-      if (!Objects.isNull(filters.clientNumber())
-          && !entity.getClientNumber().equals(filters.clientNumber())) {
-        continue;
+      if (!Objects.isNull(filters.clientNumber())) {
+        int numericValue = 0;
+        if (!Objects.isNull(entity.getClientNumber())) {
+          numericValue = Integer.parseInt(entity.getClientNumber());
+        }
+        boolean onlyNumbers = filters.clientNumber().equals(String.valueOf(numericValue));
+        boolean wholeCode = filters.clientNumber().equals(entity.getClientNumber());
+        if (!onlyNumbers && !wholeCode) {
+          continue;
+        }
       }
 
       // Entry start date filter
