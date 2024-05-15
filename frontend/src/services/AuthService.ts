@@ -32,18 +32,18 @@ export const getAuthIdToken = () => {
 export const signIn = async (provider: string): Promise<any> => {
   const appEnv = env.VITE_ZONE ?? 'DEV';
 
-  if (provider.localeCompare('idir') === 0) {
-    signInWithRedirect({
-      provider: { custom: `${(appEnv).toLocaleUpperCase()}-IDIR` }
-    });
-  } else if (provider.localeCompare('bceid') === 0) {
-    signInWithRedirect({
-      provider: { custom: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS` }
-    });
-  }
-  // else if invalid option passed logout the user
-  else {
-    logout();
+  try {
+    if (provider.localeCompare('idir') === 0) {
+      await signInWithRedirect({
+        provider: { custom: `${(appEnv).toLocaleUpperCase()}-IDIR` }
+      });
+    } else if (provider.localeCompare('bceid') === 0) {
+      await signInWithRedirect({
+        provider: { custom: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS` }
+      });
+    }
+  } catch (e) {
+    return Promise.reject(e);
   }
 };
 

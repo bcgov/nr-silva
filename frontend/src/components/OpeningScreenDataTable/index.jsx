@@ -33,26 +33,26 @@ export const batchActionClick = (selectedRows) => () => {
 
 export const buttonsCol = (
   <>
-  <Button
-    hasIconOnly
-    iconDescription="View"
-    tooltipPosition="bottom"
-    kind="ghost"
-    onClick={() => clickFn(item.id)}
-    renderIcon={Icons.DataViewAlt}
-    size="md"
-  />
-  <Button
-    hasIconOnly
-    iconDescription="Download"
-    tooltipPosition="bottom"
-    kind="ghost"
-    onClick={() => null}
-    renderIcon={Icons.Download}
-    size="md"
-  />
+    <Button
+      hasIconOnly
+      iconDescription="View"
+      tooltipposition="bottom"
+      kind="ghost"
+      onClick={() => clickFn(item.id)}
+      renderIcon={Icons.DataViewAlt}
+      size="md"
+    />
+    <Button
+      hasIconOnly
+      iconDescription="Download"
+      tooltipposition="bottom"
+      kind="ghost"
+      onClick={() => null}
+      renderIcon={Icons.Download}
+      size="md"
+    />
   </>
-)
+);
 
 // A custom hook to handle pagination logic
 const usePagination = (data, initialItemsPerPage) => {
@@ -73,15 +73,12 @@ const usePagination = (data, initialItemsPerPage) => {
   const handlePageChange = ({ page }) => {
     setCurrentPage(page);
   };
-  
 
   // Update the items per page when the user changes the value
   const handleItemsPerPageChange = (event) => {
     setCurrentPage(event.page);
     setItemsPerPage(event.pageSize);
   };
-
-  
 
   return {
     currentData,
@@ -92,8 +89,6 @@ const usePagination = (data, initialItemsPerPage) => {
     itemsPerPage, // Expose the current itemsPerPage value
   };
 };
-
-
 
 export default function OpeningScreenDataTable({ rows, headers, error }) {
   const [filteredRows, setFilteredRows] = useState(rows);
@@ -149,7 +144,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />
-                <TableToolbarMenu iconDescription="More" tooltipPosition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
+                <TableToolbarMenu iconDescription="More" tooltipposition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
                   <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
@@ -167,7 +162,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   <Button
                     hasIconOnly
                     iconDescription="Download"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => console.log('Download Click')}
                     disabled={selectedRows.length === 0}
@@ -177,7 +172,7 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   <Button
                     hasIconOnly
                     iconDescription="Print"
-                    tooltipPosition="bottom"
+                    tooltipposition="bottom"
                     kind="ghost"
                     onClick={() => {
                       batchActionClick(selectedRows);
@@ -253,10 +248,6 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
           }}
         />
         ) : null}
-
-
-    
-
     </div>
   );
 }

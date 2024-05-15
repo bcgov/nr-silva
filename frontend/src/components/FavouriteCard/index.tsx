@@ -8,9 +8,9 @@ import './styles.scss';
 
 interface FavouriteCardProps {
   index: number,
-  title: String,
-  link: String,
-  icon:String,
+  title: string,
+  link: string,
+  icon: string,
   description:String
 }
 
@@ -29,7 +29,7 @@ const FavouriteCard = ({
     <Tile
       className={'fav-card-main' }
       tabIndex={index}
-      onClick={() => navigate('/')}
+      onClick={() => navigate(link)}
     >
       <div className="fav-card-header">
         <Icon className="fav-card-icon" />
