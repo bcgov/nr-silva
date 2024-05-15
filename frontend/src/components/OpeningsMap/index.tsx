@@ -8,10 +8,14 @@ import { getOpeningsPolygonFromWfs } from '../../map-services/BcGwWfsApi';
 interface MapProps {
   selectedBasemap: any;
   openingId: number | null;
+  setOpeningPolygonNotFound: Function;
 }
 
-const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap, openingId }) => {
-  //const position: [number, number] = [49.11941257871176, -122.83461402566606];
+const OpeningsMap: React.FC<MapProps> = ({
+  selectedBasemap,
+  openingId,
+  setOpeningPolygonNotFound,
+}) => {
   const lastClickedLayerRef = useRef<any>(null); // Replace 'any' with the specific type if known
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
   const [position, setPosition] = useState<number[]>([48.43737, -123.35883]);
@@ -22,6 +26,8 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap, openingId }) => {
   };
 
   useEffect(() => {
+    setOpeningPolygonNotFound(false);
+
     const callBcGwApi = async () => {
       const openingGeom: OpeningPolygon | null = await getOpeningsPolygonFromWfs(openingId);
       if (openingGeom) {
@@ -29,7 +35,7 @@ const OpeningsMap: React.FC<MapProps> = ({ selectedBasemap, openingId }) => {
         setPosition([openingGeom.positionLat, openingGeom.positionLong]);
         setReloadMap(true);
       } else {
-        window.alert('No features found for the Opening ID ' + openingId);
+        setOpeningPolygonNotFound(true);
       }
     };
 

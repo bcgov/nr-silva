@@ -9,6 +9,7 @@ import { headers } from "../OpeningScreenDataTable/testData";
 import { fetchRecentOpenings } from "../../services/OpeningService";
 import SectionTitle from "../SectionTitle";
 import TableSkeleton from "../TableSkeleton";
+import { InlineNotification } from '@carbon/react';
 
 const OpeningsTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
@@ -16,6 +17,7 @@ const OpeningsTab: React.FC = () => {
   const [openingRows, setOpeningRows] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +38,7 @@ const OpeningsTab: React.FC = () => {
 
   useEffect(() => {
     console.log('Loading OpeningsTab components!');
-  }, [loadId]);
+  }, [loadId, openingPolygonNotFound]);
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial)
@@ -69,6 +71,7 @@ const OpeningsTab: React.FC = () => {
                     url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
                   }}
                   openingId={loadId}
+                  setOpeningPolygonNotFound={setOpeningPolygonNotFound}
                 />
               </div>
             </div>
@@ -76,6 +79,15 @@ const OpeningsTab: React.FC = () => {
         </div>
 
         <div className="container-fluid p-0 pb-5">
+          {openingPolygonNotFound? (
+            <InlineNotification
+              title="Opening ID not found!"
+              subtitle="Unable to find selected Opening Polygon!"
+              kind="error"
+              lowContrast
+              className = "inline-notification"
+            />
+          ) : null }
           {loading ? (
             <TableSkeleton headers={headers} />
           ) : (

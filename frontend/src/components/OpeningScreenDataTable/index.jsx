@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   DataTable,
   TableBatchAction,
@@ -88,7 +88,18 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
   };
 
   const clickViewAction = useCallback((id) => {
-    setOpeningIds(id);
+    console.log(`Clicked view on id ${id}`);
+  }, []);
+
+  const selectRowEvent = useCallback((openingId, selected) => {
+    if (!selected) {
+      console.log(`Selected row id=${openingId} selected=${JSON.stringify(!selected)}`);
+      setOpeningIds([openingId]);
+    }
+    //setOpeningIds(prevOpeningIds => ([
+    //  ...prevOpeningIds,
+    //  openingId
+    //]));
   }, []);
 
   return (
@@ -126,12 +137,13 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                   <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
-                  <TableToolbarAction onClick={() => {
-                    batchActionClick(selectedRows);
-                    batchActionProps.onCancel();
-                    console.log('Clicked print')
-                  }}
-                  disabled={selectedRows.length === 0}
+                  <TableToolbarAction
+                    onClick={() => {
+                      batchActionClick(selectedRows);
+                      batchActionProps.onCancel();
+                      console.log('Clicked print')
+                    }}
+                    disabled={selectedRows.length === 0}
                   >
                     Download
                   </TableToolbarAction>
@@ -178,7 +190,12 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
               <TableBody>
                 {rows.map((row, i) => (
                   <TableRow key={i} {...getRowProps({ row })}>
-                    <TableSelectRow {...getSelectionProps({ row })} />
+                    <TableSelectRow {
+                      ...getSelectionProps({
+                        row,
+                        onClick: (e) => selectRowEvent(row.id, row.isSelected)
+                      })
+                    } />
                     {row.cells.map((cell, j) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (
