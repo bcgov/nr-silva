@@ -74,8 +74,6 @@ const BCHeaderwSide = () => {
 
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
-  const [goToURL, setGoToURL] = useState<string>('');
-  const [goTo, setGoTo] = useState<boolean>(false);
 
   const handleNotificationsPanel = useCallback((): void => {
     if (notifications) {
@@ -104,13 +102,6 @@ const BCHeaderwSide = () => {
   }, []);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (goTo) {
-      setGoTo(false);
-      navigate(goToURL);
-    }
-  }, [goTo, goToURL, navigate]);
 
   return (
     <HeaderContainer
@@ -164,10 +155,7 @@ const BCHeaderwSide = () => {
                       <SideNavLink
                         key={subItem.name}
                         renderIcon={IconComponent || ''}
-                        onClick={() => {
-                          setGoToURL(subItem.link);
-                          setGoTo(true);
-                        }}
+                        onClick={() => navigate(subItem.link)}
                         isActive={window.location.pathname === subItem.link}
                       >
                         {subItem.name}

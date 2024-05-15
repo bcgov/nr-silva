@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import BCGovLogo from "../../components/BCGovLogo";
 import { Button, InlineNotification } from "@carbon/react";
 import { Login } from '@carbon/icons-react';
@@ -8,6 +8,7 @@ import '../../custom.scss';
 import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
 import ThemeToggle from "../../components/ThemeToggle";
+import { useNavigate } from "react-router-dom";
 
 const Landing: React.FC = () => {
     // Adding the Lottie Loader and loading the View for lottie with initial options
@@ -16,6 +17,19 @@ const Landing: React.FC = () => {
       loop: true
     };
     const { View } = useLottie(options);
+    const navigate = useNavigate();
+    const login = useCallback(async (provider: string) => {
+      try {
+        await signIn(provider)
+      } catch(e) {
+        if (e && typeof e === "object" && "message" in e) {
+          const messageError = e.message as string;
+          if (messageError === 'There is already a signed in user.') {
+            navigate('/dashboard');
+          }
+        }
+      }
+    }, []);
     return (
       <>
         <div className="container-fluid">
@@ -67,7 +81,7 @@ const Landing: React.FC = () => {
               <div className="row gy-3">
                 <div className="col-xl-5 col-lg-6">
                   <Button
-                    onClick={()=>signIn('idir')}
+                    onClick={() => login('idir')}
                     renderIcon={Login}
                     data-testid="landing-button__idir"
                     className="btn-landing"
@@ -78,7 +92,7 @@ const Landing: React.FC = () => {
                 <div className="col-xl-5 col-lg-6 ">
                   <Button
                     kind="tertiary"
-                    onClick={() => {signIn('bceid')}}
+                    onClick={() => {login('bceid')}}
                     renderIcon={Login}
                     data-testid="landing-button__bceid"
                     className="btn-landing"
