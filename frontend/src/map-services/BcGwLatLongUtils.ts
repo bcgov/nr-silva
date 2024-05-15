@@ -20,3 +20,21 @@ export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]) => {
   }
   return newCoord;
 }
+
+/**
+ * Shifts BC GW LineString response Lng-Lat to Lat-Lng format.
+ *
+ * @param coordinates point array from the api.
+ * @returns the same array with lat and long shifted.
+ */
+export const shiftLineStringCoordinates = (coordinates: number[][]): number[][] => {
+  const newCoord :number[][] = [];
+  for (let i = 0, len = coordinates.length; i < len; i++) {
+    const point = coordinates[i];
+    if (Array.isArray(point)) {
+      let newOne = point as number[];
+      newCoord.push([newOne[1], newOne[0]]);
+    }
+  }
+  return newCoord;
+};

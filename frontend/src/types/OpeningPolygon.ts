@@ -1,9 +1,9 @@
 export type OpeningPolygon = {
   key: string;
-  bounds: any;
+  bounds: number[][][];
   properties: object;
   id: string;
   positionLat: number;
   positionLong: number;
-  popupHtml: JSX.Element;
+  popup?: JSX.Element;
 };

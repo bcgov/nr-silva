@@ -17,7 +17,7 @@ const OpeningsTab: React.FC = () => {
   const [openingRows, setOpeningRows] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
-  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(true);
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,12 +64,6 @@ const OpeningsTab: React.FC = () => {
             <div className="row px-2">
               <div className="leaflet-container">
                 <OpeningsMap
-                  selectedBasemap={{
-                    id: 1,
-                    name: "Google Maps Satelite",
-                    attribution: '&copy; Google Maps',
-                    url: "https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
-                  }}
                   openingId={loadId}
                   setOpeningPolygonNotFound={setOpeningPolygonNotFound}
                 />
@@ -95,7 +89,7 @@ const OpeningsTab: React.FC = () => {
               headers={headers}
               rows={openingRows}
               error={error}
-              setOpeningIds={setLoadId}
+              setOpeningId={setLoadId}
             />
           )}
         </div>

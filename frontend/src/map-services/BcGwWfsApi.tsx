@@ -1,5 +1,6 @@
+import { MapLayer } from '../types/MapLayer';
 import { OpeningPolygon } from '../types/OpeningPolygon';
-import { shiftBcGwLngLat2LatLng } from './BcGwLatLongUtils';
+import { shiftBcGwLngLat2LatLng, shiftLineStringCoordinates } from './BcGwLatLongUtils';
 
 interface AppendProps {
   featureProps: object;
@@ -148,7 +149,7 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
             id: json.features[i].id,
             positionLat: (json.bbox[1] + json.bbox[3]) / 2,
             positionLong: (json.bbox[0] + json.bbox[2]) / 2,
-            popupHtml: createPopupFromProps(json.features[i].properties)
+            popup: createPopupFromProps(json.features[i].properties)
           };
           openingsList.push(openingObj);
         }
@@ -157,6 +158,59 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
       // Handling arrays to allow quering more than 1 at once.
       if (openingsList.length) {
         return openingsList[0];
+      }
+    }
+  }
+  return null;
+};
+
+export const getInitialLayers = async (): Promise<MapLayer | null> => {
+  console.log('API: Fetching initial layer');
+
+  let uri = 'https://openmaps.gov.bc.ca/geo/ows';
+  // service
+  uri += '?service=WFS';
+  // version
+  uri += '&version=2.0.0';
+  // request
+  uri += '&request=GetFeature';
+  // typeName (layer !?)
+  uri += '&typeName=WHSE_FOREST_TENURE.FTEN_ROAD_SECTION_LINES_SVW';
+  // output format
+  uri += '&outputFormat=application/json';
+  // Srs name
+  uri += '&SrsName=EPSG:4326';
+  // Properties name
+  uri += '&PROPERTYNAME=ROAD_SECTION_ID,ROAD_SECTION_NAME,SECTION_WIDTH,FEATURE_LENGTH,GEOMETRY';
+
+  const resultsStyle = {
+    color: 'black'
+  };
+
+  const resultJson = await fetch(uri);
+  if (resultJson.ok) {
+    const json = await resultJson.json();
+
+    if (json.features && json.features.length) {
+      const bounds: number[][][] = [];
+      for (let i = 0, len = json.features.length; i < len; i++) {
+        // for now, only lineString type
+        if (json.features[i].geometry && json.features[i].geometry.type === 'LineString') {
+          const geometry = shiftLineStringCoordinates(json.features[i].geometry.coordinates);
+          bounds.push(geometry);
+        }
+      }
+
+      if (bounds.length) {
+        const layer: MapLayer = {
+          key: 'WHSE FOREST TENURE - FTEN ROAD SECTION LINES',
+          name: 'WHSE FOREST TENURE - FTEN ROAD SECTION LINES',
+          pathOptions: resultsStyle,
+          bounds: bounds,
+          properties: {}
+        };
+
+        return layer;
       }
     }
   }

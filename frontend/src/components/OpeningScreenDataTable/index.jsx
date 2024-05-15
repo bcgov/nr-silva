@@ -66,7 +66,7 @@ const usePagination = (data, initialItemsPerPage) => {
   };
 };
 
-export default function OpeningScreenDataTable({ rows, headers, error, setOpeningIds }) {
+export default function OpeningScreenDataTable({ rows, headers, error, setOpeningId }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
     currentData,
@@ -94,12 +94,8 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
   const selectRowEvent = useCallback((openingId, selected) => {
     if (!selected) {
       console.log(`Selected row id=${openingId} selected=${JSON.stringify(!selected)}`);
-      setOpeningIds([openingId]);
+      setOpeningId(openingId);
     }
-    //setOpeningIds(prevOpeningIds => ([
-    //  ...prevOpeningIds,
-    //  openingId
-    //]));
   }, []);
 
   return (
