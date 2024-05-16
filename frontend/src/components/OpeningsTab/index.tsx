@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Button } from "@carbon/react";
 import './styles.scss'
 import { ViewFilled } from '@carbon/icons-react';
@@ -11,8 +10,12 @@ import SectionTitle from "../SectionTitle";
 import TableSkeleton from "../TableSkeleton";
 import { InlineNotification } from '@carbon/react';
 
-const OpeningsTab: React.FC = () => {
-  const [showSpatial, setShowSpatial] = useState<boolean>(false);
+interface Props {
+  showSpatial: boolean;
+  setShowSpatial: Function;
+}
+
+const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [openingRows, setOpeningRows] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -37,18 +40,15 @@ const OpeningsTab: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Loading OpeningsTab components!');
+    console.log(`Loading OpeningsTab components! showSpatial=${showSpatial}`);
   }, [loadId, openingPolygonNotFound]);
 
   const toggleSpatial = () => {
-    setShowSpatial(!showSpatial)
+    setShowSpatial((prevShowSpatial :boolean) => {
+      console.log(`prevShowSpatial=${prevShowSpatial}`);
+      return !prevShowSpatial
+    });
   }
-
-  const userDetails = useSelector((state: any) => state.userDetails)
-  const goToActivity = () => {
-    console.log("clicked a row")
-  }
-  const { user } = userDetails
 
   return (
     <>
@@ -56,7 +56,12 @@ const OpeningsTab: React.FC = () => {
         <div className="container-fluid">
           <div className="row px-0 py-4 p-sm-4">
             <SectionTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
-            <Button className="h-100 my-auto d-none d-sm-block" renderIcon={ViewFilled} type="button" onClick={toggleSpatial}>
+            <Button
+              className="h-100 my-auto d-none d-sm-block"
+              renderIcon={ViewFilled}
+              type="button"
+              onClick={() => toggleSpatial()}
+            >
               {showSpatial ? 'Hide Spatial' : 'Show Spatial'}
             </Button>
           </div>
