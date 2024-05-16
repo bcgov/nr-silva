@@ -125,3 +125,48 @@ export async function fetchFreeGrowingMilestones(orgUnitCode, clientNumber, entr
         throw error;
     }
 }
+
+export async function fetchRecentActions() {
+    let authToken = await getAuthIdToken();
+    try {
+        // Comment out the actual API call for now
+        // const response = await axios.get('https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/my-recent-actions/requests', {
+        //     headers: {
+        //         Authorization: `Bearer ${authToken}`
+        //     }
+        // });
+
+        // Temporarily use the sample data for testing
+        // const { data } = response;
+        const data = [
+          {
+            "activityType": "Update",
+            "openingId": 1541297,
+            "statusCode": "APP",
+            "statusDescription": "Approved",
+            "lastUpdatedLabel": "1 minute ago",
+            "lastUpdated": "2024-05-16T19:59:21.635Z"
+          },
+          // Add more sample objects here if needed
+        ];
+
+        if (Array.isArray(data)) {
+            // Transforming response data into a format consumable by the component
+            const rows = data.map(action => ({
+                activityType: action.activityType,
+                openingID: action.openingId.toString(), // Convert openingId to string if needed
+                status: action.statusDescription,
+                lastUpdated: action.lastUpdatedLabel // Use lastUpdatedLabel from API
+            }));
+            
+            // Returning the transformed data
+            return rows;
+        } else {
+            console.log('No data found in the response.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching recent actions:', error);
+        throw error;
+    }
+}
