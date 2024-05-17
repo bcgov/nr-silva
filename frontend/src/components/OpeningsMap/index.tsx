@@ -82,7 +82,7 @@ const OpeningsMap: React.FC<MapProps> = ({
             attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a>"
           />
         </BaseLayer>
-        <BaseLayer checked name="Google Maps Satelite">
+        <BaseLayer name="Google Maps Satelite">
           <TileLayer
             url={"https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"}
             attribution="&copy; Google Maps"
