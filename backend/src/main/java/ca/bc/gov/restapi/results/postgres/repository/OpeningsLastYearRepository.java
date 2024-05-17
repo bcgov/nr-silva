@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,4 +12,7 @@ public interface OpeningsLastYearRepository extends JpaRepository<OpeningsLastYe
 
   @Query("from OpeningsLastYearEntity o where o.openingId in ?1")
   List<OpeningsLastYearEntity> findAllByOpeningIdInList(List<Long> openingIdList);
+
+  @Query("from OpeningsLastYearEntity o where o.entryTimestamp >= ?1 or o.updateTimestamp >= ?1")
+  List<OpeningsLastYearEntity> findAllFromLastYear(LocalDateTime baseDateTime, Sort sort);
 }

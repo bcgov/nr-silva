@@ -50,6 +50,7 @@ const usePagination = (data, initialItemsPerPage) => {
   const handlePageChange = ({ page }) => {
     setCurrentPage(page);
   };
+
   // Update the items per page when the user changes the value
   const handleItemsPerPageChange = (event) => {
     setCurrentPage(event.page);
