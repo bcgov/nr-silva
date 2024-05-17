@@ -132,7 +132,10 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
   // CQL Filters
   uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
 
-  const resultJson = await fetch(uri);
+  const resultJson = await fetch(uri, {
+    method: "GET",
+    mode: "no-cors"
+  });
   if (resultJson.ok) {
     const json = await resultJson.json();
 
@@ -187,7 +190,10 @@ export const getInitialLayers = async (): Promise<MapLayer | null> => {
     color: 'black'
   };
 
-  const resultJson = await fetch(uri);
+  const resultJson = await fetch(uri, {
+    method: "GET",
+    mode: "no-cors"
+  });
   if (resultJson.ok) {
     const json = await resultJson.json();
 
