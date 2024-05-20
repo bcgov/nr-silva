@@ -1,3 +1,4 @@
+import React from 'react';
 import { GroupedBarChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import "@carbon/charts/styles.css";

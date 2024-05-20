@@ -20,8 +20,11 @@ const Opening: React.FC = () => {
   return (
     <>
       <div className="container-fluid">
-        <div className="row px-0 py-4 p-sm-4">
-          <PageTitle title="Openings" subtitle="Create, manage or check opening information " />
+        <div className="row px-0 py-4 p-sm-4" data-testid="opening-pagetitle">
+          <PageTitle
+            title="Openings"
+            subtitle="Create, manage or check opening information"
+          />
         </div>
       </div>
 

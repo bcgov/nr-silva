@@ -1,3 +1,4 @@
+import React from 'react';
 import { TabList } from "@carbon/react";
 import { Tabs } from "@carbon/react";
 import { Tab } from "@carbon/react";

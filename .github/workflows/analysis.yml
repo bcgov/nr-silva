@@ -47,12 +47,12 @@ jobs:
           dir: frontend
           node_version: "20"
           sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/__test__/**
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-frontend
             -Dsonar.sources=src
-            -Dsonar.tests.inclusions=**/*.test.ts
+            -Dsonar.tests.inclusions=**/__test__/**
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
           sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
           # Only use triggers for PRs
