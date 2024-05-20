@@ -1,5 +1,3 @@
-version: '3.9'
-
 x-frontend: &frontend
   environment:
     VITE_ZONE: DEV
