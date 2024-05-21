@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   DataTable,
   TableBatchAction,
@@ -30,29 +30,6 @@ export const batchActionClick = (selectedRows) => () => {
   console.log('Batch action clicked with selected rows:', selectedRows);
   // Add your logic to handle batch actions here
 };
-
-export const buttonsCol = (
-  <>
-    <Button
-      hasIconOnly
-      iconDescription="View"
-      tooltipposition="bottom"
-      kind="ghost"
-      onClick={() => clickFn(item.id)}
-      renderIcon={Icons.DataViewAlt}
-      size="md"
-    />
-    <Button
-      hasIconOnly
-      iconDescription="Download"
-      tooltipposition="bottom"
-      kind="ghost"
-      onClick={() => null}
-      renderIcon={Icons.Download}
-      size="md"
-    />
-  </>
-);
 
 // A custom hook to handle pagination logic
 const usePagination = (data, initialItemsPerPage) => {
@@ -90,7 +67,7 @@ const usePagination = (data, initialItemsPerPage) => {
   };
 };
 
-export default function OpeningScreenDataTable({ rows, headers, error }) {
+export default function OpeningScreenDataTable({ rows, headers, error, setOpeningId }) {
   const [filteredRows, setFilteredRows] = useState(rows);
   const {
     currentData,
@@ -101,8 +78,6 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
     itemsPerPage, // Use itemsPerPage from the hook
   } = usePagination(filteredRows, 5);
 
-  
-
   const handleSearchChange = (searchTerm) => {
     const filtered = rows.filter((item) =>
       Object.values(item)
@@ -112,6 +87,17 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
     );
     setFilteredRows(filtered);
   };
+
+  const clickViewAction = useCallback((id) => {
+    console.log(`Clicked view on id ${id}`);
+  }, []);
+
+  const selectRowEvent = useCallback((openingId, selected) => {
+    if (!selected) {
+      console.log(`Selected row id=${openingId} selected=${JSON.stringify(!selected)}`);
+      setOpeningId(openingId);
+    }
+  }, []);
 
   return (
     <div>
@@ -148,12 +134,13 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
                   <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
-                  <TableToolbarAction onClick={() => {
-                    batchActionClick(selectedRows);
-                    batchActionProps.onCancel();
-                    console.log('Clicked print')
-                  }}
-                  disabled={selectedRows.length === 0}
+                  <TableToolbarAction
+                    onClick={() => {
+                      batchActionClick(selectedRows);
+                      batchActionProps.onCancel();
+                      console.log('Clicked print')
+                    }}
+                    disabled={selectedRows.length === 0}
                   >
                     Download
                   </TableToolbarAction>
@@ -200,13 +187,37 @@ export default function OpeningScreenDataTable({ rows, headers, error }) {
               <TableBody>
                 {rows.map((row, i) => (
                   <TableRow key={i} {...getRowProps({ row })}>
-                    <TableSelectRow {...getSelectionProps({ row })} />
+                    <TableSelectRow {
+                      ...getSelectionProps({
+                        row,
+                        onClick: (e) => selectRowEvent(row.id, row.isSelected)
+                      })
+                    } />
                     {row.cells.map((cell, j) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (
                           <StatusTag type={cell.value} />
                         ) : cell.info.header === "actions" ? (
-                          buttonsCol
+                          <>
+                            <Button
+                              hasIconOnly
+                              iconDescription="View"
+                              tooltipPosition="bottom"
+                              kind="ghost"
+                              onClick={() => clickViewAction(row.id)}
+                              renderIcon={Icons.DataViewAlt}
+                              size="md"
+                            />
+                            <Button
+                              hasIconOnly
+                              iconDescription="Download"
+                              tooltipPosition="bottom"
+                              kind="ghost"
+                              onClick={() => null}
+                              renderIcon={Icons.Download}
+                              size="md"
+                            />
+                          </>
                         ) : (
                           cell.value
                         )}

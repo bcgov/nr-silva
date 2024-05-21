@@ -1,3 +1,4 @@
+import React from 'react';
 import { DonutChart } from "@carbon/charts-react";
 import { useState } from "react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
