@@ -43,7 +43,16 @@ Object.defineProperty(global.SVGElement.prototype, 'getBBox', {
 
 Object.defineProperty(global.SVGElement.prototype, 'getComputedTextLength', {
   writable: true,
-  value: vi.fn().mockReturnValue(0),
+  value: vi.fn().mockReturnValue(220),
+});
+
+Object.defineProperty(global.SVGElement.prototype, 'transform', {
+  writable: true,
+  value: {
+    baseVal: {
+      consolidate: vi.fn(() => {})
+    },
+  }
 });
 
 Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {

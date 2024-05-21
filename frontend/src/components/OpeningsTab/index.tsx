@@ -40,7 +40,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
   }, []);
 
   useEffect(() => {
-    console.log(`Loading OpeningsTab components! showSpatial=${showSpatial}`);
+    // 
   }, [loadId, openingPolygonNotFound]);
 
   const toggleSpatial = () => {

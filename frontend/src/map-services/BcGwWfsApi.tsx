@@ -107,8 +107,6 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
     return Promise.resolve(null);
   }
 
-  console.log(`API: Fetch using opening ids=${JSON.stringify(openingId)}`);
-
   // NEXT STEPS:
   // - Work with dynamic properties
   // - Work with different SRS !? (to be discussed)
@@ -168,8 +166,6 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
 };
 
 export const getInitialLayers = async (): Promise<MapLayer | null> => {
-  console.log('API: Fetching initial layer');
-
   let uri = 'https://openmaps.gov.bc.ca/geo/ows';
   // service
   uri += '?service=WFS';

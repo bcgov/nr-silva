@@ -12,8 +12,7 @@ const state = {
   }
 };
 
-vi
-  .spyOn(redux, 'useSelector')
+vi.spyOn(redux, 'useSelector')
   .mockImplementation((callback) => callback(state));
 
 describe('Opening screen test cases', () => {
@@ -26,7 +25,6 @@ describe('Opening screen test cases', () => {
 
     const pageTitleComp = getByTestId('opening-pagetitle');
     expect(pageTitleComp).toBeDefined();
-    //expect(pageTitleComp).toHaveTextContent('Create, manage or check opening information');
 
     //const subtitle = 'Create, manage or check opening information';
     //expect(screen.getByText(subtitle)).toBeDefined();

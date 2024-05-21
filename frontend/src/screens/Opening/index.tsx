@@ -14,7 +14,7 @@ const Opening: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(`showSpatial changed=${showSpatial}`);
+    //
   }, [showSpatial]);
 
   return (
