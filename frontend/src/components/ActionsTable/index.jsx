@@ -1,3 +1,4 @@
+import React from 'react';
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "@carbon/react";
 import StatusTag from "../StatusTag";
 

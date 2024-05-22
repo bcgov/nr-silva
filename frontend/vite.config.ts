@@ -1,10 +1,10 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite'
+import { defineConfig, UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const config = {
+  const config: UserConfig = {
     define: {} as any,
     plugins: [
       {
@@ -35,30 +35,19 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       hmr: {
         overlay: false
-      }
+      },
     },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/setupTests.ts',
-      css: true,
-      reporters: ['verbose'],
-      coverage: {
-        provider: 'v8',
-        reporter: ['text', 'json', 'html'],
-        include: ['src/**/*'],
-        exclude: [],
-      }
-    },
   };
 
   if (mode === 'development') {
-    config.define.global = {};
+    if (config.define) {
+      config.define.global = {};
+    }
   }
 
   return config;

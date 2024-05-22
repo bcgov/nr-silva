@@ -2,9 +2,9 @@ import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 
 export async function fetchRecentOpenings() {
-    let authToken = await getAuthIdToken();
+    let authToken = getAuthIdToken();
     try {
-        const response = await axios.get('https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/openings/recent-openings?page=0&perPage=15', {
+        const response = await axios.get('https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/openings/recent-openings?page=0&perPage=100', {
             headers: {
                 Authorization: `Bearer ${authToken}`
             }
