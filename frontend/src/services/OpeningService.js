@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 
+const backendUrl = process.env.BACKEND_URL;
+
 export async function fetchRecentOpenings() {
     let authToken = getAuthIdToken();
     try {
-        const response = await axios.get('https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/openings/recent-openings?page=0&perPage=100', {
+        const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
             headers: {
                 Authorization: `Bearer ${authToken}`
             }
@@ -44,7 +46,7 @@ export async function fetchOpeningsPerYear(orgUnitCode, statusCode, entryDateSta
     let authToken = await getAuthIdToken();
     try {
         // Construct URL with optional parameters
-        let url = 'https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/submission-trends';
+        let url = backendUrl.concat("/api/dashboard-metrics/submission-trends");
         if (orgUnitCode || statusCode || entryDateStart || entryDateEnd) {
             url += '?';
             if (orgUnitCode) url += `orgUnitCode=${orgUnitCode}&`;
@@ -84,7 +86,7 @@ export async function fetchOpeningsPerYear(orgUnitCode, statusCode, entryDateSta
 
 export async function fetchFreeGrowingMilestones(orgUnitCode, clientNumber, entryDateStart, entryDateEnd) {
     let authToken = await getAuthIdToken();
-    let url = 'https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/free-growing-milestones';
+    let url = backendUrl.concat("/api/dashboard-metrics/free-growing-milestones");
 
     // Construct URL with optional parameters
     if (orgUnitCode || clientNumber || entryDateStart || entryDateEnd) {
@@ -130,7 +132,7 @@ export async function fetchRecentActions() {
     let authToken = await getAuthIdToken();
     try {
         // Comment out the actual API call for now
-        // const response = await axios.get('https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca/api/dashboard-metrics/my-recent-actions/requests', {
+        // const response = await axios.get(backendUrl.concat("/api/dashboard-metrics/my-recent-actions/requests"));
         //     headers: {
         //         Authorization: `Bearer ${authToken}`
         //     }
