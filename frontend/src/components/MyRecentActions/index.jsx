@@ -41,8 +41,8 @@ const MyRecentActions = () => {
   return (
     <Tabs>
       <TabList activation="manual" aria-label="List of tabs">
-        <Tab><div className="tab-header">Recent</div></Tab>
-        <Tab><div className="tab-header">Files and Docs</div></Tab>
+        <Tab><div className="tab-header-recent">Recent</div></Tab>
+        <Tab><div className="tab-header-recent">Files and Docs</div></Tab>
       </TabList>
       <TabPanels>
         <TabPanel className="tab-content">
