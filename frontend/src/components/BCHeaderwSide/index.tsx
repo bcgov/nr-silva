@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useThemePreference } from '../../utils/ThemePreference';
 import {
   HeaderContainer,
@@ -11,7 +11,9 @@ import {
   HeaderPanel,
   SideNav,
   SideNavItems,
-  SideNavLink
+  SideNavLink,
+  SideNavMenu,
+  SideNavMenuItem
 } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import './BCHeaderwSide.scss';
@@ -22,16 +24,18 @@ import MyProfile from '../MyProfile';
 
 interface ListItem {
   name: string;
-  icon: string;
+  icon?: keyof typeof Icons;
   link: string;
   disabled: boolean;
-}
-interface ListItems {
-  name: string;
-  items: ListItem[]
+  subItems?: ListItem[];
 }
 
-const listItems = [
+interface ListItems {
+  name: string;
+  items: ListItem[];
+}
+
+const listItems: ListItems[] = [
   {
     name: 'Main activities',
     items: [
@@ -45,8 +49,30 @@ const listItems = [
         name: 'Opening',
         icon: 'MapBoundaryVegetation',
         link: '/opening',
-        disabled: false
-      },
+        disabled: false,
+        subItems: [
+          {
+            name: 'Silviculture search',
+            link: '/opening',
+            disabled: false
+          },
+          {
+            name: 'Create an opening',
+            link: '/opening/create',
+            disabled: false
+          },
+          {
+            name: 'Reports',
+            link: '/opening/reports',
+            disabled: false
+          },
+          {
+            name: 'Upcoming activities',
+            link: '/opening/upcoming-activities',
+            disabled: false
+          }
+        ]
+      }
     ]
   },
   {
@@ -69,27 +95,18 @@ const listItems = [
 ];
 
 const BCHeaderwSide = () => {
-  //can only be impored at component level
   const { theme, setTheme } = useThemePreference();
 
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
 
   const handleNotificationsPanel = useCallback((): void => {
-    if (notifications) {
-      setNotifications(false);
-    } else {
-      setNotifications(true);
-    }
+    setNotifications(!notifications);
     setMyProfile(false);
   }, [notifications]);
 
   const handleMyProfilePanel = useCallback((): void => {
-    if (myProfile) {
-      setMyProfile(false);
-    } else {
-      setMyProfile(true);
-    }
+    setMyProfile(!myProfile);
     setNotifications(false);
   }, [myProfile]);
 
@@ -102,10 +119,11 @@ const BCHeaderwSide = () => {
   }, []);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <HeaderContainer
-      render={({ isSideNavExpanded, onClickSideNavExpand }: any) => (
+      render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
         <Header
           aria-label="React TS Carbon Quickstart"
           className="quickstart-header"
@@ -122,9 +140,8 @@ const BCHeaderwSide = () => {
           </Link>
           <HeaderGlobalBar className="align-items-center">
             <div className="mx-2">
-              <ThemeToggle/>
+              <ThemeToggle />
             </div>
-            
             <HeaderGlobalAction
               aria-label="User Settings"
               tooltipAlignment="end"
@@ -140,27 +157,49 @@ const BCHeaderwSide = () => {
               title="My Profile"
               closeFn={closeMyProfilePanel}
             />
-            <MyProfile/>
+            <MyProfile />
           </HeaderPanel>
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
-              {listItems.map((item: ListItems) => (
+              {listItems.map(item => (
                 <div key={item.name}>
                   <SideNavLink className="side-nav-category-name">
                     {item.name}
                   </SideNavLink>
-                  {item.items.map((subItem: ListItem) => {
-                    const IconComponent = Icons[subItem.icon];
-                    return (
-                      <SideNavLink
-                        key={subItem.name}
-                        renderIcon={IconComponent || ''}
-                        onClick={() => navigate(subItem.link)}
-                        isActive={window.location.pathname === subItem.link}
-                      >
-                        {subItem.name}
-                      </SideNavLink>
-                    );
+                  {item.items.map(subItem => {
+                    const IconComponent = Icons[subItem.icon as keyof typeof Icons];
+                    if (subItem.subItems) {
+                      const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
+                      return (
+                        <SideNavMenu
+                          key={subItem.name}
+                          title={subItem.name}
+                          renderIcon={IconComponent}
+                          isActive={isActive}
+                        >
+                          {subItem.subItems.map(subSubItem => (
+                            <SideNavMenuItem
+                              key={subSubItem.name}
+                              onClick={() => navigate(subSubItem.link)}
+                              isActive={location.pathname === subSubItem.link}
+                            >
+                              {subSubItem.name}
+                            </SideNavMenuItem>
+                          ))}
+                        </SideNavMenu>
+                      );
+                    } else {
+                      return (
+                        <SideNavLink
+                          key={subItem.name}
+                          renderIcon={IconComponent}
+                          onClick={() => navigate(subItem.link)}
+                          isActive={location.pathname === subItem.link}
+                        >
+                          {subItem.name}
+                        </SideNavLink>
+                      );
+                    }
                   })}
                 </div>
               ))}

@@ -55,7 +55,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
       <div>
         <div className="container-fluid">
           <div className="row px-0 py-4 p-sm-4">
-            <SectionTitle title="Recent openings" subtitle="Track your recent openings and select to check spatial activity" />
+            <SectionTitle title="Recent openings" subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below" />
             <Button
               className="h-100 my-auto d-none d-sm-block"
               renderIcon={ViewFilled}
