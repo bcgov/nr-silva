@@ -96,6 +96,8 @@ objects:
               imagePullPolicy: Always
               name: ${NAME}
               env:
+                - name: BACKEND_URL
+                  value: "https://${NAME}-${ZONE}-backend.${DOMAIN}"
                 - name: LOG_LEVEL
                   value: "${LOG_LEVEL}"
                 - name: VITE_BACKEND_URL
