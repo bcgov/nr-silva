@@ -30,7 +30,7 @@ const Opening: React.FC = () => {
 
       {!showSpatial && (
         <div className="favourite-activities">
-          <div className="row gy-0 gy-sm-4 ">
+          <div className="row gy-0 ">
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
               <FavouriteCard index={1} title={'Silviculture search'} link="#" icon={'SearchLocate'} description={'Search for opening types, activities or standards'}/>
             </div>
@@ -48,7 +48,7 @@ const Opening: React.FC = () => {
       )}
 
       <Tabs>
-        <TabList aria-label="List of Tab" contained>
+        <TabList className="tab-list" aria-label="List of Tab" contained>
           <Tab><div className="tab-header">Recent Openings</div></Tab>
           <Tab><div className="tab-header">Dashboard</div></Tab>
         </TabList>

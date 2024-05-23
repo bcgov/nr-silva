@@ -11,8 +11,8 @@
   }
 
   .favourite-activities {
-    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
-    padding: 2rem;
+    background-color: var(--#{vars.$bcgov-prefix}-background) !important;
+    padding-top: 0px !important;
   }
 
   .tab-content {
@@ -21,6 +21,9 @@
   .tab-header{
     @include type.type-style('heading-01');
     min-width: 251px;
+    margin-left: 40px;
+  }
+  .tab-list{
     margin-left: 40px;
   }
 
