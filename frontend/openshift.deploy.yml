@@ -70,7 +70,8 @@ objects:
         spec:
           containers:
             - name: ${NAME}-${ZONE}
-              image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}              securityContext:
+              image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
+              securityContext:
                 capabilities:
                   add: ["NET_BIND_SERVICE"]
               imagePullPolicy: Always
