@@ -29,10 +29,13 @@ parameters:
   - name: MAX_REPLICAS
     description: The maximum amount of replicas for the horizontal pod autoscaler.
     value: "5"
+  - name: TAG
+    description: Image tag; e.g. PR number, latest or prod
+    required: true
   - name: REGISTRY
     description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
     value: ghcr.io
-  - name: ORG_NAME
+  - name: ORG
     description: Organization name, e.g. bcgov
     value: bcgov
   - name: DB_POOL_CONN_TIMEOUT
@@ -77,22 +80,6 @@ parameters:
     value: "http://localhost:300*,https://*.apps.silver.devops.gov.bc.ca"
 objects:
   - apiVersion: v1
-    kind: ImageStream
-    metadata:
-      labels:
-        app: "${NAME}-${ZONE}"
-      name: "${NAME}-${ZONE}-${COMPONENT}"
-    spec:
-      lookupPolicy:
-        local: false
-      tags:
-        - name: "${IMAGE_TAG}"
-          from:
-            kind: DockerImage
-            name: ${REGISTRY}/${ORG_NAME}/${NAME}/${COMPONENT}:${ZONE}
-          referencePolicy:
-            type: Local
-  - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
@@ -102,14 +89,6 @@ objects:
       replicas: 1
       triggers:
         - type: ConfigChange
-        - type: ImageChange
-          imageChangeParams:
-            automatic: true
-            containerNames:
-              - "${NAME}"
-            from:
-              kind: ImageStreamTag
-              name: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
       selector:
         deploymentconfig: "${NAME}-${ZONE}-${COMPONENT}"
       strategy:
@@ -121,9 +100,9 @@ objects:
             deploymentconfig: "${NAME}-${ZONE}-${COMPONENT}"
         spec:
           containers:
-            - image: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
+            - name: ${NAME}-${ZONE}
+              image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               imagePullPolicy: Always
-              name: "${NAME}"
               volumeMounts:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
