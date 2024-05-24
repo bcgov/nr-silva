@@ -72,7 +72,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
           parameters:
-            -p ZONE=test
+            -p ZONE=test -p TAG=test
             ${{ matrix.parameters }}
           timeout: ${{ matrix.timeout || '10m' }}
           verification_path: ${{ matrix.verification_path }}
@@ -154,7 +154,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
           parameters:
-            -p ZONE=prod
+            -p ZONE=prod -p TAG=prod
             ${{ matrix.parameters }}
           timeout: ${{ matrix.timeout || '10m' }}
           verification_path: ${{ matrix.verification_path }}

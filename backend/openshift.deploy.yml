@@ -29,10 +29,13 @@ parameters:
   - name: MAX_REPLICAS
     description: The maximum amount of replicas for the horizontal pod autoscaler.
     value: "5"
+  - name: TAG
+    description: Image tag; e.g. PR number, latest or prod
+    required: true
   - name: REGISTRY
     description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
     value: ghcr.io
-  - name: ORG_NAME
+  - name: ORG
     description: Organization name, e.g. bcgov
     value: bcgov
   - name: DB_POOL_CONN_TIMEOUT
@@ -76,54 +79,29 @@ parameters:
     description: Sets all the allowed request origins
     value: "http://localhost:300*,https://*.apps.silver.devops.gov.bc.ca"
 objects:
-  - apiVersion: v1
-    kind: ImageStream
-    metadata:
-      labels:
-        app: "${NAME}-${ZONE}"
-      name: "${NAME}-${ZONE}-${COMPONENT}"
-    spec:
-      lookupPolicy:
-        local: false
-      tags:
-        - name: "${IMAGE_TAG}"
-          from:
-            kind: DockerImage
-            name: ${REGISTRY}/${ORG_NAME}/${NAME}/${COMPONENT}:${ZONE}
-          referencePolicy:
-            type: Local
-  - apiVersion: v1
-    kind: DeploymentConfig
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
       labels:
         app: "${NAME}-${ZONE}"
       name: "${NAME}-${ZONE}-${COMPONENT}"
     spec:
       replicas: 1
-      triggers:
-        - type: ConfigChange
-        - type: ImageChange
-          imageChangeParams:
-            automatic: true
-            containerNames:
-              - "${NAME}"
-            from:
-              kind: ImageStreamTag
-              name: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
       selector:
-        deploymentconfig: "${NAME}-${ZONE}-${COMPONENT}"
+        matchLabels:
+          deployment: "${NAME}-${ZONE}-${COMPONENT}"
       strategy:
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
           labels:
             app: "${NAME}-${ZONE}"
-            deploymentconfig: "${NAME}-${ZONE}-${COMPONENT}"
+            deployment: "${NAME}-${ZONE}-${COMPONENT}"
         spec:
           containers:
-            - image: "${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}"
+            - name: ${NAME}-${ZONE}
+              image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               imagePullPolicy: Always
-              name: "${NAME}"
               volumeMounts:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
@@ -227,7 +205,7 @@ objects:
           port: 80
           targetPort: 8080
       selector:
-        deploymentconfig: "${NAME}-${ZONE}-${COMPONENT}"
+        deployment: "${NAME}-${ZONE}-${COMPONENT}"
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
@@ -254,7 +232,7 @@ objects:
     spec:
       scaleTargetRef:
         apiVersion: apps.openshift.io/v1
-        kind: DeploymentConfig
+        kind: Deployment
         name: "${NAME}-${ZONE}-${COMPONENT}"
       minReplicas: "${{MIN_REPLICAS}}"
       maxReplicas: "${{MAX_REPLICAS}}"
