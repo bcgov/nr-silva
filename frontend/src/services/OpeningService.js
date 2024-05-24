@@ -26,7 +26,8 @@ export async function fetchRecentOpenings() {
                 cutBlock: opening.cutBlock ? opening.cutBlock : '-',
                 grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
                 status: opening.status ? opening.status.description : '-',
-                category: opening.category ? opening.category.code : '-',
+                category: opening.category ? opening.category.code + ":" + opening.category.description  : '-',
+                categoryDescription: opening.category ? opening.category.description : '-',
                 disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
                 createdAt: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
                 lastViewed: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'

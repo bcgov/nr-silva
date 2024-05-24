@@ -250,14 +250,6 @@ export const headers = [
     header: 'Disturbance start',
   },
   {
-    key: 'createdAt',
-    header: 'Created At',
-  },
-  {
-    key: 'lastViewed',
-    header: 'Last Viewed',
-  },
-  {
   key: 'actions',
   header: 'Actions',
   },

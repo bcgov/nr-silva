@@ -145,9 +145,8 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                     Download
                   </TableToolbarAction>
                 </TableToolbarMenu>
-                <div className="d-none d-sm-flex">
+                <div className="d-none d-sm-flex my-auto">
                   <Button
-                    hasIconOnly
                     iconDescription="Download"
                     tooltipposition="bottom"
                     kind="ghost"
@@ -155,9 +154,10 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                     disabled={selectedRows.length === 0}
                     renderIcon={Icons.Download}
                     size="md"
-                  />
+                  >
+                    Download
+                  </Button>
                   <Button
-                    hasIconOnly
                     iconDescription="Print"
                     tooltipposition="bottom"
                     kind="ghost"
@@ -169,7 +169,9 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                     disabled={selectedRows.length === 0}
                     renderIcon={Icons.Printer}
                     size="md"
-                  />
+                  >
+                    Print
+                  </Button>
                 </div>
               </TableToolbarContent>
             </TableToolbar>
@@ -205,20 +207,24 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                               tooltipPosition="bottom"
                               kind="ghost"
                               onClick={() => clickViewAction(row.id)}
-                              renderIcon={Icons.DataViewAlt}
+                              renderIcon={Icons.View}
                               size="md"
                             />
                             <Button
                               hasIconOnly
-                              iconDescription="Download"
+                              iconDescription="Document Download"
                               tooltipPosition="bottom"
                               kind="ghost"
                               onClick={() => null}
-                              renderIcon={Icons.Download}
+                              renderIcon={Icons.DocumentDownload}
                               size="md"
                             />
                           </>
-                        ) : (
+                        )
+                        : cell.info.header === "category" ?(
+                          cell.value.split(':')[0]
+                        ) 
+                        : (
                           cell.value
                         )}
                       </TableCell>
