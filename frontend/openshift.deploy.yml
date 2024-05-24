@@ -7,7 +7,7 @@ parameters:
   - name: COMPONENT
     description: Component name
     value: frontend
-  - name: ORG_NAME
+  - name: ORG
     description: Organization name, e.g. bcgov
     value: bcgov
   - name: ZONE
