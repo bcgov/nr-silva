@@ -12,6 +12,8 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
+  - name: TAG
+    description: Dummy variable for workflow convenience
   - name: AWS_KINESIS_STREAM
     description: AWS Kinesis Stream identifier
     required: false
