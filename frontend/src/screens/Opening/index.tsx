@@ -32,10 +32,10 @@ const Opening: React.FC = () => {
         <div className="favourite-activities">
           <div className="row gy-0 gy-sm-4 ">
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Search opening'} link="#" icon={'SearchLocate'} description={'Search for a opening to update or consult using advance filters such as activities, standards, codes or links'}/>
+              <FavouriteCard index={1} title={'Silviculture search'} link="#" icon={'SearchLocate'} description={'Search for opening types, activities or standards'}/>
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Create a new opening'} link="#" icon={'MapBoundary'} description={'Register a opening for tracking silviculture treatments'}/>
+              <FavouriteCard index={1} title={'Create an opening'} link="#" icon={'MapBoundary'} description={'Create different opening types to track silviculture activities, treatments and generate their identifier (ID)'}/>
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
               <FavouriteCard index={1} title={'Reports'} link="#" icon={'ReportData'} description={'Consult and manage opening reports'}/>

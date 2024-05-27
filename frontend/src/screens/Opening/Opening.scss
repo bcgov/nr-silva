@@ -20,6 +20,8 @@
   }
   .tab-header{
     @include type.type-style('heading-01');
+    min-width: 251px;
+    margin-left: 40px;
   }
 
   @media only screen and (max-width: 671px) {
