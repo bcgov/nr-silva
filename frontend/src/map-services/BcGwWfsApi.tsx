@@ -1,6 +1,9 @@
+import ApiConfig from '../api-services/ApiConfig';
+import api from '../api-services/api';
 import { MapLayer } from '../types/MapLayer';
 import { OpeningPolygon } from '../types/OpeningPolygon';
 import { shiftBcGwLngLat2LatLng, shiftLineStringCoordinates } from './BcGwLatLongUtils';
+import axios from 'axios';
 
 interface AppendProps {
   featureProps: object;
@@ -130,6 +133,8 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
   // CQL Filters
   uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
 
+  console.log("shooting with fetch only..");
+
   const resultJson = await fetch(uri);
   if (resultJson.ok) {
     const json = await resultJson.json();
@@ -162,7 +167,7 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
   return null;
 };
 
-export const getInitialLayers = async (): Promise<MapLayer | null> => {
+export const getInitialLayers = async (token: string | null): Promise<MapLayer | null> => {
   let uri = 'https://openmaps.gov.bc.ca/geo/ows';
   // service
   uri += '?service=WFS';
@@ -183,9 +188,13 @@ export const getInitialLayers = async (): Promise<MapLayer | null> => {
     color: 'black'
   };
 
-  const resultJson = await fetch(uri);
-  if (resultJson.ok) {
-    const json = await resultJson.json();
+  const layerName = 'WHSE_FOREST_TENURE.FTEN_ROAD_SECTION_LINES_SVW';
+  const url = `${ApiConfig.baseMapLayer}/${layerName}`;
+  const response = await api.get(url);
+  const { data } = response;
+  
+  if (data) {
+    const json = data;
 
     if (json.features && json.features.length) {
       const bounds: number[][][] = [];

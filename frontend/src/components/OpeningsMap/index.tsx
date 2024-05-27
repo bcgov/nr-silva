@@ -7,6 +7,7 @@ import { getInitialLayers, getOpeningsPolygonFromWfs } from '../../map-services/
 import { LayersControl } from 'react-leaflet';
 import { MapLayer } from '../../types/MapLayer';
 import { Polyline } from 'react-leaflet';
+import { getAuthIdToken } from '../../services/AuthService';
 
 interface MapProps {
   openingId: number | null;
@@ -27,6 +28,8 @@ const OpeningsMap: React.FC<MapProps> = ({
     color: 'black'
   };
 
+  let authToken = getAuthIdToken();
+
   useEffect(() => {
     setOpeningPolygonNotFound(false);
 
@@ -42,7 +45,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     };
 
     const getDefaultLayers = async () => {
-      const layer: MapLayer | null = await getInitialLayers();
+      const layer: MapLayer | null = await getInitialLayers(authToken);
       if (layer) {
         setLayers([layer]);
       }
