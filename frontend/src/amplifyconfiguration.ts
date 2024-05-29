@@ -21,7 +21,7 @@ const amplifyconfig: ResourcesConfig = {
       loginWith: {
         oauth: {
           domain: env.VITE_AWS_DOMAIN || "prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com",
-          scopes: ['openid',],
+          scopes: ['openid'],
           redirectSignIn: [`${window.location.origin}/dashboard`],
           redirectSignOut: [redirectSignOut],
           responseType: 'code'

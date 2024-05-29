@@ -25,25 +25,25 @@ window.matchMedia = window.matchMedia || function() {
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn(),
+  disconnect: vi.fn()
 }));
 
 Object.defineProperty(global.SVGElement.prototype, 'getScreenCTM', {
   writable: true,
-  value: vi.fn(),
+  value: vi.fn()
 });
 
 Object.defineProperty(global.SVGElement.prototype, 'getBBox', {
   writable: true,
   value: vi.fn().mockReturnValue({
     x: 0,
-    y: 0,
-  }),
+    y: 0
+  })
 });
 
 Object.defineProperty(global.SVGElement.prototype, 'getComputedTextLength', {
   writable: true,
-  value: vi.fn().mockReturnValue(220),
+  value: vi.fn().mockReturnValue(220)
 });
 
 Object.defineProperty(global.SVGElement.prototype, 'transform', {
@@ -51,7 +51,7 @@ Object.defineProperty(global.SVGElement.prototype, 'transform', {
   value: {
     baseVal: {
       consolidate: vi.fn(() => {})
-    },
+    }
   }
 });
 
@@ -61,6 +61,6 @@ Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
     x: 10,
     y: 10,
     inverse: () => {},
-    multiply: () => {},
-  }),
+    multiply: () => {}
+  })
 });

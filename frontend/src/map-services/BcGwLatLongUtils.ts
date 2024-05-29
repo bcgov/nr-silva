@@ -32,7 +32,7 @@ export const shiftLineStringCoordinates = (coordinates: number[][]): number[][] 
   for (let i = 0, len = coordinates.length; i < len; i++) {
     const point = coordinates[i];
     if (Array.isArray(point)) {
-      let newOne = point as number[];
+      const newOne = point as number[];
       newCoord.push([newOne[1], newOne[0]]);
     }
   }
