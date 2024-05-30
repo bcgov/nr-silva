@@ -8,5 +8,5 @@ export const StatusColourMap = {
   Submitted: 'cyan',
   Unkown: 'outline',
   Approved:'green',
-  'In progress':'purple',
+  'In progress':'purple'
 };
