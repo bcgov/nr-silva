@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   DataTable,
   TableBatchAction,
@@ -25,60 +25,31 @@ import * as Icons from '@carbon/icons-react'
 import StatusTag from '../StatusTag'; // Import the StatusTag component
 import './styles.scss'
 import EmptySection from '../EmptySection';
+import PaginationContext from '../../contexts/PaginationContext';
 
-export const batchActionClick = (selectedRows) => () => {
-  console.log('Batch action clicked with selected rows:', selectedRows);
-  // Add your logic to handle batch actions here
-};
+interface IOpeningScreenDataTable {
+  rows: any[],
+  headers: any[],
+  setOpeningId: Function,
+}
 
-// A custom hook to handle pagination logic
-const usePagination = (data, initialItemsPerPage) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-
-  // Update the total number of pages when itemsPerPage changes
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  // Get the current page data
-  const currentData = () => {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return data.slice(start, end);
-  };
-
-  // Update the current page when the user changes the page
-  const handlePageChange = ({ page }) => {
-    setCurrentPage(page);
-  };
-
-  // Update the items per page when the user changes the value
-  const handleItemsPerPageChange = (event) => {
-    setCurrentPage(event.page);
-    setItemsPerPage(event.pageSize);
-  };
-
-  return {
-    currentData,
-    currentPage,
-    totalPages,
-    handlePageChange,
-    handleItemsPerPageChange,
-    itemsPerPage, // Expose the current itemsPerPage value
-  };
-};
-
-export default function OpeningScreenDataTable({ rows, headers, error, setOpeningId }) {
-  const [filteredRows, setFilteredRows] = useState(rows);
+const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, headers, setOpeningId }) => {
+  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
   const {
-    currentData,
+    getCurrentData,
     currentPage,
     totalPages,
     handlePageChange,
     handleItemsPerPageChange,
     itemsPerPage, // Use itemsPerPage from the hook
-  } = usePagination(filteredRows, 5);
+    setPageData,
+    setInitialItemsPerPage
+  } = useContext(PaginationContext);
 
-  const handleSearchChange = (searchTerm) => {
+  setPageData(filteredRows);
+  setInitialItemsPerPage(5);
+
+  const handleSearchChange = (searchTerm: string) => {
     const filtered = rows.filter((item) =>
       Object.values(item)
         .join(' ')
@@ -88,20 +59,25 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
     setFilteredRows(filtered);
   };
 
-  const clickViewAction = useCallback((id) => {
+  const clickViewAction = useCallback((id: string) => {
     console.log(`Clicked view on id ${id}`);
   }, []);
 
-  const selectRowEvent = useCallback((openingId, selected) => {
+  const selectRowEvent = useCallback((openingId: string, selected: boolean) => {
     if (!selected) {
       console.log(`Selected row id=${openingId} selected=${JSON.stringify(!selected)}`);
       setOpeningId(openingId);
     }
   }, []);
 
+  const batchActionClick = (selectedRows: any[]) => () => {
+    console.log('Batch action clicked with selected rows:', selectedRows);
+    // Add your logic to handle batch actions here
+  };
+
   return (
     <div>
-      <DataTable rows={currentData()} headers={headers}>
+      <DataTable rows={getCurrentData()} headers={headers}>
       {({
         rows,
         headers,
@@ -115,6 +91,19 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
         getTableProps,
         getTableContainerProps,
         selectRow,
+      }:{
+        rows: any[],
+        headers: any[],
+        getHeaderProps: Function,
+        getRowProps: Function,
+        getSelectionProps: Function,
+        getToolbarProps: Function,
+        getBatchActionProps: Function,
+        onInputChange: Function,
+        selectedRows: any[],
+        getTableProps: Function,
+        getTableContainerProps: Function,
+        selectRow: any
       }) => {
         const batchActionProps = getBatchActionProps();
 
@@ -126,7 +115,7 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
               <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
-                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />
@@ -190,10 +179,10 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
                     <TableSelectRow {
                       ...getSelectionProps({
                         row,
-                        onClick: (e) => selectRowEvent(row.id, row.isSelected)
+                        onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
                       })
                     } />
-                    {row.cells.map((cell, j) => (
+                    {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (
                           <StatusTag type={cell.value} />
@@ -253,12 +242,14 @@ export default function OpeningScreenDataTable({ rows, headers, error, setOpenin
           pageSize={itemsPerPage}
           pageSizes={[5, 20, 50]}
           itemsPerPageText="Items per page"
-          onChange={({ page, pageSize }) => {
-            handlePageChange({ page, pageSize });
-            handleItemsPerPageChange({ page,pageSize });
+          onChange={({ page, pageSize }:{ page: number, pageSize: number}) => {
+            handlePageChange( page );
+            handleItemsPerPageChange(page, pageSize);
           }}
         />
         ) : null}
     </div>
   );
 }
+
+export default OpeningScreenDataTable;
