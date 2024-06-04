@@ -93,7 +93,6 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
             <OpeningScreenDataTable
               headers={headers}
               rows={openingRows}
-              error={error}
               setOpeningId={setLoadId}
             />
           )}
