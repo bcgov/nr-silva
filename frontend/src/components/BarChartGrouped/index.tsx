@@ -14,8 +14,8 @@ const BarChartGrouped = () => {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [chartData, setChartData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orgUnitCode, setOrgUnitCode] = useState<string>('');
-  const [statusCode, setStatusCode] = useState<string>('');
+  const [orgUnitCode, setOrgUnitCode] = useState<string | null>(null);
+  const [statusCode, setStatusCode] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 

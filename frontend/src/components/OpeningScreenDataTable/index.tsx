@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   DataTable,
   TableBatchAction,
@@ -46,9 +46,6 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
     setInitialItemsPerPage
   } = useContext(PaginationContext);
 
-  setPageData(filteredRows);
-  setInitialItemsPerPage(5);
-
   const handleSearchChange = (searchTerm: string) => {
     const filtered = rows.filter((item) =>
       Object.values(item)
@@ -65,7 +62,6 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
 
   const selectRowEvent = useCallback((openingId: string, selected: boolean) => {
     if (!selected) {
-      console.log(`Selected row id=${openingId} selected=${JSON.stringify(!selected)}`);
       setOpeningId(openingId);
     }
   }, []);
@@ -75,8 +71,13 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
     // Add your logic to handle batch actions here
   };
 
+  useEffect(() => {
+    setPageData(filteredRows);
+    setInitialItemsPerPage(5);
+  }, [filteredRows]);
+
   return (
-    <div>
+    <>
       <DataTable rows={getCurrentData()} headers={headers}>
       {({
         rows,
@@ -169,15 +170,15 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
                 <TableRow>
                   <th id='blank'></th>
                   {headers.map((header, i) => (
-                    <TableHeader key={i} {...getHeaderProps({ header })}>
-                      {header.header}
+                    <TableHeader key={header.key}>
+                      { header.header }
                     </TableHeader>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row, i) => (
-                  <TableRow key={i} {...getRowProps({ row })}>
+                  <TableRow key={row.id}>
                     <TableSelectRow {
                       ...getSelectionProps({
                         row,
@@ -229,32 +230,32 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
 
     {/* Check if there are no elements in the table, if not then print the Empty */}
     {filteredRows.length <= 0 ? (
-        <EmptySection
-          pictogram="Magnify"
-          title={'There are no openings to show yet'}
-          description={
-            'Your recent openings will appear here once you generate one'
-          }
-          fill="#0073E6"
-        />
-      ) : null}
+      <EmptySection
+        pictogram="Magnify"
+        title={'There are no openings to show yet'}
+        description={
+          'Your recent openings will appear here once you generate one'
+        }
+        fill="#0073E6"
+      />
+    ) : null}
 
-      {/* Check if there are no elements in the table, if not then print the Empty */}
-      {filteredRows.length > 0 ? (
-          <Pagination
-          totalItems={filteredRows.length}
-          backwardText="Previous page"
-          forwardText="Next page"
-          pageSize={itemsPerPage}
-          pageSizes={[5, 20, 50]}
-          itemsPerPageText="Items per page"
-          onChange={({ page, pageSize }:{ page: number, pageSize: number}) => {
-            handlePageChange( page );
-            handleItemsPerPageChange(page, pageSize);
-          }}
-        />
-        ) : null}
-    </div>
+    {/* Check if there are no elements in the table, if not then print the Empty */}
+    {filteredRows.length > 0 ? (
+      <Pagination
+        totalItems={filteredRows.length}
+        backwardText="Previous page"
+        forwardText="Next page"
+        pageSize={itemsPerPage}
+        pageSizes={[5, 20, 50]}
+        itemsPerPageText="Items per page"
+        onChange={({ page, pageSize }:{ page: number, pageSize: number}) => {
+          handlePageChange( page );
+          handleItemsPerPageChange(page, pageSize);
+        }}
+      />
+      ) : null}
+    </>
   );
 }
 
