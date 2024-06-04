@@ -103,12 +103,15 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 }
 
 /**
-* See OIDC Attribute Mapping mapping reference:
-*      https://github.com/bcgov/nr-forests-access-management/wiki/OIDC-Attribute-Mapping
-* Note, current user data return for 'userData.username' is matched to "cognito:username" on Cognito.
-* Which isn't what we really want to display. The display username is "custom:idp_username" from token.
-*/
+ * See OIDC Attribute Mapping mapping reference:
+ *      https://github.com/bcgov/nr-forests-access-management/wiki/OIDC-Attribute-Mapping
+ * Note, current user data return for 'userData.username' is matched to "cognito:username" on Cognito.
+ * Which isn't what we really want to display. The display username is "custom:idp_username" from token.
+ */
 
+/**
+ *
+ */
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
   const decodedIdToken = idToken?.payload as any;
   const decodedAccessToken = accessToken?.payload as any;
@@ -135,19 +138,25 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     roles: decodedAccessToken['cognito:groups'],
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
-    lastName,  // Add lastName field
+    lastName  // Add lastName field
   };
 
   return famLoginUser;
 }
 
 
+/**
+ *
+ */
 function removeFamUser() {
   storeFamUser(undefined);
 
   // clean up local storage for selected application
 }
 
+/**
+ *
+ */
 function storeFamUser (famLoginUser: FamLoginUser | null | undefined) {
   if (famLoginUser) {
     localStorage.setItem(FAM_LOGIN_USER, JSON.stringify(famLoginUser));

@@ -3,7 +3,7 @@ export const ActivityIconMap = {
   'Opening report': 'Document',
   'Opening spatial': 'Map',
   'Update': 'Map',
-  'Unknown': 'Help',
+  'Unknown': 'Help'
 };
 export const FileIconMap = {
   'PDF file': 'DocumentPdf',
