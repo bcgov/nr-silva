@@ -1,57 +1,66 @@
 import React, { useState, useEffect } from "react";
-import { GroupedBarChart } from "@carbon/charts-react";
+import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 
+interface IDropdownItem {
+  value: string,
+  text: string
+}
+
 const BarChartGrouped = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [chartData, setChartData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [orgUnitCode, setOrgUnitCode] = useState(null);
-  const [statusCode, setStatusCode] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [orgUnitCode, setOrgUnitCode] = useState<string>('');
+  const [statusCode, setStatusCode] = useState<string>('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
   };
 
   useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        setIsLoading(true);
+        let formattedStartDate: string | null = null;
+        let formattedEndDate: string | null = null;
+    
+        if (startDate) {
+          formattedStartDate = formatDateToString(startDate);
+        }
+        if (endDate) {
+          formattedEndDate = formatDateToString(endDate);
+        }
+    
+        const data = await fetchOpeningsPerYear({
+          orgUnitCode,
+          statusCode,
+          entryDateStart: formattedStartDate,
+          entryDateEnd: formattedEndDate
+        });
+        setChartData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+        setIsLoading(false);
+      }
+    };
+
     fetchChartData();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [orgUnitCode, statusCode, startDate, endDate]);
   
-  const fetchChartData = async () => {
-    try {
-      setIsLoading(true);
-      let formattedStartDate = startDate;
-      let formattedEndDate = endDate;
-  
-      if (startDate) {
-        formattedStartDate = formatDateToString(startDate);
-      }
-      if (endDate) {
-        formattedEndDate = formatDateToString(endDate);
-      }
-  
-      const data = await fetchOpeningsPerYear(orgUnitCode, statusCode, formattedStartDate, formattedEndDate);
-      setChartData(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching chart data:", error);
-      setIsLoading(false);
-    }
-  };
-  
-
-  const formatDateToString = (dates) => {
-    const date = dates[0]
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+  const formatDateToString = (dateToFormat: Date | null) => {
+    if (!dateToFormat) return null;
+    const year = dateToFormat.getFullYear();
+    const month = String(dateToFormat.getMonth() + 1).padStart(2, "0");
+    const day = String(dateToFormat.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
@@ -65,7 +74,7 @@ const BarChartGrouped = () => {
         mapsTo: "value",
       },
       bottom: {
-        scaleType: "labels",
+        scaleType: ScaleTypes.LABELS,
         mapsTo: "key",
       },
     },
@@ -111,6 +120,14 @@ const BarChartGrouped = () => {
     // Add more options as needed
   ];
 
+  const setOrgUnitCodeSelected = ({selectedItem}:{selectedItem: IDropdownItem}) => {
+    setOrgUnitCode(selectedItem.value);
+  };
+
+  const setStatusCodeSelected = ({selectedItem}:{selectedItem: IDropdownItem}) => {
+    setStatusCode(selectedItem.value);
+  };
+
   return (
     <div className="px-3">
       <div className="row gy-2 pb-3">
@@ -118,24 +135,26 @@ const BarChartGrouped = () => {
           <Dropdown
             id="district-dropdown"
             label={windowWidth <= 1584 ? "District" : "Filter by district"}
+            titleText={windowWidth <= 1584 ? "District" : "Filter by district"}
             items={orgUnitItems}
-            itemToString={item => item ? item.text : ''}
-            onChange={({ selectedItem }) => setOrgUnitCode(selectedItem.value)}
+            itemToString={(item: IDropdownItem) => item ? item.text : ''}
+            onChange={setOrgUnitCodeSelected}
           />
         </div>
         <div className="col-md-4 p-0 px-md-1">
           <Dropdown
             id="status-dropdown"
             label={windowWidth <= 1584 ? "Status" : "Filter by status"}
+            titleText={windowWidth <= 1584 ? "Status" : "Filter by status"}
             items={statusItems}
-            itemToString={item => item ? item.text : ''}
-            onChange={({ selectedItem }) => setStatusCode(selectedItem.value)}
+            itemToString={(item: IDropdownItem) => item ? item.text : ''}
+            onChange={setStatusCodeSelected}
           />
         </div>
         <div className="col-2 px-md-1 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={date => setStartDate(date)}
+            onChange={(date: Date) => setStartDate(date)}
           >
             <DatePickerInput
               id="start-date-picker-input-id"
@@ -148,7 +167,7 @@ const BarChartGrouped = () => {
         <div className="col-2 px-md-1 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={date => setEndDate(date)}
+            onChange={(date: Date) => setEndDate(date)}
           >
             <DatePickerInput
               id="end-date-picker-input-id"

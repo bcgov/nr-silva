@@ -19,17 +19,15 @@ const OpeningMetricsTab: React.FC = () => {
     setShowSpatial(!showSpatial)
   }
 
-  const userDetails = useSelector((state:any) => state.userDetails)
-  const goToActivity = () => {
-    console.log("clicked a row")
-  }
-  const { user } = userDetails
-    return (
-      <>
+  return (
+    <>
       <div className="container-fluid p-3">
         <div className="row gy-3">
           <div className="col-xxl-6">
-            <ChartContainer title="Openings per years" description="Check openings and submissions per year">
+            <ChartContainer
+              title="Openings per years"
+              description="Check openings and submissions per year"
+            >
               <BarChartGrouped/>
             </ChartContainer>
           </div>
@@ -53,8 +51,8 @@ const OpeningMetricsTab: React.FC = () => {
           
         </div>
       </div>
-      </>
-    );
-  };
+    </>
+  );
+};
 
 export default OpeningMetricsTab;

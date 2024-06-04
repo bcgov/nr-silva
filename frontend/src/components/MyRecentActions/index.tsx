@@ -4,8 +4,8 @@ import ActionsTable from "../ActionsTable";
 import { fetchRecentActions } from '../../services/OpeningService';
 import { rows as fileRows, headers as fileHeaders } from "./filesData";
 
-const MyRecentActions = () => {
-  const [recentActions, setRecentActions] = useState([]);
+const MyRecentActions: React.FC = () => {
+  const [recentActions, setRecentActions] = useState<any[]>([]);
 
   const headers = [
     {
