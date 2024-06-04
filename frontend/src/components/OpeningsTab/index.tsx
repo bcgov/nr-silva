@@ -54,7 +54,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
           <SectionTitle title="Recent openings" subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below" />
           <Button
             className="h-100 my-auto d-none d-sm-block"
-            renderIcon={ViewFilled}
+            renderIcon={Location}
             type="button"
             onClick={() => toggleSpatial()}
           >
