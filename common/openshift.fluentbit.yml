@@ -12,6 +12,8 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
+  - name: TAG
+    description: Dummy variable for workflow convenience
   - name: AWS_KINESIS_STREAM
     description: AWS Kinesis Stream identifier
     required: false
@@ -41,8 +43,8 @@ parameters:
     displayName: Memory Request
     value: 16Mi
 objects:
-  - kind: DeploymentConfig
-    apiVersion: v1
+  - kind: Deployment
+    apiVersion: apps/v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -50,14 +52,15 @@ objects:
     spec:
       replicas: 1
       selector:
-        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        matchLabels:
+          deployment: ${NAME}-${ZONE}-${COMPONENT}
       strategy:
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
           labels:
             app: ${NAME}-${ZONE}
-            deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+            deployment: ${NAME}-${ZONE}-${COMPONENT}
         spec:
           containers:
             - name: ${NAME}

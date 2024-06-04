@@ -5,7 +5,7 @@ const FAM_LOGIN_USER = 'famLoginUser';
 export const getUserDetails = () => async (dispatch: any) => {
   try {
     dispatch({
-      type: USER_DETAILS_REQUEST,
+      type: USER_DETAILS_REQUEST
     });
     //first call the isCurrent and only after that extract the JSON
     const data = await isCurrentAuthUser();
@@ -15,12 +15,12 @@ export const getUserDetails = () => async (dispatch: any) => {
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
-      payload: { ...user, isLoggedIn: data},
+      payload: { ...user, isLoggedIn: data}
     });
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,
-      payload: { error: error },
+      payload: { error: error }
     });
   }
 };
