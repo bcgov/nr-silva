@@ -44,59 +44,54 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
   }, [loadId, openingPolygonNotFound]);
 
   const toggleSpatial = () => {
-    setShowSpatial((prevShowSpatial :boolean) => {
-      console.log(`prevShowSpatial=${prevShowSpatial}`);
-      return !prevShowSpatial
-    });
+    setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
   }
 
   return (
     <>
-      <div>
-        <div className="container-fluid">
-          <div className="row px-0 py-4 p-sm-4">
-            <SectionTitle title="Recent openings" subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below" />
-            <Button
-              className="h-100 my-auto d-none d-sm-block"
-              renderIcon={ViewFilled}
-              type="button"
-              onClick={() => toggleSpatial()}
-            >
-              {showSpatial ? 'Hide Spatial' : 'Show Spatial'}
-            </Button>
-          </div>
-          {showSpatial ? (
-            <div className="row px-2">
-              <div className="leaflet-container">
-                <OpeningsMap
-                  openingId={loadId}
-                  setOpeningPolygonNotFound={setOpeningPolygonNotFound}
-                />
-              </div>
+      <div className="container-fluid">
+        <div className="row px-0 py-4 p-sm-4">
+          <SectionTitle title="Recent openings" subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below" />
+          <Button
+            className="h-100 my-auto d-none d-sm-block"
+            renderIcon={ViewFilled}
+            type="button"
+            onClick={() => toggleSpatial()}
+          >
+            {showSpatial ? 'Hide Spatial' : 'Show Spatial'}
+          </Button>
+        </div>
+        {showSpatial ? (
+          <div className="row px-2">
+            <div className="leaflet-container">
+              <OpeningsMap
+                openingId={loadId}
+                setOpeningPolygonNotFound={setOpeningPolygonNotFound}
+              />
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
+      </div>
 
-        <div className="container-fluid p-0 pb-5">
-          {openingPolygonNotFound? (
-            <InlineNotification
-              title="Opening ID not found!"
-              subtitle="Unable to find selected Opening Polygon!"
-              kind="error"
-              lowContrast
-              className = "inline-notification"
-            />
-          ) : null }
-          {loading ? (
-            <TableSkeleton headers={headers} />
-          ) : (
-            <OpeningScreenDataTable
-              headers={headers}
-              rows={openingRows}
-              setOpeningId={setLoadId}
-            />
-          )}
-        </div>
+      <div className="container-fluid p-0 pb-5">
+        {openingPolygonNotFound? (
+          <InlineNotification
+            title="Opening ID not found!"
+            subtitle="Unable to find selected Opening Polygon!"
+            kind="error"
+            lowContrast
+            className = "inline-notification"
+          />
+        ) : null }
+        {loading ? (
+          <TableSkeleton headers={headers} />
+        ) : (
+          <OpeningScreenDataTable
+            headers={headers}
+            rows={openingRows}
+            setOpeningId={setLoadId}
+          />
+        )}
       </div>
     </>
   );
