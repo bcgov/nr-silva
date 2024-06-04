@@ -58,8 +58,8 @@ export async function fetchRecentOpenings() {
 }
 
 interface IOpeningPerYear {
-  orgUnitCode: string;
-  statusCode: string;
+  orgUnitCode: string | null;
+  statusCode: string | null;
   entryDateStart: string | null;
   entryDateEnd: string | null;
 }
