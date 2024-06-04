@@ -130,48 +130,46 @@ const BarChartGrouped = () => {
 
   return (
     <div className="px-3">
-      <div className="row gy-2 pb-3">
-        <div className="col-md-4 p-0">
+      <div className="row gy-2 gx-1 p-3 pt-0">
+        <div className="col-md-3">
           <Dropdown
             id="district-dropdown"
-            label={windowWidth <= 1584 ? "District" : "Filter by district"}
-            titleText={windowWidth <= 1584 ? "District" : "Filter by district"}
+            titleText="District"
             items={orgUnitItems}
             itemToString={(item: IDropdownItem) => item ? item.text : ''}
             onChange={setOrgUnitCodeSelected}
           />
         </div>
-        <div className="col-md-4 p-0 px-md-1">
+        <div className="col-md-3">
           <Dropdown
             id="status-dropdown"
-            label={windowWidth <= 1584 ? "Status" : "Filter by status"}
-            titleText={windowWidth <= 1584 ? "Status" : "Filter by status"}
+            titleText = "Status"
             items={statusItems}
             itemToString={(item: IDropdownItem) => item ? item.text : ''}
             onChange={setStatusCodeSelected}
           />
         </div>
-        <div className="col-2 px-md-1 d-none d-md-block">
+        <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(date: Date) => setStartDate(date)}
           >
             <DatePickerInput
               id="start-date-picker-input-id"
-              placeholder="yyyy-MM-dd"
+              placeholder="yyyy/MM/dd"
               size="md"
               labelText="Start Date"
             />
           </DatePicker>
         </div>
-        <div className="col-2 px-md-1 d-none d-md-block">
+        <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(date: Date) => setEndDate(date)}
           >
             <DatePickerInput
               id="end-date-picker-input-id"
-              placeholder="yyyy-MM-dd"
+              placeholder="yyyy/MM/dd"
               size="md"
               labelText="End Date"
             />
