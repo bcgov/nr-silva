@@ -89,7 +89,7 @@ const DonutChartView: React.FC = () => {
 
   return (
     <div className="px-3">
-      <div className="row gy-2 pb-3">
+      <div className="row gy-2 gx-1 pt-0">
         <div className="col-md-4 p-0">
           <Dropdown
             id="orgUnitCode"

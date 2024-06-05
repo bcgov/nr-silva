@@ -56,7 +56,9 @@ const BarChartGrouped = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [orgUnitCode, statusCode, startDate, endDate]);
   
-  const formatDateToString = (dateToFormat: Date | null) => {
+  const formatDateToString = (dateToFormat: any | null) => {
+    console.log("date to format:")
+    console.log(dateToFormat)
     if (!dateToFormat) return null;
     const year = dateToFormat.getFullYear();
     const month = String(dateToFormat.getMonth() + 1).padStart(2, "0");
@@ -130,7 +132,7 @@ const BarChartGrouped = () => {
 
   return (
     <div className="px-3">
-      <div className="row gy-2 gx-1 p-3 pt-0">
+      <div className="row gy-2 gx-1 pb-3">
         <div className="col-md-3">
           <Dropdown
             id="district-dropdown"
@@ -152,7 +154,7 @@ const BarChartGrouped = () => {
         <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: Date) => setStartDate(date)}
+            onChange={(date: any) => setStartDate(date)}
           >
             <DatePickerInput
               id="start-date-picker-input-id"
@@ -165,7 +167,7 @@ const BarChartGrouped = () => {
         <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: Date) => setEndDate(date)}
+            onChange={(date: any) => setEndDate(date)}
           >
             <DatePickerInput
               id="end-date-picker-input-id"
