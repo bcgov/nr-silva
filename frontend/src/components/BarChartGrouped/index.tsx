@@ -6,8 +6,8 @@ import "./BarChartGrouped.scss";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 
 interface IDropdownItem {
-  value: string,
-  text: string
+  value: string;
+  text: string;
 }
 
 const BarChartGrouped = () => {
@@ -29,19 +29,19 @@ const BarChartGrouped = () => {
         setIsLoading(true);
         let formattedStartDate: string | null = null;
         let formattedEndDate: string | null = null;
-    
+
         if (startDate) {
           formattedStartDate = formatDateToString(startDate);
         }
         if (endDate) {
           formattedEndDate = formatDateToString(endDate);
         }
-    
+
         const data = await fetchOpeningsPerYear({
           orgUnitCode,
           statusCode,
           entryDateStart: formattedStartDate,
-          entryDateEnd: formattedEndDate
+          entryDateEnd: formattedEndDate,
         });
         setChartData(data);
         setIsLoading(false);
@@ -55,10 +55,8 @@ const BarChartGrouped = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [orgUnitCode, statusCode, startDate, endDate]);
-  
-  const formatDateToString = (dateToFormat: any | null) => {
-    console.log("date to format:")
-    console.log(dateToFormat)
+
+  const formatDateToString = (dateToFormat: Date) => {
     if (!dateToFormat) return null;
     const year = dateToFormat.getFullYear();
     const month = String(dateToFormat.getMonth() + 1).padStart(2, "0");
@@ -67,7 +65,7 @@ const BarChartGrouped = () => {
   };
 
   const colors = {
-    "Openings": "#1192E8",
+    Openings: "#1192E8",
   };
 
   const options = {
@@ -87,46 +85,54 @@ const BarChartGrouped = () => {
     grid: {
       x: {
         enabled: false,
-        color: '#d3d3d3',
-        strokeDashArray: '2,2'
+        color: "#d3d3d3",
+        strokeDashArray: "2,2",
       },
       y: {
         enabled: true,
-        color: '#d3d3d3',
-        strokeDashArray: '2,2'
-      }
+        color: "#d3d3d3",
+        strokeDashArray: "2,2",
+      },
     },
     toolbar: {
       enabled: false,
       numberOfIcons: 2,
       controls: [
         {
-          type: "Make fullscreen"
+          type: "Make fullscreen",
         },
         {
-          type: "Make fullscreen"
+          type: "Make fullscreen",
         },
-      ]
-    }
+      ],
+    },
   };
 
   const orgUnitItems = [
-    { value: 'DCR', text: 'DCR' },
-    { value: 'XYZ', text: 'District 2' },
+    { value: "DCR", text: "DCR" },
+    { value: "XYZ", text: "District 2" },
     // Add more options as needed
   ];
 
   const statusItems = [
-    { value: 'APP', text: 'Approved' },
-    { value: 'NAN', text: 'Not Approved' },
+    { value: "APP", text: "Approved" },
+    { value: "NAN", text: "Not Approved" },
     // Add more options as needed
   ];
 
-  const setOrgUnitCodeSelected = ({selectedItem}:{selectedItem: IDropdownItem}) => {
+  const setOrgUnitCodeSelected = ({
+    selectedItem,
+  }: {
+    selectedItem: IDropdownItem;
+  }) => {
     setOrgUnitCode(selectedItem.value);
   };
 
-  const setStatusCodeSelected = ({selectedItem}:{selectedItem: IDropdownItem}) => {
+  const setStatusCodeSelected = ({
+    selectedItem,
+  }: {
+    selectedItem: IDropdownItem;
+  }) => {
     setStatusCode(selectedItem.value);
   };
 
@@ -138,23 +144,23 @@ const BarChartGrouped = () => {
             id="district-dropdown"
             titleText="District"
             items={orgUnitItems}
-            itemToString={(item: IDropdownItem) => item ? item.text : ''}
+            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
             onChange={setOrgUnitCodeSelected}
           />
         </div>
         <div className="col-md-3">
           <Dropdown
             id="status-dropdown"
-            titleText = "Status"
+            titleText="Status"
             items={statusItems}
-            itemToString={(item: IDropdownItem) => item ? item.text : ''}
+            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
             onChange={setStatusCodeSelected}
           />
         </div>
         <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: any) => setStartDate(date)}
+            onChange={(dates: [Date]) => setStartDate(dates[0])}
           >
             <DatePickerInput
               id="start-date-picker-input-id"
@@ -167,7 +173,7 @@ const BarChartGrouped = () => {
         <div className="col-md-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: any) => setEndDate(date)}
+            onChange={(dates: [Date]) => setEndDate(dates[0])}
           >
             <DatePickerInput
               id="end-date-picker-input-id"
@@ -181,10 +187,9 @@ const BarChartGrouped = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <GroupedBarChart
-          data={chartData}
-          options={options}
-        />
+        <div className="bar-chart-container">
+          <GroupedBarChart data={chartData} options={options} />
+        </div>
       )}
     </div>
   );
