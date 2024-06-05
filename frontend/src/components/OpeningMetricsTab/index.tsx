@@ -27,7 +27,7 @@ const OpeningMetricsTab: React.FC = () => (
           </ChartContainer>
         </div>
         <div className="col-xxl-6">
-          <ChartContainer title="Free grow milestone declarations" description="Check opening standards unit for inspections purposes">
+          <ChartContainer title="Free growing milestone declarations" description="Check opening standards unit for inspections purposes">
             <DonutChartView/>
           </ChartContainer>
         </div>
