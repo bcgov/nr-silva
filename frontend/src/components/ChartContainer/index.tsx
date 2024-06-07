@@ -28,7 +28,7 @@ export default function ChartContainer({ children, title, description }: Props) 
             />
             <Button
               hasIconOnly
-              iconDescription="Overflow menu vertical"
+              iconDescription="Download options"
               tooltipposition="bottom"
               kind="ghost"
               onClick={() => console.log('Download Click')}
