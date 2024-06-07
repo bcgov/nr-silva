@@ -25,28 +25,6 @@
   }
 }
 
-.#{vars.$bcgov-prefix}--data-table thead tr th#blank {
-  min-width:50px;
-}
-
-.#{vars.$bcgov-prefix}--data-table thead tr th  {
-  background-color: #F3F3F5;
-  border-top: 1px solid #DFDFE1;
-}
-
-.#{vars.$bcgov-prefix}--data-table thead tr th {
-  min-width:158px;
-}
-
-.#{vars.$bcgov-prefix}--data-table tr td {
-  background-color: white;
-  color:black;
-  height: 64px;
-}
-.#{vars.$bcgov-prefix}--data-table tr:hover td {
-  background-color: #F3F3F5;
-}
-
 @media only screen and (max-width: 672px) {
   .#{vars.$bcgov-prefix}--data-table-content {
     width: 100%;
