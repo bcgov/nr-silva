@@ -93,7 +93,7 @@ public class OpeningService {
    */
   public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
     log.info(
-        "Getting recent openings, user independnt, with page index {} and page size {}",
+        "Getting recent openings, user independent, with page index {} and page size {}",
         pagination.page(),
         pagination.perPage());
 
@@ -129,8 +129,8 @@ public class OpeningService {
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
-      List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> clutBloks) {
-    if (openings.size() != clutBloks.size()) {
+      List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> cutBlocks) {
+    if (openings.size() != cutBlocks.size()) {
       log.warn("Different number of records for the Opening x Cut Block Open Admin relationship");
     }
 
@@ -146,8 +146,8 @@ public class OpeningService {
       BigDecimal openingGrossArea = BigDecimal.ZERO;
       LocalDate disturbanceStartDate = null;
 
-      if (clutBloks.size() - 1 >= i) {
-        CutBlockOpenAdminEntity cutBlockOpenAdmin = clutBloks.get(i);
+      if (cutBlocks.size() - 1 >= i) {
+        CutBlockOpenAdminEntity cutBlockOpenAdmin = cutBlocks.get(i);
         forestFileId = cutBlockOpenAdmin.getForestFileId();
         cuttingPermitId = cutBlockOpenAdmin.getCuttingPermitId();
         timberMark = cutBlockOpenAdmin.getTimberMark();

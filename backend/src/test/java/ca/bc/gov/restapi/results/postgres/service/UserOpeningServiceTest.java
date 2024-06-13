@@ -89,7 +89,7 @@ class UserOpeningServiceTest {
   }
 
   @Test
-  @DisplayName("Save opening to user happy path shoudl succeed")
+  @DisplayName("Save opening to user happy path should succeed")
   void saveOpeningToUser_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
