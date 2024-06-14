@@ -1,4 +1,4 @@
-export const toggleTheme = (theme:any,setTheme:any)=>{
+export const toggleTheme = (theme: string, setTheme: Function)=>{
     if (theme === 'g10') {
       setTheme('g100');
       localStorage.setItem('mode', 'dark');

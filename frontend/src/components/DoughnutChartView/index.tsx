@@ -1,12 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { DonutChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput, TextInput } from "@carbon/react";
-import "./DonutChartView.scss";
+import "./DoughnutChartView.scss";
 import { fetchFreeGrowingMilestones } from "../../services/OpeningService";
 
-interface IDonutChart {
-  group: any;
-  value: any;
+interface IDoughnutChart {
+  group: string;
+  value: string;
 }
 
 interface IDropdownItem {
@@ -14,9 +14,9 @@ interface IDropdownItem {
   text: string
 }
 
-const DonutChartView: React.FC = () => {
+const DoughnutChartView: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [chartData, setChartData] = useState<IDonutChart[]>([]);
+  const [chartData, setChartData] = useState<IDoughnutChart[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [orgUnitCode, setOrgUnitCode] = useState<string>("");
   const [clientNumber, setClientNumber] = useState<string>("");
@@ -146,4 +146,4 @@ const DonutChartView: React.FC = () => {
   );
 };
 
-export default DonutChartView;
+export default DoughnutChartView;

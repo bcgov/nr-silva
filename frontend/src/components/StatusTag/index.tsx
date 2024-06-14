@@ -1,19 +1,20 @@
 import React from 'react';
 import { Tag } from '@carbon/react';
-
 import { StatusColourMap } from './definitions';
-
 import './styles.scss';
 
-type StatusTagProps = {
-  type: keyof typeof StatusColourMap
+interface IStatusTag {
+  code: string;
 }
 
-const StatusTag = ({ type }: StatusTagProps) => {
-  const tagType: keyof typeof StatusColourMap = Object.keys(StatusColourMap).includes(type) ? type : 'Unkown';
+const StatusTag: React.FC<IStatusTag> = (props) => {
+  const colorsKeys: string[] = Object.keys(StatusColourMap);
+  const colorKey: string = colorsKeys.includes(props.code)? props.code : StatusColourMap.Unknown;
+  const typeColor: string = StatusColourMap[colorKey as keyof typeof StatusColourMap];
+
   return (
-    <Tag className="status-tag" type={StatusColourMap[tagType]}>
-      {type}
+    <Tag className="status-tag" type={typeColor}>
+      { props.code }
     </Tag>
   );
 };

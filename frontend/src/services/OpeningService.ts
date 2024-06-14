@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
+import { RecentAction } from '../types/RecentAction';
+import { StatusColourMap } from '../components/StatusTag/definitions';
+import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
+import { RecentOpening } from '../types/RecentOpening';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
@@ -18,7 +22,7 @@ interface IOpening {
   updateTimestamp: string | null;
 }
 
-export async function fetchRecentOpenings() {
+export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
   let authToken = getAuthIdToken();
   try {
     const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
@@ -64,7 +68,7 @@ interface IOpeningPerYear {
   entryDateEnd: string | null;
 }
 
-export async function fetchOpeningsPerYear(props: IOpeningPerYear) {
+export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<OpeningPerYearChart[]> {
   let authToken = getAuthIdToken();
   try {
     // Construct URL with optional parameters
@@ -88,7 +92,7 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear) {
     const { data } = response;
     if (data && Array.isArray(data)) {
       // Format data for BarChartGrouped component
-      const formattedData = data.map(item => ({
+      const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
         key: item.monthName,
         value: item.amount
@@ -177,12 +181,16 @@ export async function fetchRecentActions() {
 
     if (Array.isArray(data)) {
       // Transforming response data into a format consumable by the component
-      const rows = data.map(action => ({
-        activityType: action.activityType,
-        openingID: action.openingId.toString(), // Convert openingId to string if needed
-        status: action.statusDescription,
-        lastUpdated: action.lastUpdatedLabel // Use lastUpdatedLabel from API
-      }));
+      const rows: RecentAction[] = data.map(action => {
+        return {
+          activityType: action.activityType,
+          openingId: action.openingId.toString(),
+          statusCode: action.statusCode,
+          statusDescription: action.statusDescription,
+          lastUpdated: new Date(action.lastUpdated),
+          lastUpdatedLabel: action.lastUpdatedLabel
+        }
+      });
       
       // Returning the transformed data
       return rows;

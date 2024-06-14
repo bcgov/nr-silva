@@ -20,8 +20,20 @@ const userInfoFromStorage = (JSON.parse(localStorage.getItem(FAM_LOGIN_USER) as 
 | undefined
 | null)
 
+interface User extends FamLoginUser {
+  isLoggedIn: boolean
+}
+
+interface UserState {
+  userDetails: {
+    user: User,
+    loading: boolean,
+    error: boolean
+  }
+}
+
 // set the initial state
-const initialState: any = {
+const initialState: UserState = {
   userDetails: {
     user: {
       ...userInfoFromStorage,

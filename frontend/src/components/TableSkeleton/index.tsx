@@ -3,12 +3,10 @@ import {
   DataTableSkeleton
 } from '@carbon/react';
 import './styles.scss'
+import { TableHeader } from '../../types/TableHeader';
 
 interface Props {
-  headers: {
-    key: string;
-    header: string;
-  }[];
+  headers: TableHeader[];
 }
 
 const TableSkeleton: React.FC<Props> = ({headers}) => (
