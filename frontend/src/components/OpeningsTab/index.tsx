@@ -90,6 +90,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
             headers={headers}
             rows={openingRows}
             setOpeningId={setLoadId}
+            showSpatial
           />
         )}
       </div>

@@ -31,9 +31,15 @@ interface IOpeningScreenDataTable {
   rows: any[],
   headers: any[],
   setOpeningId: Function,
+  showSpatial: boolean
 }
 
-const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, headers, setOpeningId }) => {
+const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
+  rows,
+  headers,
+  setOpeningId,
+  showSpatial
+}) => {
   const [filteredRows, setFilteredRows] = useState<any[]>(rows);
   const {
     getCurrentData,
@@ -166,7 +172,9 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
             <Table {...getTableProps()} aria-label="sample table">
               <TableHead>
                 <TableRow>
-                  <th id='blank'></th>
+                  {showSpatial && (
+                    <th id='blank'></th>
+                  )}
                   {headers.map((header, i) => (
                     <TableHeader key={header.key}>
                       { header.header }
@@ -177,12 +185,14 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
               <TableBody>
                 {rows.map((row, i) => (
                   <TableRow key={row.id}>
-                    <TableSelectRow {
-                      ...getSelectionProps({
-                        row,
-                        onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
-                      })
-                    } />
+                    {showSpatial && (
+                      <TableSelectRow {
+                        ...getSelectionProps({
+                          row,
+                          onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
+                        })
+                      } />
+                    )}
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (
