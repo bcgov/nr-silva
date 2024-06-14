@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(
     name = "Dashboard Extraction (SILVA)",
     description = "Endpoints fot the Dashboard extraction process in the `SILVA` schema")
-public class DashboardExtractionEnpoint {
+public class DashboardExtractionEndpoint {
 
   private final OracleExtractionLogsRepository oracleExtractionLogsRepository;
 
