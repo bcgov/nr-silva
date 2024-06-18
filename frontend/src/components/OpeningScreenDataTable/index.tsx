@@ -20,10 +20,9 @@ import {
   Button,
   Pagination
 } from '@carbon/react';
-import { TrashCan, Save, Download, Add } from '@carbon/icons-react';
-import * as Icons from '@carbon/icons-react'
-import StatusTag from '../StatusTag'; // Import the StatusTag component
-import './styles.scss'
+import * as Icons from '@carbon/icons-react';
+import StatusTag from '../StatusTag';
+import './styles.scss';
 import EmptySection from '../EmptySection';
 import PaginationContext from '../../contexts/PaginationContext';
 
@@ -40,6 +39,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
   setOpeningId,
   showSpatial
 }) => {
+  console.log('showSpatial', showSpatial);
   const [filteredRows, setFilteredRows] = useState<any[]>(rows);
   const {
     getCurrentData,
@@ -184,14 +184,16 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
               </TableHead>
               <TableBody>
                 {rows.map((row, i) => (
-                  <TableRow key={row.id}>
+                  <TableRow key={row.id} data-testid={"row__opening-screen-data-table"}>
                     {showSpatial && (
-                      <TableSelectRow {
-                        ...getSelectionProps({
-                          row,
-                          onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
-                        })
-                      } />
+                      <div data-testid={"checkbox__opening-screen-data-table"}>
+                        <TableSelectRow {
+                          ...getSelectionProps({
+                            row,
+                            onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
+                          })
+                        } />
+                      </div>
                     )}
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
