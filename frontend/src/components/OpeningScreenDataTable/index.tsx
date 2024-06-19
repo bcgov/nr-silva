@@ -20,10 +20,9 @@ import {
   Button,
   Pagination
 } from '@carbon/react';
-import { TrashCan, Save, Download, Add } from '@carbon/icons-react';
-import * as Icons from '@carbon/icons-react'
-import StatusTag from '../StatusTag'; // Import the StatusTag component
-import './styles.scss'
+import * as Icons from '@carbon/icons-react';
+import StatusTag from '../StatusTag';
+import './styles.scss';
 import EmptySection from '../EmptySection';
 import PaginationContext from '../../contexts/PaginationContext';
 
@@ -31,9 +30,16 @@ interface IOpeningScreenDataTable {
   rows: any[],
   headers: any[],
   setOpeningId: Function,
+  showSpatial: boolean
 }
 
-const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, headers, setOpeningId }) => {
+const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
+  rows,
+  headers,
+  setOpeningId,
+  showSpatial
+}) => {
+  console.log('showSpatial', showSpatial);
   const [filteredRows, setFilteredRows] = useState<any[]>(rows);
   const {
     getCurrentData,
@@ -166,7 +172,9 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
             <Table {...getTableProps()} aria-label="sample table">
               <TableHead>
                 <TableRow>
-                  <th id='blank'></th>
+                  {showSpatial && (
+                    <th id='blank'></th>
+                  )}
                   {headers.map((header, i) => (
                     <TableHeader key={header.key}>
                       { header.header }
@@ -177,12 +185,14 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
               <TableBody>
                 {rows.map((row, i) => (
                   <TableRow key={row.id}>
-                    <TableSelectRow {
-                      ...getSelectionProps({
-                        row,
-                        onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
-                      })
-                    } />
+                    {showSpatial && (
+                      <TableSelectRow data-testid={`checkbox__opening-screen-data-table_${row.id}`} {
+                        ...getSelectionProps({
+                          row,
+                          onClick: (e: Event) => selectRowEvent(row.id, row.isSelected),
+                        })
+                      } />
+                    )}
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (

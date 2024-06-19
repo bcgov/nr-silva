@@ -18,8 +18,13 @@ interface IOpening {
   updateTimestamp: string | null;
 }
 
-export async function fetchRecentOpenings() {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch recent openings data from backend.
+ *
+ * @returns {Promise<any[]>} Array of objects found
+ */
+export async function fetchRecentOpenings(): Promise<any[]> {
+  const authToken = getAuthIdToken();
   try {
     const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
       headers: {
@@ -64,8 +69,13 @@ interface IOpeningPerYear {
   entryDateEnd: string | null;
 }
 
-export async function fetchOpeningsPerYear(props: IOpeningPerYear) {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch openings per year data from backend.
+ *
+ * @returns {Promise<any[]>} Array of objects found
+ */
+export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<any[]> {
+  const authToken = getAuthIdToken();
   try {
     // Construct URL with optional parameters
     let url = backendUrl.concat("/api/dashboard-metrics/submission-trends");
@@ -111,8 +121,13 @@ interface IFreeGrowingProps {
   entryDateEnd: string | null;
 }
 
-export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps) {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch free growing milestones data from backend.
+ *
+ * @returns {any[]} Array with recent action objects.
+ */
+export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Promise<any[]> {
+  const authToken = getAuthIdToken();
   let url = backendUrl.concat("/api/dashboard-metrics/free-growing-milestones");
 
   // Construct URL with optional parameters
@@ -151,8 +166,13 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps) {
   }
 }
 
-export async function fetchRecentActions() {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch recent actions data from backend.
+ *
+ * @returns {any[]} Array with recent action objects.
+ */
+export function fetchRecentActions(): any[] {
+  // const authToken = getAuthIdToken();
   try {
     // Comment out the actual API call for now
     // const response = await axios.get(backendUrl.concat("/api/dashboard-metrics/my-recent-actions/requests"));
@@ -171,7 +191,7 @@ export async function fetchRecentActions() {
         "statusDescription": "Approved",
         "lastUpdatedLabel": "1 minute ago",
         "lastUpdated": "2024-05-16T19:59:21.635Z"
-      },
+      }
       // Add more sample objects here if needed
     ];
 
