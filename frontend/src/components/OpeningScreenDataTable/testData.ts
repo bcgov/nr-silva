@@ -1,4 +1,3 @@
-// export const rows = [];
 export const rows = [
   {
     id: '114207',
@@ -209,56 +208,56 @@ export const rows = [
     disturbanceStart: '-',
     createdAt: '2021-07-10',
     lastViewed: '2022-10-21'
-  },
+  }
 ];
 
 export const headers = [
   {
     key: 'openingId',
-    header: 'Opening Id',
+    header: 'Opening Id'
   },
   {
     key: 'fileId',
-    header: 'File Id',
+    header: 'File Id'
   },
   {
     key: 'cuttingPermit',
-    header: 'Cutting permit',
+    header: 'Cutting permit'
   },
   {
     key: 'timberMark',
-    header: 'Timber mark',
+    header: 'Timber mark'
   },
   {
     key: 'cutBlock',
-    header: 'Cut block',
+    header: 'Cut block'
   },
   {
     key: 'grossAreaHa',
-    header: 'Gross area (ha)',
+    header: 'Gross area (ha)'
   },
   {
     key: 'status',
-    header: 'Status',
+    header: 'Status'
   },
   {
     key: 'category',
-    header: 'Category',
+    header: 'Category'
   },
   {
     key: 'disturbanceStart',
-    header: 'Disturbance start',
+    header: 'Disturbance start'
   },
   {
     key: 'createdAt',
-    header: 'Created At',
+    header: 'Created At'
   },
   {
     key: 'lastViewed',
-    header: 'Last Viewed',
+    header: 'Last Viewed'
   },
   {
   key: 'actions',
-  header: 'Actions',
-  },
+  header: 'Actions'
+  }
 ];
