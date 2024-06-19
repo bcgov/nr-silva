@@ -75,7 +75,9 @@ describe('Opening Screen Data table component test', () => {
     );
 
     const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
-    // here...
+    // The next line should be "not.toBeNull()" however, Carbon React team forgot to add data-testid
+    // attribute to this component (TableSelectRow), making it impossible to get by testid value.
+    // Once we have that fixed, please get back here and update the next statement.
     expect(tableSelectionRow).toBeNull();
   });
 });
