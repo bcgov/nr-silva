@@ -16,7 +16,7 @@ interface Props {
   setShowSpatial: Function;
 }
 
-const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
+const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +91,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
             headers={headers}
             rows={openingRows}
             setOpeningId={setLoadId}
+            showSpatial={showSpatial}
           />
         )}
       </div>

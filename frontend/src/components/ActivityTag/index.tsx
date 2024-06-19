@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tag } from '@carbon/react';
 import * as Carbon from '@carbon/icons-react';
 import { ActivityIconMap, FileIconMap } from './definitions';
 import './styles.scss';
@@ -9,11 +8,8 @@ type ActivityTagProps = {
   fileFormat?: string;
 };
 
-// Type can be:
-// IF 'Recent' tab: Update
-// IF 'Files and Docs' tab: Opening retails, Opening report, ...
-
 const ActivityTag: React.FC<ActivityTagProps> = (props) => {
+  console.log('props.type', props.type);
   const activitiesKeys: string[] = Object.keys(ActivityIconMap);
   const activityKey: string = activitiesKeys.includes(props.type)? props.type : ActivityIconMap.Unknown;
   const tagType = ActivityIconMap[activityKey as keyof typeof ActivityIconMap];

@@ -7,7 +7,10 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "plugin:jsdoc/recommended"
+    "plugin:react/jsx-runtime",
+    "plugin:jsdoc/recommended",
+    "plugin:import/recommended",
+    "plugin:jsx-a11y/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -20,7 +23,9 @@
   "plugins": [
     "@typescript-eslint",
     "react",
-    "jsdoc"
+    "jsdoc",
+    "import",
+    "jsx-a11y"
   ],
   "ignorePatterns": ["**/__test__/*", "**/assets/*", "**/*.scss", "**/*.css", "**/*.svg"],
   "rules": {
@@ -63,6 +68,9 @@
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
+    },
+    "react": {
+      "version": "detect"
     }
   }
 }
