@@ -108,7 +108,7 @@ const DonutChartView: React.FC = () => {
             onChange={(event: ChangeEvent<HTMLInputElement>) => setClientNumber(event.target.value)}
           />
         </div>
-        <div className="col-3 px-md-1 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(dates: [Date]) => setStartDate(dates[0])}
@@ -121,7 +121,7 @@ const DonutChartView: React.FC = () => {
             />
           </DatePicker>
         </div>
-        <div className="col-3 px-md-1 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(dates: [Date]) => setEndDate(dates[0])}

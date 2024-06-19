@@ -145,7 +145,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
                     renderIcon={Icons.Download}
                     size="md"
                   >
-                    Download
+                    Download table
                   </Button>
                   <Button
                     iconDescription="Print"
@@ -160,7 +160,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({ rows, heade
                     renderIcon={Icons.Printer}
                     size="md"
                   >
-                    Print
+                    Print table
                   </Button>
                 </div>
               </TableToolbarContent>

@@ -52,8 +52,13 @@ const listItems: ListItems[] = [
         disabled: false,
         subItems: [
           {
-            name: 'Silviculture search',
+            name: 'Home page',
             link: '/opening',
+            disabled: false
+          },
+          {
+            name: 'Silviculture search',
+            link: '/opening/silviculture',
             disabled: false
           },
           {

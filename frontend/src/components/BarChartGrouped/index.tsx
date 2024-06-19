@@ -157,7 +157,7 @@ const BarChartGrouped = () => {
             onChange={setStatusCodeSelected}
           />
         </div>
-        <div className="col-md-3 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(dates: [Date]) => setStartDate(dates[0])}
@@ -170,7 +170,7 @@ const BarChartGrouped = () => {
             />
           </DatePicker>
         </div>
-        <div className="col-md-3 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
             onChange={(dates: [Date]) => setEndDate(dates[0])}

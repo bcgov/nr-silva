@@ -20,8 +20,8 @@
   }
   .tab-header{
     @include type.type-style('heading-01');
-    min-width: 251px;
-    margin-left: 40px;
+    width: 251px;
+    padding-left: 40px;
   }
   .tab-list{
     margin-left: 40px;

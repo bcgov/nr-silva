@@ -10,11 +10,11 @@ import MyRecentActions from "../MyRecentActions";
 const OpeningMetricsTab: React.FC = () => (
   <>
     <div className="container-fluid p-3">
-      <div className="row gy-3">
+      <div className="row gy-4">
         <div className="col-xxl-6">
           <ChartContainer
-            title="Openings per years"
-            description="Check openings and submissions per year"
+            title="Openings submission trends"
+            description="Check quantity and evolution of openings"
           >
             <BarChartGrouped />
           </ChartContainer>
