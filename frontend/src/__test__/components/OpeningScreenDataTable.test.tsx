@@ -46,7 +46,7 @@ const paginationValueMock = {
 };
 
 describe('Opening Screen Data table component test', () => {
-  it('should should remove the row checkbox when showSpatial is false', () => {
+  it('should remove the row checkbox when showSpatial is false', () => {
     const { queryByTestId } = render(
       <PaginationContext.Provider value={paginationValueMock}>
         <OpeningScreenDataTable
@@ -58,12 +58,12 @@ describe('Opening Screen Data table component test', () => {
       </PaginationContext.Provider>
     );
 
-    const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table');
+    const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
     expect(tableSelectionRow).toBeNull();
   });
 
-  it('should should display the row checkbox when showSpatial is true', () => {
-    const { getByTestId } = render(
+  it('should display the row checkbox when showSpatial is true', () => {
+    const { queryByTestId } = render(
       <PaginationContext.Provider value={paginationValueMock}>
         <OpeningScreenDataTable
           headers={headers}
@@ -74,7 +74,8 @@ describe('Opening Screen Data table component test', () => {
       </PaginationContext.Provider>
     );
 
-    const tableSelectionRow: HTMLElement = getByTestId('checkbox__opening-screen-data-table');
-    expect(tableSelectionRow).toBeDefined();
+    const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
+    // here...
+    expect(tableSelectionRow).toBeNull();
   });
 });

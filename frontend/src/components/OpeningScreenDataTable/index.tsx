@@ -184,16 +184,14 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
               </TableHead>
               <TableBody>
                 {rows.map((row, i) => (
-                  <TableRow key={row.id} data-testid={"row__opening-screen-data-table"}>
+                  <TableRow key={row.id}>
                     {showSpatial && (
-                      <div data-testid={"checkbox__opening-screen-data-table"}>
-                        <TableSelectRow {
-                          ...getSelectionProps({
-                            row,
-                            onClick: (e: Event) => selectRowEvent(row.id, row.isSelected)
-                          })
-                        } />
-                      </div>
+                      <TableSelectRow data-testid={`checkbox__opening-screen-data-table_${row.id}`} {
+                        ...getSelectionProps({
+                          row,
+                          onClick: (e: Event) => selectRowEvent(row.id, row.isSelected),
+                        })
+                      } />
                     )}
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
