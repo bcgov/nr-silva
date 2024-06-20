@@ -1,5 +1,6 @@
 import React from "react";
-import './styles.scss'
+import './styles.scss';
+import SectionTitle from "../SectionTitle";
 import BarChartGrouped from "../BarChartGrouped";
 import ChartContainer from "../ChartContainer";
 import DonutChartView from "../DonutChartView";
@@ -9,7 +10,10 @@ import MyRecentActions from "../MyRecentActions";
 
 const OpeningMetricsTab: React.FC = () => (
   <>
-    <div className="container-fluid p-3">
+    <div className="container-fluid tab-padding">
+    <div className="title-container pb-32">
+      <SectionTitle title="Dashboard" subtitle="Manage and track silvicultural information about openings" />
+    </div>
       <div className="row gy-4">
         <div className="col-xxl-6">
           <ChartContainer

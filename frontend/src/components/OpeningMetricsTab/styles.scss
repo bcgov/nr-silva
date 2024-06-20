@@ -14,6 +14,14 @@
     padding: 2rem;
   }
 
+  .tab-padding{
+    padding: 40px;
+    padding-top: 32px;
+  }
+  .pb-32{
+    padding-bottom: 32px;
+  }
+
   @media only screen and (max-width: 671px) {
     .favourite-activities {
       background-color: var(--#{vars.$bcgov-prefix}-layer-01);
