@@ -6,7 +6,6 @@ import {
   signOut
 } from 'aws-amplify/auth'
 import { env } from '../env'
-import { JwtPayload } from '@aws-amplify/core/internals/utils';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -114,8 +113,8 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
  *
  */
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
-  const decodedIdToken: JwtPayload | undefined = idToken?.payload;
-  const decodedAccessToken: JwtPayload | undefined = accessToken?.payload;
+  const decodedIdToken = idToken?.payload;
+  const decodedAccessToken = accessToken?.payload;
   // Extract the first name and last name from the displayName and remove unwanted part
   let displayName: string = '';
   if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {

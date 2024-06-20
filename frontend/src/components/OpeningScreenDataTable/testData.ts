@@ -1,6 +1,6 @@
-import { TableHeader } from "../../types/TableHeader";
+import { ITableHeader } from "../../types/TableHeader";
 
-export const headers: TableHeader[] = [
+export const headers: ITableHeader[] = [
   {
     key: 'openingId',
     header: 'Opening Id'

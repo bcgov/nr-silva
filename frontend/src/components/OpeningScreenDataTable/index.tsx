@@ -26,11 +26,11 @@ import './styles.scss';
 import EmptySection from '../EmptySection';
 import PaginationContext from '../../contexts/PaginationContext';
 import { RecentOpening } from '../../types/RecentOpening';
-import { TableHeader as TableHeaderType } from '../../types/TableHeader';
+import { ITableHeader } from '../../types/TableHeader';
 
 interface IOpeningScreenDataTable {
   rows: RecentOpening[],
-  headers: TableHeaderType[],
+  headers: ITableHeader[],
   setOpeningId: Function,
   showSpatial: boolean
 }
