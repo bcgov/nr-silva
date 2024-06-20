@@ -15,24 +15,21 @@ import {
   SideNav,
   SideNavItems,
   HeaderSideNavItems,
-
 } from '@carbon/react';
 import { NavLink } from "react-router-dom";
 import * as Icons from '@carbon/icons-react';
-
 import './BCHeader.scss'
-
-
+import { HeaderContainerProps } from "./definitions";
 
 const BCHeader: React.FC = () => {
-  //can only be impored at component level
+  //can only be imported at component level
   const { theme, setTheme } = useThemePreference();
 
     return (
       <>
         <HeaderContainer
-          render={({ isSideNavExpanded, onClickSideNavExpand }: any) => (
-            <Header aria-label="React TS Carbon Quickstart"
+          render={({ isSideNavExpanded, onClickSideNavExpand }: HeaderContainerProps) => (
+            <Header aria-label="React TS Carbon QuickStart"
             className="spar-header"
             data-testid="header">
               <SkipToContent />
@@ -73,8 +70,6 @@ const BCHeader: React.FC = () => {
                   </HeaderGlobalAction>
                 </NavLink>
                 
-                
-
                 <HeaderGlobalAction
                   aria-label="App Switch"
                   tooltipAlignment="end">

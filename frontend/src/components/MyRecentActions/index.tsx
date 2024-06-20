@@ -3,11 +3,13 @@ import { TabList, Tabs, Tab, TabPanels, TabPanel } from "@carbon/react";
 import ActionsTable from "../ActionsTable";
 import { fetchRecentActions } from '../../services/OpeningService';
 import { rows as fileRows, headers as fileHeaders } from "./filesData";
+import { RecentAction } from '../../types/RecentAction';
+import { ITableHeader } from '../../types/TableHeader';
 
 const MyRecentActions: React.FC = () => {
-  const [recentActions, setRecentActions] = useState<any[]>([]);
+  const [recentActions, setRecentActions] = useState<RecentAction[]>([]);
 
-  const headers = [
+  const headers: ITableHeader[] = [
     {
       key: 'activityType',
       header: 'Activity Type',
@@ -29,7 +31,7 @@ const MyRecentActions: React.FC = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const actions = await fetchRecentActions();
+        const actions: RecentAction[] = await fetchRecentActions();
         setRecentActions(actions);
       } catch (error) {
         console.error('Error fetching recent actions:', error);

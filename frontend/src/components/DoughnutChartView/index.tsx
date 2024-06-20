@@ -1,22 +1,17 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { DonutChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput, TextInput } from "@carbon/react";
-import "./DonutChartView.scss";
-import { fetchFreeGrowingMilestones } from "../../services/OpeningService";
-
-interface IDonutChart {
-  group: any;
-  value: any;
-}
+import "./DoughnutChartView.scss";
+import { IFreeGrowingChartData, fetchFreeGrowingMilestones } from "../../services/OpeningService";
 
 interface IDropdownItem {
   value: string,
   text: string
 }
 
-const DonutChartView: React.FC = () => {
+const DoughnutChartView: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [chartData, setChartData] = useState<IDonutChart[]>([]);
+  const [chartData, setChartData] = useState<IFreeGrowingChartData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [orgUnitCode, setOrgUnitCode] = useState<string>("");
   const [clientNumber, setClientNumber] = useState<string>("");
@@ -38,7 +33,7 @@ const DonutChartView: React.FC = () => {
       setIsLoading(true);
       const formattedStartDate = formatDateToString(startDate);
       const formattedEndDate = formatDateToString(endDate);
-      const data = await fetchFreeGrowingMilestones({
+      const data: IFreeGrowingChartData[] = await fetchFreeGrowingMilestones({
         orgUnitCode,
         clientNumber,
         entryDateStart: formattedStartDate,
@@ -146,4 +141,4 @@ const DonutChartView: React.FC = () => {
   );
 };
 
-export default DonutChartView;
+export default DoughnutChartView;

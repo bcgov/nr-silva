@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const config: UserConfig = {
-    define: {} as any,
+    define: {},
     plugins: [
       {
         name: 'build-html',

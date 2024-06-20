@@ -25,10 +25,12 @@ import StatusTag from '../StatusTag';
 import './styles.scss';
 import EmptySection from '../EmptySection';
 import PaginationContext from '../../contexts/PaginationContext';
+import { RecentOpening } from '../../types/RecentOpening';
+import { ITableHeader } from '../../types/TableHeader';
 
 interface IOpeningScreenDataTable {
-  rows: any[],
-  headers: any[],
+  rows: RecentOpening[],
+  headers: ITableHeader[],
   setOpeningId: Function,
   showSpatial: boolean
 }
@@ -39,8 +41,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
   setOpeningId,
   showSpatial
 }) => {
-  console.log('showSpatial', showSpatial);
-  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
+  const [filteredRows, setFilteredRows] = useState<RecentOpening[]>(rows);
   const {
     getCurrentData,
     currentPage,
@@ -196,7 +197,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
                         {cell.info.header === "status" ? (
-                          <StatusTag type={cell.value} />
+                          <StatusTag code={cell.value} />
                         ) : cell.info.header === "actions" ? (
                           <>
                             <Button
