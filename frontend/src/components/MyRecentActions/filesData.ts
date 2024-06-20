@@ -1,4 +1,5 @@
 import { RecentAction } from "../../types/RecentAction";
+import { ITableHeader } from "../../types/TableHeader";
 
 export const rows: RecentAction[] = [
   {
@@ -7,7 +8,7 @@ export const rows: RecentAction[] = [
     statusCode: 'PND',
     statusDescription: 'Pending',
     fileFormat: 'PDF file',
-    lastUpdated: new Date(),
+    lastUpdated: '-',
     lastUpdatedLabel: 'Now'
   },
   {
@@ -16,7 +17,7 @@ export const rows: RecentAction[] = [
     statusCode: 'SUB',
     statusDescription: 'Submitted',
     fileFormat: 'Excel file',
-    lastUpdated: new Date(),
+    lastUpdated: '-',
     lastUpdatedLabel: '1 minute ago'
   },
   {
@@ -25,7 +26,7 @@ export const rows: RecentAction[] = [
     statusCode: 'APP',
     statusDescription: 'Approved',
     fileFormat: 'CSV file',
-    lastUpdated: new Date(),
+    lastUpdated: '-',
     lastUpdatedLabel: 'Aug 20, 2023'
   },
   {
@@ -34,7 +35,7 @@ export const rows: RecentAction[] = [
     statusCode: 'APP',
     statusDescription: 'Approved',
     fileFormat: 'PDF file',
-    lastUpdated: new Date(),
+    lastUpdated: '-',
     lastUpdatedLabel:'Nov 20, 2023'
    },
    {
@@ -43,12 +44,12 @@ export const rows: RecentAction[] = [
     statusCode: 'PRG',
     statusDescription: 'In progress',
     fileFormat: 'Excel file',
-    lastUpdated: new Date(),
+    lastUpdated: '-',
     lastUpdatedLabel:'Now'
    }
 ];
 
-export const headers = [
+export const headers: ITableHeader[] = [
   {
     key: 'activityType',
     header: 'Activity Type'

@@ -2,38 +2,27 @@ import React from 'react';
 import * as Carbon from '@carbon/icons-react';
 import { ActivityIconMap, FileIconMap } from './definitions';
 import './styles.scss';
+import { ActivityTagFileFormatEnum, ActivityTagTypeEnum } from '../../types/ActivityTagType';
 
 type ActivityTagProps = {
-  type: string;
-  fileFormat?: string;
+  type: ActivityTagTypeEnum;
+  fileFormat?: ActivityTagFileFormatEnum; // Optional fileFormat
 };
 
-const ActivityTag: React.FC<ActivityTagProps> = (props) => {
-  console.log('props.type', props.type);
-  const activitiesKeys: string[] = Object.keys(ActivityIconMap);
-  const activityKey: string = activitiesKeys.includes(props.type)? props.type : ActivityIconMap.Unknown;
-  const tagType = ActivityIconMap[activityKey as keyof typeof ActivityIconMap];
-  
-  let iconName = null;
-
-  // If it's not the 'Files and Docs' tab, then get's the icon given the activity value
-  if (!props.fileFormat) {
-    iconName = ActivityIconMap[tagType as keyof typeof ActivityIconMap];
+const ActivityTag = ({ type, fileFormat }: ActivityTagProps) => {
+  const tagType: keyof typeof ActivityIconMap = Object.keys(ActivityIconMap).includes(type) ? type : 'Unknown';
+  let iconName;
+  if (fileFormat && FileIconMap[fileFormat]) {
+    iconName = FileIconMap[fileFormat];
   }
-
-  if (!iconName) {
-    const fileTypeKeys: string[] = Object.keys(FileIconMap);
-    const fileTypeKey: string = fileTypeKeys.includes(props.type)? props.type : FileIconMap.Unknown;
-    const fileIcon: string = FileIconMap[activityKey as keyof typeof FileIconMap];
-    iconName = FileIconMap[fileTypeKey as keyof typeof FileIconMap];
+  else{
+    iconName = ActivityIconMap[tagType]; // get the icon name by the type name
   }
-
-  const Icon = Carbon[iconName];
+  const Icon = Carbon[iconName]; // get the icon component by the icon name
 
   return (
     <>
-      <Icon size={18} />
-      {props.type}
+      <Icon size={18} /> {type}
     </>
   );
 };

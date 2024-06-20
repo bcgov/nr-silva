@@ -7,20 +7,6 @@ import { RecentOpening } from '../types/RecentOpening';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
-interface IOpening {
-  openingId: number;
-  fileId: string;
-  cuttingPermit: string | null;
-  timberMark: string | null;
-  cutBlock: string | null;
-  grossAreaHa: number | null;
-  status: {code: string, description: string} | null;
-  category: {code: string, description: string} | null;
-  disturbanceStart: string | null;
-  entryTimestamp: string | null;
-  updateTimestamp: string | null;
-}
-
 /**
  * Fetch recent openings data from backend.
  *
@@ -40,7 +26,7 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
 
       if (data.data) {
         // Extracting row information from the fetched data
-        const rows: any[] = data.data.map((opening: IOpening) => ({
+        const rows: RecentOpening[] = data.data.map((opening: RecentOpening) => ({
           id: opening.openingId.toString(),
           openingId: opening.openingId.toString(),
           fileId: opening.fileId ? opening.fileId : '-',
@@ -51,8 +37,8 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
           status: opening.status ? opening.status.description : '-',
           category: opening.category ? opening.category.code : '-',
           disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
-          createdAt: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
-          lastViewed: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
+          entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
+          updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
         }));
   
         return rows;
@@ -124,12 +110,17 @@ interface IFreeGrowingProps {
   entryDateEnd: string | null;
 }
 
+export interface IFreeGrowingChartData {
+  group: string;
+  value: number;
+}
+
 /**
  * Fetch free growing milestones data from backend.
  *
- * @returns {any[]} Array with recent action objects.
+ * @returns {IFreeGrowingChartData[]} Array with recent action objects.
  */
-export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Promise<any[]> {
+export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Promise<IFreeGrowingChartData[]> {
   const authToken = getAuthIdToken();
   let url = backendUrl.concat("/api/dashboard-metrics/free-growing-milestones");
 
@@ -154,7 +145,7 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
     const { data } = response;
     if (data && Array.isArray(data)) {
       // Transform data for DonutChartView component
-      const transformedData = data.map(item => ({
+      const transformedData: IFreeGrowingChartData[] = data.map(item => ({
         group: item.label,
         value: item.amount
       }));
@@ -172,9 +163,9 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
 /**
  * Fetch recent actions data from backend.
  *
- * @returns {any[]} Array with recent action objects.
+ * @returns {RecentAction[]} Array with recent action objects.
  */
-export function fetchRecentActions(): any[] {
+export function fetchRecentActions(): RecentAction[] {
   // const authToken = getAuthIdToken();
   try {
     // Comment out the actual API call for now
@@ -186,10 +177,10 @@ export function fetchRecentActions(): any[] {
 
     // Temporarily use the sample data for testing
     // const { data } = response;
-    const data = [
+    const data: RecentAction[] = [
       {
         "activityType": "Update",
-        "openingId": 1541297,
+        "openingId": "1541297",
         "statusCode": "APP",
         "statusDescription": "Approved",
         "lastUpdatedLabel": "1 minute ago",
@@ -206,7 +197,7 @@ export function fetchRecentActions(): any[] {
           openingId: action.openingId.toString(),
           statusCode: action.statusCode,
           statusDescription: action.statusDescription,
-          lastUpdated: new Date(action.lastUpdated),
+          lastUpdated: action.lastUpdated,
           lastUpdatedLabel: action.lastUpdatedLabel
         }
       });

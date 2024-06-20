@@ -4,11 +4,12 @@ import ActionsTable from "../ActionsTable";
 import { fetchRecentActions } from '../../services/OpeningService';
 import { rows as fileRows, headers as fileHeaders } from "./filesData";
 import { RecentAction } from '../../types/RecentAction';
+import { ITableHeader } from '../../types/TableHeader';
 
 const MyRecentActions: React.FC = () => {
   const [recentActions, setRecentActions] = useState<RecentAction[]>([]);
 
-  const headers = [
+  const headers: ITableHeader[] = [
     {
       key: 'activityType',
       header: 'Activity Type',

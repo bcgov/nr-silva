@@ -6,10 +6,7 @@ import {
 } from '@carbon/react';
 
 import History from '../../types/History';
-
-import { formatDate } from '../../utils/DateUtils';
 import statusClass from '../../utils/HistoryStatus';
-
 import './styles.scss';
 
 interface OpeningHistoryProps {
