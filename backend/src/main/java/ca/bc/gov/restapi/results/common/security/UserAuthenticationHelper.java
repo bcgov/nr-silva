@@ -53,7 +53,7 @@ public class UserAuthenticationHelper {
           }
 
           lastName = parts[0].trim();
-          // Remove 'de' or other starting characteres before space
+          // Remove 'de' or other starting characters before space
           if (lastName.contains(" ")) {
             lastName = lastName.split(" ")[1].trim();
           }

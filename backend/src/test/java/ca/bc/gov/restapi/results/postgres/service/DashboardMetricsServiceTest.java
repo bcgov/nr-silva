@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
@@ -65,7 +65,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -85,7 +85,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto("AAA", null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto("AAA", null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -105,7 +105,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, "APP", null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, "APP", null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -120,11 +120,11 @@ class DashboardMetricsServiceTest {
 
   @Test
   @DisplayName("Opening submission trends with Status filter not matching should succeed")
-  void getOpeningsSubmissionTrends_statusFilterDont_shouldSucceed() {
+  void getOpeningsSubmissionTrends_statusFilterNot_shouldSucceed() {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, "UPD", null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, "UPD", null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     Assertions.assertFalse(list.isEmpty());
@@ -153,8 +153,8 @@ class DashboardMetricsServiceTest {
     LocalDateTime oneMonthBefore = now.minusMonths(1L);
     LocalDateTime oneMonthLater = now.plusMonths(1L);
 
-    DashboardFiltesDto filtersDto =
-        new DashboardFiltesDto(null, null, oneMonthBefore, oneMonthLater, null);
+    DashboardFiltersDto filtersDto =
+        new DashboardFiltersDto(null, null, oneMonthBefore, oneMonthLater, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     String monthName = now.getMonth().name().toLowerCase();
@@ -169,10 +169,10 @@ class DashboardMetricsServiceTest {
 
   @Test
   @DisplayName("Opening submission trends with no data should succeed")
-  void getOpeningsSubmissionTrends_noData_shouldSuceed() {
+  void getOpeningsSubmissionTrends_noData_shouldSucceed() {
     when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(List.of());
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
     List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
 
     Assertions.assertTrue(list.isEmpty());
@@ -184,7 +184,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT_BY_ID)).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
     List<FreeGrowingMilestonesDto> list =
         dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
 
@@ -217,7 +217,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT_BY_ID)).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto("AAA", null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto("AAA", null, null, null, null);
     List<FreeGrowingMilestonesDto> list =
         dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
 
@@ -250,7 +250,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT_BY_ID)).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, "00011254");
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "00011254");
     List<FreeGrowingMilestonesDto> list =
         dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
 
@@ -283,7 +283,7 @@ class DashboardMetricsServiceTest {
     List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
     when(openingsLastYearRepository.findAll(SORT_BY_ID)).thenReturn(entities);
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, "12797");
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "12797");
     List<FreeGrowingMilestonesDto> list =
         dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
 
@@ -320,8 +320,8 @@ class DashboardMetricsServiceTest {
     LocalDateTime oneMonthBefore = now.minusMonths(1L);
     LocalDateTime oneMonthLater = now.plusMonths(1L);
 
-    DashboardFiltesDto filtersDto =
-        new DashboardFiltesDto(null, null, oneMonthBefore, oneMonthLater, null);
+    DashboardFiltersDto filtersDto =
+        new DashboardFiltersDto(null, null, oneMonthBefore, oneMonthLater, null);
     List<FreeGrowingMilestonesDto> list =
         dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto);
 

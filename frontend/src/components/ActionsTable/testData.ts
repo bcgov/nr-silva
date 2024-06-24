@@ -34,19 +34,18 @@ export const rows = [
   export const headers = [
     {
       key: 'activityType',
-      header: 'Activity Type',
+      header: 'Activity Type'
     },
     {
       key: 'openingID',
-      header: 'Opening ID',
+      header: 'Opening ID'
     },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Status'
     },
     {
       key: 'lastUpdated',
-      header: 'Last Updated',
+      header: 'Last Updated'
     }
   ];
-

@@ -1,52 +1,69 @@
-export const rows = [
+import { RecentAction } from "../../types/RecentAction";
+import { ITableHeader } from "../../types/TableHeader";
+
+export const rows: RecentAction[] = [
   {
     activityType: 'Opening details',
+    openingId: '11',
+    statusCode: 'PND',
+    statusDescription: 'Pending',
     fileFormat: 'PDF file',
-    status: 'Pending',
-    lastUpdated: 'Now'
+    lastUpdated: '-',
+    lastUpdatedLabel: 'Now'
   },
   {
     activityType: 'Opening report',
+    openingId: '12',
+    statusCode: 'SUB',
+    statusDescription: 'Submitted',
     fileFormat: 'Excel file',
-    status: 'Submitted',
-    lastUpdated: '1 minute ago'
+    lastUpdated: '-',
+    lastUpdatedLabel: '1 minute ago'
   },
   {
     activityType: 'Opening spatial',
+    openingId: '13',
+    statusCode: 'APP',
+    statusDescription: 'Approved',
     fileFormat: 'CSV file',
-    status: 'Approved',
-    lastUpdated: 'Aug 20, 2023'
+    lastUpdated: '-',
+    lastUpdatedLabel: 'Aug 20, 2023'
   },
   {
     activityType:'Opening spatial', 
+    openingId: '14',
+    statusCode: 'APP',
+    statusDescription: 'Approved',
     fileFormat: 'PDF file',
-    status:'Approved', 
-    lastUpdated:'Nov 20, 2023'
+    lastUpdated: '-',
+    lastUpdatedLabel:'Nov 20, 2023'
    },
    {
     activityType:'Opening details', 
+    openingId: '15',
+    statusCode: 'PRG',
+    statusDescription: 'In progress',
     fileFormat: 'Excel file',
-    status:'In progress', 
-    lastUpdated:'Now'
+    lastUpdated: '-',
+    lastUpdatedLabel:'Now'
    }
 ];
 
-export const headers = [
+export const headers: ITableHeader[] = [
   {
     key: 'activityType',
-    header: 'Activity Type',
+    header: 'Activity Type'
   },
   {
     key: 'fileFormat',
-    header: 'File Format',
+    header: 'File Format'
   },
   {
     key: 'status',
-    header: 'Status',
+    header: 'Status'
   },
   {
     key: 'lastUpdated',
-    header: 'Last Updated',
+    header: 'Last Updated'
   }
 ];
-

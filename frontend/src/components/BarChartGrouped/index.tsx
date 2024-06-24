@@ -4,6 +4,7 @@ import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
+import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 
 interface IDropdownItem {
   value: string;
@@ -12,7 +13,7 @@ interface IDropdownItem {
 
 const BarChartGrouped = () => {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-  const [chartData, setChartData] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<OpeningPerYearChart[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [orgUnitCode, setOrgUnitCode] = useState<string | null>(null);
   const [statusCode, setStatusCode] = useState<string | null>(null);
@@ -36,8 +37,8 @@ const BarChartGrouped = () => {
         if (endDate) {
           formattedEndDate = formatDateToString(endDate);
         }
-
-        const data = await fetchOpeningsPerYear({
+    
+        const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
           orgUnitCode,
           statusCode,
           entryDateStart: formattedStartDate,
@@ -146,6 +147,7 @@ const BarChartGrouped = () => {
             items={orgUnitItems}
             itemToString={(item: IDropdownItem) => (item ? item.text : "")}
             onChange={setOrgUnitCodeSelected}
+            label="District"
           />
         </div>
         <div className="col-md-3">
@@ -155,6 +157,7 @@ const BarChartGrouped = () => {
             items={statusItems}
             itemToString={(item: IDropdownItem) => (item ? item.text : "")}
             onChange={setStatusCodeSelected}
+            label="Status"
           />
         </div>
         <div className="col-md-2 col-xxl-3 d-none d-md-block">

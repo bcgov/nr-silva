@@ -9,15 +9,16 @@ import { fetchRecentOpenings } from "../../services/OpeningService";
 import SectionTitle from "../SectionTitle";
 import TableSkeleton from "../TableSkeleton";
 import { InlineNotification } from '@carbon/react';
+import { RecentOpening } from "../../types/RecentOpening";
 
 interface Props {
   showSpatial: boolean;
   setShowSpatial: Function;
 }
 
-const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
+const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [openingRows, setOpeningRows] = useState<any[]>([]);
+  const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
@@ -25,7 +26,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rows = await fetchRecentOpenings();
+        const rows: RecentOpening[] = await fetchRecentOpenings();
         setOpeningRows(rows);
         setLoading(false);
         setError(null);
@@ -90,6 +91,7 @@ const OpeningsTab: React.FC<Props> = ({showSpatial, setShowSpatial}) => {
             headers={headers}
             rows={openingRows}
             setOpeningId={setLoadId}
+            showSpatial={showSpatial}
           />
         )}
       </div>

@@ -1,5 +1,5 @@
+import { ResourcesConfig } from 'aws-amplify';
 import { env } from './env';
-import { ResourcesConfig } from '@aws-amplify/core';
 
 const ZONE = env.VITE_ZONE.toLocaleLowerCase();
 const redirectUri = window.location.origin;

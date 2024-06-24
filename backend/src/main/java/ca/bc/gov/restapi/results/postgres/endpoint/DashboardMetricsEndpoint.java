@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
-import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
@@ -72,7 +72,7 @@ public class DashboardMetricsEndpoint {
           @Parameter(
               name = "statusCode",
               in = ParameterIn.QUERY,
-              description = "The Openins Status code to filter",
+              description = "The Openings Status code to filter",
               required = false,
               example = "APP")
           String statusCode,
@@ -80,7 +80,7 @@ public class DashboardMetricsEndpoint {
           @Parameter(
               name = "entryDateStart",
               in = ParameterIn.QUERY,
-              description = "The Openins entry timestamp start date to filter, format yyyy-MM-dd",
+              description = "The Openings entry timestamp start date to filter, format yyyy-MM-dd",
               required = false,
               example = "2024-03-11")
           String entryDateStart,
@@ -88,12 +88,12 @@ public class DashboardMetricsEndpoint {
           @Parameter(
               name = "entryDateEnd",
               in = ParameterIn.QUERY,
-              description = "The Openins entry timestamp end date to filter, format yyyy-MM-dd",
+              description = "The Openings entry timestamp end date to filter, format yyyy-MM-dd",
               required = false,
               example = "2024-03-11")
           String entryDateEnd) {
-    DashboardFiltesDto filtersDto =
-        new DashboardFiltesDto(
+    DashboardFiltersDto filtersDto =
+        new DashboardFiltersDto(
             orgUnitCode,
             statusCode,
             TimestampUtil.parseDateString(entryDateStart),
@@ -159,7 +159,7 @@ public class DashboardMetricsEndpoint {
           @Parameter(
               name = "entryDateStart",
               in = ParameterIn.QUERY,
-              description = "The Openins entry timestamp start date to filter, format yyyy-MM-dd",
+              description = "The Openings entry timestamp start date to filter, format yyyy-MM-dd",
               required = false,
               example = "2024-03-11")
           String entryDateStart,
@@ -167,12 +167,12 @@ public class DashboardMetricsEndpoint {
           @Parameter(
               name = "entryDateEnd",
               in = ParameterIn.QUERY,
-              description = "The Openins entry timestamp end date to filter, format yyyy-MM-dd",
+              description = "The Openings entry timestamp end date to filter, format yyyy-MM-dd",
               required = false,
               example = "2024-03-11")
           String entryDateEnd) {
-    DashboardFiltesDto filtersDto =
-        new DashboardFiltesDto(
+    DashboardFiltersDto filtersDto =
+        new DashboardFiltersDto(
             orgUnitCode,
             null,
             TimestampUtil.parseDateString(entryDateStart),

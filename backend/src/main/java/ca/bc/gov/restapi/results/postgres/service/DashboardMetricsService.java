@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
-import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
@@ -41,10 +41,10 @@ public class DashboardMetricsService {
   /**
    * Get openings submission trends data for the opening per year chart.
    *
-   * @param filters Possible filter, see {@link DashboardFiltesDto} for more.
+   * @param filters Possible filter, see {@link DashboardFiltersDto} for more.
    * @return A list of {@link OpeningsPerYearDto} for the opening chart.
    */
-  public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltesDto filters) {
+  public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltersDto filters) {
     log.info("Getting Opening Submission Trends with filters {}", filters.toString());
 
     LocalDateTime baseDateTime = LocalDateTime.now().minusMonths(12);
@@ -77,7 +77,7 @@ public class DashboardMetricsService {
   private void filterOpeningSubmissions(
       Map<Integer, List<OpeningsLastYearEntity>> resultMap,
       List<OpeningsLastYearEntity> entities,
-      DashboardFiltesDto filters) {
+      DashboardFiltersDto filters) {
     // Iterate over the found records filtering and putting them into the right month
     for (OpeningsLastYearEntity entity : entities) {
       // Org Unit filter - District
@@ -132,11 +132,11 @@ public class DashboardMetricsService {
   /**
    * Get free growing milestone declarations data for the chart.
    *
-   * @param filters Possible filter, see {@link DashboardFiltesDto} for more.
+   * @param filters Possible filter, see {@link DashboardFiltersDto} for more.
    * @return A list of {@link FreeGrowingMilestonesDto} for the chart.
    */
   public List<FreeGrowingMilestonesDto> getFreeGrowingMilestoneChartData(
-      DashboardFiltesDto filters) {
+      DashboardFiltersDto filters) {
     log.info("Getting Free growing milestones with filters {}", filters.toString());
 
     List<OpeningsLastYearEntity> entities =

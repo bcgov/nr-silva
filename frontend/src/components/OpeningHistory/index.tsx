@@ -2,16 +2,13 @@ import React from 'react';
 
 import {
   ProgressIndicator,
-  ProgressStep,
-  Button
+  ProgressStep
 } from '@carbon/react';
 
 import History from '../../types/History';
-import { formatDate } from '../../utils/DateUtils';
 import statusClass from '../../utils/HistoryStatus';
-
-import './styles.scss';
 import FavoriteButton from '../FavoriteButton';
+import './styles.scss';
 
 interface OpeningHistoryProps {
   histories: History[];
@@ -23,7 +20,7 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
       {histories.map((history, index) => (
         <div key={index} className="col-12 col-sm-4">
           <div className='activity-history-col'>
-            <p className="activity-history-header">
+            <div className="activity-history-header">
               <div className="d-flex flex-row align-items-center">
                 <div className="favorite-icon">
                   <FavoriteButton
@@ -35,7 +32,7 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
                 </div>
                 {`Opening Id ${history.id}`}
               </div>
-            </p>
+            </div>
             <ProgressIndicator vertical className="activity-history-box">
               {history.steps.map((step) => {
                 const status = statusClass(step.status);

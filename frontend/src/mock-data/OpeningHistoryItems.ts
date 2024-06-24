@@ -1,4 +1,6 @@
-const OpeningHistoryItems:any[] = [
+import History from "../types/History";
+
+const OpeningHistoryItems: History[] = [
   {
     id: 1541297,
     steps: [

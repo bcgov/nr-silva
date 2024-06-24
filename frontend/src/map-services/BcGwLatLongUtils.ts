@@ -1,10 +1,10 @@
 /**
  * Shifts BC GW response Lng-Lat to Lat-Lng format.
  *
- * @param coordinates geometry object from the api.
- * @returns the same geometry object with lat and long shifted.
+ * @param {number[][][]} coordinates geometry object from the api.
+ * @returns {number[][][]} the same geometry object with lat and long shifted.
  */
-export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]) => {
+export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]): number[][][] => {
   const newCoord = [];
   for (let i = 0, len = coordinates.length; i < len; i++) {
     const polygon: number[][] = coordinates[i];
@@ -24,8 +24,8 @@ export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]) => {
 /**
  * Shifts BC GW LineString response Lng-Lat to Lat-Lng format.
  *
- * @param coordinates point array from the api.
- * @returns the same array with lat and long shifted.
+ * @param {number[][]} coordinates point array from the api.
+ * @returns {number[][]} the same array with lat and long shifted.
  */
 export const shiftLineStringCoordinates = (coordinates: number[][]): number[][] => {
   const newCoord :number[][] = [];

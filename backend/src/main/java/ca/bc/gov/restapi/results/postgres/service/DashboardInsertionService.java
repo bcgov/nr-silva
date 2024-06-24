@@ -43,7 +43,7 @@ public class DashboardInsertionService {
   private static final String INCONSISTENCY = "DEBUG mode ON! Possible data inconsistency found!";
 
   /**
-   * Loads all data extraced from Oracle into Postgres.
+   * Loads all data extracted from Oracle into Postgres.
    *
    * @param oracleDto A {@link OracleExtractionDto} containing all data
    */
@@ -88,7 +88,7 @@ public class DashboardInsertionService {
   private void saveOpeningsActivities(OracleExtractionDto oracleDto, Boolean debug) {
     logAndSave(
         oracleDto.logMessages(),
-        "Cleaning up opening acitivites (SILVA.OPENINGS_ACTIVITY on Postgres)");
+        "Cleaning up opening activities (SILVA.OPENINGS_ACTIVITY on Postgres)");
     openingsActivityRepository.deleteAll();
     openingsActivityRepository.flush();
 

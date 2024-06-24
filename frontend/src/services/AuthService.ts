@@ -29,7 +29,7 @@ export const getAuthIdToken = () => {
   return authIdToken;
 };
 
-export const signIn = async (provider: string): Promise<any> => {
+export const signIn = async (provider: string): Promise<void> => {
   const appEnv = env.VITE_ZONE ?? 'DEV';
 
   try {
@@ -113,10 +113,13 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
  *
  */
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
-  const decodedIdToken = idToken?.payload as any;
-  const decodedAccessToken = accessToken?.payload as any;
+  const decodedIdToken = idToken?.payload;
+  const decodedAccessToken = accessToken?.payload;
   // Extract the first name and last name from the displayName and remove unwanted part
-  const displayName = decodedIdToken['custom:idp_display_name'];
+  let displayName: string = '';
+  if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
+    displayName = decodedIdToken['custom:idp_display_name'] as string;
+  }
   const hasComma = displayName.includes(',');
 
   let [lastName, firstName] = hasComma
@@ -130,12 +133,35 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
 
   const sanitizedFirstName = hasComma ? firstName.split(' ')[0].trim() : firstName;
 
+  let userName: string = '';
+  if (decodedIdToken && 'custom:idp_username' in decodedIdToken) {
+    userName = decodedIdToken['custom:idp_username'] as string;
+  }
+
+  let email: string = '';
+  if (decodedIdToken && 'custom:idp_username' in decodedIdToken) {
+    email = decodedIdToken['email'] as string;
+  }
+
+  let idpProvider: string = '';
+  if (decodedIdToken && 'identities' in decodedIdToken) {
+    const identities = decodedIdToken['identities'] as object;
+    if (identities && 'providerName' in identities) {
+      idpProvider = identities['providerName'] as string;
+    }
+  }
+
+  let roles: string[] = [];
+  if (decodedAccessToken && 'cognito:groups' in decodedAccessToken) {
+    roles = decodedAccessToken['cognito:groups'] as Array<string>;
+  }
+
   const famLoginUser = {
-    userName: decodedIdToken['custom:idp_username'],
+    userName,
     displayName,
-    email: decodedIdToken['email'],
-    idpProvider: decodedIdToken['identities']['providerName'],
-    roles: decodedAccessToken['cognito:groups'],
+    email,
+    idpProvider,
+    roles,
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
     lastName  // Add lastName field
