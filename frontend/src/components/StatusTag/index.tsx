@@ -13,7 +13,11 @@ const StatusTag: React.FC<IStatusTag> = (props) => {
   const typeColor: string = StatusColourMap[colorKey as keyof typeof StatusColourMap];
 
   return (
-    <Tag className="status-tag" type={typeColor}>
+    <Tag
+      className="status-tag"
+      type={typeColor}
+      data-testid={`tag__status_colored_tag_${colorKey}`}
+    >
       { props.code }
     </Tag>
   );

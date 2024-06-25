@@ -29,9 +29,9 @@ const MyRecentActions: React.FC = () => {
   ];
 
   useEffect(() => {
-    async function fetchData() {
+    function fetchData() {
       try {
-        const actions: RecentAction[] = await fetchRecentActions();
+        const actions: RecentAction[] = fetchRecentActions();
         setRecentActions(actions);
       } catch (error) {
         console.error('Error fetching recent actions:', error);
@@ -43,8 +43,22 @@ const MyRecentActions: React.FC = () => {
   return (
     <Tabs>
       <TabList activation="manual" aria-label="List of tabs">
-        <Tab><div className="tab-header-recent">Recent</div></Tab>
-        <Tab><div className="tab-header-recent">Files and Docs</div></Tab>
+        <Tab>
+          <div
+            className="tab-header-recent"
+            data-testid={"my-recent-actions__recent-tab-header"}
+          >
+            Recent
+          </div>
+        </Tab>
+        <Tab>
+          <div
+            className="tab-header-recent"
+            data-testid={"my-recent-actions__files-tab-header"}
+          >
+            Files and Docs
+          </div>
+        </Tab>
       </TabList>
       <TabPanels>
         <TabPanel className="tab-content">
