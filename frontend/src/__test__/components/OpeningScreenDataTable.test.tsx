@@ -3,20 +3,20 @@ import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import OpeningScreenDataTable from '../../components/OpeningScreenDataTable';
 import PaginationContext from '../../contexts/PaginationContext';
+import { RecentOpening } from '../../types/RecentOpening';
 
-const rows = [{
-  id: '1',
+const rows: RecentOpening[] = [{
   openingId: '123',
   fileId: '1',
   cuttingPermit: '1',
   timberMark: '1',
   cutBlock: '1',
-  grossAreaHa: '1',
-  status: '1',
-  category: '1',
+  grossAreaHa: 1,
+  statusDesc: 'Approved',
+  categoryDesc: 'Another',
   disturbanceStart: '1',
-  createdAt: '1',
-  lastViewed: '1',
+  entryTimestamp: '1',
+  updateTimestamp: '1',
 }];
 
 const headers = [{ key: 'openingId', header: 'Opening Id', },
