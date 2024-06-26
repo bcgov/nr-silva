@@ -34,8 +34,8 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
           timberMark: opening.timberMark ? opening.timberMark : '-',
           cutBlock: opening.cutBlock ? opening.cutBlock : '-',
           grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          status: opening.status ? opening.status.description : '-',
-          category: opening.category ? opening.category.code : '-',
+          status: opening.statusDesc ? opening.statusDesc : '-',
+          category: opening.categoryDesc ? opening.categoryDesc : '-',
           disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
           entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
           updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
