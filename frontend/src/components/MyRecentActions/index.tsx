@@ -20,11 +20,11 @@ const MyRecentActions: React.FC = () => {
       header: 'Opening ID',
     },
     {
-      key: 'status',
+      key: 'statusCode',
       header: 'Status',
     },
     {
-      key: 'lastUpdated',
+      key: 'lastUpdatedLabel',
       header: 'Last Updated',
     }
   ];
