@@ -6,6 +6,8 @@ import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
+import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
@@ -93,7 +95,7 @@ public class OpeningService {
    */
   public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
     log.info(
-        "Getting recent openings, user independnt, with page index {} and page size {}",
+        "Getting recent openings, user independent, with page index {} and page size {}",
         pagination.page(),
         pagination.perPage());
 
@@ -126,6 +128,53 @@ public class OpeningService {
     paginatedResult.setHasNextPage(openingPage.hasNext());
 
     return paginatedResult;
+  }
+
+  /**
+   * Search Opening API.
+   *
+   * @param filtersDto An instance of {@link SearchOpeningFiltersDto} with all possible filters.
+   * @return Paginated result with found content.
+   */
+  public PaginatedResult<SearchOpeningDto> searchOpening(
+      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination) {
+    log.info(
+        "Search Openings with page index {} and page size {}",
+        pagination.page(),
+        pagination.perPage());
+
+    // Openings
+    Pageable pageable =
+        PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
+    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
+
+    PaginatedResult<SearchOpeningDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setPageIndex(pagination.page());
+    paginatedResult.setPerPage(pagination.perPage());
+
+    if (openingPage.getContent().isEmpty()) {
+      log.info("No openings result for the search given page index and size!");
+      paginatedResult.setData(List.of());
+      paginatedResult.setTotalPages(0);
+      paginatedResult.setHasNextPage(false);
+      return paginatedResult;
+    }
+
+    // populate openings
+
+    // get category description
+
+    // get status descriptions
+
+    // get cut block ids
+
+    // get org unit
+
+    // get results electronic submissions
+
+    // get client acronyms
+
+    return null;
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
