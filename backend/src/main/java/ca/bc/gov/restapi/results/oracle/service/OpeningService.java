@@ -160,21 +160,42 @@ public class OpeningService {
       return paginatedResult;
     }
 
+    List<SearchOpeningDto> searchResultList = new ArrayList<>();
+
     // populate openings
+    openingPage
+        .getContent()
+        .forEach(
+            (opening) -> {
+              SearchOpeningDto searchDto = new SearchOpeningDto();
+              searchDto.setOpeningId(opening.getId());
+              searchDto.setOpeningNumber(opening.getOpeningNumber());
+              searchDto.setCategory(OpeningCategoryEnum.of(opening.getCategory()));
+              searchDto.setStatus(OpeningStatusEnum.of(opening.getStatus()));
+              // cuttingPermitId
+              // timberMarkId
+              // cutBlockId
+              // grossAreaHa
+              // disturbanceDate
+              // orgUnitNo
+              // orgUnitCode
+              // orgUnitName
+              // clientNumber
+              // clientAcronym
+              // regenDelayDate
+              // freeGrowingDate
+              // updateTimestamp
+              searchDto.setEntryUserId(opening.getEntryUserId());
+              // submittedToFrpa
 
-    // get category description
+              searchResultList.add(searchDto);
+            });
 
-    // get status descriptions
+    paginatedResult.setData(searchResultList);
+    paginatedResult.setTotalPages(openingPage.getTotalPages());
+    paginatedResult.setHasNextPage(openingPage.hasNext());
 
-    // get cut block ids
-
-    // get org unit
-
-    // get results electronic submissions
-
-    // get client acronyms
-
-    return null;
+    return paginatedResult;
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(

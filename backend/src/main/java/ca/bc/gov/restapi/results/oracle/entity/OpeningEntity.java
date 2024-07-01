@@ -19,6 +19,9 @@ public class OpeningEntity {
   @Column(name = "OPENING_ID")
   private Long id;
 
+  @Column(name = "OPENING_NUMBER")
+  private String openingNumber;
+
   @Column(name = "OPENING_STATUS_CODE", length = 3)
   private String status;
 
