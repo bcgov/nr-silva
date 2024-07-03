@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +40,16 @@ public class OpeningSearchEndpoint {
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
   public Object openingSearch(
+      @PathVariable
+          @Parameter(
+              name = "number",
+              in = ParameterIn.PATH,
+              description =
+                  "Number representing one of Opening ID | Opening Number | Timber Mark ID | File"
+                      + " ID",
+              required = false,
+              example = "DCR")
+          String number,
       // Org unit - ok
       @RequestParam(value = "orgUnit", required = false)
           @Parameter(
@@ -175,6 +186,6 @@ public class OpeningSearchEndpoint {
             TimestampUtil.parseDateString(updateDateEnd));
 
     // Pagination
-    return openingService.searchOpening(filtersDto, paginationParameters);
+    return openingService.searchOpening(filtersDto, paginationParameters, number);
   }
 }

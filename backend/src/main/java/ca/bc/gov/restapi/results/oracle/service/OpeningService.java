@@ -13,10 +13,17 @@ import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +43,8 @@ public class OpeningService {
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
 
   private final LoggedUserService loggedUserService;
+
+  private final EntityManager entityManager;
 
   /**
    * Gets all recent openings for the Home Screen.
@@ -99,6 +108,10 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException();
+    }
+
     // Openings
     Pageable pageable =
         PageRequest.of(
@@ -137,12 +150,51 @@ public class OpeningService {
    * @return Paginated result with found content.
    */
   public PaginatedResult<SearchOpeningDto> searchOpening(
-      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination) {
+      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination, String number) {
     log.info(
         "Search Openings with page index {} and page size {}",
         pagination.page(),
         pagination.perPage());
 
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException();
+    }
+
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OpeningEntity> query = builder.createQuery(OpeningEntity.class);
+    Root<OpeningEntity> opening = query.from(OpeningEntity.class);
+
+    // Join with:
+    // OPENING_STATUS_CODE -- keep going with this entity
+    // CUT_BLOCK_OPEN_ADMIN
+    // ORG_UNIT
+    // RESULTS_ELECTRONIC_SUBMISSION
+    // CLIENT_ACRONYM
+
+    // Opening category filter
+    if (!Objects.isNull(filtersDto.category())) {
+      Predicate categoryPred = builder.equal(opening.get("category"), filtersDto.category());
+      query.where(categoryPred);
+    }
+
+    Pageable pageable =
+        PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
+
+    // Runs the query
+    TypedQuery<OpeningEntity> typedQuery = entityManager.createQuery(query)
+      .setFirstResult((int) pageable.getOffset())
+      .setMaxResults(pageable.getPageSize());
+
+    List<OpeningEntity> resultList = typedQuery.getResultList();
+
+    log.info("resultList size {}", resultList.size());
+    for (OpeningEntity e : resultList) {
+      log.info("- ID={}, number={} category={}", e.getId(), e.getOpeningNumber(), e.getCategory());
+    }
+
+    return null;
+
+    /*
     // Openings
     Pageable pageable =
         PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
@@ -196,6 +248,7 @@ public class OpeningService {
     paginatedResult.setHasNextPage(openingPage.hasNext());
 
     return paginatedResult;
+    */
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
