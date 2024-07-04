@@ -59,11 +59,11 @@ export const headers: ITableHeader[] = [
     header: 'File Format'
   },
   {
-    key: 'status',
+    key: 'statusCode',
     header: 'Status'
   },
   {
-    key: 'lastUpdated',
+    key: 'lastUpdatedLabel',
     header: 'Last Updated'
   }
 ];

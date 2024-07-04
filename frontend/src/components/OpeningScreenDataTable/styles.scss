@@ -33,7 +33,7 @@
   background-color: #F3F3F5;
   border-top: 1px solid;
   border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
-  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01) !important;
 }
 
 .#{vars.$bcgov-prefix}--data-table thead tr th {
@@ -41,16 +41,19 @@
 }
 
 .#{vars.$bcgov-prefix}--data-table tr:nth-child(even) td {
-  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01) !important;
   height: 64px;
 }
 .#{vars.$bcgov-prefix}--data-table tr:nth-child(odd) td {
-  background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
   height: 64px;
 }
 .#{vars.$bcgov-prefix}--data-table tr:hover td {
-  background-color: var(--#{vars.$bcgov-prefix}-layer-04);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-02) !important;
   cursor: pointer;
+}
+.#{vars.$bcgov-prefix}--pagination {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
 }
 
 .table-toolbar{

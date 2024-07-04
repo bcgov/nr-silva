@@ -61,11 +61,12 @@ const DoughnutChartView: React.FC = () => {
     donut: {
       center: {
         label: "Standard units"
-      }
+      },
+      alignment:'center'
     },
     height: "18.5rem",
     toolbar:{
-      enabled:false
+      enabled:false,
     }
   };
 
@@ -84,8 +85,8 @@ const DoughnutChartView: React.FC = () => {
 
   return (
     <div className="px-3">
-      <div className="row gy-2 pb-3">
-        <div className="col-md-4 p-0">
+      <div className="row gy-2 gx-1 pt-0">
+        <div className="col-md-3 p-0">
           <Dropdown
             id="orgUnitCode"
             label={windowWidth <= 1584 ? "District" : "Filter by district"}
@@ -95,34 +96,34 @@ const DoughnutChartView: React.FC = () => {
             onChange={setOrgUnitCodeSelected}
           />
         </div>
-        <div className="col-md-4 p-0 px-md-1">
+        <div className="col-md-3 p-0 px-md-1 mt10">
           <TextInput
             labelText="Client Number"
             id="clientNumber"
             onChange={(event: ChangeEvent<HTMLInputElement>) => setClientNumber(event.target.value)}
           />
         </div>
-        <div className="col-2 px-md-1 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: Date) => setStartDate(date)}
+            onChange={(dates: [Date]) => setStartDate(dates[0])}
           >
             <DatePickerInput
               id="start-date-picker-input-id"
-              placeholder="yyyy-MM-dd"
+              placeholder="yyyy/MM/dd"
               size="md"
               labelText="Start Date"
             />
           </DatePicker>
         </div>
-        <div className="col-2 px-md-1 d-none d-md-block">
+        <div className="col-md-2 col-xxl-3 d-none d-md-block">
           <DatePicker
             datePickerType="single"
-            onChange={(date: Date) => setEndDate(date)}
+            onChange={(dates: [Date]) => setEndDate(dates[0])}
           >
             <DatePickerInput
               id="end-date-picker-input-id"
-              placeholder="yyyy-MM-dd"
+              placeholder="yyyy/MM/dd"
               size="md"
               labelText="End Date"
             />
@@ -132,10 +133,12 @@ const DoughnutChartView: React.FC = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <DonutChart
-          data={chartData}
-          options={options}>
-        </DonutChart>
+        <div className="donut-chart-container">
+          <DonutChart
+            data={chartData}
+            options={options}>
+          </DonutChart>
+        </div>
       )}
     </div>
   );

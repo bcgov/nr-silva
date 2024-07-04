@@ -24,7 +24,7 @@ const SectionTitle = ({
  
 
   return (
-    <Column className="section-title">
+    <Column className="section-title p-0">
       <div className="title-favourite">
         <h1>{title}</h1>
       </div>

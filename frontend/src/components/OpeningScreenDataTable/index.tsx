@@ -142,9 +142,8 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                     Download
                   </TableToolbarAction>
                 </TableToolbarMenu>
-                <div className="d-none d-sm-flex">
+                <div className="d-none d-sm-flex my-auto">
                   <Button
-                    hasIconOnly
                     iconDescription="Download"
                     tooltipposition="bottom"
                     kind="ghost"
@@ -152,9 +151,10 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                     disabled={selectedRows.length === 0}
                     renderIcon={Icons.Download}
                     size="md"
-                  />
+                  >
+                    Download table
+                  </Button>
                   <Button
-                    hasIconOnly
                     iconDescription="Print"
                     tooltipposition="bottom"
                     kind="ghost"
@@ -166,7 +166,9 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                     disabled={selectedRows.length === 0}
                     renderIcon={Icons.Printer}
                     size="md"
-                  />
+                  >
+                    Print table
+                  </Button>
                 </div>
               </TableToolbarContent>
             </TableToolbar>
@@ -206,16 +208,16 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                               tooltipPosition="bottom"
                               kind="ghost"
                               onClick={() => clickViewAction(row.id)}
-                              renderIcon={Icons.DataViewAlt}
+                              renderIcon={Icons.View}
                               size="md"
                             />
                             <Button
                               hasIconOnly
-                              iconDescription="Download"
+                              iconDescription="Document Download"
                               tooltipPosition="bottom"
                               kind="ghost"
                               onClick={() => null}
-                              renderIcon={Icons.Download}
+                              renderIcon={Icons.DocumentDownload}
                               size="md"
                             />
                           </>

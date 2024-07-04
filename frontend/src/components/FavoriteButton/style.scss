@@ -1,0 +1,12 @@
+.favorite-button {
+    &.favorite {
+      .bx--btn--ghost {
+        border-color: transparent !important;
+      }
+    }
+  
+    .bx--tooltip__trigger {
+      overflow: visible !important;
+    }
+  }
+  

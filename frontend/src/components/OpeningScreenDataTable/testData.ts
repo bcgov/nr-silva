@@ -38,15 +38,7 @@ export const headers: ITableHeader[] = [
     header: 'Disturbance start'
   },
   {
-    key: 'createdAt',
-    header: 'Created At'
-  },
-  {
-    key: 'lastViewed',
-    header: 'Last Viewed'
-  },
-  {
-  key: 'actions',
-  header: 'Actions'
+    key: 'actions',
+    header: 'Actions'
   }
 ];

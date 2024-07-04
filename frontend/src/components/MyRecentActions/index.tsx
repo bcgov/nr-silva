@@ -5,6 +5,7 @@ import { fetchRecentActions } from '../../services/OpeningService';
 import { rows as fileRows, headers as fileHeaders } from "./filesData";
 import { RecentAction } from '../../types/RecentAction';
 import { ITableHeader } from '../../types/TableHeader';
+import './styles.scss'
 
 const MyRecentActions: React.FC = () => {
   const [recentActions, setRecentActions] = useState<RecentAction[]>([]);
@@ -19,19 +20,19 @@ const MyRecentActions: React.FC = () => {
       header: 'Opening ID',
     },
     {
-      key: 'status',
+      key: 'statusCode',
       header: 'Status',
     },
     {
-      key: 'lastUpdated',
+      key: 'lastUpdatedLabel',
       header: 'Last Updated',
     }
   ];
 
   useEffect(() => {
-    function fetchData() {
+    async function fetchData() {
       try {
-        const actions: RecentAction[] = fetchRecentActions();
+        const actions: RecentAction[] = await fetchRecentActions();
         setRecentActions(actions);
       } catch (error) {
         console.error('Error fetching recent actions:', error);
@@ -41,35 +42,37 @@ const MyRecentActions: React.FC = () => {
   }, []);
 
   return (
-    <Tabs>
-      <TabList activation="manual" aria-label="List of tabs">
-        <Tab>
-          <div
-            className="tab-header-recent"
-            data-testid={"my-recent-actions__recent-tab-header"}
-          >
-            Recent
-          </div>
-        </Tab>
-        <Tab>
-          <div
-            className="tab-header-recent"
-            data-testid={"my-recent-actions__files-tab-header"}
-          >
-            Files and Docs
-          </div>
-        </Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel className="tab-content">
-          <ActionsTable rows={recentActions} headers={headers}/>
-        </TabPanel>
-        <TabPanel className="tab-content">
-          {/* fileRows and fileHeaders are still static */}
-          <ActionsTable rows={fileRows} headers={fileHeaders} /> {/* Empty rows for the "Files and Docs" tab */}
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <div className="recent-actions">
+      <Tabs>
+        <TabList activation="manual" aria-label="List of tabs">
+          <Tab>
+            <div
+              className="tab-header-recent"
+              data-testid={"my-recent-actions__recent-tab-header"}
+            >
+              Recent
+            </div>
+          </Tab>
+          <Tab>
+            <div
+              className="tab-header-recent"
+              data-testid={"my-recent-actions__files-tab-header"}
+            >
+              Files and Docs
+            </div>
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel className="tab-content">
+            <ActionsTable rows={recentActions} headers={headers}/>
+          </TabPanel>
+          <TabPanel className="tab-content">
+            {/* fileRows and fileHeaders are still static */}
+            <ActionsTable rows={fileRows} headers={fileHeaders} /> {/* Empty rows for the "Files and Docs" tab */}
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </div>
   );
 };
 

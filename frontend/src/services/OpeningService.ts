@@ -7,15 +7,20 @@ import { RecentOpening } from '../types/RecentOpening';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
-interface IOpeningReq {
-  openingId: string;
+interface statusCategory {
+  code: string;
+  description: string;
+}
+
+interface RecentOpeningApi {
+  openingId: number;
   fileId: string;
   cuttingPermit: string | null;
   timberMark: string | null;
   cutBlock: string | null;
   grossAreaHa: number | null;
-  status: { code: string, description: string } | null;
-  category: { code: string, description: string } | null;
+  status: statusCategory | null;
+  category: statusCategory | null;
   disturbanceStart: string | null;
   entryTimestamp: string | null;
   updateTimestamp: string | null;
@@ -40,7 +45,7 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
 
       if (data.data) {
         // Extracting row information from the fetched data
-        const rows: RecentOpening[] = data.data.map((opening: IOpeningReq) => ({
+        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
           id: opening.openingId.toString(),
           openingId: opening.openingId.toString(),
           fileId: opening.fileId ? opening.fileId : '-',
@@ -48,8 +53,8 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
           timberMark: opening.timberMark ? opening.timberMark : '-',
           cutBlock: opening.cutBlock ? opening.cutBlock : '-',
           grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          statusDesc: opening.status ? opening.status.description : '-',
-          categoryDesc: opening.category ? opening.category.code : '-',
+          status: opening.status && opening.status.description? opening.status.description : '-',
+          category: opening.category && opening.category.description? opening.category.description : '-',
           disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
           entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
           updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
