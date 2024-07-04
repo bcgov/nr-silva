@@ -221,11 +221,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                               size="md"
                             />
                           </>
-                        )
-                        : cell.info.header === "category" ?(
-                          cell.value.split(':')[0]
-                        ) 
-                        : (
+                        ) : (
                           cell.value
                         )}
                       </TableCell>

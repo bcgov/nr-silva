@@ -7,6 +7,25 @@ import { RecentOpening } from '../types/RecentOpening';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
+interface statusCategory {
+  code: string;
+  description: string;
+}
+
+interface RecentOpeningApi {
+  openingId: number;
+  fileId: string;
+  cuttingPermit: string | null;
+  timberMark: string | null;
+  cutBlock: string | null;
+  grossAreaHa: number | null;
+  status: statusCategory | null;
+  category: statusCategory | null;
+  disturbanceStart: string | null;
+  entryTimestamp: string | null;
+  updateTimestamp: string | null;
+}
+
 /**
  * Fetch recent openings data from backend.
  *
@@ -26,7 +45,7 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
 
       if (data.data) {
         // Extracting row information from the fetched data
-        const rows: RecentOpening[] = data.data.map((opening: RecentOpening) => ({
+        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
           id: opening.openingId.toString(),
           openingId: opening.openingId.toString(),
           fileId: opening.fileId ? opening.fileId : '-',
@@ -34,8 +53,8 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
           timberMark: opening.timberMark ? opening.timberMark : '-',
           cutBlock: opening.cutBlock ? opening.cutBlock : '-',
           grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          status: opening.statusDesc ? opening.statusDesc : '-',
-          category: opening.categoryDesc ? opening.categoryDesc : '-',
+          status: opening.status && opening.status.description? opening.status.description : '-',
+          category: opening.category && opening.category.description? opening.category.description : '-',
           disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
           entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
           updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'

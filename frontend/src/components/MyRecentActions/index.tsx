@@ -45,8 +45,22 @@ const MyRecentActions: React.FC = () => {
     <div className="recent-actions">
       <Tabs>
         <TabList activation="manual" aria-label="List of tabs">
-          <Tab><div className="tab-header-recent">Recent</div></Tab>
-          <Tab><div className="tab-header-recent">Files and Docs</div></Tab>
+          <Tab>
+            <div
+              className="tab-header-recent"
+              data-testid={"my-recent-actions__recent-tab-header"}
+            >
+              Recent
+            </div>
+          </Tab>
+          <Tab>
+            <div
+              className="tab-header-recent"
+              data-testid={"my-recent-actions__files-tab-header"}
+            >
+              Files and Docs
+            </div>
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">

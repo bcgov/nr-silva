@@ -13,7 +13,7 @@ const rows: RecentOpening[] = [{
   cutBlock: '1',
   grossAreaHa: 1,
   statusDesc: 'Approved',
-  categoryDesc: 'Another',
+  categoryDesc: 'Another:Another',
   disturbanceStart: '1',
   entryTimestamp: '1',
   updateTimestamp: '1',
