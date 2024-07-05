@@ -4,8 +4,9 @@ import {
   getCurrentUser,
   signInWithRedirect,
   signOut
-} from 'aws-amplify/auth'
-import { env } from '../env'
+} from 'aws-amplify/auth';
+import { env } from '../env';
+import { UserClientRolesType } from '../types/UserRoleType';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -16,6 +17,7 @@ export interface FamLoginUser {
   username?: string;
   idpProvider?: string;
   roles?: string[];
+  clientIds?: string[]; // Add clientIds to FamLoginUser interface
   exp?: number;
 }
 
@@ -110,11 +112,15 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
  */
 
 /**
- *
+ * Function to parse roles and extract client IDs
  */
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
   const decodedIdToken = idToken?.payload;
   const decodedAccessToken = accessToken?.payload;
+  console.log("The decoded id token:")
+  console.log(decodedIdToken)
+  console.log("The decoded access token:")
+  console.log(decodedAccessToken)
   // Extract the first name and last name from the displayName and remove unwanted part
   let displayName: string = '';
   if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
@@ -156,20 +162,61 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     roles = decodedAccessToken['cognito:groups'] as Array<string>;
   }
 
+  // Extract client IDs from roles
+  const clientIds = parseClientIdsFromRoles(roles);
+
+  //hard coded data
+  // Define the roles array based on UserClientRolesType structure
+const rolesArray: UserClientRolesType[] = [
+  {
+    clientId: '00132184',
+    roles: ['role1', 'role2'], // Example roles for clientId '00132184'
+    clientName: 'Client Name 1'
+  },
+  {
+    clientId: '00012797',
+    roles: ['role3'], // Example roles for clientId '00012797'
+    clientName: 'Client Name 2'
+  },
+  {
+    clientId: '00001012',
+    roles: ['role4', 'role5'], // Example roles for clientId '00001012'
+    clientName: 'Client Name 3'
+  },
+  {
+    clientId: '00149081',
+    roles: ['role6'], // Example roles for clientId '00149081'
+    clientName: 'Client Name 4'
+  }
+];
+
   const famLoginUser = {
     userName,
     displayName,
     email,
     idpProvider,
-    roles,
+    clientRoles: rolesArray,
+    clientIds,
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
-    lastName  // Add lastName field
+    lastName
   };
+  
 
   return famLoginUser;
 }
 
+/**
+ * Function to parse client IDs from roles
+ */
+function parseClientIdsFromRoles(roles: string[]): string[] {
+  // Implement logic to extract client IDs from roles here
+  // Placeholder implementation
+  return roles.map(role => {
+    const parts = role.split(':');
+    return parts[parts.length - 1];
+  });
+}
 
 /**
  *

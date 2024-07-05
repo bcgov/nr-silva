@@ -1,7 +1,14 @@
-import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL } from '../constants/userConstants'
-import { isCurrentAuthUser } from '../services/AuthService'
+import {
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  SET_CLIENT_ROLES,
+  SET_SELECTED_CLIENT_ROLES
+} from '../constants/userConstants';
+import { isCurrentAuthUser } from '../services/AuthService';
 
 const FAM_LOGIN_USER = 'famLoginUser';
+
 export const getUserDetails = () => async (dispatch: any) => {
   try {
     dispatch({
@@ -15,7 +22,7 @@ export const getUserDetails = () => async (dispatch: any) => {
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
-      payload: { ...user, isLoggedIn: data}
+      payload: { ...user, isLoggedIn: data }
     });
   } catch (error) {
     dispatch({
@@ -23,4 +30,18 @@ export const getUserDetails = () => async (dispatch: any) => {
       payload: { error: error }
     });
   }
+};
+
+export const setClientRoles = (clientRoles) => (dispatch: any) => {
+  dispatch({
+    type: SET_CLIENT_ROLES,
+    payload: clientRoles
+  });
+};
+
+export const setSelectedClientRoles = (selectedClientRoles) => (dispatch: any) => {
+  dispatch({
+    type: SET_SELECTED_CLIENT_ROLES,
+    payload: selectedClientRoles
+  });
 };
