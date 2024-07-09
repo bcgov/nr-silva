@@ -92,7 +92,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
   const continueToDashboard = () => {
     if (clientRolesToSet) {
       dispatch(setSelectedClientRoles(clientRolesToSet));
-      navigate('/');
+      navigate('/dashboard');
     }
   };
 
@@ -200,17 +200,26 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
           ) : null
       }
       {renderListSection()}
-      <Row className="org-buttons-row">
+      <Row className="btn-row">
         <Column>
-          <Button kind="primary" size="md" renderIcon={ArrowRight} onClick={continueToDashboard}>
-            Continue
+          <Button
+            className="action-btn"
+            kind="ghost"
+            size="lg"
+            onClick={logout}
+          >
+            Cancel
           </Button>
         </Column>
-      </Row>
-      <Row className="logout-row">
         <Column>
-          <Button kind="danger" onClick={() => logout()}>
-            Logout
+          <Button
+            className="action-btn"
+            kind="primary"
+            size="lg"
+            onClick={continueToDashboard}
+            renderIcon={ArrowRight}
+          >
+            Continue
           </Button>
         </Column>
       </Row>
