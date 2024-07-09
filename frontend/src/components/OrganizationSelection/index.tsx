@@ -21,6 +21,8 @@ import { MIN_CLIENTS_SHOW_SEARCH, TEXT } from './constants';
 import { RoleSelectionProps } from './definitions';
 import OrganizationItem from './OrganizationItem';
 
+const SELECTED_CLIENT_ROLES = 'selectedClientRoles';
+
 import './styles.scss';
 
 const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
@@ -36,7 +38,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
   const [clientRolesToSet, setClientRolesToSet] = useState<UserClientRolesType | null>(selectedClientRoles);
 
   useQueries({
-    queries: user?.clientRoles.map((clientRole) => ({
+    queries: user?.clientRoles.map((clientRole:UserClientRolesType) => ({
       queryKey: ['role', 'forest-clients', clientRole.clientId],
       queryFn: () => getForestClientByNumberOrAcronym(clientRole.clientId),
       staleTime: THREE_HOURS,
@@ -72,7 +74,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
 
   const setSelectedClientRolesHandler = (clientId: string, clientName?: string) => {
     if (clientId) {
-      const found = user!.clientRoles.find((uClientRole) => (
+      const found = user!.clientRoles.find((uClientRole:any) => (
         uClientRole.clientId === clientId
       ));
       if (found) {
@@ -82,6 +84,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
         };
         setClientRolesToSet(toSet);
         if (simpleView) {
+          localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(toSet))
           dispatch(setSelectedClientRoles(toSet));
           navigate('/');
         }
@@ -91,6 +94,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
 
   const continueToDashboard = () => {
     if (clientRolesToSet) {
+      localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(clientRolesToSet))
       dispatch(setSelectedClientRoles(clientRolesToSet));
       navigate('/dashboard');
     }
@@ -171,7 +175,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
         <ul aria-label="List of Organization">
           {
             user?.clientRoles
-              .map((clientRole) => (
+              .map((clientRole:any) => (
                 renderOrgItem(clientRole)
               ))
           }

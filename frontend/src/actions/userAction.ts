@@ -6,6 +6,7 @@ import {
   SET_SELECTED_CLIENT_ROLES
 } from '../constants/userConstants';
 import { isCurrentAuthUser } from '../services/AuthService';
+import { UserClientRolesType } from '../types/UserRoleType';
 
 const FAM_LOGIN_USER = 'famLoginUser';
 
@@ -32,14 +33,14 @@ export const getUserDetails = () => async (dispatch: any) => {
   }
 };
 
-export const setClientRoles = (clientRoles) => (dispatch: any) => {
+export const setClientRoles = (clientRoles:UserClientRolesType[]) => (dispatch: any) => {
   dispatch({
     type: SET_CLIENT_ROLES,
     payload: clientRoles
   });
 };
 
-export const setSelectedClientRoles = (selectedClientRoles) => (dispatch: any) => {
+export const setSelectedClientRoles = (selectedClientRoles:UserClientRolesType) => (dispatch: any) => {
   dispatch({
     type: SET_SELECTED_CLIENT_ROLES,
     payload: selectedClientRoles

@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => {
     return (
       <>
       <div className="container">
-        <h4 className='py-4'>Hello <span className='fw-bold'>{user.firstName+" "+user.lastName}</span>, welcome to the SILVA portal. Please take a moment to review the available options and select the test that best matches your access requirements:</h4>
+        <h4 className='py-4'>Hello <span className='fw-bold'>{user.firstName+" "+user.lastName}</span>, welcome to the SILVA portal. You are logged in with the cleint <span className="fw-bold">{userDetails.selectedClientRoles.clientName}</span>!! </h4>
       </div>
       </>
     );

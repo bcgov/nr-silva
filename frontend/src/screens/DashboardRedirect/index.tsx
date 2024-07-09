@@ -1,25 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import OrganizationSelection from "../../components/OrganizationSelection";
 import LoginOrgSelection from "../../views/LoginOrgSelection";
 import SideLayout from "../../layouts/SideLayout";
 import Dashboard from "../Dashboard";
 
 const DashboardRedirect: React.FC = () => {
-  const userDetails = useSelector((state: any) => state.userDetails);
-  const { user } = userDetails;
+  const userDetails = useSelector((state: any) => state.userDetails); // Assuming state structure is correctly defined
+  const { user, selectedClientRoles } = userDetails;
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user && user.selectedClientRoles) {
+  // Redirect logic based on selectedClientRoles existence
+  React.useEffect(() => {
+    if (user && selectedClientRoles) {
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, selectedClientRoles, navigate]);
 
   return (
     <>
-      {user && user.selectedClientRoles ? (
+      {user && selectedClientRoles ? (
         <SideLayout pageContent={<Dashboard />} />
       ) : (
         <LoginOrgSelection />
