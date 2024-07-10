@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +24,7 @@ public class OpeningSearchEndpoint {
 
   private final OpeningService openingService;
 
-  @GetMapping("/{number}")
+  @GetMapping
   @Operation(
       summary = "Search for Openings",
       description = "Opening search feature with filters and pagination.",
@@ -40,15 +39,15 @@ public class OpeningSearchEndpoint {
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
   public Object openingSearch(
-      @PathVariable
+      @RequestParam(value = "number", required = false)
           @Parameter(
               name = "number",
-              in = ParameterIn.PATH,
+              in = ParameterIn.QUERY,
               description =
                   "Number representing one of Opening ID | Opening Number | Timber Mark ID | File"
                       + " ID",
               required = false,
-              example = "DCR")
+              example = "12563")
           String number,
       // Org unit - ok
       @RequestParam(value = "orgUnit", required = false)

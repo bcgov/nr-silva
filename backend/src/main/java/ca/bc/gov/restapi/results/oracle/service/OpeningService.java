@@ -5,8 +5,8 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
@@ -147,9 +147,12 @@ public class OpeningService {
    * Search Opening API.
    *
    * @param filtersDto An instance of {@link SearchOpeningFiltersDto} with all possible filters.
+   * @param pagination An instance of {@link PaginationParameters} with pagination settings.
+   * @param number An identification number, one of Opening ID, Opening Number, Timber Mark ID, or
+   *     File id.
    * @return Paginated result with found content.
    */
-  public PaginatedResult<SearchOpeningDto> searchOpening(
+  public PaginatedResult<OpeningSearchResponseDto> searchOpening(
       SearchOpeningFiltersDto filtersDto, PaginationParameters pagination, String number) {
     log.info(
         "Search Openings with page index {} and page size {}",
@@ -165,11 +168,13 @@ public class OpeningService {
     Root<OpeningEntity> opening = query.from(OpeningEntity.class);
 
     // Join with:
-    // OPENING_STATUS_CODE -- keep going with this entity
-    // CUT_BLOCK_OPEN_ADMIN
-    // ORG_UNIT
-    // RESULTS_ELECTRONIC_SUBMISSION
-    // CLIENT_ACRONYM
+    // OPENING_ATTACHMENT -- entity ok
+    // CUT_BLOCK_OPEN_ADMIN -- entity ok
+    // ORG_UNIT -- entity ok
+    // RESULTS_ELECTRONIC_SUBMISSION -- entity ok
+    // CLIENT_ACRONYM -- entity ok
+
+    // Main number filter [opening_id, opening_number, timber_mark, file_id]
 
     // Opening category filter
     if (!Objects.isNull(filtersDto.category())) {
@@ -181,9 +186,11 @@ public class OpeningService {
         PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
 
     // Runs the query
-    TypedQuery<OpeningEntity> typedQuery = entityManager.createQuery(query)
-      .setFirstResult((int) pageable.getOffset())
-      .setMaxResults(pageable.getPageSize());
+    TypedQuery<OpeningEntity> typedQuery =
+        entityManager
+            .createQuery(query)
+            .setFirstResult((int) pageable.getOffset())
+            .setMaxResults(pageable.getPageSize());
 
     List<OpeningEntity> resultList = typedQuery.getResultList();
 
