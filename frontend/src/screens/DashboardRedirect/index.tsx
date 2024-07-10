@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoginOrgSelection from "../../views/LoginOrgSelection";
@@ -12,11 +13,11 @@ const DashboardRedirect: React.FC = () => {
   const navigate = useNavigate();
 
   // Redirect logic based on selectedClientRoles existence
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && selectedClientRoles) {
       navigate("/dashboard");
     }
-  }, [user, selectedClientRoles, navigate]);
+  }, [user, selectedClientRoles]);
 
   return (
     <>

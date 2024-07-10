@@ -96,7 +96,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
     if (clientRolesToSet) {
       localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(clientRolesToSet))
       dispatch(setSelectedClientRoles(clientRolesToSet));
-      navigate('/dashboard');
+      window.location.reload()
     }
   };
 
