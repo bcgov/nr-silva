@@ -14,9 +14,9 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
@@ -163,36 +163,79 @@ public class OpeningService {
       throw new MaxPageSizeException();
     }
 
-    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<OpeningEntity> query = builder.createQuery(OpeningEntity.class);
-    Root<OpeningEntity> opening = query.from(OpeningEntity.class);
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OpeningEntity> query = cb.createQuery(OpeningEntity.class);
+    Root<OpeningEntity> root = query.from(OpeningEntity.class);
+    root.fetch("attachments", JoinType.LEFT);
+
+    List<Predicate> predicates = new ArrayList<>();
 
     // Join with:
-    // OPENING_ATTACHMENT -- entity ok
+    // OPENING_ATTACHMENT -- entity ok (Relationship: OPENING:1 <-> N:OPENING_ATTACHMENT) opening id
+    // example: 58933
     // CUT_BLOCK_OPEN_ADMIN -- entity ok
     // ORG_UNIT -- entity ok
     // RESULTS_ELECTRONIC_SUBMISSION -- entity ok
     // CLIENT_ACRONYM -- entity ok
 
-    // Main number filter [opening_id, opening_number, timber_mark, file_id]
+    /* Filters */
+    // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
+    // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
+    // number
+    boolean itsNumeric = number.replace("[0-9]", "").isBlank();
+    if (itsNumeric) {
+      // Opening id
+      Predicate openingIdPred = cb.equal(root.get("id"), number.trim());
 
-    // Opening category filter
-    if (!Objects.isNull(filtersDto.category())) {
-      Predicate categoryPred = builder.equal(opening.get("category"), filtersDto.category());
-      query.where(categoryPred);
+      // File id
+      Predicate fileIdPred = cb.equal(root.get("attachments.id"), number.trim());
+
+      // Combine them, for the 'or clause'
+      Predicate openingIdOrFileId = cb.or(openingIdPred, fileIdPred);
+
+      predicates.add(openingIdOrFileId);
+    } else {
+      //
     }
 
+    // 1. Org Unit code
+    // 2. Category code
+    if (!Objects.isNull(filtersDto.category())) {
+      Predicate categoryPred = cb.equal(root.get("category"), filtersDto.category());
+      predicates.add(categoryPred);
+    }
+
+    // 3. Status code
+    // 4. User entry id
+    // 5. Submitted to FRPA
+    // 6. Disturbance start date
+    // 7. Disturbance end date
+    // 8. Regen delay start date
+    // 9. Regen delay end date
+    // 10. Free growing start date
+    // 11. Free growing end date
+    // 12. Update date start
+    // 13. Update date end
+    // 14. File id
+
+    // Adds all the filters
+    Predicate[] wherePredicates = new Predicate[predicates.size()];
+    for (int i = 0, len = predicates.size(); i < len; i++) {
+      wherePredicates[i++] = predicates.get(i);
+    }
+    query.where(wherePredicates);
+
+    // Paging
     Pageable pageable =
         PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
 
     // Runs the query
-    TypedQuery<OpeningEntity> typedQuery =
+    List<OpeningEntity> resultList =
         entityManager
             .createQuery(query)
             .setFirstResult((int) pageable.getOffset())
-            .setMaxResults(pageable.getPageSize());
-
-    List<OpeningEntity> resultList = typedQuery.getResultList();
+            .setMaxResults(pageable.getPageSize())
+            .getResultList();
 
     log.info("resultList size {}", resultList.size());
     for (OpeningEntity e : resultList) {

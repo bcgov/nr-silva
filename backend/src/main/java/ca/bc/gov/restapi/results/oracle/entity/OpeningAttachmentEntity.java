@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.oracle.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +22,7 @@ public class OpeningAttachmentEntity {
 
   @Id
   @Column(name = "OPENING_ATTACHMENT_FILE_ID")
-  private Long openingAttachmentFileId;
+  private Long id;
 
   @Column(name = "OPENING_ID", nullable = false)
   private Long openingId;
@@ -33,4 +35,8 @@ public class OpeningAttachmentEntity {
 
   @Column(name = "MIME_TYPE_CODE", length = 3)
   private String mimeTypeCode;
+
+  @ManyToOne
+  @JoinColumn(name = "OPENING_ID")
+  private OpeningEntity opening;
 }

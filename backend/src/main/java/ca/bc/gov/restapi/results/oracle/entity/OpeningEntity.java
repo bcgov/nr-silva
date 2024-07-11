@@ -3,8 +3,10 @@ package ca.bc.gov.restapi.results.oracle.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,4 +38,7 @@ public class OpeningEntity {
 
   @Column(name = "ENTRY_TIMESTAMP")
   private LocalDateTime entryTimestamp;
+
+  @OneToMany(mappedBy = "opening")
+  private List<OpeningAttachmentEntity> attachments;
 }
