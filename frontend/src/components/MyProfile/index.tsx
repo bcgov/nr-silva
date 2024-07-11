@@ -7,6 +7,8 @@ import {
 import * as Icons from '@carbon/icons-react';
 import AvatarImage from '../AvatarImage';
 import { useThemePreference } from '../../utils/ThemePreference';
+import PanelSectionName from '../PanelSectionName';
+import OrganizationSelection from '../OrganizationSelection';
 import './MyProfile.scss';
 import { logout } from '../../services/AuthService';
 
@@ -48,6 +50,16 @@ const MyProfile = () => {
       <hr className="divisory" />
       <nav className="account-nav">
         <ul>
+          <li>
+            <PanelSectionName title="Select organization" light />
+            <div className="org-selection-container">
+              <OrganizationSelection simpleView />
+            </div>
+          </li>
+          <li>
+            <hr className="divisory" />
+            <PanelSectionName title="Options" light />
+          </li>
           <SideNavLink
             className="cursor-pointer"
             renderIcon={theme === 'g10'?Icons.Asleep:Icons.Light}

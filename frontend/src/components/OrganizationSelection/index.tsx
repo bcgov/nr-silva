@@ -27,7 +27,7 @@ import './styles.scss';
 
 const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch:any = useDispatch();
   const userDetails = useSelector((state:any) => state.userDetails);
 
   const user = userDetails.user;
@@ -50,7 +50,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
   const qc = useQueryClient();
 
   const filterClientsByValue = (value: string) => {
-    const forestClientsQueriesData = qc.getQueriesData(['role', 'forest-clients']);
+    const forestClientsQueriesData = qc.getQueriesData({ queryKey: ['role', 'forest-clients'] });
 
     const forestClients = forestClientsQueriesData.map((qData) => (
       qData.at(1) as ForestClientType
@@ -86,7 +86,8 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
         if (simpleView) {
           localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(toSet))
           dispatch(setSelectedClientRoles(toSet));
-          navigate('/');
+          //this is temporary
+          window.location.reload();
         }
       }
     }
@@ -203,8 +204,13 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
             </Row>
           ) : null
       }
-      {renderListSection()}
-      <Row className="btn-row">
+      <Row className="org-items-row">
+        {
+          renderListSection()
+        }
+      </Row>
+      {simpleView?null:(
+        <Row className="btn-row">
         <Column>
           <Button
             className="action-btn"
@@ -227,6 +233,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
           </Button>
         </Column>
       </Row>
+      )}
     </FlexGrid>
   );
 };
