@@ -39,6 +39,7 @@ public class OpeningEntity {
   @Column(name = "ENTRY_TIMESTAMP")
   private LocalDateTime entryTimestamp;
 
-  @OneToMany(mappedBy = "opening")
+  // An opening can have many attachments
+  @OneToMany(mappedBy = "openingEntity")
   private List<OpeningAttachmentEntity> attachments;
 }

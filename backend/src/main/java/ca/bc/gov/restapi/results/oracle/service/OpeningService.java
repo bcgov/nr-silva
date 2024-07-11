@@ -5,17 +5,20 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -152,7 +155,7 @@ public class OpeningService {
    *     File id.
    * @return Paginated result with found content.
    */
-  public PaginatedResult<OpeningSearchResponseDto> searchOpening(
+  public PaginatedResult<SearchOpeningDto> searchOpening(
       SearchOpeningFiltersDto filtersDto, PaginationParameters pagination, String number) {
     log.info(
         "Search Openings with page index {} and page size {}",
@@ -165,13 +168,16 @@ public class OpeningService {
 
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<OpeningEntity> query = cb.createQuery(OpeningEntity.class);
-    Root<OpeningEntity> root = query.from(OpeningEntity.class);
-    root.fetch("attachments", JoinType.LEFT);
+    Root<OpeningEntity> openingRoot = query.from(OpeningEntity.class);
+    Join<OpeningEntity, OpeningAttachmentEntity> openingAttachmentJoin =
+        openingRoot.join("attachments");
+    openingRoot.fetch("attachments", JoinType.LEFT);
 
     List<Predicate> predicates = new ArrayList<>();
 
     // Join with:
     // OPENING_ATTACHMENT -- entity ok (Relationship: OPENING:1 <-> N:OPENING_ATTACHMENT) opening id
+    // - ok!
     // example: 58933
     // CUT_BLOCK_OPEN_ADMIN -- entity ok
     // ORG_UNIT -- entity ok
@@ -182,26 +188,32 @@ public class OpeningService {
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number
-    boolean itsNumeric = number.replace("[0-9]", "").isBlank();
-    if (itsNumeric) {
-      // Opening id
-      Predicate openingIdPred = cb.equal(root.get("id"), number.trim());
+    if (!Objects.isNull(number)) {
+      log.debug("number filter detected! number=[{}]", number);
+      boolean itsNumeric = number.replaceAll("[0-9]", "").isEmpty();
+      if (itsNumeric) {
+        log.debug("number filter it's numeric!");
+        // Opening id
+        Predicate openingIdPred = cb.equal(openingRoot.get("id"), number.trim());
 
-      // File id
-      Predicate fileIdPred = cb.equal(root.get("attachments.id"), number.trim());
+        // File id
+        Predicate fileIdPred = cb.equal(openingAttachmentJoin.get("id"), number.trim());
 
-      // Combine them, for the 'or clause'
-      Predicate openingIdOrFileId = cb.or(openingIdPred, fileIdPred);
+        // Combine them, for the 'or clause'
+        Predicate openingIdOrFileId = cb.or(openingIdPred, fileIdPred);
 
-      predicates.add(openingIdOrFileId);
-    } else {
-      //
+        predicates.add(openingIdOrFileId);
+      } else {
+        log.debug("number filter it's NOT numeric!");
+      }
     }
 
     // 1. Org Unit code
     // 2. Category code
     if (!Objects.isNull(filtersDto.category())) {
-      Predicate categoryPred = cb.equal(root.get("category"), filtersDto.category());
+      log.debug("category filter detected! category=[{}]", filtersDto.category());
+      Predicate categoryPred =
+          cb.equal(openingRoot.get("category"), filtersDto.category().toUpperCase());
       predicates.add(categoryPred);
     }
 
@@ -220,41 +232,31 @@ public class OpeningService {
 
     // Adds all the filters
     Predicate[] wherePredicates = new Predicate[predicates.size()];
+    log.info("{} predicates!", predicates.size());
     for (int i = 0, len = predicates.size(); i < len; i++) {
-      wherePredicates[i++] = predicates.get(i);
+      wherePredicates[i] = predicates.get(i);
     }
-    query.where(wherePredicates);
-
-    // Paging
-    Pageable pageable =
-        PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
+    query.select(openingRoot).where(wherePredicates);
 
     // Runs the query
-    List<OpeningEntity> resultList =
+    TypedQuery<OpeningEntity> typedQuery =
         entityManager
             .createQuery(query)
-            .setFirstResult((int) pageable.getOffset())
-            .setMaxResults(pageable.getPageSize())
-            .getResultList();
+            .setFirstResult(pagination.page())
+            .setMaxResults(pagination.perPage());
+
+    List<OpeningEntity> resultList = typedQuery.getResultList();
+
+    final int totalPages = (typedQuery.getMaxResults() / pagination.perPage()) + 1;
+    final boolean hasNextPage = typedQuery.getMaxResults() > pagination.perPage();
 
     log.info("resultList size {}", resultList.size());
-    for (OpeningEntity e : resultList) {
-      log.info("- ID={}, number={} category={}", e.getId(), e.getOpeningNumber(), e.getCategory());
-    }
-
-    return null;
-
-    /*
-    // Openings
-    Pageable pageable =
-        PageRequest.of(pagination.page(), pagination.perPage(), Sort.by("id").descending());
-    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
 
     PaginatedResult<SearchOpeningDto> paginatedResult = new PaginatedResult<>();
     paginatedResult.setPageIndex(pagination.page());
     paginatedResult.setPerPage(pagination.perPage());
 
-    if (openingPage.getContent().isEmpty()) {
+    if (resultList.isEmpty()) {
       log.info("No openings result for the search given page index and size!");
       paginatedResult.setData(List.of());
       paginatedResult.setTotalPages(0);
@@ -264,41 +266,45 @@ public class OpeningService {
 
     List<SearchOpeningDto> searchResultList = new ArrayList<>();
 
-    // populate openings
-    openingPage
-        .getContent()
-        .forEach(
-            (opening) -> {
-              SearchOpeningDto searchDto = new SearchOpeningDto();
-              searchDto.setOpeningId(opening.getId());
-              searchDto.setOpeningNumber(opening.getOpeningNumber());
-              searchDto.setCategory(OpeningCategoryEnum.of(opening.getCategory()));
-              searchDto.setStatus(OpeningStatusEnum.of(opening.getStatus()));
-              // cuttingPermitId
-              // timberMarkId
-              // cutBlockId
-              // grossAreaHa
-              // disturbanceDate
-              // orgUnitNo
-              // orgUnitCode
-              // orgUnitName
-              // clientNumber
-              // clientAcronym
-              // regenDelayDate
-              // freeGrowingDate
-              // updateTimestamp
-              searchDto.setEntryUserId(opening.getEntryUserId());
-              // submittedToFrpa
+    for (OpeningEntity openingEntity : resultList) {
+      SearchOpeningDto searchOpeningDto = new SearchOpeningDto();
+      searchOpeningDto.setOpeningId(openingEntity.getId());
+      searchOpeningDto.setOpeningNumber(openingEntity.getOpeningNumber());
+      searchOpeningDto.setCategory(OpeningCategoryEnum.of(openingEntity.getCategory()));
+      searchOpeningDto.setStatus(OpeningStatusEnum.of(openingEntity.getStatus()));
+      searchOpeningDto.setCuttingPermitId(null);
+      searchOpeningDto.setTimberMark(null);
+      searchOpeningDto.setCutBlockId(null);
+      searchOpeningDto.setGrossAreaHa(null);
+      searchOpeningDto.setDisturbanceDate(null);
+      searchOpeningDto.setOrgUnitNo(null);
+      searchOpeningDto.setOrgUnitCode(null);
+      searchOpeningDto.setOrgUnitName(null);
+      searchOpeningDto.setClientNumber(null);
+      searchOpeningDto.setClientAcronym(null);
+      searchOpeningDto.setRegenDelayDate(null);
+      searchOpeningDto.setFreeGrowingDate(null);
+      searchOpeningDto.setUpdateTimestamp(openingEntity.getUpdateTimestamp());
+      searchOpeningDto.setEntryUserId(openingEntity.getEntryUserId());
+      searchOpeningDto.setSubmittedToFrpa(false);
 
-              searchResultList.add(searchDto);
-            });
+      // Attachments
+      List<OpeningAttachmentEntity> attachments = openingEntity.getAttachments();
+      if (attachments.isEmpty()) {
+        log.info("No attachments for opening id {}", openingEntity.getId());
+      } else {
+        log.info("{} attachment(s) for opening id {}", attachments.size(), openingEntity.getId());
+        searchOpeningDto.setFileId(attachments.get(0).getId());
+      }
+
+      searchResultList.add(searchOpeningDto);
+    }
 
     paginatedResult.setData(searchResultList);
-    paginatedResult.setTotalPages(openingPage.getTotalPages());
-    paginatedResult.setHasNextPage(openingPage.hasNext());
+    paginatedResult.setTotalPages(totalPages);
+    paginatedResult.setHasNextPage(hasNextPage);
 
     return paginatedResult;
-    */
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(

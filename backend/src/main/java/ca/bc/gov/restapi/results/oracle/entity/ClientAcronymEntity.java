@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.oracle.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,7 +18,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class ClientAcronymEntity {
 
-  @Column(name = "CLIENT_NUMBER", length = 8, nullable = false)
+  @Id
+  @Column(name = "CLIENT_NUMBER", length = 8)
   private String clientNumber;
 
   @Column(name = "CLIENT_ACRONYM", length = 8)

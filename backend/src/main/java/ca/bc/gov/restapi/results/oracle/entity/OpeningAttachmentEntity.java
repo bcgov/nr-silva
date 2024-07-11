@@ -24,8 +24,8 @@ public class OpeningAttachmentEntity {
   @Column(name = "OPENING_ATTACHMENT_FILE_ID")
   private Long id;
 
-  @Column(name = "OPENING_ID", nullable = false)
-  private Long openingId;
+  //@Column(name = "OPENING_ID", nullable = false)
+  //private Long openingId;
 
   @Column(name = "ATTACHMENT_NAME", length = 50, nullable = false)
   private String attachmentName;
@@ -36,7 +36,9 @@ public class OpeningAttachmentEntity {
   @Column(name = "MIME_TYPE_CODE", length = 3)
   private String mimeTypeCode;
 
+  // An Opening Attachment belongs to one Opening
+  // Foreign key referencing the opening table
   @ManyToOne
   @JoinColumn(name = "OPENING_ID")
-  private OpeningEntity opening;
+  private OpeningEntity openingEntity;
 }

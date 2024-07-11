@@ -8,9 +8,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class SearchOpeningDto {
   @Schema(
       description = "System generated value uniquely identifying the opening.",
@@ -57,7 +59,7 @@ public class SearchOpeningDto {
                 to associate the log with the specific authority to harvest and move timber.
                 """,
       example = "47/12S")
-  private String timberMarkId;
+  private String timberMark;
 
   @Schema(
       description =
@@ -81,7 +83,7 @@ public class SearchOpeningDto {
                 Ministry of Forests' offices. Values stored here are for the computer's use only,
                 and are not to be used by people as "ministry codes.
                 """,
-      example = "?")
+      example = "18")
   private Long orgUnitNo;
 
   @Schema(
@@ -91,7 +93,7 @@ public class SearchOpeningDto {
                 HQ Branch, Region, or District; next two chars identify the office name; next two
                 the section (HQ Branch) or program (Region or District); last char identifies the
                 subsection.""",
-      example = "?")
+      example = "DPG")
   private String orgUnitCode;
 
   @Schema(
@@ -100,7 +102,7 @@ public class SearchOpeningDto {
                 The name or title of a ministry office or section; for example Kamloops Forest
                 Region; Silviculture Branch; Kispiox Forest District Protection program.
                 """,
-      example = "Silviculture Branch")
+      example = "Prince George Natural District")
   private String orgUnitName;
 
   @Schema(
@@ -117,10 +119,11 @@ public class SearchOpeningDto {
       example = "MOF")
   private String clientAcronym;
 
-  // https://www.for.gov.bc.ca/pscripts/isb/idd/Column.asp?Name=STOCKING_MILESTONE&PlatformName=ORACLE
-  private String regenDelayDate;
-  // https://www.for.gov.bc.ca/pscripts/isb/idd/Column.asp?Name=STOCKING_MILESTONE&PlatformName=ORACLE
-  private String freeGrowingDate;
+  @Schema(description = "The final date based on the EARLY and LATE offset years.")
+  private LocalDateTime regenDelayDate;
+  
+  @Schema(description = "The final date based on the EARLY and LATE offset years.")
+  private LocalDateTime freeGrowingDate;
 
   @Schema(description = "The date and time of the last update.")
   private LocalDateTime updateTimestamp;
@@ -128,5 +131,9 @@ public class SearchOpeningDto {
   @Schema(description = "The USERID of the individual who entered the information.")
   private String entryUserId;
 
+  @Schema(description = "Describes if the opening got submitted to FRPA section 108")
   private Boolean submittedToFrpa;
+
+  @Schema(description = "Uniquely identifies the attached file.", example = "407")
+  private Long fileId;
 }
