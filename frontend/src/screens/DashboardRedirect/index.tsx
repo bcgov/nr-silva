@@ -7,8 +7,9 @@ import SideLayout from "../../layouts/SideLayout";
 import Dashboard from "../Dashboard";
 
 const DashboardRedirect: React.FC = () => {
-  const userDetails = useSelector((state: any) => state.userDetails); // Assuming state structure is correctly defined
-  const { user, selectedClientRoles } = userDetails;
+  const userDetails = useSelector((state: any) => state.userDetails);
+  const selectedClientRoles = useSelector((state:any)=>state.selectedClientRoles)
+  const { user } = userDetails;
 
   const navigate = useNavigate();
 

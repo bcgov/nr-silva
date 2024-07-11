@@ -9,8 +9,7 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../services/AuthService';
-import { setClientRoles, setSelectedClientRoles } from '../../actions/userAction';
-
+import { setSelectedClientRoles } from '../../actions/selectedClientRolesActions';
 import { getForestClientByNumberOrAcronym } from '../../services/TestService';
 import { THREE_HALF_HOURS, THREE_HOURS } from '../../config/TimeUnits';
 import { UserClientRolesType } from '../../types/UserRoleType';
@@ -87,7 +86,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
           localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(toSet))
           dispatch(setSelectedClientRoles(toSet));
           //this is temporary
-          window.location.reload();
+          // window.location.reload();
         }
       }
     }
@@ -97,7 +96,6 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
     if (clientRolesToSet) {
       localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(clientRolesToSet))
       dispatch(setSelectedClientRoles(clientRolesToSet));
-      window.location.reload()
     }
   };
 

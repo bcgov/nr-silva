@@ -2,8 +2,7 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
-  SET_CLIENT_ROLES,
-  SET_SELECTED_CLIENT_ROLES
+  SET_CLIENT_ROLES
 } from '../constants/userConstants';
 import { isCurrentAuthUser } from '../services/AuthService';
 import { UserClientRolesType } from '../types/UserRoleType';
@@ -40,9 +39,3 @@ export const setClientRoles = (clientRoles:UserClientRolesType[]) => (dispatch: 
   });
 };
 
-export const setSelectedClientRoles = (selectedClientRoles:UserClientRolesType) => (dispatch: any) => {
-  dispatch({
-    type: SET_SELECTED_CLIENT_ROLES,
-    payload: selectedClientRoles
-  });
-};
