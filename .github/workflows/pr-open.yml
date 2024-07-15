@@ -138,3 +138,5 @@ jobs:
           timeout: ${{ matrix.timeout }}
           triggers: ('common/' 'backend/' 'frontend/')
           verification_path: ${{ matrix.verification_path }}
+          verification_retry_attempts: 5
+          verification_retry_seconds: 15
