@@ -155,6 +155,13 @@
       <artifactId>flyway-core</artifactId>
       <version>10.15.2</version>
     </dependency>
+    <!-- https://documentation.red-gate.com/fd/release-notes-for-flyway-engine-179732572.html -->
+    <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-database-postgresql</artifactId>
+        <version>10.15.2</version>
+        <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
