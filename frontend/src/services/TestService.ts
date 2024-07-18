@@ -1,9 +1,12 @@
 // testService.tsx
 import axios from 'axios';
 import { ForestClientType } from '../types/ForestClientTypes/ForestClientType';
+import { env } from '../env';
+
+const backendUrl = env.VITE_BACKEND_URL;
 
 export const getForestClientByNumberOrAcronym = async (numberOrAcronym: string): Promise<ForestClientType> => {
-  const url = `http://localhost:5000/api/forest-clients/${numberOrAcronym}`;
+  const url = `${backendUrl}/api/forest-clients/${numberOrAcronym}`;
   
   try {
     const response = await axios.get(url);
