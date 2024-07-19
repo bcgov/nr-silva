@@ -51,13 +51,7 @@ public class OpeningEndpoint {
         openingService.getRecentOpeningsCurrentUser(paginationParameters);
 
     HttpHeaders headers = new HttpHeaders();
-    if (!userOpenings.getData().isEmpty()) {
-      headers.set("x-opening-source", "user-based");
-      return ResponseEntity.ok().headers(headers).body(userOpenings);
-    }
-
-    headers.set("x-opening-source", "not-user-based");
-    userOpenings = openingService.getRecentOpenings(paginationParameters);
+    headers.set("x-opening-source", "user-based");
     return ResponseEntity.ok().headers(headers).body(userOpenings);
   }
 }
