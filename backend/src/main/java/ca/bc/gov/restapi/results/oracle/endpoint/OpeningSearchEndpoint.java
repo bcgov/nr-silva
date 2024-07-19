@@ -175,9 +175,10 @@ public class OpeningSearchEndpoint {
             TimestampUtil.parseDateString(freeGrowingDateStart),
             TimestampUtil.parseDateString(freeGrowingDateEnd),
             TimestampUtil.parseDateString(updateDateStart),
-            TimestampUtil.parseDateString(updateDateEnd));
+            TimestampUtil.parseDateString(updateDateEnd),
+            number);
 
     // Pagination
-    return openingService.searchOpening(filtersDto, paginationParameters, number);
+    return openingService.searchOpening(filtersDto, paginationParameters);
   }
 }

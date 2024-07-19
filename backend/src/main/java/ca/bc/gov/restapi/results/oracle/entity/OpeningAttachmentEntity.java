@@ -24,9 +24,6 @@ public class OpeningAttachmentEntity {
   @Column(name = "OPENING_ATTACHMENT_FILE_ID")
   private Long id;
 
-  //@Column(name = "OPENING_ID", nullable = false)
-  //private Long openingId;
-
   @Column(name = "ATTACHMENT_NAME", length = 50, nullable = false)
   private String attachmentName;
 

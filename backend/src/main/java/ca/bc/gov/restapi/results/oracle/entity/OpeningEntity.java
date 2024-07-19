@@ -1,9 +1,13 @@
 package ca.bc.gov.restapi.results.oracle.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +44,15 @@ public class OpeningEntity {
   private LocalDateTime entryTimestamp;
 
   // An opening can have many attachments
-  @OneToMany(mappedBy = "openingEntity")
+  @OneToMany(mappedBy = "openingEntity", fetch = FetchType.LAZY)
   private List<OpeningAttachmentEntity> attachments;
+
+  // An opening can have many cut blocks
+  @OneToMany(mappedBy = "openingEntity", fetch = FetchType.LAZY)
+  private List<CutBlockOpenAdminEntity> cutBlocksOpenAdmins;
+
+  // An opening can have one org unit (ADMIN_DISTRICT)NO
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "ADMIN_DISTRICT_NO", referencedColumnName = "ORG_UNIT_NO")
+  private OrgUnitEntity adminDistrict;
 }

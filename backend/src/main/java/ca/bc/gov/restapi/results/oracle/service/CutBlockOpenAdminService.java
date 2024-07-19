@@ -20,6 +20,6 @@ public class CutBlockOpenAdminService {
    * @return A list containing the results, or an empty list.
    */
   public List<CutBlockOpenAdminEntity> findAllByOpeningIdIn(List<Long> openingIdList) {
-    return cutBlockOpenAdminRepository.findAllByOpeningIdIn(openingIdList);
+    return cutBlockOpenAdminRepository.findAllByOpeningEntity_idIn(openingIdList);
   }
 }

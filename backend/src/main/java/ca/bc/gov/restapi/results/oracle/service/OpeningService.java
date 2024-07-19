@@ -11,6 +11,7 @@ import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
@@ -156,7 +157,7 @@ public class OpeningService {
    * @return Paginated result with found content.
    */
   public PaginatedResult<SearchOpeningDto> searchOpening(
-      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination, String number) {
+      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination) {
     log.info(
         "Search Openings with page index {} and page size {}",
         pagination.page(),
@@ -168,36 +169,42 @@ public class OpeningService {
 
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<OpeningEntity> query = cb.createQuery(OpeningEntity.class);
+    // Main table, Opening
     Root<OpeningEntity> openingRoot = query.from(OpeningEntity.class);
+    // Join Opening Attachments
     Join<OpeningEntity, OpeningAttachmentEntity> openingAttachmentJoin =
         openingRoot.join("attachments");
     openingRoot.fetch("attachments", JoinType.LEFT);
+    // Join Cub Block Open Admin
+    Join<OpeningEntity, CutBlockOpenAdminEntity> cboaJoin = openingRoot.join("cutBlocksOpenAdmins");
+    openingRoot.fetch("cutBlocksOpenAdmins", JoinType.LEFT);
+    // Join Org Unit (admin district)
+    Join<OpeningEntity, OrgUnitEntity> ouAdminJoin = openingRoot.join("adminDistrict");
+    openingRoot.fetch("adminDistrict", JoinType.INNER);
 
     List<Predicate> predicates = new ArrayList<>();
 
     // Join with:
-    // OPENING_ATTACHMENT -- entity ok (Relationship: OPENING:1 <-> N:OPENING_ATTACHMENT) opening id
-    // - ok!
-    // example: 58933
-    // CUT_BLOCK_OPEN_ADMIN -- entity ok
-    // ORG_UNIT -- entity ok
-    // RESULTS_ELECTRONIC_SUBMISSION -- entity ok
-    // CLIENT_ACRONYM -- entity ok
+    // OPENING_ATTACHMENT (Relationship: OPENING:1 <-> N:OPENING_ATTACHMENT)
+    // CUT_BLOCK_OPEN_ADMIN (Relationship: OPENING:1 <-> N:CUT_BLOCK_OPEN_ADMIN)
+    // ORG_UNIT (Relationship: OPENING:1 <-> 1:ORG_UNIT)
+    // RESULTS_ELECTRONIC_SUBMISSION
+    // CLIENT_ACRONYM
 
     /* Filters */
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number
-    if (!Objects.isNull(number)) {
-      log.debug("number filter detected! number=[{}]", number);
-      boolean itsNumeric = number.replaceAll("[0-9]", "").isEmpty();
+    if (filtersDto.hasValue(filtersDto._NUMBER)) {
+      log.debug("number filter detected! number=[{}]", filtersDto.getNumber());
+      boolean itsNumeric = filtersDto.getNumber().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
         log.debug("number filter it's numeric!");
         // Opening id
-        Predicate openingIdPred = cb.equal(openingRoot.get("id"), number.trim());
+        Predicate openingIdPred = cb.equal(openingRoot.get("id"), filtersDto.getNumber());
 
         // File id
-        Predicate fileIdPred = cb.equal(openingAttachmentJoin.get("id"), number.trim());
+        Predicate fileIdPred = cb.equal(openingAttachmentJoin.get("id"), filtersDto.getNumber());
 
         // Combine them, for the 'or clause'
         Predicate openingIdOrFileId = cb.or(openingIdPred, fileIdPred);
@@ -205,15 +212,31 @@ public class OpeningService {
         predicates.add(openingIdOrFileId);
       } else {
         log.debug("number filter it's NOT numeric!");
+        // Opening number
+        Predicate openingNumberPred =
+            cb.equal(openingRoot.get("openingNumber"), filtersDto.getNumber());
+
+        // Timber Mark
+        Predicate timberMarkPred =
+            cb.equal(cboaJoin.get("cuttingPermitId"), filtersDto.getNumber());
+
+        // Combine them, for the 'or clause'
+        Predicate timberMark = cb.or(openingNumberPred, timberMarkPred);
+        predicates.add(timberMark);
       }
     }
 
     // 1. Org Unit code
+    if (filtersDto.hasValue(filtersDto._ORG_UNIT)) {
+      log.debug("org unit filter detected! org unit=[{}]", filtersDto.getOrgUnit());
+      Predicate orgUnitPred = cb.equal(ouAdminJoin.get("orgUnitCode"), filtersDto.getOrgUnit());
+      predicates.add(orgUnitPred);
+    }
     // 2. Category code
-    if (!Objects.isNull(filtersDto.category())) {
-      log.debug("category filter detected! category=[{}]", filtersDto.category());
+    if (filtersDto.hasValue(filtersDto._CATEGORY)) {
+      log.debug("category filter detected! category=[{}]", filtersDto.getCategory());
       Predicate categoryPred =
-          cb.equal(openingRoot.get("category"), filtersDto.category().toUpperCase());
+          cb.equal(openingRoot.get("category"), filtersDto.getCategory().toUpperCase());
       predicates.add(categoryPred);
     }
 
@@ -268,27 +291,30 @@ public class OpeningService {
 
     for (OpeningEntity openingEntity : resultList) {
       SearchOpeningDto searchOpeningDto = new SearchOpeningDto();
+
+      // From opening table
       searchOpeningDto.setOpeningId(openingEntity.getId());
       searchOpeningDto.setOpeningNumber(openingEntity.getOpeningNumber());
       searchOpeningDto.setCategory(OpeningCategoryEnum.of(openingEntity.getCategory()));
       searchOpeningDto.setStatus(OpeningStatusEnum.of(openingEntity.getStatus()));
-      searchOpeningDto.setCuttingPermitId(null);
-      searchOpeningDto.setTimberMark(null);
-      searchOpeningDto.setCutBlockId(null);
-      searchOpeningDto.setGrossAreaHa(null);
-      searchOpeningDto.setDisturbanceDate(null);
-      searchOpeningDto.setOrgUnitNo(null);
-      searchOpeningDto.setOrgUnitCode(null);
-      searchOpeningDto.setOrgUnitName(null);
-      searchOpeningDto.setClientNumber(null);
-      searchOpeningDto.setClientAcronym(null);
-      searchOpeningDto.setRegenDelayDate(null);
-      searchOpeningDto.setFreeGrowingDate(null);
       searchOpeningDto.setUpdateTimestamp(openingEntity.getUpdateTimestamp());
       searchOpeningDto.setEntryUserId(openingEntity.getEntryUserId());
-      searchOpeningDto.setSubmittedToFrpa(false);
 
-      // Attachments
+      // From Cut Block Opening Admin table
+      List<CutBlockOpenAdminEntity> cboas = openingEntity.getCutBlocksOpenAdmins();
+      if (cboas.isEmpty()) {
+        log.info("No cub block opening admin for opening id {}", openingEntity.getId());
+      } else {
+        log.info(
+            "{} cut block opening admin for opening id {}", cboas.size(), openingEntity.getId());
+        searchOpeningDto.setCuttingPermitId(cboas.get(0).getCuttingPermitId());
+        searchOpeningDto.setCutBlockId(cboas.get(0).getCutBlockId());
+        searchOpeningDto.setTimberMark(cboas.get(0).getTimberMark());
+        searchOpeningDto.setGrossAreaHa(cboas.get(0).getOpeningGrossArea());
+        searchOpeningDto.setDisturbanceDate(cboas.get(0).getDisturbanceEndDate());
+      }
+
+      // From Opening Attachment table
       List<OpeningAttachmentEntity> attachments = openingEntity.getAttachments();
       if (attachments.isEmpty()) {
         log.info("No attachments for opening id {}", openingEntity.getId());
@@ -296,6 +322,23 @@ public class OpeningService {
         log.info("{} attachment(s) for opening id {}", attachments.size(), openingEntity.getId());
         searchOpeningDto.setFileId(attachments.get(0).getId());
       }
+
+      // From Org Unit (Admin District)
+      OrgUnitEntity adminOrgUnit = openingEntity.getAdminDistrict();
+      if (Objects.isNull(adminOrgUnit)) {
+        log.info("No admin district for id {}", openingEntity.getId());
+      } else {
+        log.info("Admin district found for id {}", openingEntity.getId());
+        searchOpeningDto.setOrgUnitNo(adminOrgUnit.getOrgUnitNo());
+        searchOpeningDto.setOrgUnitCode(adminOrgUnit.getOrgUnitCode());
+        searchOpeningDto.setOrgUnitName(adminOrgUnit.getOrgUnitName());
+      }
+
+      searchOpeningDto.setClientNumber(null);
+      searchOpeningDto.setClientAcronym(null);
+      searchOpeningDto.setRegenDelayDate(null);
+      searchOpeningDto.setFreeGrowingDate(null);
+      searchOpeningDto.setSubmittedToFrpa(false);
 
       searchResultList.add(searchOpeningDto);
     }

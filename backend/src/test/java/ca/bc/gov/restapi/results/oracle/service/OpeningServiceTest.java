@@ -101,7 +101,7 @@ class OpeningServiceTest {
     cutBlock.setTimberMark("47/12S");
     cutBlock.setCutBlockId("12-69");
     cutBlock.setOpeningGrossArea(new BigDecimal("12.9"));
-    cutBlock.setOpeningId(openingEntity.getId());
+    cutBlock.setOpeningEntity(openingEntity);
     when(cutBlockOpenAdminService.findAllByOpeningIdIn(any())).thenReturn(List.of(cutBlock));
 
     int currentPage = 1;
@@ -161,7 +161,7 @@ class OpeningServiceTest {
     cutBlock.setTimberMark("47/12S");
     cutBlock.setCutBlockId("12-69");
     cutBlock.setOpeningGrossArea(new BigDecimal("12.9"));
-    cutBlock.setOpeningId(openingEntity.getId());
+    cutBlock.setOpeningEntity(openingEntity);
     when(cutBlockOpenAdminService.findAllByOpeningIdIn(any())).thenReturn(List.of(cutBlock));
 
     int currentPage = 1;
