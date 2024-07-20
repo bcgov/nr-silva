@@ -6,7 +6,6 @@ import ca.bc.gov.restapi.results.oracle.dto.DashboardOpeningSubmissionDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardOrgUnitDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardResultsAuditDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardStockingEventDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchOracleDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -106,39 +105,4 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
         """,
       nativeQuery = true)
   List<DashboardActionCodeDto> findAllDashboardActionCodes(List<String> codes);
-
-  @Query(
-      value =
-          """
-          SELECT o.OPENING_ID AS openingId
-            ,o.OPENING_NUMBER AS openingNumber
-            ,o.OPEN_CATEGORY_CODE AS categoryCode
-            ,oa.OPENING_ATTACHMENT_FILE_ID AS fileId
-            ,o.OPENING_STATUS_CODE AS statusCode
-            ,cboa.CUTTING_PERMIT_ID AS cuttingPermitId
-            ,cboa.TIMBER_MARK AS timberMark
-            ,cboa.CUT_BLOCK_ID AS cutBlockId
-            ,cboa.OPENING_GROSS_AREA AS openingGrossArea
-            ,cboa.DISTURBANCE_START_DATE AS disturbanceStartDate
-            ,ou.ORG_UNIT_CODE AS orgUnitCode
-            ,ou.ORG_UNIT_NAME AS orgUnitName
-            ,res.CLIENT_NUMBER AS clientNumber
-            ,'TDB' AS regenDelayDate
-            ,'TBD' AS freeGrowingDate
-            ,o.UPDATE_TIMESTAMP AS updateTimestamp
-            ,o.ENTRY_USERID AS entryUserId
-            ,'TBD' AS submittedToFrpa108
-          FROM THE.OPENING o
-          LEFT JOIN THE.OPENING_ATTACHMENT oa ON (oa.OPENING_ID = o.OPENING_ID)
-          LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
-          LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
-          LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-          LEFT JOIN THE.CLIENT_ACRONYM ca ON (ca.CLIENT_NUMBER = res.CLIENT_NUMBER)
-          WHERE o.OPENING_ID = '?1'
-            OR o.OPENING_NUMBER = '?1'
-            OR cboa.TIMBER_MARK = '?1'
-            OR oa.OPENING_ATTACHMENT_FILE_ID = '?1'
-        """,
-      nativeQuery = true)
-  Page<OpeningSearchOracleDto> findAllOpeningSearchWithNumber(Pageable pageable, String number);
 }

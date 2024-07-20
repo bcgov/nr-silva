@@ -24,7 +24,7 @@ class CutBlockOpenAdminRepositoryIntegrationTest {
     List<Long> openingIdList = List.of(101L, 102L);
 
     List<CutBlockOpenAdminEntity> cutBlocks =
-        cutBlockOpenAdminRepository.findAllByOpeningIdIn(openingIdList);
+        cutBlockOpenAdminRepository.findAllByOpeningEntity_idIn(openingIdList);
 
     Assertions.assertNotNull(cutBlocks);
     Assertions.assertEquals(2, cutBlocks.size());

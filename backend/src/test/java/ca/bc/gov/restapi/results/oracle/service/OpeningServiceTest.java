@@ -10,7 +10,7 @@ import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import jakarta.persistence.EntityManager;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ class OpeningServiceTest {
 
   @Mock LoggedUserService loggedUserService;
 
-  @Mock EntityManager entityManager;
+  @Mock OpeningSearchRepository openingSearchRepository;
 
   private OpeningService openingService;
 
@@ -42,7 +42,10 @@ class OpeningServiceTest {
   void setup() {
     openingService =
         new OpeningService(
-            openingRepository, cutBlockOpenAdminService, loggedUserService, entityManager);
+            openingRepository,
+            cutBlockOpenAdminService,
+            loggedUserService,
+            openingSearchRepository);
   }
 
   @Test

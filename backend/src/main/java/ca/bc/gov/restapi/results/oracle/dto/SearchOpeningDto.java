@@ -79,16 +79,6 @@ public class SearchOpeningDto {
   @Schema(
       description =
           """
-                Unique physical identifier for the storage of organizational unit codes for the
-                Ministry of Forests' offices. Values stored here are for the computer's use only,
-                and are not to be used by people as "ministry codes.
-                """,
-      example = "18")
-  private Long orgUnitNo;
-
-  @Schema(
-      description =
-          """
                 Identifies any office within the ministry. First character identifiesExec,
                 HQ Branch, Region, or District; next two chars identify the office name; next two
                 the section (HQ Branch) or program (Region or District); last char identifies the
