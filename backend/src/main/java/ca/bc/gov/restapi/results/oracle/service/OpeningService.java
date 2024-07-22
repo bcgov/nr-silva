@@ -142,8 +142,6 @@ public class OpeningService {
    *
    * @param filtersDto An instance of {@link SearchOpeningFiltersDto} with all possible filters.
    * @param pagination An instance of {@link PaginationParameters} with pagination settings.
-   * @param number An identification number, one of Opening ID, Opening Number, Timber Mark ID, or
-   *     File id.
    * @return Paginated result with found content.
    */
   public PaginatedResult<SearchOpeningDto> searchOpening(
@@ -157,32 +155,12 @@ public class OpeningService {
       throw new MaxPageSizeException();
     }
 
-    List<SearchOpeningDto> resultList =
-        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
-    log.info("resultList size {}", resultList.size());
-
-    PaginatedResult<SearchOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(pagination.page());
-    paginatedResult.setPerPage(pagination.perPage());
-
-    if (resultList.isEmpty()) {
-      log.info("No openings result for the search given page index and size!");
-      paginatedResult.setData(List.of());
-      paginatedResult.setTotalPages(0);
-      paginatedResult.setHasNextPage(false);
-      return paginatedResult;
-    }
-
-    paginatedResult.setData(resultList);
-    paginatedResult.setTotalPages(1);
-    paginatedResult.setHasNextPage(false);
-
-    return paginatedResult;
+    return openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
-      List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> clutBloks) {
-    if (openings.size() != clutBloks.size()) {
+      List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> cutBlocks) {
+    if (openings.size() != cutBlocks.size()) {
       log.warn("Different number of records for the Opening x Cut Block Open Admin relationship");
     }
 
@@ -198,8 +176,8 @@ public class OpeningService {
       BigDecimal openingGrossArea = BigDecimal.ZERO;
       LocalDate disturbanceStartDate = null;
 
-      if (clutBloks.size() - 1 >= i) {
-        CutBlockOpenAdminEntity cutBlockOpenAdmin = clutBloks.get(i);
+      if (cutBlocks.size() - 1 >= i) {
+        CutBlockOpenAdminEntity cutBlockOpenAdmin = cutBlocks.get(i);
         forestFileId = cutBlockOpenAdmin.getForestFileId();
         cuttingPermitId = cutBlockOpenAdmin.getCuttingPermitId();
         timberMark = cutBlockOpenAdmin.getTimberMark();

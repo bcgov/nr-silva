@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.oracle.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,6 +30,6 @@ public class OrgUnitEntity {
 
   // An Org Unit belongs to one Opening
   // Foreign key referencing the opening table
-  @OneToOne(mappedBy = "adminDistrict")
-  private OpeningEntity openingEntity;
+  // @OneToOne(mappedBy = "adminDistrict")
+  // private OpeningEntity openingEntity;
 }

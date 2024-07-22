@@ -115,10 +115,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         </Marker>
       )}
 
-      {/* Centers the map autimatically when a different opening get selected. */}
-      {position && (
-        <RecenterAutomatically lat={position[0]} long={position[1]} />
-      )}
+      
 
       {/* Add layers and Layer controls */}
       {layers.length > 0 && (

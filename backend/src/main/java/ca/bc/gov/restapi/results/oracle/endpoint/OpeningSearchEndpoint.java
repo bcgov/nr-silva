@@ -1,8 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
-import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/** This class contains resources for the opening search api. */
 @RestController
 @RequestMapping("/api/opening-search")
 @RequiredArgsConstructor
@@ -30,6 +31,26 @@ public class OpeningSearchEndpoint {
 
   private final OpeningService openingService;
 
+  /**
+   * Search for Openings with different filters.
+   *
+   * @param number Number representing one of Opening ID | Opening Number | Timber Mark ID | File
+   * @param orgUnit Org Unit code filter, same as District.
+   * @param category Opening category code filter.
+   * @param status Opening status code filter.
+   * @param userId Opening entry user id filter.
+   * @param submittedToFrpa Submitted to FRPA
+   * @param disturbanceDateStart Disturbance start date filter
+   * @param disturbanceDateEnd Disturbance end date filter
+   * @param regenDelayDateStart Regen start date filter
+   * @param regenDelayDateEnd Regen end date filter
+   * @param freeGrowingDateStart Free growing start date filter
+   * @param freeGrowingDateEnd Free growing end date filter
+   * @param updateDateStart Opening update start date filter
+   * @param updateDateEnd Opening update end date filter
+   * @param paginationParameters Pagination settings
+   * @return PaginatedResult with found records.
+   */
   @GetMapping
   @Operation(
       summary = "Search for Openings",
@@ -44,6 +65,7 @@ public class OpeningSearchEndpoint {
             description = "Access token is missing or invalid",
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
+  @PaginatedViaQuery
   public PaginatedResult<SearchOpeningDto> openingSearch(
       @RequestParam(value = "number", required = false)
           @Parameter(
@@ -92,7 +114,7 @@ public class OpeningSearchEndpoint {
           @Parameter(
               name = "submittedToFrpa",
               in = ParameterIn.QUERY,
-              description = "Submitted to FRPA, true or false.",
+              description = "Submitted to FRPA Section 108, true or false.",
               required = false,
               example = "submittedToFrpa")
           Boolean submittedToFrpa,
@@ -168,14 +190,14 @@ public class OpeningSearchEndpoint {
             status,
             userId,
             submittedToFrpa,
-            TimestampUtil.parseDateString(disturbanceDateStart),
-            TimestampUtil.parseDateString(disturbanceDateEnd),
-            TimestampUtil.parseDateString(regenDelayDateStart),
-            TimestampUtil.parseDateString(regenDelayDateEnd),
-            TimestampUtil.parseDateString(freeGrowingDateStart),
-            TimestampUtil.parseDateString(freeGrowingDateEnd),
-            TimestampUtil.parseDateString(updateDateStart),
-            TimestampUtil.parseDateString(updateDateEnd),
+            disturbanceDateStart,
+            disturbanceDateEnd,
+            regenDelayDateStart,
+            regenDelayDateEnd,
+            freeGrowingDateStart,
+            freeGrowingDateEnd,
+            updateDateStart,
+            updateDateEnd,
             number);
 
     // Pagination

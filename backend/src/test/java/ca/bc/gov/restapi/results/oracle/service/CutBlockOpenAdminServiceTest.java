@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -33,9 +32,10 @@ class CutBlockOpenAdminServiceTest {
     Long openingId = 12563L;
     CutBlockOpenAdminEntity entity = new CutBlockOpenAdminEntity();
     entity.setId(123L);
-    entity.setOpeningEntity(new OpeningEntity());
+    // entity.setOpeningEntity(new OpeningEntity());
 
-    when(cutBlockOpenAdminRepository.findAllByOpeningEntity_idIn(any())).thenReturn(List.of(entity));
+    when(cutBlockOpenAdminRepository.findAllByOpeningEntity_idIn(any()))
+        .thenReturn(List.of(entity));
 
     List<CutBlockOpenAdminEntity> entityList =
         cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(openingId));

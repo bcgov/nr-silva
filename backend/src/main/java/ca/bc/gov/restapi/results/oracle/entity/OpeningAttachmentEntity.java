@@ -3,8 +3,6 @@ package ca.bc.gov.restapi.results.oracle.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,7 +33,7 @@ public class OpeningAttachmentEntity {
 
   // An Opening Attachment belongs to one Opening
   // Foreign key referencing the opening table
-  @ManyToOne
-  @JoinColumn(name = "OPENING_ID")
-  private OpeningEntity openingEntity;
+  // @ManyToOne
+  // @JoinColumn(name = "OPENING_ID")
+  // private OpeningEntity openingEntity;
 }

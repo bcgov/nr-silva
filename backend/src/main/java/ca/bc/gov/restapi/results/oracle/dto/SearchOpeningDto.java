@@ -4,12 +4,12 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/** This class represents a record of the opening search api response. */
 @Getter
 @Setter
 @ToString
@@ -17,7 +17,7 @@ public class SearchOpeningDto {
   @Schema(
       description = "System generated value uniquely identifying the opening.",
       example = "114207")
-  private Long openingId;
+  private Integer openingId;
 
   @Schema(
       description =
@@ -71,10 +71,10 @@ public class SearchOpeningDto {
   private String cutBlockId;
 
   @Schema(description = "Gross area of the opening, in hectares.", example = "12.9")
-  private BigDecimal grossAreaHa;
+  private BigDecimal openingGrossAreaHa;
 
   @Schema(description = "Actual date that harvesting started on the cut block.")
-  private LocalDate disturbanceDate;
+  private LocalDateTime disturbanceStartDate;
 
   @Schema(
       description =
@@ -110,10 +110,10 @@ public class SearchOpeningDto {
   private String clientAcronym;
 
   @Schema(description = "The final date based on the EARLY and LATE offset years.")
-  private LocalDateTime regenDelayDate;
-  
+  private String regenDelayDate;
+
   @Schema(description = "The final date based on the EARLY and LATE offset years.")
-  private LocalDateTime freeGrowingDate;
+  private String freeGrowingDate;
 
   @Schema(description = "The date and time of the last update.")
   private LocalDateTime updateTimestamp;
@@ -125,5 +125,5 @@ public class SearchOpeningDto {
   private Boolean submittedToFrpa;
 
   @Schema(description = "Uniquely identifies the attached file.", example = "407")
-  private Long fileId;
+  private Integer fileId;
 }
