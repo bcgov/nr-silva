@@ -41,9 +41,6 @@ public class CutBlockOpenAdminEntity {
   @Column(name = "DISTURBANCE_END_DATE")
   private LocalDate disturbanceEndDate;
 
-  // A Cut Block Open Admin belongs to one Opening
-  // Foreign key referencing the opening table
-  // @ManyToOne
-  // @JoinColumn(name = "OPENING_ID")
-  // private OpeningEntity openingEntity;
+  @Column(name = "OPENING_ID")
+  private Long openingId;
 }

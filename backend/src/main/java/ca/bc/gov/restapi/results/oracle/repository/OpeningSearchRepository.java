@@ -67,7 +67,7 @@ public class OpeningSearchRepository {
     paginatedResult.setData(resultList);
     paginatedResult.setPerPage(resultList.size());
     paginatedResult.setTotalPages(lastPage);
-    paginatedResult.setHasNextPage(pagination.page() < lastPage);
+    paginatedResult.setHasNextPage(pagination.page() < lastPage && pagination.page() > 0);
 
     return paginatedResult;
   }

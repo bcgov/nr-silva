@@ -32,10 +32,9 @@ class CutBlockOpenAdminServiceTest {
     Long openingId = 12563L;
     CutBlockOpenAdminEntity entity = new CutBlockOpenAdminEntity();
     entity.setId(123L);
-    // entity.setOpeningEntity(new OpeningEntity());
+    entity.setOpeningId(openingId);
 
-    when(cutBlockOpenAdminRepository.findAllByOpeningEntity_idIn(any()))
-        .thenReturn(List.of(entity));
+    when(cutBlockOpenAdminRepository.findAllByOpeningIdIn(any())).thenReturn(List.of(entity));
 
     List<CutBlockOpenAdminEntity> entityList =
         cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(openingId));
