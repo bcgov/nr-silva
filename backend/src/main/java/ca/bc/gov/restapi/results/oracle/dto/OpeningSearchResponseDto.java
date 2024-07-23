@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class SearchOpeningDto {
+public class OpeningSearchResponseDto {
   @Schema(
       description = "System generated value uniquely identifying the opening.",
       example = "114207")

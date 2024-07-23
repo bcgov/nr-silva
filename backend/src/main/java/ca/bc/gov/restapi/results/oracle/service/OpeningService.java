@@ -5,9 +5,9 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
@@ -140,12 +140,12 @@ public class OpeningService {
   /**
    * Search Opening API.
    *
-   * @param filtersDto An instance of {@link SearchOpeningFiltersDto} with all possible filters.
+   * @param filtersDto An instance of {@link OpeningSearchFiltersDto} with all possible filters.
    * @param pagination An instance of {@link PaginationParameters} with pagination settings.
    * @return Paginated result with found content.
    */
-  public PaginatedResult<SearchOpeningDto> searchOpening(
-      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination) {
+  public PaginatedResult<OpeningSearchResponseDto> openingSearch(
+      OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
     log.info(
         "Search Openings with page index {} and page size {}",
         pagination.page(),

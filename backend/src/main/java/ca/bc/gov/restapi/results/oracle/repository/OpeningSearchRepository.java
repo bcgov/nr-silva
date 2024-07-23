@@ -2,8 +2,8 @@ package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
@@ -34,8 +34,8 @@ public class OpeningSearchRepository {
    * @param pagination Pagination parameters with pagination settings.
    * @return Paginated result with found records, if any.
    */
-  public PaginatedResult<SearchOpeningDto> searchOpeningQuery(
-      SearchOpeningFiltersDto filtersDto, PaginationParameters pagination) {
+  public PaginatedResult<OpeningSearchResponseDto> searchOpeningQuery(
+      OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
 
     final String sqlQuery = createNativeSqlQuery(filtersDto);
     final Query query = setQueryParameters(filtersDto, sqlQuery);
@@ -46,7 +46,7 @@ public class OpeningSearchRepository {
     List<?> result = query.getResultList();
     int lastPage = PaginationUtil.getLastPage(result.size(), pagination.perPage());
 
-    PaginatedResult<SearchOpeningDto> paginatedResult = new PaginatedResult<>();
+    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
     paginatedResult.setPageIndex(pagination.page());
     paginatedResult.setPerPage(pagination.perPage());
     paginatedResult.setTotalPages(lastPage);
@@ -62,7 +62,8 @@ public class OpeningSearchRepository {
     int startIndex = PaginationUtil.getStartIndex(pagination.page(), pagination.perPage());
     int endIndex = PaginationUtil.getEndIndex(startIndex, pagination.perPage(), result.size());
 
-    List<SearchOpeningDto> resultList = buildResultListDto(result.subList(startIndex, endIndex));
+    List<OpeningSearchResponseDto> resultList =
+        buildResultListDto(result.subList(startIndex, endIndex));
 
     paginatedResult.setData(resultList);
     paginatedResult.setPerPage(resultList.size());
@@ -72,13 +73,13 @@ public class OpeningSearchRepository {
     return paginatedResult;
   }
 
-  private List<SearchOpeningDto> buildResultListDto(List<?> result) {
-    List<SearchOpeningDto> resultList = new ArrayList<>();
+  private List<OpeningSearchResponseDto> buildResultListDto(List<?> result) {
+    List<OpeningSearchResponseDto> resultList = new ArrayList<>();
 
     for (Object obj : result) {
       if (obj.getClass().isArray()) {
         Object[] row = (Object[]) obj;
-        SearchOpeningDto searchOpeningDto = new SearchOpeningDto();
+        OpeningSearchResponseDto searchOpeningDto = new OpeningSearchResponseDto();
         if (row.length > 0) {
           searchOpeningDto.setOpeningId(getValue(Integer.class, row[0], "openingId"));
         }
@@ -212,78 +213,90 @@ public class OpeningSearchRepository {
     return null;
   }
 
-  private Query setQueryParameters(SearchOpeningFiltersDto filtersDto, String nativeQuery) {
+  private Query setQueryParameters(OpeningSearchFiltersDto filtersDto, String nativeQuery) {
     Query query = em.createNativeQuery(nativeQuery);
 
     // set parameters
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.NUMBER)) {
-      boolean itsNumeric = filtersDto.getNumber().replaceAll("[0-9]", "").isEmpty();
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MAIN_SEARCH_TERM)) {
+      boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
-        log.info("setting numeric 'number' filter!");
+        log.info("Setting mainSearchTerm as numeric filter value");
         // Opening id or  File id
-        query.setParameter("openingOrFile", filtersDto.getNumber());
+        query.setParameter("openingOrFile", filtersDto.getMainSearchTerm());
       } else {
-        log.info("setting non-numeric 'number' filter!");
+        log.info("Setting mainSearchTerm as non-numeric filter value");
         // Opening number or Timber Mark
-        query.setParameter("numberOrTimber", filtersDto.getNumber());
+        query.setParameter("numberOrTimber", filtersDto.getMainSearchTerm());
       }
     }
 
     // 1. Org Unit code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.ORG_UNIT)) {
-      log.info("setting org unit filter!");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.ORG_UNIT)) {
+      log.info("Setting orgUnit filter value");
       query.setParameter("orgUnit", filtersDto.getOrgUnit());
     }
     // 2. Category code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.CATEGORY)) {
-      log.info("setting category filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CATEGORY)) {
+      log.info("Setting category filter value");
       query.setParameter("category", filtersDto.getCategory());
     }
     // 3. Status code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.STATUS)) {
-      log.info("setting status filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS)) {
+      log.info("Setting status filter value");
       query.setParameter("status", filtersDto.getStatus());
     }
     // 4. User entry id
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.USER_ID)) {
-      log.info("setting user-id filter");
-      query.setParameter("userId", "%" + filtersDto.getUserId() + "%");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.ENTRY_USER_ID)) {
+      log.info("Setting entryUserId filter value");
+      query.setParameter("entryUserId", "%" + filtersDto.getEntryUserId() + "%");
     }
-    // 5. Submitted to FRPA
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.SUBMITTED_TO_FRPA)) {
+    // 5. Submitted to FRPA Section 108
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
       // log.info("Submitted to FRPA filter detected! submitted=[{}]",
       // filtersDto.getSubmittedToFrpa());
       // builder.append("AND o.ENTRY_USERID = ?5");
     }
     // 6. Disturbance start date
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.DISTURBANCE_DATE_START)) {
-      log.info("setting disturbance start date filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
+      log.info("Setting disturbanceDateStart filter value");
       query.setParameter("disturbStartDate", filtersDto.getDisturbanceDateStart());
     }
     // 7. Disturbance end date
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.DISTURBANCE_DATE_END)) {
-      log.info("setting disturbance end date filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_END)) {
+      log.info("Setting disturbanceDateEnd filter value");
       query.setParameter("disturbEndDate", filtersDto.getDisturbanceDateEnd());
     }
     // 8. Regen delay start date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
+      log.info("Skipping filter regenDelayDateStart value. Filter not ready!");
+    }
     // 9. Regen delay end date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
+      log.info("Skipping filter regenDelayDateEnd value. Filter not ready!");
+    }
     // 10. Free growing start date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
+      log.info("Skipping filter freeGrowingDateStart value. Filter not ready!");
+    }
     // 11. Free growing end date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
+      log.info("Skipping filter freeGrowingDateEnd value. Filter not ready!");
+    }
     // 12. Update date start
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.UPDATE_DATE_START)) {
-      log.info("setting update start date filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {
+      log.info("Setting updateDateStart filter value");
       query.setParameter("updateStartDate", filtersDto.getUpdateDateStart());
     }
     // 13. Update date end
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.UPDATE_DATE_END)) {
-      log.info("setting update end date filter");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_END)) {
+      log.info("Setting updateDateEnd filter value");
       query.setParameter("updateEndDate", filtersDto.getUpdateDateEnd());
     }
 
     return query;
   }
 
-  private String createNativeSqlQuery(SearchOpeningFiltersDto filtersDto) {
+  private String createNativeSqlQuery(OpeningSearchFiltersDto filtersDto) {
     StringBuilder builder = new StringBuilder();
     builder.append("SELECT o.OPENING_ID AS openingId");
     builder.append(",o.OPENING_NUMBER AS openingNumber");
@@ -317,16 +330,16 @@ public class OpeningSearchRepository {
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.NUMBER)) {
-      log.info("number filter detected! number=[{}]", filtersDto.getNumber());
-      boolean itsNumeric = filtersDto.getNumber().replaceAll("[0-9]", "").isEmpty();
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MAIN_SEARCH_TERM)) {
+      log.info("Filter mainSearchTerm detected! mainSearchTerm={}", filtersDto.getMainSearchTerm());
+      boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
-        log.info("number filter it's numeric!");
+        log.info("Filter mainSearchTerm it's numeric! Looking for Opening ID or File ID");
         // Opening id or  File id
         builder.append("AND (o.OPENING_ID = :openingOrFile or ");
         builder.append("oa.OPENING_ATTACHMENT_FILE_ID = :openingOrFile) ");
       } else {
-        log.info("number filter it's NOT numeric!");
+        log.info("Filter mainSearchTerm NOT numeric! Looking for Opening Number or Timber Mark");
         // Opening number or Timber Mark
         builder.append(
             "AND (o.OPENING_NUMBER = :numberOrTimber or cboa.TIMBER_MARK = :numberOrTimber) ");
@@ -334,66 +347,79 @@ public class OpeningSearchRepository {
     }
 
     // 1. Org Unit code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.ORG_UNIT)) {
-      log.info("org unit filter detected! org unit=[{}]", filtersDto.getOrgUnit());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.ORG_UNIT)) {
+      log.info("Filter orgUnit detected! orgUnit={}", filtersDto.getOrgUnit());
       builder.append("AND ou.ORG_UNIT_CODE = :orgUnit ");
     }
     // 2. Category code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.CATEGORY)) {
-      log.info("category filter detected! category=[{}]", filtersDto.getCategory());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CATEGORY)) {
+      log.info("Filter category detected! category={}", filtersDto.getCategory());
       builder.append("AND o.OPEN_CATEGORY_CODE = :category ");
     }
     // 3. Status code
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.STATUS)) {
-      log.info("status filter detected! status=[{}]", filtersDto.getStatus());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS)) {
+      log.info("Filter status detected! status={}", filtersDto.getStatus());
       builder.append("AND o.OPENING_STATUS_CODE = :status ");
     }
-    // 4. User entry id
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.USER_ID)) {
-      log.info("user-id filter detected! user-id=[{}]", filtersDto.getUserId());
-      builder.append("AND o.ENTRY_USERID LIKE :userId ");
+    // 4. Entry user id
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.ENTRY_USER_ID)) {
+      log.info("Filter entryUserId detected! entryUserId={}", filtersDto.getEntryUserId());
+      builder.append("AND o.ENTRY_USERID LIKE :entryUserId ");
     }
     // 5. Submitted to FRPA
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.SUBMITTED_TO_FRPA)) {
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
       // log.info("Submitted to FRPA filter detected! submitted=[{}]",
       // filtersDto.getSubmittedToFrpa());
       // builder.append("AND o.ENTRY_USERID = ?5");
     }
     // 6. Disturbance start date
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.DISTURBANCE_DATE_START)) {
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
       log.info(
-          "Disturbance start date filter detected! date=[{}]",
-          filtersDto.getDisturbanceDateStart());
+          "Filter disturbanceDateStart detected! date={}", filtersDto.getDisturbanceDateStart());
       builder.append(
           "AND cboa.DISTURBANCE_START_DATE >= to_timestamp(:disturbStartDate, 'YYYY-MM-DD') ");
     }
     // 7. Disturbance end date
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.DISTURBANCE_DATE_END)) {
-      log.info(
-          "Disturbance end date filter detected! date=[{}]", filtersDto.getDisturbanceDateEnd());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_END)) {
+      log.info("Filter disturbanceDateEnd detected! date={}", filtersDto.getDisturbanceDateEnd());
       builder.append(
           "AND cboa.DISTURBANCE_START_DATE <= to_timestamp(:disturbEndDate, 'YYYY-MM-DD') ");
     }
     // 8. Regen delay start date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
+      log.info("Filter regenDelayDateStart detected! date={}", filtersDto.getRegenDelayDateStart());
+      log.info("Skipping Filter regenDelayDateStart. Filter not ready!");
+    }
     // 9. Regen delay end date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
+      log.info("Filter regenDelayDateEnd detected! date={}", filtersDto.getRegenDelayDateEnd());
+      log.info("Skipping Filter regenDelayDateEnd. Filter not ready!");
+    }
     // 10. Free growing start date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
+      log.info(
+          "Filter freeGrowingDateStart detected! date={}", filtersDto.getFreeGrowingDateStart());
+      log.info("Skipping Filter freeGrowingDateStart. Filter not ready!");
+    }
     // 11. Free growing end date
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
+      log.info("Filter freeGrowingDateEnd detected! date={}", filtersDto.getFreeGrowingDateEnd());
+      log.info("Skipping Filter freeGrowingDateEnd. Filter not ready!");
+    }
     // 12. Update date start
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.UPDATE_DATE_START)) {
-      log.info("Update start date filter detected! date=[{}]", filtersDto.getUpdateDateStart());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {
+      log.info("Filter updateDateStart detected! date={}", filtersDto.getUpdateDateStart());
       builder.append("AND o.UPDATE_TIMESTAMP >= to_timestamp(:updateStartDate, 'YYYY-MM-DD') ");
     }
     // 13. Update date end
-    if (filtersDto.hasValue(SearchOpeningFiltersDto.UPDATE_DATE_END)) {
-      log.info("Update end date filter detected! date=[{}]", filtersDto.getUpdateDateEnd());
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_END)) {
+      log.info("Filter updateDateEnd detected! date={}", filtersDto.getUpdateDateEnd());
       builder.append("AND o.UPDATE_TIMESTAMP <= to_timestamp(:updateEndDate, 'YYYY-MM-DD') ");
     }
 
     // Order by
     builder.append("ORDER BY o.OPENING_ID DESC");
 
-    // Log query
-    log.info("Final query: {}", builder.toString());
     return builder.toString();
   }
 }

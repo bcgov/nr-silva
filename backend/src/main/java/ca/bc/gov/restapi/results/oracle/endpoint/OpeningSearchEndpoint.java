@@ -3,8 +3,8 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningDto;
-import ca.bc.gov.restapi.results.oracle.dto.SearchOpeningFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,11 +34,12 @@ public class OpeningSearchEndpoint {
   /**
    * Search for Openings with different filters.
    *
-   * @param number Number representing one of Opening ID | Opening Number | Timber Mark ID | File
+   * @param mainSearchTerm Number representing one of Opening ID | Opening Number | Timber Mark ID |
+   *     File
    * @param orgUnit Org Unit code filter, same as District.
    * @param category Opening category code filter.
    * @param status Opening status code filter.
-   * @param userId Opening entry user id filter.
+   * @param entryUserId Opening entry user id filter.
    * @param submittedToFrpa Submitted to FRPA
    * @param disturbanceDateStart Disturbance start date filter
    * @param disturbanceDateEnd Disturbance end date filter
@@ -66,18 +67,17 @@ public class OpeningSearchEndpoint {
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
   @PaginatedViaQuery
-  public PaginatedResult<SearchOpeningDto> openingSearch(
-      @RequestParam(value = "number", required = false)
+  public PaginatedResult<OpeningSearchResponseDto> openingSearch(
+      @RequestParam(value = "mainSearchTerm", required = false)
           @Parameter(
-              name = "number",
+              name = "mainSearchTerm",
               in = ParameterIn.QUERY,
               description =
-                  "Number representing one of Opening ID | Opening Number | Timber Mark ID | File"
-                      + " ID. E.g.: Opening ID 1022833, Opening Number 1012, Timber Mark EM2184"
-                      + ", File ID 407",
+                  "Search term representing one of Opening ID | Opening Number | Timber Mark ID |"
+                      + " File ID. E.g.: Opening ID 1022833, Opening Number 1012, Timber Mark"
+                      + " EM2184, File ID 407",
               required = false)
-          String number,
-      // Org unit - ok
+          String mainSearchTerm,
       @RequestParam(value = "orgUnit", required = false)
           @Parameter(
               name = "orgUnit",
@@ -85,7 +85,6 @@ public class OpeningSearchEndpoint {
               description = "Org Unit code filter, same as District. E.g.: DCR, FTL47",
               required = false)
           String orgUnit,
-      // Category - ok
       @RequestParam(value = "category", required = false)
           @Parameter(
               name = "category",
@@ -93,7 +92,6 @@ public class OpeningSearchEndpoint {
               description = "Opening category code filter. E.g.: FTML",
               required = false)
           String category,
-      // Status - ok
       @RequestParam(value = "status", required = false)
           @Parameter(
               name = "status",
@@ -101,15 +99,13 @@ public class OpeningSearchEndpoint {
               description = "Opening status code filter. E.g.: APP",
               required = false)
           String status,
-      // User id - ok
-      @RequestParam(value = "userId", required = false)
+      @RequestParam(value = "entryUserId", required = false)
           @Parameter(
-              name = "userId",
+              name = "entryUserId",
               in = ParameterIn.QUERY,
               description = "Opening entry user id filter",
               required = false)
-          String userId,
-      // Submitted to FRPA Y or N - ok
+          String entryUserId,
       @RequestParam(value = "submittedToFrpa", required = false)
           @Parameter(
               name = "submittedToFrpa",
@@ -118,7 +114,6 @@ public class OpeningSearchEndpoint {
               required = false,
               example = "submittedToFrpa")
           Boolean submittedToFrpa,
-      // disturbance date start - ok
       @RequestParam(value = "disturbanceDateStart", required = false)
           @Parameter(
               name = "disturbanceDateStart",
@@ -126,7 +121,6 @@ public class OpeningSearchEndpoint {
               description = "Disturbance start date filter, format yyyy-MM-dd.",
               required = false)
           String disturbanceDateStart,
-      // disturbance date end - ok
       @RequestParam(value = "disturbanceDateEnd", required = false)
           @Parameter(
               name = "disturbanceDateEnd",
@@ -134,7 +128,6 @@ public class OpeningSearchEndpoint {
               description = "Disturbance end date filter, format yyyy-MM-dd.",
               required = false)
           String disturbanceDateEnd,
-      // Regen delay date start
       @RequestParam(value = "regenDelayDateStart", required = false)
           @Parameter(
               name = "regenDelayDateStart",
@@ -142,7 +135,6 @@ public class OpeningSearchEndpoint {
               description = "Regen delay start date filter, format yyyy-MM-dd.",
               required = false)
           String regenDelayDateStart,
-      // Regen delay date end
       @RequestParam(value = "regenDelayDateEnd", required = false)
           @Parameter(
               name = "regenDelayDateEnd",
@@ -150,7 +142,6 @@ public class OpeningSearchEndpoint {
               description = "Regen delay end date filter, format yyyy-MM-dd.",
               required = false)
           String regenDelayDateEnd,
-      // Free growing date start
       @RequestParam(value = "freeGrowingDateStart", required = false)
           @Parameter(
               name = "freeGrowingDateStart",
@@ -158,7 +149,6 @@ public class OpeningSearchEndpoint {
               description = "Free growing start date filter, format yyyy-MM-dd.",
               required = false)
           String freeGrowingDateStart,
-      // Free growing date end
       @RequestParam(value = "freeGrowingDateEnd", required = false)
           @Parameter(
               name = "freeGrowingDateEnd",
@@ -166,7 +156,6 @@ public class OpeningSearchEndpoint {
               description = "Free growing end date filter, format yyyy-MM-dd.",
               required = false)
           String freeGrowingDateEnd,
-      // Update date start
       @RequestParam(value = "updateDateStart", required = false)
           @Parameter(
               name = "updateDateStart",
@@ -174,7 +163,6 @@ public class OpeningSearchEndpoint {
               description = "Opening update start date filter, format yyyy-MM-dd.",
               required = false)
           String updateDateStart,
-      // Update date end
       @RequestParam(value = "updateDateEnd", required = false)
           @Parameter(
               name = "updateDateEnd",
@@ -183,12 +171,12 @@ public class OpeningSearchEndpoint {
               required = false)
           String updateDateEnd,
       @Valid PaginationParameters paginationParameters) {
-    SearchOpeningFiltersDto filtersDto =
-        new SearchOpeningFiltersDto(
+    OpeningSearchFiltersDto filtersDto =
+        new OpeningSearchFiltersDto(
             orgUnit,
             category,
             status,
-            userId,
+            entryUserId,
             submittedToFrpa,
             disturbanceDateStart,
             disturbanceDateEnd,
@@ -198,9 +186,7 @@ public class OpeningSearchEndpoint {
             freeGrowingDateEnd,
             updateDateStart,
             updateDateEnd,
-            number);
-
-    // Pagination
-    return openingService.searchOpening(filtersDto, paginationParameters);
+            mainSearchTerm);
+    return openingService.openingSearch(filtersDto, paginationParameters);
   }
 }

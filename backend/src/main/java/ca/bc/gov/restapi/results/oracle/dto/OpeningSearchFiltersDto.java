@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 /** This record contains all possible filters when using the Opening Search API. */
 @Slf4j
 @Getter
-public class SearchOpeningFiltersDto {
+public class OpeningSearchFiltersDto {
   private final String orgUnit;
   private final String category;
   private final String status;
-  private final String userId;
+  private final String entryUserId;
   private final Boolean submittedToFrpa;
   private final String disturbanceDateStart;
   private final String disturbanceDateEnd;
@@ -21,12 +21,13 @@ public class SearchOpeningFiltersDto {
   private final String freeGrowingDateEnd;
   private final String updateDateStart;
   private final String updateDateEnd;
-  private final String number;
+  // Main input, it can be one of Opening ID, Opening Number, Timber Mark ID, or File ID
+  private final String mainSearchTerm;
 
   public static final String ORG_UNIT = "orgUnit";
   public static final String CATEGORY = "category";
   public static final String STATUS = "status";
-  public static final String USER_ID = "userId";
+  public static final String ENTRY_USER_ID = "entryUserId";
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";
   public static final String DISTURBANCE_DATE_END = "disturbanceDateEnd";
@@ -36,14 +37,14 @@ public class SearchOpeningFiltersDto {
   public static final String FREE_GROWING_DATE_END = "freeGrowingDateEnd";
   public static final String UPDATE_DATE_START = "updateDateStart";
   public static final String UPDATE_DATE_END = "updateDateEnd";
-  public static final String NUMBER = "number";
+  public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
 
   /** Creates an instance of the search opening filter dto. */
-  public SearchOpeningFiltersDto(
+  public OpeningSearchFiltersDto(
       String orgUnit,
       String category,
       String status,
-      String userId,
+      String entryUserId,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -53,11 +54,11 @@ public class SearchOpeningFiltersDto {
       String freeGrowingDateEnd,
       String updateDateStart,
       String updateDateEnd,
-      String number) {
+      String mainSearchTerm) {
     this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
     this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
     this.status = Objects.isNull(status) ? null : status.toUpperCase().trim();
-    this.userId = Objects.isNull(userId) ? null : userId.toUpperCase().trim();
+    this.entryUserId = Objects.isNull(entryUserId) ? null : entryUserId.toUpperCase().trim();
     this.submittedToFrpa = submittedToFrpa;
     this.disturbanceDateStart =
         Objects.isNull(disturbanceDateStart) ? null : disturbanceDateStart.trim();
@@ -70,7 +71,8 @@ public class SearchOpeningFiltersDto {
     this.freeGrowingDateEnd = Objects.isNull(freeGrowingDateEnd) ? null : freeGrowingDateEnd.trim();
     this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
     this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
-    this.number = Objects.isNull(number) ? null : number.toUpperCase().trim();
+    this.mainSearchTerm =
+        Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
 
   /**
@@ -87,8 +89,8 @@ public class SearchOpeningFiltersDto {
         return !Objects.isNull(this.category);
       case STATUS:
         return !Objects.isNull(this.status);
-      case USER_ID:
-        return !Objects.isNull(this.userId);
+      case ENTRY_USER_ID:
+        return !Objects.isNull(this.entryUserId);
       case SUBMITTED_TO_FRPA:
         return !Objects.isNull(this.submittedToFrpa);
       case DISTURBANCE_DATE_START:
@@ -107,8 +109,8 @@ public class SearchOpeningFiltersDto {
         return !Objects.isNull(this.updateDateStart);
       case UPDATE_DATE_END:
         return !Objects.isNull(this.updateDateEnd);
-      case NUMBER:
-        return !Objects.isNull(this.number);
+      case MAIN_SEARCH_TERM:
+        return !Objects.isNull(this.mainSearchTerm);
       default: {
         log.warn("Prop not found {}", prop);
         return false;
