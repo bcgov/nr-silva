@@ -15,6 +15,7 @@ import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,33 @@ class OpeningSearchEndpointTest {
         .andExpect(jsonPath("$.data[0].freeGrowingDate").value(response.getFreeGrowingDate()))
         .andExpect(jsonPath("$.data[0].entryUserId").value(response.getEntryUserId()))
         .andExpect(jsonPath("$.data[0].submittedToFrpa").value(response.getSubmittedToFrpa()))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Opening search no records found should succeed")
+  void openingSearch_noRecordsFound_shouldSucceed() throws Exception {
+    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setPageIndex(0);
+    paginatedResult.setPerPage(5);
+    paginatedResult.setTotalPages(1);
+    paginatedResult.setHasNextPage(false);
+    paginatedResult.setData(List.of());
+
+    when(openingService.openingSearch(any(), any())).thenReturn(paginatedResult);
+
+    mockMvc
+        .perform(
+            get("/api/opening-search?mainSearchTerm=AAA")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.pageIndex").value("0"))
+        .andExpect(jsonPath("$.perPage").value("5"))
+        .andExpect(jsonPath("$.totalPages").value("1"))
+        .andExpect(jsonPath("$.hasNextPage").value("false"))
+        .andExpect(jsonPath("$.data", Matchers.empty()))
         .andReturn();
   }
 }
