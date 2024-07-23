@@ -26,9 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(DashboardExtractionEnpoint.class)
+@WebMvcTest(DashboardExtractionEndpoint.class)
 @WithMockUser
-class DashboardExtractionEnpointTest {
+class DashboardExtractionEndpointTest {
 
   @Autowired private MockMvc mockMvc;
 

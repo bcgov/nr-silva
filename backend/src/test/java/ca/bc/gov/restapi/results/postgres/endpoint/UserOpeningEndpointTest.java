@@ -30,7 +30,7 @@ class UserOpeningEndpointTest {
 
   @Test
   @DisplayName("Get user tracked openings happy path should succeed")
-  void getUserTrackedOpenings_happyPath_shoudSucceed() throws Exception {
+  void getUserTrackedOpenings_happyPath_shouldSucceed() throws Exception {
     MyRecentActionsRequestsDto action =
         new MyRecentActionsRequestsDto(
             "Update", 123456L, "APP", "Approved", "2 minutes ago", LocalDateTime.now());
@@ -54,7 +54,7 @@ class UserOpeningEndpointTest {
 
   @Test
   @DisplayName("Get user tracked openings no data should succeed")
-  void getUserTrackedOpenings_noData_shoudSucceed() throws Exception {
+  void getUserTrackedOpenings_noData_shouldSucceed() throws Exception {
     when(userOpeningService.getUserTrackedOpenings()).thenReturn(List.of());
 
     mockMvc
@@ -67,15 +67,15 @@ class UserOpeningEndpointTest {
         .andReturn();
   }
 
-  void saveUserOpening_happyPath_shoudSucceed() throws Exception {
+  void saveUserOpening_happyPath_shouldSucceed() throws Exception {
     //
   }
 
-  void deleteUserOpening_happyPath_shoudSucceed() throws Exception {
+  void deleteUserOpening_happyPath_shouldSucceed() throws Exception {
     //
   }
 
-  void deleteUserOpening_notFound_shoudFail() throws Exception {
+  void deleteUserOpening_notFound_shouldFail() throws Exception {
     //
   }
 }

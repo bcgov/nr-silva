@@ -39,12 +39,12 @@ public class DashboardExtractionService {
     String message = "Starting extraction";
     log.info(message);
 
-    OracleExtractionDto extactionDto = oracleExtractionService.getOpeningActivities(params);
+    OracleExtractionDto extractionDto = oracleExtractionService.getOpeningActivities(params);
 
     // Add the first log message
-    extactionDto.logMessages().add(0, new OracleLogDto(message, startDateTime));
+    extractionDto.logMessages().add(0, new OracleLogDto(message, startDateTime));
 
-    dashboardInsertionService.loadDashboardData(extactionDto, startDateTime, params);
+    dashboardInsertionService.loadDashboardData(extractionDto, startDateTime, params);
   }
 
   private OracleExtractionParamsDto getParams(

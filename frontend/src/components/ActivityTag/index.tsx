@@ -1,14 +1,12 @@
 import React from 'react';
-import { Tag } from '@carbon/react';
 import * as Carbon from '@carbon/icons-react';
-
 import { ActivityIconMap, FileIconMap } from './definitions';
-
 import './styles.scss';
+import { ActivityTagFileFormatEnum, ActivityTagTypeEnum } from '../../types/ActivityTagType';
 
 type ActivityTagProps = {
-  type: keyof typeof ActivityIconMap;
-  fileFormat: keyof typeof FileIconMap; // Optional fileFormat
+  type: ActivityTagTypeEnum;
+  fileFormat?: ActivityTagFileFormatEnum; // Optional fileFormat
 };
 
 const ActivityTag = ({ type, fileFormat }: ActivityTagProps) => {
@@ -21,8 +19,6 @@ const ActivityTag = ({ type, fileFormat }: ActivityTagProps) => {
     iconName = ActivityIconMap[tagType]; // get the icon name by the type name
   }
   const Icon = Carbon[iconName]; // get the icon component by the icon name
-
-  
 
   return (
     <>

@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltesDto;
+import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
@@ -36,7 +36,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Opening submission trends with no filters should succeed")
   void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
 
     OpeningsPerYearDto dto = new OpeningsPerYearDto(1, "Jan", 70);
     when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of(dto));
@@ -58,7 +58,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Opening submission trends with no data should succeed")
   void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto("DCR", null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto("DCR", null, null, null, null);
 
     when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of());
 
@@ -75,7 +75,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Free growing milestones test with no filters should succeed")
   void getFreeGrowingMilestonesData_noFilters_shouldSucceed() throws Exception {
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, null);
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
 
     FreeGrowingMilestonesDto milestonesDto =
         new FreeGrowingMilestonesDto(0, "0 - 5 months", 25, new BigDecimal("100"));
@@ -106,7 +106,7 @@ class DashboardMetricsEndpointTest {
     dtoList.add(new FreeGrowingMilestonesDto(2, "12 - 17 months", 25, new BigDecimal("25")));
     dtoList.add(new FreeGrowingMilestonesDto(3, "18 months", 25, new BigDecimal("25")));
 
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, "00012797");
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "00012797");
 
     when(dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto)).thenReturn(dtoList);
 
@@ -140,7 +140,7 @@ class DashboardMetricsEndpointTest {
   @Test
   @DisplayName("Free growing milestones test with no content should succeed")
   void getFreeGrowingMilestonesData_noData_shouldSucceed() throws Exception {
-    DashboardFiltesDto filtersDto = new DashboardFiltesDto(null, null, null, null, "00012579");
+    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "00012579");
 
     when(dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto))
         .thenReturn(List.of());

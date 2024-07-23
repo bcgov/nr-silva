@@ -1,25 +1,38 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
+import { RecentAction } from '../types/RecentAction';
+import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
+import { RecentOpening } from '../types/RecentOpening';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
-interface IOpening {
+interface statusCategory {
+  code: string;
+  description: string;
+}
+
+interface RecentOpeningApi {
   openingId: number;
   fileId: string;
   cuttingPermit: string | null;
   timberMark: string | null;
   cutBlock: string | null;
   grossAreaHa: number | null;
-  status: {code: string, description: string} | null;
-  category: {code: string, description: string} | null;
+  status: statusCategory | null;
+  category: statusCategory | null;
   disturbanceStart: string | null;
   entryTimestamp: string | null;
   updateTimestamp: string | null;
 }
 
-export async function fetchRecentOpenings() {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch recent openings data from backend.
+ *
+ * @returns {Promise<RecentOpening[]>} Array of objects found
+ */
+export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
+  const authToken = getAuthIdToken();
   try {
     const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
       headers: {
@@ -32,7 +45,7 @@ export async function fetchRecentOpenings() {
 
       if (data.data) {
         // Extracting row information from the fetched data
-        const rows: any[] = data.data.map((opening: IOpening) => ({
+        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
           id: opening.openingId.toString(),
           openingId: opening.openingId.toString(),
           fileId: opening.fileId ? opening.fileId : '-',
@@ -40,11 +53,11 @@ export async function fetchRecentOpenings() {
           timberMark: opening.timberMark ? opening.timberMark : '-',
           cutBlock: opening.cutBlock ? opening.cutBlock : '-',
           grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          status: opening.status ? opening.status.description : '-',
-          category: opening.category ? opening.category.code : '-',
+          status: opening.status && opening.status.description? opening.status.description : '-',
+          category: opening.category && opening.category.description? opening.category.description : '-',
           disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
-          createdAt: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
-          lastViewed: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
+          entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
+          updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
         }));
   
         return rows;
@@ -64,8 +77,13 @@ interface IOpeningPerYear {
   entryDateEnd: string | null;
 }
 
-export async function fetchOpeningsPerYear(props: IOpeningPerYear) {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch openings per year data from backend.
+ *
+ * @returns {Promise<OpeningPerYearChart[]>} Array of objects found
+ */
+export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<OpeningPerYearChart[]> {
+  const authToken = getAuthIdToken();
   try {
     // Construct URL with optional parameters
     let url = backendUrl.concat("/api/dashboard-metrics/submission-trends");
@@ -88,7 +106,7 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear) {
     const { data } = response;
     if (data && Array.isArray(data)) {
       // Format data for BarChartGrouped component
-      const formattedData = data.map(item => ({
+      const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
         key: item.monthName,
         value: item.amount
@@ -111,8 +129,18 @@ interface IFreeGrowingProps {
   entryDateEnd: string | null;
 }
 
-export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps) {
-  let authToken = getAuthIdToken();
+export interface IFreeGrowingChartData {
+  group: string;
+  value: number;
+}
+
+/**
+ * Fetch free growing milestones data from backend.
+ *
+ * @returns {IFreeGrowingChartData[]} Array with recent action objects.
+ */
+export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Promise<IFreeGrowingChartData[]> {
+  const authToken = getAuthIdToken();
   let url = backendUrl.concat("/api/dashboard-metrics/free-growing-milestones");
 
   // Construct URL with optional parameters
@@ -136,7 +164,7 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps) {
     const { data } = response;
     if (data && Array.isArray(data)) {
       // Transform data for DonutChartView component
-      const transformedData = data.map(item => ({
+      const transformedData: IFreeGrowingChartData[] = data.map(item => ({
         group: item.label,
         value: item.amount
       }));
@@ -151,8 +179,13 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps) {
   }
 }
 
-export async function fetchRecentActions() {
-  let authToken = getAuthIdToken();
+/**
+ * Fetch recent actions data from backend.
+ *
+ * @returns {RecentAction[]} Array with recent action objects.
+ */
+export function fetchRecentActions(): RecentAction[] {
+  // const authToken = getAuthIdToken();
   try {
     // Comment out the actual API call for now
     // const response = await axios.get(backendUrl.concat("/api/dashboard-metrics/my-recent-actions/requests"));
@@ -163,26 +196,30 @@ export async function fetchRecentActions() {
 
     // Temporarily use the sample data for testing
     // const { data } = response;
-    const data = [
+    const data: RecentAction[] = [
       {
         "activityType": "Update",
-        "openingId": 1541297,
+        "openingId": "1541297",
         "statusCode": "APP",
         "statusDescription": "Approved",
         "lastUpdatedLabel": "1 minute ago",
         "lastUpdated": "2024-05-16T19:59:21.635Z"
-      },
+      }
       // Add more sample objects here if needed
     ];
 
     if (Array.isArray(data)) {
       // Transforming response data into a format consumable by the component
-      const rows = data.map(action => ({
-        activityType: action.activityType,
-        openingID: action.openingId.toString(), // Convert openingId to string if needed
-        status: action.statusDescription,
-        lastUpdated: action.lastUpdatedLabel // Use lastUpdatedLabel from API
-      }));
+      const rows: RecentAction[] = data.map(action => {
+        return {
+          activityType: action.activityType,
+          openingId: action.openingId.toString(),
+          statusCode: action.statusCode,
+          statusDescription: action.statusDescription,
+          lastUpdated: action.lastUpdated,
+          lastUpdatedLabel: action.lastUpdatedLabel
+        }
+      });
       
       // Returning the transformed data
       return rows;
