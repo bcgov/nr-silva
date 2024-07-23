@@ -76,6 +76,24 @@ class OpeningSearchRepositoryTest {
         orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
+  private OpeningSearchFiltersDto mockAllFilters() {
+    return mockFilter(
+        "DCR",
+        "FTML",
+        "APP",
+        "TEST",
+        false,
+        "2023-01-01",
+        "2023-05-31",
+        "2020-01-01",
+        "2023-12-31",
+        "2024-01-01",
+        "2024-06-30",
+        "2024-01-01",
+        "2025-01-01",
+        "407");
+  }
+
   private OpeningSearchFiltersDto mockMainFilter(String mainSearchTerm) {
     return mockFilter(
         null,
@@ -282,7 +300,7 @@ class OpeningSearchRepositoryTest {
     String timberMark = null;
     String cutBlockId = null;
     BigDecimal openingGrossArea = new BigDecimal("11");
-    Timestamp disturbanceStartDate = null;
+    Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
     Integer fileId = 407;
     String orgUnitCode = null;
     String orgUnitName = null;
@@ -334,7 +352,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
     Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
     Assertions.assertEquals(
-        disturbanceStartDate, result.getData().get(0).getDisturbanceStartDate());
+        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
     Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
@@ -361,7 +379,8 @@ class OpeningSearchRepositoryTest {
     String timberMark = "EM2184";
     String cutBlockId = null;
     BigDecimal openingGrossArea = new BigDecimal("11");
-    Timestamp disturbanceStartDate = null;
+    Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
+    ;
     Integer fileId = 407;
     String orgUnitCode = null;
     String orgUnitName = null;
@@ -413,7 +432,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
     Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
     Assertions.assertEquals(
-        disturbanceStartDate, result.getData().get(0).getDisturbanceStartDate());
+        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
     Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
@@ -440,7 +459,7 @@ class OpeningSearchRepositoryTest {
     String timberMark = "EM2184";
     String cutBlockId = null;
     BigDecimal openingGrossArea = new BigDecimal("11");
-    Timestamp disturbanceStartDate = null;
+    Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
     Integer fileId = 407;
     String orgUnitCode = "DCR";
     String orgUnitName = null;
@@ -492,7 +511,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
     Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
     Assertions.assertEquals(
-        disturbanceStartDate, result.getData().get(0).getDisturbanceStartDate());
+        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
     Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
@@ -501,6 +520,107 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
     Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertFalse(result.isHasNextPage());
+  }
+
+  @Test
+  @DisplayName("Search opening query all filters should succeed")
+  void searchOpeningQuery_allFilters_shouldSucceed() {
+    OpeningSearchFiltersDto filters = mockAllFilters();
+
+    PaginationParameters pagination = new PaginationParameters(0, 10);
+
+    Integer openingId = 123456789;
+    String openingNumber = "589";
+    OpeningCategoryEnum category = OpeningCategoryEnum.of(filters.getCategory());
+    OpeningStatusEnum status = OpeningStatusEnum.of(filters.getStatus());
+    String cuttingPermitId = "123";
+    String timberMark = "EM2184";
+    String cutBlockId = "456";
+    BigDecimal openingGrossArea = new BigDecimal("11");
+    Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
+    Integer fileId = 407;
+    String orgUnitCode = filters.getOrgUnit();
+    String orgUnitName = "Org Name";
+    String clientNumber = "00012797";
+    String regenTemporary = "TBD";
+    String freeGrowTemporary = "TBD";
+    Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
+    String entryUserId = filters.getEntryUserId();
+    String submittedToFrpa = "false";
+    List<Object[]> resultList = new ArrayList<>(1);
+    resultList.add(
+        new Object[] {
+          openingId,
+          openingNumber,
+          category.getCode(),
+          status.getCode(),
+          cuttingPermitId,
+          timberMark,
+          cutBlockId,
+          openingGrossArea,
+          disturbanceStartDate,
+          fileId,
+          orgUnitCode,
+          orgUnitName,
+          clientNumber,
+          regenTemporary,
+          freeGrowTemporary,
+          updateTimestamp,
+          entryUserId,
+          submittedToFrpa,
+        });
+    Query query = mockQuery(resultList);
+    when(entityManager.createNativeQuery(anyString())).thenReturn(query);
+
+    PaginatedResult<OpeningSearchResponseDto> result =
+        openingSearchRepository.searchOpeningQuery(filters, pagination);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(0, result.getPageIndex());
+    Assertions.assertEquals(1, result.getPerPage());
+    Assertions.assertEquals(1, result.getTotalPages());
+    Assertions.assertEquals(1, result.getData().size());
+    Assertions.assertEquals(openingId, result.getData().get(0).getOpeningId());
+    Assertions.assertEquals(openingNumber, result.getData().get(0).getOpeningNumber());
+    Assertions.assertEquals(category, result.getData().get(0).getCategory());
+    Assertions.assertEquals(status, result.getData().get(0).getStatus());
+    Assertions.assertEquals(cuttingPermitId, result.getData().get(0).getCuttingPermitId());
+    Assertions.assertEquals(timberMark, result.getData().get(0).getTimberMark());
+    Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
+    Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
+    Assertions.assertEquals(
+        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
+    Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
+    Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
+    Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
+    Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
+    Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
+    Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(entryUserId, result.getData().get(0).getEntryUserId());
+    Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertFalse(result.isHasNextPage());
+  }
+
+  @Test
+  @DisplayName("Search opening query no records found should succeed")
+  void searchOpeningQuery_noRecordsFound_shouldSucceed() {
+    OpeningSearchFiltersDto filters = mockOrgUnit("AAA");
+
+    PaginationParameters pagination = new PaginationParameters(0, 10);
+
+    List<Object[]> resultList = new ArrayList<>();
+    Query query = mockQuery(resultList);
+    when(entityManager.createNativeQuery(anyString())).thenReturn(query);
+
+    PaginatedResult<OpeningSearchResponseDto> result =
+        openingSearchRepository.searchOpeningQuery(filters, pagination);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(0, result.getPageIndex());
+    Assertions.assertEquals(10, result.getPerPage());
+    Assertions.assertEquals(0, result.getTotalPages());
+    Assertions.assertTrue(result.getData().isEmpty());
     Assertions.assertFalse(result.isHasNextPage());
   }
 }
