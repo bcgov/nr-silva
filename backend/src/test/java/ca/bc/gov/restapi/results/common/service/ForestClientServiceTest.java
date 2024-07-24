@@ -58,6 +58,22 @@ class ForestClientServiceTest {
   }
 
   @Test
+  @DisplayName("Get all clients by number should succeed")
+  void getClientByNumber_allClients_shouldSucceed() {
+    Optional<ForestClientDto> clientOne = forestClientService.getClientByNumber("00132184");
+    Assertions.assertFalse(clientOne.isEmpty());
+    
+    Optional<ForestClientDto> clientTwo = forestClientService.getClientByNumber("00012797");
+    Assertions.assertFalse(clientTwo.isEmpty());
+
+    Optional<ForestClientDto> clientThree = forestClientService.getClientByNumber("00001012");
+    Assertions.assertFalse(clientThree.isEmpty());
+
+    Optional<ForestClientDto> clientFour = forestClientService.getClientByNumber("00149081");
+    Assertions.assertFalse(clientFour.isEmpty());
+  }
+
+  @Test
   @DisplayName("Get client by number not found should succeed")
   void getClientByNumber_notFound_shouldSucceed() {
     Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber("11");

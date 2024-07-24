@@ -35,7 +35,7 @@ const OrganizationItem = ({ forestClient, queryState, selected }: OrganizationIt
   }
 
   const renderIcon = () => {
-    const clientTypeConfig = ClientTypeIconMap[forestClient.clientTypeCode];
+    const clientTypeConfig = ClientTypeIconMap[forestClient.clientType.code];
     let Img = null;
     if (selected) {
       Img = Icons.CheckmarkFilled;
