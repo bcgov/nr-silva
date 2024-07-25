@@ -6,10 +6,8 @@ import {
 } from '@carbon/react';
 import { ArrowRight } from '@carbon/icons-react';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../services/AuthService';
-import { setSelectedClientRoles } from '../../actions/selectedClientRolesActions';
+import { setSelectedClientRoles, SetSelectedClientRolesAction } from '../../actions/selectedClientRolesActions';
 import { getForestClientByNumberOrAcronym } from '../../services/TestService';
 import { THREE_HALF_HOURS, THREE_HOURS } from '../../config/TimeUnits';
 import { UserClientRolesType } from '../../types/UserRoleType';
@@ -23,21 +21,22 @@ import OrganizationItem from './OrganizationItem';
 const SELECTED_CLIENT_ROLES = 'selectedClientRoles';
 
 import './styles.scss';
+import { AppDispatch, RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
-  const navigate = useNavigate();
-  const dispatch:any = useDispatch();
-  const userDetails = useSelector((state:any) => state.userDetails);
+  const dispatch = useDispatch<AppDispatch>();
+  const userDetails = useSelector((state: RootState) => state.userDetails);
 
   const user = userDetails.user;
-  const selectedClientRoles = user.selectedClientRoles;
+  const selectedClientRoles = useSelector((state: RootState) => state.selectedClientRoles);
   
   const [matchedClients, setMatchedClients] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [clientRolesToSet, setClientRolesToSet] = useState<UserClientRolesType | null>(selectedClientRoles);
 
   useQueries({
-    queries: user?.clientRoles.map((clientRole:UserClientRolesType) => ({
+    queries: user?.clientRoles?.map((clientRole:UserClientRolesType) => ({
       queryKey: ['role', 'forest-clients', clientRole.clientId],
       queryFn: () => getForestClientByNumberOrAcronym(clientRole.clientId),
       staleTime: THREE_HOURS,
@@ -73,7 +72,7 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
 
   const setSelectedClientRolesHandler = (clientId: string, clientName?: string) => {
     if (clientId) {
-      const found = user!.clientRoles.find((uClientRole:any) => (
+      const found = user?.clientRoles?.find((uClientRole: UserClientRolesType) => (
         uClientRole.clientId === clientId
       ));
       if (found) {
@@ -85,8 +84,6 @@ const OrganizationSelection = ({ simpleView }: RoleSelectionProps) => {
         if (simpleView) {
           localStorage.setItem(SELECTED_CLIENT_ROLES, JSON.stringify(toSet))
           dispatch(setSelectedClientRoles(toSet));
-          //this is temporary
-          // window.location.reload();
         }
       }
     }

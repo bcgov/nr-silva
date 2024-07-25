@@ -5,11 +5,12 @@ import {
   SET_CLIENT_ROLES
 } from '../constants/userConstants';
 import { isCurrentAuthUser } from '../services/AuthService';
+import { AppDispatch } from '../store';
 import { UserClientRolesType } from '../types/UserRoleType';
 
 const FAM_LOGIN_USER = 'famLoginUser';
 
-export const getUserDetails = () => async (dispatch: any) => {
+export const getUserDetails = () => async (dispatch: AppDispatch) => {
   try {
     dispatch({
       type: USER_DETAILS_REQUEST
@@ -32,10 +33,9 @@ export const getUserDetails = () => async (dispatch: any) => {
   }
 };
 
-export const setClientRoles = (clientRoles:UserClientRolesType[]) => (dispatch: any) => {
+export const setClientRoles = (clientRoles:UserClientRolesType[]) => (dispatch: AppDispatch) => {
   dispatch({
     type: SET_CLIENT_ROLES,
     payload: clientRoles
   });
 };
-

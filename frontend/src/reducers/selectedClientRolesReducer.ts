@@ -4,12 +4,16 @@ import { UserClientRolesType } from "../types/UserRoleType";
 
 const selectedClientRolesFromStorage = JSON.parse(localStorage.getItem('selectedClientRoles') as string) as
   | UserClientRolesType
-  | undefined
   | null;
 
 const initialState = selectedClientRolesFromStorage ?? null;
 
-export const selectedClientRolesReducer = (state = initialState, action: any) => {
+interface ActionType {
+  type: string;
+  payload: UserClientRolesType
+}
+
+export const selectedClientRolesReducer = (state = initialState, action: ActionType): UserClientRolesType | null => {
   switch (action.type) {
     case SET_SELECTED_CLIENT_ROLES:
       return action.payload;

@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FlexGrid, Row, Column } from '@carbon/react';
 
 import OrganizationSelection from '../../components/OrganizationSelection';
-import { useSelector, useDispatch } from 'react-redux';
 
 import './styles.scss';
+import { RootState } from '../../store';
+import { useSelector } from 'react-redux';
 
 const LoginOrgSelection = () => {
-  const userDetails = useSelector((state:any) => state.userDetails);
+  const userDetails = useSelector((state: RootState) => state.userDetails);
   const user = userDetails.user;
-
 
   return (
     <FlexGrid className="login-org-selection-grid">

@@ -29,19 +29,6 @@ const selectedClientRolesFromStorage = JSON.parse(localStorage.getItem('selected
   | undefined
   | null;
 
-interface User extends FamLoginUser {
-  isLoggedIn: boolean;
-}
-
-interface UserState {
-  userDetails: {
-    user: User;
-    loading: boolean;
-    error: boolean;
-  };
-  selectedClientRoles: UserClientRolesType | undefined | null;
-}
-
 // set the initial state
 const initialState: any = {
   userDetails: {
@@ -62,5 +49,8 @@ const store = createStore(
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
