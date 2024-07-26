@@ -1,18 +1,23 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import StandardCard from "../../components/StandardCard";
-
+import { RootState } from "../../store";
 
 const Dashboard: React.FC = () => {
-  const userDetails = useSelector((state:any) => state.userDetails)
-  const { user } = userDetails
-    return (
-      <>
-      <div className="container">
-        <h4 className='py-4'>Hello <span className='fw-bold'>{user.firstName+" "+user.lastName}</span>, welcome to the SILVA portal. Please take a moment to review the available options and select the test that best matches your access requirements:</h4>
+  const userDetails = useSelector((state: RootState) => state.userDetails);
+  const selectedClientRoles = useSelector((state: RootState) => state.selectedClientRoles);
+  const { user } = userDetails;
+
+  return (
+    <>
+      <div className="container-fluid">
+        <h4 className='py-4'>
+          Hello&nbsp;
+          <span className='fw-bold'>{user.firstName+" "+user.lastName}</span>,
+          welcome to the SILVA portal. You are logged in with the client&nbsp;
+          <span className="fw-bold">{selectedClientRoles?.clientName}</span>!! </h4>
       </div>
-      </>
-    );
-  };
+    </>
+  );
+};
 
 export default Dashboard;

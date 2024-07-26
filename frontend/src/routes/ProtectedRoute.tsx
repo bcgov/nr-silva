@@ -1,15 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import { RootState } from '../store';
+import { useSelector } from 'react-redux';
 
 interface IProps {
-  signed: boolean;
   children: JSX.Element;
 }
 
-const ProtectedRoute = ({ signed, children }: IProps): JSX.Element => {
-  const userDetails = useSelector((state:any) => state.userDetails)
-  const { error, user } = userDetails
+const ProtectedRoute = ({ children }: IProps): JSX.Element => {
+  const userDetails = useSelector((state: RootState) => state.userDetails);
+  const { error, user } = userDetails;
   const { pathname } = window.location;
   const encodedUrl = encodeURI(`/?page=${pathname}`);
   return (
@@ -24,10 +24,10 @@ const ProtectedRoute = ({ signed, children }: IProps): JSX.Element => {
           return <Navigate to={encodedUrl} replace />;
         }
 
-        return <>Sorry </>
+        return <>Sorry </>;
       })()
     )
   );
 };
 
-export default ProtectedRoute ;
+export default ProtectedRoute;
