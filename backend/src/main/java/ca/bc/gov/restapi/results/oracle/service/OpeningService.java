@@ -85,49 +85,6 @@ public class OpeningService {
     return paginatedResult;
   }
 
-  /**
-   * Get recent openings given the opening creation date.
-   *
-   * @param pagination A {@link PaginationParameters} with pagination settings.
-   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
-   */
-  public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
-    log.info(
-        "Getting recent openings, user independent, with page index {} and page size {}",
-        pagination.page(),
-        pagination.perPage());
-
-    // Openings
-    Pageable pageable =
-        PageRequest.of(
-            pagination.page(), pagination.perPage(), Sort.by("updateTimestamp").descending());
-    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
-
-    PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(pagination.page());
-    paginatedResult.setPerPage(pagination.perPage());
-
-    if (openingPage.getContent().isEmpty()) {
-      log.info("No recent openings given page index and size!");
-      paginatedResult.setData(List.of());
-      paginatedResult.setTotalPages(0);
-      paginatedResult.setHasNextPage(false);
-      return paginatedResult;
-    }
-
-    // Cut Block Open Admin
-    List<Long> openingIds = openingPage.getContent().stream().map(OpeningEntity::getId).toList();
-    List<CutBlockOpenAdminEntity> cutBlocks =
-        cutBlockOpenAdminService.findAllByOpeningIdIn(openingIds);
-
-    List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
-    paginatedResult.setData(list);
-    paginatedResult.setTotalPages(openingPage.getTotalPages());
-    paginatedResult.setHasNextPage(openingPage.hasNext());
-
-    return paginatedResult;
-  }
-
   private List<RecentOpeningDto> createDtoFromEntity(
       List<OpeningEntity> openings, List<CutBlockOpenAdminEntity> cutBlocks) {
     if (openings.size() != cutBlocks.size()) {

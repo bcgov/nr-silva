@@ -132,44 +132,4 @@ class OpeningServiceTest {
     Assertions.assertEquals(0, paginatedResult.getTotalPages());
     Assertions.assertTrue(paginatedResult.getData().isEmpty());
   }
-
-  @Test
-  @DisplayName("Get a list of recent openings without user")
-  void getRecentOpenings_fetchNoUserPaginated_shouldSucceed() {
-    OpeningEntity openingEntity = new OpeningEntity();
-    openingEntity.setId(123L);
-
-    List<OpeningEntity> openingList = new ArrayList<>(1);
-    openingList.add(openingEntity);
-
-    int pages = 3;
-    int pageSize = 5;
-    int totalResults = pageSize * pages - 1;
-    Pageable openingsPageable = Pageable.ofSize(pageSize);
-
-    Page<OpeningEntity> openingsPage = new PageImpl<>(openingList, openingsPageable, totalResults);
-    when(openingRepository.findAll(any(Pageable.class))).thenReturn(openingsPage);
-
-    CutBlockOpenAdminEntity cutBlock = new CutBlockOpenAdminEntity();
-    cutBlock.setId(222L);
-    cutBlock.setForestFileId("TFL47");
-    cutBlock.setCuttingPermitId("12T");
-    cutBlock.setTimberMark("47/12S");
-    cutBlock.setCutBlockId("12-69");
-    cutBlock.setOpeningGrossArea(new BigDecimal("12.9"));
-    cutBlock.setOpeningId(openingEntity.getId());
-    when(cutBlockOpenAdminService.findAllByOpeningIdIn(any())).thenReturn(List.of(cutBlock));
-
-    int currentPage = 1;
-
-    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpenings(pagination);
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
-    Assertions.assertEquals(pages, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-    Assertions.assertEquals(1, paginatedResult.getData().size());
-  }
 }
