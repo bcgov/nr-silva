@@ -10,10 +10,10 @@ import Landing from "./screens/Landing";
 import Help from "./screens/Help";
 import Reports from './screens/Reports';
 import SideLayout from './layouts/SideLayout';
-import Dashboard from './screens/Dashboard';
 import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
+import DashboardRedirect from './screens/DashboardRedirect';
 
 Amplify.configure(amplifyconfig);
 
@@ -23,17 +23,17 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Landing/>} />
         <Route path="/dashboard" element={
-          <PostLoginRoute signed={true}>
-              <SideLayout pageContent={<Dashboard/>} />
+          <PostLoginRoute>
+            <DashboardRedirect />
           </PostLoginRoute>
         } />
         <Route path="/opening" element={
-          <ProtectedRoute signed={true}>
+          <ProtectedRoute>
             <SideLayout pageContent={<Opening/>} />
           </ProtectedRoute>
         } />
         <Route path="/reports" element={
-          <ProtectedRoute signed={true}>
+          <ProtectedRoute>
             <SideLayout pageContent={<Reports/>} />
           </ProtectedRoute>
         } />

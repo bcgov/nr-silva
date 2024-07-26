@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dashboard-extraction")
 @AllArgsConstructor
 @Tag(
-    name = "Dashboard Extraction (SILVA)",
-    description = "Endpoints fot the Dashboard extraction process in the `SILVA` schema")
+    name = "Dashboard Extraction (Postgres)",
+    description = "Endpoints for the Dashboard extraction process on `SILVA` schema")
 public class DashboardExtractionEndpoint {
 
   private final OracleExtractionLogsRepository oracleExtractionLogsRepository;
