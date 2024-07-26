@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user-openings")
 @Tag(
-    name = "User Openings (SILVA)",
-    description = "Endpoints to handle user favourite Openings in the `SILVA` schema.")
+    name = "User Openings (Postgres)",
+    description = "Endpoints to handle user favourite Openings on `SILVA` schema.")
 @RequiredArgsConstructor
 public class UserOpeningEndpoint {
 

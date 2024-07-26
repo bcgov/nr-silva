@@ -12,7 +12,7 @@ interface EmptySectionProps {
   title: string;
   description: string | React.ReactNode;
   pictogram?: string;
-  fill:string;
+  fill?:string;
 }
 
 const EmptySection = ({

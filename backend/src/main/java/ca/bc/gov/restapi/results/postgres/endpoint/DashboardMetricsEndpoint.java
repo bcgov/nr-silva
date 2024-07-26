@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/dashboard-metrics")
 @Tag(
-    name = "Dashboard Metrics (SILVA)",
-    description = "Endpoints fot the Dashboard metrics charts in the `SILVA` schema")
+    name = "Dashboard Metrics (Postgres)",
+    description = "Endpoints for the Dashboard metrics charts on `SILVA` schema")
 @RequiredArgsConstructor
 public class DashboardMetricsEndpoint {
 

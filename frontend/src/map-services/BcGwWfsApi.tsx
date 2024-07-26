@@ -132,7 +132,7 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
 
   const resultJson = await fetch(uri, {
     method: "GET",
-    mode: "no-cors"
+    mode: "cors"
   });
   if (resultJson.ok) {
     const json = await resultJson.json();
@@ -188,7 +188,7 @@ export const getInitialLayers = async (): Promise<MapLayer | null> => {
 
   const resultJson = await fetch(uri, {
     method: "GET",
-    mode: "no-cors"
+    mode: "cors"
   });
   if (resultJson.ok) {
     const json = await resultJson.json();

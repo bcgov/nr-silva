@@ -21,6 +21,8 @@ import './BCHeaderwSide.scss';
 import RightPanelTitle from '../RightPanelTitle';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
+import { ExpandableSearch } from '@carbon/react';
+import ExpandingSearch from '../ExpandingSearch';
 
 interface ListItem {
   name: string;
@@ -143,7 +145,10 @@ const BCHeaderwSide = () => {
           <Link to="/" className="header-link" data-testid="header-name">
             SILVA
           </Link>
-          <HeaderGlobalBar className="align-items-center">
+          <HeaderGlobalBar className="align-items-center w-100">
+            <div className="mx-2">
+              <ExpandingSearch />
+            </div>
             <div className="mx-2">
               <ThemeToggle />
             </div>

@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { getUserDetails } from '../actions/userAction';
 import { Loading } from "@carbon/react";
+import { RootState } from '../store';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface IProps {
-  signed: boolean;
   children: JSX.Element;
 }
 
-const PostLoginRoute = ({ signed, children }: IProps): JSX.Element => {
-  const userDetails = useSelector((state:any) => state.userDetails)
+const PostLoginRoute = ({ children }: IProps): JSX.Element => {
+  const userDetails = useSelector((state: RootState) => state.userDetails)
   const { loading, error, user } = userDetails
   const { pathname } = window.location;
   const encodedUrl = encodeURI(`/?page=${pathname}`);
@@ -19,12 +19,6 @@ const PostLoginRoute = ({ signed, children }: IProps): JSX.Element => {
   useEffect(()=>{
     dispatch(getUserDetails())
   },[dispatch])
-
-  // if (!signed) {
-    // const { pathname } = window.location;
-    // const encodedUrl = encodeURI(`/?page=${pathname}`);
-  //   return <Navigate to={encodedUrl} replace />;
-  // }
 
   return (
     loading ? (

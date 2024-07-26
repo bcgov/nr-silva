@@ -6,6 +6,8 @@ import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Tag(name = "Openings (THE)", description = "Endpoints to handle Openings in the `THE` schema.")
+@Tag(
+    name = "Openings (Oracle)",
+    description = "Endpoints to handle Openings on Oracle on `THE` schema.")
 public class OpeningEndpoint {
 
   private final OpeningService openingService;
@@ -41,7 +45,11 @@ public class OpeningEndpoint {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "An array with all recent openings, ordered by the most recent ones.")
+            description = "An array with all recent openings, ordered by the most recent ones."),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
       })
   @PaginatedViaQuery
   @CrossOrigin(exposedHeaders = "x-opening-source")
