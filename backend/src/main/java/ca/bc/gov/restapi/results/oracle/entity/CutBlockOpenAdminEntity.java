@@ -20,27 +20,27 @@ public class CutBlockOpenAdminEntity {
   @Column(name = "CUT_BLOCK_OPEN_ADMIN_ID")
   private Long id;
 
-  @Column(name = "FOREST_FILE_ID", length = 10, nullable = true)
+  @Column(name = "FOREST_FILE_ID", length = 10)
   private String forestFileId;
 
-  @Column(name = "CUTTING_PERMIT_ID", length = 3, nullable = true)
+  @Column(name = "CUTTING_PERMIT_ID", length = 3)
   private String cuttingPermitId;
 
-  @Column(name = "TIMBER_MARK", length = 6, nullable = true)
+  @Column(name = "TIMBER_MARK", length = 6)
   private String timberMark;
 
-  @Column(name = "CUT_BLOCK_ID", length = 10, nullable = true)
+  @Column(name = "CUT_BLOCK_ID", length = 10)
   private String cutBlockId;
 
-  @Column(name = "OPENING_GROSS_AREA", nullable = true, precision = 11, scale = 4)
+  @Column(name = "OPENING_GROSS_AREA", precision = 11, scale = 4)
   private BigDecimal openingGrossArea;
 
-  @Column(name = "DISTURBANCE_START_DATE", nullable = true)
+  @Column(name = "DISTURBANCE_START_DATE")
   private LocalDate disturbanceStartDate;
 
-  @Column(name = "DISTURBANCE_END_DATE", nullable = true)
+  @Column(name = "DISTURBANCE_END_DATE")
   private LocalDate disturbanceEndDate;
 
-  @Column(name = "OPENING_ID", nullable = true)
+  @Column(name = "OPENING_ID")
   private Long openingId;
 }

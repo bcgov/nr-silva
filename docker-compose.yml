@@ -10,9 +10,7 @@ x-frontend: &frontend
     timeout: 5s
     retries: 5
   restart: always
-  depends_on:
-    backend:
-      condition: service_started
+  
 
 x-backend: &backend
   healthcheck:

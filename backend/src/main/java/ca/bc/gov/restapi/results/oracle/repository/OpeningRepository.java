@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /** This interface allows the service to fetch and save data into the database. */
-public interface OpeningRepository extends JpaRepository<OpeningEntity, String> {
+public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   Page<OpeningEntity> findAllByEntryUserId(String entryUserId, Pageable pageable);
 
@@ -100,7 +100,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, String> 
           """
           SELECT raac.RESULTS_AUDIT_ACTION_CODE AS resultsAuditActionCode
             ,raac.DESCRIPTION AS description
-          FROM THE.RESULTS_AUDIT_ACTION_CODE raac 
+          FROM THE.RESULTS_AUDIT_ACTION_CODE raac
           WHERE raac.RESULTS_AUDIT_ACTION_CODE IN (?1)
         """,
       nativeQuery = true)

@@ -5,12 +5,15 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,6 +37,8 @@ public class OpeningService {
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
 
   private final LoggedUserService loggedUserService;
+
+  private final OpeningSearchRepository openingSearchRepository;
 
   /**
    * Gets all recent openings for the Home Screen.
@@ -83,6 +88,74 @@ public class OpeningService {
     paginatedResult.setHasNextPage(openingPage.hasNext());
 
     return paginatedResult;
+  }
+
+  /**
+   * Get recent openings given the opening creation date.
+   *
+   * @param pagination A {@link PaginationParameters} with pagination settings.
+   * @return {@link List} of {@link RecentOpeningDto} containing all recent openings.
+   */
+  public PaginatedResult<RecentOpeningDto> getRecentOpenings(PaginationParameters pagination) {
+    log.info(
+        "Getting recent openings, user independent, with page index {} and page size {}",
+        pagination.page(),
+        pagination.perPage());
+
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException();
+    }
+
+    // Openings
+    Pageable pageable =
+        PageRequest.of(
+            pagination.page(), pagination.perPage(), Sort.by("updateTimestamp").descending());
+    Page<OpeningEntity> openingPage = openingRepository.findAll(pageable);
+
+    PaginatedResult<RecentOpeningDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setPageIndex(pagination.page());
+    paginatedResult.setPerPage(pagination.perPage());
+
+    if (openingPage.getContent().isEmpty()) {
+      log.info("No recent openings given page index and size!");
+      paginatedResult.setData(List.of());
+      paginatedResult.setTotalPages(0);
+      paginatedResult.setHasNextPage(false);
+      return paginatedResult;
+    }
+
+    // Cut Block Open Admin
+    List<Long> openingIds = openingPage.getContent().stream().map(OpeningEntity::getId).toList();
+    List<CutBlockOpenAdminEntity> cutBlocks =
+        cutBlockOpenAdminService.findAllByOpeningIdIn(openingIds);
+
+    List<RecentOpeningDto> list = createDtoFromEntity(openingPage.getContent(), cutBlocks);
+    paginatedResult.setData(list);
+    paginatedResult.setTotalPages(openingPage.getTotalPages());
+    paginatedResult.setHasNextPage(openingPage.hasNext());
+
+    return paginatedResult;
+  }
+
+  /**
+   * Search Opening API.
+   *
+   * @param filtersDto An instance of {@link OpeningSearchFiltersDto} with all possible filters.
+   * @param pagination An instance of {@link PaginationParameters} with pagination settings.
+   * @return Paginated result with found content.
+   */
+  public PaginatedResult<OpeningSearchResponseDto> openingSearch(
+      OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
+    log.info(
+        "Search Openings with page index {} and page size {}",
+        pagination.page(),
+        pagination.perPage());
+
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException();
+    }
+
+    return openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
