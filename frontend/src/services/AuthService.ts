@@ -7,6 +7,7 @@ import {
 } from 'aws-amplify/auth';
 import { env } from '../env';
 import { UserClientRolesType } from '../types/UserRoleType';
+import { formatRolesArray } from '../utils/famUtils';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -117,6 +118,8 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
   const decodedIdToken = idToken?.payload;
   const decodedAccessToken = accessToken?.payload;
+  console.log("The decoded id token:")
+  console.log(decodedIdToken)
   // Extract the first name and last name from the displayName and remove unwanted part
   let displayName: string = '';
   if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
@@ -161,30 +164,8 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
   // Extract client IDs from roles
   const clientIds = parseClientIdsFromRoles(roles);
 
-  //hard coded data
-  // Define the roles array based on UserClientRolesType structure
-const rolesArray: UserClientRolesType[] = [
-  {
-    clientId: '00132184',
-    roles: ['role1', 'role2'], // Example roles for clientId '00132184'
-    clientName: 'Client Name 1'
-  },
-  {
-    clientId: '00012797',
-    roles: ['role3'], // Example roles for clientId '00012797'
-    clientName: 'Client Name 2'
-  },
-  {
-    clientId: '00001012',
-    roles: ['role4', 'role5'], // Example roles for clientId '00001012'
-    clientName: 'Client Name 3'
-  },
-  {
-    clientId: '00149081',
-    roles: ['role6'], // Example roles for clientId '00149081'
-    clientName: 'Client Name 4'
-  }
-];
+  //get the user roles from the FAM token
+  const rolesArray = formatRolesArray(decodedIdToken);
 
   const famLoginUser = {
     userName,
