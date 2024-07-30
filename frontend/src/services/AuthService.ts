@@ -7,6 +7,7 @@ import {
 } from 'aws-amplify/auth';
 import { env } from '../env';
 import { UserClientRolesType } from '../types/UserRoleType';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
 import { formatRolesArray } from '../utils/famUtils';
 
 // Define a global variable to store the ID token
@@ -18,7 +19,7 @@ export interface FamLoginUser {
   username?: string;
   idpProvider?: string;
   roles?: string[];
-  clientIds?: string[]; // Add clientIds to FamLoginUser interface
+  authToken?: CognitoUserSession;
   exp?: number;
 }
 
@@ -161,8 +162,6 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     roles = decodedAccessToken['cognito:groups'] as Array<string>;
   }
 
-  // Extract client IDs from roles
-  const clientIds = parseClientIdsFromRoles(roles);
 
   //get the user roles from the FAM token
   const rolesArray = formatRolesArray(decodedIdToken);
@@ -173,7 +172,6 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     email,
     idpProvider,
     clientRoles: rolesArray,
-    clientIds,
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
     lastName
@@ -181,18 +179,6 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
   
 
   return famLoginUser;
-}
-
-/**
- * Function to parse client IDs from roles
- */
-function parseClientIdsFromRoles(roles: string[]): string[] {
-  // Implement logic to extract client IDs from roles here
-  // Placeholder implementation
-  return roles.map(role => {
-    const parts = role.split(':');
-    return parts[parts.length - 1];
-  });
 }
 
 /**

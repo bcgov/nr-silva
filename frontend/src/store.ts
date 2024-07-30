@@ -5,18 +5,13 @@ import type { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { userDetailsReducer } from './reducers/userReducer'
 import { UserClientRolesType } from './types/UserRoleType'
 import { selectedClientRolesReducer } from './reducers/selectedClientRolesReducer'
+import { FamLoginUser } from './services/AuthService'
 
 const reducer = combineReducers({
   userDetails: userDetailsReducer,
   selectedClientRoles: selectedClientRolesReducer
 });
 
-export interface FamLoginUser {
-  username?: string;
-  idpProvider?: string;
-  roles?: string[];
-  authToken?: CognitoUserSession;
-}
 const FAM_LOGIN_USER = 'famLoginUser';
 
 const userInfoFromStorage = JSON.parse(localStorage.getItem(FAM_LOGIN_USER) as string) as
