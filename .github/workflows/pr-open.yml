@@ -30,7 +30,7 @@ jobs:
         env:
           DOMAIN: apps.silver.devops.gov.bc.ca
           PREFIX: ${{ github.event.repository.name }}
-        uses: bcgov-nr/action-pr-description-add@v1.1.1
+        uses: bcgov-nr/action-pr-description-add@v1.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
