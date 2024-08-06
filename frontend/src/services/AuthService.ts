@@ -6,7 +6,6 @@ import {
   signOut
 } from 'aws-amplify/auth';
 import { env } from '../env';
-import { UserClientRolesType } from '../types/UserRoleType';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 import { formatRolesArray } from '../utils/famUtils';
 
@@ -119,8 +118,6 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
   const decodedIdToken = idToken?.payload;
   const decodedAccessToken = accessToken?.payload;
-  console.log("The decoded id token:")
-  console.log(decodedIdToken)
   // Extract the first name and last name from the displayName and remove unwanted part
   let displayName: string = '';
   if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
