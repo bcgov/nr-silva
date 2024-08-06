@@ -3,5 +3,7 @@ export type MapLayer = {
   format: string;
   layers: string;
   transparent: boolean;
-  styles: string;
+  styles: {name: string, title: string}[];
+  catalogueUrl: string;
+  getCapabilitiesUrl: string;
 };

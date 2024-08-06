@@ -10,6 +10,8 @@ import SectionTitle from "../SectionTitle";
 import TableSkeleton from "../TableSkeleton";
 import { InlineNotification } from '@carbon/react';
 import { RecentOpening } from "../../types/RecentOpening";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 interface Props {
   showSpatial: boolean;
@@ -22,6 +24,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
+  const userDetails = useSelector((state: RootState) => state.userDetails);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,13 +49,25 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
 
   const toggleSpatial = () => {
     setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
-  }
+  };
+
+  const onClickFn = () => {
+    const allowed = ['RDECAMPO', 'JAZZ', 'Caroline', 'Michelle', 'Chantelle'];
+    const { userName } = userDetails.user;
+    if (allowed.includes(userName)) {
+      window.alert('Allowed');
+    }
+  };
 
   return (
     <>
       <div className="container-fluid">
         <div className="row px-0 py-4 p-sm-4">
-          <SectionTitle title="Recent openings" subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below" />
+          <SectionTitle
+            title="Recent openings"
+            subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below"
+            onClick={onClickFn}
+          />
           <Button
             className="h-100 my-auto d-none d-sm-block"
             renderIcon={Location}

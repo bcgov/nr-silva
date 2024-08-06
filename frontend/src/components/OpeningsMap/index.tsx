@@ -28,7 +28,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
   const [position, setPosition] = useState<number[]>([48.43737, -123.35883]);
   const [reloadMap, setReloadMap] = useState<boolean>(false);
-  const [layers, setLayers] = useState<MapLayer[]>(allLayers);
+  const [layers, setLayers] = useState<MapLayer[]>([]);
   const authToken = getAuthIdToken();
 
   const resultsStyle = {
@@ -90,6 +90,11 @@ const OpeningsMap: React.FC<MapProps> = ({
     if (openingId) {
       callBcGwApi();
     }
+
+    const filtered = allLayers.filter(l => l.name.length > 0);
+    if (filtered.length) {
+      setLayers(filtered);
+    }
   }, [openingId]);
 
   useEffect(() => {
@@ -136,7 +141,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         ))
       ) : null }
       
-      {/* Centers the map autimatically when a different opening get selected. */}
+      {/* Centers the map automatically when a different opening get selected. */}
       {position && (
         <RecenterAutomatically lat={position[0]} long={position[1]} />
       )}
@@ -152,7 +157,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                 format: layer.format,
                 layers: layer.layers,
                 transparent: layer.transparent,
-                styles: layer.styles
+                styles: layer.styles.map(s => s.name).join(',')
               }}
             />
           </LayersControl.Overlay>
