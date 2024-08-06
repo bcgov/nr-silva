@@ -114,21 +114,32 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
 
   let uri = 'https://openmaps.gov.bc.ca/geo/ows';
   // service
-  uri += '?service=WFS';
+  uri += '?service=WMS';
   // version
-  uri += '&version=2.0.0';
+  uri += '&version=1.1.1';
   // request
-  uri += '&request=GetFeature';
-  // typeName (layer !?)
-  uri += '&typeName=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
-  // output format
-  uri += '&outputFormat=application/json';
+  uri += '&request=GetMap';
+  // layers
+  uri += '&layers=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
+  // format
+  uri += '&format=image/png';
+  // transparency
+  uri += '&transparent=true'
+  // height
+  uri += '&height=256';
+  // width
+  uri += '&width=256';
   // Srs name
-  uri += '&SrsName=EPSG:4326';
+  //uri += '&srs=EPSG:4326';
+  uri += '&srs=EPSG:3857';
   // Properties name
-  uri += '&PROPERTYNAME=OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED';
+  //uri += '&PROPERTYNAME=OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED';
   // CQL Filters
   uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
+  // bbox
+  uri += '&bbox=-15028131.257091936,6261721.357121641,-14401959.121379772,6887893.492833805';
+
+  console.log('uri', uri);
 
   const resultJson = await fetch(uri, {
     method: "GET",

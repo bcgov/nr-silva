@@ -7,11 +7,30 @@ import { getInitialLayers, getOpeningsPolygonFromWfs } from '../../map-services/
 import { LayersControl } from 'react-leaflet';
 import { MapLayer } from '../../types/MapLayer';
 import { Polyline } from 'react-leaflet';
+import { ImageMapLayer } from 'react-esri-leaflet';
+import * as L from 'react-leaflet';
+import { WMSTileLayer } from 'react-leaflet';
 
 interface MapProps {
   openingId: number | null;
   setOpeningPolygonNotFound: Function;
 }
+
+const ImageMapLayerComponent = (url: string) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const imageMapLayer = L.esri.imageMapLayer({
+      url, // replace with your ImageMapLayer URL
+    }).addTo(map);
+
+    return () => {
+      map.removeLayer(imageMapLayer);
+    };
+  }, [map]);
+
+  return null;
+};
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingId,
@@ -48,7 +67,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       }
     };
 
-    getDefaultLayers();
+    // getDefaultLayers();
 
     if (openingId) {
       callBcGwApi();
@@ -56,7 +75,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   }, [openingId]);
 
   useEffect(() => {
-    console.log('Reloading map..position (bounding box)', position);
+    const imageMapLayer = L.esri
   }, [openings, reloadMap]);
 
   const RecenterAutomatically = ({lat, long}:{lat: number, long:number}) => {
@@ -69,6 +88,40 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   const { BaseLayer } = LayersControl;
 
+  const geojsonData = () => {
+    let uri = 'https://openmaps.gov.bc.ca/geo/ows';
+    // service
+    uri += '?service=WMS';
+    // version
+    uri += '&version=1.1.1';
+    // request
+    uri += '&request=GetMap';
+    // layers
+    uri += '&layers=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
+    // format
+    uri += '&format=image/png';
+    // transparency
+    uri += '&transparent=true'
+    // height
+    uri += '&height=256';
+    // width
+    uri += '&width=256';
+    // Srs name
+    uri += '&srs=EPSG:4326';
+    //uri += '&srs=EPSG:3857';
+    // Properties name
+    //uri += '&PROPERTYNAME=OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED';
+    // CQL Filters
+    //uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
+    uri += `&CQL_FILTER=OPENING_ID=10936`;
+    // bbox
+    uri += '&bbox=-15028131.257091936,6261721.357121641,-14401959.121379772,6887893.492833805';
+
+    console.log('uri 2', uri);
+
+    return encodeURI(uri); //fetch(uri);
+  };
+
   return (
     <MapContainer
       center={position}
@@ -76,60 +129,30 @@ const OpeningsMap: React.FC<MapProps> = ({
       style={{ height: "400px", width: "100%" }}
     >
       <LayersControl position="bottomleft">
-        <BaseLayer checked name="OpenStreetMap">
+        <BaseLayer checked name="Government of British Columbia">
           <TileLayer
             url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
             attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a>"
           />
         </BaseLayer>
-        <BaseLayer name="Google Maps Satelite">
-          <TileLayer
-            url={"https://www.google.ca/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"}
-            attribution="&copy; Google Maps"
-          />
-        </BaseLayer>
       </LayersControl>
       
 
-      {/* Display Opening polygons, if any */}
-      {openings.length ? (
-        openings.map((opening) => (
-          <Polygon
-            key={opening.key}
-            positions={opening.bounds}
-            pathOptions={resultsStyle}  
-          >
-            <Popup maxWidth="700">
-              {opening.popup}
-            </Popup>
-          </Polygon>
-        ))
-      ) : null }
-
-      {/* Display a simple marker if no Opening */}
-      {openings.length === 0 && (
-        <Marker position={position}>
-          <Popup>
-            Caffe Fantastico<br />965 Kings Rd, Victoria, BC
-          </Popup>
-        </Marker>
-      )}
-
-      
-
       {/* Add layers and Layer controls */}
-      {layers.length > 0 && (
-        <LayersControl position="topright">
-          {layers.map((layer) => (
-            <LayersControl.Overlay key={layer.key} name={layer.name}>
-              {layer.popup && (
-                <Popup>{layer.popup}</Popup>
-              )}
-              <Polyline pathOptions={layer.pathOptions} positions={layer.bounds} />
-            </LayersControl.Overlay>
-          ))}
-        </LayersControl>
-      )}
+      <LayersControl position="topright">
+        <LayersControl.Overlay key='wms-opening-layer' name='RESULTS - Openings svw'>
+          <WMSTileLayer
+            url="https://openmaps.gov.bc.ca/geo/ows"
+            params={{
+              format:"image/png",
+              layers:"WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW",
+              transparent:true,
+              styles:"2942"
+            }}
+          />
+        </LayersControl.Overlay>
+
+      </LayersControl>
       
     </MapContainer>
   );
