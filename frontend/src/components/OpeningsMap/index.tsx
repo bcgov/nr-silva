@@ -1,36 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
-import { Polygon } from 'react-leaflet';
 import { MapContainer, TileLayer, Marker, Popup, Rectangle } from 'react-leaflet';
 import { OpeningPolygon } from '../../types/OpeningPolygon';
-import { getInitialLayers, getOpeningsPolygonFromWfs } from '../../map-services/BcGwWfsApi';
+import { createPopupFromProps, getOpeningsPolygonFromWfs } from '../../map-services/BcGwWfsApi';
 import { LayersControl } from 'react-leaflet';
 import { MapLayer } from '../../types/MapLayer';
-import { Polyline } from 'react-leaflet';
-import { ImageMapLayer } from 'react-esri-leaflet';
-import * as L from 'react-leaflet';
 import { WMSTileLayer } from 'react-leaflet';
+import { allLayers } from './constants';
+import { Polygon } from 'react-leaflet';
+import axios from 'axios';
+import { getAuthIdToken } from '../../services/AuthService';
+import { env } from '../../env';
+import { shiftBcGwLngLat2LatLng } from '../../map-services/BcGwLatLongUtils';
+
+const backendUrl = env.VITE_BACKEND_URL;
 
 interface MapProps {
   openingId: number | null;
   setOpeningPolygonNotFound: Function;
 }
-
-const ImageMapLayerComponent = (url: string) => {
-  const map = useMap();
-
-  useEffect(() => {
-    const imageMapLayer = L.esri.imageMapLayer({
-      url, // replace with your ImageMapLayer URL
-    }).addTo(map);
-
-    return () => {
-      map.removeLayer(imageMapLayer);
-    };
-  }, [map]);
-
-  return null;
-};
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingId,
@@ -40,17 +28,56 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
   const [position, setPosition] = useState<number[]>([48.43737, -123.35883]);
   const [reloadMap, setReloadMap] = useState<boolean>(false);
-  const [layers, setLayers] = useState<MapLayer[]>([]);
+  const [layers, setLayers] = useState<MapLayer[]>(allLayers);
+  const authToken = getAuthIdToken();
 
   const resultsStyle = {
     color: 'black'
+  };
+
+  const getPolygonTest = async (openingId: number | null): Promise<OpeningPolygon | null> => {
+    const urlApi = `/api/feature-service/polygon-and-props/${openingId}`;
+    const response = await axios.get(backendUrl.concat(urlApi), {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+        }
+    });
+
+    const { data } = response;
+
+    if (data.features && data.features.length) {
+      const openingsList: OpeningPolygon[] = [];
+      for (let i = 0, len = data.features.length; i < len; i++) {
+        if (data.features[i].geometry) {
+          const openingGeometry = shiftBcGwLngLat2LatLng(data.features[i].geometry.coordinates);
+
+          const openingObj: OpeningPolygon = {
+            key: data.features[i].id,
+            bounds: openingGeometry,
+            properties: data.features[i].properties,
+            id: data.features[i].id,
+            positionLat: (data.bbox[1] + data.bbox[3]) / 2,
+            positionLong: (data.bbox[0] + data.bbox[2]) / 2,
+            popup: createPopupFromProps(data.features[i].properties)
+          };
+          openingsList.push(openingObj);
+        }
+      }
+
+      // Handling arrays to allow querying more than 1 at once.
+      if (openingsList.length) {
+        return openingsList[0];
+      }
+    }
+
+    return null;
   };
 
   useEffect(() => {
     setOpeningPolygonNotFound(false);
 
     const callBcGwApi = async () => {
-      const openingGeom: OpeningPolygon | null = await getOpeningsPolygonFromWfs(openingId);
+      const openingGeom: OpeningPolygon | null = await getPolygonTest(openingId);
       if (openingGeom) {
         setOpenings([openingGeom]);
         setPosition([openingGeom.positionLat, openingGeom.positionLong]);
@@ -60,22 +87,13 @@ const OpeningsMap: React.FC<MapProps> = ({
       }
     };
 
-    const getDefaultLayers = async () => {
-      const layer: MapLayer | null = await getInitialLayers();
-      if (layer) {
-        setLayers([layer]);
-      }
-    };
-
-    // getDefaultLayers();
-
     if (openingId) {
       callBcGwApi();
     }
   }, [openingId]);
 
   useEffect(() => {
-    const imageMapLayer = L.esri
+    //
   }, [openings, reloadMap]);
 
   const RecenterAutomatically = ({lat, long}:{lat: number, long:number}) => {
@@ -88,40 +106,6 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   const { BaseLayer } = LayersControl;
 
-  const geojsonData = () => {
-    let uri = 'https://openmaps.gov.bc.ca/geo/ows';
-    // service
-    uri += '?service=WMS';
-    // version
-    uri += '&version=1.1.1';
-    // request
-    uri += '&request=GetMap';
-    // layers
-    uri += '&layers=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
-    // format
-    uri += '&format=image/png';
-    // transparency
-    uri += '&transparent=true'
-    // height
-    uri += '&height=256';
-    // width
-    uri += '&width=256';
-    // Srs name
-    uri += '&srs=EPSG:4326';
-    //uri += '&srs=EPSG:3857';
-    // Properties name
-    //uri += '&PROPERTYNAME=OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED';
-    // CQL Filters
-    //uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
-    uri += `&CQL_FILTER=OPENING_ID=10936`;
-    // bbox
-    uri += '&bbox=-15028131.257091936,6261721.357121641,-14401959.121379772,6887893.492833805';
-
-    console.log('uri 2', uri);
-
-    return encodeURI(uri); //fetch(uri);
-  };
-
   return (
     <MapContainer
       center={position}
@@ -129,31 +113,53 @@ const OpeningsMap: React.FC<MapProps> = ({
       style={{ height: "400px", width: "100%" }}
     >
       <LayersControl position="bottomleft">
-        <BaseLayer checked name="Government of British Columbia">
+        <BaseLayer checked name="OpenStreetMap">
           <TileLayer
             url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
             attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a>"
           />
         </BaseLayer>
       </LayersControl>
-      
 
-      {/* Add layers and Layer controls */}
-      <LayersControl position="topright">
-        <LayersControl.Overlay key='wms-opening-layer' name='RESULTS - Openings svw'>
-          <WMSTileLayer
-            url="https://openmaps.gov.bc.ca/geo/ows"
-            params={{
-              format:"image/png",
-              layers:"WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW",
-              transparent:true,
-              styles:"2942"
-            }}
-          />
-        </LayersControl.Overlay>
-
-      </LayersControl>
+      {/* Display Opening polygons, if any */}
+      {openings.length ? (
+        openings.map((opening) => (
+          <Polygon
+            key={opening.key}
+            positions={opening.bounds}
+            pathOptions={resultsStyle}  
+          >
+            <Popup maxWidth="700">
+              {opening.popup}
+            </Popup>
+          </Polygon>
+        ))
+      ) : null }
       
+      {/* Centers the map autimatically when a different opening get selected. */}
+      {position && (
+        <RecenterAutomatically lat={position[0]} long={position[1]} />
+      )}
+
+      {/* Default layers */}
+      {layers.length && (
+        <LayersControl position="topright">
+          {layers.map((layer: MapLayer) => (
+            <LayersControl.Overlay key={layer.name} name={layer.name}>
+            <WMSTileLayer
+              url="https://openmaps.gov.bc.ca/geo/ows"
+              params={{
+                format: layer.format,
+                layers: layer.layers,
+                transparent: layer.transparent,
+                styles: layer.styles
+              }}
+            />
+          </LayersControl.Overlay>
+          ))}
+        </LayersControl>
+      )}
+
     </MapContainer>
   );
 };
