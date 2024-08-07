@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.service.RestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -8,14 +9,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
+/** This class holds resources for calling WFS. */
 @RestController
 @RequestMapping("/api/feature-service")
 @AllArgsConstructor
@@ -24,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
     description = "Endpoints for handle WFS (Web Feature Service) within BC Geo Warehouse")
 public class FeatureServiceEndpoint {
 
-  private final RestTemplate restTemplate;
+  private final RestService restService;
 
   /**
    * Fetch Opening data from WFS.
@@ -56,26 +55,6 @@ public class FeatureServiceEndpoint {
               required = true)
           @PathVariable
           String openingId) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("https://openmaps.gov.bc.ca/geo/ows");
-    sb.append("?service=WFS");
-    sb.append("&version=2.0.0");
-    sb.append("&request=GetFeature");
-    sb.append("&typeName=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW");
-    sb.append("&outputFormat=application/json");
-    sb.append("&SrsName=EPSG:4326");
-    sb.append("&PROPERTYNAME=");
-    sb.append("OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,");
-    sb.append("CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED");
-    sb.append("&CQL_FILTER=OPENING_ID=").append(openingId);
-
-    try {
-      ResponseEntity<Object> response = restTemplate.getForEntity(sb.toString(), Object.class);
-      return response.getBody();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return null;
+    return restService.getOpeningPolygonAndProperties(openingId);
   }
 }

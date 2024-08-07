@@ -1,9 +1,9 @@
-import { MapLayer } from "../../types/MapLayer";
+import { BaseMapLayer, MapLayer } from "../../types/MapLayer";
 
 // Default layers
 export const allLayers: MapLayer[] = [
-  // #1 
   {
+    position: 1,
     name: 'RESULTS - Openings svw',
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
@@ -12,9 +12,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-openings-svw',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #2 
   {
+    position: 2,
     name: 'RESULTS - Standards Units',
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
@@ -23,9 +22,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-standards-units',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #3 
   {
+    position: 3,
     name: 'RESULTS - Activity Treatment Units',
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
@@ -35,11 +33,15 @@ export const allLayers: MapLayer[] = [
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW/ows?service=WMS&request=GetCapabilities'
   },
 
-  // #4 https://catalogue.data.gov.bc.ca/dataset/silviculture-investments
-  // #4 FOREST_VEGETATION.RSLT_SILV_INVESTMENT_SP - No get capabilities !?
+  // # FOREST_VEGETATION.RSLT_SILV_INVESTMENT_SP - No get capabilities !?
+  // # WHSE_FOREST_TENURES.FOM_ROAD_SECTION.SP - No get capabilities!
+  // # WHSE_FOREST_TENURE.FOM_WLDLFE_TREE_RETNTN_AREA_SP - No get capabilities!
+  // # WHSE_FOREST_TENURES.FOM_CUTLOCKS.SP - not found!
+  // # WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_FA_SVW - not found!
+  // # WHSE_TANTALIS.TA_PROTECTED_LANDS_SVW - No exact match, which one to use?
   
-  // #5 
   {
+    position: 4,
     name: 'RESULTS - Forest Cover Inventory',
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
@@ -48,9 +50,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-forest-cover-inventory',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW/ows?service=WMS&request=GetCapabilities'
   },
-
-  // #6 
   {
+    position: 5,
     name: 'RESULTS - Forest Cover Silviculture',
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
@@ -59,108 +60,98 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-forest-cover-silviculture',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW/ows?service=WMS&request=GetCapabilities'
   },
-
-  // #7 FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY
   {
-    name: '',
+    position: 6,
+    name: 'VRI - 2023 - Forest Vegetation Composite Rank 1 Layer (R1)',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [
+      {name: '5324', title: 'Vegetated_Land_Cover_Colour_Themed'},
+      {name: '1543', title: 'Non_Vegetated_Land_Cover_Colour_Themed'},
+    ],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/vri-2023-forest-vegetation-composite-rank-1-layer-r1-',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY/ows?service=WMS&request=GetCapabilities'
   },
-
-  // #8 FOREST_VEGETATION.VEG_BURN_SEVERITY_SP
   {
-    name: '',
+    position: 7,
+    name: 'Fire Burn Severity - Same Year',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_FOREST_VEGETATION.VEG_BURN_SEVERITY_SAME_YR_SP',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '9792', title: 'Burn_Severity_Rating_2023_Same_Year_Colour_Themed'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-same-year',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.VEG_BURN_SEVERITY_SAME_YR_SP/ows?service=WMS&request=GetCapabilities'
   },
-
-  // #9 FOREST_VEGETATION.VEG_BURN_SEVERITY_SAME_YR_SP 
   {
-    name: '',
+    position: 8,
+    name: 'BC Wildfire Fire Perimeters - Historical',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_LAND_AND_NATURAL_RESOURCE.PROT_HISTORICAL_FIRE_POLYS_SP',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [
+      {name: '1756', title: 'BC_Wildfire_Fire_Perimeters_Historical_Labels'},
+      {name: '1758', title: 'BC_Wildfire_Fire_Perimeters_Historical_Colour_Hatched'},
+    ],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/bc-wildfire-fire-perimeters-historical',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_LAND_AND_NATURAL_RESOURCE.PROT_HISTORICAL_FIRE_POLYS_SP/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #10 LAND_AND_NATURAL_RESOURCE.PROT_HISTORICAL_FIRE_POLYS_SP
   {
-    name: '',
+    position: 9,
+    name: 'BEC Map',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '1410', title: 'BEC_Analysis_Zones_Subzones_Variants_Colour_Themed'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/bec-map',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #11 FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY
   {
-    name: '',
+    position: 10,
+    name: 'Natural Resource (NR) Districts',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_ADMIN_BOUNDARIES.ADM_NR_DISTRICTS_SPG',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '365', title: 'Natural_Resource_Districts_Colour_Themed'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/natural-resource-nr-district',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_ADMIN_BOUNDARIES.ADM_NR_DISTRICTS_SPG/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #12 WHSE_ADMIN_BOUNDARIES.ADM_NR_DISTRICTS_SPG
   {
-    name: '',
+    position: 11,
+    name: 'FADM - BC Timber Sales Area',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_ADMIN_BOUNDARIES.FADM_BCTS_AREA_SP',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '6', title: 'BC_Timber_Sale_Areas_Colour_Filled'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/fadm-bc-timber-sales-area',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_ADMIN_BOUNDARIES.FADM_BCTS_AREA_SP/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #13 ADMIN_BOUNDARIES.FADM_BCTS_AREA_SP 
   {
-    name: '',
+    position: 12,
+    name: 'FADM - Tree Farm License Current View (TFL)',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_ADMIN_BOUNDARIES.FADM_TFL_ALL_SP',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '6980', title: 'Tree_Farm_Licence_Current_Boundary_Colour_Filled'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/fadm-tree-farm-license-current-view-tfl-',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_ADMIN_BOUNDARIES.FADM_TFL_ALL_SP/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #14 ADMIN_BOUNDARIES.FADM_TFL_ALL_SP
   {
-    name: '',
+    position: 13,
+    name: 'Forest Tenure Managed Licence',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_FOREST_TENURE.FTEN_MANAGED_LICENCE_POLY_SVW',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [
+      {name: '2891', title: 'Managed_Licence_Poly_Active_FTEN_Colour_Themed'},
+      {name: '2893', title: 'Managed_Licence_Poly_Pending_FTEN_Colour_Themed'},
+      {name: '2895', title: 'Managed_Licence_Poly_Retired_FTEN_Colour_Themed'}
+    ],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/forest-tenure-managed-licence',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_MANAGED_LICENCE_POLY_SVW/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #15 WHSE_FOREST_TENURE.FTEN_MANAGED_LICENCE_POLY_SVW
   {
-    name: '',
-    format: 'image/png',
-    layers: '',
-    transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
-  },
-  
-  // #16 WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_SVW
-  {
+    position: 14,
     name: 'ParcelMap BC Parcel Fabric',
     format: 'image/png',
     layers: 'WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_SVW',
@@ -169,20 +160,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/parcelmap-bc-parcel-fabric',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_SVW/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // #17 WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_FA_SVW - not found
-  // {
-  //   name: '',
-  //   format: 'image/png',
-  //   layers: '',
-  //   transparent: true,
-  //   styles: [{name: '', title: ''}],
-  //   catalogueUrl: '',
-  //   getCapabilitiesUrl: ''
-  // },
-
-  // #18
   {
+    position: 15,
     name: 'Forest Tenure Road Section Lines',
     format: 'image/png',
     layers: 'WHSE_FOREST_TENURE.FTEN_ROAD_SECTION_LINES_SVW',
@@ -191,53 +170,18 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/forest-tenure-road-section-lines',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_ROAD_SECTION_LINES_SVW/ows?service=WMS&request=GetCapabilities'
   },
- 
-  // # 19 WHSE_FOREST_TENURES.FOM_CUTLOCKS.SP 
   {
-    name: '',
+    position: 16,
+    name: 'Digital Road Atlas (DRA) - Master Partially-Attributed Roads',
     format: 'image/png',
-    layers: '',
+    layers: 'WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP',
     transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
+    styles: [{name: '3241_4489', title: 'Digital_Road_Atlas'}],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/digital-road-atlas-dra-master-partially-attributed-roads',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // # 20 WHSE_FOREST_TENURES.FOM_ROAD_SECTION.SP 
   {
-    name: '',
-    format: 'image/png',
-    layers: '',
-    transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
-  },
-  
-  // # 21 WHSE_FOREST_TENURE.FOM_WLDLFE_TREE_RETNTN_AREA_SP
-  {
-    name: '',
-    format: 'image/png',
-    layers: '',
-    transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
-  },
-  
-  // # 22 WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP
-  {
-    name: '',
-    format: 'image/png',
-    layers: '',
-    transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
-  },
-  
-  // # 23
-  {
+    position: 17,
     name: 'Waterbodies - TRIM Enhanced Base Map (EBM)',
     format: 'image/png',
     layers: 'WHSE_BASEMAPPING.TRIM_EBM_WATERBODIES',
@@ -246,9 +190,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/waterbodies-trim-enhanced-base-map-ebm',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.TRIM_EBM_WATERBODIES/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // # 24
   {
+    position: 18,
     name: 'Watercourses - TRIM Enhanced Base Map (EBM)',
     format: 'image/png',
     layers: 'WHSE_BASEMAPPING.TRIM_EBM_WATERCOURSES',
@@ -257,9 +200,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/watercourses-trim-enhanced-base-map-ebm',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.TRIM_EBM_WATERCOURSES/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // # 25
   {
+    position: 19,
     name: 'Freshwater Atlas Stream Network',
     format: 'image/png',
     layers: 'WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP',
@@ -271,9 +213,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-stream-network',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // # 26
   {
+    position: 20,
     name: 'Freshwater Atlas Rivers',
     format: 'image/png',
     layers: 'WHSE_BASEMAPPING.FWA_RIVERS_POLY',
@@ -282,9 +223,8 @@ export const allLayers: MapLayer[] = [
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-rivers',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_RIVERS_POLY/ows?service=WMS&request=GetCapabilities'
   },
-  
-  // # 27
   {
+    position: 21,
     name: 'Protected Lands Access Restrictions - Points',
     format: 'image/png',
     layers: 'WHSE_PARKS.PA_PRTCTD_LND_FACILITIES_SP',
@@ -292,16 +232,33 @@ export const allLayers: MapLayer[] = [
     styles: [{name: '7624', title: 'Protected_Lands_Access_Restrictions_Centre_Points_Provincial_Parks_Eco_Reserves_etc'}],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/protected-lands-access-restrictions-points',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_PARKS.PA_PRTCTD_LND_FACILITIES_SP/ows?service=WMS&request=GetCapabilities'
-  },
-  
-  // # 28 WHSE_TANTALIS.TA_PROTECTED_LANDS_SVW
-  {
-    name: '',
-    format: 'image/png',
-    layers: '',
-    transparent: true,
-    styles: [{name: '', title: ''}],
-    catalogueUrl: '',
-    getCapabilitiesUrl: ''
   }
+];
+
+// Default base maps
+export const allBaseMaps: BaseMapLayer[] = [
+  {
+    name: 'Satellite',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    default: true
+  },
+  {
+    name: 'Topographic',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
+    default: false
+  },
+  {
+    name: 'National Geographic',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+    default: false
+  },
+  {
+    name: 'BC Web Mercator',
+    url: 'https://maps.gov.bc.ca/arcgis/rest/services/province/web_mercator_cache/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'GeoBC, DataBC, TomTom, &copy; OpenStreetMap contributors',
+    default: false
+  },
 ];

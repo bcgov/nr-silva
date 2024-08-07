@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ca.bc.gov.restapi.results.common.service.RestService;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,34 +17,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.RestTemplate;
 
 @WebMvcTest(FeatureServiceEndpoint.class)
 @WithMockUser(roles = "user_read")
-public class FeatureServiceEndpointTest {
+class FeatureServiceEndpointTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean RestTemplate restTemplate;
+  @MockBean RestService restService;
 
   @Test
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() throws Exception {
     String openingId = "58993";
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("https://openmaps.gov.bc.ca/geo/ows");
-    sb.append("?service=WFS");
-    sb.append("&version=2.0.0");
-    sb.append("&request=GetFeature");
-    sb.append("&typeName=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW");
-    sb.append("&outputFormat=application/json");
-    sb.append("&SrsName=EPSG:4326");
-    sb.append("&PROPERTYNAME=");
-    sb.append("OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,");
-    sb.append("CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED");
-    sb.append("&CQL_FILTER=OPENING_ID=").append(openingId);
-    String wfsUri = sb.toString();
 
     String response =
         """
@@ -81,7 +67,7 @@ public class FeatureServiceEndpointTest {
         }
         """;
 
-    when(restTemplate.getForEntity(wfsUri, Object.class))
+    when(restService.getOpeningPolygonAndProperties(openingId))
         .thenReturn(ResponseEntity.of(Optional.of(response)));
 
     mockMvc

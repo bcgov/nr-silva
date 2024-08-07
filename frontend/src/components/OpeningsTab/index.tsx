@@ -12,6 +12,8 @@ import { InlineNotification } from '@carbon/react';
 import { RecentOpening } from "../../types/RecentOpening";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { generateHtmlFile } from "./layersGenerator";
+import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from "../../services/SecretsService";
 
 interface Props {
   showSpatial: boolean;
@@ -24,6 +26,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
+  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
   const userDetails = useSelector((state: RootState) => state.userDetails);
 
   useEffect(() => {
@@ -40,22 +43,35 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
       }
     };
 
+    const fetchAllowedPeople = async () => {
+      try {
+        const usersList: WmsLayersWhitelistUser[] = await getWmsLayersWhitelistUsers();
+        setWmsUsersWhitelist(usersList);
+      } catch (error) {
+        console.error('Error fetching recent openings:', error);
+      }
+    };
+
     fetchData();
+    fetchAllowedPeople();
   }, []);
 
   useEffect(() => {
     // 
-  }, [loadId, openingPolygonNotFound]);
+  }, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
     setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
   };
 
   const onClickFn = () => {
-    const allowed = ['RDECAMPO', 'JAZZ', 'Caroline', 'Michelle', 'Chantelle'];
+    const allowed: string[] = wmsUsersWhitelist.map((user: WmsLayersWhitelistUser) => user.userName);
     const { userName } = userDetails.user;
     if (allowed.includes(userName)) {
-      window.alert('Allowed');
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.body.innerHTML = generateHtmlFile();
+      }
     }
   };
 

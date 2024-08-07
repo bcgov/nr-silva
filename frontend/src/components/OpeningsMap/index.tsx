@@ -4,9 +4,9 @@ import { MapContainer, TileLayer, Marker, Popup, Rectangle } from 'react-leaflet
 import { OpeningPolygon } from '../../types/OpeningPolygon';
 import { createPopupFromProps, getOpeningsPolygonFromWfs } from '../../map-services/BcGwWfsApi';
 import { LayersControl } from 'react-leaflet';
-import { MapLayer } from '../../types/MapLayer';
+import { BaseMapLayer, MapLayer } from '../../types/MapLayer';
 import { WMSTileLayer } from 'react-leaflet';
-import { allLayers } from './constants';
+import { allBaseMaps, allLayers } from './constants';
 import { Polygon } from 'react-leaflet';
 import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
@@ -29,6 +29,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [position, setPosition] = useState<number[]>([48.43737, -123.35883]);
   const [reloadMap, setReloadMap] = useState<boolean>(false);
   const [layers, setLayers] = useState<MapLayer[]>([]);
+  const [baseMaps, setBaseMaps] = useState<BaseMapLayer[]>([]);
   const authToken = getAuthIdToken();
 
   const resultsStyle = {
@@ -95,6 +96,8 @@ const OpeningsMap: React.FC<MapProps> = ({
     if (filtered.length) {
       setLayers(filtered);
     }
+
+    setBaseMaps(allBaseMaps);
   }, [openingId]);
 
   useEffect(() => {
@@ -118,12 +121,14 @@ const OpeningsMap: React.FC<MapProps> = ({
       style={{ height: "400px", width: "100%" }}
     >
       <LayersControl position="bottomleft">
-        <BaseLayer checked name="OpenStreetMap">
-          <TileLayer
-            url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
-            attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a>"
-          />
-        </BaseLayer>
+        {baseMaps.map((base: BaseMapLayer) => (
+          <BaseLayer key={base.name} checked={base.default} name={base.name}>
+            <TileLayer
+              url={base.url}
+              attribution={base.attribution}
+            />
+          </BaseLayer>
+        ))}
       </LayersControl>
 
       {/* Display Opening polygons, if any */}
