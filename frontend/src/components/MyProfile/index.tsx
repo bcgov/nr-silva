@@ -72,7 +72,9 @@ const MyProfile = () => {
           >
             Log out
           </SideNavLink>
+          
         </ul>
+        <hr className="divisory mt-5" />
       </nav>
     </>
   );
