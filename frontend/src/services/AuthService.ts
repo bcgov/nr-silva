@@ -6,7 +6,8 @@ import {
   signOut
 } from 'aws-amplify/auth';
 import { env } from '../env';
-import { UserClientRolesType } from '../types/UserRoleType';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { formatRolesArray } from '../utils/famUtils';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -17,7 +18,7 @@ export interface FamLoginUser {
   username?: string;
   idpProvider?: string;
   roles?: string[];
-  clientIds?: string[]; // Add clientIds to FamLoginUser interface
+  authToken?: CognitoUserSession;
   exp?: number;
 }
 
@@ -158,33 +159,9 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     roles = decodedAccessToken['cognito:groups'] as Array<string>;
   }
 
-  // Extract client IDs from roles
-  const clientIds = parseClientIdsFromRoles(roles);
 
-  //hard coded data
-  // Define the roles array based on UserClientRolesType structure
-const rolesArray: UserClientRolesType[] = [
-  {
-    clientId: '00132184',
-    roles: ['role1', 'role2'], // Example roles for clientId '00132184'
-    clientName: 'Client Name 1'
-  },
-  {
-    clientId: '00012797',
-    roles: ['role3'], // Example roles for clientId '00012797'
-    clientName: 'Client Name 2'
-  },
-  {
-    clientId: '00001012',
-    roles: ['role4', 'role5'], // Example roles for clientId '00001012'
-    clientName: 'Client Name 3'
-  },
-  {
-    clientId: '00149081',
-    roles: ['role6'], // Example roles for clientId '00149081'
-    clientName: 'Client Name 4'
-  }
-];
+  //get the user roles from the FAM token
+  const rolesArray = formatRolesArray(decodedIdToken);
 
   const famLoginUser = {
     userName,
@@ -192,7 +169,6 @@ const rolesArray: UserClientRolesType[] = [
     email,
     idpProvider,
     clientRoles: rolesArray,
-    clientIds,
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
     lastName
@@ -200,18 +176,6 @@ const rolesArray: UserClientRolesType[] = [
   
 
   return famLoginUser;
-}
-
-/**
- * Function to parse client IDs from roles
- */
-function parseClientIdsFromRoles(roles: string[]): string[] {
-  // Implement logic to extract client IDs from roles here
-  // Placeholder implementation
-  return roles.map(role => {
-    const parts = role.split(':');
-    return parts[parts.length - 1];
-  });
 }
 
 /**
