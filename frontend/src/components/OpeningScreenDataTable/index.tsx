@@ -64,8 +64,9 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
     );
     setFilteredRows(filtered);
     if (event.key === 'Enter' && searchTerm.length > 0) {
-      console.log('Search opening!');
       setOpeningId(searchTerm);
+    } if (event.key === 'Enter' && !searchTerm.length) {
+      setOpeningId(0);
     }
   };
 

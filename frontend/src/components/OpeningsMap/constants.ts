@@ -8,7 +8,7 @@ export const allLayers: MapLayer[] = [
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
     transparent: true,
-    styles: [{name: '2942', title: 'Openings_ALL_RSLT_Colour_Filled'}],
+    styles: [{name: '2941_2942', title: 'Openings_ALL_RSLT'}],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-openings-svw',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW/ows?service=WMS&request=GetCapabilities'
   },
@@ -18,7 +18,7 @@ export const allLayers: MapLayer[] = [
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
     transparent: true,
-    styles: [{name: '2946', title: 'Standards_Unit_Poly_ALL_RSLT_Colour_Filled'}],
+    styles: [{name: '2945_2946', title: 'Standards_Unit_Poly_ALL_RSLT'}],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-standards-units',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW/ows?service=WMS&request=GetCapabilities'
   },
@@ -28,7 +28,7 @@ export const allLayers: MapLayer[] = [
     format: 'image/png',
     layers: 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
     transparent: true,
-    styles: [{name: '2938', title: 'Activity_Treatment_Poly_ALL_RSLT_Colour_Filled'}],
+    styles: [{name: '2937_2938', title: 'Activity_Treatment_Poly_ALL_RSLT'}],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/results-activity-treatment-units',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW/ows?service=WMS&request=GetCapabilities'
   },
@@ -68,7 +68,7 @@ export const allLayers: MapLayer[] = [
     transparent: true,
     styles: [
       {name: '5324', title: 'Vegetated_Land_Cover_Colour_Themed'},
-      {name: '1543', title: 'Non_Vegetated_Land_Cover_Colour_Themed'},
+      {name: '1543', title: 'Non_Vegetated_Land_Cover_Colour_Themed'}
     ],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/vri-2023-forest-vegetation-composite-rank-1-layer-r1-',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY/ows?service=WMS&request=GetCapabilities'
@@ -91,7 +91,7 @@ export const allLayers: MapLayer[] = [
     transparent: true,
     styles: [
       {name: '1756', title: 'BC_Wildfire_Fire_Perimeters_Historical_Labels'},
-      {name: '1758', title: 'BC_Wildfire_Fire_Perimeters_Historical_Colour_Hatched'},
+      {name: '1758', title: 'BC_Wildfire_Fire_Perimeters_Historical_Colour_Hatched'}
     ],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/bc-wildfire-fire-perimeters-historical',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_LAND_AND_NATURAL_RESOURCE.PROT_HISTORICAL_FIRE_POLYS_SP/ows?service=WMS&request=GetCapabilities'
@@ -241,13 +241,13 @@ export const allBaseMaps: BaseMapLayer[] = [
     name: 'Satellite',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-    default: true
+    default: false
   },
   {
     name: 'Topographic',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
-    default: false
+    default: true
   },
   {
     name: 'National Geographic',
@@ -261,4 +261,10 @@ export const allBaseMaps: BaseMapLayer[] = [
     attribution: 'GeoBC, DataBC, TomTom, &copy; OpenStreetMap contributors',
     default: false
   },
+  {
+    name: 'Open Street Maps',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    default: false
+  }
 ];

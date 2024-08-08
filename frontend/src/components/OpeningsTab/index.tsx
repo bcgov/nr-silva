@@ -56,9 +56,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
     fetchAllowedPeople();
   }, []);
 
-  useEffect(() => {
-    // 
-  }, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
+  useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
     setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
