@@ -53,7 +53,9 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
     setInitialItemsPerPage
   } = useContext(PaginationContext);
 
-  const handleSearchChange = (searchTerm: string) => {
+  const handleSearchChange = (event: any) => {
+    const searchTerm: string = event.target.value;
+
     const filtered = rows.filter((item) =>
       Object.values(item)
         .join(' ')
@@ -61,6 +63,11 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
         .includes(searchTerm.toLowerCase())
     );
     setFilteredRows(filtered);
+    if (event.key === 'Enter' && searchTerm.length > 0) {
+      setOpeningId(searchTerm);
+    } if (event.key === 'Enter' && !searchTerm.length) {
+      setOpeningId(0);
+    }
   };
 
   const clickViewAction = useCallback((id: string) => {
@@ -123,7 +130,8 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
               <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
+                  //onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange(e)}
+                  onKeyDown={(e: any) => handleSearchChange(e)}
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                 />

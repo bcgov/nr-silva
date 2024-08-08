@@ -1,6 +1,8 @@
+import { LatLngExpression } from "leaflet";
+
 export type OpeningPolygon = {
   key: string;
-  bounds: number[][][];
+  bounds: LatLngExpression[][];
   properties: object;
   id: string;
   positionLat: number;
