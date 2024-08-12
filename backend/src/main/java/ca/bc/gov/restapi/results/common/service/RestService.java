@@ -1,11 +1,13 @@
 package ca.bc.gov.restapi.results.common.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /** This service provides method for doing requests and GET calls. */
+@Slf4j
 @Service
 public class RestService {
 
@@ -37,9 +39,11 @@ public class RestService {
 
     try {
       ResponseEntity<Object> response = restTemplate.getForEntity(sb.toString(), Object.class);
-      return response.getBody();
+      Object responseBody = response.getBody();
+      log.info("Request to WFS finished with code {}", response.getStatusCode());
+      return responseBody;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Exception when fetching from WFS {}", e.getMessage());
     }
     return null;
   }
