@@ -60,7 +60,7 @@ const listItems: ListItems[] = [
           },
           {
             name: 'Silviculture search',
-            link: '/opening/silviculture',
+            link: '/search',
             disabled: false
           },
           {

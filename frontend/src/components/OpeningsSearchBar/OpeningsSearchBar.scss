@@ -1,0 +1,43 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
+
+.openings-searchbar-container{
+  padding: 32px 32px;
+
+  //these are for the nested elements
+  input{
+    background-color: white;
+    border-block-end : none;
+  }
+  input::placeholder {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    color: var(--bx-text-secondary);
+  }
+  .multi-dropdown{
+    margin-top: -14px;
+  }
+  .bx--list-box__field--wrapper{
+    background-color: white;
+  }
+  .bx--list-box__label{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    color: var(--bx-text-secondary);
+  }
+  .bx--search-close{
+    top: 4px;
+    width: 40px;
+    bottom: 0px;
+    border-block-end : none;
+  }
+  .search-button{
+    margin-top: 2px;
+  }
+  
+}
