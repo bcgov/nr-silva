@@ -60,7 +60,8 @@ class OpeningSearchEndpointTest {
     response.setFreeGrowingDate(null);
     response.setUpdateTimestamp(LocalDateTime.now());
     response.setEntryUserId("TEST");
-    response.setSubmittedToFrpa(false);
+    response.setSubmittedToFrpa(true);
+    response.setSilvaReliefAppId(333L);
     response.setFileId(407);
 
     paginatedResult.setData(List.of(response));
@@ -96,6 +97,7 @@ class OpeningSearchEndpointTest {
         .andExpect(jsonPath("$.data[0].freeGrowingDate").value(response.getFreeGrowingDate()))
         .andExpect(jsonPath("$.data[0].entryUserId").value(response.getEntryUserId()))
         .andExpect(jsonPath("$.data[0].submittedToFrpa").value(response.getSubmittedToFrpa()))
+        .andExpect(jsonPath("$.data[0].silvaReliefAppId").value(response.getSilvaReliefAppId()))
         .andReturn();
   }
 

@@ -126,4 +126,9 @@ public class OpeningSearchResponseDto {
 
   @Schema(description = "Uniquely identifies the attached file.", example = "407")
   private Integer fileId;
+
+  @Schema(
+      description = "Uniquely identifies an Application for Relief from obligations.",
+      example = "56")
+  private Long silvaReliefAppId;
 }
