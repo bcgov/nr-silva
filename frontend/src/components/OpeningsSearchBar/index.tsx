@@ -1,70 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./OpeningsSearchBar.scss";
-import { Search, MultiSelect, Button } from "@carbon/react";
+import { Search, Button } from "@carbon/react";
 import * as Icons from '@carbon/icons-react';
-import Icon from "../Icon";
+import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
+import SearchFilterBar from "../SearchFilterBar";
 
-const OpeningsSearchBar = () => {
-  const items:any[] = [
-    {
-      id: "downshift-1-item-0",
-      text: "Option 1",
-    },
-    {
-      id: "downshift-1-item-1",
-      text: "Option 2",
-    },
-    {
-      id: "downshift-1-item-2",
-      text: "Option 3 - a disabled item",
-      disabled: true,
-    },
-    {
-      id: "downshift-1-item-3",
-      text: "Option 4",
-    },
-    {
-      id: "downshift-1-item-4",
-      text: "An example option that is really long to show what should be done to handle long text",
-    },
-    {
-      id: "downshift-1-item-5",
-      text: "Option 5",
-    },
-  ];
+const OpeningsSearchBar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const toggleShowFilters = () => {
+    console.log("toggle filter called")
+    setShowFilters(!showFilters);
+    console.log("the new value is:"+showFilters)
+  };
 
   return (
     <div>
-      <div className="openings-searchbar-container d-flex flex-row align-content-center">
-        <Search
-          size="md"
-          placeholder="Search by opening ID, opening number, timber mark or file ID"
-          labelText="Search"
-          closeButtonLabelText="Clear search input"
-          id={`search-1`}
-          onChange={() => {}}
-          onKeyDown={() => {}}
-        />
-        <MultiSelect
-          label="Advanced Search"
-          showLabel = {false}
-          showHelper = {false}
-          id="carbon-multiselect-example"
-          size='md'
-          items={items}
-          itemToString={(item:any) => (item ? item.text : "")}
-          selectionFeedback="top-after-reopen"
-          className='multi-dropdown w-50 ms-1'
-        />
-        <Button
-          className="search-button ms-2"
-          renderIcon={Icons.Search}
-          type="button"
-          size='md'
-          onClick={() => console.log("search clicked")}
-        >
-          Search
-        </Button>
+      <div className="openings-searchbar-container row align-content-center">
+        <div className="col-10 p-0">
+          <div className="d-flex flex-row">
+            <Search
+              size="md"
+              placeholder="Search by opening ID, opening number, timber mark or file ID"
+              labelText="Search"
+              closeButtonLabelText="Clear search input"
+              id={`search-1`}
+              onChange={() => {}}
+              onKeyDown={() => {}}
+            />
+            <Button
+              className="toggle-dropdown-button ms-2"
+              renderIcon={isOpen ? Icons.ChevronSortUp : Icons.ChevronSortDown}
+              type="button"
+              size="md"
+              onClick={toggleDropdown}
+            >
+              Advanced Search
+            </Button>
+          </div>
+          {isOpen && (
+            <AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />
+          )}
+          {showFilters && (
+            <SearchFilterBar />
+          )}
+        </div>
+        <div className="col-2 p-0">
+          <Button
+            className="search-button ms-2"
+            renderIcon={Icons.Search}
+            type="button"
+            size='md'
+            onClick={() => console.log("search clicked")}
+          >
+            Search
+          </Button>
+        </div>
       </div>
     </div>
   );

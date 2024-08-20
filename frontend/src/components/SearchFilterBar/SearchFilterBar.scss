@@ -1,0 +1,19 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
+
+.search-filter-bar {
+    background-color: white;
+    position: relative;
+    z-index: 1;
+    padding: 11px 16px;
+}
+
+.clear-button-container{
+    .clear-filters-button{
+        padding: 4px 13px;
+        cursor: pointer;
+        color: var(--bx-link-primary);
+    }
+}
+

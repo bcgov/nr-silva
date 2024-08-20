@@ -1,0 +1,34 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
+
+.advanced-search-dropdown {
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    width: 64.33%;
+    //these are for the nested elements
+    .advanced-search-container{
+        box-shadow: 0px 2px 6px 0px #0000004D;
+    }
+    input{
+        background-color: var(--bx-field-01);
+        border-bottom: 1px solid var(--bx-border-strong-01);
+    }
+
+}
+
+.horizontal-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 462px;
+
+    .#{vars.$bcgov-prefix}--checkbox-label-text{
+        font-size: 14px;
+        line-height: 18px;
+        letter-spacing:0.16px;
+        margin-right: 16px;
+        color: var(--bx-text-primary);
+    }
+}
+

@@ -9,6 +9,7 @@
   input{
     background-color: white;
     border-block-end : none;
+    border-bottom: 1px solid var(--bx-border-strong-01);
   }
   input::placeholder {
     font-weight: 400;
@@ -20,24 +21,23 @@
   .multi-dropdown{
     margin-top: -14px;
   }
-  .bx--list-box__field--wrapper{
+  .#{vars.$bcgov-prefix}--list-box__field--wrapper{
     background-color: white;
   }
-  .bx--list-box__label{
+  .#{vars.$bcgov-prefix}--list-box__label{
     font-weight: 400;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.16px;
     color: var(--bx-text-secondary);
   }
-  .bx--search-close{
-    top: 4px;
+  .#{vars.$bcgov-prefix}--search-close{
     width: 40px;
     bottom: 0px;
     border-block-end : none;
   }
   .search-button{
-    margin-top: 2px;
+    margin-top: 0px;
   }
   
 }
