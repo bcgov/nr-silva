@@ -1,0 +1,106 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+
+.search-data-table{
+  // nested elements for the search data table only
+  .table-toolbar{
+    border-top: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  }
+  .divider{
+    width: 1px;
+    height: 48px;
+    background-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  }
+  .total-results-container{
+    height: 100%;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    padding: 0px 16px 0px 32px;
+  }
+  .total-search-results {
+    @include type.type-style('body-compact-02');
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    color: var(--bx-text-secondary);
+  }
+  .bx--btn--ghost{
+    min-height: 48px;
+    align-items: center;
+  }
+}
+.activity-table {
+  margin-bottom: 2.5rem;
+
+  tr > th:first-child,
+  tr > td:first-child {
+    padding-left: 2.5rem;
+  }
+
+  tr > th:last-child,
+  tr > td:last-child {
+    padding-right: 2.5rem;
+  }
+
+  tr > th:last-child div,
+  tr > td:last-child {
+    text-align: center;
+  }
+
+  .activities-table-cell svg {
+    position: relative;
+    margin-right: 0.5rem;
+    top: 0.1875rem;
+  }
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th#blank {
+  min-width:50px;
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th  {
+  background-color: #F3F3F5;
+  border-top: 1px solid;
+  border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01) !important;
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th {
+  min-width:158px;
+}
+
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(even) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01) !important;
+  height: 64px;
+}
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(odd) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
+  height: 64px;
+}
+.#{vars.$bcgov-prefix}--data-table tr:hover td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-02) !important;
+  cursor: pointer;
+}
+.#{vars.$bcgov-prefix}--pagination {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
+}
+
+.table-toolbar{
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+  
+}
+
+@media only screen and (max-width: 672px) {
+  .#{vars.$bcgov-prefix}--data-table-content {
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+  .activity-table {
+    width: 56.25rem;
+  }
+}
