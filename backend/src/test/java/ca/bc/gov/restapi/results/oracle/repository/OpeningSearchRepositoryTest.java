@@ -309,7 +309,7 @@ class OpeningSearchRepositoryTest {
     String freeGrowTemporary = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
-    String submittedToFrpa = "NO";
+    BigDecimal submittedToFrpa108 = new BigDecimal("33");
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(
         new Object[] {
@@ -330,7 +330,7 @@ class OpeningSearchRepositoryTest {
           freeGrowTemporary,
           updateTimestamp,
           userId,
-          submittedToFrpa,
+          submittedToFrpa108,
         });
     Query query = mockQuery(resultList);
     when(entityManager.createNativeQuery(anyString())).thenReturn(query);
@@ -360,7 +360,8 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
     Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
     Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
-    Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertEquals(true, result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertEquals(33L, result.getData().get(0).getSilvaReliefAppId());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
@@ -389,7 +390,7 @@ class OpeningSearchRepositoryTest {
     String freeGrowTemporary = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
-    String submittedToFrpa = "NO";
+    BigDecimal submittedToFrpa = BigDecimal.ZERO;
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(
         new Object[] {
@@ -468,7 +469,7 @@ class OpeningSearchRepositoryTest {
     String freeGrowTemporary = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
-    String submittedToFrpa = "NO";
+    BigDecimal submittedToFrpa = BigDecimal.ZERO;
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(
         new Object[] {
@@ -547,7 +548,7 @@ class OpeningSearchRepositoryTest {
     String freeGrowTemporary = "TBD";
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String entryUserId = filters.getEntryUserId();
-    String submittedToFrpa = "false";
+    BigDecimal submittedToFrpa = BigDecimal.ZERO;
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(
         new Object[] {

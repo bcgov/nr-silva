@@ -168,10 +168,10 @@ public class OpeningSearchRepository {
           searchOpeningDto.setEntryUserId(entryUserId);
         }
 
-        // HERE
         if (row.length > 17) {
-          String submitted = getValue(String.class, row[17], "submittedToFrpa");
-          searchOpeningDto.setSubmittedToFrpa("Y".equals(submitted));
+          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[17], "submittedToFrpa108");
+          searchOpeningDto.setSubmittedToFrpa(silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0);
+          searchOpeningDto.setSilvaReliefAppId(silvaReliefAppId.longValue());
         }
 
         // fetch from forestClient API
@@ -252,9 +252,8 @@ public class OpeningSearchRepository {
     }
     // 5. Submitted to FRPA Section 108
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
-      // log.info("Submitted to FRPA filter detected! submitted=[{}]",
-      // filtersDto.getSubmittedToFrpa());
-      // builder.append("AND o.ENTRY_USERID = ?5");
+      log.info("Setting submitted to FRPA filter!");
+      // No need to set value since the query already dit it.
     }
     // 6. Disturbance start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
@@ -315,15 +314,18 @@ public class OpeningSearchRepository {
     builder.append(",'TBD' AS freeGrowingDate");
     builder.append(",o.UPDATE_TIMESTAMP AS updateTimestamp");
     builder.append(",o.ENTRY_USERID AS entryUserId");
-    builder.append(",'TBD' AS submittedToFrpa108 ");
+    builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submittedToFrpa108 ");
     builder.append("FROM THE.OPENING o ");
     builder.append("LEFT JOIN THE.OPENING_ATTACHMENT oa ON (oa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)");
-    builder.append(
-        "LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID ="
-            + " o.RESULTS_SUBMISSION_ID)");
+    builder.append("LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (");
+    builder.append(" res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)");
     builder.append("LEFT JOIN THE.CLIENT_ACRONYM ca ON (ca.CLIENT_NUMBER = res.CLIENT_NUMBER) ");
+    builder.append("LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON (atu.OPENING_ID = o.OPENING_ID)");
+    builder.append("LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (");
+    builder.append(" sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID");
+    builder.append(" AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')");
     builder.append("WHERE 1=1 ");
 
     /* Filters */
@@ -368,9 +370,8 @@ public class OpeningSearchRepository {
     }
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
-      // log.info("Submitted to FRPA filter detected! submitted=[{}]",
-      // filtersDto.getSubmittedToFrpa());
-      // builder.append("AND o.ENTRY_USERID = ?5");
+      log.info("Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
+      builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");
     }
     // 6. Disturbance start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
