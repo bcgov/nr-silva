@@ -170,8 +170,11 @@ public class OpeningSearchRepository {
 
         if (row.length > 17) {
           BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[17], "submittedToFrpa108");
-          searchOpeningDto.setSubmittedToFrpa(silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0);
-          searchOpeningDto.setSilvaReliefAppId(silvaReliefAppId.longValue());
+          boolean submittedApp = silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0;
+          searchOpeningDto.setSubmittedToFrpa(submittedApp);
+          if (submittedApp) {
+            searchOpeningDto.setSilvaReliefAppId(silvaReliefAppId.longValue());
+          }
         }
 
         // fetch from forestClient API
@@ -370,8 +373,16 @@ public class OpeningSearchRepository {
     }
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
-      log.info("Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
-      builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");
+      Boolean value = filtersDto.getSubmittedToFrpa();
+      if (Boolean.FALSE.equals(value)) {
+        log.info(
+            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
+        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NULL ");
+      } else {
+        log.info(
+            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
+        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");
+      }
     }
     // 6. Disturbance start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {

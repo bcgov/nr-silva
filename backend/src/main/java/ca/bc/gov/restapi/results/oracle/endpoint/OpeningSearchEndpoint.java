@@ -111,8 +111,7 @@ public class OpeningSearchEndpoint {
               name = "submittedToFrpa",
               in = ParameterIn.QUERY,
               description = "Submitted to FRPA Section 108, true or false.",
-              required = false,
-              example = "submittedToFrpa")
+              required = false)
           Boolean submittedToFrpa,
       @RequestParam(value = "disturbanceDateStart", required = false)
           @Parameter(
