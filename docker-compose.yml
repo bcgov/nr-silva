@@ -47,7 +47,7 @@ services:
     container_name: backend
     entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
-    image: maven:3.9.8-eclipse-temurin-17
+    image: maven:3.9.9-eclipse-temurin-17
     network_mode: host
     volumes: 
       - ./backend:/app
