@@ -2,6 +2,10 @@ import { ITableHeader } from "../../types/TableHeader";
 
 export const headers: ITableHeader[] = [
   {
+    key: 'actions',
+    header: 'Actions'
+  },
+  {
     key: 'openingId',
     header: 'Opening Id'
   },
@@ -10,36 +14,24 @@ export const headers: ITableHeader[] = [
     header: 'File Id'
   },
   {
-    key: 'cuttingPermit',
-    header: 'Cutting permit'
+    key: 'category',
+    header: 'Category'
   },
   {
-    key: 'timberMark',
-    header: 'Timber mark'
-  },
-  {
-    key: 'cutBlock',
-    header: 'Cut block'
-  },
-  {
-    key: 'grossAreaHa',
-    header: 'Gross area (ha)'
+    key: 'orgUnit',
+    header: 'Org unit'
   },
   {
     key: 'status',
     header: 'Status'
   },
   {
-    key: 'category',
-    header: 'Category'
+    key: 'cuttingPermit',
+    header: 'Cutting permit'
   },
   {
-    key: 'disturbanceStart',
-    header: 'Disturbance start'
-  },
-  {
-    key: 'actions',
-    header: 'Actions'
+    key: 'cutBlock',
+    header: 'Cut block'
   }
 ];
 
@@ -56,6 +48,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2022-10-27',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-27'
   },
   {
@@ -70,6 +63,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2022-09-04',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-27'
   },
   {
@@ -84,6 +78,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2022-09-04',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-27'
   },
   {
@@ -98,6 +93,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2022-01-16',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-26'
   },
   {
@@ -112,6 +108,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-12-08',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-26'
   },
   {
@@ -126,6 +123,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-11-15',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-25'
   },
   {
@@ -140,6 +138,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-11-15',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-25'
   },
   {
@@ -154,6 +153,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-10-20',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-24'
   },
   {
@@ -168,6 +168,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-10-20',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-24'
   },
   {
@@ -182,6 +183,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-09-12',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-23'
   },
   {
@@ -196,6 +198,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-09-12',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-23'
   },
   {
@@ -210,6 +213,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-08-05',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-22'
   },
   {
@@ -224,6 +228,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-08-05',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-22'
   },
   {
@@ -238,6 +243,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-07-10',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-21'
   },
   {
@@ -252,6 +258,7 @@ export const rows:any = [
     category: 'FTML',
     disturbanceStart: '-',
     createdAt: '2021-07-10',
+    orgUnit: 'DCC - Cariboo chilcotin natural resources',
     lastViewed: '2022-10-21'
   }
 ];

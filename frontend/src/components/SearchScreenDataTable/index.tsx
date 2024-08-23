@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
   TableSelectAll,
+  Tooltip,
   TableSelectRow,
   Button,
   Pagination
@@ -32,6 +33,7 @@ interface ISearchScreenDataTable {
   rows: RecentOpening[],
   headers: ITableHeader[],
   setOpeningId: Function,
+  toggleSpatial:Function,
   showSpatial: boolean
 }
 
@@ -39,6 +41,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   rows,
   headers,
   setOpeningId,
+  toggleSpatial,
   showSpatial
 }) => {
   const [filteredRows, setFilteredRows] = useState<RecentOpening[]>(rows);
@@ -123,17 +126,28 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableToolbar aria-label="data table toolbar">
               <TableToolbarContent className="table-toolbar align-items-center justify-content-between">
                 <div className="total-results-container">
-                  <p className='total-search-results'>Total Search Results: {filteredRows.length}</p>
+                  <p className="total-search-results">
+                    Total Search Results: {filteredRows.length}
+                  </p>
                 </div>
-                <TableToolbarMenu iconDescription="More" tooltipposition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
-                  <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
+                <TableToolbarMenu
+                  iconDescription="More"
+                  tooltipposition="bottom"
+                  renderIcon={Icons.OverflowMenuVertical}
+                  tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
+                  className="d-block d-sm-none"
+                >
+                  <TableToolbarAction
+                    onClick={() => console.log("Download Click")}
+                    disabled={selectedRows.length === 0}
+                  >
                     Print
                   </TableToolbarAction>
                   <TableToolbarAction
                     onClick={() => {
                       batchActionClick(selectedRows);
                       batchActionProps.onCancel();
-                      console.log('Clicked print')
+                      console.log("Clicked print");
                     }}
                   >
                     Download
@@ -145,11 +159,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     iconDescription="Show Map"
                     tooltipposition="bottom"
                     kind="ghost"
-                    onClick={() => console.log('Show Map')}
+                    onClick={() => toggleSpatial()}
                     renderIcon={Icons.Location}
                     size="md"
                   >
-                    Show map
+                    {showSpatial === true ? "Hide map" : "Show map"}
                   </Button>
                   <div className="divider"></div>
                   <Button
@@ -159,7 +173,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     onClick={() => {
                       batchActionClick(selectedRows);
                       batchActionProps.onCancel();
-                      console.log('Edit Columns')
+                      console.log("Edit Columns");
                     }}
                     renderIcon={Icons.Column}
                     size="md"
@@ -171,7 +185,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     iconDescription="Download"
                     tooltipposition="bottom"
                     kind="ghost"
-                    onClick={() => console.log('Download Click')}
+                    onClick={() => console.log("Download Click")}
                     renderIcon={Icons.Download}
                     size="md"
                   >
@@ -183,13 +197,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <Table {...getTableProps()} aria-label="sample table">
               <TableHead>
                 <TableRow>
-                  {showSpatial && (
-                    <th id='blank'></th>
-                  )}
+                  {showSpatial && <th id="blank"></th>}
                   {headers.map((header, i) => (
-                    <TableHeader key={header.key}>
-                      { header.header }
-                    </TableHeader>
+                    <TableHeader key={header.key}>{header.header}</TableHeader>
                   ))}
                 </TableRow>
               </TableHead>
@@ -197,12 +207,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 {rows.map((row, i) => (
                   <TableRow key={row.id}>
                     {showSpatial && (
-                      <TableSelectRow data-testid={`checkbox__opening-screen-data-table_${row.id}`} {
-                        ...getSelectionProps({
+                      <TableSelectRow
+                        data-testid={`checkbox__opening-screen-data-table_${row.id}`}
+                        {...getSelectionProps({
                           row,
-                          onClick: (e: Event) => selectRowEvent(row.id, row.isSelected),
-                        })
-                      } />
+                          onClick: (e: Event) =>
+                            selectRowEvent(row.id, row.isSelected),
+                        })}
+                      />
                     )}
                     {row.cells.map((cell: any, j: number) => (
                       <TableCell key={j}>
@@ -210,24 +222,32 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           <StatusTag code={cell.value} />
                         ) : cell.info.header === "actions" ? (
                           <>
-                            <Button
-                              hasIconOnly
-                              iconDescription="View"
-                              tooltipPosition="bottom"
-                              kind="ghost"
-                              onClick={() => clickViewAction(row.id)}
-                              renderIcon={Icons.View}
-                              size="md"
-                            />
-                            <Button
-                              hasIconOnly
-                              iconDescription="Document Download"
-                              tooltipPosition="bottom"
-                              kind="ghost"
-                              onClick={() => null}
-                              renderIcon={Icons.DocumentDownload}
-                              size="md"
-                            />
+                            <TableToolbarMenu
+                              iconDescription="More"
+                              autoAlign
+                              renderIcon={Icons.OverflowMenuVertical}
+                              tabIndex={
+                                batchActionProps.shouldShowBatchActions ? -1 : 0
+                              }
+                              className="float-start"
+                            >
+                              <TableToolbarAction
+                                onClick={() => console.log("Download Click")}
+                                disabled={selectedRows.length === 0}
+                              >
+                                Print
+                              </TableToolbarAction>
+                              <TableToolbarAction
+                                onClick={() => {
+                                  batchActionClick(selectedRows);
+                                  batchActionProps.onCancel();
+                                  console.log("Clicked print");
+                                }}
+                              >
+                                Download
+                              </TableToolbarAction>
+                            </TableToolbarMenu>
+                            
                           </>
                         ) : (
                           cell.value

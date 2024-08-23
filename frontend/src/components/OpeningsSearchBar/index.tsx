@@ -3,21 +3,17 @@ import "./OpeningsSearchBar.scss";
 import { Search, Button } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
-import OpeningsMap from "../OpeningsMap";
 import SearchFilterBar from "../SearchFilterBar";
-import TableSkeleton from "../TableSkeleton";
-import SearchScreenDataTable from "../SearchScreenDataTable";
-import { headers, rows } from "../SearchScreenDataTable/testData";
-import { RecentOpening } from "../../types/RecentOpening";
 
-const OpeningsSearchBar: React.FC = () => {
+interface IOpeningsSearchBar {
+  toggleFiltersApplied : Function
+}
+const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
+  toggleFiltersApplied
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
-  const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
-  const [loadId, setLoadId] = useState<number | null>(null);
-  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -64,33 +60,11 @@ const OpeningsSearchBar: React.FC = () => {
             renderIcon={Icons.Search}
             type="button"
             size="md"
-            onClick={() => console.log("search clicked")}
+            onClick={() => toggleFiltersApplied()}
           >
             Search
           </Button>
         </div>
-      </div>
-      {showSpatial ? (
-        <div className="search-spatial-container row p-0">
-          <div className="leaflet-container">
-            <OpeningsMap
-              openingId={null}
-              setOpeningPolygonNotFound={setOpeningPolygonNotFound}
-            />
-          </div>
-        </div>
-      ) : null}
-      <div className="row">
-        {loading ? (
-            <TableSkeleton headers={headers} />
-          ) : (
-            <SearchScreenDataTable
-              headers={headers}
-              rows={rows}
-              setOpeningId={setLoadId}
-              showSpatial={showSpatial}
-            />
-          )}
       </div>
     </div>
   );
