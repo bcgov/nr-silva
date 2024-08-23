@@ -59,7 +59,7 @@ const appendProperties = (props: AppendProps): JSX.Element | null => {
   );
 }
 
-const createPopupFromProps = (props: object): JSX.Element => (
+export const createPopupFromProps = (props: object): JSX.Element => (
   <>
     {Object.keys(props).includes('OPENING_ID') && (
       <>
@@ -114,21 +114,25 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
 
   let uri = 'https://openmaps.gov.bc.ca/geo/ows';
   // service
-  uri += '?service=WFS';
+  uri += '?service=WMS';
   // version
-  uri += '&version=2.0.0';
+  uri += '&version=1.1.1';
   // request
-  uri += '&request=GetFeature';
-  // typeName (layer !?)
-  uri += '&typeName=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
-  // output format
-  uri += '&outputFormat=application/json';
+  uri += '&request=GetMap'; // GetMap, GetCapabilities, GetFeatureInfo
+  // layers
+  uri += '&layers=WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW';
+  // format
+  uri += '&format=application/json;type=geojson';
   // Srs name
-  uri += '&SrsName=EPSG:4326';
+  uri += '&srs=EPSG:4326';
   // Properties name
   uri += '&PROPERTYNAME=OPENING_ID,GEOMETRY,REGION_NAME,REGION_CODE,DISTRICT_NAME,DISTRICT_CODE,CLIENT_NAME,CLIENT_NUMBER,OPENING_WHEN_CREATED';
   // CQL Filters
   uri += `&CQL_FILTER=OPENING_ID=${openingId}`;
+  // bbox
+  //uri += '&bbox=-15028131.257091936,6261721.357121641,-14401959.121379772,6887893.492833805';
+
+  // console.log('uri', uri);
 
   const resultJson = await fetch(uri, {
     method: "GET",
@@ -165,56 +169,3 @@ export const getOpeningsPolygonFromWfs = async (openingId: number | null): Promi
   return null;
 };
 
-export const getInitialLayers = async (): Promise<MapLayer | null> => {
-  let uri = 'https://openmaps.gov.bc.ca/geo/ows';
-  // service
-  uri += '?service=WFS';
-  // version
-  uri += '&version=2.0.0';
-  // request
-  uri += '&request=GetFeature';
-  // typeName (layer !?)
-  uri += '&typeName=WHSE_FOREST_TENURE.FTEN_ROAD_SECTION_LINES_SVW';
-  // output format
-  uri += '&outputFormat=application/json';
-  // Srs name
-  uri += '&SrsName=EPSG:4326';
-  // Properties name
-  uri += '&PROPERTYNAME=ROAD_SECTION_ID,ROAD_SECTION_NAME,SECTION_WIDTH,FEATURE_LENGTH,GEOMETRY';
-
-  const resultsStyle = {
-    color: 'black'
-  };
-
-  const resultJson = await fetch(uri, {
-    method: "GET",
-    mode: "cors"
-  });
-  if (resultJson.ok) {
-    const json = await resultJson.json();
-
-    if (json.features && json.features.length) {
-      const bounds: number[][][] = [];
-      for (let i = 0, len = json.features.length; i < len; i++) {
-        // for now, only lineString type
-        if (json.features[i].geometry && json.features[i].geometry.type === 'LineString') {
-          const geometry = shiftLineStringCoordinates(json.features[i].geometry.coordinates);
-          bounds.push(geometry);
-        }
-      }
-
-      if (bounds.length) {
-        const layer: MapLayer = {
-          key: 'WHSE FOREST TENURE - FTEN ROAD SECTION LINES',
-          name: 'WHSE FOREST TENURE - FTEN ROAD SECTION LINES',
-          pathOptions: resultsStyle,
-          bounds: bounds,
-          properties: {}
-        };
-
-        return layer;
-      }
-    }
-  }
-  return null;
-};

@@ -78,6 +78,9 @@ parameters:
   - name: ALLOWED_ORIGINS
     description: Sets all the allowed request origins
     value: "http://localhost:300*,https://*.apps.silver.devops.gov.bc.ca"
+  - name: WMS_LAYERS_WHITELIST_USERS
+    description: List of users that can see active layers on the map view
+    required: true
 objects:
   - apiVersion: apps/v1
     kind: Deployment
@@ -132,6 +135,8 @@ objects:
                   value: ${DASHBOARD_JOB_IDIR_USERS}
                 - name: ALLOWED_ORIGINS
                   value: ${ALLOWED_ORIGINS}
+                - name: WMS_LAYERS_WHITELIST_USERS
+                  value: ${WMS_LAYERS_WHITELIST_USERS}
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:
