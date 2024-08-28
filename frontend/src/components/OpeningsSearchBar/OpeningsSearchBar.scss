@@ -39,6 +39,28 @@
   .search-button{
     margin-top: 0px;
   }
+  .advanced-search-field{
+    background-color: white;
+    width: 288px;
+    height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    cursor: pointer;
+    border-bottom: 1px solid var(--bx-border-strong-01);
+    color: var(--bx-text-secondary);
+    margin-left: 2px;
+    border-radius: 4px 4px 0px 0px;
+    padding: 16px 11px;
+
+    p{
+      @include type.type-style('body-compact-02');
+      font-size: 14px;
+    }
+    .text-active {
+      color: black !important;
+    }
+  }
   
 }
 

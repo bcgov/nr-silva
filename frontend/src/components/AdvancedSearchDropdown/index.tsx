@@ -38,15 +38,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   });
 
   const items = [
-    { text: "Option 1" },
-    { text: "Option 2" },
-    { text: "Option 3 - a disabled item", disabled: true },
-    { text: "Option 4" },
-    { text: "Option 5" },
-    { text: "Option 6" },
-    { text: "Option 7" },
-    { text: "Option 8" },
+    { text: "Option 1", value: "option1" },
+    { text: "Option 2", value: "option2" },
+    { text: "Option 3 - a disabled item", value: "option3", disabled: true },
+    { text: "Option 4", value: "option4" },
+    { text: "Option 5", value: "option5" },
+    { text: "Option 6", value: "option6" },
+    { text: "Option 7", value: "option7" },
+    { text: "Option 8", value: "option8" },
   ];
+  
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
@@ -76,14 +77,28 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <Checkbox
                 labelText={`Openings created by me`}
                 id="checkbox-label-1"
-                checked={filters.openingFilters.includes("Openings created by me")}
-                onChange={() => handleCheckboxChange("Openings created by me", "openingFilters")}
+                checked={filters.openingFilters.includes(
+                  "Openings created by me"
+                )}
+                onChange={() =>
+                  handleCheckboxChange(
+                    "Openings created by me",
+                    "openingFilters"
+                  )
+                }
               />
               <Checkbox
                 labelText={`Submitted to FRPA section 108`}
                 id="checkbox-label-2"
-                checked={filters.openingFilters.includes("Submitted to FRPA section 108")}
-                onChange={() => handleCheckboxChange("Submitted to FRPA section 108", "openingFilters")}
+                checked={filters.openingFilters.includes(
+                  "Submitted to FRPA section 108"
+                )}
+                onChange={() =>
+                  handleCheckboxChange(
+                    "Submitted to FRPA section 108",
+                    "openingFilters"
+                  )
+                }
               />
             </CheckboxGroup>
           </div>
@@ -96,7 +111,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               titleText="Org unit"
               items={items}
               itemToString={(item: any) => (item ? item.text : "")}
-              onChange={(e: any) => handleFilterChange({ orgUnit: e.selectedItem.text })}
+              onChange={(e: any) =>
+                handleFilterChange({ orgUnit: e.selectedItem.value })
+              }
               label="Enter or choose an org unit"
             />
           </div>
@@ -106,7 +123,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               titleText="Category"
               items={items}
               itemToString={(item: any) => (item ? item.text : "")}
-              onChange={(e: any) => handleFilterChange({ category: e.selectedItem.text })}
+              onChange={(e: any) =>
+                handleFilterChange({ category: e.selectedItem.value })
+              }
               label="Enter or choose a category"
             />
           </div>
@@ -127,11 +146,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               id="text-input-1"
               type="text"
               className="mt-2"
-              onChange={(e: any) => handleFilterChange({ clientAcronym: e.target.value })}
+              onChange={(e: any) =>
+                handleFilterChange({ clientAcronym: e.target.value })
+              }
             />
           </div>
           <div className="col-6">
-            <FormLabel>Form label with Tooltip</FormLabel>
+            <FormLabel>Block</FormLabel>
             <Tooltip
               align="bottom"
               label="If you don't remember the client information you can go to client search."
@@ -145,7 +166,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 id="block-status-dropdown"
                 items={items}
                 itemToString={(item: any) => (item ? item.text : "")}
-                onChange={(e: any) => handleFilterChange({ blockStatus: e.selectedItem.text })}
+                onChange={(e: any) =>
+                  handleFilterChange({ blockStatus: e.selectedItem.value })
+                }
                 label="Block Status"
               />
               <TextInput
@@ -153,13 +176,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 type="text"
                 placeholder="Cut block"
                 className="mx-1"
-                onChange={(e: any) => handleFilterChange({ cutBlock: e.target.value })}
+                onChange={(e: any) =>
+                  handleFilterChange({ cutBlock: e.target.value })
+                }
               />
               <TextInput
                 id="text-input-3"
                 placeholder="Cutting permit"
                 type="text"
-                onChange={(e: any) => handleFilterChange({ cuttingPermit: e.target.value })}
+                onChange={(e: any) =>
+                  handleFilterChange({ cuttingPermit: e.target.value })
+                }
               />
             </div>
           </div>
@@ -172,7 +199,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               type="number"
               className="mt-2"
               labelText="Gross area"
-              onChange={(e: any) => handleFilterChange({ grossArea: e.target.value })}
+              onChange={(e: any) =>
+                handleFilterChange({ grossArea: e.target.value })
+              }
             />
           </div>
           <div className="col-6">
@@ -181,7 +210,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               type="number"
               className="mt-2"
               labelText="Timber mark"
-              onChange={(e: any) => handleFilterChange({ timberMark: e.target.value })}
+              onChange={(e: any) =>
+                handleFilterChange({ timberMark: e.target.value })
+              }
             />
           </div>
         </div>
@@ -194,7 +225,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 titleText="Status"
                 items={items}
                 itemToString={(item: any) => (item ? item.text : "")}
-                onChange={(e: any) => handleFilterChange({ status: e.selectedItem.text })}
+                onChange={(e: any) =>
+                  handleFilterChange({ status: e.selectedItem.value })
+                }
                 label="Status"
               />
               <DatePicker
@@ -237,13 +270,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   labelText={`DFT - Draft`}
                   id="checkbox-label-dft"
                   checked={filters.blockStatuses.includes("DFT - Draft")}
-                  onChange={() => handleCheckboxChange("DFT - Draft", "blockStatuses")}
+                  onChange={() =>
+                    handleCheckboxChange("DFT - Draft", "blockStatuses")
+                  }
                 />
                 <Checkbox
                   labelText={`APP - Approved`}
                   id="checkbox-label-app"
                   checked={filters.blockStatuses.includes("APP - Approved")}
-                  onChange={() => handleCheckboxChange("APP - Approved", "blockStatuses")}
+                  onChange={() =>
+                    handleCheckboxChange("APP - Approved", "blockStatuses")
+                  }
                 />
               </div>
               <div className="d-flex">
@@ -251,13 +288,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   labelText={`FG - Free growing`}
                   id="checkbox-label-fg"
                   checked={filters.blockStatuses.includes("FG - Free growing")}
-                  onChange={() => handleCheckboxChange("FG - Free growing", "blockStatuses")}
+                  onChange={() =>
+                    handleCheckboxChange("FG - Free growing", "blockStatuses")
+                  }
                 />
                 <Checkbox
                   labelText={`SUB - Submitted`}
                   id="checkbox-label-sub"
                   checked={filters.blockStatuses.includes("SUB - Submitted")}
-                  onChange={() => handleCheckboxChange("SUB - Submitted", "blockStatuses")}
+                  onChange={() =>
+                    handleCheckboxChange("SUB - Submitted", "blockStatuses")
+                  }
                 />
               </div>
             </CheckboxGroup>

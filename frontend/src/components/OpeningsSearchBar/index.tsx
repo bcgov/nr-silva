@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./OpeningsSearchBar.scss";
-import { Search, Button } from "@carbon/react";
+import { Search, Button, Tag } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
@@ -15,6 +15,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
+  const [filtersCount, setFiltersCount] = useState<number>(0);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -34,6 +35,31 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
     onSearchInputChange(value); // Call the function to update the search input in the parent component
   };
 
+  const countActiveFilters = (filters: any): number => {
+    let count = 0;
+  
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+  
+      // Check if the value is an array (e.g., for checkboxes)
+      if (Array.isArray(value)) {
+        count += value.filter((item) => item !== "").length; // Count non-empty values in the array
+      } else if (value !== null && value !== "" && value !== "Option 1") {
+        // Increment the count for non-default, non-null, and non-empty values
+        count += 1;
+      }
+    });
+  
+    return count;
+  };
+  
+  const handleFiltersChanged = (filters: any) => {
+    const activeFiltersCount = countActiveFilters(filters);
+    setFiltersCount(activeFiltersCount); // Update the state with the active filters count
+    console.log("Number of active filters:", activeFiltersCount);
+    onSearch(filters);
+  };
+
   return (
     <div>
       <div className="openings-searchbar-container row align-content-center">
@@ -48,22 +74,32 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
               onChange={handleInputChange} // Handle input change
               onKeyDown={() => {}}
             />
-            <Button
-              className="toggle-dropdown-button ms-2"
-              renderIcon={isOpen ? Icons.ChevronSortUp : Icons.ChevronSortDown}
-              type="button"
-              size="md"
-              onClick={toggleDropdown}
-            >
-              Advanced Search
-            </Button>
+
+            <div className="advanced-search-field" onClick={toggleDropdown}>
+              {filtersCount > 0 ? (
+                <Tag
+                  filter
+                  className="mx-1"
+                  type="high-contrast"
+                  title="Clear Filter"
+                  onClose={() => console.log("Status: Free Growing")}
+                >
+                  {"+" + filtersCount}
+                </Tag>
+              ) : null}
+              <p className={filtersCount > 0 ? "text-active" : ""}>
+                Advanced Search
+              </p>
+              {isOpen ? <Icons.ChevronSortUp /> : <Icons.ChevronSortDown />}
+            </div>
           </div>
-            <div className={isOpen ? 'd-block' : 'd-none'}>
+
+          <div className={isOpen ? "d-block" : "d-none"}>
             <AdvancedSearchDropdown
               toggleShowFilters={toggleShowFilters}
-              onSearch={onSearch}
+              onSearch={handleFiltersChanged}
             />
-            </div>
+          </div>
           {showFilters && <SearchFilterBar />}
         </div>
         <div className="col-2 p-0">
