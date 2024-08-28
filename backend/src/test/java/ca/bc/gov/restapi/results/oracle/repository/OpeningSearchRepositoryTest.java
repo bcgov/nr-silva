@@ -345,26 +345,27 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(1, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(openingId, result.getData().get(0).getOpeningId());
-    Assertions.assertEquals(openingNumber, result.getData().get(0).getOpeningNumber());
-    Assertions.assertEquals(category, result.getData().get(0).getCategory());
-    Assertions.assertEquals(status, result.getData().get(0).getStatus());
-    Assertions.assertEquals(cuttingPermitId, result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals(timberMark, result.getData().get(0).getTimberMark());
-    Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(
-        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
-    Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
-    Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
-    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
-    Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
-    Assertions.assertEquals(true, result.getData().get(0).getSubmittedToFrpa());
-    Assertions.assertEquals(33L, result.getData().get(0).getSilvaReliefAppId());
+
+    OpeningSearchResponseDto dto = result.getData().get(0);
+    Assertions.assertEquals(openingId, dto.getOpeningId());
+    Assertions.assertEquals(openingNumber, dto.getOpeningNumber());
+    Assertions.assertEquals(category, dto.getCategory());
+    Assertions.assertEquals(status, dto.getStatus());
+    Assertions.assertEquals(cuttingPermitId, dto.getCuttingPermitId());
+    Assertions.assertEquals(timberMark, dto.getTimberMark());
+    Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
+    Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
+    Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
+    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
+    Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
+    Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
+    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
+    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertEquals(userId, dto.getEntryUserId());
+    Assertions.assertEquals(true, dto.getSubmittedToFrpa());
+    Assertions.assertEquals(33L, dto.getSilvaReliefAppId());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
@@ -429,25 +430,26 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(1, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(openingId, result.getData().get(0).getOpeningId());
-    Assertions.assertEquals(openingNumber, result.getData().get(0).getOpeningNumber());
-    Assertions.assertEquals(category, result.getData().get(0).getCategory());
-    Assertions.assertEquals(status, result.getData().get(0).getStatus());
-    Assertions.assertEquals(cuttingPermitId, result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals(timberMark, result.getData().get(0).getTimberMark());
-    Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(
-        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
-    Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
-    Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
-    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
-    Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
-    Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+
+    OpeningSearchResponseDto dto = result.getData().get(0);
+    Assertions.assertEquals(openingId, dto.getOpeningId());
+    Assertions.assertEquals(openingNumber, dto.getOpeningNumber());
+    Assertions.assertEquals(category, dto.getCategory());
+    Assertions.assertEquals(status, dto.getStatus());
+    Assertions.assertEquals(cuttingPermitId, dto.getCuttingPermitId());
+    Assertions.assertEquals(timberMark, dto.getTimberMark());
+    Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
+    Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
+    Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
+    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
+    Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
+    Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
+    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
+    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertEquals(userId, dto.getEntryUserId());
+    Assertions.assertEquals(false, dto.getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
@@ -511,25 +513,26 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(1, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(openingId, result.getData().get(0).getOpeningId());
-    Assertions.assertEquals(openingNumber, result.getData().get(0).getOpeningNumber());
-    Assertions.assertEquals(category, result.getData().get(0).getCategory());
-    Assertions.assertEquals(status, result.getData().get(0).getStatus());
-    Assertions.assertEquals(cuttingPermitId, result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals(timberMark, result.getData().get(0).getTimberMark());
-    Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(
-        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
-    Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
-    Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
-    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
-    Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
-    Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+
+    OpeningSearchResponseDto dto = result.getData().get(0);
+    Assertions.assertEquals(openingId, dto.getOpeningId());
+    Assertions.assertEquals(openingNumber, dto.getOpeningNumber());
+    Assertions.assertEquals(category, dto.getCategory());
+    Assertions.assertEquals(status, dto.getStatus());
+    Assertions.assertEquals(cuttingPermitId, dto.getCuttingPermitId());
+    Assertions.assertEquals(timberMark, dto.getTimberMark());
+    Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
+    Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
+    Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
+    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
+    Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
+    Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
+    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
+    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertEquals(userId, dto.getEntryUserId());
+    Assertions.assertEquals(false, dto.getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
@@ -593,27 +596,26 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(1, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(openingId, result.getData().get(0).getOpeningId());
-    Assertions.assertEquals(openingNumber, result.getData().get(0).getOpeningNumber());
-    Assertions.assertEquals(category, result.getData().get(0).getCategory());
-    Assertions.assertEquals(status, result.getData().get(0).getStatus());
-    Assertions.assertEquals(cuttingPermitId, result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals(timberMark, result.getData().get(0).getTimberMark());
-    Assertions.assertEquals(cutBlockId, result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(openingGrossArea, result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(
-        disturbanceStartDate.toLocalDateTime(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, result.getData().get(0).getFileId());
-    Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
-    Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(
-        earlyFreeGrowing, Timestamp.valueOf(result.getData().get(0).getEarlyFreeGrowingDate()));
-    Assertions.assertEquals(
-        lateFreeGrowing, Timestamp.valueOf(result.getData().get(0).getLateFreeGrowingDate()));
-    Assertions.assertEquals(entryUserId, result.getData().get(0).getEntryUserId());
-    Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
+
+    OpeningSearchResponseDto dto = result.getData().get(0);
+    Assertions.assertEquals(openingId, dto.getOpeningId());
+    Assertions.assertEquals(openingNumber, dto.getOpeningNumber());
+    Assertions.assertEquals(category, dto.getCategory());
+    Assertions.assertEquals(status, dto.getStatus());
+    Assertions.assertEquals(cuttingPermitId, dto.getCuttingPermitId());
+    Assertions.assertEquals(timberMark, dto.getTimberMark());
+    Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
+    Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
+    Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
+    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
+    Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
+    Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
+    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
+    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertEquals(entryUserId, dto.getEntryUserId());
+    Assertions.assertEquals(false, dto.getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
