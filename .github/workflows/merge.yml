@@ -138,6 +138,7 @@ jobs:
               -p RESULTS_ENV_OPENSEARCH=production
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
+              -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:

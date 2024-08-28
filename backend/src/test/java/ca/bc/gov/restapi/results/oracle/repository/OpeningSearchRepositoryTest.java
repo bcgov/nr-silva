@@ -305,8 +305,9 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
-    String regenTemporary = null;
-    String freeGrowTemporary = null;
+    Timestamp regenDelay = null;
+    Timestamp earlyFreeGrowing = null;
+    Timestamp lateFreeGrowing = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
     BigDecimal submittedToFrpa108 = new BigDecimal("33");
@@ -326,8 +327,9 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
-          regenTemporary,
-          freeGrowTemporary,
+          regenDelay,
+          earlyFreeGrowing,
+          lateFreeGrowing,
           updateTimestamp,
           userId,
           submittedToFrpa108,
@@ -357,8 +359,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
+    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
+    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
     Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(true, result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertEquals(33L, result.getData().get(0).getSilvaReliefAppId());
@@ -386,8 +389,9 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
-    String regenTemporary = null;
-    String freeGrowTemporary = null;
+    Timestamp regenDelay = null;
+    Timestamp earlyFreeGrowing = null;
+    Timestamp lateFreeGrowing = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
     BigDecimal submittedToFrpa = BigDecimal.ZERO;
@@ -407,8 +411,9 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
-          regenTemporary,
-          freeGrowTemporary,
+          regenDelay,
+          earlyFreeGrowing,
+          lateFreeGrowing,
           updateTimestamp,
           userId,
           submittedToFrpa,
@@ -438,8 +443,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
+    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
+    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
     Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
@@ -465,8 +471,9 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = "DCR";
     String orgUnitName = null;
     String clientNumber = null;
-    String regenTemporary = null;
-    String freeGrowTemporary = null;
+    Timestamp regenDelay = null;
+    Timestamp earlyFreeGrowing = null;
+    Timestamp lateFreeGrowing = null;
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String userId = "TEST";
     BigDecimal submittedToFrpa = BigDecimal.ZERO;
@@ -486,8 +493,9 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
-          regenTemporary,
-          freeGrowTemporary,
+          regenDelay,
+          earlyFreeGrowing,
+          lateFreeGrowing,
           updateTimestamp,
           userId,
           submittedToFrpa,
@@ -517,8 +525,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
+    Assertions.assertEquals(earlyFreeGrowing, result.getData().get(0).getEarlyFreeGrowingDate());
+    Assertions.assertEquals(lateFreeGrowing, result.getData().get(0).getLateFreeGrowingDate());
     Assertions.assertEquals(userId, result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
@@ -544,8 +553,9 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = filters.getOrgUnit();
     String orgUnitName = "Org Name";
     String clientNumber = "00012797";
-    String regenTemporary = "TBD";
-    String freeGrowTemporary = "TBD";
+    Timestamp regenDelay = null;
+    Timestamp earlyFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
+    Timestamp lateFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
     String entryUserId = filters.getEntryUserId();
     BigDecimal submittedToFrpa = BigDecimal.ZERO;
@@ -565,8 +575,9 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
-          regenTemporary,
-          freeGrowTemporary,
+          regenDelay,
+          earlyFreeGrowing,
+          lateFreeGrowing,
           updateTimestamp,
           entryUserId,
           submittedToFrpa,
@@ -596,8 +607,11 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(clientNumber, result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(regenTemporary, result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(freeGrowTemporary, result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(regenDelay, result.getData().get(0).getRegenDelayDate());
+    Assertions.assertEquals(
+        earlyFreeGrowing, Timestamp.valueOf(result.getData().get(0).getEarlyFreeGrowingDate()));
+    Assertions.assertEquals(
+        lateFreeGrowing, Timestamp.valueOf(result.getData().get(0).getLateFreeGrowingDate()));
     Assertions.assertEquals(entryUserId, result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(false, result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
