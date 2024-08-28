@@ -14,18 +14,50 @@ const OpeningsSearchTab: React.FC = () => {
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useState<Record<string, any>>({});
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
   };
+  
   const toggleFiltersApplied = () => {
     setFiltersApplied(!filtersApplied);
+  };
+
+  const handleSearch = (searchData: any) => {
+    // Logic to make the API call using react-query
+    // Use searchParams as the data to be sent
+    console.log("final search params are here:")
+    console.log(searchParams)
+  };
+
+  const handleFiltersChanged = (searchData: any) => {
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      ...searchData,
+    }));
+    console.log("Search Data:", searchData);
+    console.log(searchParams)
+  };
+
+  const handleSearchInputChange = (searchInput: string) => {
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      searchInput, // Add the search input to the searchParams
+    }));
+
+    console.log("Search Input Changed:", searchInput);
+    
   };
 
   return (
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
-        <OpeningsSearchBar toggleFiltersApplied={toggleFiltersApplied} />
+        <OpeningsSearchBar 
+          onSearch={handleFiltersChanged} 
+          onSearchInputChange={handleSearchInputChange} 
+          onSearchClick = {handleSearch}
+        />
         {showSpatial ? (
           <div className="search-spatial-container row p-0">
             <div className="leaflet-container">

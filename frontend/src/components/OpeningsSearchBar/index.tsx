@@ -6,23 +6,32 @@ import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 
 interface IOpeningsSearchBar {
-  toggleFiltersApplied : Function
+  onSearch: (searchData: any) => void;
+  onSearchInputChange: (searchInput: string) => void; // New prop
+  onSearchClick: Function
 }
-const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
-  toggleFiltersApplied
-}) => {
+
+const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInputChange, onSearchClick }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [showSpatial, setShowSpatial] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>("");
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const toggleShowFilters = () => {
-    console.log("toggle filter called");
     setShowFilters(!showFilters);
-    console.log("the new value is:" + showFilters);
+  };
+
+  const handleSearchClick = () => {
+    onSearch({ searchInput });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    onSearchInputChange(value); // Call the function to update the search input in the parent component
   };
 
   return (
@@ -36,7 +45,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
               labelText="Search"
               closeButtonLabelText="Clear search input"
               id={`search-1`}
-              onChange={() => {}}
+              onChange={handleInputChange} // Handle input change
               onKeyDown={() => {}}
             />
             <Button
@@ -49,9 +58,12 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
               Advanced Search
             </Button>
           </div>
-          {isOpen && (
-            <AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />
-          )}
+            <div className={isOpen ? 'd-block' : 'd-none'}>
+            <AdvancedSearchDropdown
+              toggleShowFilters={toggleShowFilters}
+              onSearch={onSearch}
+            />
+            </div>
           {showFilters && <SearchFilterBar />}
         </div>
         <div className="col-2 p-0">
@@ -60,7 +72,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
             renderIcon={Icons.Search}
             type="button"
             size="md"
-            onClick={() => toggleFiltersApplied()}
+            onClick={handleSearchClick}
           >
             Search
           </Button>
