@@ -265,8 +265,9 @@ class OpeningServiceTest {
     dto.setOrgUnitName("");
     dto.setClientNumber("");
     dto.setClientAcronym("");
-    dto.setRegenDelayDate("");
-    dto.setFreeGrowingDate("");
+    dto.setRegenDelayDate(LocalDateTime.now());
+    dto.setEarlyFreeGrowingDate(LocalDateTime.now());
+    dto.setLateFreeGrowingDate(LocalDateTime.now());
     dto.setUpdateTimestamp(LocalDateTime.now());
     dto.setEntryUserId("");
     dto.setSubmittedToFrpa(false);
@@ -300,7 +301,10 @@ class OpeningServiceTest {
     Assertions.assertEquals(dto.getOrgUnitName(), result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(dto.getClientNumber(), result.getData().get(0).getClientNumber());
     Assertions.assertEquals(dto.getRegenDelayDate(), result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(dto.getFreeGrowingDate(), result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(
+        dto.getEarlyFreeGrowingDate(), result.getData().get(0).getEarlyFreeGrowingDate());
+    Assertions.assertEquals(
+        dto.getLateFreeGrowingDate(), result.getData().get(0).getLateFreeGrowingDate());
     Assertions.assertEquals(dto.getEntryUserId(), result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(dto.getSubmittedToFrpa(), result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
@@ -330,8 +334,9 @@ class OpeningServiceTest {
     dto.setOrgUnitName("");
     dto.setClientNumber("");
     dto.setClientAcronym("");
-    dto.setRegenDelayDate("");
-    dto.setFreeGrowingDate("");
+    dto.setRegenDelayDate(LocalDateTime.now());
+    dto.setEarlyFreeGrowingDate(LocalDateTime.now());
+    dto.setLateFreeGrowingDate(LocalDateTime.now());
     dto.setUpdateTimestamp(LocalDateTime.now());
     dto.setEntryUserId("");
     dto.setSubmittedToFrpa(false);
@@ -365,7 +370,10 @@ class OpeningServiceTest {
     Assertions.assertEquals(dto.getOrgUnitName(), result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(dto.getClientNumber(), result.getData().get(0).getClientNumber());
     Assertions.assertEquals(dto.getRegenDelayDate(), result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(dto.getFreeGrowingDate(), result.getData().get(0).getFreeGrowingDate());
+    Assertions.assertEquals(
+        dto.getEarlyFreeGrowingDate(), result.getData().get(0).getEarlyFreeGrowingDate());
+    Assertions.assertEquals(
+        dto.getLateFreeGrowingDate(), result.getData().get(0).getLateFreeGrowingDate());
     Assertions.assertEquals(dto.getEntryUserId(), result.getData().get(0).getEntryUserId());
     Assertions.assertEquals(dto.getSubmittedToFrpa(), result.getData().get(0).getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());

@@ -57,7 +57,8 @@ class OpeningSearchEndpointTest {
     response.setClientNumber(null);
     response.setClientAcronym(null);
     response.setRegenDelayDate(null);
-    response.setFreeGrowingDate(null);
+    response.setEarlyFreeGrowingDate(null);
+    response.setLateFreeGrowingDate(null);
     response.setUpdateTimestamp(LocalDateTime.now());
     response.setEntryUserId("TEST");
     response.setSubmittedToFrpa(true);
@@ -94,7 +95,10 @@ class OpeningSearchEndpointTest {
         .andExpect(jsonPath("$.data[0].orgUnitName").value(response.getOrgUnitName()))
         .andExpect(jsonPath("$.data[0].clientNumber").value(response.getClientNumber()))
         .andExpect(jsonPath("$.data[0].regenDelayDate").value(response.getRegenDelayDate()))
-        .andExpect(jsonPath("$.data[0].freeGrowingDate").value(response.getFreeGrowingDate()))
+        .andExpect(
+            jsonPath("$.data[0].earlyFreeGrowingDate").value(response.getEarlyFreeGrowingDate()))
+        .andExpect(
+            jsonPath("$.data[0].lateFreeGrowingDate").value(response.getLateFreeGrowingDate()))
         .andExpect(jsonPath("$.data[0].entryUserId").value(response.getEntryUserId()))
         .andExpect(jsonPath("$.data[0].submittedToFrpa").value(response.getSubmittedToFrpa()))
         .andExpect(jsonPath("$.data[0].silvaReliefAppId").value(response.getSilvaReliefAppId()))
