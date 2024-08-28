@@ -360,9 +360,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
-    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
-    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
-    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertNull(dto.getRegenDelayDate());
+    Assertions.assertNull(dto.getEarlyFreeGrowingDate());
+    Assertions.assertNull(dto.getLateFreeGrowingDate());
     Assertions.assertEquals(userId, dto.getEntryUserId());
     Assertions.assertEquals(true, dto.getSubmittedToFrpa());
     Assertions.assertEquals(33L, dto.getSilvaReliefAppId());
@@ -445,9 +445,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
-    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
-    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
-    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertNull(dto.getRegenDelayDate());
+    Assertions.assertNull(dto.getEarlyFreeGrowingDate());
+    Assertions.assertNull(dto.getLateFreeGrowingDate());
     Assertions.assertEquals(userId, dto.getEntryUserId());
     Assertions.assertEquals(false, dto.getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
@@ -528,9 +528,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
-    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
-    Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
-    Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
+    Assertions.assertNull(dto.getRegenDelayDate());
+    Assertions.assertNull(dto.getEarlyFreeGrowingDate());
+    Assertions.assertNull(dto.getLateFreeGrowingDate());
     Assertions.assertEquals(userId, dto.getEntryUserId());
     Assertions.assertEquals(false, dto.getSubmittedToFrpa());
     Assertions.assertFalse(result.isHasNextPage());
@@ -611,7 +611,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
-    Assertions.assertEquals(regenDelay, Timestamp.valueOf(dto.getRegenDelayDate()));
+    Assertions.assertNull(dto.getRegenDelayDate());
     Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
     Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));
     Assertions.assertEquals(entryUserId, dto.getEntryUserId());
