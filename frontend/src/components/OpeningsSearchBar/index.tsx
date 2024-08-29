@@ -16,6 +16,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
+  const [filtersList, setFiltersList] = useState(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -57,6 +58,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
     console.log("Number of active filters:", activeFiltersCount);
+    setFiltersList(filters);
     onSearch(filters);
   };
 
@@ -100,7 +102,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
               onSearch={handleFiltersChanged}
             />
           </div>
-          {showFilters && <SearchFilterBar />}
+          {filtersCount > 0  && <SearchFilterBar filters={filtersList} />}
         </div>
         <div className="col-2 p-0">
           <Button
