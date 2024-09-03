@@ -4,10 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
+/** This class represents an Opening Category in the database. */
 @Getter
 @Setter
 @Entity
@@ -22,11 +23,11 @@ public class OpenCategoryCodeEntity {
   private String description;
 
   @Column(name = "EFFECTIVE_DATE", nullable = false)
-  private LocalDateTime effectiveDate;
+  private LocalDate effectiveDate;
 
   @Column(name = "EXPIRY_DATE", nullable = false)
-  private LocalDateTime expiryDate;
+  private LocalDate expiryDate;
 
   @Column(name = "UPDATE_TIMESTAMP", nullable = false)
-  private LocalDateTime updateTimestamp;
+  private LocalDate updateTimestamp;
 }

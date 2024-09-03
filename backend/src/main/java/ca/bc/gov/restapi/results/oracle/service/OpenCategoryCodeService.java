@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeRepository;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class OpenCategoryCodeService {
     }
 
     List<OpenCategoryCodeEntity> openCategoryCodes =
-        openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDateTime.now());
+        openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
     log.info("Found {} open category codes (excluding expired)", openCategoryCodes.size());
     return openCategoryCodes;
   }
