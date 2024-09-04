@@ -5,7 +5,11 @@ import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
+import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -14,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class OpeningSearchEndpoint {
 
   private final OpeningService openingService;
+
+  private final OpenCategoryCodeService openCategoryCodeService;
+
+  private final OrgUnitService orgUnitService;
 
   /**
    * Search for Openings with different filters.
@@ -187,5 +196,100 @@ public class OpeningSearchEndpoint {
             updateDateEnd,
             mainSearchTerm);
     return openingService.openingSearch(filtersDto, paginationParameters);
+  }
+
+  /**
+   * Get all opening categories. Optionally you can ask for the expired ones.
+   *
+   * @param includeExpired Query param to include expired categories.
+   * @return List of OpenCategoryCodeEntity with found categories.
+   */
+  @GetMapping("/categories")
+  @Operation(
+      summary = "Get all opening categories",
+      description = "Get all opening categories. Optionally you can ask for the expired ones.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "An array with found objects, or an empty array.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
+      })
+  public List<OpenCategoryCodeEntity> getOpeningCategories(
+      @RequestParam(value = "includeExpired", required = false)
+          @Parameter(
+              name = "includeExpired",
+              in = ParameterIn.QUERY,
+              description = "Defines if the API should include expired categories",
+              required = false)
+          Boolean includeExpired) {
+    boolean addExpired = Boolean.TRUE.equals(includeExpired);
+    return openCategoryCodeService.findAllCategories(addExpired);
+  }
+
+  /**
+   * Get all org units.
+   *
+   * @param includeExpired Query param to include expired org units.
+   * @return List of OrgUnitEntity with found org units.
+   */
+  @GetMapping("/org-units")
+  @Operation(
+      summary = "Get all opening org units",
+      description = "Get all opening org units. Optionally you can ask for the expired ones.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "An array with found objects, or an empty array.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
+      })
+  public List<OrgUnitEntity> getOpeningOrgUnits(
+      @RequestParam(value = "includeExpired", required = false)
+          @Parameter(
+              name = "includeExpired",
+              in = ParameterIn.QUERY,
+              description = "Defines if the API should include expired org units",
+              required = false)
+          Boolean includeExpired) {
+    boolean addExpired = Boolean.TRUE.equals(includeExpired);
+    return orgUnitService.findAllOrgUnits(addExpired);
+  }
+
+  /**
+   * Get all org units by code.
+   *
+   * @param codes Org Unit codes to search for.
+   * @return List of OrgUnitEntity with found org units.
+   */
+  @GetMapping("/org-units-by-code")
+  @Operation(
+      summary = "Get all opening org units by code",
+      description = "Get all opening org units by code.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "An array with found objects, or an empty array.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Access token is missing or invalid",
+            content = @Content(schema = @Schema(implementation = Void.class)))
+      })
+  public List<OrgUnitEntity> getOpeningOrgUnitsByCode(
+      @RequestParam(value = "orgUnitCodes", required = true)
+          @Parameter(
+              name = "orgUnitCodes",
+              in = ParameterIn.QUERY,
+              description = "Defines the org units that should be included in the search",
+              required = false)
+          List<String> codes) {
+    return orgUnitService.findAllOrgUnitsByCode(codes);
   }
 }
