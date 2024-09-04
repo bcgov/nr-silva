@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.scss";
 import EmptySection from "../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
 import TableSkeleton from "../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
-import { headers, rows } from "../SearchScreenDataTable/testData";
+import { headers } from "../SearchScreenDataTable/testData";
 import OpeningsMap from "../OpeningsMap";
+import { useOpeningsQuery } from "../../services/queries/search/openingQueries";
 
 const OpeningsSearchTab: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -16,6 +17,15 @@ const OpeningsSearchTab: React.FC = () => {
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
 
+  const { data, isFetching } = useOpeningsQuery(searchParams);
+
+  useEffect(() => {
+    // Log data whenever it changes
+    if (data) {
+      console.log("API Response Data:", data);
+    }
+  }, [data]);
+
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
   };
@@ -24,11 +34,12 @@ const OpeningsSearchTab: React.FC = () => {
     setFiltersApplied(!filtersApplied);
   };
 
-  const handleSearch = (searchData: any) => {
-    // Logic to make the API call using react-query
-    // Use searchParams as the data to be sent
+  const handleSearch = () => {
+    toggleFiltersApplied();
     console.log("final search params are here:")
-    console.log(searchParams)
+    console.log(searchParams);
+    // No need to log data here as it won't be available immediately
+    setFiltersApplied(true); // Set filters as applied to show results
   };
 
   const handleFiltersChanged = (searchData: any) => {
@@ -37,17 +48,14 @@ const OpeningsSearchTab: React.FC = () => {
       ...searchData,
     }));
     console.log("Search Data:", searchData);
-    console.log(searchParams)
   };
 
   const handleSearchInputChange = (searchInput: string) => {
     setSearchParams((prevParams) => ({
       ...prevParams,
-      searchInput, // Add the search input to the searchParams
+      searchInput,
     }));
-
     console.log("Search Input Changed:", searchInput);
-    
   };
 
   return (
@@ -56,7 +64,7 @@ const OpeningsSearchTab: React.FC = () => {
         <OpeningsSearchBar 
           onSearch={handleFiltersChanged} 
           onSearchInputChange={handleSearchInputChange} 
-          onSearchClick = {handleSearch}
+          onSearchClick={handleSearch}
         />
         {showSpatial ? (
           <div className="search-spatial-container row p-0">
@@ -71,12 +79,12 @@ const OpeningsSearchTab: React.FC = () => {
         <div className="row">
           {filtersApplied ? (
             <>
-              {loading ? (
+              {isFetching ? (
                 <TableSkeleton headers={headers} />
               ) : (
                 <SearchScreenDataTable
                   headers={headers}
-                  rows={rows}
+                  rows={data.data || []}
                   setOpeningId={setLoadId}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}

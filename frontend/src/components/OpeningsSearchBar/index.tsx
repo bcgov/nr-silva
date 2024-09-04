@@ -27,7 +27,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
   };
 
   const handleSearchClick = () => {
-    onSearch({ searchInput });
+    onSearchClick();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -14,25 +14,34 @@ export const headers: ITableHeader[] = [
     header: 'File Id'
   },
   {
-    key: 'category',
+    key: 'categoryDescription',
     header: 'Category'
   },
   {
-    key: 'orgUnit',
+    key: 'orgUnitName',
     header: 'Org unit'
   },
   {
-    key: 'status',
+    key: 'statusCode',
     header: 'Status'
   },
   {
-    key: 'cuttingPermit',
+    key: 'cuttingPermitId',
     header: 'Cutting permit'
   },
   {
-    key: 'cutBlock',
+    key: 'cutBlockId',
     header: 'Cut block'
+  },
+  {
+    key: 'openingGrossAreaHa',
+    header: 'Gross Area'
+  },
+  {
+    key: 'disturbanceStartDate',
+    header:'Disturbance Date'
   }
+
 ];
 
 export const rows:any = [

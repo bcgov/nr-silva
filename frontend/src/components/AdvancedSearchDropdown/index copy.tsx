@@ -11,7 +11,6 @@ import {
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
-import { useOpeningFiltersQuery } from "../../services/queries/search/openingQueries";
 
 interface AdvancedSearchDropdownProps {
   onSearch: (filters: any) => void; // Function to handle search logic
@@ -38,11 +37,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     blockStatuses: [] as string[], // Array to hold multiple block statuses
   });
 
-  const {
-    data: openingFiltersData,
-    isLoading,
-    isError,
-  } = useOpeningFiltersQuery();
+  const items = [
+    { text: "Option 1", value: "option1" },
+    { text: "Option 2", value: "option2" },
+    { text: "Option 3 - a disabled item", value: "option3", disabled: true },
+    { text: "Option 4", value: "option4" },
+    { text: "Option 5", value: "option5" },
+    { text: "Option 6", value: "option6" },
+    { text: "Option 7", value: "option7" },
+    { text: "Option 8", value: "option8" },
+  ];
+  
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
@@ -58,23 +63,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
     handleFilterChange({ [group]: updatedGroup });
   };
-
-  if (isLoading) {
-    return <div>Loading filters...</div>;
-  }
-
-  if (isError) {
-    return (
-      <div>
-        <p>There was an error while loading the advanced filters.</p>
-      </div>
-    );
-  }
-
-  const items = openingFiltersData?.map((item: any) => ({
-    text: item.code,
-    value: item.code,
-  })) || [];
 
   return (
     <div className="advanced-search-dropdown">
@@ -272,7 +260,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             </div>
           </div>
           <div className="col-6">
-          <CheckboxGroup
+            <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
               legendText="Block Statuses"
@@ -315,11 +303,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </div>
             </CheckboxGroup>
           </div>
-            </div>
-          </div>
         </div>
-      );
-    };
-    
-    export default AdvancedSearchDropdown;
-    
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearchDropdown;
