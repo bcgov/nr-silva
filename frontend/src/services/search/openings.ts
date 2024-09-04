@@ -50,7 +50,7 @@ export interface OpeningItem {
   }
   
 
-const API_URL = "https://nr-silva-364-backend.apps.silver.devops.gov.bc.ca";
+const API_URL = "https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca";
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Map frontend filter names to backend filter names
