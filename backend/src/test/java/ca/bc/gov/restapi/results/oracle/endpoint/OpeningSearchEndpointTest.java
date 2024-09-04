@@ -9,11 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +38,10 @@ class OpeningSearchEndpointTest {
   @Autowired private MockMvc mockMvc;
 
   @MockBean private OpeningService openingService;
+
+  @MockBean private OpenCategoryCodeService openCategoryCodeService;
+
+  @MockBean private OrgUnitService orgUnitService;
 
   @Test
   @DisplayName("Opening search happy path should succeed")
@@ -129,6 +139,176 @@ class OpeningSearchEndpointTest {
         .andExpect(jsonPath("$.totalPages").value("1"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
         .andExpect(jsonPath("$.data", Matchers.empty()))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Categories happy Path should Succeed")
+  void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
+    OpenCategoryCodeEntity category = new OpenCategoryCodeEntity();
+    category.setCode("FTML");
+    category.setDescription("Free Growing");
+    category.setEffectiveDate(LocalDate.now().minusYears(3L));
+    category.setExpiryDate(LocalDate.now().plusYears(3L));
+    category.setUpdateTimestamp(LocalDate.now());
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String effectiveDateStr = category.getEffectiveDate().format(formatter);
+    String expiryDateStr = category.getExpiryDate().format(formatter);
+    String updateTimestampStr = category.getUpdateTimestamp().format(formatter);
+
+    List<OpenCategoryCodeEntity> openCategoryCodeEntityList = List.of(category);
+
+    when(openCategoryCodeService.findAllCategories(false)).thenReturn(openCategoryCodeEntityList);
+
+    mockMvc
+        .perform(
+            get("/api/opening-search/categories")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$[0].code").value(category.getCode()))
+        .andExpect(jsonPath("$[0].description").value(category.getDescription()))
+        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
+        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
+        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Org Units happy Path should Succeed")
+  void getOpeningOrgUnits_happyPath_shouldSucceed() throws Exception {
+    OrgUnitEntity orgUnit = new OrgUnitEntity();
+    orgUnit.setOrgUnitNo(22L);
+    orgUnit.setOrgUnitCode("DAS");
+    orgUnit.setOrgUnitName("DAS Name");
+    orgUnit.setLocationCode("123");
+    orgUnit.setAreaCode("1");
+    orgUnit.setTelephoneNo("25436521");
+    orgUnit.setOrgLevelCode('R');
+    orgUnit.setOfficeNameCode("RR");
+    orgUnit.setRollupRegionNo(12L);
+    orgUnit.setRollupRegionCode("19");
+    orgUnit.setRollupDistNo(13L);
+    orgUnit.setRollupDistCode("25");
+    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
+    orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
+    orgUnit.setUpdateTimestamp(LocalDate.now());
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String effectiveDateStr = orgUnit.getEffectiveDate().format(formatter);
+    String expiryDateStr = orgUnit.getExpiryDate().format(formatter);
+    String updateTimestampStr = orgUnit.getUpdateTimestamp().format(formatter);
+
+    List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
+
+    when(orgUnitService.findAllOrgUnits(false)).thenReturn(orgUnitEntityList);
+
+    mockMvc
+        .perform(
+            get("/api/opening-search/org-units")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
+        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
+        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
+        .andExpect(jsonPath("$[0].locationCode").value(orgUnit.getLocationCode()))
+        .andExpect(jsonPath("$[0].areaCode").value(orgUnit.getAreaCode()))
+        .andExpect(jsonPath("$[0].telephoneNo").value(orgUnit.getTelephoneNo()))
+        .andExpect(jsonPath("$[0].orgLevelCode").value(orgUnit.getOrgLevelCode().toString()))
+        .andExpect(jsonPath("$[0].officeNameCode").value(orgUnit.getOfficeNameCode()))
+        .andExpect(jsonPath("$[0].rollupRegionNo").value(orgUnit.getRollupRegionNo()))
+        .andExpect(jsonPath("$[0].rollupRegionCode").value(orgUnit.getRollupRegionCode()))
+        .andExpect(jsonPath("$[0].rollupDistNo").value(orgUnit.getRollupDistNo()))
+        .andExpect(jsonPath("$[0].rollupDistCode").value(orgUnit.getRollupDistCode()))
+        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
+        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
+        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Org Units By Code happy Path should Succeed")
+  void getOpeningOrgUnitsByCode_happyPath_shouldSucceed() throws Exception {
+    OrgUnitEntity orgUnit = new OrgUnitEntity();
+    orgUnit.setOrgUnitNo(22L);
+    orgUnit.setOrgUnitCode("DAS");
+    orgUnit.setOrgUnitName("DAS Name");
+    orgUnit.setLocationCode("123");
+    orgUnit.setAreaCode("1");
+    orgUnit.setTelephoneNo("25436521");
+    orgUnit.setOrgLevelCode('R');
+    orgUnit.setOfficeNameCode("RR");
+    orgUnit.setRollupRegionNo(12L);
+    orgUnit.setRollupRegionCode("19");
+    orgUnit.setRollupDistNo(13L);
+    orgUnit.setRollupDistCode("25");
+    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
+    orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
+    orgUnit.setUpdateTimestamp(LocalDate.now());
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String effectiveDateStr = orgUnit.getEffectiveDate().format(formatter);
+    String expiryDateStr = orgUnit.getExpiryDate().format(formatter);
+    String updateTimestampStr = orgUnit.getUpdateTimestamp().format(formatter);
+
+    List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
+
+    when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(orgUnitEntityList);
+
+    mockMvc
+        .perform(
+            get("/api/opening-search/org-units-by-code?orgUnitCodes=DAS")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
+        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
+        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
+        .andExpect(jsonPath("$[0].locationCode").value(orgUnit.getLocationCode()))
+        .andExpect(jsonPath("$[0].areaCode").value(orgUnit.getAreaCode()))
+        .andExpect(jsonPath("$[0].telephoneNo").value(orgUnit.getTelephoneNo()))
+        .andExpect(jsonPath("$[0].orgLevelCode").value(orgUnit.getOrgLevelCode().toString()))
+        .andExpect(jsonPath("$[0].officeNameCode").value(orgUnit.getOfficeNameCode()))
+        .andExpect(jsonPath("$[0].rollupRegionNo").value(orgUnit.getRollupRegionNo()))
+        .andExpect(jsonPath("$[0].rollupRegionCode").value(orgUnit.getRollupRegionCode()))
+        .andExpect(jsonPath("$[0].rollupDistNo").value(orgUnit.getRollupDistNo()))
+        .andExpect(jsonPath("$[0].rollupDistCode").value(orgUnit.getRollupDistCode()))
+        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
+        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
+        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Org Units By Code not Found should Succeed")
+  void getOpeningOrgUnitsByCode_notFound_shouldSucceed() throws Exception {
+    when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(List.of());
+
+    mockMvc
+        .perform(
+            get("/api/opening-search/org-units-by-code?orgUnitCodes=DAS")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$", Matchers.empty()))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Org Units By Code bad Request should Succeed")
+  void getOpeningOrgUnitsByCode_badRequest_shouldFail() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/opening-search/org-units-by-code?")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 }
