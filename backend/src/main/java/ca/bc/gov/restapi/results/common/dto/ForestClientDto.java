@@ -27,13 +27,13 @@ public record ForestClientDto(
                 "A code indicating the status of ministry client. Examples include but are not"
                     + " limited to: Active, Deactivated, Deceased...",
             example = "ACT")
-        ForestClientStatusEnum clientStatus,
+        ForestClientStatusEnum clientStatusCode,
     @Schema(
             description =
                 "A code indicating a type of ministry client. Examples include but are not limited"
                     + " to: Corporation, Individual, Association, First Nation..",
             example = "C")
-        ForestClientTypeEnum clientType,
+        ForestClientTypeEnum clientTypeCode,
     @Schema(
             description = "An acronym for this client; works as an alternative identifier.",
             example = "WFP")

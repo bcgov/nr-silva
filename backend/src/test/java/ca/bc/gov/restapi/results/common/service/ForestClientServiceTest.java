@@ -1,24 +1,30 @@
 package ca.bc.gov.restapi.results.common.service;
 
+import static org.mockito.Mockito.when;
+
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
+import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ForestClientServiceTest {
 
+  @Mock ForestClientApiProvider forestClientApiProvider;
+
   private ForestClientService forestClientService;
 
   @BeforeEach
   void setup() {
-    forestClientService = new ForestClientService();
+    forestClientService = new ForestClientService(forestClientApiProvider);
   }
 
   @Test
@@ -26,57 +32,78 @@ class ForestClientServiceTest {
   void getClientByNumber_happyPath_shouldSucceed() {
     String clientNumber = "00132184";
 
-    Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber(clientNumber);
+    ForestClientDto clientDto =
+        new ForestClientDto(
+            clientNumber,
+            "TIMBER SALES MANAGER BABINE",
+            "First",
+            "Middle",
+            ForestClientStatusEnum.ACTIVE,
+            ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
+            "TBA");
 
-    Assertions.assertFalse(clientDto.isEmpty());
-    Assertions.assertEquals(clientNumber, clientDto.get().clientNumber());
-    Assertions.assertEquals("TIMBER SALES MANAGER BABINE", clientDto.get().clientName());
-    Assertions.assertNull(clientDto.get().legalFirstName());
-    Assertions.assertNull(clientDto.get().legalMiddleName());
-    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, clientDto.get().clientStatus());
+    when(forestClientApiProvider.fetchClientByNumber(clientNumber))
+        .thenReturn(Optional.of(clientDto));
+
+    Optional<ForestClientDto> clientDtoOptional =
+        forestClientService.getClientByNumber(clientNumber);
+
+    Assertions.assertFalse(clientDtoOptional.isEmpty());
+
+    ForestClientDto responseDto = clientDtoOptional.get();
+    Assertions.assertEquals(clientNumber, responseDto.clientNumber());
+    Assertions.assertEquals("TIMBER SALES MANAGER BABINE", responseDto.clientName());
+    Assertions.assertEquals("First", responseDto.legalFirstName());
+    Assertions.assertEquals("Middle", responseDto.legalMiddleName());
+    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatus());
     Assertions.assertEquals(
-        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, clientDto.get().clientType());
-    Assertions.assertEquals("TBA", clientDto.get().acronym());
+        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientType());
+    Assertions.assertEquals("TBA", responseDto.acronym());
   }
 
   @Test
   @DisplayName("Get client by number leading zeroes should succeed")
   void getClientByNumber_leadingZeroes_shouldSucceed() {
     String clientNumber = "132184";
+    String fixedClientNumber = "00132184";
 
-    Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber(clientNumber);
+    ForestClientDto clientDto =
+        new ForestClientDto(
+            fixedClientNumber,
+            "TIMBER SALES MANAGER BABINE",
+            "First",
+            "Middle",
+            ForestClientStatusEnum.ACTIVE,
+            ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
+            "TBA");
 
-    Assertions.assertFalse(clientDto.isEmpty());
-    Assertions.assertEquals("00132184", clientDto.get().clientNumber());
-    Assertions.assertEquals("TIMBER SALES MANAGER BABINE", clientDto.get().clientName());
-    Assertions.assertNull(clientDto.get().legalFirstName());
-    Assertions.assertNull(clientDto.get().legalMiddleName());
-    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, clientDto.get().clientStatus());
+    when(forestClientApiProvider.fetchClientByNumber(fixedClientNumber))
+        .thenReturn(Optional.of(clientDto));
+
+    Optional<ForestClientDto> clientDtoOptional =
+        forestClientService.getClientByNumber(clientNumber);
+
+    Assertions.assertFalse(clientDtoOptional.isEmpty());
+
+    ForestClientDto responseDto = clientDtoOptional.get();
+    Assertions.assertEquals(fixedClientNumber, responseDto.clientNumber());
+    Assertions.assertEquals("TIMBER SALES MANAGER BABINE", responseDto.clientName());
+    Assertions.assertEquals("First", responseDto.legalFirstName());
+    Assertions.assertEquals("Middle", responseDto.legalMiddleName());
+    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatus());
     Assertions.assertEquals(
-        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, clientDto.get().clientType());
-    Assertions.assertEquals("TBA", clientDto.get().acronym());
-  }
-
-  @Test
-  @DisplayName("Get all clients by number should succeed")
-  void getClientByNumber_allClients_shouldSucceed() {
-    Optional<ForestClientDto> clientOne = forestClientService.getClientByNumber("00132184");
-    Assertions.assertFalse(clientOne.isEmpty());
-    
-    Optional<ForestClientDto> clientTwo = forestClientService.getClientByNumber("00012797");
-    Assertions.assertFalse(clientTwo.isEmpty());
-
-    Optional<ForestClientDto> clientThree = forestClientService.getClientByNumber("00001012");
-    Assertions.assertFalse(clientThree.isEmpty());
-
-    Optional<ForestClientDto> clientFour = forestClientService.getClientByNumber("00149081");
-    Assertions.assertFalse(clientFour.isEmpty());
+        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientType());
+    Assertions.assertEquals("TBA", responseDto.acronym());
   }
 
   @Test
   @DisplayName("Get client by number not found should succeed")
   void getClientByNumber_notFound_shouldSucceed() {
-    Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber("11");
+    String clientNumber = "00000011";
+
+    when(forestClientApiProvider.fetchClientByNumber(clientNumber)).thenReturn(Optional.empty());
+
+    Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber(clientNumber);
 
     Assertions.assertTrue(clientDto.isEmpty());
   }
