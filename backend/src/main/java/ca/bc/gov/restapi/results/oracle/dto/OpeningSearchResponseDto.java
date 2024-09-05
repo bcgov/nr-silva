@@ -110,10 +110,13 @@ public class OpeningSearchResponseDto {
   private String clientAcronym;
 
   @Schema(description = "The final date based on the EARLY and LATE offset years.")
-  private String regenDelayDate;
+  private LocalDateTime regenDelayDate;
 
-  @Schema(description = "The final date based on the EARLY and LATE offset years.")
-  private String freeGrowingDate;
+  @Schema(description = "The final date based on the EARLY offset years.")
+  private LocalDateTime earlyFreeGrowingDate;
+
+  @Schema(description = "The final date based on the LATE offset years.")
+  private LocalDateTime lateFreeGrowingDate;
 
   @Schema(description = "The date and time of the last update.")
   private LocalDateTime updateTimestamp;
@@ -126,4 +129,9 @@ public class OpeningSearchResponseDto {
 
   @Schema(description = "Uniquely identifies the attached file.", example = "407")
   private Integer fileId;
+
+  @Schema(
+      description = "Uniquely identifies an Application for Relief from obligations.",
+      example = "56")
+  private Long silvaReliefAppId;
 }

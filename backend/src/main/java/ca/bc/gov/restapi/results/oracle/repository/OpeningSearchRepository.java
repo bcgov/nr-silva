@@ -148,30 +148,44 @@ public class OpeningSearchRepository {
           searchOpeningDto.setClientNumber(clientNumber);
         }
 
-        // HERE
         if (row.length > 13) {
-          searchOpeningDto.setRegenDelayDate(getValue(String.class, row[13], "regenTemporary"));
+          Timestamp regenDelayDate = getValue(Timestamp.class, row[13], "regenDelayDate");
+          if (!Objects.isNull(regenDelayDate)) {
+            searchOpeningDto.setRegenDelayDate(regenDelayDate.toLocalDateTime());
+          }
         }
 
-        // HERE
         if (row.length > 14) {
-          searchOpeningDto.setFreeGrowingDate(getValue(String.class, row[14], "freeGrowTemporary"));
+          Timestamp earlyDate = getValue(Timestamp.class, row[14], "earlyFreeGrowingDate");
+          if (!Objects.isNull(earlyDate)) {
+            searchOpeningDto.setEarlyFreeGrowingDate(earlyDate.toLocalDateTime());
+          }
         }
 
         if (row.length > 15) {
-          Timestamp updateTimestamp = getValue(Timestamp.class, row[15], "updateTimestamp");
-          searchOpeningDto.setUpdateTimestamp(updateTimestamp.toLocalDateTime());
+          Timestamp dateDate = getValue(Timestamp.class, row[15], "lateFreeGrowingDate");
+          if (!Objects.isNull(dateDate)) {
+            searchOpeningDto.setLateFreeGrowingDate(dateDate.toLocalDateTime());
+          }
         }
 
         if (row.length > 16) {
-          String entryUserId = getValue(String.class, row[16], "entryUserId");
+          Timestamp updateTimestamp = getValue(Timestamp.class, row[16], "updateTimestamp");
+          searchOpeningDto.setUpdateTimestamp(updateTimestamp.toLocalDateTime());
+        }
+
+        if (row.length > 17) {
+          String entryUserId = getValue(String.class, row[17], "entryUserId");
           searchOpeningDto.setEntryUserId(entryUserId);
         }
 
-        // HERE
-        if (row.length > 17) {
-          String submitted = getValue(String.class, row[17], "submittedToFrpa");
-          searchOpeningDto.setSubmittedToFrpa("Y".equals(submitted));
+        if (row.length > 18) {
+          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[18], "submittedToFrpa108");
+          boolean submittedApp = silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0;
+          searchOpeningDto.setSubmittedToFrpa(submittedApp);
+          if (submittedApp) {
+            searchOpeningDto.setSilvaReliefAppId(silvaReliefAppId.longValue());
+          }
         }
 
         // fetch from forestClient API
@@ -252,9 +266,8 @@ public class OpeningSearchRepository {
     }
     // 5. Submitted to FRPA Section 108
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
-      // log.info("Submitted to FRPA filter detected! submitted=[{}]",
-      // filtersDto.getSubmittedToFrpa());
-      // builder.append("AND o.ENTRY_USERID = ?5");
+      log.info("Setting submitted to FRPA filter!");
+      // No need to set value since the query already dit it.
     }
     // 6. Disturbance start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
@@ -268,19 +281,23 @@ public class OpeningSearchRepository {
     }
     // 8. Regen delay start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
-      log.info("Skipping filter regenDelayDateStart value. Filter not ready!");
+      log.info("Setting regenDelayDateStart filter value");
+      query.setParameter("regenDelayDateStart", filtersDto.getRegenDelayDateStart());
     }
     // 9. Regen delay end date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
-      log.info("Skipping filter regenDelayDateEnd value. Filter not ready!");
+      log.info("Setting regenDelayDateEnd filter value");
+      query.setParameter("regenDelayDateEnd", filtersDto.getRegenDelayDateEnd());
     }
     // 10. Free growing start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
-      log.info("Skipping filter freeGrowingDateStart value. Filter not ready!");
+      log.info("Setting freeGrowingDateStart filter value");
+      query.setParameter("freeGrowingDateStart", filtersDto.getFreeGrowingDateStart());
     }
     // 11. Free growing end date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
-      log.info("Skipping filter freeGrowingDateEnd value. Filter not ready!");
+      log.info("Setting freeGrowingDateEnd filter value");
+      query.setParameter("freeGrowingDateEnd", filtersDto.getFreeGrowingDateEnd());
     }
     // 12. Update date start
     if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {
@@ -311,19 +328,38 @@ public class OpeningSearchRepository {
     builder.append(",ou.ORG_UNIT_CODE AS orgUnitCode");
     builder.append(",ou.ORG_UNIT_NAME AS orgUnitName");
     builder.append(",res.CLIENT_NUMBER AS clientNumber");
-    builder.append(",'TDB' AS regenDelayDate");
-    builder.append(",'TBD' AS freeGrowingDate");
+
+    String sql;
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12))";
+    builder.append(sql).append(" AS regenDelayDate");
+
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS,0)*12))";
+    builder.append(sql).append(" AS earlyFreeGrowingDate");
+
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS,0)*12))";
+    builder.append(sql).append(" AS lateFreeGrowingDate");
+
     builder.append(",o.UPDATE_TIMESTAMP AS updateTimestamp");
     builder.append(",o.ENTRY_USERID AS entryUserId");
-    builder.append(",'TBD' AS submittedToFrpa108 ");
+    builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submittedToFrpa108 ");
     builder.append("FROM THE.OPENING o ");
     builder.append("LEFT JOIN THE.OPENING_ATTACHMENT oa ON (oa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)");
-    builder.append(
-        "LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID ="
-            + " o.RESULTS_SUBMISSION_ID)");
+    builder.append("LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (");
+    builder.append(" res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)");
     builder.append("LEFT JOIN THE.CLIENT_ACRONYM ca ON (ca.CLIENT_NUMBER = res.CLIENT_NUMBER) ");
+    builder.append("LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON (atu.OPENING_ID = o.OPENING_ID)");
+    builder.append("LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (");
+    builder.append(" sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID");
+    builder.append(" AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP') ");
+    builder.append("LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID) ");
+    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smrg ON (");
+    builder.append(" smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID");
+    builder.append(" AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG') ");
+    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smfg ON (");
+    builder.append(" smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID");
+    builder.append(" AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG') ");
     builder.append("WHERE 1=1 ");
 
     /* Filters */
@@ -368,9 +404,16 @@ public class OpeningSearchRepository {
     }
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
-      // log.info("Submitted to FRPA filter detected! submitted=[{}]",
-      // filtersDto.getSubmittedToFrpa());
-      // builder.append("AND o.ENTRY_USERID = ?5");
+      Boolean value = filtersDto.getSubmittedToFrpa();
+      if (Boolean.FALSE.equals(value)) {
+        log.info(
+            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
+        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NULL ");
+      } else {
+        log.info(
+            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
+        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");
+      }
     }
     // 6. Disturbance start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
@@ -388,23 +431,31 @@ public class OpeningSearchRepository {
     // 8. Regen delay start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
       log.info("Filter regenDelayDateStart detected! date={}", filtersDto.getRegenDelayDateStart());
-      log.info("Skipping Filter regenDelayDateStart. Filter not ready!");
+      builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
+      builder.append("COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12) ");
+      builder.append("> to_timestamp(:regenDelayDateStart,'YYYY-MM-DD')");
     }
     // 9. Regen delay end date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
       log.info("Filter regenDelayDateEnd detected! date={}", filtersDto.getRegenDelayDateEnd());
-      log.info("Skipping Filter regenDelayDateEnd. Filter not ready!");
+      builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
+      builder.append("COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12) ");
+      builder.append("< to_timestamp(:regenDelayDateEnd,'YYYY-MM-DD')");
     }
     // 10. Free growing start date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
       log.info(
           "Filter freeGrowingDateStart detected! date={}", filtersDto.getFreeGrowingDateStart());
-      log.info("Skipping Filter freeGrowingDateStart. Filter not ready!");
+      builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
+      builder.append("COALESCE(SMFG.EARLY_OFFSET_YEARS,0)*12) ");
+      builder.append("> to_timestamp(:freeGrowingDateStart,'YYYY-MM-DD')");
     }
     // 11. Free growing end date
     if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
       log.info("Filter freeGrowingDateEnd detected! date={}", filtersDto.getFreeGrowingDateEnd());
-      log.info("Skipping Filter freeGrowingDateEnd. Filter not ready!");
+      builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
+      builder.append("COALESCE(SMFG.LATE_OFFSET_YEARS,0)*12) ");
+      builder.append("< to_timestamp(:freeGrowingDateEnd, 'YYYY-MM-DD')");
     }
     // 12. Update date start
     if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {

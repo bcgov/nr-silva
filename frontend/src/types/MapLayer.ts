@@ -1,8 +1,17 @@
 export type MapLayer = {
-  key: string;
+  position: number;
   name: string;
-  pathOptions: object;
-  popup?: JSX.Element;
-  bounds: number[][][];
-  properties: object;
+  format: string;
+  layers: string;
+  transparent: boolean;
+  styles: {name: string, title: string}[];
+  catalogueUrl: string;
+  getCapabilitiesUrl: string;
+};
+
+export type BaseMapLayer = {
+  name: string;
+  url: string;
+  attribution: string;
+  default: boolean;
 };
