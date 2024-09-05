@@ -7,7 +7,7 @@
 
   //these are for the nested elements
   input{
-    background-color: white;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     border-block-end : none;
     border-bottom: 1px solid var(--bx-border-strong-01);
   }
@@ -40,7 +40,7 @@
     margin-top: 0px;
   }
   .advanced-search-field{
-    background-color: white;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     width: 288px;
     height: 40px;
     align-items: center;
@@ -58,7 +58,7 @@
       font-size: 14px;
     }
     .text-active {
-      color: black !important;
+      color: var(--#{vars.$bcgov-prefix}-text-primary) !important;
     }
   }
   

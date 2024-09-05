@@ -3,7 +3,7 @@
 @use '@carbon/type';
 
 .advanced-search-dropdown {
-    background-color: white;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     position: absolute;
     z-index: 2;
     width: 64.33%;
