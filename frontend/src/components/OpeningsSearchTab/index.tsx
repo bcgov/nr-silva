@@ -19,13 +19,6 @@ const OpeningsSearchTab: React.FC = () => {
 
   const { data, isFetching } = useOpeningsQuery(searchParams);
 
-  useEffect(() => {
-    // Log data whenever it changes
-    if (data) {
-      console.log("API Response Data:", data);
-    }
-  }, [data]);
-
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
   };
@@ -36,8 +29,6 @@ const OpeningsSearchTab: React.FC = () => {
 
   const handleSearch = () => {
     toggleFiltersApplied();
-    console.log("final search params are here:")
-    console.log(searchParams);
     // No need to log data here as it won't be available immediately
     setFiltersApplied(true); // Set filters as applied to show results
   };
@@ -47,7 +38,7 @@ const OpeningsSearchTab: React.FC = () => {
       ...prevParams,
       ...searchData,
     }));
-    console.log("Search Data:", searchData);
+    // console.log("Search Data:", searchData);
   };
 
   const handleSearchInputChange = (searchInput: string) => {
@@ -55,7 +46,7 @@ const OpeningsSearchTab: React.FC = () => {
       ...prevParams,
       searchInput,
     }));
-    console.log("Search Input Changed:", searchInput);
+    // console.log("Search Input Changed:", searchInput);
   };
 
   return (

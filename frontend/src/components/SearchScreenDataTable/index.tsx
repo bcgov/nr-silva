@@ -133,8 +133,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentData && currentData.map((row : any) => (
-              <TableRow key={row.openingId}>
+            {currentData && currentData.map((row : any, i: number) => (
+              <TableRow key={row.openingId+i.toString()}>
                 {headers.map((header) => (
                   <TableCell key={header.key}>
                     {header.key === "statusCode" ? (

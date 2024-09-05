@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   CheckboxGroup,
@@ -8,6 +8,7 @@ import {
   Tooltip,
   DatePicker,
   DatePickerInput,
+  Loading
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
@@ -39,7 +40,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   });
 
   const {
-    data: openingFiltersData,
+    data,
     isLoading,
     isError,
   } = useOpeningFiltersQuery();
@@ -60,7 +61,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   };
 
   if (isLoading) {
-    return <div>Loading filters...</div>;
+    return <Loading withOverlay={true} />;
   }
 
   if (isError) {
@@ -71,10 +72,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     );
   }
 
-  const items = openingFiltersData?.map((item: any) => ({
+  const categoryItems = data.categories?.map((item: any) => ({
     text: item.code,
     value: item.code,
   })) || [];
+
+  const orgUnitItems = data.orgUnits?.map((item: any) => ({
+    text: item.orgUnitCode,
+    value: item.orgUnitCode,
+  })) || [];
+
 
   return (
     <div className="advanced-search-dropdown">
@@ -121,7 +128,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <Dropdown
               id="orguni-dropdown"
               titleText="Org unit"
-              items={items}
+              items={orgUnitItems}
               itemToString={(item: any) => (item ? item.text : "")}
               onChange={(e: any) =>
                 handleFilterChange({ orgUnit: e.selectedItem.value })
@@ -133,7 +140,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <Dropdown
               id="category-dropdown"
               titleText="Category"
-              items={items}
+              items={categoryItems}
               itemToString={(item: any) => (item ? item.text : "")}
               onChange={(e: any) =>
                 handleFilterChange({ category: e.selectedItem.value })
@@ -157,6 +164,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <TextInput
               id="text-input-1"
               type="text"
+              labelText="clientAcronym"
               className="mt-2"
               onChange={(e: any) =>
                 handleFilterChange({ clientAcronym: e.target.value })
@@ -176,7 +184,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <div className="d-flex flex-auto mt-2">
               <Dropdown
                 id="block-status-dropdown"
-                items={items}
+                titleText = "Block Status"
+                items={categoryItems}
                 itemToString={(item: any) => (item ? item.text : "")}
                 onChange={(e: any) =>
                   handleFilterChange({ blockStatus: e.selectedItem.value })
@@ -187,6 +196,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 id="text-input-2"
                 type="text"
                 placeholder="Cut block"
+                labelText="CutBlock"
                 className="mx-1"
                 onChange={(e: any) =>
                   handleFilterChange({ cutBlock: e.target.value })
@@ -195,6 +205,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <TextInput
                 id="text-input-3"
                 placeholder="Cutting permit"
+                labelText="Cutting permit"
                 type="text"
                 onChange={(e: any) =>
                   handleFilterChange({ cuttingPermit: e.target.value })
@@ -235,7 +246,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <Dropdown
                 id="status-dropdown"
                 titleText="Status"
-                items={items}
+                items={categoryItems}
                 itemToString={(item: any) => (item ? item.text : "")}
                 onChange={(e: any) =>
                   handleFilterChange({ status: e.selectedItem.value })

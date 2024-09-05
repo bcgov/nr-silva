@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCategories, fetchOpenings, OpeningFilters } from "../../search/openings";
+import { fetchOpeningFilters, fetchOpenings, OpeningFilters } from "../../search/openings";
 
 export const useOpeningsQuery = (filters: OpeningFilters) => {
   return useQuery({
@@ -10,7 +10,7 @@ export const useOpeningsQuery = (filters: OpeningFilters) => {
 
 export const useOpeningFiltersQuery = () => {
   return useQuery({
-    queryKey: ["openingCategories"],
-    queryFn: () => fetchCategories()
+    queryKey: ["openingFilters"],
+    queryFn: fetchOpeningFilters,
   });
 };
