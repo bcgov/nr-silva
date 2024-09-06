@@ -7,6 +7,7 @@ import SearchScreenDataTable from "../SearchScreenDataTable";
 import { headers } from "../SearchScreenDataTable/testData";
 import OpeningsMap from "../OpeningsMap";
 import { useOpeningsQuery } from "../../services/queries/search/openingQueries";
+import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
 
 const OpeningsSearchTab: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,6 +19,7 @@ const OpeningsSearchTab: React.FC = () => {
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
 
   const { data, isFetching } = useOpeningsQuery(searchParams);
+  const {filters} = useOpeningsSearch();
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
@@ -33,12 +35,11 @@ const OpeningsSearchTab: React.FC = () => {
     setFiltersApplied(true); // Set filters as applied to show results
   };
 
-  const handleFiltersChanged = (searchData: any) => {
+  const handleFiltersChanged = () => {
     setSearchParams((prevParams) => ({
       ...prevParams,
-      ...searchData,
+      ...filters,
     }));
-    // console.log("Search Data:", searchData);
   };
 
   const handleSearchInputChange = (searchInput: string) => {
@@ -46,14 +47,16 @@ const OpeningsSearchTab: React.FC = () => {
       ...prevParams,
       searchInput,
     }));
-    // console.log("Search Input Changed:", searchInput);
   };
+
+  useEffect(()=>{
+    handleFiltersChanged();
+  },[filters])
 
   return (
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
         <OpeningsSearchBar 
-          onSearch={handleFiltersChanged} 
           onSearchInputChange={handleSearchInputChange} 
           onSearchClick={handleSearch}
         />

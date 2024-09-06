@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./OpeningsSearchBar.scss";
 import { Search, Button, Tag } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
+import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
 
 interface IOpeningsSearchBar {
-  onSearch: (searchData: any) => void;
   onSearchInputChange: (searchInput: string) => void; // New prop
   onSearchClick: Function
 }
 
-const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInputChange, onSearchClick }) => {
+const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearchInputChange, onSearchClick }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
   const [filtersList, setFiltersList] = useState(null);
+  const {filters, clearFilters} = useOpeningsSearch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -54,13 +55,15 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
     return count;
   };
   
-  const handleFiltersChanged = (filters: any) => {
+  const handleFiltersChanged = () => {
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
     console.log("Number of active filters:", activeFiltersCount);
     setFiltersList(filters);
-    onSearch(filters);
   };
+  useEffect(()=>{
+    handleFiltersChanged();
+  },[filters])
 
   return (
     <div>
@@ -84,7 +87,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
                   className="mx-1"
                   type="high-contrast"
                   title="Clear Filter"
-                  onClose={() => console.log("Status: Free Growing")}
+                  onClose={() => clearFilters()}
                 >
                   {"+" + filtersCount}
                 </Tag>
@@ -99,7 +102,6 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({ onSearch, onSearchInp
           <div className={isOpen ? "d-block" : "d-none"}>
             <AdvancedSearchDropdown
               toggleShowFilters={toggleShowFilters}
-              onSearch={handleFiltersChanged}
             />
           </div>
           {filtersCount > 0  && <SearchFilterBar filters={filtersList} />}

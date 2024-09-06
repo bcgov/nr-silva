@@ -8,22 +8,21 @@ import {
   Tooltip,
   DatePicker,
   DatePickerInput,
-  Loading
+  Loading,
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../services/queries/search/openingQueries";
+import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
 
 interface AdvancedSearchDropdownProps {
-  onSearch: (filters: any) => void; // Function to handle search logic
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   toggleShowFilters,
-  onSearch,
 }) => {
-  const [filters, setFilters] = useState({
+  const defaultFilters = {
     startDate: null as Date | null,
     endDate: null as Date | null,
     orgUnit: null as string | null,
@@ -37,18 +36,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     status: null as string | null,
     openingFilters: [] as string[], // Array to hold multiple checkbox selections
     blockStatuses: [] as string[], // Array to hold multiple block statuses
-  });
+  };
+  // const [filters, setFilters] = useState(defaultFilters);
+  const {filters, setFilters, clearFilters } = useOpeningsSearch();
 
-  const {
-    data,
-    isLoading,
-    isError,
-  } = useOpeningFiltersQuery();
+  const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
     setFilters(newFilters);
-    onSearch(newFilters); // Send the updated filters to the parent component
+    // onSearch(filters); // Send the updated filters to the parent component
   };
 
   const handleCheckboxChange = (value: string, group: string) => {
@@ -58,6 +55,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
       : [...selectedGroup, value];
 
     handleFilterChange({ [group]: updatedGroup });
+  };
+
+  const handleClearFilters = () => {
+    console.log("clearing filters");
+    setFilters(defaultFilters);
+    // onSearch(defaultFilters); // Send the updated filters to the parent component
   };
 
   if (isLoading) {
@@ -72,16 +75,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     );
   }
 
-  const categoryItems = data.categories?.map((item: any) => ({
-    text: item.code,
-    value: item.code,
-  })) || [];
+  const categoryItems =
+    data.categories?.map((item: any) => ({
+      text: item.code,
+      value: item.code,
+    })) || [];
 
-  const orgUnitItems = data.orgUnits?.map((item: any) => ({
-    text: item.orgUnitCode,
-    value: item.orgUnitCode,
-  })) || [];
-
+  const orgUnitItems =
+    data.orgUnits?.map((item: any) => ({
+      text: item.orgUnitCode,
+      value: item.orgUnitCode,
+    })) || [];
 
   return (
     <div className="advanced-search-dropdown">
@@ -164,7 +168,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <TextInput
               id="text-input-1"
               type="text"
-              labelText="clientAcronym"
+              labelText=""
               className="mt-2"
               onChange={(e: any) =>
                 handleFilterChange({ clientAcronym: e.target.value })
@@ -184,7 +188,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <div className="d-flex flex-auto mt-2">
               <Dropdown
                 id="block-status-dropdown"
-                titleText = "Block Status"
+                titleText=""
                 items={categoryItems}
                 itemToString={(item: any) => (item ? item.text : "")}
                 onChange={(e: any) =>
@@ -196,7 +200,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 id="text-input-2"
                 type="text"
                 placeholder="Cut block"
-                labelText="CutBlock"
+                labelText=""
                 className="mx-1"
                 onChange={(e: any) =>
                   handleFilterChange({ cutBlock: e.target.value })
@@ -205,7 +209,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <TextInput
                 id="text-input-3"
                 placeholder="Cutting permit"
-                labelText="Cutting permit"
+                labelText=""
                 type="text"
                 onChange={(e: any) =>
                   handleFilterChange({ cuttingPermit: e.target.value })
@@ -283,7 +287,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             </div>
           </div>
           <div className="col-6">
-          <CheckboxGroup
+            <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
               legendText="Block Statuses"
@@ -326,11 +330,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </div>
             </CheckboxGroup>
           </div>
-            </div>
-          </div>
         </div>
-      );
-    };
-    
-    export default AdvancedSearchDropdown;
-    
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearchDropdown;

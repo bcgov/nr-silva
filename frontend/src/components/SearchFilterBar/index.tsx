@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './SearchFilterBar.scss'
 import { Tag, Link } from '@carbon/react';
+import { useOpeningsSearch } from '../../contexts/search/OpeningsSearch';
 
 interface SearchFilterBarProps {
   filters: any;
 }
 
-const SearchFilterBar: React.FC<SearchFilterBarProps> = ({filters}) => {
+const SearchFilterBar: React.FC<SearchFilterBarProps> = ({}) => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const {filters, clearFilters} = useOpeningsSearch();
 
   useEffect(() => {
     setActiveFilters(getActiveFilters(filters));
@@ -15,7 +17,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({filters}) => {
 
   const handleClearFilter = (filter: string) => {
     console.log(`Clearing filter: ${filter}`);
-    // Add your logic to clear the filter here
+    clearFilters();
   };
 
   return (
@@ -39,7 +41,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({filters}) => {
           </div>
         </div>
         <div className="clear-button-container">
-          <Link className="clear-filters-button">Clear filters</Link>
+          <Link className="clear-filters-button" onClick={handleClearFilter}>Clear filters</Link>
         </div>
       </div>
     </div>

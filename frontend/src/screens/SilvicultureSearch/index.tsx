@@ -8,6 +8,7 @@ import { TabPanels } from "@carbon/react";
 import { TabPanel } from "@carbon/react";
 import * as Icons from '@carbon/icons-react';
 import OpeningsSearchTab from "../../components/OpeningsSearchTab";
+import { OpeningsSearchProvider } from "../../contexts/search/OpeningsSearch";
 
 const SilvicultureSearch: React.FC = () => {
 
@@ -31,7 +32,9 @@ const SilvicultureSearch: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">
-            <OpeningsSearchTab />
+            <OpeningsSearchProvider>
+              <OpeningsSearchTab />
+            </OpeningsSearchProvider>
           </TabPanel>
           <TabPanel className="tab-content">
             <h4>Hi there this is from the second tab</h4>
