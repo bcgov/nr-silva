@@ -5,6 +5,7 @@ interface OpeningsSearchContextProps {
   filters: any;
   setFilters: React.Dispatch<React.SetStateAction<any>>;
   clearFilters: () => void;
+  clearIndividualField: (key:string) => void;
 }
 
 // Create the context with a default value of undefined
@@ -30,10 +31,18 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
 
   const [filters, setFilters] = useState(defaultFilters);
 
+  // Function to clear individual filter field by key
+  const clearIndividualField = (key: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [key]: defaultFilters[key as keyof typeof defaultFilters],
+    }));
+  };
+
   const clearFilters = () => setFilters(defaultFilters);
 
   return (
-    <OpeningsSearchContext.Provider value={{ filters, setFilters, clearFilters }}>
+    <OpeningsSearchContext.Provider value={{ filters, setFilters, clearFilters, clearIndividualField }}>
       {children}
     </OpeningsSearchContext.Provider>
   );
