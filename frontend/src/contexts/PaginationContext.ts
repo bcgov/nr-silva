@@ -9,6 +9,8 @@ export interface PaginationContextData {
   itemsPerPage: number;
   setPageData(data: any[]): void;
   setInitialItemsPerPage(items: number): void;
+  totalResultItems: number; // Update to totalResultItems
+  setTotalResultItems(totalResultItems: number): void; // Update to setTotalResultItems
 }
 
 const PaginationContext = createContext<PaginationContextData>({} as PaginationContextData);

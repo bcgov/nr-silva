@@ -28,6 +28,7 @@ interface ISearchScreenDataTable {
   setOpeningId: Function;
   toggleSpatial: Function;
   showSpatial: boolean;
+  totalItems: number;
 }
 
 const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
@@ -36,25 +37,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   setOpeningId,
   toggleSpatial,
   showSpatial,
+  totalItems
 }) => {
-  const [filteredRows, setFilteredRows] = useState<OpeningsSearch[]>(rows);
   const {
-    getCurrentData,
-    currentPage,
-    totalPages,
     handlePageChange,
     handleItemsPerPageChange,
     itemsPerPage,
-    setPageData,
     setInitialItemsPerPage,
+    currentPage
   } = useContext(PaginationContext);
-  // Create a variable for current data
-  const currentData = Array.isArray(getCurrentData?.()) ? getCurrentData() : [];
 
   useEffect(() => {
-    setPageData(filteredRows);
-    setInitialItemsPerPage(5);
-  }, [filteredRows]);
+    setInitialItemsPerPage(itemsPerPage);
+  }, [rows, totalItems]);
 
   return (
     <>
@@ -63,7 +58,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableToolbarContent className="table-toolbar align-items-center justify-content-between">
             <div className="total-results-container">
               <p className="total-search-results">
-                Total Search Results: {filteredRows.length}
+                Total Search Results: {totalItems}
               </p>
             </div>
             <TableToolbarMenu
@@ -133,7 +128,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentData && currentData.map((row : any, i: number) => (
+            {rows && rows.map((row : any, i: number) => (
               <TableRow key={row.openingId+i.toString()}>
                 {headers.map((header) => (
                   <TableCell key={header.key}>
@@ -170,7 +165,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         </Table>
       </TableContainer>
 
-      {filteredRows.length <= 0 ? (
+      {rows.length <= 0 ? (
         <EmptySection
           pictogram="Magnify"
           title={"There are no openings to show yet"}
@@ -181,14 +176,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       ) : null}
 
-      {filteredRows.length > 0 && (
+      {rows.length > 0 && (
         <Pagination
-          totalItems={filteredRows.length}
+          totalItems={totalItems}
           backwardText="Previous page"
           forwardText="Next page"
           pageSize={itemsPerPage}
           pageSizes={[5, 20, 50]}
           itemsPerPageText="Items per page"
+          page = {currentPage}
           onChange={({ page, pageSize } : { page: number, pageSize: number}) => {
             handlePageChange(page);
             handleItemsPerPageChange(page, pageSize);

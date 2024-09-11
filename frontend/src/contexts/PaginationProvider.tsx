@@ -6,6 +6,7 @@ const PaginationProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const [initialItemsPerPage, setInitialItemsPerPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [totalResultItems, setTotalResultItems] = useState<number>(0); // State for totalResultItems
 
   // Update the total number of pages when itemsPerPage changes
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -30,6 +31,7 @@ const PaginationProvider: React.FC<{children: React.ReactNode}> = ({ children })
 
   const setPageData = (data: any[]): void => {
     setData(data);
+    setTotalResultItems(data.length); // Update totalResultItems
   };
 
   const contextValue: PaginationContextData = useMemo(() => ({
@@ -41,6 +43,8 @@ const PaginationProvider: React.FC<{children: React.ReactNode}> = ({ children })
     itemsPerPage,
     setPageData,
     setInitialItemsPerPage,
+    totalResultItems, // Expose totalResultItems to the context
+    setTotalResultItems, // Expose setter for totalResultItems
   }), [
     getCurrentData,
     currentPage,
@@ -50,13 +54,14 @@ const PaginationProvider: React.FC<{children: React.ReactNode}> = ({ children })
     itemsPerPage,
     setPageData,
     setInitialItemsPerPage,
+    totalResultItems, // Include in dependencies
   ]);
 
   return (
     <PaginationContext.Provider value={contextValue}>
-      { children }
+      {children}
     </PaginationContext.Provider>
-  )
+  );
 };
 
 export default PaginationProvider;

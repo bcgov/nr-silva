@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./styles.scss";
 import EmptySection from "../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
@@ -8,56 +8,77 @@ import { headers } from "../SearchScreenDataTable/testData";
 import OpeningsMap from "../OpeningsMap";
 import { useOpeningsQuery } from "../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
+import PaginationContext from "../../contexts/PaginationContext";
 
 const OpeningsSearchTab: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
+  const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
+  const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
+  const { currentPage, itemsPerPage, totalResultItems } = useContext(PaginationContext);
 
-  const { data, isFetching } = useOpeningsQuery(searchParams);
-  const {filters} = useOpeningsSearch();
+  // Only fetch when search is triggered and with finalParams
+  const { data, isFetching } = useOpeningsQuery(finalParams, isSearchTriggered);
+  const { filters } = useOpeningsSearch();
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
   };
-  
+
   const toggleFiltersApplied = () => {
     setFiltersApplied(!filtersApplied);
   };
 
   const handleSearch = () => {
     toggleFiltersApplied();
-    // No need to log data here as it won't be available immediately
     setFiltersApplied(true); // Set filters as applied to show results
+    setFinalParams(searchParams); // Only update finalParams on search
+    setIsSearchTriggered(true); // Trigger the search
   };
 
   const handleFiltersChanged = () => {
     setSearchParams((prevParams) => ({
       ...prevParams,
       ...filters,
+      page: currentPage,
+      perPage: itemsPerPage
     }));
   };
+
+  const handlePaginationChanged = () => {
+    setFinalParams((prevParams) => ({
+      ...prevParams,
+      page: currentPage,
+      perPage: itemsPerPage
+    }));
+  }
 
   const handleSearchInputChange = (searchInput: string) => {
     setSearchParams((prevParams) => ({
       ...prevParams,
       searchInput,
+      page: 1, //going back to page 1 when the user clicks to make another search
+      perPage: itemsPerPage
     }));
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     handleFiltersChanged();
-  },[filters])
+  }, [filters]);
+
+  useEffect(() => {
+    handlePaginationChanged();
+  }, [currentPage, itemsPerPage]);
 
   return (
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
-        <OpeningsSearchBar 
-          onSearchInputChange={handleSearchInputChange} 
+        <OpeningsSearchBar
+          onSearchInputChange={handleSearchInputChange}
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
@@ -78,10 +99,11 @@ const OpeningsSearchTab: React.FC = () => {
               ) : (
                 <SearchScreenDataTable
                   headers={headers}
-                  rows={data.data || []}
+                  rows={data?.data || []}
                   setOpeningId={setLoadId}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
+                  totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
                 />
               )}
             </>

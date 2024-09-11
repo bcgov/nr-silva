@@ -65,7 +65,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     disturbanceDateStart: filters.startDate,
     disturbanceDateEnd: filters.endDate,
     // Add other mappings as necessary
-    page: filters.page,
+    // -1 for the page because the api goes by index starting from 0
+    page: filters.page && filters.page-1,
     perPage: filters.perPage,
   };
 
