@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './SearchFilterBar.scss'
 import { Tag, Link } from '@carbon/react';
-import { useOpeningsSearch } from '../../contexts/search/OpeningsSearch';
+import { useOpeningsSearch } from '../../../../contexts/search/OpeningsSearch';
 
 interface SearchFilterBarProps {
   filters: any;

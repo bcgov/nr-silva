@@ -4,7 +4,7 @@ import { Search, Button, Tag } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
-import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
+import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 
 interface IOpeningsSearchBar {
   onSearchInputChange: (searchInput: string) => void; // New prop

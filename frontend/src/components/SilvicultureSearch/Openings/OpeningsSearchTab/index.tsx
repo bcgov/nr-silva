@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./styles.scss";
-import EmptySection from "../EmptySection";
+import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
-import TableSkeleton from "../TableSkeleton";
+import TableSkeleton from "../../../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
 import { headers } from "../SearchScreenDataTable/testData";
-import OpeningsMap from "../OpeningsMap";
-import { useOpeningsQuery } from "../../services/queries/search/openingQueries";
-import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
-import PaginationContext from "../../contexts/PaginationContext";
+import OpeningsMap from "../../../OpeningsMap";
+import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
+import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import PaginationContext from "../../../../contexts/PaginationContext";
 
 const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);

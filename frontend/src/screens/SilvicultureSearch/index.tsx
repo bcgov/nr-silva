@@ -7,7 +7,7 @@ import { Tab } from "@carbon/react";
 import { TabPanels } from "@carbon/react";
 import { TabPanel } from "@carbon/react";
 import * as Icons from '@carbon/icons-react';
-import OpeningsSearchTab from "../../components/OpeningsSearchTab";
+import OpeningsSearchTab from "../../components/SilvicultureSearch/Openings/OpeningsSearchTab";
 import { OpeningsSearchProvider } from "../../contexts/search/OpeningsSearch";
 
 const SilvicultureSearch: React.FC = () => {

@@ -22,12 +22,12 @@ import {
   Pagination
 } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
-import StatusTag from '../StatusTag';
+import StatusTag from '../../../StatusTag';
 import './styles.scss';
-import EmptySection from '../EmptySection';
-import PaginationContext from '../../contexts/PaginationContext';
-import { OpeningsSearch } from '../../types/OpeningsSearch';
-import { ITableHeader } from '../../types/TableHeader';
+import EmptySection from '../../../EmptySection';
+import PaginationContext from '../../../../contexts/PaginationContext';
+import { OpeningsSearch } from '../../../../types/OpeningsSearch';
+import { ITableHeader } from '../../../../types/TableHeader';
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[],

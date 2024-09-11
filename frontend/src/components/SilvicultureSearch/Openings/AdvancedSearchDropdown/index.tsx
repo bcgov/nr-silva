@@ -12,8 +12,8 @@ import {
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
-import { useOpeningFiltersQuery } from "../../services/queries/search/openingQueries";
-import { useOpeningsSearch } from "../../contexts/search/OpeningsSearch";
+import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
+import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
