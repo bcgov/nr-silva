@@ -55,9 +55,9 @@ class ForestClientServiceTest {
     Assertions.assertEquals("TIMBER SALES MANAGER BABINE", responseDto.clientName());
     Assertions.assertEquals("First", responseDto.legalFirstName());
     Assertions.assertEquals("Middle", responseDto.legalMiddleName());
-    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatus());
+    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatusCode());
     Assertions.assertEquals(
-        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientType());
+        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientTypeCode());
     Assertions.assertEquals("TBA", responseDto.acronym());
   }
 
@@ -90,9 +90,9 @@ class ForestClientServiceTest {
     Assertions.assertEquals("TIMBER SALES MANAGER BABINE", responseDto.clientName());
     Assertions.assertEquals("First", responseDto.legalFirstName());
     Assertions.assertEquals("Middle", responseDto.legalMiddleName());
-    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatus());
+    Assertions.assertEquals(ForestClientStatusEnum.ACTIVE, responseDto.clientStatusCode());
     Assertions.assertEquals(
-        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientType());
+        ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE, responseDto.clientTypeCode());
     Assertions.assertEquals("TBA", responseDto.acronym());
   }
 

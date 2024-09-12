@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Getter;
 
 /** This enum contains all forest client types codes and descriptions. */

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+/** This class contains methods to integrate SILVA REST API with ForestClient API. */
 @Slf4j
 @Component
 public class ForestClientApiProvider {
