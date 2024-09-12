@@ -8,12 +8,14 @@ export function formatRolesArray(decodedIdToken: any): UserClientRolesType[] {
     const cognitoGroups: string[] = decodedIdToken['cognito:groups'];
     const rolesMap: { [key: string]: string[] } = {};
   
-    cognitoGroups.forEach(group => {
-      const [role, clientId] = group.split('_');
-      if (!rolesMap[clientId]) {
-        rolesMap[clientId] = [];
+    cognitoGroups.forEach((group: string) => {
+      if (group.indexOf('_') > 0) {
+        const [role, clientId] = group.split('_');
+        if (!rolesMap[clientId]) {
+          rolesMap[clientId] = [];
+        }
+        rolesMap[clientId].push(role);
       }
-      rolesMap[clientId].push(role);
     });
   
     const rolesArray: UserClientRolesType[] = Object.keys(rolesMap).map(clientId => ({
