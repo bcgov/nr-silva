@@ -33,7 +33,7 @@ const App: React.FC = () => {
             <SideLayout pageContent={<Opening/>} />
           </ProtectedRoute>
         } />
-        <Route path="/search" element={
+        <Route path="/silviculture-search" element={
           <ProtectedRoute>
             <SideLayout pageContent={<SilvicultureSearch/>} />
           </ProtectedRoute>
