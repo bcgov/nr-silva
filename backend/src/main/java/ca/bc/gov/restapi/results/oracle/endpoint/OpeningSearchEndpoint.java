@@ -83,8 +83,8 @@ public class OpeningSearchEndpoint {
               in = ParameterIn.QUERY,
               description =
                   "Search term representing one of Opening ID | Opening Number | Timber Mark ID |"
-                      + " File ID. E.g.: Opening ID 1022833, Opening Number 1012, Timber Mark"
-                      + " EM2184, File ID 407",
+                      + " Forest File ID. Eg: Opening ID 1022833, Opening Number 1012, Timber Mark"
+                      + " EM2184, Forest File ID TFL47",
               required = false)
           String mainSearchTerm,
       @RequestParam(value = "orgUnit", required = false)
