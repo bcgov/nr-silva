@@ -8,7 +8,7 @@ export type ForestClientType = {
   clientName: string,
   legalFirstName: string,
   legalMiddleName: string,
-  clientStatus: ForestClientCodeDescription,
-  clientType: ForestClientCodeDescription,
+  clientStatusCode: ForestClientCodeDescription,
+  clientTypeCode: ForestClientCodeDescription,
   acronym: string
 };

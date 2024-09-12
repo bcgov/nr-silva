@@ -1,16 +1,22 @@
 package ca.bc.gov.restapi.results.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 /** This enum contains all forest client statuses codes and descriptions. */
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ForestClientStatusEnum {
+  @JsonProperty("ACT")
   ACTIVE("ACT", "Active"),
+  @JsonProperty("DAC")
   DEACTIVATED("DAC", "Deactivated"),
+  @JsonProperty("DEC")
   DECEASED("DEC", "Deceased"),
+  @JsonProperty("REC")
   RECEIVERSHIP("REC", "Receivership"),
+  @JsonProperty("SPN")
   SUSPENDED("SPN", "Suspended");
 
   private final String code;

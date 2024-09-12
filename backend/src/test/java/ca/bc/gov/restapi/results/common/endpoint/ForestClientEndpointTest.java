@@ -45,8 +45,9 @@ class ForestClientEndpointTest {
 
     when(forestClientService.getClientByNumber(clientNumber)).thenReturn(Optional.of(clientDto));
 
-    ForestClientStatusEnum active = ForestClientStatusEnum.of(clientDto.clientStatus().getCode());
-    ForestClientTypeEnum type = ForestClientTypeEnum.of(clientDto.clientType().getCode());
+    ForestClientStatusEnum active =
+        ForestClientStatusEnum.of(clientDto.clientStatusCode().getCode());
+    ForestClientTypeEnum type = ForestClientTypeEnum.of(clientDto.clientTypeCode().getCode());
 
     mockMvc
         .perform(
@@ -59,8 +60,8 @@ class ForestClientEndpointTest {
         .andExpect(jsonPath("$.clientName").value(clientDto.clientName()))
         .andExpect(jsonPath("$.legalFirstName").value(clientDto.legalFirstName()))
         .andExpect(jsonPath("$.legalMiddleName").value(clientDto.legalMiddleName()))
-        .andExpect(jsonPath("$.clientStatus.code").value(active.getCode()))
-        .andExpect(jsonPath("$.clientType.code").value(type.getCode().toString()))
+        .andExpect(jsonPath("$.clientStatusCode.code").value(active.getCode()))
+        .andExpect(jsonPath("$.clientTypeCode.code").value(type.getCode().toString()))
         .andExpect(jsonPath("$.acronym").value(clientDto.acronym()))
         .andReturn();
   }
