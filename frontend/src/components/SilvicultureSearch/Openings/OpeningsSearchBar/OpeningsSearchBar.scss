@@ -38,10 +38,10 @@
   }
   .search-button{
     margin-top: 0px;
+    min-width: 100%;
   }
   .advanced-search-field{
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-    width: 288px;
     height: 40px;
     align-items: center;
     justify-content: space-between;
@@ -49,7 +49,6 @@
     cursor: pointer;
     border-bottom: 1px solid var(--bx-border-strong-01);
     color: var(--bx-text-secondary);
-    margin-left: 2px;
     border-radius: 4px 4px 0px 0px;
     padding: 16px 11px;
 
@@ -74,4 +73,12 @@
     margin-bottom:32px !important;
     z-index: 1;
   }
+}
+
+.demo-content {
+  background-color: pink;
+  border: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  color: #333;
 }

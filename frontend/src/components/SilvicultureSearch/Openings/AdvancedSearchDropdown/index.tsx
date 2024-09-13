@@ -9,6 +9,9 @@ import {
   DatePicker,
   DatePickerInput,
   Loading,
+  FlexGrid,
+  Row,
+  Column
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
@@ -89,8 +92,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
   return (
     <div className="advanced-search-dropdown">
-      <div className="container-fluid advanced-search-container p-32">
-        <div className="row pb-32">
+      <FlexGrid className="container-fluid advanced-search-container p-32">
+        <Row className=" pb-32">
           <div className="group-1">
             <CheckboxGroup
               orientation="horizontal"
@@ -125,10 +128,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               />
             </CheckboxGroup>
           </div>
-        </div>
+        </Row>
 
-        <div className="row mb-3">
-          <div className="col-6">
+        <Row className=" mb-3">
+          <Column lg={8}>
             <Dropdown
               id="orguni-dropdown"
               titleText="Org unit"
@@ -139,8 +142,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               }
               label="Enter or choose an org unit"
             />
-          </div>
-          <div className="col-6">
+          </Column>
+          <Column lg={8}>
             <Dropdown
               id="category-dropdown"
               titleText="Category"
@@ -151,11 +154,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               }
               label="Enter or choose a category"
             />
-          </div>
-        </div>
+          </Column>
+        </Row>
 
-        <div className="row mb-3">
-          <div className="col-6">
+        <Row className=" mb-3">
+          <Column lg={8}>
             <FormLabel>Client acronym</FormLabel>
             <Tooltip
               align="bottom"
@@ -174,8 +177,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ clientAcronym: e.target.value })
               }
             />
-          </div>
-          <div className="col-6">
+          </Column>
+          <Column lg={8}>
             <FormLabel>Block</FormLabel>
             <Tooltip
               align="bottom"
@@ -216,11 +219,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 }
               />
             </div>
-          </div>
-        </div>
+          </Column>
+        </Row>
 
-        <div className="row mb-3">
-          <div className="col-6">
+        <Row className=" mb-3">
+          <Column lg={8}>
             <TextInput
               id="gross-area-input"
               type="number"
@@ -230,8 +233,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ grossArea: e.target.value })
               }
             />
-          </div>
-          <div className="col-6">
+          </Column>
+          <Column lg={8}>
             <TextInput
               id="timber-mark-input"
               type="number"
@@ -241,11 +244,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ timberMark: e.target.value })
               }
             />
-          </div>
-        </div>
+          </Column>
+        </Row>
 
-        <div className="row">
-          <div className="col-6">
+        <Row className="">
+          <Column lg={8}>
             <div className="d-flex flex-auto">
               <Dropdown
                 id="status-dropdown"
@@ -285,8 +288,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 />
               </DatePicker>
             </div>
-          </div>
-          <div className="col-6">
+          </Column>
+          <Column lg={8}>
             <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
@@ -329,9 +332,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 />
               </div>
             </CheckboxGroup>
-          </div>
-        </div>
-      </div>
+          </Column>
+        </Row>
+      </FlexGrid>
     </div>
   );
 };

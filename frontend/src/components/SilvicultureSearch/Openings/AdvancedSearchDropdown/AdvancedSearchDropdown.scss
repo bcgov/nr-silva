@@ -6,7 +6,7 @@
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     position: absolute;
     z-index: 2;
-    width: 64.33%;
+    width: 65.66%;
     //these are for the nested elements
     .advanced-search-container{
         box-shadow: 0px 2px 6px 0px #0000004D;
@@ -31,4 +31,35 @@
         color: var(--bx-text-primary);
     }
 }
+
+@media only screen and (min-width: 320px) {
+    .advanced-search-dropdown {
+        width: 93.5%;
+      }
+  }
+  /* Medium - Up to 672px */
+  @media only screen and (min-width: 672px) {
+    .advanced-search-dropdown {
+        width: 96.6%;
+      }
+  }
+  /* Large - Up to 1056px  */
+  @media only screen and (min-width: 1056px) {
+    .advanced-search-dropdown {
+        width: 56.3%;
+      }
+  }
+  
+  /* Max - Up to 1584px */
+  @media only screen and (min-width: 1584px) {
+    .advanced-search-dropdown {
+        width: 60.66%;
+      }
+  }
+  /* Extra Max - Up to 1784px */
+  @media only screen and (min-width: 1784px) {
+    .advanced-search-dropdown {
+        width: 70.66%;
+      }
+  }
 
