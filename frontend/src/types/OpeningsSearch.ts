@@ -1,6 +1,6 @@
 export interface OpeningsSearch {
   openingId: number;
-  fileId: string | null;
+  forestFileId: string | null;
   categoryCode: string | null;
   categoryDescription: string | null;
   statusCode: string;

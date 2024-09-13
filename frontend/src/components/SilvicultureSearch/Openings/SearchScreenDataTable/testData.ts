@@ -1,4 +1,4 @@
-import { ITableHeader } from "../../types/TableHeader";
+import { ITableHeader } from "../../../../types/TableHeader";
 
 export const headers: ITableHeader[] = [
   {
@@ -10,7 +10,7 @@ export const headers: ITableHeader[] = [
     header: 'Opening Id'
   },
   {
-    key: 'fileId',
+    key: 'forestFileId',
     header: 'File Id'
   },
   {

@@ -3,7 +3,7 @@ x-frontend: &frontend
     VITE_ZONE: DEV
     VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
     VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
-    VITE_BACKEND_URL: https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca
+    VITE_BACKEND_URL: https://nr-silva-368-backend.apps.silver.devops.gov.bc.ca
   healthcheck:
     test: curl http://localhost:3000"
     interval: 15s

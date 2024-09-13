@@ -6,7 +6,7 @@ export const headers: ITableHeader[] = [
     header: 'Opening Id'
   },
   {
-    key: 'fileId',
+    key: 'forestFileId',
     header: 'File Id'
   },
   {

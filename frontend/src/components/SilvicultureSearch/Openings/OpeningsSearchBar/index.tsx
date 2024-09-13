@@ -61,7 +61,6 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   const handleFiltersChanged = () => {
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
-    console.log("Number of active filters:", activeFiltersCount);
     setFiltersList(filters);
   };
   useEffect(() => {

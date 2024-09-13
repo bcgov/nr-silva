@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getAuthIdToken } from "../AuthService";
+import { env } from "../../env";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -45,11 +46,11 @@ export interface OpeningItem {
   updateTimestamp: string;
   entryUserId: string;
   submittedToFrpa: boolean;
-  fileId: string | null;
+  forestFileId: string | null;
   silvaReliefAppId: string | null;
 }
 
-const API_URL = "https://nr-silva-test-backend.apps.silver.devops.gov.bc.ca";
+const backendUrl = env.VITE_BACKEND_URL;
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Map frontend filter names to backend filter names
@@ -79,7 +80,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(API_URL + "/api/opening-search", {
+  const response = await axios.get(backendUrl + "/api/opening-search", {
     params: cleanedParams,
     headers: {
       Authorization: `Bearer ${authToken}`,
@@ -108,7 +109,7 @@ export const fetchCategories = async (): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(API_URL + "/api/opening-search/categories", {
+  const response = await axios.get(backendUrl + "/api/opening-search/categories", {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
@@ -123,7 +124,7 @@ export const fetchOrgUnits = async (): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(API_URL + "/api/opening-search/org-units", {
+  const response = await axios.get(backendUrl + "/api/opening-search/org-units", {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
