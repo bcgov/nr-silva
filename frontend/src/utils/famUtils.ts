@@ -23,7 +23,6 @@ export function formatRolesArray(decodedIdToken: any): UserClientRolesType[] {
       roles: rolesMap[clientId],
       clientName: `Client Number ${clientId}` // Placeholder for client name, modify as needed
     }));
-    console.log(rolesArray)
   
     return rolesArray;
   }
