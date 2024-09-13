@@ -1,17 +1,21 @@
 package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
-import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
-import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
+import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 /** This service contains methods for interacting with Forest Client API. */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ForestClientService {
+
+  private final ForestClientApiProvider forestClientApiProvider;
 
   /**
    * Get a {@link ForestClientDto} given a client number.
@@ -23,11 +27,16 @@ public class ForestClientService {
     log.info("Received client number to fetch {}", clientNumber);
 
     String fixedNumber = checkClientNumber(clientNumber);
-    log.info("Fixed client number {}", fixedNumber);
+    if (!fixedNumber.equals("clientNumber")) {
+      log.info("Fixed client number to fetch {}", fixedNumber);
+    }
 
-    Optional<ForestClientDto> clientDto = mockForestClient(fixedNumber);
-    log.info("Client {} found!", (clientDto.isEmpty() ? "not" : ""));
-    return clientDto;
+    try {
+      return forestClientApiProvider.fetchClientByNumber(fixedNumber);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.info(String.format("Client %s not found", clientNumber), e);
+      return Optional.empty();
+    }
   }
 
   private String checkClientNumber(String clientNumber) {
@@ -41,54 +50,5 @@ public class ForestClientService {
     } catch (NumberFormatException nfe) {
       return "00000000";
     }
-  }
-
-  private Optional<ForestClientDto> mockForestClient(String clientNumber) {
-    if (clientNumber.equals("00132184")) {
-      return Optional.of(
-          new ForestClientDto(
-              "00132184",
-              "TIMBER SALES MANAGER BABINE",
-              null,
-              null,
-              ForestClientStatusEnum.ACTIVE,
-              ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
-              "TBA"));
-    }
-    if (clientNumber.equals("00012797")) {
-      return Optional.of(
-          new ForestClientDto(
-              "00012797",
-              "MINISTRY OF FORESTS",
-              null,
-              null,
-              ForestClientStatusEnum.ACTIVE,
-              ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
-              "MOF"));
-    }
-    if (clientNumber.equals("00001012")) {
-      return Optional.of(
-          new ForestClientDto(
-              "00001012",
-              "BELL LUMBER & POLE CANADA, ULC",
-              null,
-              null,
-              ForestClientStatusEnum.ACTIVE,
-              ForestClientTypeEnum.CORPORATION,
-              "BELL"));
-    }
-    if (clientNumber.equals("00149081")) {
-      return Optional.of(
-          new ForestClientDto(
-              "00149081",
-              "WESTERN FOREST PRODUCTS INC.",
-              null,
-              null,
-              ForestClientStatusEnum.ACTIVE,
-              ForestClientTypeEnum.CORPORATION,
-              "WFP"));
-    }
-
-    return Optional.empty();
   }
 }
