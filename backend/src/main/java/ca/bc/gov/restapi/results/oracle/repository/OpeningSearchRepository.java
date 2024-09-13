@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
@@ -40,8 +41,8 @@ public class OpeningSearchRepository {
     final String sqlQuery = createNativeSqlQuery(filtersDto);
     final Query query = setQueryParameters(filtersDto, sqlQuery);
 
-    // Limit to 100 records at the database
-    query.setMaxResults(100);
+    // Limit to 500 records at the database
+    query.setMaxResults(ConstantsConfig.MAX_PAGE_SIZE);
 
     List<?> result = query.getResultList();
     int lastPage = PaginationUtil.getLastPage(result.size(), pagination.perPage());
@@ -129,8 +130,8 @@ public class OpeningSearchRepository {
         }
 
         if (row.length > 9) {
-          Integer fileId = getValue(Integer.class, row[9], "fileId");
-          searchOpeningDto.setFileId(fileId);
+          String forestFileId = getValue(String.class, row[9], "forestFileId");
+          searchOpeningDto.setForestFileId(forestFileId);
         }
 
         if (row.length > 10) {
@@ -239,7 +240,7 @@ public class OpeningSearchRepository {
         query.setParameter("openingOrFile", filtersDto.getMainSearchTerm());
       } else {
         log.info("Setting mainSearchTerm as non-numeric filter value");
-        // Opening number or Timber Mark
+        // Opening number, Timber Mark, or Forest File Id
         query.setParameter("numberOrTimber", filtersDto.getMainSearchTerm());
       }
     }
@@ -324,7 +325,7 @@ public class OpeningSearchRepository {
     builder.append(",cboa.CUT_BLOCK_ID AS cutBlockId");
     builder.append(",cboa.OPENING_GROSS_AREA AS openingGrossArea");
     builder.append(",cboa.DISTURBANCE_START_DATE AS disturbanceStartDate");
-    builder.append(",oa.OPENING_ATTACHMENT_FILE_ID AS fileId");
+    builder.append(",cboa.FOREST_FILE_ID AS forestFileId");
     builder.append(",ou.ORG_UNIT_CODE AS orgUnitCode");
     builder.append(",ou.ORG_UNIT_NAME AS orgUnitName");
     builder.append(",res.CLIENT_NUMBER AS clientNumber");
@@ -343,7 +344,6 @@ public class OpeningSearchRepository {
     builder.append(",o.ENTRY_USERID AS entryUserId");
     builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submittedToFrpa108 ");
     builder.append("FROM THE.OPENING o ");
-    builder.append("LEFT JOIN THE.OPENING_ATTACHMENT oa ON (oa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)");
     builder.append("LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)");
     builder.append("LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (");
@@ -370,15 +370,18 @@ public class OpeningSearchRepository {
       log.info("Filter mainSearchTerm detected! mainSearchTerm={}", filtersDto.getMainSearchTerm());
       boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
-        log.info("Filter mainSearchTerm it's numeric! Looking for Opening ID or File ID");
-        // Opening id or  File id
-        builder.append("AND (o.OPENING_ID = :openingOrFile or ");
-        builder.append("oa.OPENING_ATTACHMENT_FILE_ID = :openingOrFile) ");
+        log.info("Filter mainSearchTerm it's numeric! Looking for Opening ID");
+        // Opening id
+        builder.append("AND o.OPENING_ID = :openingOrFile ");
       } else {
-        log.info("Filter mainSearchTerm NOT numeric! Looking for Opening Number or Timber Mark");
-        // Opening number or Timber Mark
-        builder.append(
-            "AND (o.OPENING_NUMBER = :numberOrTimber or cboa.TIMBER_MARK = :numberOrTimber) ");
+        log.info(
+            "Filter mainSearchTerm NOT numeric! Looking for Opening Number, Timber Mark, or Forest"
+                + " File Id");
+        // Opening number, Timber Mark, or Forest File Id
+        builder.append("AND (");
+        builder.append("o.OPENING_NUMBER = :numberOrTimber ");
+        builder.append(" or cboa.TIMBER_MARK = :numberOrTimber ");
+        builder.append(" or cboa.FOREST_FILE_ID = :numberOrTimber)");
       }
     }
 
@@ -467,6 +470,34 @@ public class OpeningSearchRepository {
       log.info("Filter updateDateEnd detected! date={}", filtersDto.getUpdateDateEnd());
       builder.append("AND o.UPDATE_TIMESTAMP <= to_timestamp(:updateEndDate, 'YYYY-MM-DD') ");
     }
+
+    /* Group by - to avoid duplications */
+    builder.append("GROUP BY o.OPENING_ID ");
+    builder.append(",o.OPENING_NUMBER ");
+    builder.append(",o.OPEN_CATEGORY_CODE ");
+    builder.append(",o.OPENING_STATUS_CODE ");
+    builder.append(",cboa.CUTTING_PERMIT_ID ");
+    builder.append(",cboa.TIMBER_MARK ");
+    builder.append(",cboa.CUT_BLOCK_ID ");
+    builder.append(",cboa.OPENING_GROSS_AREA ");
+    builder.append(",cboa.DISTURBANCE_START_DATE ");
+    builder.append(",cboa.FOREST_FILE_ID ");
+    builder.append(",ou.ORG_UNIT_CODE ");
+    builder.append(",ou.ORG_UNIT_NAME ");
+    builder.append(",res.CLIENT_NUMBER ");
+    
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) ";
+    builder.append(sql);
+
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) ";
+    builder.append(sql);
+
+    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) ";
+    builder.append(sql);
+
+    builder.append(",o.UPDATE_TIMESTAMP ");
+    builder.append(",o.ENTRY_USERID ");
+    builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) ");
 
     // Order by
     builder.append("ORDER BY o.OPENING_ID DESC");
