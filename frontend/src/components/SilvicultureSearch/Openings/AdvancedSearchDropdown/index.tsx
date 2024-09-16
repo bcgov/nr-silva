@@ -94,10 +94,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     <div className="advanced-search-dropdown">
       <FlexGrid className="container-fluid advanced-search-container p-32">
         <Row className=" pb-32">
-          <div className="group-1">
+          <Column sm={4} className="group-1">
             <CheckboxGroup
               orientation="horizontal"
-              className="horizontal-checkbox-group"
               legendText="Opening Filters"
             >
               <Checkbox
@@ -127,7 +126,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 }
               />
             </CheckboxGroup>
-          </div>
+          </Column>
         </Row>
 
         <Row className=" mb-3">
@@ -248,11 +247,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
         </Row>
 
         <Row className="">
-          <Column lg={8}>
+          <Column lg={12}>
             <div className="d-flex flex-auto">
               <Dropdown
                 id="status-dropdown"
-                titleText="Status"
+                titleText="Date Type"
                 items={categoryItems}
                 itemToString={(item: any) => (item ? item.text : "")}
                 onChange={(e: any) =>
@@ -289,7 +288,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </DatePicker>
             </div>
           </Column>
-          <Column lg={8}>
+          {/* <Column lg={8}>
             <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
@@ -332,7 +331,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 />
               </div>
             </CheckboxGroup>
-          </Column>
+          </Column> */}
         </Row>
       </FlexGrid>
     </div>

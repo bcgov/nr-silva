@@ -22,7 +22,7 @@ export const headers: ITableHeader[] = [
     header: 'Org unit'
   },
   {
-    key: 'statusCode',
+    key: 'statusDescription',
     header: 'Status'
   },
   {

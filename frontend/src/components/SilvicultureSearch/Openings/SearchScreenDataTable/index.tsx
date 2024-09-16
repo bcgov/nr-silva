@@ -132,7 +132,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               <TableRow key={row.openingId+i.toString()}>
                 {headers.map((header) => (
                   <TableCell key={header.key}>
-                    {header.key === "statusCode" ? (
+                    {header.key === "statusDescription" ? (
                       <StatusTag code={row[header.key]} />
                     ) : header.key === "actions" ? (
                       <TableToolbarMenu
@@ -154,7 +154,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           Download
                         </TableToolbarAction>
                       </TableToolbarMenu>
-                    ) : (
+                    ) : header.header === "Category"? (
+                       row['categoryCode']+' - '+row['categoryDescription']
+                    )
+                    :(
                       row[header.key]
                     )}
                   </TableCell>
