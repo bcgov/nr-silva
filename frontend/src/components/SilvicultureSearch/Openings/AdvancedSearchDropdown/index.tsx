@@ -188,16 +188,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </button>
             </Tooltip>
             <div className="d-flex flex-auto mt-2">
-              <Dropdown
-                id="block-status-dropdown"
-                titleText=""
-                items={categoryItems}
-                itemToString={(item: any) => (item ? item.text : "")}
-                onChange={(e: any) =>
-                  handleFilterChange({ blockStatus: e.selectedItem.value })
-                }
-                label="Block Status"
-              />
+              
               <TextInput
                 id="text-input-2"
                 type="text"
@@ -247,18 +238,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
         </Row>
 
         <Row className="">
-          <Column lg={12}>
+          <Column lg={8}>
             <div className="d-flex flex-auto">
-              <Dropdown
-                id="status-dropdown"
-                titleText="Date Type"
-                items={categoryItems}
-                itemToString={(item: any) => (item ? item.text : "")}
-                onChange={(e: any) =>
-                  handleFilterChange({ status: e.selectedItem.value })
-                }
-                label="Status"
-              />
               <DatePicker
                 datePickerType="single"
                 className="mx-2"
@@ -288,11 +269,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </DatePicker>
             </div>
           </Column>
-          {/* <Column lg={8}>
+          <Column lg={8}>
             <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
-              legendText="Block Statuses"
+              legendText="Status"
             >
               <div className="d-flex">
                 <Checkbox
@@ -331,7 +312,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 />
               </div>
             </CheckboxGroup>
-          </Column> */}
+          </Column>
         </Row>
       </FlexGrid>
     </div>
