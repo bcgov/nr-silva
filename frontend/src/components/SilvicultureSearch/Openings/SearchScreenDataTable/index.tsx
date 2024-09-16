@@ -12,7 +12,9 @@ import {
   TableHeader,
   TableRow,
   Button,
-  Pagination
+  Pagination,
+  OverflowMenu,
+  OverflowMenuItem
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -135,25 +137,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     {header.key === "statusDescription" ? (
                       <StatusTag code={row[header.key]} />
                     ) : header.key === "actions" ? (
-                      <TableToolbarMenu
-                        iconDescription="More"
-                        autoAlign
-                        renderIcon={Icons.OverflowMenuVertical}
-                        className="float-start"
-                      >
-                        <TableToolbarAction
-                          onClick={() => console.log("Download Click")}
-                        >
-                          Print
-                        </TableToolbarAction>
-                        <TableToolbarAction
-                          onClick={() => {
-                            console.log("Clicked print");
-                          }}
-                        >
-                          Download
-                        </TableToolbarAction>
-                      </TableToolbarMenu>
+                      <OverflowMenu ariaLabel="More actions">
+                        <OverflowMenuItem itemText="Favourite opening" onClick={()=>console.log("favouriteItemClicked for:"+row.openingId)} />
+                        <OverflowMenuItem itemText="Download opening as PDF file" />
+                        <OverflowMenuItem itemText="Download opening as CSV file" />
+                        <OverflowMenuItem itemText="Delete opening" />
+                      </OverflowMenu>
                     ) : header.header === "Category"? (
                        row['categoryCode']+' - '+row['categoryDescription']
                     )
