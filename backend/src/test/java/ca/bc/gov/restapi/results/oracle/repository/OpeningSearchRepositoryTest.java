@@ -301,7 +301,7 @@ class OpeningSearchRepositoryTest {
     String cutBlockId = null;
     BigDecimal openingGrossArea = new BigDecimal("11");
     Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
-    Integer fileId = 407;
+    String forestFileId = "TFL47";
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
@@ -323,7 +323,7 @@ class OpeningSearchRepositoryTest {
           cutBlockId,
           openingGrossArea,
           disturbanceStartDate,
-          fileId,
+          forestFileId,
           orgUnitCode,
           orgUnitName,
           clientNumber,
@@ -356,7 +356,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
     Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
     Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(forestFileId, dto.getForestFileId());
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
@@ -386,7 +386,7 @@ class OpeningSearchRepositoryTest {
     BigDecimal openingGrossArea = new BigDecimal("11");
     Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
     ;
-    Integer fileId = 407;
+    String forestFileId = "TFL47";
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
@@ -408,7 +408,7 @@ class OpeningSearchRepositoryTest {
           cutBlockId,
           openingGrossArea,
           disturbanceStartDate,
-          fileId,
+          forestFileId,
           orgUnitCode,
           orgUnitName,
           clientNumber,
@@ -441,7 +441,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
     Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
     Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(forestFileId, dto.getForestFileId());
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
@@ -469,7 +469,7 @@ class OpeningSearchRepositoryTest {
     String cutBlockId = null;
     BigDecimal openingGrossArea = new BigDecimal("11");
     Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
-    Integer fileId = 407;
+    String forestFileId = "TFL47";
     String orgUnitCode = "DCR";
     String orgUnitName = null;
     String clientNumber = null;
@@ -491,7 +491,7 @@ class OpeningSearchRepositoryTest {
           cutBlockId,
           openingGrossArea,
           disturbanceStartDate,
-          fileId,
+          forestFileId,
           orgUnitCode,
           orgUnitName,
           clientNumber,
@@ -524,7 +524,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
     Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
     Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(forestFileId, dto.getForestFileId());
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
@@ -552,7 +552,7 @@ class OpeningSearchRepositoryTest {
     String cutBlockId = "456";
     BigDecimal openingGrossArea = new BigDecimal("11");
     Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
-    Integer fileId = 407;
+    String forestFileId = "TFL47";
     String orgUnitCode = filters.getOrgUnit();
     String orgUnitName = "Org Name";
     String clientNumber = "00012797";
@@ -574,7 +574,7 @@ class OpeningSearchRepositoryTest {
           cutBlockId,
           openingGrossArea,
           disturbanceStartDate,
-          fileId,
+          forestFileId,
           orgUnitCode,
           orgUnitName,
           clientNumber,
@@ -607,7 +607,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(cutBlockId, dto.getCutBlockId());
     Assertions.assertEquals(openingGrossArea, dto.getOpeningGrossAreaHa());
     Assertions.assertEquals(disturbanceStartDate.toLocalDateTime(), dto.getDisturbanceStartDate());
-    Assertions.assertEquals(fileId, dto.getFileId());
+    Assertions.assertEquals(forestFileId, dto.getForestFileId());
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());

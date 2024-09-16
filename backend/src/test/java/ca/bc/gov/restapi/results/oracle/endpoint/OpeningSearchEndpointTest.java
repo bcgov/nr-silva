@@ -73,7 +73,7 @@ class OpeningSearchEndpointTest {
     response.setEntryUserId("TEST");
     response.setSubmittedToFrpa(true);
     response.setSilvaReliefAppId(333L);
-    response.setFileId(407);
+    response.setForestFileId("TFL47");
 
     paginatedResult.setData(List.of(response));
 
@@ -100,7 +100,7 @@ class OpeningSearchEndpointTest {
         .andExpect(jsonPath("$.data[0].openingGrossAreaHa").value(response.getOpeningGrossAreaHa()))
         .andExpect(
             jsonPath("$.data[0].disturbanceStartDate").value(response.getDisturbanceStartDate()))
-        .andExpect(jsonPath("$.data[0].fileId").value(response.getFileId()))
+        .andExpect(jsonPath("$.data[0].forestFileId").value(response.getForestFileId()))
         .andExpect(jsonPath("$.data[0].orgUnitCode").value(response.getOrgUnitCode()))
         .andExpect(jsonPath("$.data[0].orgUnitName").value(response.getOrgUnitName()))
         .andExpect(jsonPath("$.data[0].clientNumber").value(response.getClientNumber()))

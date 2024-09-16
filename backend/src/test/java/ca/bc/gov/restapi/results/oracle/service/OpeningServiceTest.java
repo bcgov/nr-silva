@@ -271,7 +271,7 @@ class OpeningServiceTest {
     dto.setUpdateTimestamp(LocalDateTime.now());
     dto.setEntryUserId("");
     dto.setSubmittedToFrpa(false);
-    dto.setFileId(407);
+    dto.setForestFileId("TFL47");
     paginated.setData(List.of(dto));
 
     OpeningSearchFiltersDto filters = mockMainFilter("407");
@@ -296,7 +296,7 @@ class OpeningServiceTest {
         dto.getOpeningGrossAreaHa(), result.getData().get(0).getOpeningGrossAreaHa());
     Assertions.assertEquals(
         dto.getDisturbanceStartDate(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(dto.getFileId(), result.getData().get(0).getFileId());
+    Assertions.assertEquals(dto.getForestFileId(), result.getData().get(0).getForestFileId());
     Assertions.assertEquals(dto.getOrgUnitCode(), result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(dto.getOrgUnitName(), result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(dto.getClientNumber(), result.getData().get(0).getClientNumber());
@@ -340,7 +340,7 @@ class OpeningServiceTest {
     dto.setUpdateTimestamp(LocalDateTime.now());
     dto.setEntryUserId("");
     dto.setSubmittedToFrpa(false);
-    dto.setFileId(407);
+    dto.setForestFileId("TFL47");
     paginated.setData(List.of(dto));
 
     OpeningSearchFiltersDto filters = mockOrgUnit("DCR");
@@ -365,7 +365,7 @@ class OpeningServiceTest {
         dto.getOpeningGrossAreaHa(), result.getData().get(0).getOpeningGrossAreaHa());
     Assertions.assertEquals(
         dto.getDisturbanceStartDate(), result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals(dto.getFileId(), result.getData().get(0).getFileId());
+    Assertions.assertEquals(dto.getForestFileId(), result.getData().get(0).getForestFileId());
     Assertions.assertEquals(dto.getOrgUnitCode(), result.getData().get(0).getOrgUnitCode());
     Assertions.assertEquals(dto.getOrgUnitName(), result.getData().get(0).getOrgUnitName());
     Assertions.assertEquals(dto.getClientNumber(), result.getData().get(0).getClientNumber());
