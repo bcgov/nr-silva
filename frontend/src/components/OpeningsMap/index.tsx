@@ -7,8 +7,17 @@ import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
 import { shiftBcGwLngLat2LatLng } from '../../map-services/BcGwLatLongUtils';
-import { LayersControl, MapContainer, Polygon, Popup, TileLayer, useMap, WMSTileLayer } from 'react-leaflet';
-import { LatLng, LatLngExpression } from 'leaflet';
+import {
+  LayersControl,
+  MapContainer,
+  Polygon,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
+  WMSTileLayer
+} from 'react-leaflet';
+import { LatLngExpression } from 'leaflet';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
@@ -117,11 +126,13 @@ const OpeningsMap: React.FC<MapProps> = ({
         }, (error: GeolocationPositionError) => {
           console.error(`${error.code}: ${error.message}`);
           // Set the province location, if user denied
+          // north east - lat = 54.76267040025495, lng = -103.46923828125
+          // south east - lat = 47.91634204016118, lng = -139.35058593750003
           setPosition({
-            lat: 55.001251,
-            lng: -125.002441
+            lat: 51.339506220208065,
+            lng: -121.40991210937501
           });
-          setZoomLevel(11);
+          setZoomLevel(6);
         }, options);
       }
     }
@@ -140,6 +151,20 @@ const OpeningsMap: React.FC<MapProps> = ({
     }, [latLong]);
     return null;
   };
+
+  // Use this function to investigate/play with map click
+  // Just add <LocationMarker /> inside <MapContainer /> below
+  /*
+  function LocationMarker() {
+    const map = useMapEvents({
+      click() {
+        console.log('click, bounds:', map.getBounds());
+        console.log('click, zoom:', map.getZoom());
+      }
+    });
+    return null;
+  }
+  */
 
   return (
     <MapContainer
