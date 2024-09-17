@@ -14,7 +14,7 @@ const initialState = {
   error: null
 };
 
-export const userDetailsReducer = (state = initialState, action: any) => {
+export const userDetailsReducer = (state = initialState, action: { type: string; payload: object }) => {
   switch (action.type) {
     case USER_DETAILS_REQUEST:
       return { ...state, loading: true };
