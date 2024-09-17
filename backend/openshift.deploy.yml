@@ -81,9 +81,6 @@ parameters:
   - name: WMS_LAYERS_WHITELIST_USERS
     description: List of users that can see active layers on the map view
     required: true
-  - name: FORESTCLIENTAPI_KEY
-    description:
-    required: true
 objects:
   - apiVersion: apps/v1
     kind: Deployment
@@ -141,7 +138,10 @@ objects:
                 - name: WMS_LAYERS_WHITELIST_USERS
                   value: ${WMS_LAYERS_WHITELIST_USERS}
                 - name: FORESTCLIENTAPI_KEY
-                  value: ${FORESTCLIENTAPI_KEY}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: forest-client-api-key
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:
