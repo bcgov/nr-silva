@@ -33,6 +33,15 @@
     align-items: center;
   }
   
+  
+}
+
+//Need to find selector for specific screen
+.bx--overflow-menu-options{
+  width:260px !important
+}
+.bx--overflow-menu-options__option-content {
+  overflow:visible;
 }
  
 .activity-table {

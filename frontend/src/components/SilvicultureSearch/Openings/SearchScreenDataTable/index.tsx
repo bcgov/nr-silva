@@ -137,11 +137,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     {header.key === "statusDescription" ? (
                       <StatusTag code={row[header.key]} />
                     ) : header.key === "actions" ? (
-                      <OverflowMenu ariaLabel="More actions">
+                      <OverflowMenu size={'md'} ariaLabel="More actions" >
                         <OverflowMenuItem itemText="Favourite opening" onClick={()=>console.log("favouriteItemClicked for:"+row.openingId)} />
                         <OverflowMenuItem itemText="Download opening as PDF file" />
                         <OverflowMenuItem itemText="Download opening as CSV file" />
-                        <OverflowMenuItem itemText="Delete opening" />
+                        <OverflowMenuItem itemText="Delete opening"  />
                       </OverflowMenu>
                     ) : header.header === "Category"? (
                        row['categoryCode']+' - '+row['categoryDescription']
