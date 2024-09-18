@@ -16,6 +16,8 @@
     "amazon-cognito-identity-js": "^6.3.13",
     "aws-amplify": "^6.5.0",
     "axios": "^1.6.8",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.3",
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
@@ -31,6 +33,7 @@
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.0",
     "web-vitals": "^4.0.0",
+    "xlsx": "^0.18.5",
     "yaml": "^2.3.2"
   },
   "scripts": {
@@ -60,6 +63,7 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
+    "@types/jspdf": "^2.0.0",
     "@types/leaflet": "^1.9.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

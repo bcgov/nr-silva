@@ -32,6 +32,7 @@ import { ITableHeader } from "../../../../types/TableHeader";
 import { columns as defaultColumns } from "./testData";
 import { FlexGrid } from "@carbon/react";
 import { MenuItem } from "@carbon/react";
+import { convertToCSV, downloadCSV, downloadPDF, downloadXLSX } from "../../../../utils/fileConversions";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -63,6 +64,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   } = useContext(PaginationContext);
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDownload, setOpenDownload] = useState(false);
 
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);
@@ -108,7 +110,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 {showSpatial === true ? "Hide map" : "Show map"}
               </Button>
               <div className="divider"></div>
-
               <Popover
                 open={openEdit}
                 isTabTip
@@ -179,16 +180,50 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 </PopoverContent>
               </Popover>
               <div className="divider"></div>
-              <Button
-                iconDescription="Download"
-                tooltipposition="bottom"
-                kind="ghost"
-                onClick={() => console.log("Download Click")}
-                renderIcon={Icons.Download}
-                size="md"
+              <Popover
+                open={openDownload}
+                isTabTip
+                align={alignTwo}
+                onRequestClose={() => setOpenDownload(false)}
               >
-                Download
-              </Button>
+                <Button
+                  iconDescription="Download"
+                  tooltipposition="bottom"
+                  kind="ghost"
+                  onClick={() => {
+                    setOpenDownload(!openDownload);
+                  }}
+                  renderIcon={Icons.Download}
+                  size="lg"
+                >
+                  Download
+                </Button>
+                <PopoverContent className="download-column-content">
+                  <MenuItem
+                    className="menu-item"
+                    size={'lg'}
+                    label="Download table as PDF file"
+                    onClick={() => {
+                      downloadPDF(headers, rows)
+                    }}
+                  />
+                  <MenuItem
+                    className="menu-item"
+                    size="lg"
+                    label="Download table as CSV file"
+                    onClick={() => {
+                      const csvData = convertToCSV(headers, rows);
+                      downloadCSV(csvData, "openings-data.csv");
+                    }}
+                  />
+                  <MenuItem
+                    className="menu-item"
+                    size={'lg'}
+                    label="Download table as XLS file"
+                    onClick={() => downloadXLSX(headers, rows)}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </TableToolbarContent>
         </TableToolbar>
