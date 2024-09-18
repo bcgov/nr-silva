@@ -128,7 +128,7 @@ public class OpeningSearchResponseDto {
   private Boolean submittedToFrpa;
 
   @Schema(description = "Uniquely identifies the attached file.", example = "407")
-  private Integer fileId;
+  private String forestFileId;
 
   @Schema(
       description = "Uniquely identifies an Application for Relief from obligations.",
