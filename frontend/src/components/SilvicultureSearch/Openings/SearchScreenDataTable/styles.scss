@@ -36,6 +36,32 @@
   
 }
 
+
+.edit-column-content{
+  width: 400px;
+  .dropdown-label {
+    padding:16px;
+    p {
+      @include type.type-style('label-02');
+      font-size: 12px;
+    }
+  }
+  .dropdown-container{
+    padding: 16px;
+    padding-top: 0px;
+  }
+  .menu-item{
+    font-size: 12px;
+  }
+  .checkbox-item .bx--checkbox-label-text{
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    font-weight: 400;
+  }
+
+}
+
 //Need to find selector for specific screen
 .bx--overflow-menu-options{
   width:260px !important

@@ -1,48 +1,58 @@
 import { ITableHeader } from "../../../../types/TableHeader";
 
-export const headers: ITableHeader[] = [
+export const columns: ITableHeader[] = [
   {
     key: 'actions',
-    header: 'Actions'
+    header: 'Actions',
+    selected: true
   },
   {
     key: 'openingId',
-    header: 'Opening Id'
+    header: 'Opening Id',
+    selected: true
   },
   {
     key: 'forestFileId',
-    header: 'File Id'
+    header: 'File Id',
+    selected: true
   },
   {
     key: 'categoryDescription',
-    header: 'Category'
+    header: 'Category',
+    selected: true
   },
   {
     key: 'orgUnitName',
-    header: 'Org unit'
+    header: 'Org unit',
+    selected: true
   },
   {
     key: 'statusDescription',
-    header: 'Status'
+    header: 'Status',
+    selected: true
   },
   {
     key: 'cuttingPermitId',
-    header: 'Cutting permit'
+    header: 'Cutting permit',
+    selected: true
   },
   {
     key: 'cutBlockId',
-    header: 'Cut block'
+    header: 'Cut block',
+    selected: true
   },
   {
     key: 'openingGrossAreaHa',
-    header: 'Gross Area'
+    header: 'Gross Area',
+    selected: true
   },
   {
     key: 'disturbanceStartDate',
-    header:'Disturbance Date'
+    header: 'Disturbance Date',
+    selected: false
   }
-
 ];
+
 
 export const rows:any = [
   {

@@ -4,11 +4,12 @@ import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
 import TableSkeleton from "../../../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
-import { headers } from "../SearchScreenDataTable/testData";
+import { columns } from "../SearchScreenDataTable/testData";
 import OpeningsMap from "../../../OpeningsMap";
 import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import PaginationContext from "../../../../contexts/PaginationContext";
+import { ITableHeader } from "../../../../types/TableHeader";
 
 const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
@@ -20,6 +21,8 @@ const OpeningsSearchTab: React.FC = () => {
   const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
   const { currentPage, itemsPerPage, totalResultItems } = useContext(PaginationContext);
+  
+  const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
   // Only fetch when search is triggered and with finalParams
   const { data, isFetching } = useOpeningsQuery(finalParams, isSearchTriggered);
@@ -66,6 +69,31 @@ const OpeningsSearchTab: React.FC = () => {
     }));
   };
 
+  const handleCheckboxChange = (columnKey: string) => {
+    if(columnKey === "select-default"){
+      //set to the deafult
+      setHeaders(columns)
+    }
+    else if(columnKey === "select-all"){
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) => ({
+          ...header,
+          selected: true, // Select all headers
+        }))
+      );
+    }
+    else{
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) =>
+          header.key === columnKey
+            ? { ...header, selected: !header.selected }
+            : header
+        )
+      );
+    }
+    
+  };
+
   useEffect(() => {
     handleFiltersChanged();
   }, [filters]);
@@ -98,8 +126,10 @@ const OpeningsSearchTab: React.FC = () => {
                 <TableSkeleton headers={headers} />
               ) : (
                 <SearchScreenDataTable
-                  headers={headers}
                   rows={data?.data || []}
+                  headers={headers}
+                  defaultColumns={columns}
+                  handleCheckboxChange={handleCheckboxChange}
                   setOpeningId={setLoadId}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
