@@ -256,8 +256,13 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 )
                               }
                             />
-                            <OverflowMenuItem itemText="Download opening as PDF file" />
-                            <OverflowMenuItem itemText="Download opening as CSV file" />
+                            <OverflowMenuItem itemText="Download opening as PDF file" onClick={()=>downloadPDF(defaultColumns, [row])} />
+                            <OverflowMenuItem itemText="Download opening as CSV file" 
+                              onClick={() => {
+                                  const csvData = convertToCSV(defaultColumns, [row]);
+                                  downloadCSV(csvData, "openings-data.csv");
+                                }}  
+                            />
                             <OverflowMenuItem itemText="Delete opening" />
                           </OverflowMenu>
                         ) : header.header === "Category" ? (
