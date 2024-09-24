@@ -1,13 +1,19 @@
 import React from 'react';
 import { FlexGrid, Row, Column } from '@carbon/react';
-
 import OrganizationSelection from '../../components/OrganizationSelection';
-
-import './styles.scss';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
+import './styles.scss';
 
-const LoginOrgSelection = () => {
+/**
+ * Renders the organization selection view after login.
+ * 
+ * This view allows users to select which organization they are representing.
+ * It displays the user's name and username, prompting them to choose an organization.
+ * 
+ * @returns {JSX.Element} The rendered LoginOrgSelection component.
+ */
+function LoginOrgSelection (): JSX.Element {
   const userDetails = useSelector((state: RootState) => state.userDetails);
   const user = userDetails.user;
 
