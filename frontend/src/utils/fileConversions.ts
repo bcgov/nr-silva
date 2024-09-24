@@ -6,12 +6,12 @@ import "jspdf-autotable"; // Add this for table support in jsPDF
 // Utility to convert rows and headers to XLSX format and trigger download
 export const downloadXLSX = (headers: any[], rows: any[], filename = "data.xlsx"): void => {
   // Map headers
-  const headerRow = headers.filter(h => h.selected).map(h => h.header);
+  const headerRow = headers.filter(h => h.selected && h.key !== "actions").map(h => h.header);
 
   // Map rows
   const data = rows.map(row => {
     return headers
-      .filter(h => h.selected)
+      .filter(h => h.selected && h.key !== "actions")
       .map(header => row[header.key as keyof any]);
   });
 
@@ -31,14 +31,14 @@ export const downloadXLSX = (headers: any[], rows: any[], filename = "data.xlsx"
 export const convertToCSV = (headers: any[], rows: any[]): string => {
     // Map headers to a CSV-compatible format
     const headerRow = headers
-      .filter(h => h.selected)
+      .filter(h => h.selected && h.key !== "actions")
       .map(h => h.header)
       .join(",");
   
     // Map rows to a CSV-compatible format
     const csvRows = rows.map(row => {
       return headers
-        .filter(h => h.selected)
+        .filter(h => h.selected && h.key !== "actions")
         .map(header => {
           const cell = row[header.key as keyof any];
           // Handle escaping quotes and commas
@@ -75,12 +75,12 @@ export const downloadPDF = (headers: any[], rows: any[], filename = "data.pdf"):
   
     // Map headers and rows for the PDF table
     const tableHeaders = headers
-      .filter(h => h.selected)
+      .filter(h => h.selected && h.key !== "actions")
       .map(h => h.header);
   
     const tableData = rows.map(row =>
       headers
-        .filter(h => h.selected)
+        .filter(h => h.selected && h.key !== "actions")
         .map(header => row[header.key as keyof any])
     );
   
