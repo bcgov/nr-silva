@@ -18,6 +18,7 @@ import {
   Popover,
   PopoverContent,
   Checkbox,
+  CheckboxGroup,
   Row,
   Column,
   MenuItemDivider,
@@ -29,10 +30,15 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { columns as defaultColumns } from "./testData";
 import { FlexGrid } from "@carbon/react";
 import { MenuItem } from "@carbon/react";
-import { convertToCSV, downloadCSV, downloadPDF, downloadXLSX } from "../../../../utils/fileConversions";
+import {
+  convertToCSV,
+  downloadCSV,
+  downloadPDF,
+  downloadXLSX,
+} from "../../../../utils/fileConversions";
+import { Tooltip } from "@carbon/react";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -65,10 +71,24 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
 
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);
   }, [rows, totalItems]);
+  
+  // Function to handle row selection changes
+  const handleRowSelectionChanged = (rowId: string) => {
+    setSelectedRows((prevSelectedRows) => {
+      if (prevSelectedRows.includes(rowId)) {
+        // If the row is already selected, remove it from the selected rows
+        return prevSelectedRows.filter((id) => id !== rowId);
+      } else {
+        // If the row is not selected, add it to the selected rows
+        return [...prevSelectedRows, rowId];
+      }
+    });
+  };
 
   return (
     <>
@@ -201,10 +221,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <PopoverContent className="download-column-content">
                   <MenuItem
                     className="menu-item"
-                    size={'lg'}
+                    size={"lg"}
                     label="Download table as PDF file"
                     onClick={() => {
-                      downloadPDF(headers, rows)
+                      downloadPDF(headers, rows);
                     }}
                   />
                   <MenuItem
@@ -218,7 +238,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   />
                   <MenuItem
                     className="menu-item"
-                    size={'lg'}
+                    size={"lg"}
                     label="Download table as XLS file"
                     onClick={() => downloadXLSX(headers, rows)}
                   />
@@ -243,28 +263,62 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <TableRow key={row.openingId + i.toString()}>
                   {headers.map((header) =>
                     header.selected ? (
-                      <TableCell key={header.key}>
+                      <TableCell key={header.key} className={(header.key === "actions" && showSpatial) ? "p-0" : null}>
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          <OverflowMenu size={"md"} ariaLabel="More actions">
-                            <OverflowMenuItem
-                              itemText="Favourite opening"
-                              onClick={() =>
-                                console.log(
-                                  "favouriteItemClicked for:" + row.openingId
-                                )
-                              }
-                            />
-                            <OverflowMenuItem itemText="Download opening as PDF file" onClick={()=>downloadPDF(defaultColumns, [row])} />
-                            <OverflowMenuItem itemText="Download opening as CSV file" 
-                              onClick={() => {
-                                  const csvData = convertToCSV(defaultColumns, [row]);
+                          <CheckboxGroup
+                            orientation="horizontal"
+                            className="align-items-center justify-content-start"
+                          >
+                            {/* Checkbox for selecting rows */}
+                            {showSpatial && (
+                              <Tooltip
+                                className="checkbox-tip"
+                                label="Click to view this opening's map activity."
+                                align="bottom-left"
+                                autoAlign
+                              >
+                                <div className="mb-2 mx-2">
+                                  <Checkbox
+                                    id={`checkbox-label-${row.openingId}`}
+                                    checked={selectedRows.includes(
+                                      row.openingId
+                                    )}
+                                    onChange={() =>
+                                      handleRowSelectionChanged(row.openingId)
+                                    }
+                                  />
+                                </div>
+                              </Tooltip>
+                            )}
+                            <OverflowMenu size={"md"} ariaLabel="More actions">
+                              <OverflowMenuItem
+                                itemText="Favourite opening"
+                                onClick={() =>
+                                  console.log(
+                                    "favouriteItemClicked for:" + row.openingId
+                                  )
+                                }
+                              />
+                              <OverflowMenuItem
+                                itemText="Download opening as PDF file"
+                                onClick={() =>
+                                  downloadPDF(defaultColumns, [row])
+                                }
+                              />
+                              <OverflowMenuItem
+                                itemText="Download opening as CSV file"
+                                onClick={() => {
+                                  const csvData = convertToCSV(defaultColumns, [
+                                    row,
+                                  ]);
                                   downloadCSV(csvData, "openings-data.csv");
-                                }}  
-                            />
-                            <OverflowMenuItem itemText="Delete opening" />
-                          </OverflowMenu>
+                                }}
+                              />
+                              <OverflowMenuItem itemText="Delete opening" />
+                            </OverflowMenu>
+                          </CheckboxGroup>
                         ) : header.header === "Category" ? (
                           row["categoryCode"] +
                           " - " +
