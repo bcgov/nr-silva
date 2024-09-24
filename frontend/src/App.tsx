@@ -32,7 +32,7 @@ const App: React.FC = () => {
             <SideLayout pageContent={<Opening/>} />
           </ProtectedRoute>
         } />
-        <Route path="/reports" element={
+        <Route path="/opening/reports" element={
           <ProtectedRoute>
             <SideLayout pageContent={<Reports/>} />
           </ProtectedRoute>
