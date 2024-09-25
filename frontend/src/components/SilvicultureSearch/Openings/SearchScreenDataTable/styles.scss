@@ -77,6 +77,13 @@
   letter-spacing: 0.16px;
 }
 
+.fav-toast{
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index:2;
+}
+
 //Need to find selector for specific screen
 .bx--overflow-menu-options{
   width:260px !important

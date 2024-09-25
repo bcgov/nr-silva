@@ -22,6 +22,8 @@ import {
   Row,
   Column,
   MenuItemDivider,
+  ToastNotification,
+  ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -39,6 +41,7 @@ import {
   downloadXLSX,
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
+import { useNavigate } from "react-router-dom";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -72,6 +75,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
+  const [toastText, setToastText] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);
@@ -89,6 +94,13 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       }
     });
   };
+
+  //Function to handle the favourite feature of the opening for a user
+  const handleFavouriteOpening = (rowId: string) => {
+    console.log(rowId + " has been added as a favourite for the user")
+    //make a call to the api for the favourite opening when ready
+    setToastText(`Following "OpeningID ${rowId}"`);
+  }
 
   return (
     <>
@@ -263,7 +275,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <TableRow key={row.openingId + i.toString()}>
                   {headers.map((header) =>
                     header.selected ? (
-                      <TableCell key={header.key} className={(header.key === "actions" && showSpatial) ? "p-0" : null}>
+                      <TableCell
+                        key={header.key}
+                        className={
+                          header.key === "actions" && showSpatial ? "p-0" : null
+                        }
+                      >
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
@@ -296,9 +313,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                               <OverflowMenuItem
                                 itemText="Favourite opening"
                                 onClick={() =>
-                                  console.log(
-                                    "favouriteItemClicked for:" + row.openingId
-                                  )
+                                  handleFavouriteOpening(row.openingId)
                                 }
                               />
                               <OverflowMenuItem
@@ -367,6 +382,21 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           }}
         />
       )}
+      {toastText!=null ? (
+        <ActionableNotification
+          className="fav-toast"
+          title="Success"
+          subtitle={toastText}
+          lowContrast={true}
+          kind="success"
+          role="status"
+          closeOnEscape
+          onClose={() => setToastText(null)}
+          actionButtonLabel="Go to track openings"
+          onActionButtonClick = {() => navigate('/opening?tab=metrics&scrollTo=trackOpenings')}
+
+        />
+      ) : null}
     </>
   );
 };
