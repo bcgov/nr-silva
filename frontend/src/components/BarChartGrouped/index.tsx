@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
-import "@carbon/charts/styles.css";
-import "./BarChartGrouped.scss";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+import "@carbon/charts/styles.css";
+import "./BarChartGrouped.scss";
 
 interface IDropdownItem {
   value: string;
   text: string;
 }
 
-const BarChartGrouped = () => {
+/**
+ * Renders an Bar Chart Grouped component.
+ *
+ * @returns {JSX.Element} The rendered BarChartGrouped component.
+ */
+function BarChartGrouped(): JSX.Element {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [chartData, setChartData] = useState<OpeningPerYearChart[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -190,7 +195,7 @@ const BarChartGrouped = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <div className="bar-chart-container">
+        <div className="bar-chart-container" data-testid="bar-chart">
           <GroupedBarChart data={chartData} options={options} />
         </div>
       )}
