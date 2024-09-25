@@ -52,18 +52,23 @@ export const rows: RecentAction[] = [
 export const headers: ITableHeader[] = [
   {
     key: 'activityType',
-    header: 'Activity Type'
+    header: 'Activity Type',
+    selected: true
   },
   {
     key: 'fileFormat',
-    header: 'File Format'
+    header: 'File Format',
+    selected: true
   },
   {
     key: 'statusCode',
-    header: 'Status'
+    header: 'Status',
+    selected: true
   },
   {
     key: 'lastUpdatedLabel',
-    header: 'Last Updated'
+    header: 'Last Updated',
+    selected: true
   }
 ];
+
