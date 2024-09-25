@@ -81,6 +81,10 @@ parameters:
   - name: WMS_LAYERS_WHITELIST_USERS
     description: List of users that can see active layers on the map view
     required: true
+  - name: RANDOM_EXPRESSION
+    description: Random expression to make sure deployments update
+    from: "[a-zA-Z0-9]{32}"
+    generate: expression
 objects:
   - apiVersion: apps/v1
     kind: Deployment
@@ -171,6 +175,8 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-database
                       key: database-user
+                - name: RANDOM_EXPRESSION
+                  value: ${RANDOM_EXPRESSION}
               resources:
                 requests:
                   cpu: "${CPU_REQUEST}"
