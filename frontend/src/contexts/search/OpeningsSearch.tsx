@@ -4,6 +4,8 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 interface OpeningsSearchContextProps {
   filters: any;
   setFilters: React.Dispatch<React.SetStateAction<any>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>
   clearFilters: () => void;
   clearIndividualField: (key:string) => void;
 }
@@ -30,6 +32,7 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
   };
 
   const [filters, setFilters] = useState(defaultFilters);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Function to clear individual filter field by key
   const clearIndividualField = (key: string) => {
@@ -42,7 +45,7 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
   const clearFilters = () => setFilters(defaultFilters);
 
   return (
-    <OpeningsSearchContext.Provider value={{ filters, setFilters, clearFilters, clearIndividualField }}>
+    <OpeningsSearchContext.Provider value={{ filters, setFilters, searchTerm, setSearchTerm, clearFilters, clearIndividualField }}>
       {children}
     </OpeningsSearchContext.Provider>
   );

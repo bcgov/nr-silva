@@ -32,9 +32,7 @@ const SilvicultureSearch: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">
-            <OpeningsSearchProvider>
-              <OpeningsSearchTab />
-            </OpeningsSearchProvider>
+            <OpeningsSearchTab />
           </TabPanel>
           <TabPanel className="tab-content">
             <h4>Hi there this is from the second tab</h4>

@@ -10,6 +10,7 @@ import { useOpeningsQuery } from "../../../../services/queries/search/openingQue
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { ITableHeader } from "../../../../types/TableHeader";
+import { countActiveFilters } from "../../../../utils/searchUtils";
 
 const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
@@ -26,7 +27,7 @@ const OpeningsSearchTab: React.FC = () => {
 
   // Only fetch when search is triggered and with finalParams
   const { data, isFetching } = useOpeningsQuery(finalParams, isSearchTriggered);
-  const { filters } = useOpeningsSearch();
+  const { filters, searchTerm } = useOpeningsSearch();
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
@@ -39,7 +40,7 @@ const OpeningsSearchTab: React.FC = () => {
   const handleSearch = () => {
     toggleFiltersApplied();
     setFiltersApplied(true); // Set filters as applied to show results
-    setFinalParams(searchParams); // Only update finalParams on search
+    setFinalParams({...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
     setIsSearchTriggered(true); // Trigger the search
   };
 
@@ -102,11 +103,21 @@ const OpeningsSearchTab: React.FC = () => {
     handlePaginationChanged();
   }, [currentPage, itemsPerPage]);
 
+  useEffect (()=>{
+    handleSearchInputChange(searchTerm);
+  },[searchTerm]);
+
+  //initally when the screen loads check if there was a earch term present
+  useEffect (()=>{
+    if(searchTerm.length>0 || countActiveFilters(filters)>0){
+      handleSearch();
+    }
+  },[])
+
   return (
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
         <OpeningsSearchBar
-          onSearchInputChange={handleSearchInputChange}
           onSearchClick={handleSearch}
         />
         {showSpatial ? (

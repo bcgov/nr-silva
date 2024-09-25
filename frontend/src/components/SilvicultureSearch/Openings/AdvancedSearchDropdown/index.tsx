@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Checkbox,
   CheckboxGroup,
@@ -11,7 +11,7 @@ import {
   Loading,
   FlexGrid,
   Row,
-  Column
+  Column,
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
@@ -40,15 +40,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     openingFilters: [] as string[], // Array to hold multiple checkbox selections
     blockStatuses: [] as string[], // Array to hold multiple block statuses
   };
-  // const [filters, setFilters] = useState(defaultFilters);
-  const {filters, setFilters, clearFilters } = useOpeningsSearch();
-
+  
+  const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
     setFilters(newFilters);
-    // onSearch(filters); // Send the updated filters to the parent component
   };
 
   const handleCheckboxChange = (value: string, group: string) => {
@@ -63,7 +61,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   const handleClearFilters = () => {
     console.log("clearing filters");
     setFilters(defaultFilters);
-    // onSearch(defaultFilters); // Send the updated filters to the parent component
   };
 
   if (isLoading) {
@@ -93,7 +90,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   return (
     <div className="advanced-search-dropdown">
       <FlexGrid className="container-fluid advanced-search-container p-32">
-        <Row className=" pb-32">
+        <Row className="pb-32">
           <Column sm={4} className="group-1">
             <CheckboxGroup
               orientation="horizontal"
@@ -102,34 +99,24 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <Checkbox
                 labelText={`Openings created by me`}
                 id="checkbox-label-1"
-                checked={filters.openingFilters.includes(
-                  "Openings created by me"
-                )}
+                checked={filters.openingFilters.includes("Openings created by me")}
                 onChange={() =>
-                  handleCheckboxChange(
-                    "Openings created by me",
-                    "openingFilters"
-                  )
+                  handleCheckboxChange("Openings created by me", "openingFilters")
                 }
               />
               <Checkbox
                 labelText={`Submitted to FRPA section 108`}
                 id="checkbox-label-2"
-                checked={filters.openingFilters.includes(
-                  "Submitted to FRPA section 108"
-                )}
+                checked={filters.openingFilters.includes("Submitted to FRPA section 108")}
                 onChange={() =>
-                  handleCheckboxChange(
-                    "Submitted to FRPA section 108",
-                    "openingFilters"
-                  )
+                  handleCheckboxChange("Submitted to FRPA section 108", "openingFilters")
                 }
               />
             </CheckboxGroup>
           </Column>
         </Row>
 
-        <Row className=" mb-3">
+        <Row className="mb-3">
           <Column lg={8}>
             <Dropdown
               id="orguni-dropdown"
@@ -140,6 +127,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ orgUnit: e.selectedItem.value })
               }
               label="Enter or choose an org unit"
+              selectedItem={orgUnitItems.find((item:any) => item.value === filters.orgUnit)}
             />
           </Column>
           <Column lg={8}>
@@ -152,11 +140,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ category: e.selectedItem.value })
               }
               label="Enter or choose a category"
+              selectedItem={categoryItems.find((item:any) => item.value === filters.category)}
             />
           </Column>
         </Row>
 
-        <Row className=" mb-3">
+        <Row className="mb-3">
           <Column lg={8}>
             <FormLabel>Client acronym</FormLabel>
             <Tooltip
@@ -172,6 +161,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               type="text"
               labelText=""
               className="mt-2"
+              value={filters.clientAcronym}
               onChange={(e: any) =>
                 handleFilterChange({ clientAcronym: e.target.value })
               }
@@ -188,13 +178,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </button>
             </Tooltip>
             <div className="d-flex flex-auto mt-2">
-              
               <TextInput
                 id="text-input-2"
                 type="text"
                 placeholder="Cut block"
                 labelText=""
                 className="mx-1"
+                value={filters.cutBlock}
                 onChange={(e: any) =>
                   handleFilterChange({ cutBlock: e.target.value })
                 }
@@ -204,6 +194,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 placeholder="Cutting permit"
                 labelText=""
                 type="text"
+                value={filters.cuttingPermit}
                 onChange={(e: any) =>
                   handleFilterChange({ cuttingPermit: e.target.value })
                 }
@@ -212,13 +203,14 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
           </Column>
         </Row>
 
-        <Row className=" mb-3">
+        <Row className="mb-3">
           <Column lg={8}>
             <TextInput
               id="gross-area-input"
               type="number"
               className="mt-2"
               labelText="Gross area"
+              value={filters.grossArea}
               onChange={(e: any) =>
                 handleFilterChange({ grossArea: e.target.value })
               }
@@ -230,6 +222,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               type="number"
               className="mt-2"
               labelText="Timber mark"
+              value={filters.timberMark}
               onChange={(e: any) =>
                 handleFilterChange({ timberMark: e.target.value })
               }
@@ -252,6 +245,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   placeholder="yyyy/MM/dd"
                   size="md"
                   labelText="Start Date"
+                  value={filters.startDate ? filters.startDate.toISOString().slice(0, 10) : ""}
                 />
               </DatePicker>
               <DatePicker
@@ -265,6 +259,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   placeholder="yyyy/MM/dd"
                   size="md"
                   labelText="End Date"
+                  value={filters.endDate ? filters.endDate.toISOString().slice(0, 10) : ""}
                 />
               </DatePicker>
             </div>
@@ -295,19 +290,19 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </div>
               <div className="d-flex">
                 <Checkbox
-                  labelText={`FG - Free growing`}
-                  id="checkbox-label-fg"
-                  checked={filters.blockStatuses.includes("FG - Free growing")}
+                  labelText={`RJC - Rejected`}
+                  id="checkbox-label-rjc"
+                  checked={filters.blockStatuses.includes("RJC - Rejected")}
                   onChange={() =>
-                    handleCheckboxChange("FG - Free growing", "blockStatuses")
+                    handleCheckboxChange("RJC - Rejected", "blockStatuses")
                   }
                 />
                 <Checkbox
-                  labelText={`SUB - Submitted`}
-                  id="checkbox-label-sub"
-                  checked={filters.blockStatuses.includes("SUB - Submitted")}
+                  labelText={`CNL - Cancelled`}
+                  id="checkbox-label-cnl"
+                  checked={filters.blockStatuses.includes("CNL - Cancelled")}
                   onChange={() =>
-                    handleCheckboxChange("SUB - Submitted", "blockStatuses")
+                    handleCheckboxChange("CNL - Cancelled", "blockStatuses")
                   }
                 />
               </div>

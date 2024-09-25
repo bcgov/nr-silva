@@ -5,14 +5,13 @@ import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { countActiveFilters } from "../../../../utils/searchUtils";
 
 interface IOpeningsSearchBar {
-  onSearchInputChange: (searchInput: string) => void; // New prop
   onSearchClick: Function;
 }
 
 const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
-  onSearchInputChange,
   onSearchClick,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +19,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
   const [filtersList, setFiltersList] = useState(null);
-  const { filters, clearFilters } = useOpeningsSearch();
+  const { filters, clearFilters, searchTerm, setSearchTerm } = useOpeningsSearch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -36,26 +35,9 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchInput(value);
-    onSearchInputChange(value); // Call the function to update the search input in the parent component
-  };
-
-  const countActiveFilters = (filters: any): number => {
-    let count = 0;
-
-    Object.keys(filters).forEach((key) => {
-      const value = filters[key];
-
-      // Check if the value is an array (e.g., for checkboxes)
-      if (Array.isArray(value)) {
-        count += value.filter((item) => item !== "").length; // Count non-empty values in the array
-      } else if (value !== null && value !== "" && value !== "Option 1") {
-        // Increment the count for non-default, non-null, and non-empty values
-        count += 1;
-      }
-    });
-
-    return count;
+    setSearchTerm(value);
+    // setSearchInput(value);
+    // onSearchInputChange(value); // Call the function to update the search input in the parent component
   };
 
   const handleFiltersChanged = () => {
@@ -81,6 +63,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
                   id={`search-1`}
                   onChange={handleInputChange} // Handle input change
                   onKeyDown={() => {}}
+                  value={searchTerm}
                 />
             </Column>
 
