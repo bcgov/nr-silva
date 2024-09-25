@@ -31,6 +31,7 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p ZONE=test
 
   deploys-test:
@@ -99,6 +100,7 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+            -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p ZONE=prod
 
   image-promotions:

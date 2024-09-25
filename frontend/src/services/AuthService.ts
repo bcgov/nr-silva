@@ -8,6 +8,7 @@ import {
 import { env } from '../env';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 import { formatRolesArray } from '../utils/famUtils';
+import { UserClientRolesType } from '../types/UserRoleType';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -91,7 +92,7 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
     // Set the authIdToken variable
     setAuthIdToken(tokens?.idToken?.toString() || null);
 
-    const famLoginUser = parseToken(tokens?.idToken, tokens?.accessToken);
+    const famLoginUser = parseToken(tokens?.idToken);
     await storeFamUser(famLoginUser);
     return famLoginUser;
 
@@ -115,9 +116,9 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 /**
  * Function to parse roles and extract client IDs
  */
-function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): FamLoginUser {
+function parseToken(idToken: JWT | undefined): FamLoginUser {
   const decodedIdToken = idToken?.payload;
-  const decodedAccessToken = accessToken?.payload;
+
   // Extract the first name and last name from the displayName and remove unwanted part
   let displayName: string = '';
   if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
@@ -154,14 +155,8 @@ function parseToken(idToken: JWT | undefined, accessToken: JWT | undefined): Fam
     }
   }
 
-  let roles: string[] = [];
-  if (decodedAccessToken && 'cognito:groups' in decodedAccessToken) {
-    roles = decodedAccessToken['cognito:groups'] as Array<string>;
-  }
-
-
-  //get the user roles from the FAM token
-  const rolesArray = formatRolesArray(decodedIdToken);
+  // Get user roles from FAM token
+  const rolesArray: UserClientRolesType[] = formatRolesArray(decodedIdToken);
 
   const famLoginUser = {
     userName,

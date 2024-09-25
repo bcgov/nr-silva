@@ -7,7 +7,16 @@ import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
 import { shiftBcGwLngLat2LatLng } from '../../map-services/BcGwLatLongUtils';
-import { LayersControl, MapContainer, Polygon, Popup, TileLayer, useMap, WMSTileLayer } from 'react-leaflet';
+import {
+  LayersControl,
+  MapContainer,
+  Polygon,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
+  WMSTileLayer
+} from 'react-leaflet';
 import { LatLngExpression } from 'leaflet';
 
 const backendUrl = env.VITE_BACKEND_URL;
@@ -28,6 +37,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [layers, setLayers] = useState<MapLayer[]>([]);
   const [baseMaps, setBaseMaps] = useState<BaseMapLayer[]>([]);
   const authToken = getAuthIdToken();
+  const [zoomLevel, setZoomLevel] = useState<number>(13);
 
   const resultsStyle = {
     color: 'black'
@@ -99,24 +109,67 @@ const OpeningsMap: React.FC<MapProps> = ({
       setLayers(filtered);
     }
 
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        };
+
+        navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+          setPosition({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setZoomLevel(8);
+        }, (error: GeolocationPositionError) => {
+          console.error(`${error.code}: ${error.message}`);
+          // Set the province location, if user denied
+          // north east - lat = 54.76267040025495, lng = -103.46923828125
+          // south east - lat = 47.91634204016118, lng = -139.35058593750003
+          setPosition({
+            lat: 51.339506220208065,
+            lng: -121.40991210937501
+          });
+          setZoomLevel(6);
+        }, options);
+      }
+    }
+
     setBaseMaps(allBaseMaps);
+    getUserLocation();
   }, [openingId]);
 
   useEffect(() => {}, [openings, reloadMap]);
 
   const RecenterAutomatically = ({latLong}: {latLong: LatLngExpression}) => {
     const map = useMap();
-    const zoom = 13;
+    const zoom = zoomLevel;
     useEffect(() => {
       map.setView(latLong, zoom);
     }, [latLong]);
     return null;
   };
 
+  // Use this function to investigate/play with map click
+  // Just add <LocationMarker /> inside <MapContainer /> below
+  /*
+  function LocationMarker() {
+    const map = useMapEvents({
+      click() {
+        console.log('click, bounds:', map.getBounds());
+        console.log('click, zoom:', map.getZoom());
+      }
+    });
+    return null;
+  }
+  */
+
   return (
     <MapContainer
       center={position}
-      zoom={13}
+      zoom={zoomLevel}
       style={{ height: "400px", width: "100%" }}
     >
       <TileLayer
