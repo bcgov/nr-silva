@@ -32,6 +32,9 @@ parameters:
     description: Password for the PostgreSQL connection user.
     from: "[a-zA-Z0-9]{16}"
     generate: expression
+  - name: FORESTCLIENTAPI_KEY
+    description:
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
@@ -53,6 +56,7 @@ objects:
     stringData:
       oracle-user: ${ORACLE_DB_USER}
       oracle-password: ${ORACLE_DB_PASSWORD}
+      forest-client-api-key: ${FORESTCLIENTAPI_KEY}
   - apiVersion: v1
     kind: Secret
     metadata:

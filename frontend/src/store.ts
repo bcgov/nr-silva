@@ -1,7 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { thunk } from 'redux-thunk'
 import { composeWithDevTools } from '@redux-devtools/extension'
-import type { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { userDetailsReducer } from './reducers/userReducer'
 import { UserClientRolesType } from './types/UserRoleType'
 import { selectedClientRolesReducer } from './reducers/selectedClientRolesReducer'
@@ -25,7 +24,7 @@ const selectedClientRolesFromStorage = JSON.parse(localStorage.getItem('selected
   | null;
 
 // set the initial state
-const initialState: any = {
+const initialState: object = {
   userDetails: {
     user: {
       ...userInfoFromStorage,
