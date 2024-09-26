@@ -2,8 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import EmptySection from '../../components/EmptySection';
-import * as Icons from '@carbon/icons-react';
-import * as Pictograms from '@carbon/pictograms-react';
 import '@testing-library/jest-dom';
 
 describe('EmptySection Component', () => {
