@@ -1,9 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { Tile, OverflowMenu, OverflowMenuItem } from '@carbon/react';
+import { Tile } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
-
 import './styles.scss';
 
 interface FavouriteCardProps {
@@ -14,16 +12,15 @@ interface FavouriteCardProps {
   description:String
 }
 
-const FavouriteCard = ({
+function FavouriteCard ({
   index,
   title,
   link,
   icon,
   description
-}: FavouriteCardProps) => {
+}: FavouriteCardProps): JSX.Element {
   const Icon = Icons[String(icon)];
   const navigate = useNavigate();
-  const favActQueryKey = ['favourite-activities'];
 
   return (
     <Tile
@@ -35,7 +32,6 @@ const FavouriteCard = ({
         <Icon className="fav-card-icon" />
         <p className="fav-card-title-small">{title}</p>
         <p className="fav-card-content-description fav-card-content-description-small">{description}</p>
-
       </div>
 
       <div className="fav-card-content">
