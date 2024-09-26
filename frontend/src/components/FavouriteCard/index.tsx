@@ -12,6 +12,17 @@ interface FavouriteCardProps {
   description:String
 }
 
+/**
+ * A card component that displays a favourite item.
+ *
+ * @param {FavouriteCardProps} props - The component props.
+ * @property {number} props.index - The index of the card.
+ * @property {string} props.title - The title of the card.
+ * @property {string} props.link - The link to navigate to when the card is clicked.
+ * @property {string} props.icon - The name of the Carbon icon to display on the card.
+ * @property {string} props.description - The description of the card.
+ * @returns {JSX.Element} The rendered card component.
+ */
 function FavouriteCard ({
   index,
   title,
