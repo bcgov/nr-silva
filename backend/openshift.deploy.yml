@@ -141,6 +141,11 @@ objects:
                   value: ${ALLOWED_ORIGINS}
                 - name: WMS_LAYERS_WHITELIST_USERS
                   value: ${WMS_LAYERS_WHITELIST_USERS}
+                - name: FORESTCLIENTAPI_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: forest-client-api-key
                 - name: DATABASE_USER
                   valueFrom:
                     secretKeyRef:

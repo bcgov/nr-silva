@@ -1,9 +1,9 @@
 declare global {
   // eslint-disable-next-line no-unused-vars
   interface Window {
-    config: any
+    config: object
   }
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const env: Record<string, any> = { ...import.meta.env, ...window.config }
+export const env: Record<string, string> = { ...import.meta.env, ...window.config }

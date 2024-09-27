@@ -32,8 +32,11 @@
     "vite": "^5.0.0",
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.0",
+<<<<<<< HEAD
     "web-vitals": "^4.0.0",
     "xlsx": "^0.18.5",
+=======
+>>>>>>> 03e42be1caa1bb07bea033ab5fe87e2211ed2906
     "yaml": "^2.3.2"
   },
   "scripts": {

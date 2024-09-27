@@ -283,7 +283,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           backwardText="Previous page"
           forwardText="Next page"
           pageSize={itemsPerPage}
-          pageSizes={[5, 20, 50]}
+          pageSizes={[5, 20, 50, 200]}
           itemsPerPageText="Items per page"
           onChange={({ page, pageSize }:{ page: number, pageSize: number}) => {
             handlePageChange(page);

@@ -2,9 +2,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@carbon/type';
 
-
-
- 
   .search-tablist{
     .tab-content {
       background-color: var(--#{vars.$bcgov-prefix}-layer-01);
