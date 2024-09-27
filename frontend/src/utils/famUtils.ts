@@ -23,19 +23,6 @@ export function formatRolesArray(decodedIdToken: object | undefined): UserClient
           }
           rolesMap[clientId].push(role);
         }
-<<<<<<< HEAD
-        rolesMap[clientId].push(role);
-      }
-    });
-  
-    const rolesArray: UserClientRolesType[] = Object.keys(rolesMap).map(clientId => ({
-      clientId,
-      roles: rolesMap[clientId],
-      clientName: `Client Number ${clientId}` // Placeholder for client name, modify as needed
-    }));
-  
-    return rolesArray;
-=======
       });
     
       const rolesArray: UserClientRolesType[] = Object.keys(rolesMap).map(clientId => ({
@@ -43,11 +30,9 @@ export function formatRolesArray(decodedIdToken: object | undefined): UserClient
         roles: rolesMap[clientId],
         clientName: `Client Number ${clientId}` // Placeholder for client name, modify as needed
       }));
-    
       return rolesArray;
     }
 
     return [];
->>>>>>> 03e42be1caa1bb07bea033ab5fe87e2211ed2906
   }
   
