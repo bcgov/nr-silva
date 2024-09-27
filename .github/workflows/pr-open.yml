@@ -17,7 +17,7 @@ jobs:
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
       route: ${{ github.event.number }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
     steps:
@@ -69,7 +69,7 @@ jobs:
     name: Builds
     needs: [init]
     if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -96,7 +96,7 @@ jobs:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
     needs: [builds]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         name: [database, backend, frontend, fluentbit]
