@@ -15,7 +15,7 @@ jobs:
   tests-backend:
     name: Tests (Backend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov-nr/action-test-and-analyse-java@v1.0.2
         with:
@@ -37,7 +37,7 @@ jobs:
   lint-frontend:
     name: Lint (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.2.1
         with:
@@ -52,7 +52,7 @@ jobs:
   tests-frontend:
     name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.2.1
         with:
@@ -76,7 +76,7 @@ jobs:
   codeql:
     name: CodeQL
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3
@@ -105,7 +105,7 @@ jobs:
   trivy:
     name: Trivy Security Scan
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 

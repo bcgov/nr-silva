@@ -17,7 +17,7 @@ jobs:
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
       route: ${{ github.event.number }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
     steps:
@@ -47,7 +47,7 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -69,7 +69,7 @@ jobs:
     name: Builds
     needs: [init]
     if: "!github.event.pull_request.head.repo.fork"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -96,7 +96,7 @@ jobs:
     name: Deploys
     if: "!github.event.pull_request.head.repo.fork"
     needs: [builds]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         name: [database, backend, frontend, fluentbit]
@@ -127,7 +127,7 @@ jobs:
           - name: fluentbit
             file: common/openshift.fluentbit.yml
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v3.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}

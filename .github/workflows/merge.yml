@@ -14,10 +14,10 @@ jobs:
   init-test:
     name: TEST Init
     environment: test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -38,7 +38,7 @@ jobs:
     name: TEST Deployments
     needs: [init-test]
     environment: test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       issues: write
     strategy:
@@ -66,7 +66,7 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v3.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -83,10 +83,10 @@ jobs:
     name: PROD Init
     needs: [deploys-test]
     environment: prod
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: OpenShift Init
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -106,7 +106,7 @@ jobs:
   image-promotions:
     name: Promote images to PROD
     needs: [deploys-test]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -124,7 +124,7 @@ jobs:
     name: PROD Deployments
     needs: [init-prod, image-promotions]
     environment: prod
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         name: [database, backend, frontend, fluentbit]
@@ -150,7 +150,7 @@ jobs:
             file: common/openshift.fluentbit.yml
             overwrite: true
     steps:
-      - uses: bcgov-nr/action-deployer-openshift@v3.0.0
+      - uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: ${{ matrix.file }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
