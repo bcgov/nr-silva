@@ -71,6 +71,18 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
       value: item.orgUnitCode,
     })) || [];
 
+  const dateTypeItems =
+  data.dateTypes?.map((item: any) => ({
+    text: item.label,
+    value: item.value,
+  })) || [];
+  
+  const blockStatusItems =
+    data.blockStatuses?.map((item: any) => ({
+      text: item.label,
+      value: item.value,
+    })) || [];
+
   return (
     <div className="advanced-search-dropdown">
       <FlexGrid className="container-fluid advanced-search-container p-32">
@@ -242,11 +254,14 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   <Dropdown
                     id="date-type-dropdown"
                     titleText="Date type"
-                    items={categoryItems}
+                    items={dateTypeItems}
                     itemToString={(item: any) => (item ? item.text : "")}
                     onChange={(e: any) =>
                       handleFilterChange({ dateType: e.selectedItem.value })
                     }
+                    selectedItem={dateTypeItems.find(
+                      (item: any) => item.value === filters.dateType
+                    )}
                     label="Date type"
                   />
                 </Column>

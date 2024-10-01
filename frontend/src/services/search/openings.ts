@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getAuthIdToken } from "../AuthService";
 import { env } from "../../env";
+import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -134,10 +135,20 @@ export const fetchOrgUnits = async (): Promise<any> => {
   return response.data;
 };
 
+export const fetchDateTypes = async (): Promise<any> => {
+  return dateTypes;
+};
+
+export const fetchBlockStatuses = async (): Promise<any> => {
+  return blockStatuses;
+};
+
 export const fetchOpeningFilters = async (): Promise<any> => {
-  const [categories, orgUnits] = await Promise.all([
+  const [categories, orgUnits, dateTypes, blockStatuses] = await Promise.all([
     fetchCategories(),
     fetchOrgUnits(),
+    fetchDateTypes(),
+    fetchBlockStatuses(),
   ]);
-  return { categories: categories, orgUnits: orgUnits };
+  return { categories, orgUnits, dateTypes, blockStatuses };
 };
