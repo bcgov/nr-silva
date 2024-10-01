@@ -32,16 +32,34 @@
     }
 }
 
+.date-type-col{
+    padding: 0px;
+    padding-left: 16px;
+}
+.date-selectors-col{
+    padding-left: 0px;
+}
+
 @media only screen and (min-width: 320px) {
     .advanced-search-dropdown {
         width: 93.5%;
       }
+      .date-type-col{
+        padding: 0px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .date-selectors-col{
+        padding-left: 16px;
+        padding-top:8px;
+    }
   }
   /* Medium - Up to 672px */
   @media only screen and (min-width: 672px) {
     .advanced-search-dropdown {
         width: 96.6%;
       }
+      
   }
   /* Large - Up to 1056px  */
   @media only screen and (min-width: 1056px) {
@@ -55,6 +73,9 @@
     .advanced-search-dropdown {
         width: 60.66%;
       }
+      .date-selectors-col{
+        padding: 0px;
+    }
   }
   /* Extra Max - Up to 1784px */
   @media only screen and (min-width: 1784px) {

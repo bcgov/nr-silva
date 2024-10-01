@@ -97,6 +97,8 @@ const OpeningsSearchTab: React.FC = () => {
 
   useEffect(() => {
     handleFiltersChanged();
+    console.log("new filters")
+    console.log(filters)
   }, [filters]);
 
   useEffect(() => {

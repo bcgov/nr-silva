@@ -36,11 +36,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     cuttingPermit: "",
     grossArea: "",
     timberMark: "",
-    status: null as string | null,
+    dateType: null as string | null,
     openingFilters: [] as string[], // Array to hold multiple checkbox selections
     blockStatuses: [] as string[], // Array to hold multiple block statuses
   };
-  
+
   const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
@@ -99,17 +99,27 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               <Checkbox
                 labelText={`Openings created by me`}
                 id="checkbox-label-1"
-                checked={filters.openingFilters.includes("Openings created by me")}
+                checked={filters.openingFilters.includes(
+                  "Openings created by me"
+                )}
                 onChange={() =>
-                  handleCheckboxChange("Openings created by me", "openingFilters")
+                  handleCheckboxChange(
+                    "Openings created by me",
+                    "openingFilters"
+                  )
                 }
               />
               <Checkbox
                 labelText={`Submitted to FRPA section 108`}
                 id="checkbox-label-2"
-                checked={filters.openingFilters.includes("Submitted to FRPA section 108")}
+                checked={filters.openingFilters.includes(
+                  "Submitted to FRPA section 108"
+                )}
                 onChange={() =>
-                  handleCheckboxChange("Submitted to FRPA section 108", "openingFilters")
+                  handleCheckboxChange(
+                    "Submitted to FRPA section 108",
+                    "openingFilters"
+                  )
                 }
               />
             </CheckboxGroup>
@@ -127,7 +137,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ orgUnit: e.selectedItem.value })
               }
               label="Enter or choose an org unit"
-              selectedItem={orgUnitItems.find((item:any) => item.value === filters.orgUnit)}
+              selectedItem={orgUnitItems.find(
+                (item: any) => item.value === filters.orgUnit
+              )}
             />
           </Column>
           <Column lg={8}>
@@ -140,7 +152,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ category: e.selectedItem.value })
               }
               label="Enter or choose a category"
-              selectedItem={categoryItems.find((item:any) => item.value === filters.category)}
+              selectedItem={categoryItems.find(
+                (item: any) => item.value === filters.category
+              )}
             />
           </Column>
         </Row>
@@ -232,37 +246,63 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
         <Row className="">
           <Column lg={8}>
-            <div className="d-flex flex-auto">
-              <DatePicker
-                datePickerType="single"
-                className="mx-2"
-                onChange={(dates: [Date]) => {
-                  handleFilterChange({ startDate: dates[0] });
-                }}
-              >
-                <DatePickerInput
-                  id="start-date-picker-input-id"
-                  placeholder="yyyy/MM/dd"
-                  size="md"
-                  labelText="Start Date"
-                  value={filters.startDate ? filters.startDate.toISOString().slice(0, 10) : ""}
-                />
-              </DatePicker>
-              <DatePicker
-                datePickerType="single"
-                onChange={(dates: [Date]) => {
-                  handleFilterChange({ endDate: dates[0] });
-                }}
-              >
-                <DatePickerInput
-                  id="end-date-picker-input-id"
-                  placeholder="yyyy/MM/dd"
-                  size="md"
-                  labelText="End Date"
-                  value={filters.endDate ? filters.endDate.toISOString().slice(0, 10) : ""}
-                />
-              </DatePicker>
-            </div>
+            <FlexGrid className="p-0">
+              <Row>
+                <Column sm={4} lg={16} xl={16} max={5} className="date-type-col">
+                  <Dropdown
+                    id="date-type-dropdown"
+                    titleText="Date type"
+                    items={categoryItems}
+                    itemToString={(item: any) => (item ? item.text : "")}
+                    onChange={(e: any) =>
+                      handleFilterChange({ dateType: e.selectedItem.value })
+                    }
+                    label="Date type"
+                  />
+                </Column>
+                <Column sm={4} lg={16} xl={16} max={11} className="date-selectors-col">
+                  <div className="d-flex flex-auto">
+                    <DatePicker
+                      datePickerType="single"
+                      className="me-1"
+                      onChange={(dates: [Date]) => {
+                        handleFilterChange({ startDate: dates[0] });
+                      }}
+                    >
+                      <DatePickerInput
+                        id="start-date-picker-input-id"
+                        placeholder="yyyy/MM/dd"
+                        size="md"
+                        labelText="Start Date"
+                        value={
+                          filters.startDate
+                            ? filters.startDate.toISOString().slice(0, 10)
+                            : ""
+                        }
+                      />
+                    </DatePicker>
+                    <DatePicker
+                      datePickerType="single"
+                      onChange={(dates: [Date]) => {
+                        handleFilterChange({ endDate: dates[0] });
+                      }}
+                    >
+                      <DatePickerInput
+                        id="end-date-picker-input-id"
+                        placeholder="yyyy/MM/dd"
+                        size="md"
+                        labelText="End Date"
+                        value={
+                          filters.endDate
+                            ? filters.endDate.toISOString().slice(0, 10)
+                            : ""
+                        }
+                      />
+                    </DatePicker>
+                  </div>
+                </Column>
+              </Row>
+            </FlexGrid>
           </Column>
           <Column lg={8}>
             <CheckboxGroup

@@ -26,7 +26,7 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
     cuttingPermit: "",
     grossArea: "",
     timberMark: "",
-    status: null as string | null,
+    dateType: null as string | null,
     openingFilters: [] as string[],
     blockStatuses: [] as string[],
   };
