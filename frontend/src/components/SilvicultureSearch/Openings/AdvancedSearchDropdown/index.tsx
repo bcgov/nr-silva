@@ -25,21 +25,6 @@ interface AdvancedSearchDropdownProps {
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   toggleShowFilters,
 }) => {
-  const defaultFilters = {
-    startDate: null as Date | null,
-    endDate: null as Date | null,
-    orgUnit: null as string | null,
-    category: null as string | null,
-    clientAcronym: "",
-    blockStatus: "",
-    cutBlock: "",
-    cuttingPermit: "",
-    grossArea: "",
-    timberMark: "",
-    dateType: null as string | null,
-    openingFilters: [] as string[], // Array to hold multiple checkbox selections
-    blockStatuses: [] as string[], // Array to hold multiple block statuses
-  };
 
   const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
@@ -58,10 +43,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     handleFilterChange({ [group]: updatedGroup });
   };
 
-  const handleClearFilters = () => {
-    console.log("clearing filters");
-    setFilters(defaultFilters);
-  };
+  useEffect(()=>{
+    console.log("filters.startDate:"+filters.startDate)
+  },[filters]);
 
   if (isLoading) {
     return <Loading withOverlay={true} />;
@@ -248,7 +232,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
           <Column lg={8}>
             <FlexGrid className="p-0">
               <Row>
-                <Column sm={4} lg={16} xl={16} max={5} className="date-type-col">
+                <Column
+                  sm={4}
+                  lg={16}
+                  xl={16}
+                  max={5}
+                  className="date-type-col"
+                >
                   <Dropdown
                     id="date-type-dropdown"
                     titleText="Date type"
@@ -260,42 +250,61 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                     label="Date type"
                   />
                 </Column>
-                <Column sm={4} lg={16} xl={16} max={11} className="date-selectors-col">
+                <Column
+                  sm={4}
+                  lg={16}
+                  xl={16}
+                  max={11}
+                  className="date-selectors-col"
+                >
                   <div className="d-flex flex-auto">
                     <DatePicker
                       datePickerType="single"
                       className="me-1"
                       onChange={(dates: [Date]) => {
-                        handleFilterChange({ startDate: dates[0] });
+                        if (dates.length > 0) {
+                          handleFilterChange({ startDate: dates[0] });
+                        }
+                      }}
+                      onClose={(dates: [Date]) => {
+                        if (dates.length > 0) {
+                          handleFilterChange({ startDate: dates[0] });
+                        }
                       }}
                     >
                       <DatePickerInput
                         id="start-date-picker-input-id"
-                        placeholder="yyyy/MM/dd"
                         size="md"
                         labelText="Start Date"
-                        value={
-                          filters.startDate
-                            ? filters.startDate.toISOString().slice(0, 10)
-                            : ""
+                        placeholder={
+                          filters.startDate !== null
+                            ? filters.startDate.toISOString().slice(0, 10) // Display the date in YYYY-MM-DD format
+                            : "yyyy/MM/dd"
                         }
                       />
                     </DatePicker>
+
                     <DatePicker
                       datePickerType="single"
                       onChange={(dates: [Date]) => {
-                        handleFilterChange({ endDate: dates[0] });
+                        if (dates.length > 0) {
+                          handleFilterChange({ endDate: dates[0] });
+                        }
+                      }}
+                      onClose={(dates: [Date]) => {
+                        if (dates.length > 0) {
+                          handleFilterChange({ endDate: dates[0] });
+                        }
                       }}
                     >
                       <DatePickerInput
                         id="end-date-picker-input-id"
-                        placeholder="yyyy/MM/dd"
                         size="md"
                         labelText="End Date"
-                        value={
+                        placeholder={
                           filters.endDate
-                            ? filters.endDate.toISOString().slice(0, 10)
-                            : ""
+                            ? filters.endDate.toISOString().slice(0, 10) // Display the date in YYYY-MM-DD format
+                            : "yyyy/MM/dd"
                         }
                       />
                     </DatePicker>
