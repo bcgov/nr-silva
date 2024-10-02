@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -12,7 +12,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/**/*'],
-      exclude: [],
+      exclude: [
+        'src/amplifyconfiguration.ts',
+        'src/module.d.ts',
+        'src/react-app-env.d.ts',
+        'src/reportWebVitals.ts'
+      ],
     },
     server: {
       deps: {

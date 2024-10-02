@@ -2,12 +2,21 @@ import React, { useEffect, useState } from 'react';
 import './ExpandingSearch.scss';
 import { ExpandableSearch } from '@carbon/react';
 
-const ExpandingSearch = () => {
-
+/**
+ * Renders an Expanding Search component.
+ *
+ * @returns {JSX.Element} The ExpandingSearch to be rendered.
+ */
+function ExpandingSearch (): JSX.Element {
   return (
-    <div >
-      <ExpandableSearch size="lg" labelText="Search" closeButtonLabelText="Clear search input" id="search-expandable-1" onChange={() => {}} onKeyDown={() => {}} />
-    </div>
+    <ExpandableSearch
+      size="lg"
+      labelText="Search"
+      closeButtonLabelText="Clear search input"
+      id="search-expandable-1"
+      onChange={() => {}}
+      onKeyDown={() => {}}
+    />
   );
 };
 

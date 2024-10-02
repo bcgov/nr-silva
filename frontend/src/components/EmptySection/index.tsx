@@ -1,10 +1,7 @@
 import React from 'react';
-
 import * as Icons from '@carbon/icons-react';
 import * as Pictograms from '@carbon/pictograms-react';
-
 import Subtitle from '../Subtitle';
-
 import './styles.scss';
 
 interface EmptySectionProps {
@@ -15,9 +12,20 @@ interface EmptySectionProps {
   fill?:string;
 }
 
-const EmptySection = ({
+/**
+ * Renders an Empty Section component.
+ *
+ * @param {object} props - Component props
+ * @param {string} [props.icon] - Optional. The name of the icon to display.
+ * @param {string} props.title - The title of the empty section.
+ * @param {string | React.ReactNode} props.description - The description of the empty section.
+ * @param {string} [props.pictogram] - Optional. The name of the pictogram to display.
+ * @param {string} [props.fill] - Optional. The fill color of the icon or pictogram.
+ * @returns {JSX.Element} A div element containing the empty section.
+ */
+function EmptySection ({
   icon, title, description, pictogram, fill
-}: EmptySectionProps) => {
+}: EmptySectionProps): JSX.Element {
   let Img;
 
   if (icon) {
@@ -30,7 +38,7 @@ const EmptySection = ({
 
   return (
     <div className="empty-section-container">
-      <Img className="empty-section-icon" style={{fill:fill}} />
+      <Img className="empty-section-icon" data-testid="empty-section-icon" style={{fill:fill}} />
       <p className="empty-section-title">
         {title}
       </p>

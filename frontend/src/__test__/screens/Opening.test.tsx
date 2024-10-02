@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux'
