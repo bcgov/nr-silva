@@ -1,5 +1,4 @@
 import React from 'react';
-
 import './AvatarImage.scss';
 
 type Size = 'small' | 'large';
@@ -19,7 +18,16 @@ const getInitials = (userName: string) => {
   return '';
 };
 
-const AvatarImage = ({ userName, size }: AvatarImageProps) => {
+/**
+ * Renders an AvatarImage component.
+ *
+ * @component
+ * @param {object} props - The component props.
+ * @param {string} props.userName - The username to be used in the Avatar.
+ * @param {Size} props.size - The size that should be rendered.
+ * @returns {JSX.Element} The rendered AvatarImage component.
+ */
+function AvatarImage({ userName, size }: AvatarImageProps): JSX.Element {
   const initials = getInitials(userName);
 
   return (

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useThemePreference } from '../../utils/ThemePreference';
 import {
   HeaderContainer,
   Header,
@@ -16,110 +15,26 @@ import {
   SideNavMenuItem
 } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
-import './BCHeaderwSide.scss';
-
 import RightPanelTitle from '../RightPanelTitle';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
-import { ExpandableSearch } from '@carbon/react';
 import ExpandingSearch from '../ExpandingSearch';
+import { leftMenu } from './constants';
+import './BCHeaderwSide.scss';
 
-interface ListItem {
-  name: string;
-  icon?: keyof typeof Icons;
-  link: string;
-  disabled: boolean;
-  subItems?: ListItem[];
-}
-
-interface ListItems {
-  name: string;
-  items: ListItem[];
-}
-
-const listItems: ListItems[] = [
-  {
-    name: 'Main activities',
-    items: [
-      {
-        name: 'Dashboard',
-        icon: 'Dashboard',
-        link: '/dashboard',
-        disabled: false
-      },
-      {
-        name: 'Opening',
-        icon: 'MapBoundaryVegetation',
-        link: '/opening',
-        disabled: false,
-        subItems: [
-          {
-            name: 'Home page',
-            link: '/opening',
-            disabled: false
-          },
-          {
-            name: 'Silviculture search',
-            link: '/silviculture-search',
-            disabled: false
-          },
-          {
-            name: 'Create an opening',
-            link: '/opening/create',
-            disabled: false
-          },
-          {
-            name: 'Reports',
-            link: '/opening/reports',
-            disabled: false
-          },
-          {
-            name: 'Upcoming activities',
-            link: '/opening/upcoming-activities',
-            disabled: false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Management',
-    items: [
-      {
-        name: 'Settings',
-        icon: 'Settings',
-        link: '#',
-        disabled: true
-      },
-      {
-        name: 'Notifications',
-        icon: 'Notification',
-        link: '#',
-        disabled: true
-      }
-    ]
-  }
-];
-
-const BCHeaderwSide = () => {
-  const { theme, setTheme } = useThemePreference();
-
+/**
+ * Renders an BC Headerw Side component.
+ *
+ * @returns {JSX.Element} The rendered BCHeaderwSide component.
+ */
+function BCHeaderwSide(): JSX.Element {
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
-
-  const handleNotificationsPanel = useCallback((): void => {
-    setNotifications(!notifications);
-    setMyProfile(false);
-  }, [notifications]);
 
   const handleMyProfilePanel = useCallback((): void => {
     setMyProfile(!myProfile);
     setNotifications(false);
   }, [myProfile]);
-
-  const closeNotificationsPanel = useCallback((): void => {
-    setNotifications(false);
-  }, []);
 
   const closeMyProfilePanel = useCallback((): void => {
     setMyProfile(false);
@@ -171,7 +86,7 @@ const BCHeaderwSide = () => {
           </HeaderPanel>
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
-              {listItems.map(item => (
+              {leftMenu.map(item => (
                 <div key={item.name}>
                   <SideNavLink className="side-nav-category-name">
                     {item.name}

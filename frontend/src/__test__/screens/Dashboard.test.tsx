@@ -2,10 +2,10 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { Provider } from 'react-redux'; // Import Provider
+import { Provider } from 'react-redux';
 import store from '../../store';
 import Dashboard from '../../screens/Dashboard';
-import * as redux from 'react-redux'
+import * as redux from 'react-redux';
 
 const state = {
   userDetails: {

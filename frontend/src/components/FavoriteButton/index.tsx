@@ -10,12 +10,22 @@ interface FavoriteButtonProps {
   fill: string;
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({
+/**
+ * Renders an Favourite Button component.
+ *
+ * @param {object} props - Component props
+ * @param {string} props.tooltipPosition - The tooltip position.
+ * @param {string} props.kind - The favourite button kind.
+ * @param {string} props.size - The favourite button size.
+ * @param {string} props.fill - The favourite button fill.
+ * @returns {JSX.Element} The FavoriteButton element to be rendered.
+ */
+function FavoriteButton({
   tooltipPosition,
   kind,
   size,
   fill,
-}) => {
+}: FavoriteButtonProps): JSX.Element {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleClick = () => {
@@ -30,7 +40,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     return <div>Invalid icon name</div>;
   }
 
-  const CustomIcon = () => <Icon style={{ fill }} />;
+  const CustomIcon = () => <Icon data-testid="favourite-button-icon" style={{ fill }} />;
 
   return (
     <Button

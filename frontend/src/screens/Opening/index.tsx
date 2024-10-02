@@ -43,16 +43,40 @@ const Opening: React.FC = () => {
         <div className="favourite-activities">
           <div className="row gy-0 ">
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Silviculture search'} link="#" icon={'SearchLocate'} description={'Search for opening types, activities or standards'}/>
+              <FavouriteCard
+                index={1}
+                title={'Silviculture search'}
+                link="#"
+                icon={'SearchLocate'}
+                description={'Search for opening types, activities or standards'}
+              />
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Create an opening'} link="#" icon={'MapBoundary'} description={'Create different opening types to track silviculture activities, treatments and generate their identifier (ID)'}/>
+              <FavouriteCard
+                index={1}
+                title={'Create an opening'}
+                link="#"
+                icon={'MapBoundary'}
+                description={'Create different opening types to track silviculture activities, treatments and generate their identifier (ID)'}
+              />
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Reports'} link="#" icon={'ReportData'} description={'Consult and manage opening reports'}/>
+              <FavouriteCard
+                index={1}
+                title={'Reports'}
+                link="#"
+                icon={'ReportData'}
+                description={'Consult and manage opening reports'}
+              />
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3">
-              <FavouriteCard index={1} title={'Upcoming activities'} link="#" icon={'Activity'} description={'Track opening activities and milestones'}/>
+              <FavouriteCard
+                index={1}
+                title={'Upcoming activities'}
+                link="#"
+                icon={'Activity'}
+                description={'Track opening activities and milestones'}
+              />
             </div>
           </div>
         </div>

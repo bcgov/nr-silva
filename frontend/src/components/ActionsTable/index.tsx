@@ -1,7 +1,14 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "@carbon/react";
-import StatusTag from "../StatusTag";
-import ActivityTag from "../ActivityTag";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell
+} from '@carbon/react';
+import StatusTag from '../StatusTag';
+import ActivityTag from '../ActivityTag';
 import { RecentAction } from '../../types/RecentAction';
 import { ActivityTagFileFormatEnum, ActivityTagTypeEnum } from '../../types/ActivityTagType';
 import { ITableHeader } from '../../types/TableHeader';
@@ -11,7 +18,14 @@ interface IActionsTable {
   headers: ITableHeader[];
 }
 
-const ActionsTable: React.FC<IActionsTable> = ({ rows, headers }) => {
+/**
+ * Renders an Actions Table component.
+ *
+ * @component
+ * @param {IActionsTable} props - The component props.
+ * @returns {JSX.Element} The rendered ActionsTable component.
+ */
+function ActionsTable(props: IActionsTable): JSX.Element {
   const getTypeEnum = (typeStr: string): ActivityTagTypeEnum => {
     switch (typeStr) {
       case ActivityTagTypeEnum.OPENING_DETAILS:
@@ -40,13 +54,13 @@ const ActionsTable: React.FC<IActionsTable> = ({ rows, headers }) => {
     }
   };
 
-  const headerKeys = headers.map(header => header.key);
+  const headerKeys = props.headers.map(header => header.key);
 
   return (
     <Table size="lg" useZebraStyles={false} aria-label="actions table">
       <TableHead>
         <TableRow>
-          {headers.map(header => (
+          {props.headers.map(header => (
             <TableHeader id={header.key} key={header.key}>
               {header.header}
             </TableHeader>
@@ -54,7 +68,7 @@ const ActionsTable: React.FC<IActionsTable> = ({ rows, headers }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {rows.map((row: RecentAction, idx: number) => (
+        {props.rows.map((row: RecentAction, idx: number) => (
           <TableRow key={idx}>
             {headerKeys.map((key: string) => (
               <TableCell key={key}>
