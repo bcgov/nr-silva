@@ -36,7 +36,7 @@ const mainActivitiesItems: LeftMenu[] = [
           },
           {
             name: 'Silviculture search',
-            link: '/opening/silviculture',
+            link: '/silviculture-search',
             disabled: false
           },
           {
