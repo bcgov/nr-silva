@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.3</version>
+    <version>3.3.4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -40,7 +40,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
-    <hibernate.version>6.6.0.Final</hibernate.version>
+    <hibernate.version>6.6.1.Final</hibernate.version>
   </properties>
 
   <profiles>
@@ -462,7 +462,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.18.1</version>
+            <version>10.18.2</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -508,7 +508,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.41.1</version>
+        <version>9.41.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
