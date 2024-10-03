@@ -48,7 +48,7 @@ class OpeningServiceTest {
       String orgUnit,
       String category,
       String status,
-      String entryUserId,
+      Boolean myOpenings,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -58,12 +58,15 @@ class OpeningServiceTest {
       String freeGrowingDateEnd,
       String updateDateStart,
       String updateDateEnd,
+      String cuttingPermitId,
+      String cutBlockId,
+      String timberMark,
       String mainSearchTerm) {
     return new OpeningSearchFiltersDto(
         orgUnit,
         category,
         status,
-        entryUserId,
+        myOpenings,
         submittedToFrpa,
         disturbanceDateStart,
         disturbanceDateEnd,
@@ -73,16 +76,23 @@ class OpeningServiceTest {
         freeGrowingDateEnd,
         updateDateStart,
         updateDateEnd,
+        cuttingPermitId,
+        cutBlockId,
+        timberMark,
         mainSearchTerm);
   }
 
   private OpeningSearchFiltersDto mockOrgUnit(String orgUnit) {
     return mockFilter(
-        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null);
   }
 
   private OpeningSearchFiltersDto mockMainFilter(String mainSearchTerm) {
     return mockFilter(
+        null,
+        null,
+        null,
         null,
         null,
         null,

@@ -261,9 +261,9 @@ public class OpeningSearchRepository {
       query.setParameter("status", filtersDto.getStatus());
     }
     // 4. User entry id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.ENTRY_USER_ID)) {
-      log.info("Setting entryUserId filter value");
-      query.setParameter("entryUserId", "%" + filtersDto.getEntryUserId() + "%");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+      log.info("Setting myOpenings filter value");
+      query.setParameter("entryUserId", filtersDto.getRequestUserId());
     }
     // 5. Submitted to FRPA Section 108
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
@@ -415,10 +415,10 @@ public class OpeningSearchRepository {
       log.info("Filter status detected! status={}", filtersDto.getStatus());
       builder.append("AND o.OPENING_STATUS_CODE = :status ");
     }
-    // 4. Entry user id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.ENTRY_USER_ID)) {
-      log.info("Filter entryUserId detected! entryUserId={}", filtersDto.getEntryUserId());
-      builder.append("AND o.ENTRY_USERID LIKE :entryUserId ");
+    // 4. My openings
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+      log.info("Filter myOpenings detected! entryUserId={}", filtersDto.getRequestUserId());
+      builder.append("AND o.ENTRY_USERID = :entryUserId ");
     }
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {

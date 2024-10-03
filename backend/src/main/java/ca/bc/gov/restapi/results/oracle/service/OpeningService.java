@@ -54,7 +54,7 @@ public class OpeningService {
         pagination.perPage());
 
     if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
     }
 
     String entryUserId = loggedUserService.getLoggedUserId();
@@ -103,7 +103,7 @@ public class OpeningService {
         pagination.perPage());
 
     if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
     }
 
     // Openings
@@ -151,8 +151,17 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
-    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH) {
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH);
+    }
+
+    // Set the user in the filter, if required
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+      String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
+      if (!userId.startsWith("IDIR")) {
+        userId = "BCEID" + userId.substring(5);
+      }
+      filtersDto.setRequestUserId(userId);
     }
 
     return openingSearchRepository.searchOpeningQuery(filtersDto, pagination);

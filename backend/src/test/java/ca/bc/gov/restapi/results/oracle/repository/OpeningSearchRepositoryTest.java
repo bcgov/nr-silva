@@ -43,7 +43,7 @@ class OpeningSearchRepositoryTest {
       String orgUnit,
       String category,
       String status,
-      String entryUserId,
+      Boolean myOpenings,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -53,12 +53,15 @@ class OpeningSearchRepositoryTest {
       String freeGrowingDateEnd,
       String updateDateStart,
       String updateDateEnd,
+      String cuttingPermitId,
+      String cutBlockId,
+      String timberMark,
       String mainSearchTerm) {
     return new OpeningSearchFiltersDto(
         orgUnit,
         category,
         status,
-        entryUserId,
+        myOpenings,
         submittedToFrpa,
         disturbanceDateStart,
         disturbanceDateEnd,
@@ -68,12 +71,16 @@ class OpeningSearchRepositoryTest {
         freeGrowingDateEnd,
         updateDateStart,
         updateDateEnd,
+        cuttingPermitId,
+        cutBlockId,
+        timberMark,
         mainSearchTerm);
   }
 
   private OpeningSearchFiltersDto mockOrgUnit(String orgUnit) {
     return mockFilter(
-        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null);
   }
 
   private OpeningSearchFiltersDto mockAllFilters() {
@@ -81,7 +88,7 @@ class OpeningSearchRepositoryTest {
         "DCR",
         "FTML",
         "APP",
-        "TEST",
+        true,
         false,
         "2023-01-01",
         "2023-05-31",
@@ -91,11 +98,17 @@ class OpeningSearchRepositoryTest {
         "2024-06-30",
         "2024-01-01",
         "2025-01-01",
+        "207",
+        "HS",
+        "47/206",
         "407");
   }
 
   private OpeningSearchFiltersDto mockMainFilter(String mainSearchTerm) {
     return mockFilter(
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -560,7 +573,7 @@ class OpeningSearchRepositoryTest {
     Timestamp earlyFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
     Timestamp lateFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
-    String entryUserId = filters.getEntryUserId();
+    String entryUserId = filters.getRequestUserId();
     BigDecimal submittedToFrpa = BigDecimal.ZERO;
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(

@@ -11,7 +11,7 @@ public class OpeningSearchFiltersDto {
   private final String orgUnit;
   private final String category;
   private final String status;
-  private final String entryUserId;
+  private final Boolean myOpenings;
   private final Boolean submittedToFrpa;
   private final String disturbanceDateStart;
   private final String disturbanceDateEnd;
@@ -30,7 +30,7 @@ public class OpeningSearchFiltersDto {
   public static final String ORG_UNIT = "orgUnit";
   public static final String CATEGORY = "category";
   public static final String STATUS = "status";
-  public static final String ENTRY_USER_ID = "entryUserId";
+  public static final String MY_OPENINGS = "myOpenings";
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";
   public static final String DISTURBANCE_DATE_END = "disturbanceDateEnd";
@@ -45,12 +45,14 @@ public class OpeningSearchFiltersDto {
   public static final String TIMBER_MARK = "timberMark";
   public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
 
+  private String requestUserId;
+
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
       String orgUnit,
       String category,
       String status,
-      String entryUserId,
+      Boolean myOpenings,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -67,7 +69,7 @@ public class OpeningSearchFiltersDto {
     this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
     this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
     this.status = Objects.isNull(status) ? null : status.toUpperCase().trim();
-    this.entryUserId = Objects.isNull(entryUserId) ? null : entryUserId.toUpperCase().trim();
+    this.myOpenings = myOpenings;
     this.submittedToFrpa = submittedToFrpa;
     this.disturbanceDateStart =
         Objects.isNull(disturbanceDateStart) ? null : disturbanceDateStart.trim();
@@ -89,6 +91,15 @@ public class OpeningSearchFiltersDto {
   }
 
   /**
+   * Set the Request User Id.
+   *
+   * @param requestUserId The id to be set.
+   */
+  public void setRequestUserId(String requestUserId) {
+    this.requestUserId = requestUserId;
+  }
+
+  /**
    * Define if a property has value.
    *
    * @param prop The property to be checked.
@@ -102,8 +113,8 @@ public class OpeningSearchFiltersDto {
         return !Objects.isNull(this.category);
       case STATUS:
         return !Objects.isNull(this.status);
-      case ENTRY_USER_ID:
-        return !Objects.isNull(this.entryUserId);
+      case MY_OPENINGS:
+        return !Objects.isNull(this.myOpenings);
       case SUBMITTED_TO_FRPA:
         return !Objects.isNull(this.submittedToFrpa);
       case DISTURBANCE_DATE_START:

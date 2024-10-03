@@ -48,7 +48,7 @@ public class OpeningSearchEndpoint {
    * @param orgUnit Org Unit code filter, same as District.
    * @param category Opening category code filter.
    * @param status Opening status code filter.
-   * @param entryUserId Opening entry user id filter.
+   * @param myOpenings Openings created by the request user
    * @param submittedToFrpa Submitted to FRPA
    * @param disturbanceDateStart Disturbance start date filter
    * @param disturbanceDateEnd Disturbance end date filter
@@ -58,6 +58,9 @@ public class OpeningSearchEndpoint {
    * @param freeGrowingDateEnd Free growing end date filter
    * @param updateDateStart Opening update start date filter
    * @param updateDateEnd Opening update end date filter
+   * @param cuttingPermitId The cutting permit identification filter
+   * @param cutBlockId Cute block identification filter
+   * @param timberMark Timber mark filter
    * @param paginationParameters Pagination settings
    * @return PaginatedResult with found records.
    */
@@ -108,13 +111,13 @@ public class OpeningSearchEndpoint {
               description = "Opening status code filter. E.g.: APP",
               required = false)
           String status,
-      @RequestParam(value = "entryUserId", required = false)
+      @RequestParam(value = "myOpenings", required = false)
           @Parameter(
-              name = "entryUserId",
+              name = "myOpenings",
               in = ParameterIn.QUERY,
-              description = "Opening entry user id filter",
+              description = "Openings created by the request user",
               required = false)
-          String entryUserId,
+          Boolean myOpenings,
       @RequestParam(value = "submittedToFrpa", required = false)
           @Parameter(
               name = "submittedToFrpa",
@@ -211,7 +214,7 @@ public class OpeningSearchEndpoint {
             orgUnit,
             category,
             status,
-            entryUserId,
+            myOpenings,
             submittedToFrpa,
             disturbanceDateStart,
             disturbanceDateEnd,
