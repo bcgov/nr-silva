@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
-import ca.bc.gov.restapi.results.oracle.repository.OrgUnitRepository;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -20,13 +19,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 class OrgUnitServiceTest {
 
-  @Mock OrgUnitRepository orgUnitRepository;
-
   private OrgUnitService orgUnitService;
 
   @BeforeEach
   void setup() {
-    orgUnitService = new OrgUnitService(orgUnitRepository);
+    orgUnitService = new OrgUnitService();
   }
 
   @Test
