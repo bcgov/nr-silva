@@ -78,119 +78,122 @@ public class OpeningSearchRepository {
     List<OpeningSearchResponseDto> resultList = new ArrayList<>();
 
     for (Object obj : result) {
+      int index = 0;
       if (obj.getClass().isArray()) {
         Object[] row = (Object[]) obj;
         OpeningSearchResponseDto searchOpeningDto = new OpeningSearchResponseDto();
-        if (row.length > 0) {
-          searchOpeningDto.setOpeningId(getValue(Integer.class, row[0], "openingId"));
+        if (row.length > index) {
+          searchOpeningDto.setOpeningId(getValue(Integer.class, row[index++], "openingId"));
         }
 
-        if (row.length > 1) {
-          String openingNumber = getValue(String.class, row[1], "openingNumber");
+        if (row.length > index) {
+          String openingNumber = getValue(String.class, row[index++], "openingNumber");
           if (!Objects.isNull(openingNumber)) {
             searchOpeningDto.setOpeningNumber(openingNumber.trim());
           }
         }
 
-        if (row.length > 2) {
-          String category = getValue(String.class, row[2], "category");
+        if (row.length > index) {
+          String category = getValue(String.class, row[index++], "category");
           searchOpeningDto.setCategory(OpeningCategoryEnum.of(category));
         }
 
-        if (row.length > 3) {
-          String status = getValue(String.class, row[3], "status");
+        if (row.length > index) {
+          String status = getValue(String.class, row[index++], "status");
           searchOpeningDto.setStatus(OpeningStatusEnum.of(status));
         }
 
-        if (row.length > 4) {
-          String cuttingPermitId = getValue(String.class, row[4], "cuttingPermitId");
+        if (row.length > index) {
+          String cuttingPermitId = getValue(String.class, row[index++], "cuttingPermitId");
           searchOpeningDto.setCuttingPermitId(cuttingPermitId);
         }
 
-        if (row.length > 5) {
-          String timberMark = getValue(String.class, row[5], "timberMark");
+        if (row.length > index) {
+          String timberMark = getValue(String.class, row[index++], "timberMark");
           searchOpeningDto.setTimberMark(timberMark);
         }
 
-        if (row.length > 6) {
-          String cutBlockId = getValue(String.class, row[6], "cutBlockId");
+        if (row.length > index) {
+          String cutBlockId = getValue(String.class, row[index++], "cutBlockId");
           searchOpeningDto.setCutBlockId(cutBlockId);
         }
 
-        if (row.length > 7) {
-          BigDecimal openingGrossAreaHa = getValue(BigDecimal.class, row[7], "openingGrossAreaHa");
+        if (row.length > index) {
+          BigDecimal openingGrossAreaHa = getValue(BigDecimal.class, row[index++], "openingGrossAreaHa");
           searchOpeningDto.setOpeningGrossAreaHa(openingGrossAreaHa);
         }
 
-        if (row.length > 8) {
-          Timestamp startDate = getValue(Timestamp.class, row[8], "disturbanceStartDate");
+        if (row.length > index) {
+          Timestamp startDate = getValue(Timestamp.class, row[index++], "disturbanceStartDate");
           if (!Objects.isNull(startDate)) {
             searchOpeningDto.setDisturbanceStartDate(startDate.toLocalDateTime());
           }
         }
 
-        if (row.length > 9) {
-          String forestFileId = getValue(String.class, row[9], "forestFileId");
+        if (row.length > index) {
+          String forestFileId = getValue(String.class, row[index++], "forestFileId");
           searchOpeningDto.setForestFileId(forestFileId);
         }
 
-        if (row.length > 10) {
-          String orgUnitCode = getValue(String.class, row[10], "orgUnitCode");
+        if (row.length > index) {
+          String orgUnitCode = getValue(String.class, row[index++], "orgUnitCode");
           searchOpeningDto.setOrgUnitCode(orgUnitCode);
         }
 
-        if (row.length > 11) {
-          String orgUnitName = getValue(String.class, row[11], "orgUnitName");
+        if (row.length > index) {
+          String orgUnitName = getValue(String.class, row[index++], "orgUnitName");
           searchOpeningDto.setOrgUnitName(orgUnitName);
         }
 
-        if (row.length > 12) {
-          String clientNumber = getValue(String.class, row[12], "clientNumber");
+        if (row.length > index) {
+          String clientNumber = getValue(String.class, row[index++], "clientNumber");
           searchOpeningDto.setClientNumber(clientNumber);
         }
 
-        if (row.length > 13) {
-          Timestamp regenDelayDate = getValue(Timestamp.class, row[13], "regenDelayDate");
+        if (row.length > index) {
+          String clientLocation = getValue(String.class, row[index++], "clientLocation");
+          searchOpeningDto.setClientLocation(clientLocation);
+        }
+
+        if (row.length > index) {
+          Timestamp regenDelayDate = getValue(Timestamp.class, row[index++], "regenDelayDate");
           if (!Objects.isNull(regenDelayDate)) {
             searchOpeningDto.setRegenDelayDate(regenDelayDate.toLocalDateTime());
           }
         }
 
-        if (row.length > 14) {
-          Timestamp earlyDate = getValue(Timestamp.class, row[14], "earlyFreeGrowingDate");
+        if (row.length > index) {
+          Timestamp earlyDate = getValue(Timestamp.class, row[index++], "earlyFreeGrowingDate");
           if (!Objects.isNull(earlyDate)) {
             searchOpeningDto.setEarlyFreeGrowingDate(earlyDate.toLocalDateTime());
           }
         }
 
-        if (row.length > 15) {
-          Timestamp dateDate = getValue(Timestamp.class, row[15], "lateFreeGrowingDate");
+        if (row.length > index) {
+          Timestamp dateDate = getValue(Timestamp.class, row[index++], "lateFreeGrowingDate");
           if (!Objects.isNull(dateDate)) {
             searchOpeningDto.setLateFreeGrowingDate(dateDate.toLocalDateTime());
           }
         }
 
-        if (row.length > 16) {
-          Timestamp updateTimestamp = getValue(Timestamp.class, row[16], "updateTimestamp");
+        if (row.length > index) {
+          Timestamp updateTimestamp = getValue(Timestamp.class, row[index++], "updateTimestamp");
           searchOpeningDto.setUpdateTimestamp(updateTimestamp.toLocalDateTime());
         }
 
-        if (row.length > 17) {
-          String entryUserId = getValue(String.class, row[17], "entryUserId");
+        if (row.length > index) {
+          String entryUserId = getValue(String.class, row[index++], "entryUserId");
           searchOpeningDto.setEntryUserId(entryUserId);
         }
 
-        if (row.length > 18) {
-          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[18], "submittedToFrpa108");
+        if (row.length > index) {
+          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[index++], "submittedToFrpa108");
           boolean submittedApp = silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0;
           searchOpeningDto.setSubmittedToFrpa(submittedApp);
           if (submittedApp) {
             searchOpeningDto.setSilvaReliefAppId(silvaReliefAppId.longValue());
           }
         }
-
-        // fetch from forestClient API
-        searchOpeningDto.setClientAcronym(null);
 
         resultList.add(searchOpeningDto);
       }
@@ -345,6 +348,7 @@ public class OpeningSearchRepository {
     builder.append(",ou.ORG_UNIT_CODE AS orgUnitCode");
     builder.append(",ou.ORG_UNIT_NAME AS orgUnitName");
     builder.append(",res.CLIENT_NUMBER AS clientNumber");
+    builder.append(",res.CLIENT_LOCN_CODE AS clientLocation");
 
     String sql;
     sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12))";
@@ -520,6 +524,7 @@ public class OpeningSearchRepository {
     builder.append(",ou.ORG_UNIT_CODE ");
     builder.append(",ou.ORG_UNIT_NAME ");
     builder.append(",res.CLIENT_NUMBER ");
+    builder.append(",res.CLIENT_LOCN_CODE ");
 
     sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) ";
     builder.append(sql);

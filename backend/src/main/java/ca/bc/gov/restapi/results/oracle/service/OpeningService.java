@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
@@ -18,10 +19,13 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,6 +47,8 @@ public class OpeningService {
   private final LoggedUserService loggedUserService;
 
   private final OpeningSearchRepository openingSearchRepository;
+
+  private final ForestClientApiProvider forestClientApiProvider;
 
   /**
    * Gets all recent openings for the Home Screen.
@@ -183,18 +189,25 @@ public class OpeningService {
             .map(OpeningSearchResponseDto::getClientNumber)
             .toList();
 
+    // Recreate list without duplicates
     List<String> clientNumbers = new ArrayList<>(new HashSet<>(clientNumbersWithDuplicates));
 
-    // fetch from forest client
-    // Keep going from here
+    Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
 
-    // create map
-    Map<String, ForestClientDto> forestClientsMap = Map.of();
+    // Forest client API doesn't have a single endpoint to fetch all at once, so we need to do
+    // one request per client number :/
+    for (String clientNumber : clientNumbers) {
+      Optional<ForestClientDto> dto = forestClientApiProvider.fetchClientByNumber(clientNumber);
+      if (dto.isPresent()) {
+        forestClientsMap.put(clientNumber, dto.get());
+      }
+    }
 
     for (OpeningSearchResponseDto response : result.getData()) {
       ForestClientDto client = forestClientsMap.get(response.getClientNumber());
       if (!Objects.isNull(client)) {
         response.setClientAcronym(client.acronym());
+        response.setClientName(client.clientName());
       }
     }
   }
