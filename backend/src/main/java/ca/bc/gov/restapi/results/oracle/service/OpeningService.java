@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
+import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
@@ -17,7 +18,10 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -164,7 +168,35 @@ public class OpeningService {
       filtersDto.setRequestUserId(userId);
     }
 
-    return openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+    PaginatedResult<OpeningSearchResponseDto> result =
+        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+
+    fetchClientAcronyms(result);
+
+    return result;
+  }
+
+  private void fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
+    List<String> clientNumbersWithDuplicates =
+        result.getData().stream()
+            .filter(o -> !Objects.isNull(o.getClientNumber()))
+            .map(OpeningSearchResponseDto::getClientNumber)
+            .toList();
+
+    List<String> clientNumbers = new ArrayList<>(new HashSet<>(clientNumbersWithDuplicates));
+
+    // fetch from forest client
+    // Keep going from here
+
+    // create map
+    Map<String, ForestClientDto> forestClientsMap = Map.of();
+
+    for (OpeningSearchResponseDto response : result.getData()) {
+      ForestClientDto client = forestClientsMap.get(response.getClientNumber());
+      if (!Objects.isNull(client)) {
+        response.setClientAcronym(client.acronym());
+      }
+    }
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
