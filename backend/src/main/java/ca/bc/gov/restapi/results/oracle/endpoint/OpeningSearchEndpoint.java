@@ -178,6 +178,14 @@ public class OpeningSearchEndpoint {
               description = "Opening update end date filter, format yyyy-MM-dd.",
               required = false)
           String updateDateEnd,
+      @RequestParam(value = "cuttingPermitId", required = false)
+          @Parameter(
+              name = "cuttingPermitId",
+              in = ParameterIn.QUERY,
+              description =
+                  "Identifier for a cutting permit associated with a quota type harvesting tenure.",
+              required = false)
+          String cuttingPermitId,
       @Valid PaginationParameters paginationParameters) {
     OpeningSearchFiltersDto filtersDto =
         new OpeningSearchFiltersDto(
@@ -194,6 +202,7 @@ public class OpeningSearchEndpoint {
             freeGrowingDateEnd,
             updateDateStart,
             updateDateEnd,
+            cuttingPermitId,
             mainSearchTerm);
     return openingService.openingSearch(filtersDto, paginationParameters);
   }

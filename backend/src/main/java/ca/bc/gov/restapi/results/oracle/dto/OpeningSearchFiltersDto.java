@@ -21,6 +21,7 @@ public class OpeningSearchFiltersDto {
   private final String freeGrowingDateEnd;
   private final String updateDateStart;
   private final String updateDateEnd;
+  private final String cuttingPermitId;
   // Main input, it can be one of Opening ID, Opening Number, Timber Mark ID, or File ID
   private final String mainSearchTerm;
 
@@ -37,6 +38,7 @@ public class OpeningSearchFiltersDto {
   public static final String FREE_GROWING_DATE_END = "freeGrowingDateEnd";
   public static final String UPDATE_DATE_START = "updateDateStart";
   public static final String UPDATE_DATE_END = "updateDateEnd";
+  public static final String CUTTING_PERMIT_ID = "cuttingPermitId";
   public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
 
   /** Creates an instance of the search opening filter dto. */
@@ -54,6 +56,7 @@ public class OpeningSearchFiltersDto {
       String freeGrowingDateEnd,
       String updateDateStart,
       String updateDateEnd,
+      String cuttingPermitId,
       String mainSearchTerm) {
     this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
     this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
@@ -71,6 +74,8 @@ public class OpeningSearchFiltersDto {
     this.freeGrowingDateEnd = Objects.isNull(freeGrowingDateEnd) ? null : freeGrowingDateEnd.trim();
     this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
     this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
+    this.cuttingPermitId =
+        Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
     this.mainSearchTerm =
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
@@ -109,6 +114,8 @@ public class OpeningSearchFiltersDto {
         return !Objects.isNull(this.updateDateStart);
       case UPDATE_DATE_END:
         return !Objects.isNull(this.updateDateEnd);
+      case CUTTING_PERMIT_ID:
+        return !Objects.isNull(this.cuttingPermitId);
       case MAIN_SEARCH_TERM:
         return !Objects.isNull(this.mainSearchTerm);
       default: {

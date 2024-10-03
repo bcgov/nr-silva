@@ -310,6 +310,11 @@ public class OpeningSearchRepository {
       log.info("Setting updateDateEnd filter value");
       query.setParameter("updateEndDate", filtersDto.getUpdateDateEnd());
     }
+    // 14. Cutting permit id
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUTTING_PERMIT_ID)) {
+      log.info("Setting cuttingPermitId filter value");
+      query.setParameter("cuttingPermitId", filtersDto.getCuttingPermitId());
+    }
 
     return query;
   }
@@ -470,6 +475,12 @@ public class OpeningSearchRepository {
       log.info("Filter updateDateEnd detected! date={}", filtersDto.getUpdateDateEnd());
       builder.append("AND o.UPDATE_TIMESTAMP <= to_timestamp(:updateEndDate, 'YYYY-MM-DD') ");
     }
+    // 14. Cutting permit
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUTTING_PERMIT_ID)) {
+      log.info(
+          "Filter cuttingPermitId detected! cuttingPermit={}", filtersDto.getCuttingPermitId());
+      builder.append("AND cboa.CUTTING_PERMIT_ID = :cuttingPermitId ");
+    }
 
     /* Group by - to avoid duplications */
     builder.append("GROUP BY o.OPENING_ID ");
@@ -485,7 +496,7 @@ public class OpeningSearchRepository {
     builder.append(",ou.ORG_UNIT_CODE ");
     builder.append(",ou.ORG_UNIT_NAME ");
     builder.append(",res.CLIENT_NUMBER ");
-    
+
     sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) ";
     builder.append(sql);
 
