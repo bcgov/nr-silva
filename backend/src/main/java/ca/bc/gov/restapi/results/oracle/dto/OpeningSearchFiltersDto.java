@@ -22,6 +22,8 @@ public class OpeningSearchFiltersDto {
   private final String updateDateStart;
   private final String updateDateEnd;
   private final String cuttingPermitId;
+  private final String cutBlockId;
+  private final String timberMark;
   // Main input, it can be one of Opening ID, Opening Number, Timber Mark ID, or File ID
   private final String mainSearchTerm;
 
@@ -39,6 +41,8 @@ public class OpeningSearchFiltersDto {
   public static final String UPDATE_DATE_START = "updateDateStart";
   public static final String UPDATE_DATE_END = "updateDateEnd";
   public static final String CUTTING_PERMIT_ID = "cuttingPermitId";
+  public static final String CUT_BLOCK_ID = "cutBlockId";
+  public static final String TIMBER_MARK = "timberMark";
   public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
 
   /** Creates an instance of the search opening filter dto. */
@@ -57,6 +61,8 @@ public class OpeningSearchFiltersDto {
       String updateDateStart,
       String updateDateEnd,
       String cuttingPermitId,
+      String cutBlockId,
+      String timberMark,
       String mainSearchTerm) {
     this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
     this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
@@ -76,6 +82,8 @@ public class OpeningSearchFiltersDto {
     this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
     this.cuttingPermitId =
         Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
+    this.cutBlockId = Objects.isNull(cutBlockId) ? null : cutBlockId.toUpperCase().trim();
+    this.timberMark = Objects.isNull(timberMark) ? null : timberMark.toUpperCase().trim();
     this.mainSearchTerm =
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
@@ -116,6 +124,10 @@ public class OpeningSearchFiltersDto {
         return !Objects.isNull(this.updateDateEnd);
       case CUTTING_PERMIT_ID:
         return !Objects.isNull(this.cuttingPermitId);
+      case CUT_BLOCK_ID:
+        return !Objects.isNull(this.cutBlockId);
+      case TIMBER_MARK:
+        return !Objects.isNull(this.timberMark);
       case MAIN_SEARCH_TERM:
         return !Objects.isNull(this.mainSearchTerm);
       default: {

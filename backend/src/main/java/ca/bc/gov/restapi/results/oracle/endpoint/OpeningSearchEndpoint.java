@@ -186,6 +186,25 @@ public class OpeningSearchEndpoint {
                   "Identifier for a cutting permit associated with a quota type harvesting tenure.",
               required = false)
           String cuttingPermitId,
+      @RequestParam(value = "cutBlockId", required = false)
+          @Parameter(
+              name = "cutBlockId",
+              in = ParameterIn.QUERY,
+              description =
+                  "Identifier for a cut block of a harvesting tenure (within a cutting permit for"
+                      + " tenures with cp's).",
+              required = false)
+          String cutBlockId,
+      @RequestParam(value = "timberMark", required = false)
+          @Parameter(
+              name = "timberMark",
+              in = ParameterIn.QUERY,
+              description =
+                  "Unique identifying set of characters to be stamped or marked on the end of each"
+                      + " log to associate the log with the specific authority to harvest and move"
+                      + " timber.",
+              required = false)
+          String timberMark,
       @Valid PaginationParameters paginationParameters) {
     OpeningSearchFiltersDto filtersDto =
         new OpeningSearchFiltersDto(
@@ -203,6 +222,8 @@ public class OpeningSearchEndpoint {
             updateDateStart,
             updateDateEnd,
             cuttingPermitId,
+            cutBlockId,
+            timberMark,
             mainSearchTerm);
     return openingService.openingSearch(filtersDto, paginationParameters);
   }

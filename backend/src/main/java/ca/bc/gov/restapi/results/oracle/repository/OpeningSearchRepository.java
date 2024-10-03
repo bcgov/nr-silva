@@ -315,6 +315,16 @@ public class OpeningSearchRepository {
       log.info("Setting cuttingPermitId filter value");
       query.setParameter("cuttingPermitId", filtersDto.getCuttingPermitId());
     }
+    // 15. Cut block id
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUT_BLOCK_ID)) {
+      log.info("Setting cutBlockId filter value");
+      query.setParameter("cutBlockId", filtersDto.getCutBlockId());
+    }
+    // 16. Timber mark
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.TIMBER_MARK)) {
+      log.info("Setting timberMark filter value");
+      query.setParameter("timberMark", filtersDto.getTimberMark());
+    }
 
     return query;
   }
@@ -475,11 +485,23 @@ public class OpeningSearchRepository {
       log.info("Filter updateDateEnd detected! date={}", filtersDto.getUpdateDateEnd());
       builder.append("AND o.UPDATE_TIMESTAMP <= to_timestamp(:updateEndDate, 'YYYY-MM-DD') ");
     }
-    // 14. Cutting permit
+    // 14. Cutting permit id
     if (filtersDto.hasValue(OpeningSearchFiltersDto.CUTTING_PERMIT_ID)) {
       log.info(
-          "Filter cuttingPermitId detected! cuttingPermit={}", filtersDto.getCuttingPermitId());
+          "Filter cuttingPermitId detected! cuttingPermitId={}", filtersDto.getCuttingPermitId());
       builder.append("AND cboa.CUTTING_PERMIT_ID = :cuttingPermitId ");
+    }
+    // 15. Cut block id
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUT_BLOCK_ID)) {
+      log.info(
+          "Filter cutBlockId detected! cutBlockId={}", filtersDto.getCutBlockId());
+      builder.append("AND cboa.CUT_BLOCK_ID = :cutBlockId ");
+    }
+    // 16. Timber mark
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.TIMBER_MARK)) {
+      log.info(
+          "Filter timberMark detected! timberMark={}", filtersDto.getTimberMark());
+      builder.append("AND cboa.TIMBER_MARK = :timberMark ");
     }
 
     /* Group by - to avoid duplications */
