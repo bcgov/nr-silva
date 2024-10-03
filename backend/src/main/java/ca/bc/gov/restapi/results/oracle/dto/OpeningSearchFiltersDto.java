@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OpeningSearchFiltersDto {
   private final String orgUnit;
   private final String category;
-  private final String status;
+  private final List<String> statusList;
   private final Boolean myOpenings;
   private final Boolean submittedToFrpa;
   private final String disturbanceDateStart;
@@ -29,7 +31,7 @@ public class OpeningSearchFiltersDto {
 
   public static final String ORG_UNIT = "orgUnit";
   public static final String CATEGORY = "category";
-  public static final String STATUS = "status";
+  public static final String STATUS_LIST = "statusList";
   public static final String MY_OPENINGS = "myOpenings";
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";
@@ -51,7 +53,7 @@ public class OpeningSearchFiltersDto {
   public OpeningSearchFiltersDto(
       String orgUnit,
       String category,
-      String status,
+      List<String> statusList,
       Boolean myOpenings,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
@@ -68,7 +70,10 @@ public class OpeningSearchFiltersDto {
       String mainSearchTerm) {
     this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
     this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
-    this.status = Objects.isNull(status) ? null : status.toUpperCase().trim();
+    this.statusList = new ArrayList<>();
+    if (!Objects.isNull(statusList)) {
+      this.statusList.addAll(statusList.stream().map(s -> String.format("'%s'", s)).toList());
+    }
     this.myOpenings = myOpenings;
     this.submittedToFrpa = submittedToFrpa;
     this.disturbanceDateStart =
@@ -111,8 +116,8 @@ public class OpeningSearchFiltersDto {
         return !Objects.isNull(this.orgUnit);
       case CATEGORY:
         return !Objects.isNull(this.category);
-      case STATUS:
-        return !Objects.isNull(this.status);
+      case STATUS_LIST:
+        return !this.statusList.isEmpty();
       case MY_OPENINGS:
         return !Objects.isNull(this.myOpenings);
       case SUBMITTED_TO_FRPA:

@@ -47,7 +47,7 @@ public class OpeningSearchEndpoint {
    *     File
    * @param orgUnit Org Unit code filter, same as District.
    * @param category Opening category code filter.
-   * @param status Opening status code filter.
+   * @param statusList Opening statuses codes filter.
    * @param myOpenings Openings created by the request user
    * @param submittedToFrpa Submitted to FRPA
    * @param disturbanceDateStart Disturbance start date filter
@@ -104,13 +104,13 @@ public class OpeningSearchEndpoint {
               description = "Opening category code filter. E.g.: FTML",
               required = false)
           String category,
-      @RequestParam(value = "status", required = false)
+      @RequestParam(value = "statusList", required = false)
           @Parameter(
-              name = "status",
+              name = "statusList",
               in = ParameterIn.QUERY,
               description = "Opening status code filter. E.g.: APP",
               required = false)
-          String status,
+          List<String> statusList,
       @RequestParam(value = "myOpenings", required = false)
           @Parameter(
               name = "myOpenings",
@@ -213,7 +213,7 @@ public class OpeningSearchEndpoint {
         new OpeningSearchFiltersDto(
             orgUnit,
             category,
-            status,
+            statusList,
             myOpenings,
             submittedToFrpa,
             disturbanceDateStart,

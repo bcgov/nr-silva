@@ -255,10 +255,11 @@ public class OpeningSearchRepository {
       log.info("Setting category filter value");
       query.setParameter("category", filtersDto.getCategory());
     }
-    // 3. Status code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS)) {
-      log.info("Setting status filter value");
-      query.setParameter("status", filtersDto.getStatus());
+    // 3. Status list codes
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS_LIST)) {
+      
+      log.info("Setting statusList filter values");
+      // No need to set value since the query already dit it. Didn't work set through named param
     }
     // 4. User entry id
     if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
@@ -411,9 +412,10 @@ public class OpeningSearchRepository {
       builder.append("AND o.OPEN_CATEGORY_CODE = :category ");
     }
     // 3. Status code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS)) {
-      log.info("Filter status detected! status={}", filtersDto.getStatus());
-      builder.append("AND o.OPENING_STATUS_CODE = :status ");
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS_LIST)) {
+      String statuses = String.join(",", filtersDto.getStatusList());
+      log.info("Filter statusList detected! statusList={}", statuses);
+      builder.append(String.format("AND o.OPENING_STATUS_CODE IN (%s) ", statuses));
     }
     // 4. My openings
     if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
