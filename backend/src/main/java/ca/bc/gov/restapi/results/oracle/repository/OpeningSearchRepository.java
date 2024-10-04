@@ -119,7 +119,8 @@ public class OpeningSearchRepository {
         }
 
         if (row.length > index) {
-          BigDecimal openingGrossAreaHa = getValue(BigDecimal.class, row[index++], "openingGrossAreaHa");
+          BigDecimal openingGrossAreaHa =
+              getValue(BigDecimal.class, row[index++], "openingGrossAreaHa");
           searchOpeningDto.setOpeningGrossAreaHa(openingGrossAreaHa);
         }
 
@@ -187,7 +188,8 @@ public class OpeningSearchRepository {
         }
 
         if (row.length > index) {
-          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[index++], "submittedToFrpa108");
+          BigDecimal silvaReliefAppId =
+              getValue(BigDecimal.class, row[index++], "submittedToFrpa108");
           boolean submittedApp = silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0;
           searchOpeningDto.setSubmittedToFrpa(submittedApp);
           if (submittedApp) {
@@ -260,7 +262,7 @@ public class OpeningSearchRepository {
     }
     // 3. Status list codes
     if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS_LIST)) {
-      
+
       log.info("Setting statusList filter values");
       // No need to set value since the query already dit it. Didn't work set through named param
     }
@@ -499,14 +501,12 @@ public class OpeningSearchRepository {
     }
     // 15. Cut block id
     if (filtersDto.hasValue(OpeningSearchFiltersDto.CUT_BLOCK_ID)) {
-      log.info(
-          "Filter cutBlockId detected! cutBlockId={}", filtersDto.getCutBlockId());
+      log.info("Filter cutBlockId detected! cutBlockId={}", filtersDto.getCutBlockId());
       builder.append("AND cboa.CUT_BLOCK_ID = :cutBlockId ");
     }
     // 16. Timber mark
     if (filtersDto.hasValue(OpeningSearchFiltersDto.TIMBER_MARK)) {
-      log.info(
-          "Filter timberMark detected! timberMark={}", filtersDto.getTimberMark());
+      log.info("Filter timberMark detected! timberMark={}", filtersDto.getTimberMark());
       builder.append("AND cboa.TIMBER_MARK = :timberMark ");
     }
 
