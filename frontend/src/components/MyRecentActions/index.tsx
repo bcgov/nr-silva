@@ -34,9 +34,9 @@ const MyRecentActions: React.FC = () => {
   ];
 
   useEffect(() => {
-    async function fetchData() {
+    function fetchData() {
       try {
-        const actions: RecentAction[] = await fetchRecentActions();
+        const actions: RecentAction[] = fetchRecentActions();
         setRecentActions(actions);
       } catch (error) {
         console.error('Error fetching recent actions:', error);

@@ -1,4 +1,5 @@
 export interface RecentOpening {
+  id: string;
   openingId: string;
   forestFileId: string;
   cuttingPermit: string | null;

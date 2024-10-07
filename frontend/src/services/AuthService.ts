@@ -93,7 +93,7 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
     setAuthIdToken(tokens?.idToken?.toString() || null);
 
     const famLoginUser = parseToken(tokens?.idToken);
-    await storeFamUser(famLoginUser);
+    storeFamUser(famLoginUser);
     return famLoginUser;
 
   } catch (error) {
