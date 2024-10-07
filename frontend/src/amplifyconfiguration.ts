@@ -1,4 +1,3 @@
-import { ResourcesConfig } from 'aws-amplify';
 import { env } from './env';
 
 const ZONE = env.VITE_ZONE.toLocaleLowerCase();
@@ -12,7 +11,7 @@ const redirectSignOut =
     : `${logoutDomain}/clp-cgi/logoff.cgi?retnow=1&returl=${retUrl}?redirect_uri=${redirectUri}/`;
 
 // https://docs.amplify.aws/javascript/build-a-backend/auth/set-up-auth/
-const amplifyconfig: ResourcesConfig = {
+const amplifyconfig = {
   Auth: {
     Cognito: {
       userPoolId: env.VITE_USER_POOLS_ID ?? "ca-central-1_t2HSZBHur",
