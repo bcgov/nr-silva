@@ -16,6 +16,14 @@ const data = {
   "lastUpdated": "2024-05-16T19:59:21.635Z"
 };
 
+vi.mock('../../services/SecretsService', () => ({
+  getWmsLayersWhitelistUsers: vi.fn(() => [
+    {
+      userName: 'TEST'
+    }
+  ])
+}));
+
 vi.mock('../../services/OpeningService', () => ({
   fetchRecentOpenings: vi.fn(() => [
     {
