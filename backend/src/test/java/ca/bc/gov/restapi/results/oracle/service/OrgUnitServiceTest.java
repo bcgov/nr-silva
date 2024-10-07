@@ -26,7 +26,7 @@ class OrgUnitServiceTest {
 
   @BeforeEach
   void setup() {
-    orgUnitService = new OrgUnitService(orgUnitRepository);
+    orgUnitService = new OrgUnitService(orgUnitRepository, new String[]{"DCR"});
   }
 
   @Test
@@ -50,7 +50,7 @@ class OrgUnitServiceTest {
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
     when(orgUnitRepository.findAllByExpiryDateAfter(any())).thenReturn(List.of(orgUnit));
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits(false);
+    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(1, entities.size());
@@ -94,7 +94,7 @@ class OrgUnitServiceTest {
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
     when(orgUnitRepository.findAll()).thenReturn(List.of(orgUnit));
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits(true);
+    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(1, entities.size());

@@ -203,7 +203,7 @@ class OpeningSearchEndpointTest {
 
     List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
 
-    when(orgUnitService.findAllOrgUnits(false)).thenReturn(orgUnitEntityList);
+    when(orgUnitService.findAllOrgUnits()).thenReturn(orgUnitEntityList);
 
     mockMvc
         .perform(
