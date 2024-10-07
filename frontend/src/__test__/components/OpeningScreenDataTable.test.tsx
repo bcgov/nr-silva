@@ -65,24 +65,24 @@ describe('Opening Screen Data table component test', () => {
     });
   });
 
-  // it('should display the row checkbox when showSpatial is true', () => {
-  //   const { queryByTestId } = render(
-  //     <PaginationContext.Provider value={paginationValueMock}>
-  //       <OpeningScreenDataTable
-  //         headers={headers}
-  //         rows={rows}
-  //         setOpeningId={setOpeningId}
-  //         showSpatial={true}
-  //       />
-  //     </PaginationContext.Provider>
-  //   );
+  it('should display the row checkbox when showSpatial is true', () => {
+    const { queryByTestId } = render(
+      <PaginationContext.Provider value={paginationValueMock}>
+        <OpeningScreenDataTable
+          headers={headers}
+          rows={rows}
+          setOpeningId={setOpeningId}
+          showSpatial={true}
+        />
+      </PaginationContext.Provider>
+    );
 
-  //   act(() => {
-  //     const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
-  //     // The next line should be "not.toBeNull()" however, Carbon React team forgot to add data-testid
-  //     // attribute to this component (TableSelectRow), making it impossible to get by testid value.
-  //     // Once we have that fixed, please get back here and update the next statement.
-  //     expect(tableSelectionRow).toBeNull();
-  //   });
-  // });
+    act(() => {
+      const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
+      // The next line should be "not.toBeNull()" however, Carbon React team forgot to add data-testid
+      // attribute to this component (TableSelectRow), making it impossible to get by testid value.
+      // Once we have that fixed, please get back here and update the next statement.
+      expect(tableSelectionRow).toBeNull();
+    });
+  });
 });

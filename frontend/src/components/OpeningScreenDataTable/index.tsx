@@ -41,6 +41,8 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
   const [filteredRows, setFilteredRows] = useState<RecentOpening[]>(rows);
   const {
     getCurrentData,
+    currentPage,
+    totalPages,
     handlePageChange,
     handleItemsPerPageChange,
     itemsPerPage, // Use itemsPerPage from the hook
@@ -175,7 +177,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                 </div>
               </TableToolbarContent>
             </TableToolbar>
-            <Table {...getTableProps()} aria-label="sample table">
+            <Table {...getTableProps()} aria-label="sample-table">
               <TableHead>
                 <TableRow>
                   {showSpatial && (

@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "@carbon/react";
+import React, { useEffect, useState } from 'react';
+import { Button } from '@carbon/react';
 import './styles.scss'
 import { Location } from '@carbon/icons-react';
-import OpeningsMap from "../OpeningsMap";
-import OpeningScreenDataTable from "../OpeningScreenDataTable/index";
-import { headers } from "../OpeningScreenDataTable/testData";
-import { fetchRecentOpenings } from "../../services/OpeningService";
-import SectionTitle from "../SectionTitle";
-import TableSkeleton from "../TableSkeleton";
+import OpeningsMap from '../OpeningsMap';
+import OpeningScreenDataTable from '../OpeningScreenDataTable/index';
+import { headers } from '../OpeningScreenDataTable/testData';
+import { fetchRecentOpenings } from '../../services/OpeningService';
+import SectionTitle from '../SectionTitle';
+import TableSkeleton from '../TableSkeleton';
 import { InlineNotification } from '@carbon/react';
-import { RecentOpening } from "../../types/RecentOpening";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { generateHtmlFile } from "./layersGenerator";
-import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from "../../services/SecretsService";
+import { RecentOpening } from '../../types/RecentOpening';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { generateHtmlFile } from './layersGenerator';
+import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
 
 interface Props {
   showSpatial: boolean;
