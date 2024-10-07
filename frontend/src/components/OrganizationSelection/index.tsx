@@ -7,7 +7,7 @@ import {
 import { ArrowRight } from '@carbon/icons-react';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { logout } from '../../services/AuthService';
-import { setSelectedClientRoles, SetSelectedClientRolesAction } from '../../actions/selectedClientRolesActions';
+import { setSelectedClientRoles } from '../../actions/selectedClientRolesActions';
 import { getForestClientByNumberOrAcronym } from '../../services/TestService';
 import { THREE_HALF_HOURS, THREE_HOURS } from '../../config/TimeUnits';
 import { UserClientRolesType } from '../../types/UserRoleType';

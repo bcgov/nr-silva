@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux'
@@ -16,14 +16,14 @@ vi.spyOn(redux, 'useSelector')
   .mockImplementation((callback) => callback(state));
 
 describe('Opening screen test cases', () => {
-  it('should renders Opening Page Title component', () => {
+  it('should renders Opening Page Title component', async () => {
     const { getByTestId } = render(
       <BrowserRouter>
         <Opening />
       </BrowserRouter>
     );
 
-    const pageTitleComp = getByTestId('opening-pagetitle');
+    const pageTitleComp = await waitFor(() => getByTestId('opening-pagetitle'));
     expect(pageTitleComp).toBeDefined();
 
     //const subtitle = 'Create, manage or check opening information';

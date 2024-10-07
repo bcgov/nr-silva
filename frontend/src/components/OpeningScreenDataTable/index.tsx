@@ -1,8 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   DataTable,
-  TableBatchAction,
-  TableBatchActions,
   TableToolbar,
   TableToolbarAction,
   TableToolbarContent,
@@ -15,7 +13,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableSelectAll,
   TableSelectRow,
   Button,
   Pagination
@@ -44,8 +41,6 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
   const [filteredRows, setFilteredRows] = useState<RecentOpening[]>(rows);
   const {
     getCurrentData,
-    currentPage,
-    totalPages,
     handlePageChange,
     handleItemsPerPageChange,
     itemsPerPage, // Use itemsPerPage from the hook
@@ -126,7 +121,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
           <TableContainer
             {...getTableContainerProps()}
           >
-            <TableToolbar aria-label="data table toolbar">
+            <TableToolbar aria-label="data-table-toolbar">
               <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
