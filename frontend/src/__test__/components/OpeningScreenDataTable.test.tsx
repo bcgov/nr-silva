@@ -1,11 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import OpeningScreenDataTable from '../../components/OpeningScreenDataTable';
 import PaginationContext from '../../contexts/PaginationContext';
 import { RecentOpening } from '../../types/RecentOpening';
 
 const rows: RecentOpening[] = [{
+  id: '123',
   openingId: '123',
   fileId: '1',
   cuttingPermit: '1',
@@ -58,8 +59,10 @@ describe('Opening Screen Data table component test', () => {
       </PaginationContext.Provider>
     );
 
-    const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
-    expect(tableSelectionRow).toBeNull();
+    act(() => {
+      const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
+      expect(tableSelectionRow).toBeNull();
+    });
   });
 
   it('should display the row checkbox when showSpatial is true', () => {
@@ -74,10 +77,12 @@ describe('Opening Screen Data table component test', () => {
       </PaginationContext.Provider>
     );
 
-    const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
-    // The next line should be "not.toBeNull()" however, Carbon React team forgot to add data-testid
-    // attribute to this component (TableSelectRow), making it impossible to get by testid value.
-    // Once we have that fixed, please get back here and update the next statement.
-    expect(tableSelectionRow).toBeNull();
+    act(() => {
+      const tableSelectionRow: HTMLElement | null = queryByTestId('checkbox__opening-screen-data-table_1');
+      // The next line should be "not.toBeNull()" however, Carbon React team forgot to add data-testid
+      // attribute to this component (TableSelectRow), making it impossible to get by testid value.
+      // Once we have that fixed, please get back here and update the next statement.
+      expect(tableSelectionRow).toBeNull();
+    });
   });
 });

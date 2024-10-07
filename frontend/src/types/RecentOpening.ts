@@ -1,4 +1,5 @@
 export interface RecentOpening {
+  id: string;
   openingId: string;
   fileId: string;
   cuttingPermit: string | null;

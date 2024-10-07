@@ -11,6 +11,20 @@ import store from '../../store';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
 
+vi.mock('../../services/TestService', () => ({
+  getForestClientByNumberOrAcronym: vi.fn(() => [
+    {
+      clientNumber: '00012797',
+      clientName: 'MINISTRY OF FORESTS',
+      legalFirstName: '',
+      legalMiddleName: '',
+      clientStatusCode: { code: 'ACT', description: 'Active' },
+      clientTypeCode: { code: 'F', description: 'Ministry of Forests and Range' },
+      acronym: 'MOF'
+    },
+  ]),
+}));
+
 const renderComponent = () => {
   const qc = new QueryClient();
 
