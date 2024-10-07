@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import BCHeader from '../../components/BCHeader';
 import { ThemePreference } from '../../utils/ThemePreference';
@@ -20,7 +20,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 describe('BC Header component tests', () => {
-  it('should have a Header with proper class name', () => {
+  it('should have a Header with proper class name', async () => {
     const { getByTestId, getByText } = render(
       <BrowserRouter>
         <ThemePreference>
@@ -29,7 +29,7 @@ describe('BC Header component tests', () => {
       </BrowserRouter>
     );
 
-    const element: HTMLElement | null = getByTestId('bc-header__header');
+    const element: HTMLElement | null = await waitFor(() => getByTestId('bc-header__header'));
     expect(element).toBeDefined();
     expect(element).not.toBeNull();
     expect(element?.classList.contains('spar-header')).toBe(true);

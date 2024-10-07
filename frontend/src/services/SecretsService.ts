@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
 
-const backendUrl = env.VITE_BACKEND_URL;
+const backendUrl = env.VITE_BACKEND_URL || '';
 
 export interface WmsLayersWhitelistUser {
   userName: string

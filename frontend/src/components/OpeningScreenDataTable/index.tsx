@@ -1,8 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   DataTable,
-  TableBatchAction,
-  TableBatchActions,
   TableToolbar,
   TableToolbarAction,
   TableToolbarContent,
@@ -15,7 +13,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableSelectAll,
   TableSelectRow,
   Button,
   Pagination
@@ -126,7 +123,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
           <TableContainer
             {...getTableContainerProps()}
           >
-            <TableToolbar aria-label="data table toolbar">
+            <TableToolbar aria-label="data-table-toolbar">
               <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
@@ -180,7 +177,7 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
                 </div>
               </TableToolbarContent>
             </TableToolbar>
-            <Table {...getTableProps()} aria-label="sample table">
+            <Table {...getTableProps()} aria-label="sample-table">
               <TableHead>
                 <TableRow>
                   {showSpatial && (

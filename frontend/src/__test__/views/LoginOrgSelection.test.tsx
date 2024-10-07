@@ -6,7 +6,21 @@ import store from '../../store';
 import LoginOrgSelection from '../../views/LoginOrgSelection';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserClientRolesType } from '../../types/UserRoleType';
-import * as redux from 'react-redux'
+import * as redux from 'react-redux';
+
+vi.mock('../../services/TestService', () => ({
+  getForestClientByNumberOrAcronym: vi.fn(() => [
+    {
+      clientNumber: '00012797',
+      clientName: 'MINISTRY OF FORESTS',
+      legalFirstName: '',
+      legalMiddleName: '',
+      clientStatusCode: { code: 'ACT', description: 'Active' },
+      clientTypeCode: { code: 'F', description: 'Ministry of Forests and Range' },
+      acronym: 'MOF'
+    },
+  ]),
+}));
 
 const clientRoles: UserClientRolesType[] = [
   {

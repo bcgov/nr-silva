@@ -57,7 +57,7 @@ const mainActivitiesItems: LeftMenu[] = [
         ]
       }
     ]
-  },
+  }
 ];
 
 const managementItems: LeftMenu[] = [

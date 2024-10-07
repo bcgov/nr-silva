@@ -1,5 +1,18 @@
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](/)
 
+#### Frontend
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend)
+
+#### Backend
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nr-silva-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=nr-silva-backend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-backend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-backend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-backend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-backend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nr-silva-backend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=nr-silva-backend)
 
 # Natural Resources SILVA Front-End Starting Web Application
 
