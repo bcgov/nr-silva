@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
 
+vi.stubEnv('VITE_BACKEND_URL', 'http://test.com');
+
 const data = {
   "activityType": "Update",
   "openingId": "1541297",
