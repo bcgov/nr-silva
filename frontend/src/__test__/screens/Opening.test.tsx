@@ -7,6 +7,15 @@ import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
 
+const data = {
+  "activityType": "Update",
+  "openingId": "1541297",
+  "statusCode": "APP",
+  "statusDescription": "Approved",
+  "lastUpdatedLabel": "1 minute ago",
+  "lastUpdated": "2024-05-16T19:59:21.635Z"
+};
+
 vi.mock('../../services/OpeningService', () => ({
   fetchRecentOpenings: vi.fn(() => [
     {
@@ -22,6 +31,26 @@ vi.mock('../../services/OpeningService', () => ({
       disturbanceStart: '2023-01-02',
       entryTimestamp: '',
       updateTimestamp: ''
+    }
+  ]),
+  fetchOpeningsPerYear: vi.fn(() => Promise.resolve([
+    { group: '2022', key: 'Openings', value: 10 },
+    { group: '2023', key: 'Openings', value: 15 },
+  ])),
+  fetchFreeGrowingMilestones: vi.fn(() => Promise.resolve([
+    {
+      group: '1-5',
+      value: 11
+    }
+  ])),
+  fetchRecentActions: vi.fn(() => [
+    {
+      activityType: data.activityType,
+      openingId: data.openingId.toString(),
+      statusCode: data.statusCode,
+      statusDescription: data.statusDescription,
+      lastUpdated: data.lastUpdated,
+      lastUpdatedLabel: data.lastUpdatedLabel
     }
   ]),
 }));
