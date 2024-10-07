@@ -6,6 +6,7 @@
   "dependencies": {
     "@bcgov-nr/nr-theme": "^1.7.0",
     "@carbon/charts-react": "^1.13.32",
+    "@carbon/icons-react": "^11.50.1",
     "@carbon/pictograms-react": "^11.49.0",
     "@carbon/react": "^1.27.0",
     "@redux-devtools/extension": "^3.3.0",
