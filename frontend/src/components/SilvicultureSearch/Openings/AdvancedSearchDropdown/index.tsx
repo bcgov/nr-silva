@@ -23,9 +23,7 @@ interface AdvancedSearchDropdownProps {
 }
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
-  toggleShowFilters,
 }) => {
-
   const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
@@ -42,10 +40,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
     handleFilterChange({ [group]: updatedGroup });
   };
-
-  useEffect(()=>{
-    console.log("filters.startDate:"+filters.startDate)
-  },[filters]);
 
   if (isLoading) {
     return <Loading withOverlay={true} />;
@@ -72,11 +66,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
     })) || [];
 
   const dateTypeItems =
-  data.dateTypes?.map((item: any) => ({
-    text: item.label,
-    value: item.value,
-  })) || [];
-  
+    data.dateTypes?.map((item: any) => ({
+      text: item.label,
+      value: item.value,
+    })) || [];
+
   const blockStatusItems =
     data.blockStatuses?.map((item: any) => ({
       text: item.label,
@@ -133,9 +127,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ orgUnit: e.selectedItem.value })
               }
               label="Enter or choose an org unit"
-              selectedItem={orgUnitItems.find(
-                (item: any) => item.value === filters.orgUnit
-              )}
+              selectedItem={
+                filters.orgUnit
+                  ? orgUnitItems.find(
+                      (item: any) => item.value === filters.orgUnit
+                    )
+                  : ""
+              }
             />
           </Column>
           <Column lg={8}>
@@ -148,9 +146,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                 handleFilterChange({ category: e.selectedItem.value })
               }
               label="Enter or choose a category"
-              selectedItem={categoryItems.find(
-                (item: any) => item.value === filters.category
-              )}
+              selectedItem={
+                filters.category
+                  ? categoryItems.find(
+                      (item: any) => item.value === filters.category
+                    )
+                  : ""
+              }
             />
           </Column>
         </Row>
@@ -259,9 +261,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                     onChange={(e: any) =>
                       handleFilterChange({ dateType: e.selectedItem.value })
                     }
-                    selectedItem={dateTypeItems.find(
-                      (item: any) => item.value === filters.dateType
-                    )}
+                    selectedItem={
+                      filters.dateType
+                        ? dateTypeItems.find(
+                            (item: any) => item.value === filters.dateType
+                          )
+                        : ""
+                    }
                     label="Date type"
                   />
                 </Column>
@@ -278,14 +284,15 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                       className="me-1"
                       onChange={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ startDate: dates[0] });
+                          handleFilterChange({ startDate: dates[0].toISOString().slice(0, 10) });
                         }
                       }}
                       onClose={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ startDate: dates[0] });
+                          handleFilterChange({ startDate: dates[0].toISOString().slice(0, 10) });
                         }
                       }}
+                      readOnly={!filters.dateType}
                     >
                       <DatePickerInput
                         id="start-date-picker-input-id"
@@ -293,7 +300,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                         labelText="Start Date"
                         placeholder={
                           filters.startDate !== null
-                            ? filters.startDate.toISOString().slice(0, 10) // Display the date in YYYY-MM-DD format
+                            ? filters.startDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
                       />
@@ -303,14 +310,15 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                       datePickerType="single"
                       onChange={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ endDate: dates[0] });
+                          handleFilterChange({ endDate: dates[0].toISOString().slice(0, 10) });
                         }
                       }}
                       onClose={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ endDate: dates[0] });
+                          handleFilterChange({ endDate: dates[0].toISOString().slice(0, 10) });
                         }
                       }}
+                      readOnly={!filters.dateType}
                     >
                       <DatePickerInput
                         id="end-date-picker-input-id"
@@ -318,7 +326,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                         labelText="End Date"
                         placeholder={
                           filters.endDate
-                            ? filters.endDate.toISOString().slice(0, 10) // Display the date in YYYY-MM-DD format
+                            ? filters.endDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
                       />
@@ -332,41 +340,41 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             <CheckboxGroup
               orientation="horizontal"
               className="horizontal-checkbox-group"
-              legendText="Status"
+              legendText="Status (Select One)"
             >
               <div className="d-flex">
                 <Checkbox
                   labelText={`DFT - Draft`}
                   id="checkbox-label-dft"
-                  checked={filters.blockStatuses.includes("DFT - Draft")}
+                  checked={filters.status.includes("DFT")}
                   onChange={() =>
-                    handleCheckboxChange("DFT - Draft", "blockStatuses")
+                    handleCheckboxChange("DFT", "status")
                   }
                 />
                 <Checkbox
                   labelText={`APP - Approved`}
                   id="checkbox-label-app"
-                  checked={filters.blockStatuses.includes("APP - Approved")}
+                  checked={filters.status.includes("APP")}
                   onChange={() =>
-                    handleCheckboxChange("APP - Approved", "blockStatuses")
+                    handleCheckboxChange("APP", "status")
                   }
                 />
               </div>
               <div className="d-flex">
                 <Checkbox
-                  labelText={`RJC - Rejected`}
+                  labelText={`FG - Free Growing`}
                   id="checkbox-label-rjc"
-                  checked={filters.blockStatuses.includes("RJC - Rejected")}
+                  checked={filters.status.includes("FG")}
                   onChange={() =>
-                    handleCheckboxChange("RJC - Rejected", "blockStatuses")
+                    handleCheckboxChange("FG", "status")
                   }
                 />
                 <Checkbox
-                  labelText={`CNL - Cancelled`}
+                  labelText={`SUB - Submitted`}
                   id="checkbox-label-cnl"
-                  checked={filters.blockStatuses.includes("CNL - Cancelled")}
+                  checked={filters.status.includes("SUB")}
                   onChange={() =>
-                    handleCheckboxChange("CNL - Cancelled", "blockStatuses")
+                    handleCheckboxChange("SUB", "status")
                   }
                 />
               </div>

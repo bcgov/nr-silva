@@ -2,6 +2,7 @@ import axios from "axios";
 import { getAuthIdToken } from "../AuthService";
 import { env } from "../../env";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
+import { createDateParams, formatDateToYYYYMMDD } from "../../utils/searchUtils";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -15,7 +16,7 @@ export interface OpeningFilters {
   cuttingPermit?: string;
   grossArea?: string;
   timberMark?: string;
-  status?: string;
+  status?: string[];
   openingFilters?: string[];
   blockStatuses?: string[];
   page?: number;
@@ -54,21 +55,20 @@ export interface OpeningItem {
 const backendUrl = env.VITE_BACKEND_URL;
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
-  // Map frontend filter names to backend filter names
+  // Get the date params based on dateType
+  const { dateStartKey, dateEndKey } = createDateParams(filters);
   const params = {
     mainSearchTerm: filters.searchInput,
     orgUnit: filters.orgUnit,
     category: filters.category,
-    status: filters.status,
+    status: filters.status?.join(','), // Join status array into a comma-separated string
     entryUserId: filters.clientAcronym,
     submittedToFrpa:
       filters.openingFilters?.includes("Submitted to FRPA section 108") ||
       undefined,
-    disturbanceDateStart: filters.startDate,
-    disturbanceDateEnd: filters.endDate,
-    // Add other mappings as necessary
-    // -1 for the page because the api goes by index starting from 0
-    page: filters.page && filters.page-1,
+    [dateStartKey]: filters.startDate,  // Use dynamic key for start date
+    [dateEndKey]: filters.endDate,      // Use dynamic key for end date
+    page: filters.page && filters.page - 1, // Adjust page index (-1)
     perPage: filters.perPage,
   };
 
@@ -79,7 +79,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
 
   // Retrieve the auth token
   const authToken = getAuthIdToken();
-
+  console.log("sending the following params:")
+  console.log(cleanedParams)
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search", {
     params: cleanedParams,
@@ -98,12 +99,14 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     status: undefined, // Remove the old nested status object
     category: undefined, // Remove the old nested category object
   }));
+
   // Returning the modified response data with the flattened structure
   return {
     ...response.data,
     data: flattenedData,
   };
 };
+
 
 export const fetchCategories = async (): Promise<any> => {
   // Retrieve the auth token

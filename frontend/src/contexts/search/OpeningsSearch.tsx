@@ -20,6 +20,7 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
     endDate: null as Date | null,
     orgUnit: null as string | null,
     category: null as string | null,
+    status: [] as string[],
     clientAcronym: "",
     blockStatus: "",
     cutBlock: "",

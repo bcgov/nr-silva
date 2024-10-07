@@ -1,5 +1,4 @@
 export const dateTypes = [
-    { value: "", label: "Choose an Option" },
     { value: "Disturbance", label: "Disturbance" },
     { value: "Regen Delay", label: "Regen Delay" },
     { value: "Free Growing", label: "Free Growing" },
@@ -7,7 +6,6 @@ export const dateTypes = [
   ];
   
   export const blockStatuses = [
-    { value: "", label: "" },
     { value: "AP", label: "AP  -  Appeal Pending" },
     { value: "HB", label: "HB  -  Approved for Harvesting" },
     { value: "HX", label: "HX  -  Cancelled" },

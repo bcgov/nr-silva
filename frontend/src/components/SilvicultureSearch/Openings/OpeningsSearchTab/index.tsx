@@ -114,6 +114,11 @@ const OpeningsSearchTab: React.FC = () => {
     }
   },[])
 
+  // useEffect(()=>{
+  //   console.log("new filters")
+  //   console.log(filters)
+  // },[filters])
+
   return (
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
