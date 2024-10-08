@@ -42,8 +42,8 @@ class OpeningSearchRepositoryTest {
   private OpeningSearchFiltersDto mockFilter(
       String orgUnit,
       String category,
-      String status,
-      String entryUserId,
+      List<String> statusList,
+      Boolean myOpenings,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -53,12 +53,15 @@ class OpeningSearchRepositoryTest {
       String freeGrowingDateEnd,
       String updateDateStart,
       String updateDateEnd,
+      String cuttingPermitId,
+      String cutBlockId,
+      String timberMark,
       String mainSearchTerm) {
     return new OpeningSearchFiltersDto(
         orgUnit,
         category,
-        status,
-        entryUserId,
+        statusList,
+        myOpenings,
         submittedToFrpa,
         disturbanceDateStart,
         disturbanceDateEnd,
@@ -68,20 +71,24 @@ class OpeningSearchRepositoryTest {
         freeGrowingDateEnd,
         updateDateStart,
         updateDateEnd,
+        cuttingPermitId,
+        cutBlockId,
+        timberMark,
         mainSearchTerm);
   }
 
   private OpeningSearchFiltersDto mockOrgUnit(String orgUnit) {
     return mockFilter(
-        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null);
   }
 
   private OpeningSearchFiltersDto mockAllFilters() {
     return mockFilter(
         "DCR",
         "FTML",
-        "APP",
-        "TEST",
+        List.of("APP"),
+        true,
         false,
         "2023-01-01",
         "2023-05-31",
@@ -91,11 +98,17 @@ class OpeningSearchRepositoryTest {
         "2024-06-30",
         "2024-01-01",
         "2025-01-01",
+        "207",
+        "HS",
+        "47/206",
         "407");
   }
 
   private OpeningSearchFiltersDto mockMainFilter(String mainSearchTerm) {
     return mockFilter(
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -305,6 +318,7 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
+    String clientLocation = null;
     Timestamp regenDelay = null;
     Timestamp earlyFreeGrowing = null;
     Timestamp lateFreeGrowing = null;
@@ -327,6 +341,7 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
+          clientLocation,
           regenDelay,
           earlyFreeGrowing,
           lateFreeGrowing,
@@ -390,6 +405,7 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = null;
     String orgUnitName = null;
     String clientNumber = null;
+    String clientLocation = null;
     Timestamp regenDelay = null;
     Timestamp earlyFreeGrowing = null;
     Timestamp lateFreeGrowing = null;
@@ -412,6 +428,7 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
+          clientLocation,
           regenDelay,
           earlyFreeGrowing,
           lateFreeGrowing,
@@ -445,6 +462,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(clientLocation, dto.getClientLocation());
+    Assertions.assertNull(dto.getClientName());
+    Assertions.assertNull(dto.getClientAcronym());
     Assertions.assertNull(dto.getRegenDelayDate());
     Assertions.assertNull(dto.getEarlyFreeGrowingDate());
     Assertions.assertNull(dto.getLateFreeGrowingDate());
@@ -473,6 +493,7 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = "DCR";
     String orgUnitName = null;
     String clientNumber = null;
+    String clientLocation = null;
     Timestamp regenDelay = null;
     Timestamp earlyFreeGrowing = null;
     Timestamp lateFreeGrowing = null;
@@ -495,6 +516,7 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
+          clientLocation,
           regenDelay,
           earlyFreeGrowing,
           lateFreeGrowing,
@@ -528,6 +550,9 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(clientLocation, dto.getClientLocation());
+    Assertions.assertNull(dto.getClientName());
+    Assertions.assertNull(dto.getClientAcronym());
     Assertions.assertNull(dto.getRegenDelayDate());
     Assertions.assertNull(dto.getEarlyFreeGrowingDate());
     Assertions.assertNull(dto.getLateFreeGrowingDate());
@@ -546,7 +571,7 @@ class OpeningSearchRepositoryTest {
     Integer openingId = 123456789;
     String openingNumber = "589";
     OpeningCategoryEnum category = OpeningCategoryEnum.of(filters.getCategory());
-    OpeningStatusEnum status = OpeningStatusEnum.of(filters.getStatus());
+    OpeningStatusEnum status = OpeningStatusEnum.of(filters.getStatusList().get(0));
     String cuttingPermitId = "123";
     String timberMark = "EM2184";
     String cutBlockId = "456";
@@ -556,11 +581,12 @@ class OpeningSearchRepositoryTest {
     String orgUnitCode = filters.getOrgUnit();
     String orgUnitName = "Org Name";
     String clientNumber = "00012797";
+    String clientLocation = "00";
     Timestamp regenDelay = null;
     Timestamp earlyFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
     Timestamp lateFreeGrowing = Timestamp.valueOf(LocalDateTime.now());
     Timestamp updateTimestamp = Timestamp.valueOf(LocalDateTime.now());
-    String entryUserId = filters.getEntryUserId();
+    String entryUserId = filters.getRequestUserId();
     BigDecimal submittedToFrpa = BigDecimal.ZERO;
     List<Object[]> resultList = new ArrayList<>(1);
     resultList.add(
@@ -578,6 +604,7 @@ class OpeningSearchRepositoryTest {
           orgUnitCode,
           orgUnitName,
           clientNumber,
+          clientLocation,
           regenDelay,
           earlyFreeGrowing,
           lateFreeGrowing,
@@ -611,6 +638,7 @@ class OpeningSearchRepositoryTest {
     Assertions.assertEquals(orgUnitCode, dto.getOrgUnitCode());
     Assertions.assertEquals(orgUnitName, dto.getOrgUnitName());
     Assertions.assertEquals(clientNumber, dto.getClientNumber());
+    Assertions.assertEquals(clientLocation, dto.getClientLocation());
     Assertions.assertNull(dto.getRegenDelayDate());
     Assertions.assertEquals(earlyFreeGrowing, Timestamp.valueOf(dto.getEarlyFreeGrowingDate()));
     Assertions.assertEquals(lateFreeGrowing, Timestamp.valueOf(dto.getLateFreeGrowingDate()));

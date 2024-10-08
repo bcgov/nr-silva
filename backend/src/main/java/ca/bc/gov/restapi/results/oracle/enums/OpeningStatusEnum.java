@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Objects;
 
 /**
  * This enumeration represents all possible values for the Opening Status column from the Opening
@@ -49,6 +50,9 @@ public enum OpeningStatusEnum {
    * @return OpeningStatusEnum or null if not found.
    */
   public static OpeningStatusEnum of(String code) {
+    if (!Objects.isNull(code) && code.contains("\'")) {
+      code = code.replace("'", "");
+    }
     for (OpeningStatusEnum status : values()) {
       if (status.code.equals(code)) {
         return status;
