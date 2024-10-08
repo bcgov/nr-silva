@@ -1,0 +1,115 @@
+# General application
+server:
+  error:
+    include-message: always
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  allowed:
+    cors:
+      origins: ${ALLOWED_ORIGINS:#{'http://127.*, http://localhost:300*'}}
+
+spring:
+  application:
+  name: results-api
+
+# Database, and JPA - Oracle
+  datasource:
+    oracle:
+      driver-class-name: oracle.jdbc.OracleDriver
+      url: jdbc:oracle:thin:@tcps://${DATABASE_HOST:nrcdb03.bcgov}:${DATABASE_PORT:1543}/${SERVICE_NAME:dbq01.nrs.bcgov}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
+      username: ${DATABASE_USER}
+      password: ${DATABASE_PASSWORD}
+      connectionTimeout: ${DB_POOL_CONN_TIMEOUT:120000}
+      idleTimeout: ${DB_POOL_IDLE_TIMEOUT:60000}
+      maxLifetime: ${DB_POOL_MAX_LIFETIME:150000}
+      keepaliveTime: 30000
+      poolName: SilvaOracleConnPool
+      minimumIdle: ${DB_POOL_MIN_IDLE:1}
+      maximumPoolSize: ${DB_POOL_MAX_SIZE:1}
+      leakDetectionThreshold: 60000
+
+# Database, and JPA - Postgres
+    postgres:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
+      username: ${POSTGRES_USER:postgres}
+      password: ${POSTGRES_PASSWORD:default}
+      connectionTimeout: ${DB_POOL_CONN_TIMEOUT:120000}
+      idleTimeout: ${DB_POOL_IDLE_TIMEOUT:60000}
+      maxLifetime: ${DB_POOL_MAX_LIFETIME:150000}
+      keepaliveTime: 30000
+      poolName: SilvaPostgresConnPool
+      minimumIdle: ${DB_POOL_MIN_IDLE:1}
+      maximumPoolSize: ${DB_POOL_MAX_SIZE:1}
+      leakDetectionThreshold: 60000
+
+# Common database settings
+  jpa:
+    show-sql: true
+
+# FAM
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}
+          jwk-set-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}/.well-known/jwks.json
+
+# Flyway
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
+    user: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:default}
+
+# OpenSearch settings
+nr-results-ecs-version: 8.9
+nr-results-backend-env-opensearch: ${RESULTS_ENV_OPENSEARCH:development}
+nr-results-team-email-address: Team.Silva@gov.bc.ca
+
+  
+# Actuator and ops
+management:
+  endpoint:
+    health:
+      show-details: always
+
+# Native Cloud
+springdoc:
+  enable-native-support: true
+
+# https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2
+quarkus:
+  native:
+    additional-build-args: -march=native
+
+# Certificate for the Database
+ca:
+  bc:
+    gov:
+      nrs:
+        oracle:
+          keystore: ${ORACLEDB_KEYSTORE:jssecacerts-path}
+          secret: ${ORACLEDB_SECRET:changeit}
+          host: ${DATABASE_HOST:nrcdb03.bcgov}
+
+# Users allowed to manually trigger the Dashboard extraction job
+nr:
+  results:
+    dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS}
+
+# Users allowed to see and download WMS layers information
+    config:
+      wms-layers.whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+
+# Forest Client API
+forest-client-api:
+  address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
+  key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
+
+# Logging
+logging:
+  level:
+    ca.bc.gov.restapi.results: ${LOGGING_LEVEL:INFO}
