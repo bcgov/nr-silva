@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 import { getAuthIdToken } from "../AuthService";
 import { env } from "../../env";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
@@ -56,34 +57,39 @@ const backendUrl = env.VITE_BACKEND_URL;
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType
+  // Get the date params based on dateType
   const { dateStartKey, dateEndKey } = createDateParams(filters);
+
   const params = {
     mainSearchTerm: filters.searchInput,
     orgUnit: filters.orgUnit,
     category: filters.category,
-    status: filters.status?.join(','), // Join status array into a comma-separated string
+    statusList: filters.status, // Keep it as an array
     entryUserId: filters.clientAcronym,
     submittedToFrpa:
-      filters.openingFilters?.includes("Submitted to FRPA section 108") ||
-      undefined,
+      filters.openingFilters?.includes("Submitted to FRPA section 108") || undefined,
     [dateStartKey]: filters.startDate,  // Use dynamic key for start date
     [dateEndKey]: filters.endDate,      // Use dynamic key for end date
     page: filters.page && filters.page - 1, // Adjust page index (-1)
     perPage: filters.perPage,
   };
 
-  // Remove undefined or empty values from the params object
+  // Remove undefined, null, or empty string values from the params object
   const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([_, v]) => v !== undefined && v !== "")
+    Object.entries(params).filter(([_, v]) => v !== undefined && v !== null && v !== "")
   );
+
+  // Stringify the cleanedParams using qs with arrayFormat: 'repeat'
+  const queryString = qs.stringify(cleanedParams, { 
+    addQueryPrefix: true,
+    arrayFormat: 'repeat'  // This will format arrays like statusList=DUB&statusList=APP
+  });
 
   // Retrieve the auth token
   const authToken = getAuthIdToken();
-  console.log("sending the following params:")
-  console.log(cleanedParams)
+
   // Make the API request with the Authorization header
-  const response = await axios.get(backendUrl + "/api/opening-search", {
-    params: cleanedParams,
+  const response = await axios.get(`${backendUrl}/api/opening-search${queryString}`, {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
