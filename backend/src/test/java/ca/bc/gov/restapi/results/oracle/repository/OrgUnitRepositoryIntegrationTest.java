@@ -20,16 +20,16 @@ class OrgUnitRepositoryIntegrationTest {
   @Autowired private OrgUnitRepository orgUnitRepository;
 
   @Test
-  @DisplayName("Find all by expiry date after happy path should succeed")
-  void findAllByExpiryDateAfter_happyPath_shouldSucceed() {
-    List<OrgUnitEntity> list = orgUnitRepository.findAllByExpiryDateAfter(LocalDate.now());
+  @DisplayName("Find all by org unit code unit in happy path should succeed")
+  void findAllByOrgUnitCodeIn_happyPath_shouldSucceed() {
+    List<OrgUnitEntity> list = orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"));
 
     Assertions.assertNotNull(list);
     Assertions.assertEquals(1, list.size());
 
     OrgUnitEntity orgUnit = list.get(0);
     Assertions.assertEquals(1L, orgUnit.getOrgUnitNo());
-    Assertions.assertEquals("ONE", orgUnit.getOrgUnitCode());
+    Assertions.assertEquals("DAS", orgUnit.getOrgUnitCode());
     Assertions.assertEquals("Org one", orgUnit.getOrgUnitName());
     Assertions.assertEquals("001", orgUnit.getLocationCode());
     Assertions.assertEquals("AAA", orgUnit.getAreaCode());

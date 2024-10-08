@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,12 +25,12 @@ class OrgUnitServiceTest {
 
   @BeforeEach
   void setup() {
-    orgUnitService = new OrgUnitService(orgUnitRepository, new String[]{"DCR"});
+    orgUnitService = new OrgUnitService(orgUnitRepository, new String[] {"DAS"});
   }
 
   @Test
-  @DisplayName("Find all org units include expired false should succeed")
-  void findAllOrgUnits_includeExpiredFalse_shouldSucceed() {
+  @DisplayName("Find all org units happy path should succeed")
+  void findAllOrgUnits_happyPath_shouldSucceed() {
     OrgUnitEntity orgUnit = new OrgUnitEntity();
     orgUnit.setOrgUnitNo(22L);
     orgUnit.setOrgUnitCode("DAS");
@@ -49,7 +48,7 @@ class OrgUnitServiceTest {
     orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
-    when(orgUnitRepository.findAllByExpiryDateAfter(any())).thenReturn(List.of(orgUnit));
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of(orgUnit));
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
@@ -71,50 +70,6 @@ class OrgUnitServiceTest {
     Assertions.assertEquals("25", responseOrg.getRollupDistCode());
 
     verify(orgUnitRepository, times(0)).findAll();
-  }
-
-  @Test
-  @DisplayName("Find all org units include expired true should succeed")
-  void findAllOrgUnits_includeExpiredTrue_shouldSucceed() {
-    OrgUnitEntity orgUnit = new OrgUnitEntity();
-    orgUnit.setOrgUnitNo(22L);
-    orgUnit.setOrgUnitCode("DAS");
-    orgUnit.setOrgUnitName("DAS Name");
-    orgUnit.setLocationCode("123");
-    orgUnit.setAreaCode("1");
-    orgUnit.setTelephoneNo("25436521");
-    orgUnit.setOrgLevelCode('R');
-    orgUnit.setOfficeNameCode("RR");
-    orgUnit.setRollupRegionNo(12L);
-    orgUnit.setRollupRegionCode("19");
-    orgUnit.setRollupDistNo(13L);
-    orgUnit.setRollupDistCode("25");
-    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
-    orgUnit.setExpiryDate(LocalDate.now().minusYears(1L));
-    orgUnit.setUpdateTimestamp(LocalDate.now());
-
-    when(orgUnitRepository.findAll()).thenReturn(List.of(orgUnit));
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
-
-    Assertions.assertNotNull(entities);
-    Assertions.assertEquals(1, entities.size());
-
-    OrgUnitEntity responseOrg = entities.get(0);
-    Assertions.assertTrue(responseOrg.getExpiryDate().isBefore(LocalDate.now()));
-    Assertions.assertEquals(22L, responseOrg.getOrgUnitNo());
-    Assertions.assertEquals("DAS", responseOrg.getOrgUnitCode());
-    Assertions.assertEquals("DAS Name", responseOrg.getOrgUnitName());
-    Assertions.assertEquals("123", responseOrg.getLocationCode());
-    Assertions.assertEquals("1", responseOrg.getAreaCode());
-    Assertions.assertEquals("25436521", responseOrg.getTelephoneNo());
-    Assertions.assertEquals('R', responseOrg.getOrgLevelCode());
-    Assertions.assertEquals("RR", responseOrg.getOfficeNameCode());
-    Assertions.assertEquals(12L, responseOrg.getRollupRegionNo());
-    Assertions.assertEquals("19", responseOrg.getRollupRegionCode());
-    Assertions.assertEquals(13L, responseOrg.getRollupDistNo());
-    Assertions.assertEquals("25", responseOrg.getRollupDistCode());
-
-    verify(orgUnitRepository, times(0)).findAllByExpiryDateAfter(any());
   }
 
   @Test
