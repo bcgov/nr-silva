@@ -47,8 +47,8 @@ public class OpeningSearchEndpoint {
    *     File
    * @param orgUnit Org Unit code filter, same as District.
    * @param category Opening category code filter.
-   * @param status Opening status code filter.
-   * @param entryUserId Opening entry user id filter.
+   * @param statusList Opening statuses codes filter.
+   * @param myOpenings Openings created by the request user
    * @param submittedToFrpa Submitted to FRPA
    * @param disturbanceDateStart Disturbance start date filter
    * @param disturbanceDateEnd Disturbance end date filter
@@ -58,6 +58,9 @@ public class OpeningSearchEndpoint {
    * @param freeGrowingDateEnd Free growing end date filter
    * @param updateDateStart Opening update start date filter
    * @param updateDateEnd Opening update end date filter
+   * @param cuttingPermitId The cutting permit identification filter
+   * @param cutBlockId Cute block identification filter
+   * @param timberMark Timber mark filter
    * @param paginationParameters Pagination settings
    * @return PaginatedResult with found records.
    */
@@ -101,20 +104,20 @@ public class OpeningSearchEndpoint {
               description = "Opening category code filter. E.g.: FTML",
               required = false)
           String category,
-      @RequestParam(value = "status", required = false)
+      @RequestParam(value = "statusList", required = false)
           @Parameter(
-              name = "status",
+              name = "statusList",
               in = ParameterIn.QUERY,
               description = "Opening status code filter. E.g.: APP",
               required = false)
-          String status,
-      @RequestParam(value = "entryUserId", required = false)
+          List<String> statusList,
+      @RequestParam(value = "myOpenings", required = false)
           @Parameter(
-              name = "entryUserId",
+              name = "myOpenings",
               in = ParameterIn.QUERY,
-              description = "Opening entry user id filter",
+              description = "Openings created by the request user",
               required = false)
-          String entryUserId,
+          Boolean myOpenings,
       @RequestParam(value = "submittedToFrpa", required = false)
           @Parameter(
               name = "submittedToFrpa",
@@ -178,13 +181,40 @@ public class OpeningSearchEndpoint {
               description = "Opening update end date filter, format yyyy-MM-dd.",
               required = false)
           String updateDateEnd,
+      @RequestParam(value = "cuttingPermitId", required = false)
+          @Parameter(
+              name = "cuttingPermitId",
+              in = ParameterIn.QUERY,
+              description =
+                  "Identifier for a cutting permit associated with a quota type harvesting tenure.",
+              required = false)
+          String cuttingPermitId,
+      @RequestParam(value = "cutBlockId", required = false)
+          @Parameter(
+              name = "cutBlockId",
+              in = ParameterIn.QUERY,
+              description =
+                  "Identifier for a cut block of a harvesting tenure (within a cutting permit for"
+                      + " tenures with cp's).",
+              required = false)
+          String cutBlockId,
+      @RequestParam(value = "timberMark", required = false)
+          @Parameter(
+              name = "timberMark",
+              in = ParameterIn.QUERY,
+              description =
+                  "Unique identifying set of characters to be stamped or marked on the end of each"
+                      + " log to associate the log with the specific authority to harvest and move"
+                      + " timber.",
+              required = false)
+          String timberMark,
       @Valid PaginationParameters paginationParameters) {
     OpeningSearchFiltersDto filtersDto =
         new OpeningSearchFiltersDto(
             orgUnit,
             category,
-            status,
-            entryUserId,
+            statusList,
+            myOpenings,
             submittedToFrpa,
             disturbanceDateStart,
             disturbanceDateEnd,
@@ -194,6 +224,9 @@ public class OpeningSearchEndpoint {
             freeGrowingDateEnd,
             updateDateStart,
             updateDateEnd,
+            cuttingPermitId,
+            cutBlockId,
+            timberMark,
             mainSearchTerm);
     return openingService.openingSearch(filtersDto, paginationParameters);
   }
