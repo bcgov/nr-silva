@@ -12,6 +12,6 @@
     padding: 0rem;
 }
 
-.bx--list-box__label {
+.#{vars.$bcgov-prefix}--list-box__label {
     color: var(--#{vars.$bcgov-prefix}-text-secondary);
 }

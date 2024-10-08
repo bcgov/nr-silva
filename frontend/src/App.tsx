@@ -14,6 +14,7 @@ import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
 import DashboardRedirect from './screens/DashboardRedirect';
+import SilvicultureSearch from './screens/SilvicultureSearch';
 
 Amplify.configure(amplifyconfig);
 
@@ -30,6 +31,11 @@ const App: React.FC = () => {
         <Route path="/opening" element={
           <ProtectedRoute>
             <SideLayout pageContent={<Opening/>} />
+          </ProtectedRoute>
+        } />
+        <Route path="/silviculture-search" element={
+          <ProtectedRoute>
+            <SideLayout pageContent={<SilvicultureSearch/>} />
           </ProtectedRoute>
         } />
         <Route path="/opening/reports" element={

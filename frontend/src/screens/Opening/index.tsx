@@ -17,6 +17,17 @@ const Opening: React.FC = () => {
     //
   }, [showSpatial]);
 
+  
+  const getTabNumber = () => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab === 'metrics') {
+      console.log("the selected tab came out as:"+tab)
+      return 1;
+    }
+    return 0;
+  } 
+
   return (
     <>
       <div className="container-fluid">
@@ -71,7 +82,7 @@ const Opening: React.FC = () => {
         </div>
       )}
 
-      <Tabs>
+      <Tabs defaultSelectedIndex={getTabNumber}>
         <TabList className="tab-list" aria-label="List of Tab" contained>
           <Tab><div className="tab-header">Recent Openings</div></Tab>
           <Tab><div className="tab-header">Dashboard</div></Tab>

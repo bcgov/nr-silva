@@ -1,7 +1,7 @@
 export interface RecentOpening {
   id: string;
   openingId: string;
-  fileId: string;
+  forestFileId: string;
   cuttingPermit: string | null;
   timberMark: string | null;
   cutBlock: string | null;
