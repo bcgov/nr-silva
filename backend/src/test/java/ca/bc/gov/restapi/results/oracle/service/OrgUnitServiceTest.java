@@ -73,6 +73,20 @@ class OrgUnitServiceTest {
   }
 
   @Test
+  @DisplayName("Find all org units empty response should succeed")
+  void findAllOrgUnits_emptyResponse_shouldSucceed() {
+    orgUnitService = new OrgUnitService(orgUnitRepository, new String[] {});
+
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
+    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
+
+    Assertions.assertNotNull(entities);
+    Assertions.assertTrue(entities.isEmpty());
+
+    verify(orgUnitRepository, times(0)).findAll();
+  }
+
+  @Test
   @DisplayName("Find all org units by code happy path should succeed")
   void findAllOrgUnitsByCode_happyPath_shouldSucceed() {
     OrgUnitEntity orgUnit = new OrgUnitEntity();
