@@ -1,4 +1,3 @@
-import { OpeningFilters } from "../services/search/openings";
 export const countActiveFilters = (filters: any): number => {
     let count = 0;
 

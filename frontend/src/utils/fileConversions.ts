@@ -93,7 +93,7 @@ export const downloadPDF = (headers: any[], rows: any[], filename = "data.pdf"):
     // Add the table to the PDF
     doc.autoTable({
       head: [tableHeaders],
-      body: tableData,
+      body: tableData
     });
   
     // Trigger the download

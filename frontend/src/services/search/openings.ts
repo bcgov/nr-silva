@@ -3,8 +3,7 @@ import qs from "qs";
 import { getAuthIdToken } from "../AuthService";
 import { env } from "../../env";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
-import { createDateParams, formatDateToYYYYMMDD } from "../../utils/searchUtils";
-import MyProfile from "../../components/MyProfile";
+import { createDateParams } from "../../utils/searchUtils";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -77,7 +76,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     [dateStartKey]: filters.startDate,  // Use dynamic key for start date
     [dateEndKey]: filters.endDate,      // Use dynamic key for end date
     page: filters.page && filters.page - 1, // Adjust page index (-1)
-    perPage: filters.perPage,
+    perPage: filters.perPage
   };
 
   // Remove undefined, null, or empty string values from the params object
@@ -97,8 +96,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(`${backendUrl}/api/opening-search${queryString}`, {
     headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+      Authorization: `Bearer ${authToken}`
+    }
   });
 
   // Flatten the data part of the response
@@ -109,13 +108,13 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     categoryCode: item.category?.code,
     categoryDescription: item.category?.description,
     status: undefined, // Remove the old nested status object
-    category: undefined, // Remove the old nested category object
+    category: undefined // Remove the old nested category object
   }));
 
   // Returning the modified response data with the flattened structure
   return {
     ...response.data,
-    data: flattenedData,
+    data: flattenedData
   };
 };
 
@@ -127,8 +126,8 @@ export const fetchCategories = async (): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/categories", {
     headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+      Authorization: `Bearer ${authToken}`
+    }
   });
 
   // Returning the api response data
@@ -142,8 +141,8 @@ export const fetchOrgUnits = async (): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/org-units", {
     headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+      Authorization: `Bearer ${authToken}`
+    }
   });
 
   // Returning the api response data
@@ -163,7 +162,7 @@ export const fetchOpeningFilters = async (): Promise<any> => {
     fetchCategories(),
     fetchOrgUnits(),
     fetchDateTypes(),
-    fetchBlockStatuses(),
+    fetchBlockStatuses()
   ]);
   return { categories, orgUnits, dateTypes, blockStatuses };
 };
