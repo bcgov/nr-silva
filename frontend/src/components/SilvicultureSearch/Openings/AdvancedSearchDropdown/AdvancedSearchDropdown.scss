@@ -53,12 +53,18 @@
         padding-left: 16px;
         padding-top:8px;
     }
+    .flex-status-list{
+        flex-direction: column;
+    }
   }
   /* Medium - Up to 672px */
   @media only screen and (min-width: 672px) {
     .advanced-search-dropdown {
         width: 96.6%;
       }
+    .flex-status-list{
+        flex-direction: column;
+    }
       
   }
   /* Large - Up to 1056px  */
@@ -66,6 +72,9 @@
     .advanced-search-dropdown {
         width: 56.3%;
       }
+      .flex-status-list{
+        flex-direction: row;
+    }
   }
   
   /* Max - Up to 1584px */

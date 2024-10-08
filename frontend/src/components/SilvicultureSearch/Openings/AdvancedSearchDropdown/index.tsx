@@ -17,6 +17,7 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { color } from "@carbon/charts";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -159,43 +160,48 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
         <Row className="mb-3">
           <Column lg={8}>
-            <FormLabel>Client acronym</FormLabel>
-            <Tooltip
-              align="bottom"
-              label="If you don't remember the client information you can go to client search."
-            >
-              <button className="bx--tooltip__trigger" type="button">
-                <Icons.Information />
-              </button>
-            </Tooltip>
-            <TextInput
-              id="text-input-1"
-              type="text"
-              labelText=""
-              className="mt-2"
-              value={filters.clientAcronym}
-              onChange={(e: any) =>
-                handleFilterChange({ clientAcronym: e.target.value })
-              }
-            />
+            <div className="d-flex flex-auto mt-2 gap-1">
+              <div>
+                <FormLabel>Client acronym</FormLabel>
+                <Tooltip
+                  align="bottom"
+                  label="If you don't remember the client information you can go to client search."
+                >
+                  <button className="bx--tooltip__trigger" type="button">
+                    <Icons.Information/>
+                  </button>
+                </Tooltip>
+                <TextInput
+                  id="text-input-1"
+                  type="text"
+                  labelText=""
+                  className="mt-2"
+                  value={filters.clientAcronym}
+                  onChange={(e: any) =>
+                    handleFilterChange({ clientAcronym: e.target.value })
+                  }
+                />
+              </div>
+              <>
+                <TextInput
+                  id="client-location-code"
+                  labelText="Client location code"
+                  type="text"
+                  className="mt-1"
+                  value={filters.clientLocationCode}
+                  onChange={(e: any) =>
+                    handleFilterChange({ clientLocationCode: e.target.value })
+                  }
+                />
+              </>
+            </div>
           </Column>
           <Column lg={8}>
-            <FormLabel>Block</FormLabel>
-            <Tooltip
-              align="bottom"
-              label="If you don't remember the client information you can go to client search."
-            >
-              <button className="bx--tooltip__trigger" type="button">
-                <Icons.Information />
-              </button>
-            </Tooltip>
-            <div className="d-flex flex-auto mt-2">
+            <div className="d-flex flex-auto mt-2 gap-1">
               <TextInput
                 id="text-input-2"
                 type="text"
-                placeholder="Cut block"
-                labelText=""
-                className="mx-1"
+                labelText="Cut block"
                 value={filters.cutBlock}
                 onChange={(e: any) =>
                   handleFilterChange({ cutBlock: e.target.value })
@@ -203,8 +209,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               />
               <TextInput
                 id="text-input-3"
-                placeholder="Cutting permit"
-                labelText=""
+                labelText="Cutting permit"
                 type="text"
                 value={filters.cuttingPermit}
                 onChange={(e: any) =>
@@ -218,21 +223,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
         <Row className="mb-3">
           <Column lg={8}>
             <TextInput
-              id="gross-area-input"
-              type="number"
-              className="mt-2"
-              labelText="Gross area"
-              value={filters.grossArea}
-              onChange={(e: any) =>
-                handleFilterChange({ grossArea: e.target.value })
-              }
-            />
-          </Column>
-          <Column lg={8}>
-            <TextInput
               id="timber-mark-input"
               type="number"
-              className="mt-2"
               labelText="Timber mark"
               value={filters.timberMark}
               onChange={(e: any) =>
@@ -240,9 +232,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               }
             />
           </Column>
-        </Row>
-
-        <Row className="">
           <Column lg={8}>
             <FlexGrid className="p-0">
               <Row>
@@ -251,7 +240,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   lg={16}
                   xl={16}
                   max={5}
-                  className="date-type-col"
+                  className="date-type-col mt-sm-2 mt-lg-0"
                 >
                   <Dropdown
                     id="date-type-dropdown"
@@ -284,12 +273,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                       className="me-1"
                       onChange={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ startDate: dates[0].toISOString().slice(0, 10) });
+                          handleFilterChange({
+                            startDate: dates[0].toISOString().slice(0, 10),
+                          });
                         }
                       }}
                       onClose={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ startDate: dates[0].toISOString().slice(0, 10) });
+                          handleFilterChange({
+                            startDate: dates[0].toISOString().slice(0, 10),
+                          });
                         }
                       }}
                       readOnly={!filters.dateType}
@@ -310,12 +303,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                       datePickerType="single"
                       onChange={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ endDate: dates[0].toISOString().slice(0, 10) });
+                          handleFilterChange({
+                            endDate: dates[0].toISOString().slice(0, 10),
+                          });
                         }
                       }}
                       onClose={(dates: [Date]) => {
                         if (dates.length > 0) {
-                          handleFilterChange({ endDate: dates[0].toISOString().slice(0, 10) });
+                          handleFilterChange({
+                            endDate: dates[0].toISOString().slice(0, 10),
+                          });
                         }
                       }}
                       readOnly={!filters.dateType}
@@ -336,46 +333,39 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
               </Row>
             </FlexGrid>
           </Column>
-          <Column lg={8}>
+        </Row>
+
+        <Row className="">
+          
+          <Column lg={16}>
             <CheckboxGroup
               orientation="horizontal"
-              className="horizontal-checkbox-group"
               legendText="Status (Select One)"
             >
-              <div className="d-flex">
+              <div className="d-flex flex-status-list">
                 <Checkbox
                   labelText={`DFT - Draft`}
                   id="checkbox-label-dft"
                   checked={filters.status.includes("DFT")}
-                  onChange={() =>
-                    handleCheckboxChange("DFT", "status")
-                  }
+                  onChange={() => handleCheckboxChange("DFT", "status")}
                 />
                 <Checkbox
                   labelText={`APP - Approved`}
                   id="checkbox-label-app"
                   checked={filters.status.includes("APP")}
-                  onChange={() =>
-                    handleCheckboxChange("APP", "status")
-                  }
+                  onChange={() => handleCheckboxChange("APP", "status")}
                 />
-              </div>
-              <div className="d-flex">
                 <Checkbox
                   labelText={`FG - Free Growing`}
                   id="checkbox-label-rjc"
                   checked={filters.status.includes("FG")}
-                  onChange={() =>
-                    handleCheckboxChange("FG", "status")
-                  }
+                  onChange={() => handleCheckboxChange("FG", "status")}
                 />
                 <Checkbox
                   labelText={`SUB - Submitted`}
                   id="checkbox-label-cnl"
                   checked={filters.status.includes("SUB")}
-                  onChange={() =>
-                    handleCheckboxChange("SUB", "status")
-                  }
+                  onChange={() => handleCheckboxChange("SUB", "status")}
                 />
               </div>
             </CheckboxGroup>
