@@ -27,9 +27,9 @@ import "jspdf-autotable"; // Add this for table support in jsPDF
 // };
 
 // Utility to convert rows and headers to a CSV format
-export const downloadXLSX = async (headers: any[], rows: any[], filename = "data.csv"): string => {
-  const csvData = await convertToCSV(headers, rows);
-  downloadCSV(csvData, filename);
+export const downloadXLSX = (headers: any[], rows: any[], filename = "data.csv"): void => {
+  const csvData = convertToCSV(headers, rows);
+  return downloadCSV(csvData, filename);
 };
 
 
