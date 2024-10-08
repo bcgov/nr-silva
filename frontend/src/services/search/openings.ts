@@ -4,6 +4,7 @@ import { getAuthIdToken } from "../AuthService";
 import { env } from "../../env";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { createDateParams, formatDateToYYYYMMDD } from "../../utils/searchUtils";
+import MyProfile from "../../components/MyProfile";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -66,6 +67,11 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     category: filters.category,
     statusList: filters.status, // Keep it as an array
     entryUserId: filters.clientAcronym,
+    cutBlockId: filters.cutBlock,
+    cuttinPermitId:filters.cuttingPermit,
+    timbermark:filters.timberMark,
+    myOpenings:
+      filters.openingFilters?.includes("Openings created by me") || undefined,
     submittedToFrpa:
       filters.openingFilters?.includes("Submitted to FRPA section 108") || undefined,
     [dateStartKey]: filters.startDate,  // Use dynamic key for start date
