@@ -101,6 +101,11 @@ public class OpeningSearchResponseDto {
   private String clientNumber;
 
   @Schema(
+      description = "Sequentially assigned number to identify a ministry client location.",
+      example = "01")
+  private String clientLocation;
+
+  @Schema(
       description =
           """
                 A familiar alphabetic acronym to be used as an alternative to the Ministry's Client
@@ -108,6 +113,8 @@ public class OpeningSearchResponseDto {
                 """,
       example = "MOF")
   private String clientAcronym;
+
+  private String clientName;
 
   @Schema(description = "The final date based on the EARLY and LATE offset years.")
   private LocalDateTime regenDelayDate;

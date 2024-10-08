@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.common.exception;
 
-import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,9 +9,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class MaxPageSizeException extends ResponseStatusException {
 
   /** Creates an MaxPageSizeException exception with http status and message. */
-  public MaxPageSizeException() {
+  public MaxPageSizeException(Integer max) {
     super(
         HttpStatus.BAD_REQUEST,
-        "Max page size limit exceeded! Choose a number below " + ConstantsConfig.MAX_PAGE_SIZE);
+        "Max page size limit exceeded! Choose a number below " + max);
   }
 }
