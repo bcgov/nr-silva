@@ -26,6 +26,7 @@ public class OraclePersistenceConfig {
   @Bean
   @Primary
   public DataSource oracleDataSource() {
+    System.out.println("oracleHikariConfig: " + oracleHikariConfig);
     HikariConfig config = new HikariConfig();
     config.setJdbcUrl(oracleHikariConfig.getUrl());
     config.setUsername(oracleHikariConfig.getUsername());
