@@ -313,7 +313,7 @@ public class OpeningSearchEndpoint {
               in = ParameterIn.QUERY,
               description = "Defines the org units that should be included in the search",
               required = false)
-          List<String> codes) {
+          String[] codes) {
     return orgUnitService.findAllOrgUnitsByCode(codes);
   }
 }

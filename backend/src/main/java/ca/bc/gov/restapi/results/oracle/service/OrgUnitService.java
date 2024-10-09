@@ -30,13 +30,11 @@ public class OrgUnitService {
     log.info("Getting all org units for the search openings");
 
     if (Objects.isNull(orgUnitsFromProps) || orgUnitsFromProps.length == 0) {
-      log.info("No Org Units from the properties file.");
+      log.warn("No Org Units from the properties file.");
       return List.of();
     }
 
-    List<String> orgUnitCodes = Arrays.asList(orgUnitsFromProps);
-
-    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitCodes);
+    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitsFromProps);
 
     log.info("Found {} org units by codes", orgUnits.size());
     return orgUnits;
@@ -48,8 +46,8 @@ public class OrgUnitService {
    * @param orgUnitCodes Org Unit codes to search for.
    * @return List of {@link OrgUnitEntity} with found categories.
    */
-  public List<OrgUnitEntity> findAllOrgUnitsByCode(List<String> orgUnitCodes) {
-    log.info("Getting all org units by codes: {}", orgUnitCodes);
+  public List<OrgUnitEntity> findAllOrgUnitsByCode(String[] orgUnitCodes) {
+    log.info("Getting all org units by codes: {}", Arrays.toString(orgUnitCodes));
 
     List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitCodes);
     log.info("Found {} org units by codes", orgUnits.size());

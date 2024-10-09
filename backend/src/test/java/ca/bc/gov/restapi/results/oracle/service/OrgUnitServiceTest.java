@@ -48,7 +48,8 @@ class OrgUnitServiceTest {
     orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of(orgUnit));
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(new String[] {"DAS"}))
+        .thenReturn(List.of(orgUnit));
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
@@ -77,7 +78,7 @@ class OrgUnitServiceTest {
   void findAllOrgUnits_emptyResponse_shouldSucceed() {
     orgUnitService = new OrgUnitService(orgUnitRepository, new String[] {});
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(new String[] {"DAS"})).thenReturn(List.of());
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
@@ -106,8 +107,10 @@ class OrgUnitServiceTest {
     orgUnit.setExpiryDate(LocalDate.now().minusYears(1L));
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of(orgUnit));
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(List.of("DAS"));
+    String[] units = new String[] {"DAS"};
+
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(units)).thenReturn(List.of(orgUnit));
+    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(units);
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(1, entities.size());
@@ -131,8 +134,9 @@ class OrgUnitServiceTest {
   @Test
   @DisplayName("Find all org units by code not found should succeed")
   void findAllOrgUnitsByCode_notFound_shouldSucceed() {
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(List.of("DAS"));
+    String[] units = new String[] {"DAS"};
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(units)).thenReturn(List.of());
+    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(units);
 
     Assertions.assertNotNull(entities);
     Assertions.assertTrue(entities.isEmpty());

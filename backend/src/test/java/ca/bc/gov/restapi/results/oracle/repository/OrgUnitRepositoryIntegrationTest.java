@@ -22,7 +22,7 @@ class OrgUnitRepositoryIntegrationTest {
   @Test
   @DisplayName("Find all by org unit code unit in happy path should succeed")
   void findAllByOrgUnitCodeIn_happyPath_shouldSucceed() {
-    List<OrgUnitEntity> list = orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"));
+    List<OrgUnitEntity> list = orgUnitRepository.findAllByOrgUnitCodeIn(new String[]{"DAS"});
 
     Assertions.assertNotNull(list);
     Assertions.assertEquals(1, list.size());
