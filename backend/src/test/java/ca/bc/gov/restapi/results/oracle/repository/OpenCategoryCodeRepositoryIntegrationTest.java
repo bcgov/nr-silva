@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,10 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-@Sql(scripts = {"classpath:sql_scripts/OpenCategoryCodeRepositoryIntegrationTest.sql"})
-class OpenCategoryCodeRepositoryIntegrationTest {
+class OpenCategoryCodeRepositoryIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired private OpenCategoryCodeRepository openCategoryCodeRepository;
 
@@ -26,11 +24,11 @@ class OpenCategoryCodeRepositoryIntegrationTest {
         openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
 
     Assertions.assertNotNull(list);
-    Assertions.assertEquals(1, list.size());
+    Assertions.assertEquals(22, list.size());
 
     OpenCategoryCodeEntity category = list.get(0);
-    Assertions.assertEquals("AAA", category.getCode());
-    Assertions.assertEquals("AAA description valid", category.getDescription());
+    Assertions.assertEquals("CONT", category.getCode());
+    Assertions.assertEquals("SP as a part of contractual agreement", category.getDescription());
     Assertions.assertTrue(category.getExpiryDate().isAfter(LocalDate.now()));
   }
 }
