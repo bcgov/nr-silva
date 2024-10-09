@@ -7,13 +7,14 @@ import org.testcontainers.utility.DockerImageName;
 
 /**
  * CustomOracleContainer extends OracleContainer to provide a customized Oracle database container.
- * This is because by default, the library expects the Oracle database to come from a different image.
+ * This is because by default, the library expects the Oracle database to come from a different
+ * image.
  */
 public class CustomOracleContainer extends OracleContainer {
 
   /**
-   * Constructs a CustomOracleContainer with predefined settings.
-   * Sets the Docker image, database name, username, and a random password.
+   * Constructs a CustomOracleContainer with predefined settings. Sets the Docker image, database
+   * name, username, and a random password.
    */
   public CustomOracleContainer() {
     super(
@@ -28,8 +29,8 @@ public class CustomOracleContainer extends OracleContainer {
   }
 
   /**
-   * Overrides the waitUntilContainerStarted method to set a custom startup timeout.
-   * The Oracle image tends to be slow, so we set a longer timeout.
+   * Overrides the waitUntilContainerStarted method to set a custom startup timeout. The Oracle
+   * image tends to be slow, so we set a longer timeout.
    */
   @Override
   protected void waitUntilContainerStarted() {
