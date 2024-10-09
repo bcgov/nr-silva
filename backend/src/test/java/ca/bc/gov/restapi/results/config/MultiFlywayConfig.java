@@ -1,9 +1,9 @@
 package ca.bc.gov.restapi.results.config;
 
+import ca.bc.gov.restapi.results.oracle.config.OracleHikariConfig;
+import ca.bc.gov.restapi.results.postgres.config.PostgresHikariConfig;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,33 +11,40 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MultiFlywayConfig {
 
-  /*@Bean
-  @ConfigurationProperties(prefix = "spring.datasource.postgres")
-  public DataSource postgresDataSource() {
-    return DataSourceBuilder.create().build();
-  }*/
-
-/*  @Bean
-  @ConfigurationProperties(prefix = "spring.datasource.oracle")
-  public DataSource oracleDataSource() {
-    return DataSourceBuilder.create().build();
-  }*/
-
-  /*@Bean
-  public Flyway flywayPostgres(@Qualifier("postgresDataSource") DataSource postgresDataSource) {
+  @Bean
+  public Flyway flywayPostgres(PostgresHikariConfig postgresHikariConfig) {
     return Flyway.configure()
-        .dataSource(postgresDataSource)
-        .locations("classpath:db/migration/postgres")
+        .dataSource(toDataSource(postgresHikariConfig))
+        .locations("classpath:db/migration", "classpath:migration/postgres")
+        .baselineOnMigrate(true)
         .load();
-  }*/
+  }
 
-  /*@Bean
-  public Flyway flywayOracle(@Qualifier("oracleDataSource") DataSource oracleDataSource) {
+  @Bean
+  public Flyway flywayOracle(OracleHikariConfig postgresHikariConfig) {
     return Flyway.configure()
-        .dataSource(oracleDataSource)
-        .locations("classpath:db/migration/oracle")
+        .dataSource(toDataSource(postgresHikariConfig))
+        .locations("classpath:migration/oracle")
         .schemas("THE")
         .load();
-  }*/
+  }
+
+  private DataSource toDataSource(PostgresHikariConfig postgresHikariConfig) {
+    return DataSourceBuilder.create()
+        .url(postgresHikariConfig.getUrl())
+        .username(postgresHikariConfig.getUsername())
+        .password(postgresHikariConfig.getPassword())
+        .driverClassName(postgresHikariConfig.getDriverClassName())
+        .build();
+  }
+
+  private DataSource toDataSource(OracleHikariConfig postgresHikariConfig) {
+    return DataSourceBuilder.create()
+        .url(postgresHikariConfig.getUrl())
+        .username(postgresHikariConfig.getUsername())
+        .password(postgresHikariConfig.getPassword())
+        .driverClassName(postgresHikariConfig.getDriverClassName())
+        .build();
+  }
 
 }
