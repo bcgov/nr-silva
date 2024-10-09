@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningDto;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,21 +44,15 @@ public class UserOpeningEndpoint {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "An array containing up to three Openings for the user.",
+            description = "An array containing up to three Openings for the user. Or an empty list",
             content = @Content(mediaType = "application/json")),
-        @ApiResponse(
-            responseCode = "204",
-            description = "No data found for this user. No response body."),
         @ApiResponse(
             responseCode = "401",
             description = "Access token is missing or invalid",
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
-  public ResponseEntity<List<MyRecentActionsRequestsDto>> getUserTrackedOpenings() {
-    List<MyRecentActionsRequestsDto> userOpenings = userOpeningService.getUserTrackedOpenings();
-    if (userOpenings.isEmpty()) {
-      return ResponseEntity.noContent().build();
-    }
+  public ResponseEntity<List<TrackOpeningDto>> getUserTrackedOpenings() {
+    List<TrackOpeningDto> userOpenings = userOpeningService.getUserTrackedOpenings();
 
     return ResponseEntity.ok(userOpenings);
   }

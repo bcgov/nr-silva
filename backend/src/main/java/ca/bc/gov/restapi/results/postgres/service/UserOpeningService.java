@@ -2,13 +2,14 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
-import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningDto;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningStepDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +33,9 @@ public class UserOpeningService {
   /**
    * Gets user's tracked Openings.
    *
-   * @return A list of {@link MyRecentActionsRequestsDto} containing the found records.
+   * @return A list of {@link TrackOpeningDto} containing the found records.
    */
-  public List<MyRecentActionsRequestsDto> getUserTrackedOpenings() {
+  public List<TrackOpeningDto> getUserTrackedOpenings() {
     log.info("Getting all user openings for the Track openings table");
 
     String userId = loggedUserService.getLoggedUserId();
@@ -45,30 +46,30 @@ public class UserOpeningService {
       return List.of();
     }
 
-    List<Long> openingIds = userList.stream().map(UserOpeningEntity::getOpeningId).toList();
-    List<OpeningsActivityEntity> openingActivities =
-        openingsActivityRepository.findAllByOpeningId(openingIds);
+    // List<Long> openingIds = userList.stream().map(UserOpeningEntity::getOpeningId).toList();
 
-    if (openingActivities.isEmpty()) {
+    // List<OpeningsActivityEntity> openingActivities =
+    //     openingsActivityRepository.findAllByOpeningId(openingIds);
+
+    if (userList.isEmpty()) {
       log.info("No records found on the opening activity table for the opening ID list!");
       return List.of();
     }
 
-    List<MyRecentActionsRequestsDto> resultList = new ArrayList<>();
+    // get history from where?
+
+    List<TrackOpeningDto> resultList = new ArrayList<>();
 
     PrettyTime prettyTime = new PrettyTime();
 
-    for (OpeningsActivityEntity activityEntity : openingActivities) {
-      MyRecentActionsRequestsDto requestsDto =
-          new MyRecentActionsRequestsDto(
-              activityEntity.getActivityTypeDesc(),
-              activityEntity.getOpeningId(),
-              activityEntity.getStatusCode(),
-              activityEntity.getStatusDesc(),
-              prettyTime.format(activityEntity.getLastUpdated()),
-              activityEntity.getLastUpdated());
+    for (UserOpeningEntity userOpening : userList) {
+      // steps
+      TrackOpeningStepDto step1 =
+          new TrackOpeningStepDto(
+              1, "complete", "Opening ID", prettyTime.format(LocalDateTime.now()));
+      TrackOpeningDto trackingDto = new TrackOpeningDto(userOpening.getOpeningId(), List.of(step1));
 
-      resultList.add(requestsDto);
+      resultList.add(trackingDto);
 
       if (resultList.size() == 3) {
         break;
