@@ -1,16 +1,6 @@
 spring:
-# Flyway configuration for the PostgreSQL datasource
-#  flyway:
-#    postgres:
-#      enabled: true
-#      locations: classpath:db/migration/postgres
-
-  # Flyway configuration for the Oracle datasource
-#    oracle:
-#      enabled: true
-#      schemas: THE
-#      locations: classpath:db/migration/oracle
-
+  flyway:
+    enabled: false
 # FAM
   security:
     oauth2:

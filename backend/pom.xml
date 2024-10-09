@@ -42,6 +42,7 @@
     <snakeyaml.version>2.2</snakeyaml.version>
     <hibernate.version>6.5.3.Final</hibernate.version>
     <testcontainers.version>1.20.2</testcontainers.version>
+    <flyway.version>10.13.0</flyway.version>
   </properties>
 
   <profiles>
@@ -158,6 +159,11 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-oracle</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

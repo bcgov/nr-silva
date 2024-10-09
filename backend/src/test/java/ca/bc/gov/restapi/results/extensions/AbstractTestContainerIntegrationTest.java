@@ -34,16 +34,16 @@ public abstract class AbstractTestContainerIntegrationTest {
     oracle.start();
   }
 
-/*  @Autowired
-  private Flyway flywayPostgres;*/
+  @Autowired
+  private Flyway flywayPostgres;
 
-/*  @Autowired
-  private Flyway flywayOracle;*/
+  @Autowired
+  private Flyway flywayOracle;
 
   @BeforeEach
   public void setUp() {
-    //flywayPostgres.migrate();
-    //flywayOracle.migrate();
+    flywayPostgres.migrate();
+    flywayOracle.migrate();
   }
 
   @DynamicPropertySource
@@ -57,13 +57,13 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry.add("spring.flyway.postgres.user", postgres::getUsername);
     registry.add("spring.flyway.postgres.password", postgres::getPassword);
     // Overwrite the Oracle datasource with the testcontainer configuration
-    //registry.add("spring.datasource.oracle.url", postgres::getJdbcUrl);
-    //registry.add("spring.datasource.oracle.username", postgres::getUsername);
-    //registry.add("spring.datasource.oracle.password", postgres::getPassword);
+    registry.add("spring.datasource.oracle.url",oracle::getJdbcUrl);
+    registry.add("spring.datasource.oracle.username",oracle::getUsername);
+    registry.add("spring.datasource.oracle.password",oracle::getPassword);
     // Overwrite the Flyway for Oracle with the testcontainer configuration
-    //registry.add("spring.flyway.oracle.url", postgres::getJdbcUrl);
-    //registry.add("spring.flyway.oracle.user", postgres::getUsername);
-    //registry.add("spring.flyway.oracle.password", postgres::getPassword);
+    registry.add("spring.flyway.oracle.url",oracle::getJdbcUrl);
+    registry.add("spring.flyway.oracle.user",oracle::getUsername);
+    registry.add("spring.flyway.oracle.password",oracle::getPassword);
   }
 }
 
