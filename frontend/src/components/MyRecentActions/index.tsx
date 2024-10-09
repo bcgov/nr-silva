@@ -14,18 +14,22 @@ const MyRecentActions: React.FC = () => {
     {
       key: 'activityType',
       header: 'Activity Type',
+      selected: true
     },
     {
       key: 'openingId',
       header: 'Opening ID',
+      selected: true
     },
     {
       key: 'statusCode',
       header: 'Status',
+      selected: true
     },
     {
       key: 'lastUpdatedLabel',
       header: 'Last Updated',
+      selected: true
     }
   ];
 

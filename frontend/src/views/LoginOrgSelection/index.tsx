@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlexGrid, Row, Column } from '@carbon/react';
 import OrganizationSelection from '../../components/OrganizationSelection';
 import { RootState } from '../../store';
@@ -26,7 +26,7 @@ function LoginOrgSelection (): JSX.Element {
               Organization selection
             </h2>
             <p className="subtitle-text">
-              {`${user?.firstName} ${user?.lastName} (${user?.providerUsername}) select which organization you're representing.`}
+              {`${user?.firstName} ${user?.lastName} ${user.providerUsername ? "("+user.providerUsername+")": ""} select which organization you're representing.`}
             </p>
           </section>
           <OrganizationSelection />

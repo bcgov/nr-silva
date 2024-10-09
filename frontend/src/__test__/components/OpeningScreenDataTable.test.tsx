@@ -21,7 +21,7 @@ const rows: RecentOpening[] = [{
 }];
 
 const headers = [{ key: 'openingId', header: 'Opening Id', },
-  { key: 'fileId', header: 'File Id', },
+  { key: 'forestFileId', header: 'File Id', },
   { key: 'cuttingPermit', header: 'Cutting permit', },
   { key: 'timberMark', header: 'Timber mark', },
   { key: 'cutBlock', header: 'Cut block', },
@@ -42,6 +42,8 @@ const paginationValueMock = {
   handlePageChange: vi.fn(),
   handleItemsPerPageChange: vi.fn(),
   itemsPerPage: 5,
+  totalResultItems:100,
+  setTotalResultItems:vi.fn(),
   setPageData: vi.fn(),
   setInitialItemsPerPage: vi.fn(),
 };

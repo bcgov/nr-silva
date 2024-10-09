@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import PaginationProvider from './contexts/PaginationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { OpeningsSearchProvider } from './contexts/search/OpeningsSearch';
 
 const container: HTMLElement | null = document.getElementById('root');
 if (container) {
@@ -47,7 +48,9 @@ if (container) {
           <QueryClientProvider client={queryClient}>
             <Provider store={store}>
               <PaginationProvider>
-                <App />
+                <OpeningsSearchProvider>
+                  <App />
+                </OpeningsSearchProvider>
               </PaginationProvider>
             </Provider>
           </QueryClientProvider>

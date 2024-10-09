@@ -2,6 +2,9 @@
 @use '@carbon/type';
 
 .subtitle-section {
-  @include type.type-style('body-compact-01');
+  @include type.type-style('body-02');
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
   color: var(--#{vars.$bcgov-prefix}-text-secondary);
 }

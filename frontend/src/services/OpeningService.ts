@@ -14,7 +14,7 @@ interface statusCategory {
 
 interface RecentOpeningApi {
   openingId: number;
-  fileId: string;
+  forestFileId: string;
   cuttingPermit: string | null;
   timberMark: string | null;
   cutBlock: string | null;
@@ -48,7 +48,7 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
         const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
           id: opening.openingId.toString(),
           openingId: opening.openingId.toString(),
-          fileId: opening.fileId ? opening.fileId : '-',
+          forestFileId: opening.forestFileId ? opening.forestFileId : '-',
           cuttingPermit: opening.cuttingPermit ? opening.cuttingPermit : '-',
           timberMark: opening.timberMark ? opening.timberMark : '-',
           cutBlock: opening.cutBlock ? opening.cutBlock : '-',
