@@ -14,15 +14,25 @@ import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Abstract base class for integration tests using Testcontainers for PostgreSQL and Oracle databases.
+ * This class instantiate and manage the ephemeral databases for the tests. This allows the application
+ * to run against the real database engines without the need to manually spin them up.
+ * It will also avoid conflicts in case of a database instance running in the host machine.
+ * It also helps to keep the tests isolated and avoid side effects, such as data type incompatibilities.
+ */
 @Testcontainers
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 public abstract class AbstractTestContainerIntegrationTest {
 
+  /** PostgreSQL container instance. */
   static final PostgreSQLContainer postgres;
+  /** Oracle container instance. */
   static final OracleContainer oracle;
 
+  // Static fields declared like this are instantiated first by the JVM
   static {
     postgres = new PostgreSQLContainer("postgres:13")
         .withDatabaseName("silva")
@@ -40,12 +50,23 @@ public abstract class AbstractTestContainerIntegrationTest {
   @Autowired
   private Flyway flywayOracle;
 
+  /**
+   * Migrate the databases using Flyway before each test.
+   * As we're using flyway, there's no need to worry about duplicate insertion
+   */
   @BeforeEach
   public void setUp() {
     flywayPostgres.migrate();
     flywayOracle.migrate();
   }
 
+  /**
+   * Register dynamic properties from the testcontainers.
+   * This will overwrite the application properties for the databases with the testcontainers configuration.
+   * allowing the application to connect to the ephemeral databases.
+   * As the username and password is randomly generated, there's no need to worry about conflicts.
+   * @param registry the dynamic property registry from spring itself
+   */
   @DynamicPropertySource
   static void registerDynamicProperties(DynamicPropertyRegistry registry) {
     // Overwrite the Postgres datasource with the testcontainer configuration
