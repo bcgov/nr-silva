@@ -15,11 +15,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
- * Abstract base class for integration tests using Testcontainers for PostgreSQL and Oracle databases.
- * This class instantiate and manage the ephemeral databases for the tests. This allows the application
- * to run against the real database engines without the need to manually spin them up.
- * It will also avoid conflicts in case of a database instance running in the host machine.
- * It also helps to keep the tests isolated and avoid side effects, such as data type incompatibilities.
+ * Abstract base class for integration tests using Testcontainers for PostgreSQL and Oracle
+ * databases. This class instantiate and manage the ephemeral databases for the tests. This allows
+ * the application to run against the real database engines without the need to manually spin them
+ * up. It will also avoid conflicts in case of a database instance running in the host machine. It
+ * also helps to keep the tests isolated and avoid side effects, such as data type
+ * incompatibilities.
  */
 @Testcontainers
 @ExtendWith({SpringExtension.class})
@@ -27,9 +28,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ContextConfiguration
 public abstract class AbstractTestContainerIntegrationTest {
 
-  /** PostgreSQL container instance. */
+  /**
+   * PostgreSQL container instance.
+   */
   static final PostgreSQLContainer postgres;
-  /** Oracle container instance. */
+  /**
+   * Oracle container instance.
+   */
   static final OracleContainer oracle;
 
   // Static fields declared like this are instantiated first by the JVM
@@ -51,8 +56,8 @@ public abstract class AbstractTestContainerIntegrationTest {
   private Flyway flywayOracle;
 
   /**
-   * Migrate the databases using Flyway before each test.
-   * As we're using flyway, there's no need to worry about duplicate insertion
+   * Migrate the databases using Flyway before each test. As we're using flyway, there's no need to
+   * worry about duplicate insertion
    */
   @BeforeEach
   public void setUp() {
@@ -61,10 +66,11 @@ public abstract class AbstractTestContainerIntegrationTest {
   }
 
   /**
-   * Register dynamic properties from the testcontainers.
-   * This will overwrite the application properties for the databases with the testcontainers configuration.
-   * allowing the application to connect to the ephemeral databases.
-   * As the username and password is randomly generated, there's no need to worry about conflicts.
+   * Register dynamic properties from the testcontainers. This will overwrite the application
+   * properties for the databases with the testcontainers configuration. allowing the application to
+   * connect to the ephemeral databases. As the username and password is randomly generated, there's
+   * no need to worry about conflicts.
+   *
    * @param registry the dynamic property registry from spring itself
    */
   @DynamicPropertySource
@@ -78,13 +84,13 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry.add("spring.flyway.postgres.user", postgres::getUsername);
     registry.add("spring.flyway.postgres.password", postgres::getPassword);
     // Overwrite the Oracle datasource with the testcontainer configuration
-    registry.add("spring.datasource.oracle.url",oracle::getJdbcUrl);
-    registry.add("spring.datasource.oracle.username",oracle::getUsername);
-    registry.add("spring.datasource.oracle.password",oracle::getPassword);
+    registry.add("spring.datasource.oracle.url", oracle::getJdbcUrl);
+    registry.add("spring.datasource.oracle.username", oracle::getUsername);
+    registry.add("spring.datasource.oracle.password", oracle::getPassword);
     // Overwrite the Flyway for Oracle with the testcontainer configuration
-    registry.add("spring.flyway.oracle.url",oracle::getJdbcUrl);
-    registry.add("spring.flyway.oracle.user",oracle::getUsername);
-    registry.add("spring.flyway.oracle.password",oracle::getPassword);
+    registry.add("spring.flyway.oracle.url", oracle::getJdbcUrl);
+    registry.add("spring.flyway.oracle.user", oracle::getUsername);
+    registry.add("spring.flyway.oracle.password", oracle::getPassword);
   }
 }
 
