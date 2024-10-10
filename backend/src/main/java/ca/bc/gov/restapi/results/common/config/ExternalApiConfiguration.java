@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
+/**
+ * Configuration class for external API clients. This class is responsible for creating beans for
+ * the RestClient instances used to interact with external APIs.
+ */
 @Configuration
 public class ExternalApiConfiguration {
 

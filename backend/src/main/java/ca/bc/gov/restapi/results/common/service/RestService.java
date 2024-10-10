@@ -39,15 +39,15 @@ public class RestService {
                       .queryParam("outputFormat", "application/json")
                       .queryParam("SrsName", "EPSG:4326")
                       .queryParam("PROPERTYNAME",
-                          "OPENING_ID," +
-                          "GEOMETRY," +
-                          "REGION_NAME," +
-                          "REGION_CODE," +
-                          "DISTRICT_NAME," +
-                          "DISTRICT_CODE," +
-                          "CLIENT_NAME," +
-                          "CLIENT_NUMBER," +
-                          "OPENING_WHEN_CREATED"
+                          "OPENING_ID,"
+                              + "GEOMETRY,"
+                              + "REGION_NAME,"
+                              + "REGION_CODE,"
+                              + "DISTRICT_NAME,"
+                              + "DISTRICT_CODE,"
+                              + "CLIENT_NAME,"
+                              + "CLIENT_NUMBER,"
+                              + "OPENING_WHEN_CREATED"
                       )
                       .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
                       .build(Map.of())
