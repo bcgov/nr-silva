@@ -8,7 +8,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** This class represents a pagination documentation. */
+/**
+ * This class represents a pagination documentation.
+ */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(
@@ -21,4 +23,6 @@ import java.lang.annotation.Target;
     description = "The maximum number of results in a page.",
     name = "perPage",
     schema = @Schema(type = "integer", defaultValue = "5", minimum = "1"))
-public @interface PaginatedViaQuery {}
+public @interface PaginatedViaQuery {
+
+}

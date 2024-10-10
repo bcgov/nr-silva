@@ -27,7 +27,7 @@ public class ForestClientService {
     log.info("Received client number to fetch {}", clientNumber);
 
     String fixedNumber = checkClientNumber(clientNumber);
-    if (!fixedNumber.equals("clientNumber")) {
+    if (!fixedNumber.equals(clientNumber)) {
       log.info("Fixed client number to fetch {}", fixedNumber);
     }
 
