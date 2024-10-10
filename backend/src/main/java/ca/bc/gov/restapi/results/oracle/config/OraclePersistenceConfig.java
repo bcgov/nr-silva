@@ -10,11 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-/** This class holds persistence configurations for the Oracle database. */
+/**
+ * This class holds persistence configurations for the Oracle database.
+ */
 @Configuration
 public class OraclePersistenceConfig {
 
-  @Autowired private OracleHikariConfig oracleHikariConfig;
+  @Autowired
+  private OracleHikariConfig oracleHikariConfig;
 
   @Bean
   @ConfigurationProperties("spring.datasource.oracle")
@@ -22,7 +25,9 @@ public class OraclePersistenceConfig {
     return new DataSourceProperties();
   }
 
-  /** Creates a Postgres Datasource with all Hikari connection pool configuration. */
+  /**
+   * Creates a Postgres Datasource with all Hikari connection pool configuration.
+   */
   @Bean
   @Primary
   public DataSource oracleDataSource() {

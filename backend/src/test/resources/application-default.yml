@@ -1,0 +1,26 @@
+spring:
+  flyway:
+    enabled: false
+# FAM
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://aws-cognito-issuer-uri.aws.com
+          jwk-set-uri: https://aws-cognito-issuer-uri.aws.com/.well-known/jwks.json
+
+# Users allowed to see and download WMS layers information
+nr:
+  results:
+    config:
+      wms-layers:
+        whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+
+# Forest Client API
+#forest-client-api:
+#  address: https://nonexistent.org
+#  key: 123456789abcdef
+
+logging:
+  level:
+    ca.bc.gov.restapi.results: ${LOGGING_LEVEL:INFO}

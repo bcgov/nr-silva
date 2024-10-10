@@ -1,24 +1,19 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-@Sql(scripts = {"classpath:sql_scripts/OpeningRepositoryIntegrationTest.sql"})
-class OpeningRepositoryIntegrationTest {
+class OpeningRepositoryIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private OpeningRepository openingRepository;
+  @Autowired
+  private OpeningRepository openingRepository;
 
   @Test
   @DisplayName("Finds all openings by entry user ID")

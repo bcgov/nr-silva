@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import java.time.LocalDate;
 import java.util.List;
@@ -7,17 +8,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-@Sql(scripts = {"classpath:sql_scripts/OrgUnitRepositoryIntegrationTest.sql"})
-class OrgUnitRepositoryIntegrationTest {
+class OrgUnitRepositoryIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private OrgUnitRepository orgUnitRepository;
+  @Autowired
+  private OrgUnitRepository orgUnitRepository;
 
   @Test
   @DisplayName("Find all by expiry date after happy path should succeed")
@@ -25,7 +20,7 @@ class OrgUnitRepositoryIntegrationTest {
     List<OrgUnitEntity> list = orgUnitRepository.findAllByExpiryDateAfter(LocalDate.now());
 
     Assertions.assertNotNull(list);
-    Assertions.assertEquals(1, list.size());
+    Assertions.assertEquals(2, list.size());
 
     OrgUnitEntity orgUnit = list.get(0);
     Assertions.assertEquals(1L, orgUnit.getOrgUnitNo());
