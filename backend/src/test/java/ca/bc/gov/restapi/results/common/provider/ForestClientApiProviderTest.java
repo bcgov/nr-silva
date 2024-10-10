@@ -42,22 +42,21 @@ class ForestClientApiProviderTest {
   void fetchClientByNumber_happyPath_shouldSucceed() {
 
     String clientNumber = "00012797";
-    clientApiStub
-        .stubFor(
-            get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
-                .willReturn(okJson("""
-                    {
-                      "clientNumber": "00012797",
-                      "clientName": "MINISTRY OF FORESTS",
-                      "legalFirstName": null,
-                      "legalMiddleName": null,
-                      "clientStatusCode": "ACT",
-                      "clientTypeCode": "F",
-                      "acronym": "MOF"
-                    }
-                    """)
-                )
-        );
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+            .willReturn(okJson("""
+                {
+                  "clientNumber": "00012797",
+                  "clientName": "MINISTRY OF FORESTS",
+                  "legalFirstName": null,
+                  "legalMiddleName": null,
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "F",
+                  "acronym": "MOF"
+                }
+                """)
+            )
+    );
 
     Optional<ForestClientDto> clientDto = forestClientApiProvider.fetchClientByNumber(clientNumber);
 
@@ -78,11 +77,10 @@ class ForestClientApiProviderTest {
   @DisplayName("Fetch client by number client not found should succeed")
   void fetchClientByNumber_clientNotFound_shouldSucceed() {
     String clientNumber = "00012797";
-    clientApiStub
-        .stubFor(
-            get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
-                .willReturn(notFound())
-        );
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+            .willReturn(notFound())
+    );
 
     Optional<ForestClientDto> clientDto = forestClientApiProvider.fetchClientByNumber(clientNumber);
 
