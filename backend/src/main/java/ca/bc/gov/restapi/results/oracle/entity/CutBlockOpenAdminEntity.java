@@ -6,9 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.With;
 
@@ -16,6 +18,8 @@ import lombok.With;
 @Data
 @Builder
 @With
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "CUT_BLOCK_OPEN_ADMIN")
 @Entity
 public class CutBlockOpenAdminEntity {
