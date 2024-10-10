@@ -81,6 +81,9 @@ parameters:
   - name: WMS_LAYERS_WHITELIST_USERS
     description: List of users that can see active layers on the map view
     required: true
+  - name: OPENING_SEARCH_ORG_UNITS
+    description: List of Org Units code to be displayed as options for the opening search
+    value: DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC
   - name: RANDOM_EXPRESSION
     description: Random expression to make sure deployments update
     from: "[a-zA-Z0-9]{32}"
@@ -141,6 +144,8 @@ objects:
                   value: ${ALLOWED_ORIGINS}
                 - name: WMS_LAYERS_WHITELIST_USERS
                   value: ${WMS_LAYERS_WHITELIST_USERS}
+                - name: OPENING_SEARCH_ORG_UNITS
+                  value: ${OPENING_SEARCH_ORG_UNITS}
                 - name: FORESTCLIENTAPI_KEY
                   valueFrom:
                     secretKeyRef:
