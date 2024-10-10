@@ -1,4 +1,13 @@
 package ca.bc.gov.restapi.results.common.dto;
 
-/** This record represents the filters for the oracle extraction process. */
-public record OracleExtractionParamsDto(Integer months, Boolean debug, Boolean manuallyTriggered) {}
+import lombok.Builder;
+import lombok.With;
+
+/**
+ * This record represents the filters for the oracle extraction process.
+ */
+@Builder
+@With
+public record OracleExtractionParamsDto(Integer months, Boolean debug, Boolean manuallyTriggered) {
+
+}
