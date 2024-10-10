@@ -20,7 +20,7 @@ public enum OpeningCategoryEnum {
   FTNOLVY(
       "FTNOLVY",
       "Post April 1/09 blocks (1-5 ha) for which there is no opportunity within the appraisal"
-          + " manual to collect a levy."),
+      + " manual to collect a levy."),
   FTPI("FTPI", "Forest Tenure - pilot agreement"),
   FTSBF("FTSBF", "Forest Tenure - Small Business Forest Enterprise Program"),
   FTWL("FTWL", "Forest Tenure - Woodlot: Site Plan"),
@@ -32,7 +32,7 @@ public enum OpeningCategoryEnum {
   SPEX(
       "SPEX",
       "Areas with no reforestation or FG obligations and the area is exempt from a site plan"
-          + " requirement"),
+      + " requirement"),
   UHRV("UHRV", "Unauthorized Harvesting");
 
   private final String code;

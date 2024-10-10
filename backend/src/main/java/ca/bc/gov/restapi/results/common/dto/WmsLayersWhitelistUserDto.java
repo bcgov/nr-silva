@@ -1,4 +1,13 @@
 package ca.bc.gov.restapi.results.common.dto;
 
-/** This record represents a user in the whitelist. */
-public record WmsLayersWhitelistUserDto(String userName) {}
+import lombok.Builder;
+import lombok.With;
+
+/**
+ * This record represents a user in the whitelist.
+ */
+@Builder
+@With
+public record WmsLayersWhitelistUserDto(String userName) {
+
+}

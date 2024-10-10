@@ -1,13 +1,15 @@
 package ca.bc.gov.restapi.results.oracle.util;
 
-/** This class contains methods for manual pagination. */
+/**
+ * This class contains methods for manual pagination.
+ */
 public class PaginationUtil {
 
   /**
    * Get the last page number, AKA total number of pages.
    *
    * @param totalElements The total number of elements
-   * @param pageSize The page size
+   * @param pageSize      The page size
    * @return The last page number, representing the total number of pages.
    */
   public static int getLastPage(int totalElements, int pageSize) {
@@ -22,7 +24,7 @@ public class PaginationUtil {
    * Get the start index (offset) when creating a sub list from a list.
    *
    * @param currentPage The current position or page
-   * @param pageSize The page size
+   * @param pageSize    The page size
    * @return The start index
    */
   public static int getStartIndex(int currentPage, int pageSize) {
@@ -33,8 +35,8 @@ public class PaginationUtil {
   /**
    * Get the last index (offset) when creating a sub list from a list.
    *
-   * @param startIndex The first position
-   * @param pageSize The page size
+   * @param startIndex    The first position
+   * @param pageSize      The page size
    * @param totalElements The total number of elements
    * @return The last index
    */
@@ -42,4 +44,5 @@ public class PaginationUtil {
     int endIndex = Math.min(startIndex + pageSize, totalElements);
     return endIndex;
   }
+
 }
