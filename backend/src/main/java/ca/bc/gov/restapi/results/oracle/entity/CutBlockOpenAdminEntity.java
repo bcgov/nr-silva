@@ -6,12 +6,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /** This class represents a CUT_BLOCK_OPEN_ADMIN entity in the database. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Table(name = "CUT_BLOCK_OPEN_ADMIN")
 @Entity
 public class CutBlockOpenAdminEntity {

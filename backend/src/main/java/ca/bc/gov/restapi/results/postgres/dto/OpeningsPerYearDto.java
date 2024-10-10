@@ -1,8 +1,12 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.With;
 
 /** This record represents a record for the "Opening submission trends" chart. */
+@Builder
+@With
 @Schema(
     description = "This record represents a record for the \"Opening submission trends\" chart.")
 public record OpeningsPerYearDto(

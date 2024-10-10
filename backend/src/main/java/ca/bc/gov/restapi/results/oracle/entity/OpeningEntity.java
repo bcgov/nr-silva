@@ -5,12 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /** This class represents an Opening in the database. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
 @Table(name = "OPENING")
 public class OpeningEntity {

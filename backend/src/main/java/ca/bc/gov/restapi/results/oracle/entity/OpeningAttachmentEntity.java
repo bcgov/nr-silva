@@ -4,18 +4,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /** This class represents an Opening Attachment in the database. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
-@ToString
 @Table(name = "OPENING_ATTACHMENT")
-@EqualsAndHashCode
 public class OpeningAttachmentEntity {
 
   @Id

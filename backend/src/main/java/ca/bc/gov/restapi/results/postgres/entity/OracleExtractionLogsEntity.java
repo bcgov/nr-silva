@@ -8,16 +8,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /** This class represents a log message in the database, for the oracle extraction flow. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
 @Table(name = "oracle_extraction_logs")
-@ToString
 public class OracleExtractionLogsEntity {
 
   @Id

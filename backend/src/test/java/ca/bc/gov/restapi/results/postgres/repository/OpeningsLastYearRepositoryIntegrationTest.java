@@ -15,10 +15,10 @@ class OpeningsLastYearRepositoryIntegrationTest extends AbstractTestContainerInt
 
   @Test
   @DisplayName("find all by Opening ID in List")
-  void findAllByOpeningIdInListTest() {
+  void findAllByOpeningIdIsInTest() {
     List<Long> idList = List.of(7012511L, 7012512L, 7012513L);
     List<OpeningsLastYearEntity> openingList =
-        openingsLastYearRepository.findAllByOpeningIdInList(idList);
+        openingsLastYearRepository.findAllByOpeningIdIsIn(idList);
 
     Assertions.assertFalse(openingList.isEmpty());
     Assertions.assertEquals(3, openingList.size());

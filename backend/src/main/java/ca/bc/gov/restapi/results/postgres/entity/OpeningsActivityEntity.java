@@ -6,12 +6,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /** This class represents a record in the database for the openings_activity table. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @IdClass(OpeningsActivityEntityId.class)
 @Entity
 @Table(name = "openings_activity")

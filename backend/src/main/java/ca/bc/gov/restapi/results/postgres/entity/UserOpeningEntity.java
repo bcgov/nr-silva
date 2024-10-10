@@ -5,19 +5,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /** This class represents an Opening saved as favourite to the user. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
 @Table(name = "user_openings")
 @IdClass(UserOpeningEntityId.class)
-@ToString
-@EqualsAndHashCode
 public class UserOpeningEntity {
 
   @Id

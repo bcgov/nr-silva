@@ -5,12 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /** This class represents an Opening Category in the database. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
 @Table(name = "OPEN_CATEGORY_CODE")
 public class OpenCategoryCodeEntity {

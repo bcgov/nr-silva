@@ -4,18 +4,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /** This class represents an Electronic Submission for the Openings in the database. */
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@With
 @Entity
 @Table(name = "RESULTS_ELECTRONIC_SUBMISSION")
-@EqualsAndHashCode
 public class ResultsElectronicSubmissionEntity {
   
   @Id

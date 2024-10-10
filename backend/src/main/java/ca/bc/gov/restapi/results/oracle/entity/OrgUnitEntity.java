@@ -5,18 +5,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /** This class represents an Organization Unity in the database. */
-@Getter
-@Setter
+@Data
+@Builder
+@With
 @Entity
-@ToString
 @Table(name = "ORG_UNIT")
-@EqualsAndHashCode
 public class OrgUnitEntity {
 
   @Id
