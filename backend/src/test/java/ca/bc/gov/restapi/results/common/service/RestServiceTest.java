@@ -49,15 +49,15 @@ class RestServiceTest {
                 .withQueryParam("outputFormat", equalTo("application/json"))
                 .withQueryParam("SrsName", equalTo("EPSG:4326"))
                 .withQueryParam("PROPERTYNAME",
-                    equalTo("OPENING_ID," +
-                        "GEOMETRY," +
-                        "REGION_NAME," +
-                        "REGION_CODE," +
-                        "DISTRICT_NAME," +
-                        "DISTRICT_CODE," +
-                        "CLIENT_NAME," +
-                        "CLIENT_NUMBER," +
-                        "OPENING_WHEN_CREATED"
+                    equalTo("OPENING_ID,"
+                        + "GEOMETRY,"
+                        + "REGION_NAME,"
+                        + "REGION_CODE,"
+                        + "DISTRICT_NAME,"
+                        + "DISTRICT_CODE,"
+                        + "CLIENT_NAME,"
+                        + "CLIENT_NUMBER,"
+                        + "OPENING_WHEN_CREATED"
                     ))
                 .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
                 .willReturn(okJson("{}"))
@@ -83,15 +83,15 @@ class RestServiceTest {
                 .withQueryParam("outputFormat", equalTo("application/json"))
                 .withQueryParam("SrsName", equalTo("EPSG:4326"))
                 .withQueryParam("PROPERTYNAME",
-                    equalTo("OPENING_ID," +
-                        "GEOMETRY," +
-                        "REGION_NAME," +
-                        "REGION_CODE," +
-                        "DISTRICT_NAME," +
-                        "DISTRICT_CODE," +
-                        "CLIENT_NAME," +
-                        "CLIENT_NUMBER," +
-                        "OPENING_WHEN_CREATED"
+                    equalTo("OPENING_ID,"
+                        + "GEOMETRY,"
+                        + "REGION_NAME,"
+                        + "REGION_CODE,"
+                        + "DISTRICT_NAME,"
+                        + "DISTRICT_CODE,"
+                        + "CLIENT_NAME,"
+                        + "CLIENT_NUMBER,"
+                        + "OPENING_WHEN_CREATED"
                     ))
                 .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
                 .willReturn(notFound())
