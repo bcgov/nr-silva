@@ -262,7 +262,7 @@ objects:
                 claimName: ${NAME}-${ZONE}-fluentbit-logs
             - name: ${NAME}-${ZONE}-certs
               persistentVolumeClaim:
-                claimName: ${NAME}-${ZONE}-${COMPONENT}
+                claimName: ${NAME}-${ZONE}-certs
   - apiVersion: v1
     kind: Service
     metadata:
