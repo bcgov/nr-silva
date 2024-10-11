@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
+import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
@@ -17,7 +19,12 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,6 +47,8 @@ public class OpeningService {
 
   private final OpeningSearchRepository openingSearchRepository;
 
+  private final ForestClientApiProvider forestClientApiProvider;
+
   /**
    * Gets all recent openings for the Home Screen.
    *
@@ -54,7 +63,7 @@ public class OpeningService {
         pagination.perPage());
 
     if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
     }
 
     String entryUserId = loggedUserService.getLoggedUserId();
@@ -103,7 +112,7 @@ public class OpeningService {
         pagination.perPage());
 
     if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
     }
 
     // Openings
@@ -151,11 +160,55 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
-    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException();
+    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH) {
+      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
-    return openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+    // Set the user in the filter, if required
+    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+      String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
+      if (!userId.startsWith("IDIR")) {
+        userId = "BCEID" + userId.substring(5);
+      }
+      filtersDto.setRequestUserId(userId);
+    }
+
+    PaginatedResult<OpeningSearchResponseDto> result =
+        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+
+    fetchClientAcronyms(result);
+
+    return result;
+  }
+
+  private void fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
+    List<String> clientNumbersWithDuplicates =
+        result.getData().stream()
+            .filter(o -> !Objects.isNull(o.getClientNumber()))
+            .map(OpeningSearchResponseDto::getClientNumber)
+            .toList();
+
+    // Recreate list without duplicates
+    List<String> clientNumbers = new ArrayList<>(new HashSet<>(clientNumbersWithDuplicates));
+
+    Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
+
+    // Forest client API doesn't have a single endpoint to fetch all at once, so we need to do
+    // one request per client number :/
+    for (String clientNumber : clientNumbers) {
+      Optional<ForestClientDto> dto = forestClientApiProvider.fetchClientByNumber(clientNumber);
+      if (dto.isPresent()) {
+        forestClientsMap.put(clientNumber, dto.get());
+      }
+    }
+
+    for (OpeningSearchResponseDto response : result.getData()) {
+      ForestClientDto client = forestClientsMap.get(response.getClientNumber());
+      if (!Objects.isNull(client)) {
+        response.setClientAcronym(client.acronym());
+        response.setClientName(client.clientName());
+      }
+    }
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(

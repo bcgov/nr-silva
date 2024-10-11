@@ -81,11 +81,30 @@ parameters:
   - name: WMS_LAYERS_WHITELIST_USERS
     description: List of users that can see active layers on the map view
     required: true
+  - name: OPENING_SEARCH_ORG_UNITS
+    description: List of Org Units code to be displayed as options for the opening search
+    value: DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC
   - name: RANDOM_EXPRESSION
     description: Random expression to make sure deployments update
     from: "[a-zA-Z0-9]{32}"
     generate: expression
+  - name: CERT_PVC_SIZE
+    description: The amount of storage the cert PVC should have
+    value: 25Mi
 objects:
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-certs
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${CERT_PVC_SIZE}
+      storageClassName: netapp-file-standard
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -105,6 +124,30 @@ objects:
             app: "${NAME}-${ZONE}"
             deployment: "${NAME}-${ZONE}-${COMPONENT}"
         spec:
+          initContainers:
+            - name: ${NAME}-${ZONE}-init
+              image: ${REGISTRY}/bcgov/nr-forest-client-commons/certextractor:0.2.12
+              imagePullPolicy: Always
+              env:
+                - name: ORACLEDB_HOST
+                  value: ${DATABASE_HOST}
+                - name: ORACLEDB_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-secret
+                - name: ORACLEDB_PORT
+                  value: ${DATABASE_PORT}
+              volumeMounts:
+                - name: ${NAME}-${ZONE}-certs
+                  mountPath: /cert
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
           containers:
             - name: ${NAME}-${ZONE}
               image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
@@ -112,6 +155,8 @@ objects:
               volumeMounts:
                 - name: ${NAME}-${ZONE}-fluentbit-logs
                   mountPath: /logs
+                - name: ${NAME}-${ZONE}-certs
+                  mountPath: /cert
               env:
                 - name: JAVA_OPTS
                   value: "-Xms256m"
@@ -141,6 +186,8 @@ objects:
                   value: ${ALLOWED_ORIGINS}
                 - name: WMS_LAYERS_WHITELIST_USERS
                   value: ${WMS_LAYERS_WHITELIST_USERS}
+                - name: OPENING_SEARCH_ORG_UNITS
+                  value: ${OPENING_SEARCH_ORG_UNITS}
                 - name: FORESTCLIENTAPI_KEY
                   valueFrom:
                     secretKeyRef:
@@ -156,8 +203,13 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-password
+                - name: ORACLEDB_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-secret
                 - name: ORACLEDB_KEYSTORE
-                  value: ${ORACLEDB_KEYSTORE}
+                  value: /cert/jssecacerts
                 - name: POSTGRES_HOST
                   value: ${NAME}-${ZONE}-database
                 - name: POSTGRES_DB
@@ -208,6 +260,9 @@ objects:
             - name: ${NAME}-${ZONE}-fluentbit-logs
               persistentVolumeClaim:
                 claimName: ${NAME}-${ZONE}-fluentbit-logs
+            - name: ${NAME}-${ZONE}-certs
+              persistentVolumeClaim:
+                claimName: ${NAME}-${ZONE}-certs
   - apiVersion: v1
     kind: Service
     metadata:

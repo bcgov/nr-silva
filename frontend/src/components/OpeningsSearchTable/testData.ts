@@ -4,52 +4,52 @@ export const headers: ITableHeader[] = [
   {
     key: 'openingId',
     header: 'Opening Id',
-    selected: true,
+    selected: true
   },
   {
     key: 'forestFileId',
     header: 'File Id',
-    selected: true,
+    selected: true
   },
   {
     key: 'cuttingPermit',
     header: 'Cutting permit',
-    selected: true,
+    selected: true
   },
   {
     key: 'timberMark',
     header: 'Timber mark',
-    selected: true,
+    selected: true
   },
   {
     key: 'cutBlock',
     header: 'Cut block',
-    selected: true,
+    selected: true
   },
   {
     key: 'grossAreaHa',
     header: 'Gross area (ha)',
-    selected: true,
+    selected: true
   },
   {
     key: 'status',
     header: 'Status',
-    selected: false,
+    selected: false
   },
   {
     key: 'category',
     header: 'Category',
-    selected: false,
+    selected: false
   },
   {
     key: 'disturbanceStart',
     header: 'Disturbance start',
-    selected: true,
+    selected: true
   },
   {
     key: 'actions',
     header: 'Actions',
-    selected: true,
+    selected: true
   }
 ];
 

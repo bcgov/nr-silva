@@ -2,7 +2,7 @@ export const dateTypes = [
     { value: "Disturbance", label: "Disturbance" },
     { value: "Regen Delay", label: "Regen Delay" },
     { value: "Free Growing", label: "Free Growing" },
-    { value: "Update", label: "Update" },
+    { value: "Update", label: "Update" }
   ];
   
   export const blockStatuses = [
@@ -21,5 +21,5 @@ export const dateTypes = [
     { value: "PP", label: "PP  -  Proposed" },
     { value: "SP", label: "SP  -  SP only, no application received" },
     { value: "S", label: "S  -  Silviculture" },
-    { value: "HS", label: "HS  -  Suspended" },
+    { value: "HS", label: "HS  -  Suspended" }
   ];

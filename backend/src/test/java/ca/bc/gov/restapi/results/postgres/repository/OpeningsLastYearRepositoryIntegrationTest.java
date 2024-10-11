@@ -1,26 +1,21 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-@Sql(scripts = {"classpath:sql_scripts/OpeningsLastYearRepositoryIntegrationTest.sql"})
-class OpeningsLastYearRepositoryIntegrationTest {
+class OpeningsLastYearRepositoryIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private OpeningsLastYearRepository openingsLastYearRepository;
+  @Autowired
+  private OpeningsLastYearRepository openingsLastYearRepository;
 
   @Test
   @DisplayName("find all by Opening ID in List")
-  void findAllByOpeningIdInListTest() {
+  void findAllByOpeningIdIsInTest() {
     List<Long> idList = List.of(7012511L, 7012512L, 7012513L);
     List<OpeningsLastYearEntity> openingList =
         openingsLastYearRepository.findAllByOpeningIdInList(idList);

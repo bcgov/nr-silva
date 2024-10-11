@@ -1,22 +1,18 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-@Sql(scripts = {"classpath:sql_scripts/CutBlockOpenAdminRepositoryIntegrationTest.sql"})
-class CutBlockOpenAdminRepositoryIntegrationTest {
+@DisplayName("Integration Test | CutBlockOpenAdminRepository")
+class CutBlockOpenAdminRepositoryIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private CutBlockOpenAdminRepository cutBlockOpenAdminRepository;
+  @Autowired
+  private CutBlockOpenAdminRepository cutBlockOpenAdminRepository;
 
   @Test
   @DisplayName("find all openings given a list of opening ids")

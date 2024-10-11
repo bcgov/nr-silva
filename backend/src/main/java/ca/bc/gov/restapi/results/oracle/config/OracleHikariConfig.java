@@ -1,13 +1,13 @@
 package ca.bc.gov.restapi.results.oracle.config;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /** This class holds configurations for the Oracle Hikari connection pool. */
-@Getter
-@Setter
+@Data
 @Configuration
 @ConfigurationProperties("spring.datasource.oracle")
 public class OracleHikariConfig {
