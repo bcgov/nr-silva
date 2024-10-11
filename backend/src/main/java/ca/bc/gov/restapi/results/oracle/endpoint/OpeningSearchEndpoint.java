@@ -264,9 +264,8 @@ public class OpeningSearchEndpoint {
   }
 
   /**
-   * Get all org units.
+   * Get the Org units list for the openings search API.
    *
-   * @param includeExpired Query param to include expired org units.
    * @return List of OrgUnitEntity with found org units.
    */
   @GetMapping("/org-units")
@@ -283,16 +282,8 @@ public class OpeningSearchEndpoint {
             description = "Access token is missing or invalid",
             content = @Content(schema = @Schema(implementation = Void.class)))
       })
-  public List<OrgUnitEntity> getOpeningOrgUnits(
-      @RequestParam(value = "includeExpired", required = false)
-          @Parameter(
-              name = "includeExpired",
-              in = ParameterIn.QUERY,
-              description = "Defines if the API should include expired org units",
-              required = false)
-          Boolean includeExpired) {
-    boolean addExpired = Boolean.TRUE.equals(includeExpired);
-    return orgUnitService.findAllOrgUnits(addExpired);
+  public List<OrgUnitEntity> getOpeningOrgUnits() {
+    return orgUnitService.findAllOrgUnits();
   }
 
   /**
@@ -322,7 +313,7 @@ public class OpeningSearchEndpoint {
               in = ParameterIn.QUERY,
               description = "Defines the org units that should be included in the search",
               required = false)
-          List<String> codes) {
+          String[] codes) {
     return orgUnitService.findAllOrgUnitsByCode(codes);
   }
 }
