@@ -25,6 +25,9 @@ parameters:
   - name: ORACLE_DB_PASSWORD
     description: Oracle database password for API
     required: true
+  - name: ORACLEDB_SECRET
+    description: Oracle database keystore secret/password
+    value: changeit
   - name: PG_DATABASE
     description: Postgres database name
     value: database
@@ -56,7 +59,9 @@ objects:
     stringData:
       oracle-user: ${ORACLE_DB_USER}
       oracle-password: ${ORACLE_DB_PASSWORD}
+      oracle-secret: ${ORACLEDB_SECRET}
       forest-client-api-key: ${FORESTCLIENTAPI_KEY}
+
   - apiVersion: v1
     kind: Secret
     metadata:
