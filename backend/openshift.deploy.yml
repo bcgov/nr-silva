@@ -131,7 +131,7 @@ objects:
                 - name: ORACLEDB_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: ${NAME}-${ZONE}
+                      name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-secret
                 - name: ORACLEDB_PORT
                   value: ${DATABASE_PORT}
@@ -201,7 +201,7 @@ objects:
                 - name: ORACLEDB_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: ${NAME}-${ZONE}
+                      name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-secret
                 - name: ORACLEDB_KEYSTORE
                   value: /cert/jssecacerts
