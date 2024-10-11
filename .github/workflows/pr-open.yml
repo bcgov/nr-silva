@@ -53,7 +53,7 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           file: common/openshift.init.yml
-          overwrite: false
+          overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
