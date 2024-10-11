@@ -97,7 +97,7 @@ objects:
     metadata:
       labels:
         app: ${NAME}-${ZONE}
-      name: ${NAME}-${ZONE}-${COMPONENT}
+      name: ${NAME}-${ZONE}-cert
     spec:
       accessModes:
         - ReadWriteMany
