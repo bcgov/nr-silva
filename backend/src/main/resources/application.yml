@@ -105,7 +105,7 @@ nr:
       wms-layers:
         whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
       opening-search:
-        org-units: ${OPENING_SEARCH_ORG_UNITS:DCK}
+        org-units: ${OPENING_SEARCH_ORG_UNITS:-"DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"}
 
 # Forest Client API
 forest-client-api:

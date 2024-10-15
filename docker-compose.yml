@@ -21,9 +21,9 @@ x-backend: &backend
   #restart: always
 
 x-db-vars: &db-vars
-  POSTGRES_USER: postgres
+  POSTGRES_USER: nr-silva
   POSTGRES_PASSWORD: default
-  POSTGRES_DB: postgres
+  POSTGRES_DB: nr-silva
 
 services:
   frontend:
