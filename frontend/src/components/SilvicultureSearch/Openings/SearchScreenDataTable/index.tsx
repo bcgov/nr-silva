@@ -22,7 +22,7 @@ import {
   Row,
   Column,
   MenuItemDivider,
-  ToastNotification,
+  Modal,
   ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
@@ -76,6 +76,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
+  const [openingDetails, setOpeningDetails] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -272,7 +273,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableBody>
             {rows &&
               rows.map((row: any, i: number) => (
-                <TableRow key={row.openingId + i.toString()}>
+                <TableRow
+                  key={row.openingId + i.toString()}
+                  onClick={() => {
+                    //add the api call here
+                    setOpeningDetails(true)
+                  }
+                  }
+                >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
@@ -309,22 +317,29 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 </div>
                               </Tooltip>
                             )}
-                            <OverflowMenu size={"md"} ariaLabel="More actions">
+                            <OverflowMenu
+                              size={"md"}
+                              ariaLabel="More actions"
+                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
+                            >
                               <OverflowMenuItem
                                 itemText="Favourite opening"
-                                onClick={() =>
-                                  handleFavouriteOpening(row.openingId)
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  handleFavouriteOpening(row.openingId);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as PDF file"
-                                onClick={() =>
-                                  downloadPDF(defaultColumns, [row])
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  downloadPDF(defaultColumns, [row]);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as CSV file"
-                                onClick={() => {
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
                                   const csvData = convertToCSV(defaultColumns, [
                                     row,
                                   ]);
@@ -382,7 +397,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           }}
         />
       )}
-      {toastText!=null ? (
+      {toastText != null ? (
         <ActionableNotification
           className="fav-toast"
           title="Success"
@@ -393,10 +408,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           closeOnEscape
           onClose={() => setToastText(null)}
           actionButtonLabel="Go to track openings"
-          onActionButtonClick = {() => navigate('/opening?tab=metrics&scrollTo=trackOpenings')}
-
+          onActionButtonClick={() =>
+            navigate("/opening?tab=metrics&scrollTo=trackOpenings")
+          }
         />
       ) : null}
+
+      <Modal
+        open={openingDetails}
+        onRequestClose={() => setOpeningDetails(false)}
+        passiveModal
+        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
+        modalLabel="Opening Details"
+      />
     </>
   );
 };
