@@ -53,7 +53,7 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           file: common/openshift.init.yml
-          overwrite: false
+          overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }}
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
@@ -110,6 +110,7 @@ jobs:
             file: backend/openshift.deploy.yml
             timeout: 15m
             verification_path: /actuator/health
+            overwrite: true
             parameters:
               -p MAX_REPLICAS=1
               -p MIN_REPLICAS=1
