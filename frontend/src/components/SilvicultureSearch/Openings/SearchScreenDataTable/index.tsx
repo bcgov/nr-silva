@@ -76,7 +76,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
-  const [openingDetails, setOpeningDetails] = useState(true);
+  const [openingDetails, setOpeningDetails] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
