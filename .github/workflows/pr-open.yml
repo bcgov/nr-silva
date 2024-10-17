@@ -105,12 +105,10 @@ jobs:
             file: database/openshift.deploy.yml
             parameters:
               -p DB_PVC_SIZE=128Mi
-            overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
             timeout: 15m
             verification_path: /actuator/health
-            overwrite: true
             parameters:
               -p MAX_REPLICAS=1
               -p MIN_REPLICAS=1
