@@ -22,7 +22,7 @@ import {
   Row,
   Column,
   MenuItemDivider,
-  ToastNotification,
+  Modal,
   ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
@@ -42,6 +42,7 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
+import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -76,6 +77,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
+  const [openingDetails, setOpeningDetails] = useState(false);
+  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,6 +94,20 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
+      }
+    });
+  };
+
+  const handleRowClick = (openingId: string) => {
+    // Call the mutation to mark as viewed
+    markAsViewedOpening(openingId, {
+      onSuccess: () => {
+        // setToastText(`Successfully marked opening ${openingId} as viewed.`);
+        console.log(`Successfully marked opening ${openingId} as viewed.`);
+      },
+      onError: (err: any) => {
+        // setToastText(`Failed to mark as viewed: ${err.message}`);
+        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
@@ -272,7 +289,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableBody>
             {rows &&
               rows.map((row: any, i: number) => (
-                <TableRow key={row.openingId + i.toString()}>
+                <TableRow
+                  key={row.openingId + i.toString()}
+                  onClick={async () => {
+                    //add the api call to send the viewed opening
+                    await handleRowClick(row.openingId);
+                    setOpeningDetails(true)
+                  }
+                  }
+                >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
@@ -309,22 +334,29 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 </div>
                               </Tooltip>
                             )}
-                            <OverflowMenu size={"md"} ariaLabel="More actions">
+                            <OverflowMenu
+                              size={"md"}
+                              ariaLabel="More actions"
+                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
+                            >
                               <OverflowMenuItem
                                 itemText="Favourite opening"
-                                onClick={() =>
-                                  handleFavouriteOpening(row.openingId)
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  handleFavouriteOpening(row.openingId);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as PDF file"
-                                onClick={() =>
-                                  downloadPDF(defaultColumns, [row])
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  downloadPDF(defaultColumns, [row]);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as CSV file"
-                                onClick={() => {
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
                                   const csvData = convertToCSV(defaultColumns, [
                                     row,
                                   ]);
@@ -382,7 +414,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           }}
         />
       )}
-      {toastText!=null ? (
+      {toastText != null ? (
         <ActionableNotification
           className="fav-toast"
           title="Success"
@@ -393,10 +425,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           closeOnEscape
           onClose={() => setToastText(null)}
           actionButtonLabel="Go to track openings"
-          onActionButtonClick = {() => navigate('/opening?tab=metrics&scrollTo=trackOpenings')}
-
+          onActionButtonClick={() =>
+            navigate("/opening?tab=metrics&scrollTo=trackOpenings")
+          }
         />
       ) : null}
+
+      <Modal
+        open={openingDetails}
+        onRequestClose={() => setOpeningDetails(false)}
+        passiveModal
+        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
+        modalLabel="Opening Details"
+      />
     </>
   );
 };
