@@ -42,6 +42,7 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
+import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -77,6 +78,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState(false);
+  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,6 +94,20 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
+      }
+    });
+  };
+
+  const handleRowClick = (openingId: string) => {
+    // Call the mutation to mark as viewed
+    markAsViewedOpening(openingId, {
+      onSuccess: () => {
+        // setToastText(`Successfully marked opening ${openingId} as viewed.`);
+        console.log(`Successfully marked opening ${openingId} as viewed.`);
+      },
+      onError: (err: any) => {
+        // setToastText(`Failed to mark as viewed: ${err.message}`);
+        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
@@ -275,8 +291,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call here
+                  onClick={async () => {
+                    //add the api call to send the viewed opening
+                    await handleRowClick(row.openingId);
                     setOpeningDetails(true)
                   }
                   }

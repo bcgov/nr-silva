@@ -28,7 +28,12 @@ public class UserRecentOpeningService {
     public UserRecentOpeningDto storeViewedOpening(String openingId) {
         String userId = loggedUserService.getLoggedUserId();
         LocalDateTime lastViewed = LocalDateTime.now();
-    
+        
+        // Verify that the openingId String contains numbers only and no spaces
+        if (!openingId.matches("^[0-9]*$")) {
+            throw new IllegalArgumentException("Opening ID must contain numbers only!");
+        }
+
         // Check if the user has already viewed this opening
         UserRecentOpeningEntity existingEntity = userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId);
         
