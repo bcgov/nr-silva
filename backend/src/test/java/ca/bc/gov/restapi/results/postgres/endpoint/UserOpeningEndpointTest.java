@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningDto;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningStepDto;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,16 +26,28 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser
 class UserOpeningEndpointTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockBean private UserOpeningService userOpeningService;
+  @MockBean
+  private UserOpeningService userOpeningService;
 
   @Test
   @DisplayName("Get user tracked openings happy path should succeed")
   void getUserTrackedOpenings_happyPath_shouldSucceed() throws Exception {
-    MyRecentActionsRequestsDto action =
-        new MyRecentActionsRequestsDto(
-            "Update", 123456L, "APP", "Approved", "2 minutes ago", LocalDateTime.now());
+    TrackOpeningDto action =
+        new TrackOpeningDto(
+            123456L,
+            List.of(
+                new TrackOpeningStepDto(
+                    1,
+                    "complete",
+                    "Opening ID",
+                    "2 minutes ago"
+                )
+            )
+        );
+
     when(userOpeningService.getUserTrackedOpenings()).thenReturn(List.of(action));
 
     mockMvc

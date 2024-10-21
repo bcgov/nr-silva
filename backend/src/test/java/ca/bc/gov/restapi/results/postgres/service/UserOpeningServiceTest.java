@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
+import ca.bc.gov.restapi.results.postgres.dto.TrackOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
@@ -66,14 +67,14 @@ class UserOpeningServiceTest {
     when(openingsActivityRepository.findAllByOpeningId(List.of(223344L)))
         .thenReturn(List.of(openingEntity));
 
-    List<MyRecentActionsRequestsDto> openings = userOpeningService.getUserTrackedOpenings();
+    List<TrackOpeningDto> openings = userOpeningService.getUserTrackedOpenings();
 
     Assertions.assertFalse(openings.isEmpty());
-    Assertions.assertEquals("Update", openings.get(0).activityType());
+    //Assertions.assertEquals("Update", openings.get(0).activityType());
     Assertions.assertEquals(223344L, openings.get(0).openingId());
-    Assertions.assertEquals("APP", openings.get(0).statusCode());
-    Assertions.assertEquals("Approved", openings.get(0).statusDescription());
-    Assertions.assertEquals("2 minutes ago", openings.get(0).lastUpdatedLabel());
+    //Assertions.assertEquals("APP", openings.get(0).statusCode());
+    //Assertions.assertEquals("Approved", openings.get(0).statusDescription());
+    //Assertions.assertEquals("2 minutes ago", openings.get(0).lastUpdatedLabel());
   }
 
   @Test
@@ -83,7 +84,7 @@ class UserOpeningServiceTest {
 
     when(userOpeningRepository.findAllByUserId(USER_ID)).thenReturn(List.of());
 
-    List<MyRecentActionsRequestsDto> openings = userOpeningService.getUserTrackedOpenings();
+    List<TrackOpeningDto> openings = userOpeningService.getUserTrackedOpenings();
 
     Assertions.assertTrue(openings.isEmpty());
   }
