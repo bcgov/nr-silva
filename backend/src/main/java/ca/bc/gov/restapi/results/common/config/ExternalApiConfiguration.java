@@ -22,8 +22,8 @@ public class ExternalApiConfiguration {
   public RestClient forestClientApi(ProvidersConfig providersConfig) {
     return RestClient
         .builder()
-        .baseUrl(providersConfig.getForestClientBaseUri())
-        .defaultHeader("X-API-KEY", providersConfig.getForestClientApiKey())
+        .baseUrl(providersConfig.getAddress())
+        .defaultHeader("X-API-KEY", providersConfig.getKey())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }

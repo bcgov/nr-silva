@@ -90,27 +90,22 @@ ca:
   bc:
     gov:
       nrs:
+        results:
+          # Users allowed to manually trigger the Dashboard extraction job
+          dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS}
+          # Users allowed to see and download WMS layers information
+          wms-layers:
+            whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+          opening-search:
+            org-units: ${OPENING_SEARCH_ORG_UNITS:-"DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"}
+        # Forest Client API
+        forest-client-api:
+          address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
+          key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
         oracle:
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts-path}
           secret: ${ORACLEDB_SECRET:changeit}
           host: ${DATABASE_HOST:nrcdb03.bcgov}
-
-# Users allowed to manually trigger the Dashboard extraction job
-nr:
-  results:
-    dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS}
-
-# Users allowed to see and download WMS layers information
-    config:
-      wms-layers:
-        whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
-      opening-search:
-        org-units: ${OPENING_SEARCH_ORG_UNITS:-"DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"}
-
-# Forest Client API
-forest-client-api:
-  address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
-  key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
 
 # Logging
 logging:

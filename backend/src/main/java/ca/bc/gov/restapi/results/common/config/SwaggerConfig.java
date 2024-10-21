@@ -30,22 +30,7 @@ public class SwaggerConfig {
    */
   @Bean
   public OpenAPI theRestApi() {
-    Info info = new Info();
-    info.setTitle("SILVA Back-end REST API");
-    info.setDescription(DESCRIPTION);
-    info.setVersion("0.0.1");
-    info.setTermsOfService(TERMS_OF_SERVICE);
-
-    Contact contact = new Contact();
-    contact.setName("Team Silva");
-    contact.setEmail("team.silva@gov.bc.ca");
-    contact.setUrl("https://github.com/bcgov/nr-silva");
-    info.setContact(contact);
-
-    License license = new License();
-    license.setName("OGL-BC");
-    license.setUrl(LICENSE_URL);
-    info.setLicense(license);
+    Info info = getInfo();
 
     ExternalDocumentation externalDoc = new ExternalDocumentation();
     externalDoc.setDescription("Swagger login How-To");
@@ -66,5 +51,25 @@ public class SwaggerConfig {
     openApi.setComponents(components);
 
     return openApi;
+  }
+
+  private Info getInfo() {
+    Info info = new Info();
+    info.setTitle("SILVA Back-end REST API");
+    info.setDescription(DESCRIPTION);
+    info.setVersion("0.0.1");
+    info.setTermsOfService(TERMS_OF_SERVICE);
+
+    Contact contact = new Contact();
+    contact.setName("Team Silva");
+    contact.setEmail("team.silva@gov.bc.ca");
+    contact.setUrl("https://github.com/bcgov/nr-silva");
+    info.setContact(contact);
+
+    License license = new License();
+    license.setName("OGL-BC");
+    license.setUrl(LICENSE_URL);
+    info.setLicense(license);
+    return info;
   }
 }

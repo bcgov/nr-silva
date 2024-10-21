@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 public class SecretsServiceEndpoint {
 
-  @Value("${nr.results.config.wms-layers.whitelist}")
+  @Value("${ca.bc.gov.nrs.results.wms-layers.whitelist}")
   private String[] wmsLayersWhitelistUsers;
 
   /**
