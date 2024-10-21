@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.config;
 
+import ca.bc.gov.restapi.results.common.config.DataSourceConfig;
+import ca.bc.gov.restapi.results.common.config.SilvaHikariConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +18,6 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class OraclePersistenceConfig {
 
-  @Autowired
-  private OracleHikariConfig oracleHikariConfig;
 
   @Bean
   @ConfigurationProperties("spring.datasource.oracle")
@@ -30,20 +30,20 @@ public class OraclePersistenceConfig {
    */
   @Bean
   @Primary
-  public DataSource oracleDataSource() {
+  public DataSource oracleDataSource(DataSourceConfig dataSourceConfig) {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(oracleHikariConfig.getUrl());
-    config.setUsername(oracleHikariConfig.getUsername());
-    config.setPassword(oracleHikariConfig.getPassword());
-    config.setDriverClassName(oracleHikariConfig.getDriverClassName());
-    config.setConnectionTimeout(oracleHikariConfig.getConnectionTimeout());
-    config.setIdleTimeout(oracleHikariConfig.getIdleTimeout());
-    config.setMaxLifetime(oracleHikariConfig.getMaxLifetime());
-    config.setKeepaliveTime(oracleHikariConfig.getKeepaliveTime());
-    config.setPoolName(oracleHikariConfig.getPoolName());
-    config.setMinimumIdle(oracleHikariConfig.getMinimumIdle());
-    config.setMaximumPoolSize(oracleHikariConfig.getMaximumPoolSize());
-    config.setLeakDetectionThreshold(oracleHikariConfig.getLeakDetectionThreshold());
+    config.setJdbcUrl(dataSourceConfig.getOracle().getUrl());
+    config.setUsername(dataSourceConfig.getOracle().getUsername());
+    config.setPassword(dataSourceConfig.getOracle().getPassword());
+    config.setDriverClassName(dataSourceConfig.getOracle().getDriverClassName());
+    config.setConnectionTimeout(dataSourceConfig.getOracle().getConnectionTimeout());
+    config.setIdleTimeout(dataSourceConfig.getOracle().getIdleTimeout());
+    config.setMaxLifetime(dataSourceConfig.getOracle().getMaxLifetime());
+    config.setKeepaliveTime(dataSourceConfig.getOracle().getKeepaliveTime());
+    config.setPoolName(dataSourceConfig.getOracle().getPoolName());
+    config.setMinimumIdle(dataSourceConfig.getOracle().getMinimumIdle());
+    config.setMaximumPoolSize(dataSourceConfig.getOracle().getMaximumPoolSize());
+    config.setLeakDetectionThreshold(dataSourceConfig.getOracle().getLeakDetectionThreshold());
 
     return new HikariDataSource(config);
   }

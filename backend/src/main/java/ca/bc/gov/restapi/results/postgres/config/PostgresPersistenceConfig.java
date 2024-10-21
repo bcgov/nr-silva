@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.config;
 
+import ca.bc.gov.restapi.results.common.config.DataSourceConfig;
 import ca.bc.gov.restapi.results.common.config.SilvaHikariConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,28 +21,22 @@ public class PostgresPersistenceConfig {
     return new DataSourceProperties();
   }
 
-  @Bean
-  @ConfigurationProperties("spring.datasource.postgres")
-  public SilvaHikariConfig postgresHikariConfig() {
-    return new SilvaHikariConfig();
-  }
-
   /** Creates a Postgres Datasource with all Hikari connection pool configuration. */
   @Bean
-  public DataSource postgresDataSource(SilvaHikariConfig silvaHikariConfig) {
+  public DataSource postgresDataSource(DataSourceConfig dataSourceConfig) {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(silvaHikariConfig.getUrl());
-    config.setUsername(silvaHikariConfig.getUsername());
-    config.setPassword(silvaHikariConfig.getPassword());
-    config.setDriverClassName(silvaHikariConfig.getDriverClassName());
-    config.setConnectionTimeout(silvaHikariConfig.getConnectionTimeout());
-    config.setIdleTimeout(silvaHikariConfig.getIdleTimeout());
-    config.setMaxLifetime(silvaHikariConfig.getMaxLifetime());
-    config.setKeepaliveTime(silvaHikariConfig.getKeepaliveTime());
-    config.setPoolName(silvaHikariConfig.getPoolName());
-    config.setMinimumIdle(silvaHikariConfig.getMinimumIdle());
-    config.setMaximumPoolSize(silvaHikariConfig.getMaximumPoolSize());
-    config.setLeakDetectionThreshold(silvaHikariConfig.getLeakDetectionThreshold());
+    config.setJdbcUrl(dataSourceConfig.getPostgres().getUrl());
+    config.setUsername(dataSourceConfig.getPostgres().getUsername());
+    config.setPassword(dataSourceConfig.getPostgres().getPassword());
+    config.setDriverClassName(dataSourceConfig.getPostgres().getDriverClassName());
+    config.setConnectionTimeout(dataSourceConfig.getPostgres().getConnectionTimeout());
+    config.setIdleTimeout(dataSourceConfig.getPostgres().getIdleTimeout());
+    config.setMaxLifetime(dataSourceConfig.getPostgres().getMaxLifetime());
+    config.setKeepaliveTime(dataSourceConfig.getPostgres().getKeepaliveTime());
+    config.setPoolName(dataSourceConfig.getPostgres().getPoolName());
+    config.setMinimumIdle(dataSourceConfig.getPostgres().getMinimumIdle());
+    config.setMaximumPoolSize(dataSourceConfig.getPostgres().getMaximumPoolSize());
+    config.setLeakDetectionThreshold(dataSourceConfig.getPostgres().getLeakDetectionThreshold());
 
     return new HikariDataSource(config);
   }
