@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.config;
+package ca.bc.gov.restapi.results.common.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;

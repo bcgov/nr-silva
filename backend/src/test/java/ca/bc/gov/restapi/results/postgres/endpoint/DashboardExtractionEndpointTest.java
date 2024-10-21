@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.service.DashboardExtractionService;
-import ca.bc.gov.restapi.results.postgres.config.DashboardUserManagerConfig;
+import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfig;
 import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OracleExtractionLogsRepository;
 import java.util.List;

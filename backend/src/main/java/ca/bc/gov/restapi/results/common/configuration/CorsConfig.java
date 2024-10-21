@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.config;
+package ca.bc.gov.restapi.results.common.configuration;
 
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;

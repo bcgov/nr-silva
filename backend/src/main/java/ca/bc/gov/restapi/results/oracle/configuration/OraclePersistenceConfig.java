@@ -1,11 +1,9 @@
-package ca.bc.gov.restapi.results.oracle.config;
+package ca.bc.gov.restapi.results.oracle.configuration;
 
-import ca.bc.gov.restapi.results.common.config.DataSourceConfig;
-import ca.bc.gov.restapi.results.common.config.SilvaHikariConfig;
+import ca.bc.gov.restapi.results.common.configuration.DataSourceConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

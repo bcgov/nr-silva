@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.config;
+package ca.bc.gov.restapi.results.oracle.configuration;
 
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;

@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.postgres.configuration;
 
 import java.util.List;
 import java.util.Objects;

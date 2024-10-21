@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.postgres.configuration;
 
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.service.DashboardExtractionService;
-import ca.bc.gov.restapi.results.postgres.config.DashboardUserManagerConfig;
+import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfig;
 import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OracleExtractionLogsRepository;
 import io.swagger.v3.oas.annotations.Operation;

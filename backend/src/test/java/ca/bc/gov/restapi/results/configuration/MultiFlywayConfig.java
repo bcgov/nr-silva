@@ -1,10 +1,9 @@
-package ca.bc.gov.restapi.results.config;
+package ca.bc.gov.restapi.results.configuration;
 
-import ca.bc.gov.restapi.results.common.config.DataSourceConfig;
-import ca.bc.gov.restapi.results.common.config.SilvaHikariConfig;
+import ca.bc.gov.restapi.results.common.configuration.DataSourceConfig;
+import ca.bc.gov.restapi.results.common.configuration.SilvaHikariConfig;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +53,7 @@ public class MultiFlywayConfig {
 
   /**
    * Converts Hikari configuration to a DataSource. The original Bean found at
-   * {@link ca.bc.gov.restapi.results.postgres.config.PostgresPersistenceConfig} was failing due to
+   * {@link ca.bc.gov.restapi.results.postgres.configuration.PostgresPersistenceConfig} was failing due to
    * a timeout caused by HikariCP
    *
    * @param silvaHikariConfig the Hikari configuration

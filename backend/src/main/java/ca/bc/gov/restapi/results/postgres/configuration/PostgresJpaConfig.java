@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.postgres.configuration;
 
 import ca.bc.gov.restapi.results.postgres.endpoint.UserOpeningEndpoint;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
