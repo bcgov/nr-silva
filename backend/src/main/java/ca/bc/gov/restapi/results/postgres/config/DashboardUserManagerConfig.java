@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties("nr.results")
+@ConfigurationProperties("ca.bc.gov.nrs.results")
 public class DashboardUserManagerConfig {
 
   private String[] dashboardJobUsers;

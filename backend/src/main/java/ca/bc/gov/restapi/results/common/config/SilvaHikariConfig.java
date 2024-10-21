@@ -1,16 +1,16 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.common.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/** This class holds configurations for the Postgres Hikari connection pool. */
+/**
+ * This class holds configurations for the Hikari connection pool.
+ */
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties("spring.datasource.postgres")
-public class PostgresHikariConfig {
+public class SilvaHikariConfig {
 
   private String driverClassName;
   private String url;
