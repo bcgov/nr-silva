@@ -40,7 +40,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
-    <hibernate.version>6.5.3.Final</hibernate.version>
+    <hibernate.version>6.6.1.Final</hibernate.version>
     <testcontainers.version>1.20.2</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
   </properties>
@@ -209,7 +209,7 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock-standalone</artifactId>
-      <version>3.9.1</version>
+      <version>3.9.2</version>
       <scope>test</scope>
     </dependency>
 
