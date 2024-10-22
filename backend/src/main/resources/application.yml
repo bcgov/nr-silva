@@ -31,8 +31,8 @@ spring:
 # Database, and JPA - Postgres
     postgres:
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
-      username: ${POSTGRES_USER:postgres}
+      url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
+      username: ${POSTGRES_USER:nr-silva}
       password: ${POSTGRES_PASSWORD:default}
       connectionTimeout: ${DB_POOL_CONN_TIMEOUT:120000}
       idleTimeout: ${DB_POOL_IDLE_TIMEOUT:60000}
@@ -60,9 +60,9 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
-    user: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:default}
+    url: ${spring.datasource.postgres.url}
+    user: ${spring.datasource.postgres.username}
+    password: ${spring.datasource.postgres.password}
 
 # OpenSearch settings
 nr-results-ecs-version: 8.9
@@ -105,7 +105,7 @@ nr:
       wms-layers:
         whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
       opening-search:
-        org-units: ${OPENING_SEARCH_ORG_UNITS:DCK}
+        org-units: ${OPENING_SEARCH_ORG_UNITS:-"DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"}
 
 # Forest Client API
 forest-client-api:

@@ -51,6 +51,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            overwrite: true
             timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=test
@@ -135,6 +136,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            overwrite: true
             timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=production

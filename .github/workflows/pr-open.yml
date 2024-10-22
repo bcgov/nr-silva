@@ -105,7 +105,6 @@ jobs:
             file: database/openshift.deploy.yml
             parameters:
               -p DB_PVC_SIZE=128Mi
-            overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
             timeout: 15m
