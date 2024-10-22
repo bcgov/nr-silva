@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.web.client.RestClient;
 
-class RestServiceTest {
+@DisplayName("Integrated Test | OpenMapsService")
+class OpenMapsServiceIntegratedTest {
 
   @RegisterExtension
   static WireMockExtension clientApiStub = WireMockExtension
@@ -30,7 +31,7 @@ class RestServiceTest {
       .configureStaticDsl(true)
       .build();
 
-  private final RestService restService = new RestService(
+  private final OpenMapsService openMapsService = new OpenMapsService(
       RestClient.builder().baseUrl("http://localhost:10001").build()
   );
 
@@ -62,7 +63,7 @@ class RestServiceTest {
             .willReturn(okJson("{}"))
     );
 
-    Object response = restService.getOpeningPolygonAndProperties(openingId);
+    Object response = openMapsService.getOpeningPolygonAndProperties(openingId);
 
     Assertions.assertNotNull(response);
   }
@@ -95,7 +96,7 @@ class RestServiceTest {
             .willReturn(notFound())
     );
 
-    Object response = restService.getOpeningPolygonAndProperties(openingId);
+    Object response = openMapsService.getOpeningPolygonAndProperties(openingId);
 
     Assertions.assertNull(response);
   }
