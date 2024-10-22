@@ -246,91 +246,55 @@ public class OpeningRecentViewRepository {
     builder.append(",o.OPENING_NUMBER AS openingNumber");
     builder.append(",o.OPEN_CATEGORY_CODE AS category");
     builder.append(",o.OPENING_STATUS_CODE AS status");
-    builder.append(",cboa.CUTTING_PERMIT_ID AS cuttingPermitId");
-    builder.append(",cboa.TIMBER_MARK AS timberMark");
-    builder.append(",cboa.CUT_BLOCK_ID AS cutBlockId");
-    builder.append(",cboa.OPENING_GROSS_AREA AS openingGrossArea");
-    builder.append(",cboa.DISTURBANCE_START_DATE AS disturbanceStartDate");
-    builder.append(",cboa.FOREST_FILE_ID AS forestFileId");
-    builder.append(",ou.ORG_UNIT_CODE AS orgUnitCode");
-    builder.append(",ou.ORG_UNIT_NAME AS orgUnitName");
-    builder.append(",res.CLIENT_NUMBER AS clientNumber");
-    builder.append(",res.CLIENT_LOCN_CODE AS clientLocation");
+    builder.append(",MAX(cboa.CUTTING_PERMIT_ID) AS cuttingPermitId");
+    builder.append(",MAX(cboa.TIMBER_MARK) AS timberMark");
+    builder.append(",MAX(cboa.CUT_BLOCK_ID) AS cutBlockId");
+    builder.append(",MAX(cboa.OPENING_GROSS_AREA) AS openingGrossArea");
+    builder.append(",MAX(cboa.DISTURBANCE_START_DATE) AS disturbanceStartDate");
+    builder.append(",MAX(cboa.FOREST_FILE_ID) AS forestFileId");
+    builder.append(",MAX(ou.ORG_UNIT_CODE) AS orgUnitCode");
+    builder.append(",MAX(ou.ORG_UNIT_NAME) AS orgUnitName");
+    builder.append(",MAX(res.CLIENT_NUMBER) AS clientNumber");
+    builder.append(",MAX(res.CLIENT_LOCN_CODE) AS clientLocation");
 
-    String sql;
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12))";
-    builder.append(sql).append(" AS regenDelayDate");
+    builder.append(",ADD_MONTHS(MAX(cboa.DISTURBANCE_START_DATE), (COALESCE(MAX(SMRG.LATE_OFFSET_YEARS),0)*12)) AS regenDelayDate");
+    builder.append(",ADD_MONTHS(MAX(cboa.DISTURBANCE_START_DATE), (COALESCE(MAX(SMFG.EARLY_OFFSET_YEARS),0)*12)) AS earlyFreeGrowingDate");
+    builder.append(",ADD_MONTHS(MAX(cboa.DISTURBANCE_START_DATE), (COALESCE(MAX(SMFG.LATE_OFFSET_YEARS),0)*12)) AS lateFreeGrowingDate");
 
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS,0)*12))";
-    builder.append(sql).append(" AS earlyFreeGrowingDate");
-
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS,0)*12))";
-    builder.append(sql).append(" AS lateFreeGrowingDate");
-
-    builder.append(",o.UPDATE_TIMESTAMP AS updateTimestamp");
-    builder.append(",o.ENTRY_USERID AS entryUserId");
-    builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submittedToFrpa108 ");
+    builder.append(",MAX(o.UPDATE_TIMESTAMP) AS updateTimestamp");
+    builder.append(",MAX(o.ENTRY_USERID) AS entryUserId");
+    builder.append(",COALESCE(MAX(sra.SILV_RELIEF_APPLICATION_ID), 0) AS submittedToFrpa108 ");
+    
     builder.append("FROM THE.OPENING o ");
-    builder.append("LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)");
-    builder.append("LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)");
-    builder.append("LEFT JOIN the.RESULTS_ELECTRONIC_SUBMISSION res ON (");
-    builder.append(" res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)");
+    builder.append("LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID) ");
+    builder.append("LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO) ");
+    builder.append("LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID) ");
     builder.append("LEFT JOIN THE.CLIENT_ACRONYM ca ON (ca.CLIENT_NUMBER = res.CLIENT_NUMBER) ");
-    builder.append("LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON (atu.OPENING_ID = o.OPENING_ID)");
-    builder.append("LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (");
-    builder.append(" sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID");
-    builder.append(" AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP') ");
+    builder.append("LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON (atu.OPENING_ID = o.OPENING_ID) ");
+    builder.append("LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP') ");
     builder.append("LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID) ");
-    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smrg ON (");
-    builder.append(" smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID");
-    builder.append(" AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG') ");
-    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smfg ON (");
-    builder.append(" smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID");
-    builder.append(" AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG') ");
+    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG') ");
+    builder.append("LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG') ");
+    
     builder.append("WHERE 1=1 ");
-    // If the openingIds list is not empty, add the openingIds to the query
     if (openingIds != null && !openingIds.isEmpty()) {
-      builder.append("AND o.OPENING_ID IN (");
-      for (int i = 0; i < openingIds.size(); i++) {
-        builder.append("?");
-        if (i < openingIds.size() - 1) {
-          builder.append(",");
+        builder.append("AND o.OPENING_ID IN (");
+        for (int i = 0; i < openingIds.size(); i++) {
+            builder.append("?");
+            if (i < openingIds.size() - 1) {
+                builder.append(",");
+            }
         }
-      }
-      builder.append(") ");
+        builder.append(") ");
     }
-    /* Group by - to avoid duplications */
-    builder.append("GROUP BY o.OPENING_ID ");
-    builder.append(",o.OPENING_NUMBER ");
-    builder.append(",o.OPEN_CATEGORY_CODE ");
-    builder.append(",o.OPENING_STATUS_CODE ");
-    builder.append(",cboa.CUTTING_PERMIT_ID ");
-    builder.append(",cboa.TIMBER_MARK ");
-    builder.append(",cboa.CUT_BLOCK_ID ");
-    builder.append(",cboa.OPENING_GROSS_AREA ");
-    builder.append(",cboa.DISTURBANCE_START_DATE ");
-    builder.append(",cboa.FOREST_FILE_ID ");
-    builder.append(",ou.ORG_UNIT_CODE ");
-    builder.append(",ou.ORG_UNIT_NAME ");
-    builder.append(",res.CLIENT_NUMBER ");
-    builder.append(",res.CLIENT_LOCN_CODE ");
 
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) ";
-    builder.append(sql);
-
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) ";
-    builder.append(sql);
-
-    sql = ",ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) ";
-    builder.append(sql);
-
-    builder.append(",o.UPDATE_TIMESTAMP ");
-    builder.append(",o.ENTRY_USERID ");
-    builder.append(",COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) ");
-
+    // Group by the primary keys
+    builder.append("GROUP BY o.OPENING_ID, o.OPENING_NUMBER, o.OPEN_CATEGORY_CODE, o.OPENING_STATUS_CODE ");
+    
     // Order by
     builder.append("ORDER BY o.OPENING_ID DESC");
 
     return builder.toString();
-  }
+}
+
 }

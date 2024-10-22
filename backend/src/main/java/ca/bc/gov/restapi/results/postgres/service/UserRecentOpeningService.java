@@ -79,6 +79,9 @@ public class UserRecentOpeningService {
                 .collect(Collectors.toList());
 
         System.out.println("Opening IDs: " + openingIds);
+        if (openingIds.isEmpty()) {
+            return new PaginatedResult<>();
+        }
         // Call the service method to fetch opening details
         return openingRecentViewService.getOpeningsByIds(openingIds);
     }

@@ -61,7 +61,7 @@ public class UserRecentOpeningEndpoint {
      * @param limit The maximum number of results to return.
      * @return A list of opening IDs viewed by the user.
      */
-    @GetMapping("/recent-openings")
+    @GetMapping("api/user/recent-openings")
     @Operation(
         summary = "Gets the list of recent openings viewed by the user",
         description = "Returns the list of openings that the user has recently viewed, sorted by the last viewed time in descending order.",
