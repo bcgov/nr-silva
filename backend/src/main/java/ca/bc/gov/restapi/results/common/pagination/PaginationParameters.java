@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.common.pagination;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Pagination parameters to be used in the processing of HTTP GET requests.
@@ -24,5 +26,9 @@ public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integ
     if (perPage == null) {
       perPage = 5;
     }
+  }
+
+  public Pageable toPageable(int maxPageSize) {
+    return PageRequest.of(page, maxPageSize);
   }
 }
