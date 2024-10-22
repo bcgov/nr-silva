@@ -22,8 +22,8 @@ public class ExternalApiConfiguration {
   public RestClient forestClientApi(ProvidersConfiguration providersConfiguration) {
     return RestClient
         .builder()
-        .baseUrl(providersConfiguration.getAddress())
-        .defaultHeader("X-API-KEY", providersConfiguration.getKey())
+        .baseUrl(providersConfiguration.getForestClientApi().getAddress())
+        .defaultHeader("X-API-KEY", providersConfiguration.getForestClientApi().getKey())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }
@@ -34,10 +34,10 @@ public class ExternalApiConfiguration {
    * @return the configured RestClient instance for the Open Maps API
    */
   @Bean
-  public RestClient openMapsApi() {
+  public RestClient openMapsApi(ProvidersConfiguration providersConfiguration) {
     return RestClient
         .builder()
-        .baseUrl("https://openmaps.gov.bc.ca/geo/ows")
+        .baseUrl(providersConfiguration.getOpenMaps().getAddress())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }
