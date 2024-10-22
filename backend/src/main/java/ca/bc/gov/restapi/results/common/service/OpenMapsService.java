@@ -11,11 +11,11 @@ import org.springframework.web.client.RestClient;
  */
 @Slf4j
 @Service
-public class RestService {
+public class OpenMapsService {
 
   private final RestClient restClient;
 
-  public RestService(@Qualifier("openMapsApi") RestClient openMapsApi) {
+  public OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
     this.restClient = openMapsApi;
   }
 

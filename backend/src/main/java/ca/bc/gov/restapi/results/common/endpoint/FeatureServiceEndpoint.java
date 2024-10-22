@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.common.service.RestService;
+import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
     description = "Endpoints for handle WFS (Web Feature Service) within BC Geo Warehouse")
 public class FeatureServiceEndpoint {
 
-  private final RestService restService;
+  private final OpenMapsService openMapsService;
 
   /**
    * Fetch Opening data from WFS.
@@ -55,6 +55,6 @@ public class FeatureServiceEndpoint {
               required = true)
           @PathVariable
           String openingId) {
-    return restService.getOpeningPolygonAndProperties(openingId);
+    return openMapsService.getOpeningPolygonAndProperties(openingId);
   }
 }
