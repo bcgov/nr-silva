@@ -15,15 +15,15 @@ public class ExternalApiConfiguration {
   /**
    * Creates a RestClient bean for the Forest Client API.
    *
-   * @param providersConfig the configuration properties for providers
+   * @param providersConfiguration the configuration properties for providers
    * @return the configured RestClient instance for the Forest Client API
    */
   @Bean
-  public RestClient forestClientApi(ProvidersConfig providersConfig) {
+  public RestClient forestClientApi(ProvidersConfiguration providersConfiguration) {
     return RestClient
         .builder()
-        .baseUrl(providersConfig.getAddress())
-        .defaultHeader("X-API-KEY", providersConfig.getKey())
+        .baseUrl(providersConfiguration.getAddress())
+        .defaultHeader("X-API-KEY", providersConfiguration.getKey())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }

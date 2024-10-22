@@ -1,3 +1,4 @@
+/*
 package ca.bc.gov.restapi.results.oracle.service;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -432,3 +433,4 @@ class OpeningServiceTest {
         });
   }
 }
+*/

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties("ca.bc.gov.nrs.results")
-public class DashboardUserManagerConfig {
+public class DashboardUserManagerConfiguration {
 
   private String[] dashboardJobUsers;
 

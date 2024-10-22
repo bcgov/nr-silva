@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 /** This class contains base configuration for Swagger API documentation. */
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfiguration {
 
   private static final String DESCRIPTION =
       "A REST service API to provide SILVA Application database and backend capabilities.";

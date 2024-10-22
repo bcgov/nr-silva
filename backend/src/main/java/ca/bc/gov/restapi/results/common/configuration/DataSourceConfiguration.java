@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource")
-public class DataSourceConfig {
+public class DataSourceConfiguration {
 
   private String driverClassName;
   private String url;
   private String username;
   private String password;
 
-  private SilvaHikariConfig oracle;
-  private SilvaHikariConfig postgres;
+  private SilvaHikariConfiguration oracle;
+  private SilvaHikariConfiguration postgres;
 }

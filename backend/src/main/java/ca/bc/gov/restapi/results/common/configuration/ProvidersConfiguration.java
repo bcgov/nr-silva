@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties("ca.bc.gov.nrs.forest-client-api")
-public class ProvidersConfig {
+public class ProvidersConfiguration {
 
   private String address;
   private String key;

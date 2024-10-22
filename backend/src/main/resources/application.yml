@@ -60,9 +60,9 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
-    user: ${POSTGRES_USER:nr-silva}
-    password: ${POSTGRES_PASSWORD:default}
+    url: ${spring.datasource.postgres.url}
+    user: ${spring.datasource.postgres.username}
+    password: ${spring.datasource.postgres.password}
 
 # OpenSearch settings
 nr-results-ecs-version: 8.9

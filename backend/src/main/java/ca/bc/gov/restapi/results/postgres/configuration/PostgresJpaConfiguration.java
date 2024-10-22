@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     },
     entityManagerFactoryRef = "postgresEntityManagerFactory",
     transactionManagerRef = "postgresTransactionManager")
-public class PostgresJpaConfig {
+public class PostgresJpaConfiguration {
 
   /**
    * Creates the EntityManagerFactory for the postgres database.

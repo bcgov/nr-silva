@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** This class holds the configuration for CORS handling. */
 @Slf4j
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfiguration implements WebMvcConfigurer {
 
   @Value("${server.allowed.cors.origins}")
   private String[] allowedOrigins;

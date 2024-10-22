@@ -1,7 +1,8 @@
 package ca.bc.gov.restapi.results.configuration;
 
-import ca.bc.gov.restapi.results.common.configuration.DataSourceConfig;
-import ca.bc.gov.restapi.results.common.configuration.SilvaHikariConfig;
+import ca.bc.gov.restapi.results.common.configuration.DataSourceConfiguration;
+import ca.bc.gov.restapi.results.common.configuration.SilvaHikariConfiguration;
+import ca.bc.gov.restapi.results.postgres.configuration.PostgresPersistenceConfiguration;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -21,14 +22,14 @@ public class MultiFlywayConfig {
    * Configures Flyway for PostgreSQL database. This will overwrite the original Flyway
    * configuration for PostgreSQL.
    *
-   * @param dataSourceConfig the data source configuration
+   * @param dataSourceConfiguration the data source configuration
    * @return the configured Flyway instance for PostgreSQL
    */
   @Bean
-  public Flyway flywayPostgres(DataSourceConfig dataSourceConfig) {
+  public Flyway flywayPostgres(DataSourceConfiguration dataSourceConfiguration) {
     return Flyway.configure()
         //We build the datasource as the original Bean uses Hikari, and it failed due to Timeout
-        .dataSource(toDataSource(dataSourceConfig.getPostgres()))
+        .dataSource(toDataSource(dataSourceConfiguration.getPostgres()))
         .locations("classpath:db/migration", "classpath:migration/postgres")
         .baselineOnMigrate(true)
         .load();
@@ -38,14 +39,14 @@ public class MultiFlywayConfig {
    * Configures Flyway for Oracle database. This will allow the test to be able to recreate the
    * expected oracle database format.
    *
-   * @param dataSourceConfig the data source configuration
+   * @param dataSourceConfiguration the data source configuration
    * @return the configured Flyway instance for Oracle
    */
   @Bean
-  public Flyway flywayOracle(DataSourceConfig dataSourceConfig) {
+  public Flyway flywayOracle(DataSourceConfiguration dataSourceConfiguration) {
     return Flyway.configure()
         //We build the datasource as the original Bean uses Hikari, and it failed due to Timeout
-        .dataSource(toDataSource(dataSourceConfig.getOracle()))
+        .dataSource(toDataSource(dataSourceConfiguration.getOracle()))
         .locations("classpath:migration/oracle")
         .schemas("THE")
         .load();
@@ -53,18 +54,18 @@ public class MultiFlywayConfig {
 
   /**
    * Converts Hikari configuration to a DataSource. The original Bean found at
-   * {@link ca.bc.gov.restapi.results.postgres.configuration.PostgresPersistenceConfig} was failing due to
+   * {@link PostgresPersistenceConfiguration} was failing due to
    * a timeout caused by HikariCP
    *
-   * @param silvaHikariConfig the Hikari configuration
+   * @param silvaHikariConfiguration the Hikari configuration
    * @return the DataSource
    */
-  private DataSource toDataSource(SilvaHikariConfig silvaHikariConfig) {
+  private DataSource toDataSource(SilvaHikariConfiguration silvaHikariConfiguration) {
     return DataSourceBuilder.create()
-        .url(silvaHikariConfig.getUrl())
-        .username(silvaHikariConfig.getUsername())
-        .password(silvaHikariConfig.getPassword())
-        .driverClassName(silvaHikariConfig.getDriverClassName())
+        .url(silvaHikariConfiguration.getUrl())
+        .username(silvaHikariConfiguration.getUsername())
+        .password(silvaHikariConfiguration.getPassword())
+        .driverClassName(silvaHikariConfiguration.getDriverClassName())
         .build();
   }
 

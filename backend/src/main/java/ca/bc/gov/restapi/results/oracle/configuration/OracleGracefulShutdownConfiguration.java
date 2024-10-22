@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /** This class adds a listener for closing connection gracefully. */
 @Component
-public class OracleGracefulShutdownConfig implements ApplicationListener<ContextClosedEvent> {
+public class OracleGracefulShutdownConfiguration implements ApplicationListener<ContextClosedEvent> {
 
   @Autowired private EntityManager oracleEntityManager;
 

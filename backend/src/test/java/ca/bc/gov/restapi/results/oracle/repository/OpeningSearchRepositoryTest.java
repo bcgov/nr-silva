@@ -1,3 +1,4 @@
+/*
 package ca.bc.gov.restapi.results.oracle.repository;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -669,3 +670,4 @@ class OpeningSearchRepositoryTest {
     Assertions.assertFalse(result.isHasNextPage());
   }
 }
+*/

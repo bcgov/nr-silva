@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-public class SilvaHikariConfig {
+public class SilvaHikariConfiguration {
 
   private String driverClassName;
   private String url;
