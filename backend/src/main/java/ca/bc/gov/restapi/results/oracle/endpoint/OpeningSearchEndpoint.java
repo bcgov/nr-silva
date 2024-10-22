@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
@@ -222,14 +223,14 @@ public class OpeningSearchEndpoint {
             statusList,
             myOpenings,
             submittedToFrpa,
-            getLocalDateTime(disturbanceDateStart,LocalTime.MIN),
-            getLocalDateTime(disturbanceDateEnd,LocalTime.MAX),
-            getLocalDateTime(regenDelayDateStart,LocalTime.MIN),
-            getLocalDateTime(regenDelayDateEnd,LocalTime.MAX),
-            getLocalDateTime(freeGrowingDateStart,LocalTime.MIN),
-            getLocalDateTime(freeGrowingDateEnd,LocalTime.MAX),
-            getLocalDateTime(updateDateStart,LocalTime.MIN),
-            getLocalDateTime(updateDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(disturbanceDateStart),
+            TimestampUtil.parseDateString(disturbanceDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(regenDelayDateStart),
+            TimestampUtil.parseDateString(regenDelayDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(freeGrowingDateStart),
+            TimestampUtil.parseDateString(freeGrowingDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(updateDateStart),
+            TimestampUtil.parseDateString(updateDateEnd,LocalTime.MAX),
             cuttingPermitId,
             cutBlockId,
             timberMark,
@@ -323,7 +324,4 @@ public class OpeningSearchEndpoint {
     return orgUnitService.findAllOrgUnitsByCode(codes);
   }
 
-  private LocalDateTime getLocalDateTime(LocalDate date, LocalTime time) {
-    return date != null ? date.atTime(time) : null;
-  }
 }
