@@ -23,7 +23,7 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           file: common/openshift.init.yml
-          overwrite: false
+          overwrite: true
           parameters:
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
@@ -51,6 +51,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            overwrite: true
             timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=test
@@ -92,7 +93,7 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           file: common/openshift.init.yml
-          overwrite: false
+          overwrite: true
           parameters:
             -p AWS_KINESIS_STREAM='${{ secrets.AWS_KINESIS_STREAM }}'
             -p AWS_KINESIS_ROLE_ARN='${{ secrets.AWS_KINESIS_ROLE_ARN }}'
@@ -135,6 +136,7 @@ jobs:
           - name: backend
             verification_path: actuator/health
             file: backend/openshift.deploy.yml
+            overwrite: true
             timeout: 15m
             parameters:
               -p RESULTS_ENV_OPENSEARCH=production
