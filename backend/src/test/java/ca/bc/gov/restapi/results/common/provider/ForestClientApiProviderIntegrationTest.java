@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.web.client.RestClient;
 
-@DisplayName("Integration Test | Forest Client API Provider")
+@DisplayName("Integrated Test | Forest Client API Provider")
 class ForestClientApiProviderIntegrationTest {
 
   @RegisterExtension
