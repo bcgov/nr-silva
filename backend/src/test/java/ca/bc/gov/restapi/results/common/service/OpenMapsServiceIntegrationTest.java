@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.web.client.RestClient;
 
 @DisplayName("Integrated Test | OpenMapsService")
-class OpenMapsServiceIntegratedTest {
+class OpenMapsServiceIntegrationTest {
 
   @RegisterExtension
   static WireMockExtension clientApiStub = WireMockExtension

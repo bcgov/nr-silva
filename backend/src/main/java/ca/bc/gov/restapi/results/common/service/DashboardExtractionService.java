@@ -27,12 +27,16 @@ public class DashboardExtractionService {
   /**
    * Service for extracting data from oracle and adding into Postgres.
    *
-   * @param months Optional number of months.
-   * @param debug Optional debug mode enabled.
+   * @param months            Optional number of months.
+   * @param debug             Optional debug mode enabled.
    * @param manuallyTriggered Optional option.
    */
   @Async
-  public void extractDataForTheDashboard(Integer months, Boolean debug, Boolean manuallyTriggered) {
+  public void extractDataForTheDashboard(
+      Integer months,
+      Boolean debug,
+      Boolean manuallyTriggered
+  ) {
     OracleExtractionParamsDto params = getParams(months, debug, manuallyTriggered);
 
     LocalDateTime startDateTime = LocalDateTime.now();
@@ -48,7 +52,10 @@ public class DashboardExtractionService {
   }
 
   private OracleExtractionParamsDto getParams(
-      Integer months, Boolean debug, Boolean manuallyTriggered) {
+      Integer months,
+      Boolean debug,
+      Boolean manuallyTriggered
+  ) {
     if (Objects.isNull(months)) {
       months = 24;
     }
