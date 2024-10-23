@@ -8,124 +8,78 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
-import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
-import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(OpeningSearchEndpoint.class)
-@WithMockUser(roles = "user_read")
-class OpeningSearchEndpointTest {
+@WithMockJwt(value = "ttester")
+@AutoConfigureMockMvc
+@DisplayName("Integrated Test | Opening Search Endpoint")
+class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private MockMvc mockMvc;
-
-  @MockBean private OpeningService openingService;
-
-  @MockBean private OpenCategoryCodeService openCategoryCodeService;
-
-  @MockBean private OrgUnitService orgUnitService;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Test
   @DisplayName("Opening search happy path should succeed")
   void openingSearch_happyPath_shouldSucceed() throws Exception {
-    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(0);
-    paginatedResult.setPerPage(5);
-    paginatedResult.setTotalPages(1);
-    paginatedResult.setHasNextPage(false);
-
-    OpeningSearchResponseDto response = new OpeningSearchResponseDto();
-    response.setOpeningId(123456789);
-    response.setOpeningNumber("589");
-    response.setCategory(OpeningCategoryEnum.FTML);
-    response.setStatus(OpeningStatusEnum.APP);
-    response.setCuttingPermitId(null);
-    response.setTimberMark(null);
-    response.setCutBlockId(null);
-    response.setOpeningGrossAreaHa(new BigDecimal("11"));
-    response.setDisturbanceStartDate(null);
-    response.setOrgUnitCode(null);
-    response.setOrgUnitName(null);
-    response.setClientNumber(null);
-    response.setClientAcronym(null);
-    response.setRegenDelayDate(null);
-    response.setEarlyFreeGrowingDate(null);
-    response.setLateFreeGrowingDate(null);
-    response.setUpdateTimestamp(LocalDateTime.now());
-    response.setEntryUserId("TEST");
-    response.setSubmittedToFrpa(true);
-    response.setSilvaReliefAppId(333L);
-    response.setForestFileId("TFL47");
-
-    paginatedResult.setData(List.of(response));
-
-    when(openingService.openingSearch(any(), any())).thenReturn(paginatedResult);
 
     mockMvc
         .perform(
-            get("/api/opening-search?mainSearchTerm=407")
+            get("/api/opening-search?mainSearchTerm=TFL49")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.pageIndex").value("0"))
-        .andExpect(jsonPath("$.perPage").value("5"))
+        .andExpect(jsonPath("$.perPage").value("1"))
         .andExpect(jsonPath("$.totalPages").value("1"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
-        .andExpect(jsonPath("$.data[0].openingId").value(response.getOpeningId()))
-        .andExpect(jsonPath("$.data[0].openingNumber").value(response.getOpeningNumber()))
-        .andExpect(jsonPath("$.data[0].category.code").value(response.getCategory().getCode()))
-        .andExpect(jsonPath("$.data[0].status.code").value(response.getStatus().getCode()))
-        .andExpect(jsonPath("$.data[0].cuttingPermitId").value(response.getCuttingPermitId()))
-        .andExpect(jsonPath("$.data[0].timberMark").value(response.getTimberMark()))
-        .andExpect(jsonPath("$.data[0].cutBlockId").value(response.getCutBlockId()))
-        .andExpect(jsonPath("$.data[0].openingGrossAreaHa").value(response.getOpeningGrossAreaHa()))
+        .andExpect(jsonPath("$.data[0].openingId").value(103))
+        .andExpect(jsonPath("$.data[0].openingNumber").isEmpty())
+        .andExpect(jsonPath("$.data[0].category.code").value("FTML"))
+        .andExpect(jsonPath("$.data[0].status.code").value("APP"))
+        .andExpect(jsonPath("$.data[0].cuttingPermitId").value("14T"))
+        .andExpect(jsonPath("$.data[0].timberMark").value("49/14S"))
+        .andExpect(jsonPath("$.data[0].cutBlockId").value("14-71"))
+        .andExpect(jsonPath("$.data[0].openingGrossAreaHa").value("14.9"))
         .andExpect(
-            jsonPath("$.data[0].disturbanceStartDate").value(response.getDisturbanceStartDate()))
-        .andExpect(jsonPath("$.data[0].forestFileId").value(response.getForestFileId()))
-        .andExpect(jsonPath("$.data[0].orgUnitCode").value(response.getOrgUnitCode()))
-        .andExpect(jsonPath("$.data[0].orgUnitName").value(response.getOrgUnitName()))
-        .andExpect(jsonPath("$.data[0].clientNumber").value(response.getClientNumber()))
-        .andExpect(jsonPath("$.data[0].regenDelayDate").value(response.getRegenDelayDate()))
+            jsonPath("$.data[0].disturbanceStartDate").value("2024-01-24"))
+        .andExpect(jsonPath("$.data[0].forestFileId").value("TFL49"))
+        .andExpect(jsonPath("$.data[0].orgUnitCode").value("DAS"))
+        .andExpect(jsonPath("$.data[0].orgUnitName").value("Org one"))
+        .andExpect(jsonPath("$.data[0].clientNumber").isEmpty())
+        .andExpect(jsonPath("$.data[0].regenDelayDate").value("2024-01-24"))
         .andExpect(
-            jsonPath("$.data[0].earlyFreeGrowingDate").value(response.getEarlyFreeGrowingDate()))
+            jsonPath("$.data[0].earlyFreeGrowingDate").value("2024-01-24"))
         .andExpect(
-            jsonPath("$.data[0].lateFreeGrowingDate").value(response.getLateFreeGrowingDate()))
-        .andExpect(jsonPath("$.data[0].entryUserId").value(response.getEntryUserId()))
-        .andExpect(jsonPath("$.data[0].submittedToFrpa").value(response.getSubmittedToFrpa()))
-        .andExpect(jsonPath("$.data[0].silvaReliefAppId").value(response.getSilvaReliefAppId()))
+            jsonPath("$.data[0].lateFreeGrowingDate").value("2024-01-24"))
+        .andExpect(jsonPath("$.data[0].entryUserId").value("IDIR\\\\TTESTER"))
+        .andExpect(jsonPath("$.data[0].submittedToFrpa").value(false))
+        .andExpect(jsonPath("$.data[0].silvaReliefAppId").value(0))
         .andReturn();
   }
 
   @Test
   @DisplayName("Opening search no records found should succeed")
   void openingSearch_noRecordsFound_shouldSucceed() throws Exception {
-    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(0);
-    paginatedResult.setPerPage(5);
-    paginatedResult.setTotalPages(1);
-    paginatedResult.setHasNextPage(false);
-    paginatedResult.setData(List.of());
-
-    when(openingService.openingSearch(any(), any())).thenReturn(paginatedResult);
 
     mockMvc
         .perform(
@@ -136,7 +90,7 @@ class OpeningSearchEndpointTest {
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.pageIndex").value("0"))
         .andExpect(jsonPath("$.perPage").value("5"))
-        .andExpect(jsonPath("$.totalPages").value("1"))
+        .andExpect(jsonPath("$.totalPages").value("0"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
         .andExpect(jsonPath("$.data", Matchers.empty()))
         .andReturn();
@@ -145,21 +99,6 @@ class OpeningSearchEndpointTest {
   @Test
   @DisplayName("Get Opening Categories happy Path should Succeed")
   void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
-    OpenCategoryCodeEntity category = new OpenCategoryCodeEntity();
-    category.setCode("FTML");
-    category.setDescription("Free Growing");
-    category.setEffectiveDate(LocalDate.now().minusYears(3L));
-    category.setExpiryDate(LocalDate.now().plusYears(3L));
-    category.setUpdateTimestamp(LocalDate.now());
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String effectiveDateStr = category.getEffectiveDate().format(formatter);
-    String expiryDateStr = category.getExpiryDate().format(formatter);
-    String updateTimestampStr = category.getUpdateTimestamp().format(formatter);
-
-    List<OpenCategoryCodeEntity> openCategoryCodeEntityList = List.of(category);
-
-    when(openCategoryCodeService.findAllCategories(false)).thenReturn(openCategoryCodeEntityList);
 
     mockMvc
         .perform(
@@ -168,42 +107,17 @@ class OpeningSearchEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].code").value(category.getCode()))
-        .andExpect(jsonPath("$[0].description").value(category.getDescription()))
-        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
-        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
-        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andExpect(jsonPath("$[0].code").value("CONT"))
+        .andExpect(jsonPath("$[0].description").value("SP as a part of contractual agreement"))
+        .andExpect(jsonPath("$[0].effectiveDate").value("2000-04-17"))
+        .andExpect(jsonPath("$[0].expiryDate").value("9999-12-31"))
+        .andExpect(jsonPath("$[0].updateTimestamp").value("2013-07-31"))
         .andReturn();
   }
 
   @Test
   @DisplayName("Get Opening Org Units happy Path should Succeed")
   void getOpeningOrgUnits_happyPath_shouldSucceed() throws Exception {
-    OrgUnitEntity orgUnit = new OrgUnitEntity();
-    orgUnit.setOrgUnitNo(22L);
-    orgUnit.setOrgUnitCode("DAS");
-    orgUnit.setOrgUnitName("DAS Name");
-    orgUnit.setLocationCode("123");
-    orgUnit.setAreaCode("1");
-    orgUnit.setTelephoneNo("25436521");
-    orgUnit.setOrgLevelCode('R');
-    orgUnit.setOfficeNameCode("RR");
-    orgUnit.setRollupRegionNo(12L);
-    orgUnit.setRollupRegionCode("19");
-    orgUnit.setRollupDistNo(13L);
-    orgUnit.setRollupDistCode("25");
-    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
-    orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
-    orgUnit.setUpdateTimestamp(LocalDate.now());
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String effectiveDateStr = orgUnit.getEffectiveDate().format(formatter);
-    String expiryDateStr = orgUnit.getExpiryDate().format(formatter);
-    String updateTimestampStr = orgUnit.getUpdateTimestamp().format(formatter);
-
-    List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
-
-    when(orgUnitService.findAllOrgUnits()).thenReturn(orgUnitEntityList);
 
     mockMvc
         .perform(
@@ -212,52 +126,27 @@ class OpeningSearchEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
-        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
-        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
-        .andExpect(jsonPath("$[0].locationCode").value(orgUnit.getLocationCode()))
-        .andExpect(jsonPath("$[0].areaCode").value(orgUnit.getAreaCode()))
-        .andExpect(jsonPath("$[0].telephoneNo").value(orgUnit.getTelephoneNo()))
-        .andExpect(jsonPath("$[0].orgLevelCode").value(orgUnit.getOrgLevelCode().toString()))
-        .andExpect(jsonPath("$[0].officeNameCode").value(orgUnit.getOfficeNameCode()))
-        .andExpect(jsonPath("$[0].rollupRegionNo").value(orgUnit.getRollupRegionNo()))
-        .andExpect(jsonPath("$[0].rollupRegionCode").value(orgUnit.getRollupRegionCode()))
-        .andExpect(jsonPath("$[0].rollupDistNo").value(orgUnit.getRollupDistNo()))
-        .andExpect(jsonPath("$[0].rollupDistCode").value(orgUnit.getRollupDistCode()))
-        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
-        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
-        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andExpect(jsonPath("$[0].orgUnitNo").value(1))
+        .andExpect(jsonPath("$[0].orgUnitCode").value("DAS"))
+        .andExpect(jsonPath("$[0].orgUnitName").value("Org one"))
+        .andExpect(jsonPath("$[0].locationCode").value("001"))
+        .andExpect(jsonPath("$[0].areaCode").value("AAA"))
+        .andExpect(jsonPath("$[0].telephoneNo").value("1122334"))
+        .andExpect(jsonPath("$[0].orgLevelCode").value("H"))
+        .andExpect(jsonPath("$[0].officeNameCode").value("VI"))
+        .andExpect(jsonPath("$[0].rollupRegionNo").value(111))
+        .andExpect(jsonPath("$[0].rollupRegionCode").value("1Code"))
+        .andExpect(jsonPath("$[0].rollupDistNo").value(222))
+        .andExpect(jsonPath("$[0].rollupDistCode").value("22Code"))
+        .andExpect(jsonPath("$[0].effectiveDate").value("2020-01-01"))
+        .andExpect(jsonPath("$[0].expiryDate").value("9999-12-31"))
+        .andExpect(jsonPath("$[0].updateTimestamp").value("2024-09-03"))
         .andReturn();
   }
 
   @Test
   @DisplayName("Get Opening Org Units By Code happy Path should Succeed")
   void getOpeningOrgUnitsByCode_happyPath_shouldSucceed() throws Exception {
-    OrgUnitEntity orgUnit = new OrgUnitEntity();
-    orgUnit.setOrgUnitNo(22L);
-    orgUnit.setOrgUnitCode("DAS");
-    orgUnit.setOrgUnitName("DAS Name");
-    orgUnit.setLocationCode("123");
-    orgUnit.setAreaCode("1");
-    orgUnit.setTelephoneNo("25436521");
-    orgUnit.setOrgLevelCode('R');
-    orgUnit.setOfficeNameCode("RR");
-    orgUnit.setRollupRegionNo(12L);
-    orgUnit.setRollupRegionCode("19");
-    orgUnit.setRollupDistNo(13L);
-    orgUnit.setRollupDistCode("25");
-    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
-    orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
-    orgUnit.setUpdateTimestamp(LocalDate.now());
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String effectiveDateStr = orgUnit.getEffectiveDate().format(formatter);
-    String expiryDateStr = orgUnit.getExpiryDate().format(formatter);
-    String updateTimestampStr = orgUnit.getUpdateTimestamp().format(formatter);
-
-    List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
-
-    when(orgUnitService.findAllOrgUnitsByCode(new String[]{"DAS"})).thenReturn(orgUnitEntityList);
 
     mockMvc
         .perform(
@@ -266,32 +155,30 @@ class OpeningSearchEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
-        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
-        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
-        .andExpect(jsonPath("$[0].locationCode").value(orgUnit.getLocationCode()))
-        .andExpect(jsonPath("$[0].areaCode").value(orgUnit.getAreaCode()))
-        .andExpect(jsonPath("$[0].telephoneNo").value(orgUnit.getTelephoneNo()))
-        .andExpect(jsonPath("$[0].orgLevelCode").value(orgUnit.getOrgLevelCode().toString()))
-        .andExpect(jsonPath("$[0].officeNameCode").value(orgUnit.getOfficeNameCode()))
-        .andExpect(jsonPath("$[0].rollupRegionNo").value(orgUnit.getRollupRegionNo()))
-        .andExpect(jsonPath("$[0].rollupRegionCode").value(orgUnit.getRollupRegionCode()))
-        .andExpect(jsonPath("$[0].rollupDistNo").value(orgUnit.getRollupDistNo()))
-        .andExpect(jsonPath("$[0].rollupDistCode").value(orgUnit.getRollupDistCode()))
-        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
-        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
-        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andExpect(jsonPath("$[0].orgUnitNo").value(1))
+        .andExpect(jsonPath("$[0].orgUnitCode").value("DAS"))
+        .andExpect(jsonPath("$[0].orgUnitName").value("Org one"))
+        .andExpect(jsonPath("$[0].locationCode").value("001"))
+        .andExpect(jsonPath("$[0].areaCode").value("AAA"))
+        .andExpect(jsonPath("$[0].telephoneNo").value("1122334"))
+        .andExpect(jsonPath("$[0].orgLevelCode").value("H"))
+        .andExpect(jsonPath("$[0].officeNameCode").value("VI"))
+        .andExpect(jsonPath("$[0].rollupRegionNo").value(111))
+        .andExpect(jsonPath("$[0].rollupRegionCode").value("1Code"))
+        .andExpect(jsonPath("$[0].rollupDistNo").value(222))
+        .andExpect(jsonPath("$[0].rollupDistCode").value("22Code"))
+        .andExpect(jsonPath("$[0].effectiveDate").value("2020-01-01"))
+        .andExpect(jsonPath("$[0].expiryDate").value("9999-12-31"))
+        .andExpect(jsonPath("$[0].updateTimestamp").value("2024-09-03"))
         .andReturn();
   }
 
   @Test
   @DisplayName("Get Opening Org Units By Code not Found should Succeed")
   void getOpeningOrgUnitsByCode_notFound_shouldSucceed() throws Exception {
-    when(orgUnitService.findAllOrgUnitsByCode(new String[]{"DAS"})).thenReturn(List.of());
-
     mockMvc
         .perform(
-            get("/api/opening-search/org-units-by-code?orgUnitCodes=DAS")
+            get("/api/opening-search/org-units-by-code?orgUnitCodes=ABC")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
