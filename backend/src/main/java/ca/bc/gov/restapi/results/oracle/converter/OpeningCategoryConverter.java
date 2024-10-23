@@ -14,7 +14,6 @@ public class OpeningCategoryConverter implements AttributeConverter<OpeningCateg
     if (Objects.isNull(attribute)) {
       return null;
     }
-
     return attribute.getCode();
   }
 
