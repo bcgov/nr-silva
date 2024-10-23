@@ -61,17 +61,17 @@ class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
         .andExpect(jsonPath("$.data[0].cutBlockId").value("14-71"))
         .andExpect(jsonPath("$.data[0].openingGrossAreaHa").value("14.9"))
         .andExpect(
-            jsonPath("$.data[0].disturbanceStartDate").value("2024-01-24"))
+            jsonPath("$.data[0].disturbanceStartDate").value("2024-01-24T00:00:00"))
         .andExpect(jsonPath("$.data[0].forestFileId").value("TFL49"))
         .andExpect(jsonPath("$.data[0].orgUnitCode").value("DAS"))
         .andExpect(jsonPath("$.data[0].orgUnitName").value("Org one"))
         .andExpect(jsonPath("$.data[0].clientNumber").isEmpty())
-        .andExpect(jsonPath("$.data[0].regenDelayDate").value("2024-01-24"))
+        .andExpect(jsonPath("$.data[0].regenDelayDate").value("2024-01-24T00:00:00"))
         .andExpect(
-            jsonPath("$.data[0].earlyFreeGrowingDate").value("2024-01-24"))
+            jsonPath("$.data[0].earlyFreeGrowingDate").value("2024-01-24T00:00:00"))
         .andExpect(
-            jsonPath("$.data[0].lateFreeGrowingDate").value("2024-01-24"))
-        .andExpect(jsonPath("$.data[0].entryUserId").value("IDIR\\\\TTESTER"))
+            jsonPath("$.data[0].lateFreeGrowingDate").value("2024-01-24T00:00:00"))
+        .andExpect(jsonPath("$.data[0].entryUserId").value("IDIR@TTESTER"))
         .andExpect(jsonPath("$.data[0].submittedToFrpa").value(false))
         .andExpect(jsonPath("$.data[0].silvaReliefAppId").value(0))
         .andReturn();
