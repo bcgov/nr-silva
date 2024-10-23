@@ -20,9 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -224,13 +222,13 @@ public class OpeningSearchEndpoint {
             myOpenings,
             submittedToFrpa,
             TimestampUtil.parseDateString(disturbanceDateStart),
-            TimestampUtil.parseDateString(disturbanceDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(disturbanceDateEnd, LocalTime.MAX),
             TimestampUtil.parseDateString(regenDelayDateStart),
-            TimestampUtil.parseDateString(regenDelayDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(regenDelayDateEnd, LocalTime.MAX),
             TimestampUtil.parseDateString(freeGrowingDateStart),
-            TimestampUtil.parseDateString(freeGrowingDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(freeGrowingDateEnd, LocalTime.MAX),
             TimestampUtil.parseDateString(updateDateStart),
-            TimestampUtil.parseDateString(updateDateEnd,LocalTime.MAX),
+            TimestampUtil.parseDateString(updateDateEnd, LocalTime.MAX),
             cuttingPermitId,
             cutBlockId,
             timberMark,
