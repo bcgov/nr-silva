@@ -151,4 +151,9 @@ public class OpeningSearchResponseDto {
       description = "Uniquely identifies an Application for Relief from obligations.",
       example = "56")
   private Long silvaReliefAppId;
+
+  @Schema(
+      description = "Uniquely identifies an Application for Relief from obligations.",
+      example = "56")
+  private LocalDateTime lastViewDate;
 }

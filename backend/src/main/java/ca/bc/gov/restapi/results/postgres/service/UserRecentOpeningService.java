@@ -11,9 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -70,20 +73,30 @@ public class UserRecentOpeningService {
         Pageable pageable = PageRequest.of(0, limit); // PageRequest object to apply limit
     
         // Fetch recent openings for the user
-        List<UserRecentOpeningEntity> recentOpenings = userRecentOpeningRepository
+        Page<UserRecentOpeningEntity> recentOpenings = userRecentOpeningRepository
                 .findByUserIdOrderByLastViewedDesc(userId, pageable);
     
         // Extract opening IDs as String
-        List<String> openingIds = recentOpenings.stream()
-                .map(opening -> String.valueOf(opening.getOpeningId())) // Convert Integer to String
-                .collect(Collectors.toList());
-
-        System.out.println("Opening IDs: " + openingIds);
+        Map<String,LocalDateTime> openingIds = recentOpenings.getContent().stream()
+                //.map(opening -> String.valueOf(opening.getOpeningId())) // Convert Integer to String
+                //.collect(Collectors.toList());
+                .collect(Collectors.toMap(UserRecentOpeningEntity::getOpeningId, UserRecentOpeningEntity::getLastViewed));
+        log.info("User with the userId {} has the following openindIds {}", userId, openingIds);
         if (openingIds.isEmpty()) {
             return new PaginatedResult<>();
         }
-        // Call the service method to fetch opening details
-        return openingRecentViewService.getOpeningsByIds(openingIds);
+        // Call the oracle service method to fetch opening details for the given opening IDs
+        PaginatedResult<OpeningSearchResponseDto> pageResult = openingRecentViewService.getOpeningsByIds(new ArrayList<>(openingIds.keySet()));
+
+        pageResult.setData(
+            pageResult
+            .getData()
+            .stream()        
+            .peek(result -> result.setLastViewDate(openingIds.get(result.getOpeningId().toString())))
+            .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
+            .collect(Collectors.toList())
+        );
+        return pageResult;
     }
     
 }

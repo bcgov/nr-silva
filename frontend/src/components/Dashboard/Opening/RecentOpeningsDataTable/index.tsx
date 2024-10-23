@@ -19,9 +19,6 @@ import {
   PopoverContent,
   Checkbox,
   CheckboxGroup,
-  Row,
-  Column,
-  MenuItemDivider,
   Modal,
   ActionableNotification
 } from "@carbon/react";
@@ -32,7 +29,6 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
 import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
@@ -42,7 +38,6 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
-import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 
 interface IRecentOpeningsDataTable {
   rows: OpeningsSearch[];
@@ -70,12 +65,10 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
     currentPage,
   } = useContext(PaginationContext);
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
-  const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState(false);
-  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,20 +84,6 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
-      }
-    });
-  };
-
-  const handleRowClick = (openingId: string) => {
-    // Call the mutation to mark as viewed
-    markAsViewedOpening(openingId, {
-      onSuccess: () => {
-        // setToastText(`Successfully marked opening ${openingId} as viewed.`);
-        console.log(`Successfully marked opening ${openingId} as viewed.`);
-      },
-      onError: (err: any) => {
-        // setToastText(`Failed to mark as viewed: ${err.message}`);
-        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
@@ -211,9 +190,8 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
                   onClick={async () => {
                     //add the api call to send the viewed opening
                     // await handleRowClick(row.openingId);
-                    setOpeningDetails(true)
-                  }
-                  }
+                    setOpeningDetails(true);
+                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
@@ -223,67 +201,57 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
                           header.key === "actions" && showSpatial ? "p-0" : null
                         }
                       >
-                        
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          <CheckboxGroup
-                            orientation="horizontal"
-                            className="align-items-center justify-content-start"
-                          >
-                            {/* Checkbox for selecting rows */}
-                            {showSpatial && (
-                              <Tooltip
-                                className="checkbox-tip"
-                                label="Click to view this opening's map activity."
-                                align="bottom-left"
-                                autoAlign
-                              >
-                                <div className="mb-2 mx-2">
-                                  <Checkbox
-                                    id={`checkbox-label-${row.openingId}`}
-                                    checked={selectedRows.includes(
-                                      row.openingId
-                                    )}
-                                    onChange={() =>
-                                      handleRowSelectionChanged(row.openingId)
-                                    }
-                                  />
-                                </div>
-                              </Tooltip>
-                            )}
-                            <OverflowMenu
-                              size={"md"}
-                              ariaLabel="More actions"
-                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
+                          <>
+                            <>
+                            <Button
+                              hasIconOnly
+                              iconDescription="View"
+                              tooltipPosition="auto"
+                              kind="ghost"
+                              onClick={() => console.log(row.openingid)}
+                              renderIcon={Icons.View}
+                              size="md"
+                            />
+                            <Button
+                              hasIconOnly
+                              iconDescription="Document Download"
+                              tooltipPosition="auto"
+                              kind="ghost"
+                              onClick={() => null}
+                              renderIcon={Icons.DocumentDownload}
+                              size="md"
+                            />
+                          </>
+                            <CheckboxGroup
+                              orientation="horizontal"
+                              className="align-items-center justify-content-start"
                             >
-                              <OverflowMenuItem
-                                itemText="Favourite opening"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  handleFavouriteOpening(row.openingId);
-                                }}
-                              />
-                              <OverflowMenuItem
-                                itemText="Download opening as PDF file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  downloadPDF(defaultColumns, [row]);
-                                }}
-                              />
-                              <OverflowMenuItem
-                                itemText="Download opening as CSV file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  const csvData = convertToCSV(defaultColumns, [
-                                    row,
-                                  ]);
-                                  downloadCSV(csvData, "openings-data.csv");
-                                }}
-                              />
-                              <OverflowMenuItem itemText="Delete opening" />
-                            </OverflowMenu>
-                          </CheckboxGroup>
+                              {/* Checkbox for selecting rows */}
+                              {showSpatial && (
+                                <Tooltip
+                                  className="checkbox-tip"
+                                  label="Click to view this opening's map activity."
+                                  align="bottom-left"
+                                  autoAlign
+                                >
+                                  <div className="mb-2 mx-2">
+                                    <Checkbox
+                                      id={`checkbox-label-${row.openingId}`}
+                                      checked={selectedRows.includes(
+                                        row.openingId
+                                      )}
+                                      onChange={() =>
+                                        handleRowSelectionChanged(row.openingId)
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              )}
+                            </CheckboxGroup>
+                          </>
                         ) : header.header === "Category" ? (
                           row["categoryCode"] +
                           " - " +

@@ -13,7 +13,8 @@ export const useUserRecentOpeningQuery = (limit:number) => {
   return useQuery({
     queryKey: ["userRecentOpenings"],
     queryFn: () => fetchUserRecentOpenings(limit),
-    enabled: true
+    enabled: true,
+    refetchOnMount: "always"
   });
 };
 
