@@ -230,6 +230,18 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
     </dependency>
+
+    <!-- Validation -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>7.0.4.Final</version>
+    </dependency>
   </dependencies>
 
   <build>
