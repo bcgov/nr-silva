@@ -14,6 +14,8 @@ spring:
 
 # Database, and JPA - Oracle
   datasource:
+    username: ${spring.datasource.postgres.username}
+    password: ${spring.datasource.postgres.password}
     oracle:
       driver-class-name: oracle.jdbc.OracleDriver
       url: jdbc:oracle:thin:@tcps://${DATABASE_HOST:nrcdb03.bcgov}:${DATABASE_PORT:1543}/${SERVICE_NAME:dbq01.nrs.bcgov}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
@@ -61,8 +63,8 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
     url: ${spring.datasource.postgres.url}
-    user: ${POSTGRES_USER:nr-silva}
-    password: ${POSTGRES_PASSWORD:default}
+    user: ${spring.datasource.postgres.username}
+    password: ${spring.datasource.postgres.password}
 
 # OpenSearch settings
 nr-results-ecs-version: 8.9
