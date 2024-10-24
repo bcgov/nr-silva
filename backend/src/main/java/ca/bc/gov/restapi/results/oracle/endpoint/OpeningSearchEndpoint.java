@@ -233,7 +233,7 @@ public class OpeningSearchEndpoint {
             cutBlockId,
             timberMark,
             mainSearchTerm);
-    return openingService.openingSearch(filtersDto, paginationParameters);
+    return openingService.openingSearch(filtersDto, null, paginationParameters);
   }
 
   /**

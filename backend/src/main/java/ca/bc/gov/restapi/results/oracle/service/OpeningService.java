@@ -13,10 +13,11 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningSearchProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
+import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,7 +35,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
+/**
+ * This class holds methods for fetching and handling {@link OpeningEntity} in general.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -45,8 +48,6 @@ public class OpeningService {
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
 
   private final LoggedUserService loggedUserService;
-
-  private final OpeningSearchRepository openingSearchRepository;
 
   private final ForestClientApiProvider forestClientApiProvider;
 
@@ -155,7 +156,10 @@ public class OpeningService {
    * @return Paginated result with found content.
    */
   public PaginatedResult<OpeningSearchResponseDto> openingSearch(
-      OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
+      OpeningSearchFiltersDto filtersDto,
+      List<Long> openingIds,
+      PaginationParameters pagination
+  ) {
     log.info(
         "Search Openings with page index {} and page size {}",
         pagination.page(),
@@ -174,8 +178,7 @@ public class OpeningService {
       filtersDto.setRequestUserId(userId);
     }
 
-    PaginatedResult<OpeningSearchResponseDto> result =
-        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+    PaginatedResult<OpeningSearchResponseDto> result = searchOpeningQuery(filtersDto, pagination);
 
     fetchClientAcronyms(result);
 
@@ -258,5 +261,69 @@ public class OpeningService {
     }
 
     return recentOpeningDtos;
+  }
+
+  private PaginatedResult<OpeningSearchResponseDto> searchOpeningQuery(
+      OpeningSearchFiltersDto filtersDto,
+      PaginationParameters pagination
+  ) {
+
+    List<OpeningSearchProjection> result = openingRepository.findOpenings(
+        filtersDto,
+        pagination.toPageable(SilvaConstants.MAX_PAGE_SIZE).getOffset(),
+        pagination.toPageable(SilvaConstants.MAX_PAGE_SIZE).getPageSize()
+    );
+
+    int lastPage = PaginationUtil.getLastPage(result.size(), pagination.perPage());
+
+    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
+    paginatedResult.setPageIndex(pagination.page());
+    paginatedResult.setPerPage(pagination.perPage());
+    paginatedResult.setTotalPages(lastPage);
+
+    if (result.isEmpty() || pagination.page() > lastPage) {
+      log.info("No search openings result for the search given page index and size!");
+      paginatedResult.setData(List.of());
+      paginatedResult.setTotalPages(result.isEmpty() ? 0 : lastPage);
+      paginatedResult.setHasNextPage(false);
+      return paginatedResult;
+    }
+
+    List<OpeningSearchResponseDto> resultList = result
+        .stream()
+        .map(resultProjection ->
+            OpeningSearchResponseDto
+                .builder()
+                .openingId(resultProjection.getOpeningId().intValue())
+                .openingNumber(resultProjection.getOpeningNumber())
+                .category(resultProjection.getFinalCategory())
+                .status(resultProjection.getFinalStatus())
+                .cuttingPermitId(resultProjection.getCuttingPermitId())
+                .timberMark(resultProjection.getTimberMark())
+                .cutBlockId(resultProjection.getCutBlockId())
+                .openingGrossAreaHa(resultProjection.getOpeningGrossArea())
+                .disturbanceStartDate(resultProjection.getDisturbanceStartDate())
+                .forestFileId(resultProjection.getForestFileId())
+                .orgUnitCode(resultProjection.getOrgUnitCode())
+                .orgUnitName(resultProjection.getOrgUnitName())
+                .clientNumber(resultProjection.getClientNumber())
+                .clientLocation(resultProjection.getClientLocation())
+                .regenDelayDate(resultProjection.getRegenDelayDate())
+                .earlyFreeGrowingDate(resultProjection.getEarlyFreeGrowingDate())
+                .lateFreeGrowingDate(resultProjection.getLateFreeGrowingDate())
+                .updateTimestamp(resultProjection.getUpdateTimestamp())
+                .entryUserId(resultProjection.getEntryUserId())
+                .submittedToFrpa(resultProjection.getSubmittedToFrpa())
+                .silvaReliefAppId(resultProjection.getSilvaReliefAppId())
+                .build()
+        )
+        .toList();
+
+    paginatedResult.setData(resultList);
+    paginatedResult.setPerPage(resultList.size());
+    paginatedResult.setTotalPages(lastPage);
+    paginatedResult.setHasNextPage(pagination.page() < lastPage && pagination.page() > 0);
+
+    return paginatedResult;
   }
 }

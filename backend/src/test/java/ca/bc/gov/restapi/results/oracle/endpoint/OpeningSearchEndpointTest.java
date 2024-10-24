@@ -63,8 +63,8 @@ class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
         .andExpect(
             jsonPath("$.data[0].disturbanceStartDate").value("2024-01-24T00:00:00"))
         .andExpect(jsonPath("$.data[0].forestFileId").value("TFL49"))
-        .andExpect(jsonPath("$.data[0].orgUnitCode").value("DAS"))
-        .andExpect(jsonPath("$.data[0].orgUnitName").value("Org one"))
+        .andExpect(jsonPath("$.data[0].orgUnitCode").value("TWO"))
+        .andExpect(jsonPath("$.data[0].orgUnitName").value("Org two"))
         .andExpect(jsonPath("$.data[0].clientNumber").isEmpty())
         .andExpect(jsonPath("$.data[0].regenDelayDate").value("2024-01-24T00:00:00"))
         .andExpect(
