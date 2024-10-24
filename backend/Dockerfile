@@ -17,12 +17,6 @@ FROM gcr.io/distroless/java-base:nonroot AS deploy
 WORKDIR /app
 COPY --from=build /app/target/results ./nr-results-backend
 
-COPY dockerfile-entrypoint.sh ./
-RUN mkdir config dump public && \
-    chmod -R g+w . && \
-    chmod g+x dockerfile-entrypoint.sh && \
-    chmod g+w ${JAVA_HOME}/lib/security/cacerts
-
 # Port and health check
 USER 1001
 EXPOSE 8080
