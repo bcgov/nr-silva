@@ -178,7 +178,7 @@ public class OpeningService {
       filtersDto.setRequestUserId(userId);
     }
 
-    PaginatedResult<OpeningSearchResponseDto> result = searchOpeningQuery(filtersDto, pagination);
+    PaginatedResult<OpeningSearchResponseDto> result = searchOpeningQuery(filtersDto, openingIds, pagination);
 
     fetchClientAcronyms(result);
 
@@ -265,11 +265,13 @@ public class OpeningService {
 
   private PaginatedResult<OpeningSearchResponseDto> searchOpeningQuery(
       OpeningSearchFiltersDto filtersDto,
+      List<Long> openingIds,
       PaginationParameters pagination
   ) {
 
     List<OpeningSearchProjection> result = openingRepository.findOpenings(
         filtersDto,
+        openingIds,
         pagination.toPageable(SilvaConstants.MAX_PAGE_SIZE).getOffset(),
         pagination.toPageable(SilvaConstants.MAX_PAGE_SIZE).getPageSize()
     );

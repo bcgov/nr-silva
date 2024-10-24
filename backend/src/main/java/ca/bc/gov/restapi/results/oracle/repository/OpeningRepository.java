@@ -208,6 +208,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
            AND (
                :#{#filters.timberMark} IS NULL OR cboa.TIMBER_MARK = :#{#filters.timberMark}
            )
+           AND (
+               :openingIds IS NULL OR o.OPENING_ID IN (:openingIds)
+           )
            GROUP BY o.OPENING_ID
             ,o.OPENING_NUMBER
             ,o.OPEN_CATEGORY_CODE
@@ -229,8 +232,12 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
             ,o.ENTRY_USERID
             ,COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0)
             ORDER BY o.OPENING_ID DESC
-            OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY
-          """
+            OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY"""
   )
-  List<OpeningSearchProjection> findOpenings(OpeningSearchFiltersDto filters, long offset, int size);
+  List<OpeningSearchProjection> findOpenings(
+      OpeningSearchFiltersDto filters,
+      List<Long> openingIds,
+      long offset,
+      int size
+  );
 }
