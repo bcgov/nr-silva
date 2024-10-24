@@ -6,17 +6,17 @@ WORKDIR /app
 COPY pom.xml mvnw ./
 COPY src ./src
 COPY .mvn/ ./.mvn
-COPY InstallCert.java .
 
 # Build
-RUN ./mvnw package -Pnative -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
+RUN ./mvnw -Pnative -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod native:compile
 
 ### Deployer
-FROM eclipse-temurin:17.0.12_7-jdk-jammy AS deploy
+FROM gcr.io/distroless/java-base:nonroot AS deploy
 
 # Copy
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/*.class ./artifacts/
+COPY --from=build /app/target/nr-results-backend ./nr-results-backend
+
 COPY dockerfile-entrypoint.sh ./
 RUN mkdir config dump public && \
     chmod -R g+w . && \
@@ -29,4 +29,4 @@ EXPOSE 8080
 HEALTHCHECK CMD curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
 
 # Startup
-ENTRYPOINT ["/app/dockerfile-entrypoint.sh"]
+ENTRYPOINT ["/app/nr-results-backend","--spring.profiles.active=container,prod"]
