@@ -30,6 +30,8 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   };
 
   const handleSearchClick = () => {
+    //set the Advanced Filter Dropsdown visibility to false
+    setIsOpen(false);
     onSearchClick();
   };
 
