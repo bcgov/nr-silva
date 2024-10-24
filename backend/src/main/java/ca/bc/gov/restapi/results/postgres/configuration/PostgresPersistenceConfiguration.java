@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.common.configuration.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /** This class holds persistence configurations for the Postgres database. */
 @Configuration
+@Slf4j
 public class PostgresPersistenceConfiguration {
 
   @Bean
@@ -22,6 +24,12 @@ public class PostgresPersistenceConfiguration {
   /** Creates a Postgres Datasource with all Hikari connection pool configuration. */
   @Bean
   public DataSource postgresDataSource(DataSourceConfiguration dataSourceConfiguration) {
+
+    log.info("Creating Postgres Datasource {} = {}",
+        dataSourceConfiguration.getPostgres().getUsername(),
+        dataSourceConfiguration.getPostgres().getPassword()
+    );
+
     HikariConfig config = new HikariConfig();
     config.setJdbcUrl(dataSourceConfiguration.getPostgres().getUrl());
     config.setUsername(dataSourceConfiguration.getPostgres().getUsername());
