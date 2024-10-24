@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.configuration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
 /** This class gets configuration from the application.yml file for both databases. */
@@ -17,6 +18,8 @@ public class DataSourceConfiguration {
   private String username;
   private String password;
 
+  @NestedConfigurationProperty
   private SilvaHikariConfiguration oracle;
+  @NestedConfigurationProperty
   private SilvaHikariConfiguration postgres;
 }
