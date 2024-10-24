@@ -15,7 +15,7 @@ FROM gcr.io/distroless/java-base:nonroot AS deploy
 
 # Copy
 WORKDIR /app
-COPY --from=build /app/target/nr-results-backend ./nr-results-backend
+COPY --from=build /app/target/results ./nr-results-backend
 
 COPY dockerfile-entrypoint.sh ./
 RUN mkdir config dump public && \
