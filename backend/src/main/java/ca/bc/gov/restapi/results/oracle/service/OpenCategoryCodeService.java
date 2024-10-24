@@ -34,8 +34,8 @@ public class OpenCategoryCodeService {
             : openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
 
     log.info("Found {} open category codes ({}cluding expired)",
-        BooleanUtils.toString(includeExpired, "in", "ex"),
-        openCategoryCodes.size()
+        openCategoryCodes.size(),
+        BooleanUtils.toString(includeExpired, "in", "ex")
     );
     return openCategoryCodes;
   }
