@@ -2,14 +2,15 @@ package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
-/** This service contains methods for interacting with Forest Client API. */
+/**
+ * This service contains methods for interacting with Forest Client API.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,17 +31,11 @@ public class ForestClientService {
     if (!fixedNumber.equals(clientNumber)) {
       log.info("Fixed client number to fetch {}", fixedNumber);
     }
-
-    try {
-      return forestClientApiProvider.fetchClientByNumber(fixedNumber);
-    } catch (HttpClientErrorException.NotFound e) {
-      log.info(String.format("Client %s not found", clientNumber), e);
-      return Optional.empty();
-    }
+    return forestClientApiProvider.fetchClientByNumber(fixedNumber);
   }
 
   private String checkClientNumber(String clientNumber) {
-    if (Objects.isNull(clientNumber)) {
+    if (StringUtils.isEmpty(clientNumber)) {
       return "00000000";
     }
 

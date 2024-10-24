@@ -1,8 +1,12 @@
 package ca.bc.gov.restapi.results.oracle.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * This class contains methods for manual pagination.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaginationUtil {
 
   /**
@@ -13,12 +17,8 @@ public class PaginationUtil {
    * @return The last page number, representing the total number of pages.
    */
   public static int getLastPage(int totalElements, int pageSize) {
-    if (pageSize == 0) {
-      return 0;
-    }
-    int lastPage = (int) Math.ceil((double) totalElements / pageSize);
-    return lastPage;
-  }
+  return (pageSize == 0) ? 0 : (int) Math.ceil((double) totalElements / pageSize);
+}
 
   /**
    * Get the start index (offset) when creating a sub list from a list.
@@ -28,9 +28,8 @@ public class PaginationUtil {
    * @return The start index
    */
   public static int getStartIndex(int currentPage, int pageSize) {
-    int startIndex = currentPage * pageSize;
-    return startIndex;
-  }
+  return currentPage * pageSize;
+}
 
   /**
    * Get the last index (offset) when creating a sub list from a list.
@@ -41,8 +40,7 @@ public class PaginationUtil {
    * @return The last index
    */
   public static int getEndIndex(int startIndex, int pageSize, int totalElements) {
-    int endIndex = Math.min(startIndex + pageSize, totalElements);
-    return endIndex;
-  }
+  return Math.min(startIndex + pageSize, totalElements);
+}
 
 }

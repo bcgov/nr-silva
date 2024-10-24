@@ -14,7 +14,6 @@ public class OpeningStatusConverter implements AttributeConverter<OpeningStatusE
     if (Objects.isNull(attribute)) {
       return null;
     }
-
     return attribute.getCode();
   }
 

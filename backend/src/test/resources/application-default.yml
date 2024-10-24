@@ -10,19 +10,25 @@ spring:
           jwk-set-uri: https://aws-cognito-issuer-uri.aws.com/.well-known/jwks.json
 
 # Users allowed to see and download WMS layers information
-nr:
-  results:
-    config:
-      wms-layers:
-        whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
-      opening-search:
-        org-units: ${OPENING_SEARCH_ORG_UNITS:DCK}
+ca:
+  bc:
+    gov:
+      nrs:
+        results:
+          wms-layers:
+            whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+          opening-search:
+            org-units: ${OPENING_SEARCH_ORG_UNITS:DAS}
+        forest-client-api:
+          address: http://localhost:10000
+          key: 123456789abcdef
+        open-maps:
+          address: http://localhost:10001
 
-# Forest Client API
-#forest-client-api:
-#  address: https://nonexistent.org
-#  key: 123456789abcdef
 
 logging:
   level:
+    #root: DEBUG
     ca.bc.gov.restapi.results: ${LOGGING_LEVEL:INFO}
+    org.springframework.web.client: DEBUG
+    org.springframework.http.client: DEBUG

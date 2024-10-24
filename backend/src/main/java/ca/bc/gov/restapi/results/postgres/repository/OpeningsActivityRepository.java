@@ -11,8 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface OpeningsActivityRepository
     extends JpaRepository<OpeningsActivityEntity, OpeningsActivityEntityId> {
 
-  @Query("from OpeningsActivityEntity o where o.openingId in (?1)")
-  List<OpeningsActivityEntity> findAllByOpeningId(List<Long> openingIds);
+  List<OpeningsActivityEntity> findAllByOpeningIdIn(List<Long> openingIds);
 
   List<OpeningsActivityEntity> findAllByEntryUserid(String userId, Sort sort);
 }

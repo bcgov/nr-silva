@@ -12,10 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Unit Test | Forest Client Service")
 class ForestClientServiceTest {
 
   @Mock ForestClientApiProvider forestClientApiProvider;
@@ -106,5 +110,20 @@ class ForestClientServiceTest {
     Optional<ForestClientDto> clientDto = forestClientService.getClientByNumber(clientNumber);
 
     Assertions.assertTrue(clientDto.isEmpty());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", " ", "  ", "   "})
+  @NullAndEmptySource
+  @DisplayName("No client number should return empty")
+  void shouldGetEmptyWhenNoClientNumber(String clientNumber) {
+
+    when(forestClientApiProvider.fetchClientByNumber("00000000"))
+        .thenReturn(Optional.empty());
+
+    Optional<ForestClientDto> clientDtoOptional =
+        forestClientService.getClientByNumber(clientNumber);
+
+    Assertions.assertTrue(clientDtoOptional.isEmpty());
   }
 }

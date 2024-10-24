@@ -1,8 +1,11 @@
 package ca.bc.gov.restapi.results.common.pagination;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Pagination parameters to be used in the processing of HTTP GET requests.
@@ -11,7 +14,12 @@ import jakarta.validation.constraints.PositiveOrZero;
  * @param perPage The maximum number of results in each page. Defaults to 20
  */
 @Hidden
-public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integer perPage) {
+public record PaginationParameters(
+    @PositiveOrZero(message = "Page number needs to be zero or a positive value")
+    Integer page,
+    @Positive(message = "Page size needs to be a positive value")
+    Integer perPage
+) {
 
   /**
    * Build an instance of {@link PaginationParameters}, using the default values for {@code page}
@@ -24,5 +32,9 @@ public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integ
     if (perPage == null) {
       perPage = 5;
     }
+  }
+
+  public Pageable toPageable(int maxPageSize) {
+    return PageRequest.of(page, maxPageSize);
   }
 }

@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
+@DisplayName("Unit Test | UserAuthenticationHelper")
 class UserAuthenticationHelperTest {
 
   private UserAuthenticationHelper userAuthenticationHelper;

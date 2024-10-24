@@ -12,6 +12,4 @@ public interface UserOpeningRepository
 
   List<UserOpeningEntity> findAllByUserId(String userId);
 
-  @Query("from UserOpeningEntity o where o.openingId in ?1 and o.userId = ?2")
-  List<UserOpeningEntity> findAllByOpeningIdInAndUserId(List<String> openingIdList, String userId);
 }

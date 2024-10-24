@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Unit Test | PaginationUtil")
 class PaginationUtilTest {
 
   @Test
@@ -34,7 +35,7 @@ class PaginationUtilTest {
   }
 
   @Test
-  @DisplayName("")
+  @DisplayName("Get endIndex test")
   void getEndIndexTest() {
     Assertions.assertEquals(40, PaginationUtil.getEndIndex(30, 10, 47));
     Assertions.assertEquals(47, PaginationUtil.getEndIndex(40, 10, 47));

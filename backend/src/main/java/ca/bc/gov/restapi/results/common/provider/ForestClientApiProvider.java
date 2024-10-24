@@ -31,7 +31,7 @@ public class ForestClientApiProvider {
    */
   public Optional<ForestClientDto> fetchClientByNumber(String number) {
 
-    log.info("Starting {} request to /clients/findByClientNumber/{number}", PROVIDER);
+    log.info("Starting {} request to /clients/findByClientNumber/{}", PROVIDER,number);
 
     try {
 

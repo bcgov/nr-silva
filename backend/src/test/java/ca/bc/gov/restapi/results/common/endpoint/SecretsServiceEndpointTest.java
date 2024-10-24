@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(SecretsServiceEndpoint.class)
 @WithMockUser(roles = "user_read")
+@DisplayName("Unit Test | Secrets Service Endpoint")
 class SecretsServiceEndpointTest {
   
   @Autowired private MockMvc mockMvc;

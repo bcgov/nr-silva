@@ -18,7 +18,7 @@ public class OrgUnitService {
 
   private final OrgUnitRepository orgUnitRepository;
 
-  @Value("${nr.results.config.opening-search.org-units}")
+  @Value("${ca.bc.gov.nrs.results.opening-search.org-units}")
   private String[] orgUnitsFromProps;
 
   /**

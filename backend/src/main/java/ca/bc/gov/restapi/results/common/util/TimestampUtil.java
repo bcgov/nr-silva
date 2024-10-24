@@ -2,14 +2,19 @@ package ca.bc.gov.restapi.results.common.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
-/** This class contains useful methods for parsing and handling timestamps. */
+/**
+ * This class contains useful methods for parsing and handling timestamps.
+ */
 public class TimestampUtil {
 
-  private TimestampUtil() {}
+  private TimestampUtil() {
+  }
 
   /**
    * Parses a date string to a {@link LocalDateTime} instance. Format: yyyy-MM-dd.
@@ -18,14 +23,35 @@ public class TimestampUtil {
    * @return LocalDateTime parsed or null if a null value is found.
    */
   public static LocalDateTime parseDateString(String dateStr) {
-    if (Objects.isNull(dateStr)) {
+    if (StringUtils.isEmpty(dateStr)) {
       return null;
     }
-
-    LocalDate entryDateStartLd =
-        LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    return entryDateStartLd.atStartOfDay();
+    return parseDateString(LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
   }
+
+/**
+ * Parses a LocalDate to a LocalDateTime instance with the time set to LocalTime.MIN.
+ *
+ * @param localDate The LocalDate to be parsed
+ * @return LocalDateTime parsed or null if a null value is found.
+ */
+public static LocalDateTime parseDateString(LocalDate localDate) {
+  return parseDateString(localDate, LocalTime.MIN);
+}
+
+/**
+ * Parses a LocalDate to a LocalDateTime instance with the specified time.
+ *
+ * @param localDate The LocalDate to be parsed
+ * @param time The LocalTime to be set
+ * @return LocalDateTime parsed or null if a null value is found.
+ */
+public static LocalDateTime parseDateString(LocalDate localDate, LocalTime time) {
+  if (Objects.isNull(localDate)) {
+    return null;
+  }
+  return localDate.atTime(time);
+}
 
   /**
    * Extract the number based on the difference between today and the day the Opening got created.

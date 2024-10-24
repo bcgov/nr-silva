@@ -18,11 +18,11 @@ parameters:
   - name: CPU_REQUEST
     value: "30m"
   - name: MEMORY_REQUEST
-    value: "350Mi"
+    value: "500Mi"
   - name: CPU_LIMIT
     value: "100m"
   - name: MEMORY_LIMIT
-    value: "500Mi"
+    value: "640Mi"
   - name: MIN_REPLICAS
     description: The minimum amount of replicas for the horizontal pod autoscaler.
     value: "3"
@@ -244,7 +244,7 @@ objects:
                 httpGet:
                   path: /actuator/health
                   port: probe-port
-                initialDelaySeconds: 120
+                initialDelaySeconds: 240
                 failureThreshold: 30
               readinessProbe:
                 httpGet:

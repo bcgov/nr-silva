@@ -31,7 +31,7 @@
     <skip.unit.tests>true</skip.unit.tests>
     <jacoco.skip>true</jacoco.skip>
     <checkstyle.skip>true</checkstyle.skip>
-    <checkstyle.failsOnError>true</checkstyle.failsOnError>
+    <checkstyle.failsOnError>false</checkstyle.failsOnError>
     <checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
@@ -195,6 +195,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -228,6 +229,18 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <!-- Validation -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>7.0.4.Final</version>
     </dependency>
   </dependencies>
 
@@ -333,17 +346,14 @@
         <configuration>
           <skip>${jacoco.skip}</skip>
           <excludes>
-            <exclude>**/config/**</exclude>
-            <exclude>**/converter/**</exclude>
+            <exclude>**/configuration/**</exclude>
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
             <exclude>**/job/**</exclude>
-            <exclude>**/response/**</exclude>
             <exclude>**/*$*Builder*</exclude>
-            <exclude>**/RestExceptionEndpoint.*</exclude>
-            <exclude>**/Controller.*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
+            <exclude>**/*Constants.*</exclude>
           </excludes>
         </configuration>
         <executions>

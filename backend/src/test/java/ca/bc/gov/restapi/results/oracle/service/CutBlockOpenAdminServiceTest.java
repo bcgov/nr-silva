@@ -1,45 +1,38 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(SpringExtension.class)
-class CutBlockOpenAdminServiceTest {
+@DisplayName("Integrated Test | CutBlockOpenAdminService")
+class CutBlockOpenAdminServiceTest extends AbstractTestContainerIntegrationTest {
 
-  @Mock CutBlockOpenAdminRepository cutBlockOpenAdminRepository;
-
+  @Autowired
   private CutBlockOpenAdminService cutBlockOpenAdminService;
-
-  @BeforeEach
-  void setup() {
-    cutBlockOpenAdminService = new CutBlockOpenAdminService(cutBlockOpenAdminRepository);
-  }
 
   @Test
   @DisplayName("Find all openings by opening id list")
   void findAllByOpeningIdIn_simpleFetch_shouldSucceed() {
-    Long openingId = 12563L;
-    CutBlockOpenAdminEntity entity = new CutBlockOpenAdminEntity();
-    entity.setId(123L);
-    entity.setOpeningId(openingId);
-
-    when(cutBlockOpenAdminRepository.findAllByOpeningIdIn(any())).thenReturn(List.of(entity));
 
     List<CutBlockOpenAdminEntity> entityList =
-        cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(openingId));
+        cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(101L));
 
     Assertions.assertNotNull(entityList);
     Assertions.assertEquals(1, entityList.size());
+  }
+
+  @Test
+  @DisplayName("Find no openings by opening id list")
+  void findAllByOpeningIdIn_simpleFetch_shouldEmpty() {
+
+    List<CutBlockOpenAdminEntity> entityList =
+        cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(192L));
+
+    Assertions.assertNotNull(entityList);
+    Assertions.assertEquals(0, entityList.size());
   }
 }
