@@ -35,7 +35,10 @@ public class PostgresJpaConfiguration {
   ) {
     return builder
         .dataSource(dataSource)
-        .properties(Map.of())
+        .properties(Map.of(
+            "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
+            "hibernate.temp.use_jdbc_metadata_defaults","false"
+        ))
         .packages("ca.bc.gov.restapi.results.postgres")
         .persistenceUnit("postgres")
         .build();

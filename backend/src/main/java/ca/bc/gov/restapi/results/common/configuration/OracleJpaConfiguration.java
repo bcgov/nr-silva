@@ -34,14 +34,17 @@ public class OracleJpaConfiguration {
   ) {
     return builder
         .dataSource(dataSource)
-        .properties(Map.of())
+        .properties(Map.of(
+            "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
+            "hibernate.temp.use_jdbc_metadata_defaults","false"
+        ))
         .packages("ca.bc.gov.restapi.results.oracle")
         .persistenceUnit("oracle")
         .build();
   }
 
   @Bean(name = "oracleDataSource")
-  @ConfigurationProperties(prefix = "spring.datasource.oracle")
+  @ConfigurationProperties(prefix = "spring.oracle")
   public DataSource oracleDataSource() {
     return DataSourceBuilder.create().build();
   }

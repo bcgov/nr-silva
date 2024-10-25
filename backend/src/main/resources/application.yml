@@ -11,6 +11,25 @@ server:
 spring:
   application:
   name: results-api
+  oracle:
+    jdbcUrl: jdbc:oracle:thin:@tcps://${DATABASE_HOST:nrcdb03.bcgov}:${DATABASE_PORT:1543}/${SERVICE_NAME:dbq01.nrs.bcgov}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
+    url: ${spring.datasource.oracle.jdbcUrl}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      driver-class-name: oracle.jdbc.OracleDriver
+      jdbcUrl: ${spring.datasource.oracle.jdbcUrl}
+      url: ${spring.datasource.oracle.jdbcUrl}
+      username: ${DATABASE_USER}
+      password: ${DATABASE_PASSWORD}
+      connectionTimeout: ${DB_POOL_CONN_TIMEOUT:120000}
+      idleTimeout: ${DB_POOL_IDLE_TIMEOUT:60000}
+      maxLifetime: ${DB_POOL_MAX_LIFETIME:150000}
+      keepaliveTime: 30000
+      poolName: SilvaOracleConnPool
+      minimumIdle: ${DB_POOL_MIN_IDLE:1}
+      maximumPoolSize: ${DB_POOL_MAX_SIZE:1}
+      leakDetectionThreshold: 60000
   datasource:
     jdbcUrl: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
     url: ${spring.datasource.jdbcUrl}
@@ -29,25 +48,7 @@ spring:
       minimumIdle: ${DB_POOL_MIN_IDLE:1}
       maximumPoolSize: ${DB_POOL_MAX_SIZE:1}
       leakDetectionThreshold: 60000
-    oracle:
-      jdbcUrl: jdbc:oracle:thin:@tcps://${DATABASE_HOST:nrcdb03.bcgov}:${DATABASE_PORT:1543}/${SERVICE_NAME:dbq01.nrs.bcgov}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
-      url: ${spring.datasource.oracle.jdbcUrl}
-      username: ${DATABASE_USER}
-      password: ${DATABASE_PASSWORD}
-      hikari:
-        driver-class-name: oracle.jdbc.OracleDriver
-        jdbcUrl: ${spring.datasource.oracle.jdbcUrl}
-        url: ${spring.datasource.oracle.jdbcUrl}
-        username: ${DATABASE_USER}
-        password: ${DATABASE_PASSWORD}
-        connectionTimeout: ${DB_POOL_CONN_TIMEOUT:120000}
-        idleTimeout: ${DB_POOL_IDLE_TIMEOUT:60000}
-        maxLifetime: ${DB_POOL_MAX_LIFETIME:150000}
-        keepaliveTime: 30000
-        poolName: SilvaOracleConnPool
-        minimumIdle: ${DB_POOL_MIN_IDLE:1}
-        maximumPoolSize: ${DB_POOL_MAX_SIZE:1}
-        leakDetectionThreshold: 60000
+
   jpa:
     hibernate:
       ddl-auto: none
