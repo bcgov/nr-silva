@@ -34,6 +34,12 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     setIsOpen(false);
     onSearchClick();
   };
+  // this function calls handleSearchClick when the enter key is pressed
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearchClick();
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -64,7 +70,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
                   closeButtonLabelText="Clear search input"
                   id={`search-1`}
                   onChange={handleInputChange} // Handle input change
-                  onKeyDown={() => {}}
+                  onKeyDown={handleKeyDown} // Handle enter key press
                   value={searchTerm}
                 />
             </Column>
