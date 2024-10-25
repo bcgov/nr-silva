@@ -1,0 +1,19 @@
+[
+  {
+    "name": "com.zaxxer.hikari.HikariConfig",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "methods": [
+      { "name": "setJdbcUrl", "parameterTypes": ["java.lang.String"] },
+      { "name": "getJdbcUrl" }
+    ],
+    "fields": [
+      { "name": "jdbcUrl" }
+    ]
+  },
+  {
+    "name": "com.zaxxer.hikari.HikariDataSource",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  }
+]

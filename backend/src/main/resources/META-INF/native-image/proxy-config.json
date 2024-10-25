@@ -1,0 +1,4 @@
+[
+  "com.zaxxer.hikari.HikariDataSource",
+  "javax.sql.DataSource"
+]

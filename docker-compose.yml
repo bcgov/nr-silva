@@ -25,6 +25,13 @@ x-db-vars: &db-vars
   POSTGRES_PASSWORD: default
   POSTGRES_DB: nr-silva
 
+x-defaults: &defaults
+  logging:
+    driver: "json-file"
+    options:
+      max-size: 10m
+      max-file: "3"
+
 services:
   frontend:
     container_name: frontend
@@ -45,26 +52,52 @@ services:
 
   backend:
     container_name: backend
-    entrypoint: sh -c './startup.sh'
-    #image: maven:3.9.6-amazoncorretto-21
-    image: maven:3.9.9-eclipse-temurin-17
-    network_mode: host
-    volumes: 
-      - ./backend:/app
-      - $HOME/zscaler-certs:/certs
-    working_dir: /app
+    #entrypoint: sh -c './startup.sh'
+    image: silva
+    #image: maven:3.9.9-eclipse-temurin-17
+    #network_mode: host
+    ports: ["8080:8080"]
+#    volumes: 
+#      - ./backend/config/application-dev-docker.yml:/app/config/application-prod.yml
+#      - $HOME/zscaler-certs:/certs
+#    working_dir: /app
     environment:
-      DATABASE_HOST: nrcdb03.bcgov
-      DATABASE_PORT: "1543"
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      SERVICE_NAME: dbq01.nrs.bcgov
-      ORACLEDB_KEYSTORE: /app/jssecacerts
-      ORACLEDB_SECRET: changeit
-      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
-      POSTGRES_HOST: localhost
-      DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
-      <<: *db-vars
+      JAVA_OPTS: "-Xms256m"
+      DB_POOL_CONN_TIMEOUT: 90000
+      DB_POOL_IDLE_TIMEOUT: 60000
+      DB_POOL_MAX_SIZE: 1
+      DB_POOL_MIN_IDLE: 1
+      DB_POOL_MAX_LIFETIME: 120000
+      RESULTS_ENV_OPENSEARCH: true
+      DATABASE_HOST: database
+      DATABASE_PORT: 1521
+      SERVICE_NAME: FREEPDB1
+      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur/.well-known/jwks.json
+      DASHBOARD_JOB_IDIR_USERS: PCRUZ
+      ALLOWED_ORIGINS: "http://localhost:300*,https://*.apps.silver.devops.gov.bc.ca"
+      WMS_LAYERS_WHITELIST_USERS: NONE
+      OPENING_SEARCH_ORG_UNITS: "DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"
+      FORESTCLIENTAPI_KEY: key
+      DATABASE_USER: THE
+      DATABASE_PASSWORD: default
+      ORACLEDB_SECRET: secret
+      ORACLEDB_KEYSTORE: /cert/jssecacerts
+      POSTGRES_HOST: legacydb
+      POSTGRES_DB: nr-silva
+      POSTGRES_PASSWORD: default
+      POSTGRES_USER: nr-silva
+      RANDOM_EXPRESSION: notsorandom
+#      DATABASE_HOST: nrcdb03.bcgov
+#      DATABASE_PORT: "1543"
+#      DATABASE_USER: ${DATABASE_USER}
+#      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+#      SERVICE_NAME: dbq01.nrs.bcgov
+#      ORACLEDB_KEYSTORE: /app/jssecacerts
+#      ORACLEDB_SECRET: changeit
+#      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
+#      POSTGRES_HOST: localhost
+#      DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
+#      <<: *db-vars
     <<: *backend
 
   database:
@@ -74,11 +107,36 @@ services:
     volumes: ["/pgdata"]
     ports: ["5432:5432"]
     healthcheck:
-      test: pg_isready -U postgres
+      test: pg_isready -U nr-silva
       interval: 5s
       timeout: 5s
       retries: 5
     image: postgis/postgis:13-master
+
+  legacydb:
+    container_name: oracle
+    environment:
+      APP_USER_PASSWORD: default
+      APP_USER: THE
+      ORACLE_RANDOM_PASSWORD: yes
+    platform: "linux/amd64"
+    image: gvenzl/oracle-free:23.5-slim-faststart
+    ports: [1521:1521]
+    volumes: [/opt/oracle/oradata]
+    healthcheck:
+      test: [ "CMD-SHELL", "healthcheck.sh" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    <<: *defaults
+
+  legacyflyway:
+    container_name: flyway
+    image: flyway/flyway
+    command: -url=jdbc:oracle:thin:@legacydb:1521/FREEPDB1 -user=THE -password=default -connectRetries=60 migrate    
+    volumes: [./backend/src/test/resources/migration/oracle:/flyway/sql]
+    depends_on: [legacydb]
+    <<: *defaults
 
   backend-native:
     container_name: backend-native
