@@ -18,12 +18,6 @@ const mainActivitiesItems: LeftMenu[] = [
     name: 'Main activities',
     items: [
       {
-        name: 'Dashboard',
-        icon: 'Dashboard',
-        link: '/dashboard',
-        disabled: false
-      },
-      {
         name: 'Opening',
         icon: 'MapBoundaryVegetation',
         link: '/opening',
@@ -42,17 +36,12 @@ const mainActivitiesItems: LeftMenu[] = [
           {
             name: 'Create an opening',
             link: '/opening/create',
-            disabled: false
-          },
-          {
-            name: 'Reports',
-            link: '/opening/reports',
-            disabled: false
+            disabled: true
           },
           {
             name: 'Upcoming activities',
             link: '/opening/upcoming-activities',
-            disabled: false
+            disabled: true
           }
         ]
       }
