@@ -1,11 +1,11 @@
 package ca.bc.gov.restapi.results;
 
 import ca.bc.gov.restapi.results.common.configuration.CorsConfiguration;
-import ca.bc.gov.restapi.results.common.configuration.DataSourceConfiguration;
 import ca.bc.gov.restapi.results.common.configuration.ExternalApiConfiguration;
+import ca.bc.gov.restapi.results.common.configuration.OracleJpaConfiguration;
+import ca.bc.gov.restapi.results.common.configuration.PostgresJpaConfiguration;
 import ca.bc.gov.restapi.results.common.configuration.ProvidersConfiguration;
 import ca.bc.gov.restapi.results.common.configuration.SecurityConfiguration;
-import ca.bc.gov.restapi.results.common.configuration.SilvaHikariConfiguration;
 import ca.bc.gov.restapi.results.common.configuration.SwaggerConfiguration;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.OracleExtractionDto;
@@ -28,7 +28,6 @@ import ca.bc.gov.restapi.results.common.security.UserAuthenticationHelper;
 import ca.bc.gov.restapi.results.common.security.UserInfo;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.oracle.configuration.OracleGracefulShutdownConfiguration;
-import ca.bc.gov.restapi.results.common.configuration.OracleJpaConfiguration;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningCategoryConverter;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningStatusConverter;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
@@ -46,7 +45,6 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfiguration;
 import ca.bc.gov.restapi.results.postgres.configuration.PostgresGracefulShutdownConfiguration;
-import ca.bc.gov.restapi.results.common.configuration.PostgresJpaConfiguration;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
@@ -63,7 +61,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/** Entry point for the RESULTS REST API application. */
+/**
+ * Entry point for the RESULTS REST API application.
+ */
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
@@ -84,11 +84,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     PaginatedResult.class,
     PaginationParameters.class,
     CorsConfiguration.class,
-    DataSourceConfiguration.class,
     ExternalApiConfiguration.class,
     ProvidersConfiguration.class,
     SecurityConfiguration.class,
-    SilvaHikariConfiguration.class,
     SwaggerConfiguration.class,
     IdentityProvider.class,
     LoggedUserService.class,
