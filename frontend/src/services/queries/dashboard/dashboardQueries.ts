@@ -1,6 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getAuthIdToken } from "../../AuthService";
+import { fetchOpeningsPerYearAPI } from "../../OpeningService";
+import { IOpeningPerYear } from "../../../types/IOpeningPerYear";
+import { fetchOrgUnits } from "../../search/openings";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -29,4 +32,21 @@ export const postViewedOpening = async (openingId: string): Promise<any> => {
       mutationFn: (openingId: string) => postViewedOpening(openingId),
     });
   };
+
+// Custom hook to use in your component
+export const useFetchOpeningsPerYear = (props: IOpeningPerYear) => {
+  return useQuery({
+    queryKey: ['openingsPerYear', props],  // Cache key including props
+    queryFn: () => fetchOpeningsPerYearAPI(props),  // Fetch function
+    enabled: true, // For Conditional fetch we can use !!props.orgUnitCode || !!props.statusCode || !!props.entryDateStart || !!props.entryDateEnd
+    staleTime: 5 * 60 * 1000,  // Cache duration (optional)
+  });
+};
+
+export const useDistrictListQuery = () => {
+  return useQuery({
+    queryKey: ["districtList"],
+    queryFn: fetchOrgUnits
+  });
+};
   

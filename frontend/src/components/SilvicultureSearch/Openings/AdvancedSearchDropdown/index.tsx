@@ -340,7 +340,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
           <Column lg={16}>
             <CheckboxGroup
               orientation="horizontal"
-              legendText="Status (Select One)"
+              legendText="Status"
             >
               <div className="d-flex flex-status-list">
                 <Checkbox
