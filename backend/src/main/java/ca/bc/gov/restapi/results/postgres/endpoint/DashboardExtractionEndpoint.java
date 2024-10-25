@@ -82,6 +82,7 @@ public class DashboardExtractionEndpoint {
     if (dashboardUserManagerConfig.getUserList().isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+    System.out.println("User list: " + dashboardUserManagerConfig.getUserList());
 
     String currentUser = loggedUserService.getLoggedUserIdirOrBceId();
     if (!dashboardUserManagerConfig.getUserList().contains(currentUser)) {

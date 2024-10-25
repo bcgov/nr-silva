@@ -1,78 +1,61 @@
+// components/BarChartGrouped.tsx
 import React, { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
-import { fetchOpeningsPerYear } from "../../services/OpeningService";
-import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+import { useDistrictListQuery, useFetchOpeningsPerYear } from "../../services/queries/dashboard/dashboardQueries";
+import { IOpeningPerYear } from "../../types/IOpeningPerYear";
+
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
 
-interface IDropdownItem {
-  value: string;
-  text: string;
-}
-
-/**
- * Renders an Bar Chart Grouped component.
- *
- * @returns {JSX.Element} The rendered BarChartGrouped component.
- */
 function BarChartGrouped(): JSX.Element {
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-  const [chartData, setChartData] = useState<OpeningPerYearChart[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [orgUnitCode, setOrgUnitCode] = useState<string | null>(null);
   const [statusCode, setStatusCode] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    const fetchChartData = async () => {
-      try {
-        setIsLoading(true);
-        let formattedStartDate: string | null = null;
-        let formattedEndDate: string | null = null;
-
-        if (startDate) {
-          formattedStartDate = formatDateToString(startDate);
-        }
-        if (endDate) {
-          formattedEndDate = formatDateToString(endDate);
-        }
-    
-        const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
-          orgUnitCode,
-          statusCode,
-          entryDateStart: formattedStartDate,
-          entryDateEnd: formattedEndDate,
-        });
-        setChartData(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-        setIsLoading(false);
-      }
-    };
-
-    fetchChartData();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [orgUnitCode, statusCode, startDate, endDate]);
-
-  const formatDateToString = (dateToFormat: Date) => {
-    if (!dateToFormat) return null;
-    const year = dateToFormat.getFullYear();
-    const month = String(dateToFormat.getMonth() + 1).padStart(2, "0");
-    const day = String(dateToFormat.getDate()).padStart(2, "0");
+  
+  const formatDateToString = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
-  const colors = {
-    Openings: "#1192E8",
+  const formattedStartDate = startDate ? formatDateToString(startDate) : null;
+  const formattedEndDate = endDate ? formatDateToString(endDate) : null;
+
+  const queryProps: IOpeningPerYear = {
+    orgUnitCode,
+    statusCode,
+    entryDateStart: formattedStartDate,
+    entryDateEnd: formattedEndDate,
   };
+
+  // Fetch the openings submission trends data
+  const { data: chartData = [], isLoading } = useFetchOpeningsPerYear(queryProps);
+  // Fetch the org units (district list) data
+  const { data: orgunitsData = [], isLoading: isOrgUnitsLoading } = useDistrictListQuery();
+
+   // Map the orgunitsData to create orgUnitItems for the Dropdown
+   const orgUnitItems = orgunitsData?.map((item: any) => ({
+    text: item.orgUnitCode,
+    value: item.orgUnitCode,
+  })) || [];
+
+  const statusItems = [
+    { value: "APP", text: "Approved" },
+    { value: "NAN", text: "Not Approved" },
+  ];
+
+  const setOrgUnitCodeSelected = ({ selectedItem }: { selectedItem: { value: string } }) => {
+    setOrgUnitCode(selectedItem.value);
+  };
+
+  const setStatusCodeSelected = ({ selectedItem }: { selectedItem: { value: string } }) => {
+    setStatusCode(selectedItem.value);
+  };
+
+  
 
   const options = {
     axes: {
@@ -84,62 +67,13 @@ function BarChartGrouped(): JSX.Element {
         mapsTo: "key",
       },
     },
-    color: {
-      scale: colors,
-    },
+    color: { scale: { Openings: "#1192E8" } },
     height: "18.5rem",
     grid: {
-      x: {
-        enabled: false,
-        color: "#d3d3d3",
-        strokeDashArray: "2,2",
-      },
-      y: {
-        enabled: true,
-        color: "#d3d3d3",
-        strokeDashArray: "2,2",
-      },
+      x: { enabled: false, color: "#d3d3d3", strokeDashArray: "2,2" },
+      y: { enabled: true, color: "#d3d3d3", strokeDashArray: "2,2" },
     },
-    toolbar: {
-      enabled: false,
-      numberOfIcons: 2,
-      controls: [
-        {
-          type: "Make fullscreen",
-        },
-        {
-          type: "Make fullscreen",
-        },
-      ],
-    },
-  };
-
-  const orgUnitItems = [
-    { value: "DCR", text: "DCR" },
-    { value: "XYZ", text: "District 2" },
-    // Add more options as needed
-  ];
-
-  const statusItems = [
-    { value: "APP", text: "Approved" },
-    { value: "NAN", text: "Not Approved" },
-    // Add more options as needed
-  ];
-
-  const setOrgUnitCodeSelected = ({
-    selectedItem,
-  }: {
-    selectedItem: IDropdownItem;
-  }) => {
-    setOrgUnitCode(selectedItem.value);
-  };
-
-  const setStatusCodeSelected = ({
-    selectedItem,
-  }: {
-    selectedItem: IDropdownItem;
-  }) => {
-    setStatusCode(selectedItem.value);
+    toolbar: { enabled: false },
   };
 
   return (
@@ -150,7 +84,7 @@ function BarChartGrouped(): JSX.Element {
             id="district-dropdown"
             titleText="District"
             items={orgUnitItems}
-            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
+            itemToString={(item:any) => (item ? item.text : "")}
             onChange={setOrgUnitCodeSelected}
             label="District"
           />
@@ -160,35 +94,19 @@ function BarChartGrouped(): JSX.Element {
             id="status-dropdown"
             titleText="Status"
             items={statusItems}
-            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
+            itemToString={(item:any) => (item ? item.text : "")}
             onChange={setStatusCodeSelected}
             label="Status"
           />
         </div>
         <div className="col-md-2 col-xxl-3 d-none d-md-block">
-          <DatePicker
-            datePickerType="single"
-            onChange={(dates: [Date]) => setStartDate(dates[0])}
-          >
-            <DatePickerInput
-              id="start-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
-              labelText="Start Date"
-            />
+          <DatePicker datePickerType="single" onChange={(dates:any) => setStartDate(dates[0])}>
+            <DatePickerInput id="start-date-picker-input-id" placeholder="yyyy/MM/dd" size="md" labelText="Start Date" />
           </DatePicker>
         </div>
         <div className="col-md-2 col-xxl-3 d-none d-md-block">
-          <DatePicker
-            datePickerType="single"
-            onChange={(dates: [Date]) => setEndDate(dates[0])}
-          >
-            <DatePickerInput
-              id="end-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
-              labelText="End Date"
-            />
+          <DatePicker datePickerType="single" onChange={(dates:any) => setEndDate(dates[0])}>
+            <DatePickerInput id="end-date-picker-input-id" placeholder="yyyy/MM/dd" size="md" labelText="End Date" />
           </DatePicker>
         </div>
       </div>
@@ -201,6 +119,6 @@ function BarChartGrouped(): JSX.Element {
       )}
     </div>
   );
-};
+}
 
 export default BarChartGrouped;

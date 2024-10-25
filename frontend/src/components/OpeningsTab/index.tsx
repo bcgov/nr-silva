@@ -4,7 +4,7 @@ import './styles.scss'
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import OpeningScreenDataTable from '../OpeningScreenDataTable/index';
-import { headers } from '../OpeningScreenDataTable/testData';
+import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/testData';
 import { fetchRecentOpenings } from '../../services/OpeningService';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
@@ -14,6 +14,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { generateHtmlFile } from './layersGenerator';
 import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
+import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
+import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
+import { ITableHeader } from '../../types/TableHeader';
 
 interface Props {
   showSpatial: boolean;
@@ -28,6 +31,8 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
   const userDetails = useSelector((state: RootState) => state.userDetails);
+  const { data, isFetching } = useUserRecentOpeningQuery(10);
+  const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +78,31 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
     }
   };
 
+  const handleCheckboxChange = (columnKey: string) => {
+    if(columnKey === "select-default"){
+      //set to the deafult
+      setHeaders(columns)
+    }
+    else if(columnKey === "select-all"){
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) => ({
+          ...header,
+          selected: true, // Select all headers
+        }))
+      );
+    }
+    else{
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) =>
+          header.key === columnKey
+            ? { ...header, selected: !header.selected }
+            : header
+        )
+      );
+    }
+    
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -116,12 +146,16 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
         {loading ? (
           <TableSkeleton headers={headers} />
         ) : (
-          <OpeningScreenDataTable
-            headers={headers}
-            rows={openingRows}
-            setOpeningId={setLoadId}
-            showSpatial={showSpatial}
-          />
+          <RecentOpeningsDataTable
+              rows={data?.data || []}
+              headers={headers}
+              defaultColumns={headers}
+              handleCheckboxChange={handleCheckboxChange}
+              setOpeningId={setLoadId}
+              toggleSpatial={toggleSpatial}
+              showSpatial={showSpatial}
+              totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
+            />
         )}
       </div>
     </>
