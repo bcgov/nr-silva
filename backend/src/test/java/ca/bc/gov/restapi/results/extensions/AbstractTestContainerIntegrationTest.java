@@ -43,9 +43,7 @@ public abstract class AbstractTestContainerIntegrationTest {
         .withDatabaseName("silva")
         .withUsername("silva")
         .withPassword(UUID.randomUUID().toString());
-    oracle = new OracleContainer("gvenzl/oracle-free:23.5-slim-faststart")
-        .withUsername("THE")
-        .withPassword(UUID.randomUUID().toString());
+    oracle = new CustomOracleContainer();
 
     postgres.start();
     oracle.start();
