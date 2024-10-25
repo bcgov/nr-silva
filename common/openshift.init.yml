@@ -31,7 +31,7 @@ parameters:
   - name: PG_DATABASE
     description: Postgres database name
     value: database
-  - name: DB_PASSWORD
+  - name: POSTGRES_DB_PASSWORD
     description: Password for the PostgreSQL connection user.
     required: true
   - name: FORESTCLIENTAPI_KEY
@@ -69,7 +69,7 @@ objects:
         app: ${NAME}-${ZONE}
     stringData:
       database-name: ${NAME}
-      database-password: ${DB_PASSWORD}
+      database-password: ${POSTGRES_DB_PASSWORD}
       database-user: ${NAME}
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
