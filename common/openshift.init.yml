@@ -33,8 +33,7 @@ parameters:
     value: database
   - name: DB_PASSWORD
     description: Password for the PostgreSQL connection user.
-    from: "[a-zA-Z0-9]{16}"
-    generate: expression
+    required: true
   - name: FORESTCLIENTAPI_KEY
     description:
     required: true
