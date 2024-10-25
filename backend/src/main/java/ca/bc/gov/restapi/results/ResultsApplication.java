@@ -28,8 +28,7 @@ import ca.bc.gov.restapi.results.common.security.UserAuthenticationHelper;
 import ca.bc.gov.restapi.results.common.security.UserInfo;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.oracle.configuration.OracleGracefulShutdownConfiguration;
-import ca.bc.gov.restapi.results.oracle.configuration.OracleJpaConfiguration;
-import ca.bc.gov.restapi.results.oracle.configuration.OraclePersistenceConfiguration;
+import ca.bc.gov.restapi.results.common.configuration.OracleJpaConfiguration;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningCategoryConverter;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningStatusConverter;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
@@ -47,8 +46,7 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfiguration;
 import ca.bc.gov.restapi.results.postgres.configuration.PostgresGracefulShutdownConfiguration;
-import ca.bc.gov.restapi.results.postgres.configuration.PostgresJpaConfiguration;
-import ca.bc.gov.restapi.results.postgres.configuration.PostgresPersistenceConfiguration;
+import ca.bc.gov.restapi.results.common.configuration.PostgresJpaConfiguration;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
@@ -99,7 +97,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     TimestampUtil.class,
     OracleGracefulShutdownConfiguration.class,
     OracleJpaConfiguration.class,
-    OraclePersistenceConfiguration.class,
     OpeningCategoryConverter.class,
     OpeningStatusConverter.class,
     OpeningSearchFiltersDto.class,
@@ -118,7 +115,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     DashboardUserManagerConfiguration.class,
     PostgresGracefulShutdownConfiguration.class,
     PostgresJpaConfiguration.class,
-    PostgresPersistenceConfiguration.class,
     DashboardFiltersDto.class,
     FreeGrowingMilestonesDto.class,
     MyRecentActionsRequestsDto.class,
