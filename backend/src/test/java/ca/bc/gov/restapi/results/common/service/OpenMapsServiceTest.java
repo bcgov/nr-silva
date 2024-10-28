@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.web.client.RestClient;
 
-class RestServiceTest {
+@DisplayName("Integrated Test | OpenMapsService")
+class OpenMapsServiceIntegrationTest {
 
   @RegisterExtension
   static WireMockExtension clientApiStub = WireMockExtension
@@ -30,7 +31,7 @@ class RestServiceTest {
       .configureStaticDsl(true)
       .build();
 
-  private final RestService restService = new RestService(
+  private final OpenMapsService openMapsService = new OpenMapsService(
       RestClient.builder().baseUrl("http://localhost:10001").build()
   );
 
@@ -49,20 +50,20 @@ class RestServiceTest {
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
             .withQueryParam("PROPERTYNAME",
                 equalTo("OPENING_ID,"
-                    + "GEOMETRY,"
-                    + "REGION_NAME,"
-                    + "REGION_CODE,"
-                    + "DISTRICT_NAME,"
-                    + "DISTRICT_CODE,"
-                    + "CLIENT_NAME,"
-                    + "CLIENT_NUMBER,"
-                    + "OPENING_WHEN_CREATED"
+                        + "GEOMETRY,"
+                        + "REGION_NAME,"
+                        + "REGION_CODE,"
+                        + "DISTRICT_NAME,"
+                        + "DISTRICT_CODE,"
+                        + "CLIENT_NAME,"
+                        + "CLIENT_NUMBER,"
+                        + "OPENING_WHEN_CREATED"
                 ))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
             .willReturn(okJson("{}"))
     );
 
-    Object response = restService.getOpeningPolygonAndProperties(openingId);
+    Object response = openMapsService.getOpeningPolygonAndProperties(openingId);
 
     Assertions.assertNotNull(response);
   }
@@ -82,20 +83,20 @@ class RestServiceTest {
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
             .withQueryParam("PROPERTYNAME",
                 equalTo("OPENING_ID,"
-                    + "GEOMETRY,"
-                    + "REGION_NAME,"
-                    + "REGION_CODE,"
-                    + "DISTRICT_NAME,"
-                    + "DISTRICT_CODE,"
-                    + "CLIENT_NAME,"
-                    + "CLIENT_NUMBER,"
-                    + "OPENING_WHEN_CREATED"
+                        + "GEOMETRY,"
+                        + "REGION_NAME,"
+                        + "REGION_CODE,"
+                        + "DISTRICT_NAME,"
+                        + "DISTRICT_CODE,"
+                        + "CLIENT_NAME,"
+                        + "CLIENT_NUMBER,"
+                        + "OPENING_WHEN_CREATED"
                 ))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
             .willReturn(notFound())
     );
 
-    Object response = restService.getOpeningPolygonAndProperties(openingId);
+    Object response = openMapsService.getOpeningPolygonAndProperties(openingId);
 
     Assertions.assertNull(response);
   }

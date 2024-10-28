@@ -18,7 +18,8 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-class UserServiceTest {
+@DisplayName("Unit Test | LoggedUserService")
+class LoggedUserServiceTest {
 
   @Mock UserAuthenticationHelper userAuthenticationHelper;
 

@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.common.service.RestService;
+import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class FeatureServiceEndpoint {
 
-  private final RestService restService;
+  private final OpenMapsService openMapsService;
 
   /**
    * Fetch Opening data from WFS.
@@ -27,6 +27,6 @@ public class FeatureServiceEndpoint {
   public Object getOpeningPolygonAndProperties(
       @PathVariable
       String openingId) {
-    return restService.getOpeningPolygonAndProperties(openingId);
+    return openMapsService.getOpeningPolygonAndProperties(openingId);
   }
 }
