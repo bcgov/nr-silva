@@ -45,6 +45,7 @@ public class DashboardExtractionEndpoint {
       Integer months,
       @RequestParam(value = "debug", required = false)
       Boolean debug) {
+
     if (dashboardUserManagerConfiguration.getUserList().isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
