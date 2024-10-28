@@ -490,12 +490,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.18.2</version>
+            <version>10.19.0</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -541,7 +541,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.41.2</version>
+        <version>9.42</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
