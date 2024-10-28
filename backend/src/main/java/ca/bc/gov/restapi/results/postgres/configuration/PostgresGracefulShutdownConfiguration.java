@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.postgres.configuration;
 
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /** This class adds a listener for closing connection gracefully. */
 @Component
-public class PostgresGracefulShutdownConfig implements ApplicationListener<ContextClosedEvent> {
+public class PostgresGracefulShutdownConfiguration implements ApplicationListener<ContextClosedEvent> {
 
   @Autowired private EntityManager postgresEntityManager;
 
