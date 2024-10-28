@@ -27,8 +27,8 @@ public class DashboardExtractionService {
   /**
    * Service for extracting data from oracle and adding into Postgres.
    *
-   * @param months Optional number of months.
-   * @param debug Optional debug mode enabled.
+   * @param months            Optional number of months.
+   * @param debug             Optional debug mode enabled.
    * @param manuallyTriggered Optional option.
    */
   @Async
@@ -47,18 +47,11 @@ public class DashboardExtractionService {
     dashboardInsertionService.loadDashboardData(extractionDto, startDateTime, params);
   }
 
-  private OracleExtractionParamsDto getParams(
-      Integer months, Boolean debug, Boolean manuallyTriggered) {
-    if (Objects.isNull(months)) {
-      months = 24;
-    }
-    if (Objects.isNull(debug)) {
-      debug = Boolean.FALSE;
-    }
-    if (Objects.isNull(manuallyTriggered)) {
-      manuallyTriggered = Boolean.FALSE;
-    }
-
-    return new OracleExtractionParamsDto(months, debug, manuallyTriggered);
-  }
+  private OracleExtractionParamsDto getParams(Integer months, Boolean debug, Boolean manuallyTriggered) {
+  return new OracleExtractionParamsDto(
+      Objects.requireNonNullElse(months, 24),
+      Objects.requireNonNullElse(debug, Boolean.FALSE),
+      Objects.requireNonNullElse(manuallyTriggered, Boolean.FALSE)
+  );
+}
 }
