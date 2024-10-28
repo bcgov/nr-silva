@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.common.pagination;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -10,7 +9,6 @@ import jakarta.validation.constraints.PositiveOrZero;
  * @param page    The page to be returned. Zero-based, and must be non-negative; defaults to 0
  * @param perPage The maximum number of results in each page. Defaults to 20
  */
-@Hidden
 public record PaginationParameters(@PositiveOrZero Integer page, @Positive Integer perPage) {
 
   /**
