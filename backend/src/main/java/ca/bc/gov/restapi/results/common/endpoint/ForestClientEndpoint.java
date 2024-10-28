@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.exception.ForestClientNotFoundException;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class ForestClientEndpoint {
    * @throws ForestClientNotFoundException when client not found
    */
   @GetMapping("/{clientNumber}")
-  public ForestClientDto getForestClient(String clientNumber) {
+  public ForestClientDto getForestClient(@PathVariable String clientNumber) {
     return forestClientService
         .getClientByNumber(clientNumber)
         .orElseThrow(ForestClientNotFoundException::new);
