@@ -46,7 +46,7 @@ public class UserOpeningEndpoint {
    */
   @PostMapping("/{id}")
   public ResponseEntity<Void> saveUserOpening(Long id) {
-    userOpeningService.saveOpeningToUser(id);
+    userOpeningService.addUserFavoriteOpening(id);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -60,7 +60,7 @@ public class UserOpeningEndpoint {
   public ResponseEntity<Void> deleteUserOpening(
       @PathVariable
       Long id) {
-    userOpeningService.deleteOpeningFromUserFavourite(id);
+    userOpeningService.removeUserFavoriteOpening(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
