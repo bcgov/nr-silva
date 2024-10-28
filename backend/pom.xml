@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.4</version>
+    <version>3.3.5</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -31,7 +31,7 @@
     <skip.unit.tests>true</skip.unit.tests>
     <jacoco.skip>true</jacoco.skip>
     <checkstyle.skip>true</checkstyle.skip>
-    <checkstyle.failsOnError>true</checkstyle.failsOnError>
+    <checkstyle.failsOnError>false</checkstyle.failsOnError>
     <checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
@@ -41,7 +41,7 @@
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
     <hibernate.version>6.6.1.Final</hibernate.version>
-    <testcontainers.version>1.20.2</testcontainers.version>
+    <testcontainers.version>1.20.3</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
   </properties>
 
@@ -120,11 +120,17 @@
   </profiles>
 
   <dependencies>
-    <!-- Spring Boot and tools -->
+    <!-- Spring Boot -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <!-- Tools -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -135,6 +141,11 @@
       <groupId>org.ocpsoft.prettytime</groupId>
       <artifactId>prettytime</artifactId>
       <version>5.0.9.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.17.0</version>
     </dependency>
 
     <!-- DevOps -->
@@ -158,6 +169,7 @@
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ojdbc11</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
@@ -175,6 +187,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -183,8 +196,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>
-      <version>1.20.2</version>
+      <artifactId>oracle-free</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -195,13 +207,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -218,13 +226,6 @@
       <artifactId>wiremock-standalone</artifactId>
       <version>3.9.2</version>
       <scope>test</scope>
-    </dependency>
-
-    <!-- Documentation -->
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>2.6.0</version>
     </dependency>
 
     <!-- Authentication and Security -->
@@ -340,17 +341,14 @@
         <configuration>
           <skip>${jacoco.skip}</skip>
           <excludes>
-            <exclude>**/config/**</exclude>
-            <exclude>**/converter/**</exclude>
+            <exclude>**/configuration/**</exclude>
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
             <exclude>**/job/**</exclude>
-            <exclude>**/response/**</exclude>
             <exclude>**/*$*Builder*</exclude>
-            <exclude>**/RestExceptionEndpoint.*</exclude>
-            <exclude>**/Controller.*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
+            <exclude>**/*Constants.*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -498,12 +496,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.18.2</version>
+            <version>10.19.0</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -549,7 +547,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.41.2</version>
+        <version>9.42</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>

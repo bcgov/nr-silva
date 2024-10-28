@@ -11,11 +11,11 @@ import org.springframework.web.client.RestClient;
  */
 @Slf4j
 @Service
-public class RestService {
+public class OpenMapsService {
 
   private final RestClient restClient;
 
-  public RestService(@Qualifier("openMapsApi") RestClient openMapsApi) {
+  public OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
     this.restClient = openMapsApi;
   }
 
@@ -40,14 +40,14 @@ public class RestService {
                       .queryParam("SrsName", "EPSG:4326")
                       .queryParam("PROPERTYNAME",
                           "OPENING_ID,"
-                              + "GEOMETRY,"
-                              + "REGION_NAME,"
-                              + "REGION_CODE,"
-                              + "DISTRICT_NAME,"
-                              + "DISTRICT_CODE,"
-                              + "CLIENT_NAME,"
-                              + "CLIENT_NUMBER,"
-                              + "OPENING_WHEN_CREATED"
+                          + "GEOMETRY,"
+                          + "REGION_NAME,"
+                          + "REGION_CODE,"
+                          + "DISTRICT_NAME,"
+                          + "DISTRICT_CODE,"
+                          + "CLIENT_NAME,"
+                          + "CLIENT_NUMBER,"
+                          + "OPENING_WHEN_CREATED"
                       )
                       .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
                       .build(Map.of())

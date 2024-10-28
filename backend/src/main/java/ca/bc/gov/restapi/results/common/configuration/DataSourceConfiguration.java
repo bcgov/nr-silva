@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.config;
+package ca.bc.gov.restapi.results.common.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource")
-public class DataSourceConfig {
+public class DataSourceConfiguration {
 
   private String driverClassName;
   private String url;

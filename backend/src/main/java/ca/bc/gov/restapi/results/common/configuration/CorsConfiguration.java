@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.config;
+package ca.bc.gov.restapi.results.common.configuration;
 
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** This class holds the configuration for CORS handling. */
 @Slf4j
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfiguration implements WebMvcConfigurer {
 
   @Value("${server.allowed.cors.origins}")
   private String[] allowedOrigins;

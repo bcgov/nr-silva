@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.config;
+package ca.bc.gov.restapi.results.common.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,15 +15,15 @@ public class ExternalApiConfiguration {
   /**
    * Creates a RestClient bean for the Forest Client API.
    *
-   * @param providersConfig the configuration properties for providers
+   * @param providersConfiguration the configuration properties for providers
    * @return the configured RestClient instance for the Forest Client API
    */
   @Bean
-  public RestClient forestClientApi(ProvidersConfig providersConfig) {
+  public RestClient forestClientApi(ProvidersConfiguration providersConfiguration) {
     return RestClient
         .builder()
-        .baseUrl(providersConfig.getForestClientBaseUri())
-        .defaultHeader("X-API-KEY", providersConfig.getForestClientApiKey())
+        .baseUrl(providersConfiguration.getForestClientBaseUri())
+        .defaultHeader("X-API-KEY", providersConfiguration.getForestClientApiKey())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }

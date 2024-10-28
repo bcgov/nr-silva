@@ -1,8 +1,6 @@
-package ca.bc.gov.restapi.results.oracle.config;
+package ca.bc.gov.restapi.results.oracle.configuration;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties("spring.datasource.oracle")
-public class OracleHikariConfig {
+public class OracleHikariConfiguration {
 
   private String driverClassName;
   private String url;

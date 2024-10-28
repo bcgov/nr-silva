@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ca.bc.gov.restapi.results.common.service.RestService;
+import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,8 @@ class FeatureServiceEndpointTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean RestService restService;
+  @MockBean
+  OpenMapsService openMapsService;
 
   @Test
   @DisplayName("Get opening polygon and properties happy path should succeed")
@@ -67,7 +68,7 @@ class FeatureServiceEndpointTest {
         }
         """;
 
-    when(restService.getOpeningPolygonAndProperties(openingId))
+    when(openMapsService.getOpeningPolygonAndProperties(openingId))
         .thenReturn(ResponseEntity.of(Optional.of(response)));
 
     mockMvc
