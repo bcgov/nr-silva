@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.service.DashboardExtractionService;
-import ca.bc.gov.restapi.results.postgres.config.DashboardUserManagerConfig;
+import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfiguration;
 import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OracleExtractionLogsRepository;
 import java.util.List;
@@ -28,7 +28,7 @@ public class DashboardExtractionEndpoint {
 
   private final DashboardExtractionService dashboardExtractionService;
 
-  private final DashboardUserManagerConfig dashboardUserManagerConfig;
+  private final DashboardUserManagerConfiguration dashboardUserManagerConfiguration;
 
   private final LoggedUserService loggedUserService;
 
@@ -45,12 +45,13 @@ public class DashboardExtractionEndpoint {
       Integer months,
       @RequestParam(value = "debug", required = false)
       Boolean debug) {
-    if (dashboardUserManagerConfig.getUserList().isEmpty()) {
+
+    if (dashboardUserManagerConfiguration.getUserList().isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     String currentUser = loggedUserService.getLoggedUserIdirOrBceId();
-    if (!dashboardUserManagerConfig.getUserList().contains(currentUser)) {
+    if (!dashboardUserManagerConfiguration.getUserList().contains(currentUser)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 

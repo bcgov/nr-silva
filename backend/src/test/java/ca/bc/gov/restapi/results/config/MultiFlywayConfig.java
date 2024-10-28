@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.config;
 
-import ca.bc.gov.restapi.results.oracle.config.OracleHikariConfig;
-import ca.bc.gov.restapi.results.postgres.config.PostgresHikariConfig;
+import ca.bc.gov.restapi.results.oracle.configuration.OracleHikariConfiguration;
+import ca.bc.gov.restapi.results.oracle.configuration.OraclePersistenceConfiguration;
+import ca.bc.gov.restapi.results.postgres.configuration.PostgresHikariConfiguration;
+import ca.bc.gov.restapi.results.postgres.configuration.PostgresPersistenceConfiguration;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -21,14 +23,14 @@ public class MultiFlywayConfig {
    * Configures Flyway for PostgreSQL database. This will overwrite the original Flyway
    * configuration for PostgreSQL.
    *
-   * @param postgresHikariConfig the PostgreSQL Hikari configuration
+   * @param postgresHikariConfiguration the PostgreSQL Hikari configuration
    * @return the configured Flyway instance for PostgreSQL
    */
   @Bean
-  public Flyway flywayPostgres(PostgresHikariConfig postgresHikariConfig) {
+  public Flyway flywayPostgres(PostgresHikariConfiguration postgresHikariConfiguration) {
     return Flyway.configure()
         //We build the datasource as the original Bean uses Hikari, and it failed due to Timeout
-        .dataSource(toDataSource(postgresHikariConfig))
+        .dataSource(toDataSource(postgresHikariConfiguration))
         .locations("classpath:db/migration", "classpath:migration/postgres")
         .baselineOnMigrate(true)
         .load();
@@ -38,14 +40,14 @@ public class MultiFlywayConfig {
    * Configures Flyway for Oracle database. This will allow the test to be able to recreate the
    * expected oracle database format.
    *
-   * @param oracleHikariConfig the Oracle Hikari configuration
+   * @param oracleHikariConfiguration the Oracle Hikari configuration
    * @return the configured Flyway instance for Oracle
    */
   @Bean
-  public Flyway flywayOracle(OracleHikariConfig oracleHikariConfig) {
+  public Flyway flywayOracle(OracleHikariConfiguration oracleHikariConfiguration) {
     return Flyway.configure()
         //We build the datasource as the original Bean uses Hikari, and it failed due to Timeout
-        .dataSource(toDataSource(oracleHikariConfig))
+        .dataSource(toDataSource(oracleHikariConfiguration))
         .locations("classpath:migration/oracle")
         .schemas("THE")
         .load();
@@ -53,35 +55,35 @@ public class MultiFlywayConfig {
 
   /**
    * Converts PostgreSQL Hikari configuration to a DataSource. The original Bean found at
-   * {@link ca.bc.gov.restapi.results.postgres.config.PostgresPersistenceConfig} was failing due to
+   * {@link PostgresPersistenceConfiguration} was failing due to
    * a timeout caused by HikariCP
    *
-   * @param postgresHikariConfig the PostgreSQL Hikari configuration
+   * @param postgresHikariConfiguration the PostgreSQL Hikari configuration
    * @return the DataSource for PostgreSQL
    */
-  private DataSource toDataSource(PostgresHikariConfig postgresHikariConfig) {
+  private DataSource toDataSource(PostgresHikariConfiguration postgresHikariConfiguration) {
     return DataSourceBuilder.create()
-        .url(postgresHikariConfig.getUrl())
-        .username(postgresHikariConfig.getUsername())
-        .password(postgresHikariConfig.getPassword())
-        .driverClassName(postgresHikariConfig.getDriverClassName())
+        .url(postgresHikariConfiguration.getUrl())
+        .username(postgresHikariConfiguration.getUsername())
+        .password(postgresHikariConfiguration.getPassword())
+        .driverClassName(postgresHikariConfiguration.getDriverClassName())
         .build();
   }
 
   /**
    * Converts Oracle Hikari configuration to a DataSource. The original Bean found at
-   * {@link ca.bc.gov.restapi.results.oracle.config.OraclePersistenceConfig} was failing due to a
+   * {@link OraclePersistenceConfiguration} was failing due to a
    * timeout caused by HikariCP.
    *
-   * @param oracleHikariConfig the Oracle Hikari configuration
+   * @param oracleHikariConfiguration the Oracle Hikari configuration
    * @return the DataSource for Oracle
    */
-  private DataSource toDataSource(OracleHikariConfig oracleHikariConfig) {
+  private DataSource toDataSource(OracleHikariConfiguration oracleHikariConfiguration) {
     return DataSourceBuilder.create()
-        .url(oracleHikariConfig.getUrl())
-        .username(oracleHikariConfig.getUsername())
-        .password(oracleHikariConfig.getPassword())
-        .driverClassName(oracleHikariConfig.getDriverClassName())
+        .url(oracleHikariConfiguration.getUrl())
+        .username(oracleHikariConfiguration.getUsername())
+        .password(oracleHikariConfiguration.getPassword())
+        .driverClassName(oracleHikariConfiguration.getDriverClassName())
         .build();
   }
 

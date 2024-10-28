@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.postgres.config;
+package ca.bc.gov.restapi.results.postgres.configuration;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties("nr.results")
-public class DashboardUserManagerConfig {
+public class DashboardUserManagerConfiguration {
 
   private String[] dashboardJobUsers;
 

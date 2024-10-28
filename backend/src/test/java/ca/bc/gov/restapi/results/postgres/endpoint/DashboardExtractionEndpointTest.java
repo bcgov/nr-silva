@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.service.DashboardExtractionService;
-import ca.bc.gov.restapi.results.postgres.config.DashboardUserManagerConfig;
+import ca.bc.gov.restapi.results.postgres.configuration.DashboardUserManagerConfiguration;
 import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OracleExtractionLogsRepository;
 import java.util.List;
@@ -36,7 +36,7 @@ class DashboardExtractionEndpointTest {
 
   @MockBean private DashboardExtractionService dashboardExtractionService;
 
-  @MockBean private DashboardUserManagerConfig dashboardUserManagerConfig;
+  @MockBean private DashboardUserManagerConfiguration dashboardUserManagerConfiguration;
 
   @MockBean private LoggedUserService loggedUserService;
 
@@ -46,7 +46,7 @@ class DashboardExtractionEndpointTest {
     Integer months = 24;
     Boolean debug = Boolean.FALSE;
 
-    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of("TEST"));
+    when(dashboardUserManagerConfiguration.getUserList()).thenReturn(List.of("TEST"));
     when(loggedUserService.getLoggedUserIdirOrBceId()).thenReturn("TEST");
     doNothing().when(dashboardExtractionService).extractDataForTheDashboard(months, debug, true);
 
@@ -65,7 +65,7 @@ class DashboardExtractionEndpointTest {
     Integer months = 24;
     Boolean debug = Boolean.FALSE;
 
-    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of("TEST"));
+    when(dashboardUserManagerConfiguration.getUserList()).thenReturn(List.of("TEST"));
     when(loggedUserService.getLoggedUserIdirOrBceId()).thenReturn("TEST");
     doNothing().when(dashboardExtractionService).extractDataForTheDashboard(months, debug, true);
 
@@ -84,7 +84,7 @@ class DashboardExtractionEndpointTest {
     Integer months = 24;
     Boolean debug = Boolean.FALSE;
 
-    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of());
+    when(dashboardUserManagerConfiguration.getUserList()).thenReturn(List.of());
 
     mockMvc
         .perform(
@@ -101,7 +101,7 @@ class DashboardExtractionEndpointTest {
     Integer months = 24;
     Boolean debug = Boolean.FALSE;
 
-    when(dashboardUserManagerConfig.getUserList()).thenReturn(List.of("AA"));
+    when(dashboardUserManagerConfiguration.getUserList()).thenReturn(List.of("AA"));
     when(loggedUserService.getLoggedUserIdirOrBceId()).thenReturn("BB");
 
     mockMvc

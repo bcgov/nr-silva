@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
-import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
@@ -42,7 +42,7 @@ public class OpeningSearchRepository {
     final Query query = setQueryParameters(filtersDto, sqlQuery);
 
     // Limit to 500 records at the database
-    query.setMaxResults(ConstantsConfig.MAX_PAGE_SIZE);
+    query.setMaxResults(SilvaConstants.MAX_PAGE_SIZE);
 
     List<?> result = query.getResultList();
     int lastPage = PaginationUtil.getLastPage(result.size(), pagination.perPage());

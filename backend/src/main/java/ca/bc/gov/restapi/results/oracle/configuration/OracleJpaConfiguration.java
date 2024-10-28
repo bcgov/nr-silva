@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.config;
+package ca.bc.gov.restapi.results.oracle.configuration;
 
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     },
     entityManagerFactoryRef = "oracleEntityManagerFactory",
     transactionManagerRef = "oracleTransactionManager")
-public class OracleJpaConfig {
+public class OracleJpaConfiguration {
 
   /**
    * Creates the EntityManagerFactory for the oracle database.

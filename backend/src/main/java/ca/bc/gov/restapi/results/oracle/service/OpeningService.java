@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.common.config.ConstantsConfig;
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
@@ -62,8 +62,8 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
-    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
+    if (pagination.perPage() > SilvaConstants.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE);
     }
 
     String entryUserId = loggedUserService.getLoggedUserId();
@@ -111,8 +111,8 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
-    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE) {
-      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE);
+    if (pagination.perPage() > SilvaConstants.MAX_PAGE_SIZE) {
+      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE);
     }
 
     // Openings
@@ -160,8 +160,8 @@ public class OpeningService {
         pagination.page(),
         pagination.perPage());
 
-    if (pagination.perPage() > ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH) {
-      throw new MaxPageSizeException(ConstantsConfig.MAX_PAGE_SIZE_OPENING_SEARCH);
+    if (pagination.perPage() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
+      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
     // Set the user in the filter, if required
