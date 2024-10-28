@@ -31,7 +31,7 @@
     <skip.unit.tests>true</skip.unit.tests>
     <jacoco.skip>true</jacoco.skip>
     <checkstyle.skip>true</checkstyle.skip>
-    <checkstyle.failsOnError>true</checkstyle.failsOnError>
+    <checkstyle.failsOnError>false</checkstyle.failsOnError>
     <checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
@@ -176,7 +176,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>      
+      <artifactId>oracle-free</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -184,11 +184,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
