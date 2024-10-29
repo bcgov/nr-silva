@@ -8,21 +8,19 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents an Opening saved as favourite to the user. */
+/**
+ * This class represents an Opening saved as favourite to the user.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_openings")
+@Table(schema = "silva", name = "user_openings")
 @IdClass(UserOpeningEntityId.class)
 public class UserOpeningEntity {
 

@@ -8,19 +8,19 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.With;
 
-/** This class represents an Opening in the database. */
+/**
+ * This class represents an Opening in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "OPENING")
+@Table(schema = "THE", name = "OPENING")
 public class OpeningEntity {
 
   @Id

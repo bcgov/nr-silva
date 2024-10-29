@@ -8,21 +8,19 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents an Organization Unity in the database. */
+/**
+ * This class represents an Organization Unity in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ORG_UNIT")
+@Table(schema = "THE", name = "ORG_UNIT")
 public class OrgUnitEntity {
 
   @Id
