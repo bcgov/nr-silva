@@ -10,6 +10,7 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.FlushModeType;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.Parameter;
@@ -36,6 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class OpeningSearchRepositoryTest {
 
   @Mock EntityManager entityManager;
+  @Mock EntityManagerFactory entityManagerFactory;
 
   private OpeningSearchRepository openingSearchRepository;
 
@@ -295,7 +297,10 @@ class OpeningSearchRepositoryTest {
 
   @BeforeEach
   void setup() {
-    openingSearchRepository = new OpeningSearchRepository(entityManager);
+
+    when(entityManagerFactory.createEntityManager()).thenReturn(entityManager);
+
+    openingSearchRepository = new OpeningSearchRepository(entityManagerFactory);
   }
 
   @Test

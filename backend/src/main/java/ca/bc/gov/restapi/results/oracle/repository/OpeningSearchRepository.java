@@ -9,6 +9,7 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -16,17 +17,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /** This class represents the Openings Search repository database access. */
 @Slf4j
 @Component
-@AllArgsConstructor
 public class OpeningSearchRepository {
 
   private final EntityManager em;
+
+  public OpeningSearchRepository(@Qualifier("oracleEntityManagerFactory") EntityManagerFactory emf) {
+    this.em = emf.createEntityManager();
+  }
 
   /**
    * Search Opening with filters.
