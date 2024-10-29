@@ -86,3 +86,11 @@ services:
     build: ./backend
     ports: ["8080:8080"]
     <<: *backend
+  
+  wiremock:
+    image: "wiremock/wiremock:latest"
+    container_name: forest-client-api-stub
+    ports: ["9000:9000","9001:9001"]
+    volumes: 
+      - ./stub/:/home/wiremock/
+    entrypoint: ["/docker-entrypoint.sh", "--enable-stub-cors","--global-response-templating","--port","9000","--https-port","9001","--verbose"]

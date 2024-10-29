@@ -1,0 +1,18 @@
+{
+  "mappings": [
+    {
+      "name": "Find by client number",
+      "request": {
+        "urlPattern": "/api/clients/findByClientNumber/([0-9]*)",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "forestclient/{{request.path.[2]}}_{{request.path.[3]}}.json"
+      }
+    }
+  ]
+}
