@@ -16,7 +16,7 @@ export type LeftMenu = {
 const mainActivitiesItems: LeftMenu[] = [
   {
     name: 'Main activities',
-    items: [
+    items: [      
       {
         name: 'Opening',
         icon: 'MapBoundaryVegetation',
@@ -32,16 +32,6 @@ const mainActivitiesItems: LeftMenu[] = [
             name: 'Silviculture search',
             link: '/silviculture-search',
             disabled: false
-          },
-          {
-            name: 'Create an opening',
-            link: '/opening/create',
-            disabled: true
-          },
-          {
-            name: 'Upcoming activities',
-            link: '/opening/upcoming-activities',
-            disabled: true
           }
         ]
       }
