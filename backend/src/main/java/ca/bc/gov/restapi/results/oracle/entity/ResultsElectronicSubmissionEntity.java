@@ -7,23 +7,21 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents an Electronic Submission for the Openings in the database. */
+/**
+ * This class represents an Electronic Submission for the Openings in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "RESULTS_ELECTRONIC_SUBMISSION")
+@Table(schema = "THE", name = "RESULTS_ELECTRONIC_SUBMISSION")
 public class ResultsElectronicSubmissionEntity {
-  
+
   @Id
   @Column(name = "RESULTS_SUBMISSION_ID")
   private Long resultsSubmissionId;

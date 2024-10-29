@@ -9,18 +9,18 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.With;
 
-/** This class represents a CUT_BLOCK_OPEN_ADMIN entity in the database. */
+/**
+ * This class represents a CUT_BLOCK_OPEN_ADMIN entity in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CUT_BLOCK_OPEN_ADMIN")
+@Table(schema = "THE", name = "CUT_BLOCK_OPEN_ADMIN")
 @Entity
 public class CutBlockOpenAdminEntity {
 
