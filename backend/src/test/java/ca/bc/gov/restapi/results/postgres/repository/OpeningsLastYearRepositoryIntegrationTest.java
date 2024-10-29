@@ -18,7 +18,7 @@ class OpeningsLastYearRepositoryIntegrationTest extends AbstractTestContainerInt
   void findAllByOpeningIdIsInTest() {
     List<Long> idList = List.of(7012511L, 7012512L, 7012513L);
     List<OpeningsLastYearEntity> openingList =
-        openingsLastYearRepository.findAllByOpeningIdInList(idList);
+        openingsLastYearRepository.findAllByOpeningIdIn(idList);
 
     Assertions.assertFalse(openingList.isEmpty());
     Assertions.assertEquals(3, openingList.size());

@@ -63,7 +63,7 @@ class UserOpeningServiceTest {
     openingEntity.setLastUpdated(now);
     openingEntity.setEntryUserid(USER_ID);
 
-    when(openingsActivityRepository.findAllByOpeningId(List.of(223344L)))
+    when(openingsActivityRepository.findAllByOpeningIdIn(List.of(223344L)))
         .thenReturn(List.of(openingEntity));
 
     List<MyRecentActionsRequestsDto> openings = userOpeningService.getUserTrackedOpenings();

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 /** This class contains methods to handle Opening Categories. */
@@ -25,15 +26,15 @@ public class OpenCategoryCodeService {
   public List<OpenCategoryCodeEntity> findAllCategories(boolean includeExpired) {
     log.info("Getting all open category codes. Include expired: {}", includeExpired);
 
-    if (includeExpired) {
-      List<OpenCategoryCodeEntity> openCategoryCodes = openCategoryCodeRepository.findAll();
-      log.info("Found {} open category codes (including expired)", openCategoryCodes.size());
-      return openCategoryCodes;
-    }
-
     List<OpenCategoryCodeEntity> openCategoryCodes =
-        openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
-    log.info("Found {} open category codes (excluding expired)", openCategoryCodes.size());
+        includeExpired ?
+            openCategoryCodeRepository.findAll()
+            : openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
+
+    log.info("Found {} open category codes ({}cluding expired)",
+        openCategoryCodes.size(),
+        BooleanUtils.toString(includeExpired, "in", "ex")
+    );
     return openCategoryCodes;
   }
 }

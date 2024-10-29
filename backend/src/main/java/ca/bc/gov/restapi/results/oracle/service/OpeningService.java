@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
@@ -165,7 +166,7 @@ public class OpeningService {
     }
 
     // Set the user in the filter, if required
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
       String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
       if (!userId.startsWith("IDIR")) {
         userId = "BCEID" + userId.substring(5);
