@@ -4,12 +4,7 @@ import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
 import { RecentOpening } from '../types/RecentOpening';
-import { 
-  RecentOpeningApi, 
-  IOpeningPerYear,
-  IFreeGrowingProps,
-  IFreeGrowingChartData
-} from '../types/OpeningTypes';
+import { IOpeningPerYear } from '../types/IOpeningPerYear';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
@@ -100,6 +95,51 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
     console.error('Error fetching openings per year:', error);
     throw error;
   }
+}
+
+export const fetchOpeningsPerYearAPI = async (props: IOpeningPerYear): Promise<OpeningPerYearChart[]> => {
+  const authToken = getAuthIdToken();
+  
+  try {
+    let url = `${backendUrl}/api/dashboard-metrics/submission-trends`;
+    if (props.orgUnitCode || props.statusCode || props.entryDateStart || props.entryDateEnd) {
+      url += "?";
+      if (props.orgUnitCode) url += `orgUnitCode=${props.orgUnitCode}&`;
+      if (props.statusCode) url += `statusCode=${props.statusCode}&`;
+      if (props.entryDateStart) url += `entryDateStart=${props.entryDateStart}&`;
+      if (props.entryDateEnd) url += `entryDateEnd=${props.entryDateEnd}&`;
+      url = url.replace(/&$/, "");
+    }
+
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${authToken}` }
+    });
+
+    if (response.data && Array.isArray(response.data)) {
+      return response.data.map(item => ({
+        group: "Openings",
+        key: item.monthName,
+        value: item.amount
+      }));
+    }
+    
+    return [];
+  } catch (error) {
+    console.error("Error fetching openings per year:", error);
+    throw error;
+  }
+};
+
+interface IFreeGrowingProps {
+  orgUnitCode: string;
+  clientNumber: string;
+  entryDateStart: string | null;
+  entryDateEnd: string | null;
+}
+
+export interface IFreeGrowingChartData {
+  group: string;
+  value: number;
 }
 
 /**

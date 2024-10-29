@@ -1,5 +1,5 @@
 // components/BarChartGrouped.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
 import { useDistrictListQuery, useFetchOpeningsPerYear } from "../../services/queries/dashboard/dashboardQueries";

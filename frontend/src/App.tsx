@@ -1,49 +1,46 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  BrowserRouter, Routes, Route
+} from 'react-router-dom';
+import { Amplify } from 'aws-amplify';
+import amplifyconfig from './amplifyconfiguration';
+
 import './custom.scss';
+
 import Landing from "./screens/Landing";
+import Help from "./screens/Help";
 import SideLayout from './layouts/SideLayout';
+import PostLoginRoute from './routes/PostLoginRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
 import DashboardRedirect from './screens/DashboardRedirect';
 import SilvicultureSearch from './screens/SilvicultureSearch';
-import ErrorHandling from './screens/ErrorHandling';
 
-
-// Create the router instance
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Landing />,
-    errorElement: <ErrorHandling /> // Handle errors for the Landing page route
-  },
-  {
-    path: "/dashboard",
-    element: <DashboardRedirect />,
-    errorElement: <ErrorHandling /> // Handle errors for the dashboard route
-  },
-  {
-    element: <ProtectedRoute requireAuth />,
-    errorElement: <ErrorHandling />, // Global error element for protected routes
-    children: [
-      {
-        path: "/opening",
-        element: <SideLayout pageContent={<Opening />} />
-      },
-      {
-        path: "/silviculture-search",
-        element: <SideLayout pageContent={<SilvicultureSearch />} />
-      }
-    ]
-  },
-  // Catch-all route for unmatched paths
-  {
-    path: "*",
-    element: <ErrorHandling />
-  }
-]);
+Amplify.configure(amplifyconfig);
 
 const App: React.FC = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing/>} />
+        <Route path="/dashboard" element={
+          <PostLoginRoute>
+            <DashboardRedirect />
+          </PostLoginRoute>
+        } />
+        <Route path="/opening" element={
+          <ProtectedRoute>
+            <SideLayout pageContent={<Opening/>} />
+          </ProtectedRoute>
+        } />
+        <Route path="/silviculture-search" element={
+          <ProtectedRoute>
+            <SideLayout pageContent={<SilvicultureSearch/>} />
+          </ProtectedRoute>
+        } />
+        <Route path="/help" element={<SideLayout pageContent={<Help/>} />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;

@@ -13,6 +13,8 @@ import {
   TableRow,
   Button,
   Pagination,
+  OverflowMenu,
+  OverflowMenuItem,
   Popover,
   PopoverContent,
   Checkbox,
@@ -88,6 +90,7 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
+    console.log(rowId + " has been added as a favourite for the user")
     //make a call to the api for the favourite opening when ready
     setToastText(`Following "OpeningID ${rowId}"`);
   }
