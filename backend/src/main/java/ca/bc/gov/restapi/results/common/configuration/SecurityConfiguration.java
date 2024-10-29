@@ -42,7 +42,7 @@ public class SecurityConfiguration {
     http.cors(Customizer.withDefaults())
         .csrf(
             customize ->
-                customize.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                customize.csrfTokenRepository(new CookieCsrfTokenRepository()))
         .authorizeHttpRequests(
             customize ->
                 customize
