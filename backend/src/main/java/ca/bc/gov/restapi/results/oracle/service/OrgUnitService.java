@@ -1,25 +1,25 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
+import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-/** This class contains methods to handle Org Units. */
+/**
+ * This class contains methods to handle Org Units.
+ */
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrgUnitService {
 
   private final OrgUnitRepository orgUnitRepository;
-
-  @Value("${nr.results.config.opening-search.org-units}")
-  private String[] orgUnitsFromProps;
+  private final SilvaConfiguration silvaConfiguration;
 
   /**
    * Find all Org Units for the Openings Search.
@@ -29,12 +29,15 @@ public class OrgUnitService {
   public List<OrgUnitEntity> findAllOrgUnits() {
     log.info("Getting all org units for the search openings");
 
-    if (Objects.isNull(orgUnitsFromProps) || orgUnitsFromProps.length == 0) {
+    if (Objects.isNull(silvaConfiguration.getOrgUnits())
+        || silvaConfiguration.getOrgUnits().isEmpty()
+    ) {
       log.warn("No Org Units from the properties file.");
       return List.of();
     }
 
-    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitsFromProps);
+    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(
+        silvaConfiguration.getOrgUnits());
 
     log.info("Found {} org units by codes", orgUnits.size());
     return orgUnits;
@@ -49,7 +52,8 @@ public class OrgUnitService {
   public List<OrgUnitEntity> findAllOrgUnitsByCode(String[] orgUnitCodes) {
     log.info("Getting all org units by codes: {}", Arrays.toString(orgUnitCodes));
 
-    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitCodes);
+    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(
+        Arrays.asList(orgUnitCodes));
     log.info("Found {} org units by codes", orgUnits.size());
     return orgUnits;
   }
