@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginOrgSelection from "../../views/LoginOrgSelection";
 import SideLayout from "../../layouts/SideLayout";
-import Dashboard from "../Dashboard";
+import Opening from "../Opening";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 
@@ -17,14 +17,14 @@ const DashboardRedirect: React.FC = () => {
   // Redirect logic based on selectedClientRoles existence
   useEffect(() => {
     if (user && selectedClientRoles) {
-      navigate("/dashboard");
+      navigate("/opening");
     }
   }, [user, selectedClientRoles]);
 
   return (
     <>
       {user && selectedClientRoles ? (
-        <SideLayout pageContent={<Dashboard />} />
+        <SideLayout pageContent={<Opening />} />
       ) : (
         <LoginOrgSelection />
       )}
