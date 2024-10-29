@@ -11,20 +11,19 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents a log message in the database, for the oracle extraction flow. */
+/**
+ * This class represents a log message in the database, for the oracle extraction flow.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @With
 @Entity
-@Table(name = "oracle_extraction_logs")
+@Table(schema = "silva", name = "oracle_extraction_logs")
 public class OracleExtractionLogsEntity {
 
   @Id
