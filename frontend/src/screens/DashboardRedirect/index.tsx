@@ -17,7 +17,7 @@ const DashboardRedirect: React.FC = () => {
   // Redirect logic based on selectedClientRoles existence
   useEffect(() => {
     if (user && selectedClientRoles) {
-      navigate("/dashboard");
+      navigate("/opening");
     }
   }, [user, selectedClientRoles]);
 

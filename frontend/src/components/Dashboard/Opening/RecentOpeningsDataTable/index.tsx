@@ -19,9 +19,6 @@ import {
   PopoverContent,
   Checkbox,
   CheckboxGroup,
-  Row,
-  Column,
-  MenuItemDivider,
   Modal,
   ActionableNotification
 } from "@carbon/react";
@@ -32,7 +29,6 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
 import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
@@ -42,9 +38,8 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
-import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 
-interface ISearchScreenDataTable {
+interface IRecentOpeningsDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
@@ -55,13 +50,10 @@ interface ISearchScreenDataTable {
   totalItems: number;
 }
 
-const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
+const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   rows,
   headers,
   defaultColumns,
-  handleCheckboxChange,
-  setOpeningId,
-  toggleSpatial,
   showSpatial,
   totalItems,
 }) => {
@@ -73,12 +65,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     currentPage,
   } = useContext(PaginationContext);
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
-  const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState(false);
-  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,20 +84,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
-      }
-    });
-  };
-
-  const handleRowClick = (openingId: string) => {
-    // Call the mutation to mark as viewed
-    markAsViewedOpening(openingId, {
-      onSuccess: () => {
-        // setToastText(`Successfully marked opening ${openingId} as viewed.`);
-        console.log(`Successfully marked opening ${openingId} as viewed.`);
-      },
-      onError: (err: any) => {
-        // setToastText(`Failed to mark as viewed: ${err.message}`);
-        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
@@ -148,86 +124,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </TableToolbarMenu>
             <div className="d-none d-sm-flex align-items-center">
               <div className="divider"></div>
-              <Button
-                iconDescription="Show Map"
-                tooltipposition="bottom"
-                kind="ghost"
-                onClick={() => toggleSpatial()}
-                renderIcon={Icons.Location}
-                size="md"
-              >
-                {showSpatial === true ? "Hide map" : "Show map"}
-              </Button>
-              <div className="divider"></div>
-              <Popover
-                open={openEdit}
-                isTabTip
-                align={alignTwo}
-                onRequestClose={() => setOpenEdit(false)}
-              >
-                <Button
-                  iconDescription="Edit Columns"
-                  tooltipposition="bottom"
-                  kind="ghost"
-                  onClick={() => {
-                    setOpenEdit(!openEdit);
-                  }}
-                  renderIcon={Icons.Column}
-                  size="md"
-                >
-                  Edit columns
-                </Button>
-
-                <PopoverContent className="edit-column-content">
-                  <div className="dropdown-label">
-                    <p>Select Columns you want to see:</p>
-                  </div>
-                  <FlexGrid className="dropdown-container">
-                    {headers.map((header, index) =>
-                      index > 0 && index % 2 === 1 ? ( // Start from index 1 and handle even-indexed pairs to skip the actions
-                        <Row key={`row-${index}`}>
-                          <Column sm={2} md={4} lg={8}>
-                            <Checkbox
-                              className="checkbox-item"
-                              key={header.key}
-                              labelText={header.header}
-                              id={`checkbox-label-${header.key}`}
-                              checked={header.selected === true}
-                              onChange={() => handleCheckboxChange(header.key)}
-                            />
-                          </Column>
-                          {headers[index + 1] && (
-                            <Column sm={2} md={4} lg={8}>
-                              <Checkbox
-                                className="checkbox-item"
-                                key={headers[index + 1].key}
-                                labelText={headers[index + 1].header}
-                                id={`checkbox-label-${headers[index + 1].key}`}
-                                checked={headers[index + 1].selected === true}
-                                onChange={() =>
-                                  handleCheckboxChange(headers[index + 1].key)
-                                }
-                              />
-                            </Column>
-                          )}
-                        </Row>
-                      ) : null
-                    )}
-                  </FlexGrid>
-
-                  <MenuItemDivider />
-                  <MenuItem
-                    className="menu-item"
-                    label="Show all columns"
-                    onClick={() => handleCheckboxChange("select-all")}
-                  />
-                  <MenuItem
-                    className="menu-item"
-                    label="Reset columns to default "
-                    onClick={() => handleCheckboxChange("select-default")}
-                  />
-                </PopoverContent>
-              </Popover>
               <div className="divider"></div>
               <Popover
                 open={openDownload}
@@ -245,7 +141,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   renderIcon={Icons.Download}
                   size="lg"
                 >
-                  Download
+                  Download Table
                 </Button>
                 <PopoverContent className="download-column-content">
                   <MenuItem
@@ -293,10 +189,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   key={row.openingId + i.toString()}
                   onClick={async () => {
                     //add the api call to send the viewed opening
-                    await handleRowClick(row.openingId);
-                    setOpeningDetails(true)
-                  }
-                  }
+                    // await handleRowClick(row.openingId);
+                    setOpeningDetails(true);
+                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
@@ -309,63 +204,54 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          <CheckboxGroup
-                            orientation="horizontal"
-                            className="align-items-center justify-content-start"
-                          >
-                            {/* Checkbox for selecting rows */}
-                            {showSpatial && (
-                              <Tooltip
-                                className="checkbox-tip"
-                                label="Click to view this opening's map activity."
-                                align="bottom-left"
-                                autoAlign
-                              >
-                                <div className="mb-2 mx-2">
-                                  <Checkbox
-                                    id={`checkbox-label-${row.openingId}`}
-                                    checked={selectedRows.includes(
-                                      row.openingId
-                                    )}
-                                    onChange={() =>
-                                      handleRowSelectionChanged(row.openingId)
-                                    }
-                                  />
-                                </div>
-                              </Tooltip>
-                            )}
-                            <OverflowMenu
-                              size={"md"}
-                              ariaLabel="More actions"
-                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
+                          <>
+                            <>
+                            <Button
+                              hasIconOnly
+                              iconDescription="View"
+                              tooltipPosition="auto"
+                              kind="ghost"
+                              onClick={() => console.log(row.openingid)}
+                              renderIcon={Icons.View}
+                              size="md"
+                            />
+                            <Button
+                              hasIconOnly
+                              iconDescription="Document Download"
+                              tooltipPosition="auto"
+                              kind="ghost"
+                              onClick={() => null}
+                              renderIcon={Icons.DocumentDownload}
+                              size="md"
+                            />
+                          </>
+                            <CheckboxGroup
+                              orientation="horizontal"
+                              className="align-items-center justify-content-start"
                             >
-                              <OverflowMenuItem
-                                itemText="Favourite opening"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  handleFavouriteOpening(row.openingId);
-                                }}
-                              />
-                              <OverflowMenuItem
-                                itemText="Download opening as PDF file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  downloadPDF(defaultColumns, [row]);
-                                }}
-                              />
-                              <OverflowMenuItem
-                                itemText="Download opening as CSV file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  const csvData = convertToCSV(defaultColumns, [
-                                    row,
-                                  ]);
-                                  downloadCSV(csvData, "openings-data.csv");
-                                }}
-                              />
-                              <OverflowMenuItem itemText="Delete opening" />
-                            </OverflowMenu>
-                          </CheckboxGroup>
+                              {/* Checkbox for selecting rows */}
+                              {showSpatial && (
+                                <Tooltip
+                                  className="checkbox-tip"
+                                  label="Click to view this opening's map activity."
+                                  align="bottom-left"
+                                  autoAlign
+                                >
+                                  <div className="mb-2 mx-2">
+                                    <Checkbox
+                                      id={`checkbox-label-${row.openingId}`}
+                                      checked={selectedRows.includes(
+                                        row.openingId
+                                      )}
+                                      onChange={() =>
+                                        handleRowSelectionChanged(row.openingId)
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              )}
+                            </CheckboxGroup>
+                          </>
                         ) : header.header === "Category" ? (
                           row["categoryCode"] +
                           " - " +
@@ -442,4 +328,4 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   );
 };
 
-export default SearchScreenDataTable;
+export default RecentOpeningsDataTable;
