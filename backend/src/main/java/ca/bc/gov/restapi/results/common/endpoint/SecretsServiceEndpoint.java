@@ -1,9 +1,9 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.dto.WmsLayersWhitelistUserDto;
 import java.util.List;
-import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/secrets")
+@RequiredArgsConstructor
 public class SecretsServiceEndpoint {
 
-  @Value("${nr.results.config.wms-layers.whitelist}")
-  private String[] wmsLayersWhitelistUsers;
+  private final SilvaConfiguration silvaConfiguration;
 
   /**
    * Get all users allowed to see the WMS layers information.
@@ -25,6 +25,10 @@ public class SecretsServiceEndpoint {
    */
   @GetMapping("/wms-layers-whitelist")
   public List<WmsLayersWhitelistUserDto> getWmsLayersWhitelistUsers() {
-    return Stream.of(wmsLayersWhitelistUsers).map(WmsLayersWhitelistUserDto::new).toList();
+    return silvaConfiguration
+        .getWmsWhitelist()
+        .stream()
+        .map(WmsLayersWhitelistUserDto::new)
+        .toList();
   }
 }

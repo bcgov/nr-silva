@@ -257,7 +257,7 @@ class OpeningSearchEndpointTest {
 
     List<OrgUnitEntity> orgUnitEntityList = List.of(orgUnit);
 
-    when(orgUnitService.findAllOrgUnitsByCode(new String[]{"DAS"})).thenReturn(orgUnitEntityList);
+    when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(orgUnitEntityList);
 
     mockMvc
         .perform(
@@ -287,7 +287,7 @@ class OpeningSearchEndpointTest {
   @Test
   @DisplayName("Get Opening Org Units By Code not Found should Succeed")
   void getOpeningOrgUnitsByCode_notFound_shouldSucceed() throws Exception {
-    when(orgUnitService.findAllOrgUnitsByCode(new String[]{"DAS"})).thenReturn(List.of());
+    when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(List.of());
 
     mockMvc
         .perform(
