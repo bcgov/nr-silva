@@ -52,8 +52,7 @@ public class OrgUnitService {
   public List<OrgUnitEntity> findAllOrgUnitsByCode(List<String> orgUnitCodes) {
     log.info("Getting all org units by codes: {}", orgUnitCodes);
 
-    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(
-        Arrays.asList(orgUnitCodes));
+    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitCodes);
     log.info("Found {} org units by codes", orgUnits.size());
     return orgUnits;
   }
