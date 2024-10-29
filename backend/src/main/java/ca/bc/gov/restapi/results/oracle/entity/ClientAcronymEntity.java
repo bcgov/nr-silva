@@ -7,21 +7,19 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents a Client Acronym in the database. */
+/**
+ * This class represents a Client Acronym in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CLIENT_ACRONYM")
+@Table(schema = "THE", name = "CLIENT_ACRONYM")
 public class ClientAcronymEntity {
 
   @Id

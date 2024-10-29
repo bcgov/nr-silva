@@ -8,19 +8,19 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.With;
 
-/** This class represents an Opening Category in the database. */
+/**
+ * This class represents an Opening Category in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "OPEN_CATEGORY_CODE")
+@Table(schema = "THE", name = "OPEN_CATEGORY_CODE")
 public class OpenCategoryCodeEntity {
 
   @Id

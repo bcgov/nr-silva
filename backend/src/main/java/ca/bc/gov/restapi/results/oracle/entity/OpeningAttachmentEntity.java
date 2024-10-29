@@ -7,21 +7,19 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
 
-/** This class represents an Opening Attachment in the database. */
+/**
+ * This class represents an Opening Attachment in the database.
+ */
 @Data
 @Builder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "OPENING_ATTACHMENT")
+@Table(schema = "THE", name = "OPENING_ATTACHMENT")
 public class OpeningAttachmentEntity {
 
   @Id
