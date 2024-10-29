@@ -150,6 +150,6 @@ public class OpeningSearchEndpoint {
   public List<OrgUnitEntity> getOpeningOrgUnitsByCode(
       @RequestParam(value = "orgUnitCodes", required = true)
       String[] codes) {
-    return orgUnitService.findAllOrgUnitsByCode(codes);
+    return orgUnitService.findAllOrgUnitsByCode(Arrays.asList(codes));
   }
 }
