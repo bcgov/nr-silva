@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
@@ -241,7 +242,7 @@ public class OpeningSearchRepository {
     Query query = em.createNativeQuery(nativeQuery);
 
     // set parameters
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.MAIN_SEARCH_TERM)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MAIN_SEARCH_TERM)) {
       boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
         log.info("Setting mainSearchTerm as numeric filter value");
@@ -255,83 +256,83 @@ public class OpeningSearchRepository {
     }
 
     // 1. Org Unit code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.ORG_UNIT)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.ORG_UNIT)) {
       log.info("Setting orgUnit filter value");
       query.setParameter("orgUnit", filtersDto.getOrgUnit());
     }
     // 2. Category code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CATEGORY)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CATEGORY)) {
       log.info("Setting category filter value");
       query.setParameter("category", filtersDto.getCategory());
     }
     // 3. Status list codes
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS_LIST)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.STATUS_LIST)) {
 
       log.info("Setting statusList filter values");
       // No need to set value since the query already dit it. Didn't work set through named param
     }
     // 4. User entry id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
       log.info("Setting myOpenings filter value");
       query.setParameter("entryUserId", filtersDto.getRequestUserId());
     }
     // 5. Submitted to FRPA Section 108
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA)) {
       log.info("Setting submitted to FRPA filter!");
       // No need to set value since the query already dit it.
     }
     // 6. Disturbance start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.DISTURBANCE_DATE_START)) {
       log.info("Setting disturbanceDateStart filter value");
       query.setParameter("disturbStartDate", filtersDto.getDisturbanceDateStart());
     }
     // 7. Disturbance end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.DISTURBANCE_DATE_END)) {
       log.info("Setting disturbanceDateEnd filter value");
       query.setParameter("disturbEndDate", filtersDto.getDisturbanceDateEnd());
     }
     // 8. Regen delay start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.REGEN_DELAY_DATE_START)) {
       log.info("Setting regenDelayDateStart filter value");
       query.setParameter("regenDelayDateStart", filtersDto.getRegenDelayDateStart());
     }
     // 9. Regen delay end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.REGEN_DELAY_DATE_END)) {
       log.info("Setting regenDelayDateEnd filter value");
       query.setParameter("regenDelayDateEnd", filtersDto.getRegenDelayDateEnd());
     }
     // 10. Free growing start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.FREE_GROWING_DATE_START)) {
       log.info("Setting freeGrowingDateStart filter value");
       query.setParameter("freeGrowingDateStart", filtersDto.getFreeGrowingDateStart());
     }
     // 11. Free growing end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.FREE_GROWING_DATE_END)) {
       log.info("Setting freeGrowingDateEnd filter value");
       query.setParameter("freeGrowingDateEnd", filtersDto.getFreeGrowingDateEnd());
     }
     // 12. Update date start
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.UPDATE_DATE_START)) {
       log.info("Setting updateDateStart filter value");
       query.setParameter("updateStartDate", filtersDto.getUpdateDateStart());
     }
     // 13. Update date end
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.UPDATE_DATE_END)) {
       log.info("Setting updateDateEnd filter value");
       query.setParameter("updateEndDate", filtersDto.getUpdateDateEnd());
     }
     // 14. Cutting permit id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUTTING_PERMIT_ID)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)) {
       log.info("Setting cuttingPermitId filter value");
       query.setParameter("cuttingPermitId", filtersDto.getCuttingPermitId());
     }
     // 15. Cut block id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUT_BLOCK_ID)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CUT_BLOCK_ID)) {
       log.info("Setting cutBlockId filter value");
       query.setParameter("cutBlockId", filtersDto.getCutBlockId());
     }
     // 16. Timber mark
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.TIMBER_MARK)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.TIMBER_MARK)) {
       log.info("Setting timberMark filter value");
       query.setParameter("timberMark", filtersDto.getTimberMark());
     }
@@ -392,7 +393,7 @@ public class OpeningSearchRepository {
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.MAIN_SEARCH_TERM)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MAIN_SEARCH_TERM)) {
       log.info("Filter mainSearchTerm detected! mainSearchTerm={}", filtersDto.getMainSearchTerm());
       boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
@@ -412,28 +413,28 @@ public class OpeningSearchRepository {
     }
 
     // 1. Org Unit code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.ORG_UNIT)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.ORG_UNIT)) {
       log.info("Filter orgUnit detected! orgUnit={}", filtersDto.getOrgUnit());
       builder.append("AND ou.ORG_UNIT_CODE = :orgUnit ");
     }
     // 2. Category code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CATEGORY)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CATEGORY)) {
       log.info("Filter category detected! category={}", filtersDto.getCategory());
       builder.append("AND o.OPEN_CATEGORY_CODE = :category ");
     }
     // 3. Status code
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.STATUS_LIST)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.STATUS_LIST)) {
       String statuses = String.join(",", filtersDto.getStatusList());
       log.info("Filter statusList detected! statusList={}", statuses);
       builder.append(String.format("AND o.OPENING_STATUS_CODE IN (%s) ", statuses));
     }
     // 4. My openings
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.MY_OPENINGS)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
       log.info("Filter myOpenings detected! entryUserId={}", filtersDto.getRequestUserId());
       builder.append("AND o.ENTRY_USERID = :entryUserId ");
     }
     // 5. Submitted to FRPA
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.SUBMITTED_TO_FRPA)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA)) {
       Boolean value = filtersDto.getSubmittedToFrpa();
       if (Boolean.FALSE.equals(value)) {
         log.info(
@@ -446,34 +447,34 @@ public class OpeningSearchRepository {
       }
     }
     // 6. Disturbance start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.DISTURBANCE_DATE_START)) {
       log.info(
           "Filter disturbanceDateStart detected! date={}", filtersDto.getDisturbanceDateStart());
       builder.append(
           "AND cboa.DISTURBANCE_START_DATE >= to_timestamp(:disturbStartDate, 'YYYY-MM-DD') ");
     }
     // 7. Disturbance end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.DISTURBANCE_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.DISTURBANCE_DATE_END)) {
       log.info("Filter disturbanceDateEnd detected! date={}", filtersDto.getDisturbanceDateEnd());
       builder.append(
           "AND cboa.DISTURBANCE_START_DATE <= to_timestamp(:disturbEndDate, 'YYYY-MM-DD') ");
     }
     // 8. Regen delay start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.REGEN_DELAY_DATE_START)) {
       log.info("Filter regenDelayDateStart detected! date={}", filtersDto.getRegenDelayDateStart());
       builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
       builder.append("COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12) ");
       builder.append("> to_timestamp(:regenDelayDateStart,'YYYY-MM-DD')");
     }
     // 9. Regen delay end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.REGEN_DELAY_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.REGEN_DELAY_DATE_END)) {
       log.info("Filter regenDelayDateEnd detected! date={}", filtersDto.getRegenDelayDateEnd());
       builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
       builder.append("COALESCE(SMRG.LATE_OFFSET_YEARS,0)*12) ");
       builder.append("< to_timestamp(:regenDelayDateEnd,'YYYY-MM-DD')");
     }
     // 10. Free growing start date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.FREE_GROWING_DATE_START)) {
       log.info(
           "Filter freeGrowingDateStart detected! date={}", filtersDto.getFreeGrowingDateStart());
       builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
@@ -481,35 +482,35 @@ public class OpeningSearchRepository {
       builder.append("> to_timestamp(:freeGrowingDateStart,'YYYY-MM-DD')");
     }
     // 11. Free growing end date
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.FREE_GROWING_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.FREE_GROWING_DATE_END)) {
       log.info("Filter freeGrowingDateEnd detected! date={}", filtersDto.getFreeGrowingDateEnd());
       builder.append("AND ADD_MONTHS(cboa.DISTURBANCE_START_DATE, ");
       builder.append("COALESCE(SMFG.LATE_OFFSET_YEARS,0)*12) ");
       builder.append("< to_timestamp(:freeGrowingDateEnd, 'YYYY-MM-DD')");
     }
     // 12. Update date start
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_START)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.UPDATE_DATE_START)) {
       log.info("Filter updateDateStart detected! date={}", filtersDto.getUpdateDateStart());
       builder.append("AND o.UPDATE_TIMESTAMP >= to_timestamp(:updateStartDate, 'YYYY-MM-DD') ");
     }
     // 13. Update date end
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.UPDATE_DATE_END)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.UPDATE_DATE_END)) {
       log.info("Filter updateDateEnd detected! date={}", filtersDto.getUpdateDateEnd());
       builder.append("AND o.UPDATE_TIMESTAMP <= to_timestamp(:updateEndDate, 'YYYY-MM-DD') ");
     }
     // 14. Cutting permit id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUTTING_PERMIT_ID)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)) {
       log.info(
           "Filter cuttingPermitId detected! cuttingPermitId={}", filtersDto.getCuttingPermitId());
       builder.append("AND cboa.CUTTING_PERMIT_ID = :cuttingPermitId ");
     }
     // 15. Cut block id
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.CUT_BLOCK_ID)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.CUT_BLOCK_ID)) {
       log.info("Filter cutBlockId detected! cutBlockId={}", filtersDto.getCutBlockId());
       builder.append("AND cboa.CUT_BLOCK_ID = :cutBlockId ");
     }
     // 16. Timber mark
-    if (filtersDto.hasValue(OpeningSearchFiltersDto.TIMBER_MARK)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.TIMBER_MARK)) {
       log.info("Filter timberMark detected! timberMark={}", filtersDto.getTimberMark());
       builder.append("AND cboa.TIMBER_MARK = :timberMark ");
     }
