@@ -14,11 +14,9 @@ ca:
   bc:
     gov:
       nrs:
-        results:
-          wms-layers:
-            whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
-          opening-search:
-            org-units: ${OPENING_SEARCH_ORG_UNITS:DAS}
+        dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS:NONE}
+        wms-whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+        org-units: ${OPENING_SEARCH_ORG_UNITS:DAS}
         forest-client-api:
           address: http://localhost:10000
           key: 123456789abcdef

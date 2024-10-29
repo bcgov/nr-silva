@@ -4,12 +4,12 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.With;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * This class contains configurations for all external APIs like address and keys.
@@ -17,7 +17,10 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@With
+@Builder
 @Configuration
+@Component
 @ConfigurationProperties("ca.bc.gov.nrs")
 public class SilvaConfiguration {
 
