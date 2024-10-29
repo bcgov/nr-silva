@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitRepository;
 import java.time.LocalDate;
@@ -22,10 +23,11 @@ class OrgUnitServiceTest {
   @Mock OrgUnitRepository orgUnitRepository;
 
   private OrgUnitService orgUnitService;
+  private final SilvaConfiguration silvaConfiguration = new SilvaConfiguration().withOrgUnits(List.of("DAS"));
 
   @BeforeEach
   void setup() {
-    orgUnitService = new OrgUnitService(orgUnitRepository, new String[] {"DAS"});
+    orgUnitService = new OrgUnitService(orgUnitRepository, silvaConfiguration);
   }
 
   @Test
@@ -48,7 +50,7 @@ class OrgUnitServiceTest {
     orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(new String[] {"DAS"}))
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS")))
         .thenReturn(List.of(orgUnit));
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
@@ -76,9 +78,9 @@ class OrgUnitServiceTest {
   @Test
   @DisplayName("Find all org units empty response should succeed")
   void findAllOrgUnits_emptyResponse_shouldSucceed() {
-    orgUnitService = new OrgUnitService(orgUnitRepository, new String[] {});
+    orgUnitService = new OrgUnitService(orgUnitRepository, silvaConfiguration);
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(new String[] {"DAS"})).thenReturn(List.of());
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
@@ -107,7 +109,7 @@ class OrgUnitServiceTest {
     orgUnit.setExpiryDate(LocalDate.now().minusYears(1L));
     orgUnit.setUpdateTimestamp(LocalDate.now());
 
-    String[] units = new String[] {"DAS"};
+    List<String> units = List.of("DAS");
 
     when(orgUnitRepository.findAllByOrgUnitCodeIn(units)).thenReturn(List.of(orgUnit));
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(units);
@@ -134,7 +136,7 @@ class OrgUnitServiceTest {
   @Test
   @DisplayName("Find all org units by code not found should succeed")
   void findAllOrgUnitsByCode_notFound_shouldSucceed() {
-    String[] units = new String[] {"DAS"};
+    List<String> units = List.of("DAS");
     when(orgUnitRepository.findAllByOrgUnitCodeIn(units)).thenReturn(List.of());
     List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnitsByCode(units);
 

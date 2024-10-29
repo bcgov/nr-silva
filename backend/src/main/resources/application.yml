@@ -79,10 +79,6 @@ management:
     health:
       show-details: always
 
-# Native Cloud
-springdoc:
-  enable-native-support: true
-
 # https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2
 quarkus:
   native:
@@ -93,27 +89,18 @@ ca:
   bc:
     gov:
       nrs:
+        dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS:NONE}
+        wms-whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
+        org-units: ${OPENING_SEARCH_ORG_UNITS:DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC}
+        forest-client-api:
+          address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
+          key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
+        open-maps:
+          address: ${OPENMAPS_URL:https://openmaps.gov.bc.ca/geo/ows}
         oracle:
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts-path}
           secret: ${ORACLEDB_SECRET:changeit}
           host: ${DATABASE_HOST:nrcdb03.bcgov}
-
-# Users allowed to manually trigger the Dashboard extraction job
-nr:
-  results:
-    dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS}
-
-# Users allowed to see and download WMS layers information
-    config:
-      wms-layers:
-        whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
-      opening-search:
-        org-units: ${OPENING_SEARCH_ORG_UNITS:-"DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC"}
-
-# Forest Client API
-forest-client-api:
-  address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
-  key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
 
 # Logging
 logging:

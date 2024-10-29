@@ -15,15 +15,15 @@ public class ExternalApiConfiguration {
   /**
    * Creates a RestClient bean for the Forest Client API.
    *
-   * @param providersConfiguration the configuration properties for providers
+   * @param silvaConfiguration the configuration properties for providers
    * @return the configured RestClient instance for the Forest Client API
    */
   @Bean
-  public RestClient forestClientApi(ProvidersConfiguration providersConfiguration) {
+  public RestClient forestClientApi(SilvaConfiguration silvaConfiguration) {
     return RestClient
         .builder()
-        .baseUrl(providersConfiguration.getForestClientBaseUri())
-        .defaultHeader("X-API-KEY", providersConfiguration.getForestClientApiKey())
+        .baseUrl(silvaConfiguration.getForestClientApi().getAddress())
+        .defaultHeader("X-API-KEY", silvaConfiguration.getForestClientApi().getKey())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }
@@ -34,10 +34,10 @@ public class ExternalApiConfiguration {
    * @return the configured RestClient instance for the Open Maps API
    */
   @Bean
-  public RestClient openMapsApi() {
+  public RestClient openMapsApi(SilvaConfiguration silvaConfiguration) {
     return RestClient
         .builder()
-        .baseUrl("https://openmaps.gov.bc.ca/geo/ows")
+        .baseUrl(silvaConfiguration.getOpenMaps().getAddress())
         .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .build();
   }

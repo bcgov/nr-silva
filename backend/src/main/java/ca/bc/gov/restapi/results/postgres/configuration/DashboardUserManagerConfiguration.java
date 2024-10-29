@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties("nr.results")
+@ConfigurationProperties("ca.bc.gov.nrs")
 public class DashboardUserManagerConfiguration {
 
-  private String[] dashboardJobUsers;
+  private List<String> dashboardJobUsers;
 
   /**
    * Gets the users in a list format.
@@ -27,6 +27,6 @@ public class DashboardUserManagerConfiguration {
     if (Objects.isNull(dashboardJobUsers)) {
       return List.of();
     }
-    return List.of(dashboardJobUsers);
+    return dashboardJobUsers;
   }
 }
