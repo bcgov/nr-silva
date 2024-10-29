@@ -46,7 +46,7 @@ const Opening: React.FC = () => {
               <FavouriteCard
                 index={1}
                 title={'Silviculture search'}
-                link="#"
+                link="/silviculture-search"
                 icon={'SearchLocate'}
                 description={'Search for opening types, activities or standards'}
               />
