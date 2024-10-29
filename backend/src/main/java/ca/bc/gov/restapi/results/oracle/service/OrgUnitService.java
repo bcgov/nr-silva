@@ -49,11 +49,10 @@ public class OrgUnitService {
    * @param orgUnitCodes Org Unit codes to search for.
    * @return List of {@link OrgUnitEntity} with found categories.
    */
-  public List<OrgUnitEntity> findAllOrgUnitsByCode(String[] orgUnitCodes) {
-    log.info("Getting all org units by codes: {}", Arrays.toString(orgUnitCodes));
+  public List<OrgUnitEntity> findAllOrgUnitsByCode(List<String> orgUnitCodes) {
+    log.info("Getting all org units by codes: {}", orgUnitCodes);
 
-    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(
-        Arrays.asList(orgUnitCodes));
+    List<OrgUnitEntity> orgUnits = orgUnitRepository.findAllByOrgUnitCodeIn(orgUnitCodes);
     log.info("Found {} org units by codes", orgUnits.size());
     return orgUnits;
   }
