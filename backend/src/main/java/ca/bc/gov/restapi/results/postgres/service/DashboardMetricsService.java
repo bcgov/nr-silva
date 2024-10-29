@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
+import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
@@ -154,12 +155,6 @@ public class DashboardMetricsService {
       resultMap.put(i, new ArrayList<>());
     }
 
-    Map<Integer, String> labelsMap = new HashMap<>();
-    labelsMap.put(0, "0 - 5 months");
-    labelsMap.put(1, "6 - 11 months");
-    labelsMap.put(2, "12 - 17 months");
-    labelsMap.put(3, "18 months");
-
     int totalRecordsFiltered = 0;
 
     // Iterate over the found records filtering and putting them into the right piece
@@ -205,7 +200,7 @@ public class DashboardMetricsService {
     BigDecimal hundredSum = new BigDecimal("100");
     for (Integer index : resultMap.keySet()) {
       List<OpeningsLastYearEntity> groupList = resultMap.get(index);
-      String label = labelsMap.get(index);
+      String label = SilvaPostgresConstants.LABELS_MAP.get(index);
       int value = groupList.size();
       log.info("{} openings of {} for label '{}'", value, totalRecordsFiltered, label);
 

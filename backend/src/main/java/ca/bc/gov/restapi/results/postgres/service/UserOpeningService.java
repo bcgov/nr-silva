@@ -56,7 +56,7 @@ public class UserOpeningService {
 
     List<Long> openingIds = userList.stream().map(UserOpeningEntity::getOpeningId).toList();
     List<OpeningsActivityEntity> openingActivities =
-        openingsActivityRepository.findAllByOpeningId(openingIds);
+        openingsActivityRepository.findAllByOpeningIdIn(openingIds);
 
     if (openingActivities.isEmpty()) {
       log.info("No records found on the opening activity table for the opening ID list!");
