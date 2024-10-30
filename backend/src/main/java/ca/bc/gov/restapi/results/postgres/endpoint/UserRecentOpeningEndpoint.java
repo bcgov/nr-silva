@@ -27,7 +27,7 @@ public class UserRecentOpeningEndpoint {
      * @param openingId The ID of the opening viewed by the user.
      * @return A simple confirmation message or the HTTP code 204-No Content.
      */
-    @PostMapping("/viewed/{openingId}")
+    @PostMapping("api/users/recent/{openingId}")
     public ResponseEntity<UserRecentOpeningDto> recordUserViewedOpening(@PathVariable String openingId) {
         // Store the opening and return the DTO
         UserRecentOpeningDto recentOpeningDto = userRecentOpeningService.storeViewedOpening(openingId);
@@ -40,7 +40,7 @@ public class UserRecentOpeningEndpoint {
      * @param limit The maximum number of results to return.
      * @return A list of opening IDs viewed by the user.
      */
-    @GetMapping("api/user/recent-openings")
+    @GetMapping("api/users/recents")
     public ResponseEntity<PaginatedResult<OpeningSearchResponseDto>> getUserRecentOpenings(@RequestParam(defaultValue = "10") int limit) {
         // Fetch recent openings for the logged-in user with the specified limit
         PaginatedResult<OpeningSearchResponseDto> recentOpenings = userRecentOpeningService.getAllRecentOpeningsForUser(limit);
