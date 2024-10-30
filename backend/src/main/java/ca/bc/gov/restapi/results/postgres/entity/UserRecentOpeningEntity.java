@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.postgres.entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,9 +7,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,37 +31,4 @@ public class UserRecentOpeningEntity {
 
     @Column(name = "last_viewed", nullable = false)
     private LocalDateTime lastViewed;
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getOpeningId() {
-        return openingId;
-    }
-
-    public void setOpeningId(String openingId) {
-        this.openingId = openingId;
-    }
-
-    public LocalDateTime getLastViewed() {
-        return lastViewed;
-    }
-
-    public void setLastViewed(LocalDateTime lastViewed) {
-        this.lastViewed = lastViewed;
-    }
 }
