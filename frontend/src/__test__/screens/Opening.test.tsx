@@ -6,21 +6,21 @@ import PaginationContext from '../../contexts/PaginationContext';
 import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Mock data and services
 const data = {
-  "activityType": "Update",
-  "openingId": "1541297",
-  "statusCode": "APP",
-  "statusDescription": "Approved",
-  "lastUpdatedLabel": "1 minute ago",
-  "lastUpdated": "2024-05-16T19:59:21.635Z"
+  activityType: "Update",
+  openingId: "1541297",
+  statusCode: "APP",
+  statusDescription: "Approved",
+  lastUpdatedLabel: "1 minute ago",
+  lastUpdated: "2024-05-16T19:59:21.635Z"
 };
 
 vi.mock('../../services/SecretsService', () => ({
   getWmsLayersWhitelistUsers: vi.fn(() => [
-    {
-      userName: 'TEST'
-    }
+    { userName: 'TEST' }
   ])
 }));
 
@@ -46,10 +46,7 @@ vi.mock('../../services/OpeningService', () => ({
     { group: '2023', key: 'Openings', value: 15 },
   ])),
   fetchFreeGrowingMilestones: vi.fn(() => Promise.resolve([
-    {
-      group: '1-5',
-      value: 11
-    }
+    { group: '1-5', value: 11 }
   ])),
   fetchRecentActions: vi.fn(() => [
     {
@@ -73,10 +70,11 @@ const state = {
 vi.spyOn(redux, 'useSelector')
   .mockImplementation((callback) => callback(state));
 
+// Pagination context mock
 const rows: RecentOpening[] = [{
   id: '123',
   openingId: '123',
-  fileId: '1',
+  forestFileId: '1',
   cuttingPermit: '1',
   timberMark: '1',
   cutBlock: '1',
@@ -87,7 +85,7 @@ const rows: RecentOpening[] = [{
   entryTimestamp: '1',
   updateTimestamp: '1',
 }];
-  
+
 const paginationValueMock = {
   getCurrentData: () => rows,
   currentPage: 0,
@@ -99,20 +97,30 @@ const paginationValueMock = {
   setInitialItemsPerPage: vi.fn(),
 };
 
+// Create a query client for testing
+const createTestQueryClient = () => new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false, // Disable retries for test stability
+    },
+  },
+});
+
 describe('Opening screen test cases', () => {
-  it('should renders Opening Page Title component', async () => {
+  it('should render Opening Page Title component', async () => {
+    const queryClient = createTestQueryClient();
+
     const { getByTestId } = render(
-      <BrowserRouter>
-        <PaginationContext.Provider value={paginationValueMock}>
-          <Opening />
-        </PaginationContext.Provider>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <PaginationContext.Provider value={paginationValueMock}>
+            <Opening />
+          </PaginationContext.Provider>
+        </BrowserRouter>
+      </QueryClientProvider>
     );
 
     const pageTitleComp = await waitFor(() => getByTestId('opening-pagetitle'));
     expect(pageTitleComp).toBeDefined();
-
-    //const subtitle = 'Create, manage or check opening information';
-    //expect(screen.getByText(subtitle)).toBeDefined();
   });
 });
