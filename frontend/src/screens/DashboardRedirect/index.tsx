@@ -9,21 +9,20 @@ import { useSelector } from "react-redux";
 
 const DashboardRedirect: React.FC = () => {
   const userDetails = useSelector((state: RootState) => state.userDetails);
-  const selectedClientRoles = useSelector((state:any)=>state.selectedClientRoles)
   const { user } = userDetails;
 
   const navigate = useNavigate();
 
   // Redirect logic based on selectedClientRoles existence
   useEffect(() => {
-    if (user && selectedClientRoles) {
+    if (user) {
       navigate("/opening");
     }
-  }, [user, selectedClientRoles]);
+  }, [user]);
 
   return (
     <>
-      {user && selectedClientRoles ? (
+      {user ? (
         <SideLayout pageContent={<Opening />} />
       ) : (
         <LoginOrgSelection />
