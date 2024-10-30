@@ -40,7 +40,7 @@ public class UserRecentOpeningEndpoint {
      * @param limit The maximum number of results to return.
      * @return A list of opening IDs viewed by the user.
      */
-    @GetMapping("api/users/recents")
+    @GetMapping("api/user/recent-openings")
     public ResponseEntity<PaginatedResult<OpeningSearchResponseDto>> getUserRecentOpenings(@RequestParam(defaultValue = "10") int limit) {
         // Fetch recent openings for the logged-in user with the specified limit
         PaginatedResult<OpeningSearchResponseDto> recentOpenings = userRecentOpeningService.getAllRecentOpeningsForUser(limit);

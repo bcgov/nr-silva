@@ -68,8 +68,7 @@ public class OpeningSearchRepository {
     int startIndex = PaginationUtil.getStartIndex(pagination.page(), pagination.perPage());
     int endIndex = PaginationUtil.getEndIndex(startIndex, pagination.perPage(), result.size());
 
-    List<OpeningSearchResponseDto> resultList =
-        buildResultListDto(result.subList(startIndex, endIndex));
+    List<OpeningSearchResponseDto> resultList = buildResultListDto(result.subList(startIndex, endIndex));
 
     paginatedResult.setData(resultList);
     paginatedResult.setPerPage(resultList.size());
@@ -124,8 +123,7 @@ public class OpeningSearchRepository {
         }
 
         if (row.length > index) {
-          BigDecimal openingGrossAreaHa =
-              getValue(BigDecimal.class, row[index++], "openingGrossAreaHa");
+          BigDecimal openingGrossAreaHa = getValue(BigDecimal.class, row[index++], "openingGrossAreaHa");
           searchOpeningDto.setOpeningGrossAreaHa(openingGrossAreaHa);
         }
 
@@ -193,8 +191,7 @@ public class OpeningSearchRepository {
         }
 
         if (row.length > index) {
-          BigDecimal silvaReliefAppId =
-              getValue(BigDecimal.class, row[index++], "submittedToFrpa108");
+          BigDecimal silvaReliefAppId = getValue(BigDecimal.class, row[index++], "submittedToFrpa108");
           boolean submittedApp = silvaReliefAppId.compareTo(BigDecimal.ZERO) > 0;
           searchOpeningDto.setSubmittedToFrpa(submittedApp);
           if (submittedApp) {
@@ -246,7 +243,7 @@ public class OpeningSearchRepository {
       boolean itsNumeric = filtersDto.getMainSearchTerm().replaceAll("[0-9]", "").isEmpty();
       if (itsNumeric) {
         log.info("Setting mainSearchTerm as numeric filter value");
-        // Opening id or  File id
+        // Opening id or File id
         query.setParameter("openingOrFile", filtersDto.getMainSearchTerm());
       } else {
         log.info("Setting mainSearchTerm as non-numeric filter value");
@@ -269,7 +266,14 @@ public class OpeningSearchRepository {
     if (filtersDto.hasValue(SilvaOracleConstants.STATUS_LIST)) {
 
       log.info("Setting statusList filter values");
-      // No need to set value since the query already dit it. Didn't work set through named param
+      // No need to set value since the query already dit it. Didn't work set through
+      // named param
+    }
+    // similarly for openingIds
+    if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
+      log.info("Setting openingIds filter values");
+      // No need to set value since the query already dit it. Didn't work set through
+      // named param
     }
     // 4. User entry id
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
@@ -390,8 +394,17 @@ public class OpeningSearchRepository {
     builder.append("WHERE 1=1 ");
 
     /* Filters */
+
+    // List of openings from the openingIds of the filterDto object for the recent openings
+    if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
+      String openingIds = String.join(",", filtersDto.getOpeningIds());
+      log.info("Filter for openingIds detected! openingIds={}", openingIds);
+      builder.append(String.format("AND o.OPENING_ID IN (%s) ", openingIds));
+    }
+
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
-    // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
+    // if it's a number, filter by openingId or fileId, otherwise filter by timber
+    // mark and opening
     // number
     if (filtersDto.hasValue(SilvaOracleConstants.MAIN_SEARCH_TERM)) {
       log.info("Filter mainSearchTerm detected! mainSearchTerm={}", filtersDto.getMainSearchTerm());
@@ -428,6 +441,7 @@ public class OpeningSearchRepository {
       log.info("Filter statusList detected! statusList={}", statuses);
       builder.append(String.format("AND o.OPENING_STATUS_CODE IN (%s) ", statuses));
     }
+
     // 4. My openings
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
       log.info("Filter myOpenings detected! entryUserId={}", filtersDto.getRequestUserId());

@@ -42,6 +42,7 @@ public class OpeningRecentViewRepository {
     List<String> openingIds, PaginationParameters pagination) {
 
     final String sqlQuery = createNativeSqlQuery(openingIds);
+    log.info("Executing search openings query: {}", sqlQuery);
     final Query query = setQueryParameters(openingIds, sqlQuery);
 
     // Limit to 500 records at the database

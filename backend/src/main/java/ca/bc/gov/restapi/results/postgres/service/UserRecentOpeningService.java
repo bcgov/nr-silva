@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.service.OpeningRecentViewService;
+import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
@@ -28,7 +30,7 @@ public class UserRecentOpeningService {
 
     private final LoggedUserService loggedUserService;
     private final UserRecentOpeningRepository userRecentOpeningRepository;
-    private final OpeningRecentViewService openingRecentViewService;
+    private final OpeningService openingService;
 
     /**
      * Stores the opening viewed by the user and returns the DTO.
@@ -86,8 +88,11 @@ public class UserRecentOpeningService {
             return new PaginatedResult<>();
         }
         // Call the oracle service method to fetch opening details for the given opening IDs
-        PaginatedResult<OpeningSearchResponseDto> pageResult = openingRecentViewService.getOpeningsByIds(new ArrayList<>(openingIds.keySet()));
-
+        //convert the openingIds to a list of strings and pass it to the OpeningSearchFiltersDto constructor
+        OpeningSearchFiltersDto filtersDto = new OpeningSearchFiltersDto(new ArrayList<>(openingIds.keySet()));
+        PaginationParameters paginationParameters = new PaginationParameters(0, 10);
+        PaginatedResult<OpeningSearchResponseDto> pageResult = openingService.openingSearch(filtersDto, paginationParameters);
+        // perform the sorting and set the lastViewDate to the OpeningSearchResponseDto
         pageResult.setData(
             pageResult
             .getData()
