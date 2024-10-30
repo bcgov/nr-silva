@@ -82,7 +82,7 @@ objects:
                 - name: LOG_LEVEL
                   value: "${LOG_LEVEL}"
                 - name: VITE_BACKEND_URL
-                  value: "https://${NAME}-${ZONE}-backend.${DOMAIN}:443"
+                  value: "https://${NAME}-${ZONE}-backend.${DOMAIN}"
                 - name: VITE_USER_POOLS_WEB_CLIENT_ID
                   value: "${VITE_USER_POOLS_WEB_CLIENT_ID}"
                 - name: VITE_ZONE
