@@ -102,7 +102,7 @@ public class OpeningSearchFiltersDto {
     this.statusList = new ArrayList<>();
     this.openingIds = openingIds;
     this.myOpenings = null;
-    this.submittedToFrpa = null;
+    this.submittedToFrpa = false;
     this.disturbanceDateStart = null;
     this.disturbanceDateEnd = null;
     this.regenDelayDateStart = null;
