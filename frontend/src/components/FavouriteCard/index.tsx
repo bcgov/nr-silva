@@ -1,6 +1,4 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Tile } from '@carbon/react';
+import { ClickableTile } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import './styles.scss';
 
@@ -9,7 +7,8 @@ interface FavouriteCardProps {
   title: string,
   link: string,
   icon: string,
-  description:String
+  description:string
+  disabled?: boolean
 }
 
 /**
@@ -28,16 +27,18 @@ function FavouriteCard ({
   title,
   link,
   icon,
-  description
+  description,
+  disabled = false
 }: FavouriteCardProps): JSX.Element {
   const Icon = Icons[String(icon)];
-  const navigate = useNavigate();
 
   return (
-    <Tile
+    <ClickableTile
+      id={`fav-card-${index}`}
       className={'fav-card-main' }
       tabIndex={index}
-      onClick={() => navigate(link)}
+      href={link}
+      disabled={disabled}
     >
       <div className="fav-card-header">
         <Icon className="fav-card-icon" />
@@ -49,7 +50,7 @@ function FavouriteCard ({
         <p className="fav-card-title-large">{title}</p>
         <p className="fav-card-content-description">{description}</p>
       </div>
-    </Tile>
+    </ClickableTile>
   );
 };
 

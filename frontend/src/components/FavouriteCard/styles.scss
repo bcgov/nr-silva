@@ -116,6 +116,12 @@ p.fav-card-title-small {
   display: none;
 }
 
+.bx--tile--clickable.bx--link--disabled, .bx--tile--clickable:hover.bx--link--disabled {
+  display: flex;
+  margin: 0.5rem;
+  padding: 1.25rem 1rem;
+}
+
 @media only screen and (max-width: 671px) {
   .fav-card-main,
   .fav-card-main-highlighted {
