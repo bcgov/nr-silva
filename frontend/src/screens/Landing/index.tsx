@@ -39,37 +39,6 @@ const Landing: React.FC = () => {
                 <BCGovLogo />
               </div>
 
-              <div className="">
-                <InlineNotification
-                  icondescription="describes the close button"
-                  subtitle="See the release notes to find out what's new"
-                  title="New Release!"
-                  kind="info"
-                  lowContrast
-                  className = "inline-notification"
-                />
-              </div>
-              <div className="">
-                <InlineNotification
-                  icondescription="describes the close button"
-                  subtitle="SILVA will be offline for up to 4 hours time starting on June 30, 2023 at 9:00pm"
-                  title="Upcoming maintenance"
-                  kind="warning"
-                  lowContrast
-                  className = "inline-notification"
-                />
-              </div>
-              <div className="">
-                <InlineNotification
-                  icondescription="describes the close button"
-                  subtitle="SILVA is expected to come back online on July 1, 2023 at 11:11am"
-                  title="SILVA is down"
-                  kind="error"
-                  lowContrast
-                  className = "inline-notification"
-                />
-              </div>
-
               {/* Welcome - Title and Subtitle */}
               <div className="mt-5">
                 <h1 data-testid="landing-title" className="landing-title">Welcome to SILVA</h1>
