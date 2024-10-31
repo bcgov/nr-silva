@@ -101,8 +101,7 @@ jobs:
   results:
     name: Analysis Results
     if: always() && (!failure()) && (!cancelled())
-    # needs: [lint-frontend, tests-backend, tests-frontend, trivy] # Use when/if Trivy becomes more reliable again
-    needs: [lint-frontend, tests-backend, tests-frontend]
+    needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-24.04
     steps:
       - run: echo "Workflow completed successfully!"
