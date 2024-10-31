@@ -69,8 +69,6 @@ jobs:
 
   builds:
     name: Builds
-    needs: [init]
-    if: "!github.event.pull_request.head.repo.fork"
     runs-on: ubuntu-24.04
     permissions:
       packages: write
@@ -96,8 +94,7 @@ jobs:
 
   deploys:
     name: Deploys
-    if: "!github.event.pull_request.head.repo.fork"
-    needs: [builds]
+    needs: [builds, init]
     runs-on: ubuntu-24.04
     strategy:
       matrix:
