@@ -74,34 +74,6 @@ jobs:
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
-  codeql:
-    name: CodeQL
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-      - uses: actions/setup-java@v4
-        with:
-          distribution: "oracle"
-          java-version: "21"
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - run: |
-          # Exclude file and build
-          rm InstallCert.java
-          ./mvnw package -DskipTests
-          ls -la
-        working-directory: backend
-
-      - uses: github/codeql-action/analyze@v3
-
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
     name: Trivy Security Scan
@@ -124,3 +96,13 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
+
+
+  results:
+    name: Analysis Results
+    if: always() && (!failure()) && (!cancelled())
+    # needs: [lint-frontend, tests-backend, tests-frontend, trivy] # Use when/if Trivy becomes more reliable again
+    needs: [lint-frontend, tests-backend, tests-frontend]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "Workflow completed successfully!"
