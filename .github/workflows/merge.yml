@@ -61,6 +61,7 @@ jobs:
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
           - name: frontend
             file: frontend/openshift.deploy.yml
+            overwrite: true
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p FAM_ROUTE=test
@@ -147,6 +148,7 @@ jobs:
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
           - name: frontend
             file: frontend/openshift.deploy.yml
+            overwrite: true
             parameters:
               -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
               -p FAM_ROUTE=prod
