@@ -1,6 +1,5 @@
 window.global ||= window;
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import { ClassPrefix } from '@carbon/react';
 import { Provider } from 'react-redux'
@@ -12,6 +11,11 @@ import PaginationProvider from './contexts/PaginationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { OpeningsSearchProvider } from './contexts/search/OpeningsSearch';
+import { Amplify } from 'aws-amplify';
+import amplifyconfig from './amplifyconfiguration';
+import { CookieStorage } from 'aws-amplify/utils';
+import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
+import { AuthProvider } from './contexts/AuthProvider';
 
 const container: HTMLElement | null = document.getElementById('root');
 if (container) {
@@ -41,19 +45,25 @@ if (container) {
       }
     });
 
+    Amplify.configure(amplifyconfig);
+    cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage());
+
+
   root.render(
     <React.StrictMode>
       <ClassPrefix prefix='bx'>
         <ThemePreference>
-          <QueryClientProvider client={queryClient}>
-            <Provider store={store}>
-              <PaginationProvider>
-                <OpeningsSearchProvider>
-                  <App />
-                </OpeningsSearchProvider>
-              </PaginationProvider>
-            </Provider>
-          </QueryClientProvider>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              <Provider store={store}>                
+                  <PaginationProvider>
+                    <OpeningsSearchProvider>
+                      <App />
+                    </OpeningsSearchProvider>
+                  </PaginationProvider>                
+              </Provider>
+            </QueryClientProvider>
+          </AuthProvider>
         </ThemePreference>
       </ClassPrefix>
     </React.StrictMode>
