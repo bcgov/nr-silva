@@ -1,33 +1,37 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { RootState } from '../store';
-import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthProvider';
+import { Loading } from "@carbon/react";
 
-interface IProps {
-  children: JSX.Element;
+interface ProtectedRouteProps {
+  requireAuth?: boolean;
+  requiredRoles?: string[];
+  redirectTo?: string;
 }
 
-const ProtectedRoute = ({ children }: IProps): JSX.Element => {
-  const userDetails = useSelector((state: RootState) => state.userDetails);
-  const { error, user } = userDetails;
-  const { pathname } = window.location;
-  const encodedUrl = encodeURI(`/?page=${pathname}`);
-  return (
-    error? (
-      <div className="h1">Error</div>
-    ):(
-      (() => {
-        if(user?.isLoggedIn){
-          return children;  
-        }
-        else if(user?.isLoggedIn === false){
-          return <Navigate to={encodedUrl} replace />;
-        }
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
+  requireAuth = false, 
+  requiredRoles = [], 
+  redirectTo = '/' 
+}) => {
+  const { isLoggedIn, isLoading, userRoles } = useAuth();
 
-        return <>Sorry </>;
-      })()
-    )
-  );
+  if(isLoading) {
+    return <Loading className={'some-class'} withOverlay={true} />;
+  }
+
+  // 1. If authentication is required and the user is not logged in, redirect to login
+  if (requireAuth && !isLoggedIn) {
+    return <Navigate to={redirectTo} replace />;
+  }
+
+  // 2. If specific roles are required and user does not have them, redirect to unauthorized page
+  if (requiredRoles.length > 0 && !requiredRoles.some(role => userRoles?.includes(role))) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+  
+  // 3. If all checks pass, render child routes
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
