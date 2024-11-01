@@ -18,6 +18,7 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { Button } from "@carbon/react";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -42,6 +43,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
          value: orgUnit,
        }));
        setSelectedOrgUnits(orgUnitsArray);
+     } else {
+        setSelectedOrgUnits([]);
      }
      // Split filters.category into array and format as needed for selectedItems
      if (filters.category) {
@@ -50,6 +53,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
         value: category,
       }));
       setSelectedCategories(categoriesArray);
+    } else{
+      setSelectedCategories([]);
     }
    }, [filters.orgUnit, filters.category]);
 
