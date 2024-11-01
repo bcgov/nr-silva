@@ -1,26 +1,23 @@
-import {
-  JWT,
-  fetchAuthSession,
-  getCurrentUser,
-  signInWithRedirect,
-  signOut
-} from 'aws-amplify/auth';
-import { env } from '../env';
-import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { JWT } from '../types/amplify';
 import { formatRolesArray } from '../utils/famUtils';
 import { UserClientRolesType } from '../types/UserRoleType';
+
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
 
-const FAM_LOGIN_USER = 'famLoginUser';
-
 export interface FamLoginUser {
-  username?: string;
+  providerUsername?: string;
+  userName?: string;
+  displayName?: string;
+  email?: string;
   idpProvider?: string;
   roles?: string[];
-  authToken?: CognitoUserSession;
+  authToken?: string;
   exp?: number;
+  clientRoles?: UserClientRolesType[];    
+  firstName?: string;
+  lastName?: string;
 }
 
 // Function to set the authIdToken variable
@@ -33,79 +30,6 @@ export const getAuthIdToken = () => {
   return authIdToken;
 };
 
-export const signIn = async (provider: string): Promise<void> => {
-  const appEnv = env.VITE_ZONE ?? 'DEV';
-
-  try {
-    if (provider.localeCompare('idir') === 0) {
-      await signInWithRedirect({
-        provider: { custom: `${(appEnv).toLocaleUpperCase()}-IDIR` }
-      });
-    } else if (provider.localeCompare('bceid') === 0) {
-      await signInWithRedirect({
-        provider: { custom: `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS` }
-      });
-    }
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-
-export const isLoggedIn = () => {
-  // this will convert the locally stored string to FamLoginUser interface type
-  // TODO add this to state once redux store is configured
-  const stateInfo = (JSON.parse(localStorage.getItem(FAM_LOGIN_USER) as string) as
-    | FamLoginUser
-    | undefined
-    | null);
-  // check if the user is logged in
-  let loggedIn = false;
-  if (stateInfo?.exp) {
-    const expirationDate = new Date(stateInfo?.exp);
-    const currentDate = new Date();
-    loggedIn = expirationDate < currentDate;
-  }
-  return loggedIn;
-};
-
-export const handlePostLogin = async () => {
-  try {
-    // const userData = await Auth.currentAuthenticatedUser();
-    await refreshToken();
-  } catch (error) {
-    console.log('Authentication Error:', error);
-  }
-};
-
-/**
- * Amplify method currentSession() will automatically refresh the accessToken and idToken
- * if tokens are "expired" and a valid refreshToken presented.
- *   // console.log("currentAuthToken: ", currentAuthToken)
- *   // console.log("ID Token: ", currentAuthToken.getIdToken().getJwtToken())
- *   // console.log("Access Token: ", currentAuthToken.getAccessToken().getJwtToken())
- *
- * Automatically logout if unable to get currentSession().
- */
-async function refreshToken (): Promise<FamLoginUser | undefined> {
-  try {
-    const { tokens } = await fetchAuthSession();
-    // Set the authIdToken variable
-    setAuthIdToken(tokens?.idToken?.toString() || null);
-
-    const famLoginUser = parseToken(tokens?.idToken);
-    storeFamUser(famLoginUser);
-    return famLoginUser;
-
-  } catch (error) {
-    console.error(
-      'Problem refreshing token or token is invalidated:',
-      error
-    );
-    // logout and redirect to login.
-    logout();
-  }
-}
-
 /**
  * See OIDC Attribute Mapping mapping reference:
  *      https://github.com/bcgov/nr-forests-access-management/wiki/OIDC-Attribute-Mapping
@@ -116,7 +40,10 @@ async function refreshToken (): Promise<FamLoginUser | undefined> {
 /**
  * Function to parse roles and extract client IDs
  */
-function parseToken(idToken: JWT | undefined): FamLoginUser {
+export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined => {
+  if(!idToken)
+    return undefined;
+  setAuthIdToken(idToken?.toString() || null);
   const decodedIdToken = idToken?.payload;
 
   // Extract the first name and last name from the displayName and remove unwanted part
@@ -166,47 +93,10 @@ function parseToken(idToken: JWT | undefined): FamLoginUser {
     clientRoles: rolesArray,
     exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
-    lastName
+    lastName,
+    providerUsername: `${idpProvider}\\${userName}`
   };
   
 
   return famLoginUser;
 }
-
-/**
- *
- */
-function removeFamUser() {
-  storeFamUser(undefined);
-
-  // clean up local storage for selected application
-}
-
-/**
- *
- */
-function storeFamUser (famLoginUser: FamLoginUser | null | undefined) {
-  if (famLoginUser) {
-    localStorage.setItem(FAM_LOGIN_USER, JSON.stringify(famLoginUser));
-  } else {
-    localStorage.removeItem(FAM_LOGIN_USER);
-  }
-}
-
-export const isCurrentAuthUser = async () => {
-  try {
-    // checks if the user is authenticated
-    await getCurrentUser();
-    // refreshes the token and stores it locally
-    await refreshToken();
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const logout = async () => {
-  await signOut();
-  removeFamUser();
-  console.log('User logged out.');
-};
