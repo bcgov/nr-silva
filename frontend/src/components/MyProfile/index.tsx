@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { SideNavLink } from '@carbon/react';
 import { Asleep, Light, UserFollow } from '@carbon/icons-react';
 import AvatarImage from '../AvatarImage';
@@ -7,13 +6,12 @@ import { useThemePreference } from '../../utils/ThemePreference';
 import PanelSectionName from '../PanelSectionName';
 import OrganizationSelection from '../OrganizationSelection';
 import './MyProfile.scss';
-import { logout } from '../../services/AuthService';
-import { RootState } from '../../store';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
-  const userDetails = useSelector((state: RootState) => state.userDetails)
   const [goTo, setGoTo] = useState<boolean>(false);
+  const { logout, user: authUser } = useAuth();
 
   const changeTheme = () => {
     if (theme === 'g10') {
@@ -36,12 +34,12 @@ const MyProfile = () => {
     <>
       <div className="user-info-section">
         <div className="user-image">
-          <AvatarImage userName={`${userDetails.user.firstName} ${userDetails.user.lastName}`} size="large" />
+          <AvatarImage userName={`${authUser?.firstName} ${authUser?.lastName}`} size="large" />
         </div>
         <div className="user-data">
-          <p className="user-name">{`${userDetails.user.firstName} ${userDetails.user.lastName}`}</p>
-          <p>{`IDIR: ${userDetails.user.userName}`}</p>
-          <p>{`Email:${userDetails.user.email}`}</p>
+          <p className="user-name">{`${authUser?.firstName} ${authUser?.lastName}`}</p>
+          <p>{`IDIR: ${authUser?.userName}`}</p>
+          <p>{`Email:${authUser?.email}`}</p>
 
         </div>
       </div>
