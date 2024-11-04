@@ -42,7 +42,7 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
-import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
+import { usePutViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -78,7 +78,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState(false);
-  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
+  const { mutate: markAsViewedOpening, isError, error } = usePutViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {

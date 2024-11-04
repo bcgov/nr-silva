@@ -8,17 +8,17 @@ import { env } from "../../../env";
 
 const backendUrl = env.VITE_BACKEND_URL;
 
-// Function to send the POST request
-export const postViewedOpening = async (openingId: string): Promise<any> => {
+// Function to send the PUT request
+export const putViewedOpening = async (openingId: string): Promise<any> => {
     const authToken = getAuthIdToken();
     try {
-      const response = await axios.post(`${backendUrl}/api/users/recent/${openingId}`, null, {
+      const response = await axios.put(`${backendUrl}/api/openings/recent/${openingId}`, null, {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
       });
       return response.data;
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.response?.status === 403) {
         throw new Error("Forbidden: You don't have permission to view this opening.");
       } else {
@@ -28,9 +28,9 @@ export const postViewedOpening = async (openingId: string): Promise<any> => {
   };
   
   // Hook for using the mutation
-  export const usePostViewedOpening = () => {
+  export const usePutViewedOpening = () => {
     return useMutation({
-      mutationFn: (openingId: string) => postViewedOpening(openingId)
+      mutationFn: (openingId: string) => putViewedOpening(openingId)
     });
   };
 
