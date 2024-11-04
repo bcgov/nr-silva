@@ -3,7 +3,6 @@ import axios from 'axios';
 import { 
   fetchRecentOpenings, 
   fetchOpeningsPerYear, 
-  fetchSubmissionTrends, 
   fetchFreeGrowingMilestones, 
   fetchRecentActions 
 } from '../../services/OpeningService';
@@ -97,38 +96,6 @@ describe('OpeningService', () => {
       (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
 
       await expect(fetchOpeningsPerYear({})).rejects.toThrow('Network Error');
-    });
-  });
-
-  describe('fetchSubmissionTrends', () => {
-    it('should fetch submission trends successfully', async () => {
-      const mockData = [1, 2, 3];
-      (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
-
-      const result = await fetchSubmissionTrends();
-
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
-        headers: { Authorization: `Bearer ${authToken}` }
-      });
-      expect(result).toEqual(mockData);
-    });
-
-    it('should fetch submission trends with empty results', async () => {
-      const mockData = [];
-      (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
-
-      const result = await fetchSubmissionTrends();
-
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
-        headers: { Authorization: `Bearer ${authToken}` }
-      });
-      expect(result).toEqual(mockData);
-    });
-
-    it('should handle error while fetching submission trends', async () => {
-      (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
-
-      await expect(fetchSubmissionTrends()).rejects.toThrow('Network Error');
     });
   });
 
