@@ -4,27 +4,14 @@ import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
 import { RecentOpening } from '../types/RecentOpening';
+import { 
+  RecentOpeningApi, 
+  IOpeningPerYear,
+  IFreeGrowingProps,
+  IFreeGrowingChartData
+} from '../types/OpeningTypes';
 
 const backendUrl = env.VITE_BACKEND_URL;
-
-interface statusCategory {
-  code: string;
-  description: string;
-}
-
-interface RecentOpeningApi {
-  openingId: number;
-  forestFileId: string;
-  cuttingPermit: string | null;
-  timberMark: string | null;
-  cutBlock: string | null;
-  grossAreaHa: number | null;
-  status: statusCategory | null;
-  category: statusCategory | null;
-  disturbanceStart: string | null;
-  entryTimestamp: string | null;
-  updateTimestamp: string | null;
-}
 
 /**
  * Fetch recent openings data from backend.
@@ -68,13 +55,6 @@ export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
     console.error('Error fetching recent openings:', error);
     throw error;
   }
-}
-
-interface IOpeningPerYear {
-  orgUnitCode: string | null;
-  statusCode: string | null;
-  entryDateStart: string | null;
-  entryDateEnd: string | null;
 }
 
 /**
@@ -146,18 +126,6 @@ export async function fetchSubmissionTrends(): Promise<number[]> {
   } else {
     return [];
   }  
-}
-
-interface IFreeGrowingProps {
-  orgUnitCode: string;
-  clientNumber: string;
-  entryDateStart: string | null;
-  entryDateEnd: string | null;
-}
-
-export interface IFreeGrowingChartData {
-  group: string;
-  value: number;
 }
 
 /**
