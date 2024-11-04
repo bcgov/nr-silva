@@ -57,8 +57,8 @@ class UserRecentOpeningServiceTest {
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
         assertNotNull(result);
-        assertEquals(userId, result.getUserId());
-        assertEquals(openingId, result.getOpeningId());
+        assertEquals(userId, result.userId());
+        assertEquals(openingId, result.openingId());
 
         verify(userRecentOpeningRepository, times(1)).save(any(UserRecentOpeningEntity.class));
     }
@@ -76,8 +76,8 @@ class UserRecentOpeningServiceTest {
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
         assertNotNull(result);
-        assertEquals(userId, result.getUserId());
-        assertEquals(openingId, result.getOpeningId());
+        assertEquals(userId, result.userId());
+        assertEquals(openingId, result.openingId());
 
         verify(userRecentOpeningRepository, times(1)).save(existingEntity);
     }
