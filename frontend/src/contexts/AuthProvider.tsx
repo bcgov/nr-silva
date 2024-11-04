@@ -38,7 +38,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const checkUser = async () => {
         try{
           const idToken = await loadUserToken();
-          console.log('idToken', idToken,env.NODE_ENV,env.VITE_USER_POOLS_WEB_CLIENT_ID);
           setIsLoggedIn(!!idToken);
           setIsLoading(false);
           if(idToken){
@@ -109,7 +108,7 @@ const loadUserToken = async () : Promise<JWT|undefined> => {
         : null;
       return Promise.resolve({ payload: jwtBody });
     } else {
-      return Promise.resolve(undefined);
+      return Promise.reject(new Error("No token found"));
     }
   }
 };
