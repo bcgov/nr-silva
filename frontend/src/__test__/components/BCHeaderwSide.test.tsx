@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import store from '../../store';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
+import { AuthProvider } from '../../contexts/AuthProvider';
 
 vi.mock('../../services/TestService', () => ({
   getForestClientByNumberOrAcronym: vi.fn(() => [
@@ -29,13 +30,15 @@ const renderComponent = () => {
   const qc = new QueryClient();
 
   render(
-    <QueryClientProvider client={qc}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <BCHeaderwSide />
-        </BrowserRouter>
-      </Provider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={qc}>
+        <Provider store={store}>
+          <BrowserRouter>
+            <BCHeaderwSide />
+          </BrowserRouter>
+        </Provider>
+      </QueryClientProvider>
+    </AuthProvider>
   );
 };
 

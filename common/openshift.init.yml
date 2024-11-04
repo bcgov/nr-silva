@@ -40,6 +40,9 @@ parameters:
   - name: VITE_USER_POOLS_WEB_CLIENT_ID
     description: Cognito user pools web client ID
     required: true
+  - name: VITE_USER_POOLS_ID
+    description: Cognito user pools ID
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
@@ -95,6 +98,7 @@ objects:
         app: ${NAME}-${ZONE}
     stringData:
       vite-user-pools-web-client-id: ${VITE_USER_POOLS_WEB_CLIENT_ID}
+      vite-user-pools-id: ${VITE_USER_POOLS_ID}
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:

@@ -12,7 +12,7 @@ export function formatRolesArray(decodedIdToken: object | undefined): UserClient
     }
 
     if ('cognito:groups' in decodedIdToken) {
-      const cognitoGroups: string[] = decodedIdToken['cognito:groups'] as string[];
+      const cognitoGroups: string[] = extractGroups(decodedIdToken);
       const rolesMap: { [key: string]: string[] } = {};
     
       cognitoGroups.forEach((group: string) => {
@@ -36,3 +36,20 @@ export function formatRolesArray(decodedIdToken: object | undefined): UserClient
     return [];
   }
   
+  /**
+   * Extract groups from the decoded token.
+   *
+   * @param {object | undefined} decodedIdToken Decoded token with payload.
+   * @returns {string[]} Array of groups.
+   */
+  export function extractGroups(decodedIdToken: object | undefined): string[] {
+    if (!decodedIdToken) {
+      return [];
+    }
+
+    if ('cognito:groups' in decodedIdToken) {
+      return decodedIdToken['cognito:groups'] as string[];
+    }
+
+    return [];
+  }

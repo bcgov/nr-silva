@@ -91,6 +91,11 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-frontend
                       key: vite-user-pools-web-client-id
+                - name: VITE_USER_POOLS_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-frontend
+                      key: vite-user-pools-id
               ports:
                 - containerPort: 3000
                   protocol: TCP
