@@ -41,16 +41,11 @@ export const getAuthIdToken = () => {
  * Function to parse roles and extract client IDs
  */
 export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined => {
-  if(!idToken)
-    return undefined;
+  if (!idToken) return undefined;
   setAuthIdToken(idToken?.toString() || null);
   const decodedIdToken = idToken?.payload;
 
-  // Extract the first name and last name from the displayName and remove unwanted part
-  let displayName: string = '';
-  if (decodedIdToken && 'custom:idp_display_name' in decodedIdToken) {
-    displayName = decodedIdToken['custom:idp_display_name'] as string;
-  }
+  const displayName = decodedIdToken?.['custom:idp_display_name'] as string || '';
   const hasComma = displayName.includes(',');
 
   let [lastName, firstName] = hasComma
@@ -64,28 +59,18 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
 
   const sanitizedFirstName = hasComma ? firstName.split(' ')[0].trim() : firstName;
 
-  let userName: string = '';
-  if (decodedIdToken && 'custom:idp_username' in decodedIdToken) {
-    userName = decodedIdToken['custom:idp_username'] as string;
-  }
+  const userName = decodedIdToken?.['custom:idp_username'] as string || '';
+  const email = decodedIdToken?.['email'] as string || '';
 
-  let email: string = '';
-  if (decodedIdToken && 'custom:idp_username' in decodedIdToken) {
-    email = decodedIdToken['email'] as string;
-  }
-
-  let idpProvider: string = '';
-  if (decodedIdToken && 'identities' in decodedIdToken) {
+  let idpProvider = '';
+  if (decodedIdToken?.['identities']) {
     const identities = decodedIdToken['identities'] as object;
-    if (identities && 'providerName' in identities) {
-      idpProvider = identities['providerName'] as string;
-    }
+    idpProvider = (identities && 'providerName' in identities) ? identities?.['providerName'] as string || '' : '';
   }
 
-  // Get user roles from FAM token
   const rolesArray: UserClientRolesType[] = formatRolesArray(decodedIdToken);
 
-  const famLoginUser = {
+  return {
     userName,
     displayName,
     email,
@@ -96,7 +81,4 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
     lastName,
     providerUsername: `${idpProvider}\\${userName}`
   };
-  
-
-  return famLoginUser;
-}
+};
