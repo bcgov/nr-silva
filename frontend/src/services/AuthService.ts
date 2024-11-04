@@ -46,6 +46,7 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
   const decodedIdToken = idToken?.payload;
 
   const displayName = decodedIdToken?.['custom:idp_display_name'] as string || '';
+  const idpProvider = (decodedIdToken?.['custom:idp_name'] as string || '').toUpperCase();
   const hasComma = displayName.includes(',');
 
   let [lastName, firstName] = hasComma
@@ -61,12 +62,6 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
 
   const userName = decodedIdToken?.['custom:idp_username'] as string || '';
   const email = decodedIdToken?.['email'] as string || '';
-
-  let idpProvider = '';
-  if (decodedIdToken?.['identities']) {
-    const identities = decodedIdToken['identities'] as object;
-    idpProvider = (identities && 'providerName' in identities) ? identities?.['providerName'] as string || '' : '';
-  }
 
   const rolesArray: UserClientRolesType[] = formatRolesArray(decodedIdToken);
 
