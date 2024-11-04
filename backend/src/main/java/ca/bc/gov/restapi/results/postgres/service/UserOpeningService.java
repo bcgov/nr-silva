@@ -89,28 +89,21 @@ public class UserOpeningService {
   }
 
   public List<Long> listUserFavoriteOpenings() {
-    log.info("Getting all user openings for the Track openings table");
+    log.info("Loading user favorite openings for {}", loggedUserService.getLoggedUserId());
 
     List<UserOpeningEntity> userList = userOpeningRepository
         .findAllByUserId(loggedUserService.getLoggedUserId());
 
     if (userList.isEmpty()) {
-      log.info("No saved openings for the current user!");
+      log.info("No saved openings for {}", loggedUserService.getLoggedUserId());
       return List.of();
     }
 
     return
-        openingRepository
-            .findAllById(
-                userList
-                    .stream()
-                    .map(UserOpeningEntity::getOpeningId)
-                    .toList()
-            )
+        userList
             .stream()
-            .map(OpeningEntity::getId)
+            .map(UserOpeningEntity::getOpeningId)
             .toList();
-
   }
 
   @Transactional
