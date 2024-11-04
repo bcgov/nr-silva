@@ -1,24 +1,35 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import './styles.scss';
 import SectionTitle from "../SectionTitle";
 import BarChartGrouped from "../BarChartGrouped";
 import ChartContainer from "../ChartContainer";
 import DoughnutChartView from "../DoughnutChartView";
 import OpeningHistory from "../OpeningHistory";
-import OpeningHistoryItems from "../../mock-data/OpeningHistoryItems";
+import History from "../../types/History";
 import MyRecentActions from "../MyRecentActions";
+import { fetchSubmissionTrends } from "../../services/OpeningService";
 
 const OpeningMetricsTab: React.FC = () => {
   const trackOpeningRef = useRef<HTMLDivElement>(null);
+  const [submissionTrends, setSubmissionTrends] = useState<History[]>([]);
 
   // Optional: Scroll to "Track Openings" when this component mounts
   useEffect(() => {
+    
     const params = new URLSearchParams(window.location.search);
     const scrollToSection = params.get('scrollTo');
 
     if (scrollToSection === 'trackOpenings' && trackOpeningRef.current) {
       trackOpeningRef.current.scrollIntoView({ behavior: "smooth" });
     }
+
+    const loadTrends = async () => {
+      const response = await fetchSubmissionTrends();
+      setSubmissionTrends(response.map(item => ({ id: item, steps: [] })));
+    };
+
+    loadTrends();
+
   }, []);
 
   return (
@@ -39,7 +50,7 @@ const OpeningMetricsTab: React.FC = () => {
           <div className="col-xxl-6" ref={trackOpeningRef}> {/* Add ref here to scroll */}
             <ChartContainer title="Track Openings" description="Follow your favourite openings">
               <OpeningHistory 
-                histories={OpeningHistoryItems}
+                histories={submissionTrends}
               />
             </ChartContainer>
           </div>

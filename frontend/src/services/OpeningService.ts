@@ -122,6 +122,32 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
   }
 }
 
+/**
+ * Fetches the submission trends/favorites from the backend.
+ *
+ * This function sends a GET request to the backend API to retrieve the user favorite openings.
+ * It includes an authorization token in the request headers.
+ *
+ * @returns {Promise<number[]>} A promise that resolves to an array of numbers representing the opening ids.
+ * If the response data is not an array, it returns an empty array.
+ */
+export async function fetchSubmissionTrends(): Promise<number[]> {
+  const authToken = getAuthIdToken();  
+  const response = await axios.get(
+    `${backendUrl}/api/openings/favorites`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`
+    }
+  });
+
+  const { data } = response;
+  if (data && Array.isArray(data)) {
+    return data;
+  } else {
+    return [];
+  }  
+}
+
 interface IFreeGrowingProps {
   orgUnitCode: string;
   clientNumber: string;
