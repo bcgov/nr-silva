@@ -1,32 +1,13 @@
 import React from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import LoginOrgSelection from "../../views/LoginOrgSelection";
-import SideLayout from "../../layouts/SideLayout";
-import Opening from "../Opening";
-import { RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import { Loading } from "@carbon/react";
+import { useGetAuth } from "../../contexts/AuthProvider";
 
 const DashboardRedirect: React.FC = () => {
-  const userDetails = useSelector((state: RootState) => state.userDetails);
-  const { user } = userDetails;
-
-  const navigate = useNavigate();
-
-  // Redirect logic based on selectedClientRoles existence
-  useEffect(() => {
-    if (user) {
-      navigate("/opening");
-    }
-  }, [user]);
-
+  const { isLoggedIn } = useGetAuth();
   return (
     <>
-      {user ? (
-        <SideLayout pageContent={<Opening />} />
-      ) : (
-        <LoginOrgSelection />
-      )}
+      {isLoggedIn ? <Navigate to={"/opening"} replace /> : <Loading className={'some-class'} withOverlay={true} />}
     </>
   );
 };
