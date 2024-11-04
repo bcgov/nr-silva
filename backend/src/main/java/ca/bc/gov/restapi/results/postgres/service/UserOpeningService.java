@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
@@ -87,7 +88,7 @@ public class UserOpeningService {
     return resultList;
   }
 
-  public List<OpeningSearchResponseDto> listUserFavoriteOpenings() {
+  public List<Long> listUserFavoriteOpenings() {
     log.info("Getting all user openings for the Track openings table");
 
     List<UserOpeningEntity> userList = userOpeningRepository
@@ -107,33 +108,7 @@ public class UserOpeningService {
                     .toList()
             )
             .stream()
-            .map(opening ->
-                new OpeningSearchResponseDto(
-                    opening.getId().intValue(),
-                    null,
-                    OpeningCategoryEnum.of(opening.getCategory()),
-                    OpeningStatusEnum.of(opening.getStatus()),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    opening.getUpdateTimestamp(),
-                    opening.getEntryUserId(),
-                    null,
-                    null,
-                    null
-                )
-            )
+            .map(OpeningEntity::getId)
             .toList();
 
   }

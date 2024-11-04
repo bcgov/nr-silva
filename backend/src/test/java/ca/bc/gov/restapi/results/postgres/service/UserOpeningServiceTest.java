@@ -4,8 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
@@ -95,6 +97,7 @@ class UserOpeningServiceTest {
   @DisplayName("Save opening to user happy path should succeed")
   void addUser_FavoriteOpening_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
+    when(openingRepository.findById(any())).thenReturn(Optional.of(new OpeningEntity()));
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
     userOpeningService.addUserFavoriteOpening(112233L);
   }
@@ -120,7 +123,7 @@ class UserOpeningServiceTest {
     when(userOpeningRepository.findById(any())).thenReturn(Optional.empty());
 
     Assertions.assertThrows(
-        UserOpeningNotFoundException.class,
+        UserFavoriteNotFoundException.class,
         () -> {
           userOpeningService.removeUserFavoriteOpening(112233L);
         });

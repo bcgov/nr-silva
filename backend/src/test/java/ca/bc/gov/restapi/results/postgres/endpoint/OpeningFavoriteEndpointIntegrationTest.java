@@ -95,7 +95,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.[0].openingId").value(101));
+        .andExpect(jsonPath("$.[0]").value(101));
   }
 
   @Test

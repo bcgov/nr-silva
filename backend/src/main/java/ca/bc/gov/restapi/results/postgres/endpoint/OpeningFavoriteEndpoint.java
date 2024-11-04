@@ -24,7 +24,7 @@ public class OpeningFavoriteEndpoint {
   private final UserOpeningService userOpeningService;
 
   @GetMapping
-  public List<OpeningSearchResponseDto> getFavorites() {
+  public List<Long> getFavorites() {
     return userOpeningService.listUserFavoriteOpenings();
   }
 
