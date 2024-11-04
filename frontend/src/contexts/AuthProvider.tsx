@@ -13,7 +13,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: (provider: string) => void;
   logout: () => void;
-  userDetails: () => Promise<FamLoginUser | undefined> 
 
 }
 
@@ -38,12 +37,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {          
       const checkUser = async () => {
         try{
-          const session = await fetchAuthSession();          
-          setIsLoggedIn(!!session.tokens);
+          const idToken = await loadUserToken();
+          console.log('idToken', idToken,env.NODE_ENV,env.VITE_USER_POOLS_WEB_CLIENT_ID);
+          setIsLoggedIn(!!idToken);
           setIsLoading(false);
-          if(session.tokens){
-            setUser(parseToken(session.tokens.idToken));
-            setUserRoles(extractGroups(session.tokens?.idToken?.payload));
+          if(idToken){
+            setUser(parseToken(idToken));
+            setUserRoles(extractGroups(idToken?.payload));
           }
         }catch(error){
           setIsLoggedIn(false);
@@ -53,16 +53,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };  
       checkUser();
   }, []);
-
-
-  const userDetails = async (): Promise<FamLoginUser | undefined> => {
-    const idToken = await loadUserToken();
-
-    if(idToken){
-      return Promise.resolve(parseToken(idToken));
-    }
-    return Promise.reject(new Error('No user details found'));
-  };
 
   const login = async (provider: string) => {
     const envProvider = (provider.localeCompare('idir') === 0) 
@@ -86,8 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoggedIn,
     isLoading,
     login,
-    logout,
-    userDetails
+    logout
   }), [user, userRoles, isLoggedIn, isLoading]);
 
   return (
