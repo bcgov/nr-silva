@@ -4,9 +4,9 @@ import {
   USER_DETAILS_FAIL,
   SET_CLIENT_ROLES
 } from '../constants/userConstants';
-import { isCurrentAuthUser } from '../services/AuthService';
 import { AppDispatch } from '../store';
 import { UserClientRolesType } from '../types/UserRoleType';
+import { useAuth } from '../contexts/AuthProvider';
 
 const FAM_LOGIN_USER = 'famLoginUser';
 
@@ -15,15 +15,15 @@ export const getUserDetails = () => async (dispatch: AppDispatch) => {
     dispatch({
       type: USER_DETAILS_REQUEST
     });
-    //first call the isCurrent and only after that extract the JSON
-    const data = await isCurrentAuthUser();
+    //first call the isCurrent and only after that extract the JSON    
+    const { isLoggedIn } = useAuth();
 
     const userJSON = localStorage.getItem(FAM_LOGIN_USER); // Retrieve the JSON string from local storage
     const user = userJSON ? JSON.parse(userJSON) : null; // Parse the JSON string to a JavaScript object
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
-      payload: { ...user, isLoggedIn: data }
+      payload: { ...user, isLoggedIn }
     });
   } catch (error) {
     dispatch({
