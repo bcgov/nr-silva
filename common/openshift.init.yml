@@ -37,6 +37,9 @@ parameters:
   - name: FORESTCLIENTAPI_KEY
     description:
     required: true
+  - name: VITE_USER_POOLS_WEB_CLIENT_ID
+    description: Cognito user pools web client ID
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
@@ -60,7 +63,6 @@ objects:
       oracle-password: ${ORACLE_DB_PASSWORD}
       oracle-secret: ${ORACLEDB_SECRET}
       forest-client-api-key: ${FORESTCLIENTAPI_KEY}
-
   - apiVersion: v1
     kind: Secret
     metadata:
@@ -85,6 +87,14 @@ objects:
                   network.openshift.io/policy-group: ingress
       policyTypes:
         - Ingress
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: ${NAME}-${ZONE}-frontend
+      labels:
+        app: ${NAME}-${ZONE}
+    stringData:
+      vite-user-pools-web-client-id: ${VITE_USER_POOLS_WEB_CLIENT_ID}
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
