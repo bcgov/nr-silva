@@ -1,35 +1,29 @@
-import React, { useCallback } from "react";
+import React from "react";
 import BCGovLogo from "../../components/BCGovLogo";
-import { Button, InlineNotification } from "@carbon/react";
+import { Button } from "@carbon/react";
 import { Login } from '@carbon/icons-react';
-import { signIn } from "../../services/AuthService";
 import './Landing.scss';
 import '../../custom.scss';
 import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
-import ThemeToggle from "../../components/ThemeToggle";
-import { useNavigate } from "react-router-dom";
+import { useGetAuth } from "../../contexts/AuthProvider";
 
 const Landing: React.FC = () => {
+
+  const { login, isLoggedIn } = useGetAuth();
+
     // Adding the Lottie Loader and loading the View for lottie with initial options
     const options = {
       animationData: silvaLottie,
       loop: true
     };
     const { View } = useLottie(options);
-    const navigate = useNavigate();
-    const login = useCallback(async (provider: string) => {
-      try {
-        await signIn(provider)
-      } catch(e) {
-        if (e && typeof e === "object" && "message" in e) {
-          const messageError = e.message as string;
-          if (messageError === 'There is already a signed in user.') {
-            navigate('/dashboard');
-          }
-        }
-      }
-    }, []);
+    
+    // If the user is already logged in, redirect to the dashboard
+    if (isLoggedIn) {
+      window.location.href = '/dashboard';
+    }
+
     return (
       <>
         <div className="container-fluid">
@@ -61,7 +55,7 @@ const Landing: React.FC = () => {
                 <div className="col-xl-5 col-lg-6 ">
                   <Button
                     kind="tertiary"
-                    onClick={() => {login('bceid')}}
+                    onClick={() => login('bceid')}
                     renderIcon={Login}
                     data-testid="landing-button__bceid"
                     className="btn-landing"

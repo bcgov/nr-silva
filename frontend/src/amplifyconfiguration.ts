@@ -17,8 +17,8 @@ const verificationMethods: verificationMethodsType = 'code';
 const amplifyconfig = {
   Auth: {
     Cognito: {
-      userPoolId: env.VITE_USER_POOLS_ID ?? "ca-central-1_t2HSZBHur",
-      userPoolClientId: env.VITE_USER_POOLS_WEB_CLIENT_ID ?? "70a2am185rie10r78b0ugcs1mm",
+      userPoolId: env.VITE_USER_POOLS_ID,
+      userPoolClientId: env.VITE_USER_POOLS_WEB_CLIENT_ID,
       signUpVerificationMethod: verificationMethods, // 'code' | 'link'
       loginWith: {
         oauth: {
