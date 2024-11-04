@@ -3,7 +3,6 @@ import {
   Checkbox,
   CheckboxGroup,
   Dropdown,
-  MultiSelect,
   TextInput,
   FormLabel,
   Tooltip,
@@ -19,6 +18,7 @@ import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { Button } from "@carbon/react";
+import { FilterableMultiSelect } from "@carbon/react";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -160,7 +160,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
         <Row className="mb-3">
           <Column lg={8}>
-            <MultiSelect
+            <FilterableMultiSelect
               label="Enter or choose an org unit"
               id="orgunit-multiselect"
               className="multi-select"
@@ -173,7 +173,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
             />
           </Column>
           <Column lg={8}>
-            <MultiSelect
+            <FilterableMultiSelect
               label="Enter or choose a category"
               id="category-multiselect"
               className="multi-select"
