@@ -63,9 +63,9 @@ public class OpeningSearchEndpoint {
       @RequestParam(value = "mainSearchTerm", required = false)
       String mainSearchTerm,
       @RequestParam(value = "orgUnit", required = false)
-      String orgUnit,
+      List<String> orgUnit,
       @RequestParam(value = "category", required = false)
-      String category,
+      List<String> category,
       @RequestParam(value = "statusList", required = false)
       List<String> statusList,
       @RequestParam(value = "myOpenings", required = false)

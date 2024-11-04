@@ -18,8 +18,8 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
   const defaultFilters = {
     startDate: null as Date | null,
     endDate: null as Date | null,
-    orgUnit: null as string | null,
-    category: null as string | null,
+    orgUnit: [] as string[],
+    category: [] as string[],
     status: [] as string[],
     clientAcronym: "",
     clientLocationCode: "",

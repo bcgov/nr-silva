@@ -62,8 +62,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
 
   const params = {
     mainSearchTerm: filters.searchInput,
-    orgUnit: filters.orgUnit,
-    category: filters.category,
+    orgUnit: filters.orgUnit, //Keep it as an array
+    category: filters.category, // Keep it as an array
     statusList: filters.status, // Keep it as an array
     entryUserId: filters.clientAcronym,
     cutBlockId: filters.cutBlock,

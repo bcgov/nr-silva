@@ -17,7 +17,6 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import { Button } from "@carbon/react";
 import { FilterableMultiSelect } from "@carbon/react";
 
 interface AdvancedSearchDropdownProps {
@@ -38,7 +37,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
    useEffect(() => {
      // Split filters.orgUnit into array and format as needed for selectedItems
      if (filters.orgUnit) {
-       const orgUnitsArray = filters.orgUnit.split(",").map((orgUnit: String) => ({
+       const orgUnitsArray = filters.orgUnit.map((orgUnit: String) => ({
          text: orgUnit,
          value: orgUnit,
        }));
@@ -48,7 +47,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
      }
      // Split filters.category into array and format as needed for selectedItems
      if (filters.category) {
-      const categoriesArray = filters.category.split(",").map((category: String) => ({
+      const categoriesArray = filters.category.map((category: String) => ({
         text: category,
         value: category,
       }));
@@ -65,13 +64,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
-    //convert updatedGroup to string csv
-    const updatedGroupCsv = updatedGroup.join(",");
     if (group === "orgUnit")
     setSelectedOrgUnits(updatedGroup);
     if (group === "category")
     setSelectedCategories(updatedGroup);
-    handleFilterChange({ [group]: updatedGroupCsv });
+    handleFilterChange({ [group]: updatedGroup });
   }
 
   const handleCheckboxChange = (value: string, group: string) => {
