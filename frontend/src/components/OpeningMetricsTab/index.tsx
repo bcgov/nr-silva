@@ -7,7 +7,7 @@ import DoughnutChartView from "../DoughnutChartView";
 import OpeningHistory from "../OpeningHistory";
 import History from "../../types/History";
 import MyRecentActions from "../MyRecentActions";
-import { fetchSubmissionTrends } from "../../services/OpeningService";
+import { fetchOpeningTrends } from "../../services/OpeningFavoriteService";
 
 const OpeningMetricsTab: React.FC = () => {
   const trackOpeningRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ const OpeningMetricsTab: React.FC = () => {
     }
 
     const loadTrends = async () => {
-      const response = await fetchSubmissionTrends();
+      const response = await fetchOpeningTrends();
       setSubmissionTrends(response.map(item => ({ id: item, steps: [] })));
     };
 
