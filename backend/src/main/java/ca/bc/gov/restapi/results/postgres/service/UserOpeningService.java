@@ -108,7 +108,8 @@ public class UserOpeningService {
 
   @Transactional
   public void addUserFavoriteOpening(Long openingId) {
-
+  log.info("Adding opening ID {} as favorite for user {}", openingId,
+      loggedUserService.getLoggedUserId());
     openingRepository
         .findById(openingId)
         .orElseThrow(() -> {
@@ -128,8 +129,8 @@ public class UserOpeningService {
 
   @Transactional
   public void removeUserFavoriteOpening(Long openingId) {
-    log.info("Opening ID to delete from the user's favourites: {}", openingId);
-
+    log.info("Removing opening ID {} from the favorites for user {}", openingId,
+        loggedUserService.getLoggedUserId());
     userOpeningRepository.findById(
         new UserOpeningEntityId(
             loggedUserService.getLoggedUserId(),
