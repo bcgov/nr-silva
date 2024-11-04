@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from 'react';
 import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
 import { parseToken, FamLoginUser } from "../services/AuthService";
 import { extractGroups } from '../utils/famUtils';
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if(idToken){
       return Promise.resolve(parseToken(idToken));
     }
-    return Promise.reject('No user details found');
+    return Promise.reject(new Error('No user details found'));
   };
 
   const login = async (provider: string) => {
@@ -80,8 +80,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.location.href = '/'; // Optional redirect after logout    
   };
 
+  const contextValue = useMemo(() => ({
+    user,
+    userRoles,
+    isLoggedIn,
+    isLoading,
+    login,
+    logout,
+    userDetails
+  }), [user, userRoles, isLoggedIn, isLoading]);
+
   return (
-    <AuthContext.Provider value={{ user, userRoles, isLoggedIn, isLoading, login, logout, userDetails }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
@@ -89,18 +99,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 // This is a helper hook to use the Auth context more easily
 // 5. Create a custom hook to consume the context safely
-export const useAuth = (): AuthContextType => {
+export const useGetAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-export const getAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('AuthProvider not found');
+    throw new Error('useGetAuth must be used within an AuthProvider');
   }
   return context;
 };

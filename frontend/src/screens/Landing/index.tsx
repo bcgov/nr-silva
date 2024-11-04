@@ -6,11 +6,11 @@ import './Landing.scss';
 import '../../custom.scss';
 import { useLottie } from "lottie-react";
 import silvaLottie from "../../assets/lotties/silva-logo-lottie-1.json"
-import { useAuth } from "../../contexts/AuthProvider";
+import { useGetAuth } from "../../contexts/AuthProvider";
 
 const Landing: React.FC = () => {
 
-  const { login, isLoggedIn } = useAuth();
+  const { login, isLoggedIn } = useGetAuth();
 
     // Adding the Lottie Loader and loading the View for lottie with initial options
     const options = {

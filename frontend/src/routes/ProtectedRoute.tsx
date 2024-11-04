@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthProvider';
+import { useGetAuth } from '../contexts/AuthProvider';
 import { Loading } from "@carbon/react";
 
 interface ProtectedRouteProps {
@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles = [], 
   redirectTo = '/' 
 }) => {
-  const { isLoggedIn, isLoading, userRoles } = useAuth();
+  const { isLoggedIn, isLoading, userRoles } = useGetAuth();
 
   if(isLoading) {
     return <Loading className={'some-class'} withOverlay={true} />;

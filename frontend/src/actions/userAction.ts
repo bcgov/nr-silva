@@ -6,7 +6,7 @@ import {
 } from '../constants/userConstants';
 import { AppDispatch } from '../store';
 import { UserClientRolesType } from '../types/UserRoleType';
-import { useAuth } from '../contexts/AuthProvider';
+import { useGetAuth } from '../contexts/AuthProvider';
 
 const FAM_LOGIN_USER = 'famLoginUser';
 
@@ -16,7 +16,7 @@ export const getUserDetails = () => async (dispatch: AppDispatch) => {
       type: USER_DETAILS_REQUEST
     });
     //first call the isCurrent and only after that extract the JSON    
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn } = useGetAuth();
 
     const userJSON = localStorage.getItem(FAM_LOGIN_USER); // Retrieve the JSON string from local storage
     const user = userJSON ? JSON.parse(userJSON) : null; // Parse the JSON string to a JavaScript object
