@@ -4,10 +4,10 @@ import { Loading } from "@carbon/react";
 import { useGetAuth } from "../../contexts/AuthProvider";
 
 const DashboardRedirect: React.FC = () => {
-  const { user } = useGetAuth();
+  const { isLoggedIn } = useGetAuth();
   return (
     <>
-      {user ? <Navigate to={"/opening"} replace /> : <Loading className={'some-class'} withOverlay={true} />}
+      {isLoggedIn ? <Navigate to={"/opening"} replace /> : <Loading className={'some-class'} withOverlay={true} />}
     </>
   );
 };
