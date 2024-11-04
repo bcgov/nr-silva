@@ -16,6 +16,8 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -153,7 +155,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     PaginatedResult<OpeningSearchResponseDto> result =
         openingService.openingSearch(new OpeningSearchFiltersDto(
-                "TWO",
+                List.of("TWO"),
                 null,
                 null,
                 null,
