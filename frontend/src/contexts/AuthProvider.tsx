@@ -1,7 +1,9 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
 import { parseToken, FamLoginUser } from "../services/AuthService";
+import { extractGroups } from '../utils/famUtils';
 import { env } from '../env';
+import { JWT } from '../types/amplify';
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -23,7 +25,6 @@ interface AuthProviderProps {
 // 3. Create the context with a default value of `undefined`
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
 // 4. Create the AuthProvider component with explicit typing
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
           if(session.tokens){
             setUser(parseToken(session.tokens.idToken));
+            setUserRoles(extractGroups(session.tokens?.idToken?.payload));
           }
         }catch(error){
           setIsLoggedIn(false);
@@ -54,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   const userDetails = async (): Promise<FamLoginUser | undefined> => {
-    const { idToken } = (await fetchAuthSession()).tokens ?? {}; //TODO: make a way to set through tests
+    const idToken = await loadUserToken();
 
     if(idToken){
       return Promise.resolve(parseToken(idToken));
@@ -68,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     : `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS`;
 
       signInWithRedirect({
-        provider: { custom: envProvider.toUpperCase() } //TODO: Change environment
+        provider: { custom: envProvider.toUpperCase() }
       });    
   };
 
@@ -101,4 +103,41 @@ export const getAuth = () => {
     throw new Error('AuthProvider not found');
   }
   return context;
+};
+
+const loadUserToken = async () : Promise<JWT|undefined> => {
+  if(env.NODE_ENV !== 'test'){
+    const {idToken} = (await fetchAuthSession()).tokens ?? {};    
+    return Promise.resolve(idToken);
+  } else {
+    // This is for test only
+    const token = getUserTokenFromCookie();
+    if (token) {
+      const jwtBody = token
+        ? JSON.parse(atob(token.split(".")[1]))
+        : null;
+      return Promise.resolve({ payload: jwtBody });
+    } else {
+      return Promise.resolve(undefined);
+    }
+  }
+};
+
+const getUserTokenFromCookie = (): string|undefined => {
+  const baseCookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
+  const userId = encodeURIComponent(getCookie(`${baseCookieName}.LastAuthUser`));
+  if (userId) {
+    const idTokenCookieName = `${baseCookieName}.${userId}.idToken`;
+    const idToken = getCookie(idTokenCookieName);
+    return idToken;
+  } else {
+    return undefined;
+  }
+};
+
+const getCookie = (name: string): string => {
+  const cookie = document.cookie
+    .split(";")
+    .find((cookieValue) => cookieValue.trim().startsWith(name));
+  return cookie ? cookie.split("=")[1] : "";
 };
