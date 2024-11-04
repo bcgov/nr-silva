@@ -55,6 +55,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.2.1
+        env:
+          VITE_ZONE: test
+          VITE_USER_POOLS_ID: ca-central-1_abc123
+          VITE_USER_POOLS_WEB_CLIENT_ID: abc123
+          VITE_BACKEND_URL: http://localhost:8080
         with:
           commands: |
             npm ci
