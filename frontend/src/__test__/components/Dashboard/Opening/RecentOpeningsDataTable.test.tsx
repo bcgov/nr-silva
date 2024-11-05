@@ -3,12 +3,8 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import OpeningsSearchBar from "../../../../components/SilvicultureSearch/Openings/OpeningsSearchBar";
 import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { OpeningsSearchProvider } from "../../../../contexts/search/OpeningsSearch";
-import { Pagination } from "@carbon/react";
-import {Provider } from "react-redux";
 import PaginationProvider from "../../../../contexts/PaginationProvider";
 import RecentOpeningsDataTable from "../../../../components/Dashboard/Opening/RecentOpeningsDataTable";
 import { MemoryRouter } from "react-router-dom";
