@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import OpeningHistory from '../../components/OpeningHistory';
 import History from '../../types/History';
+import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
 
 const mockHistories: History[] = [
   {
@@ -19,6 +20,10 @@ const mockHistories: History[] = [
   },
 ];
 
+vi.mock('../../services/OpeningFavoriteService', () => ({
+  deleteOpeningFavorite: vi.fn(),
+}));
+
 describe('OpeningHistory Component', () => {
   it('renders correctly with given histories', async () => {
     let getByText;
@@ -34,5 +39,31 @@ describe('OpeningHistory Component', () => {
     expect(getByText('Step 1')).toBeInTheDocument();
     expect(getByText('Step 2')).toBeInTheDocument();
     expect(getByText('Step 3')).toBeInTheDocument();
+  });
+
+  it('renders correctly with empty histories', async () => {
+    let container;
+    await act(async () => {
+      ({ container } = render(<OpeningHistory histories={[]} /> ));
+    });
+
+    // Select the div with the specific class
+    const activityHistoryContainer = container.querySelector('.row.activity-history-container.gx-4');
+    
+    // Check if the container is empty
+    expect(activityHistoryContainer).toBeInTheDocument(); // Ensure the element exists
+    expect(activityHistoryContainer?.children.length).toBe(0); // Confirm it's empty by checking for no children
+  });
+
+  // check if when clicked on the FavoriteButton, the deleteOpeningFavorite function is called
+  it('should call deleteOpeningFavorite when FavoriteButton is clicked', async () => {    
+    let container;
+    await act(async () => {
+      ({ container } = render(<OpeningHistory histories={mockHistories} /> ));
+    });
+
+    const favoriteButton = container.querySelector('.favorite-icon button')
+    favoriteButton && favoriteButton.click();
+    expect(deleteOpeningFavorite).toHaveBeenCalled();
   });
 });
