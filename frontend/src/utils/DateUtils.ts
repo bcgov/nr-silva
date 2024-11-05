@@ -12,11 +12,3 @@ export const dateStringToISO = (date: string): string => {
   }
   return '';
 };
-
-export const formatDateToString = (dateToFormat: Date) => {
-  if (!dateToFormat) return null;
-  const year = dateToFormat.getFullYear();
-  const month = String(dateToFormat.getMonth() + 1).padStart(2, "0");
-  const day = String(dateToFormat.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
