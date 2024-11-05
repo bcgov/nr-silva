@@ -110,12 +110,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
       value: item.value,
     })) || [];
 
-  const blockStatusItems =
-    data.blockStatuses?.map((item: any) => ({
-      text: item.label,
-      value: item.value,
-    })) || [];
-
   return (
     <div className="advanced-search-dropdown">
       <FlexGrid className="container-fluid advanced-search-container p-32">
