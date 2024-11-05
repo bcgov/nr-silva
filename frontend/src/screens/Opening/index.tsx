@@ -12,6 +12,11 @@ import OpeningMetricsTab from "../../components/OpeningMetricsTab";
 
 const Opening: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
+
+  const tabChange = (tabSelection:{selectedIndex: number}) => {
+    setActiveTab(tabSelection.selectedIndex);
+  };
 
   useEffect(() => {
     //
@@ -74,7 +79,7 @@ const Opening: React.FC = () => {
         </div>
       )}
 
-      <Tabs>
+      <Tabs onChange={tabChange}>
         <TabList className="tab-list" aria-label="List of Tab" contained>
           <Tab><div className="tab-header">Recent Openings</div></Tab>
           <Tab><div className="tab-header">Dashboard</div></Tab>
@@ -87,7 +92,7 @@ const Opening: React.FC = () => {
             />
           </TabPanel>
           <TabPanel className="tab-content">
-            <OpeningMetricsTab />
+            {activeTab === 1 && <OpeningMetricsTab />}
           </TabPanel>
         </TabPanels>
       </Tabs>
