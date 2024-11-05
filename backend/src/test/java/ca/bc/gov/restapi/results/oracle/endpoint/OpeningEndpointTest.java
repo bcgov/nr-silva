@@ -64,7 +64,6 @@ class OpeningEndpointTest {
 
     PaginationParameters params = new PaginationParameters(0, 5);
 
-    when(openingService.getRecentOpeningsCurrentUser(params)).thenReturn(paginatedResult);
 
     mockMvc
         .perform(

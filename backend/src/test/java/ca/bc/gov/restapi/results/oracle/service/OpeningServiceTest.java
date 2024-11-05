@@ -43,53 +43,6 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   private OpeningService openingService;
 
   @Test
-  @DisplayName("Get a list of recent openings for logged user")
-  void getRecentOpenings_fetchPaginated_shouldSucceed() {
-    int pages = 3;
-    int currentPage = 0;
-
-    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpeningsCurrentUser(pagination);
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
-    Assertions.assertEquals(1, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-    Assertions.assertEquals(1, paginatedResult.getData().size());
-  }
-
-  @Test
-  @DisplayName("Get an empty list of recent openings for the home screen")
-  void getRecentOpenings_emptyPages_shouldSucceed() {
-
-    int currentPage = 0;
-    int pages = 1;
-    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpeningsCurrentUser(pagination);
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
-    Assertions.assertEquals(1, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-  }
-
-  @Test
-  @DisplayName("Get a list of recent openings without user")
-  void getRecentOpenings_fetchNoUserPaginated_shouldSucceed() {
-
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpenings(new PaginationParameters(1, 1));
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(1, paginatedResult.getPageIndex());
-    Assertions.assertEquals(3, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-    Assertions.assertEquals(1, paginatedResult.getData().size());
-  }
-
-  @Test
   @DisplayName("Opening search file id happy path should succeed")
   void openingSearch_fileId_shouldSucceed() {
 

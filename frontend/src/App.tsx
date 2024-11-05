@@ -35,10 +35,6 @@ const router = createBrowserRouter([
         element: <SideLayout pageContent={<SilvicultureSearch />} />
       },
       {
-        path: "/opening/reports",
-        element: <SideLayout pageContent={<Reports />} />
-      },
-      {
         path: "/help",
         element: <SideLayout pageContent={<Help />} />
       }

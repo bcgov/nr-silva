@@ -125,7 +125,7 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(`${backendUrl}/api/user/recent-openings`, {
+  const response = await axios.get(`${backendUrl}/api/openings/recent`, {
     headers: {
       Authorization: `Bearer ${authToken}`
     }
