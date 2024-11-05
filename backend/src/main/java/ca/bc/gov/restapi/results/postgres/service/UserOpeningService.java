@@ -108,14 +108,13 @@ public class UserOpeningService {
 
   @Transactional
   public void addUserFavoriteOpening(Long openingId) {
-  log.info("Adding opening ID {} as favorite for user {}", openingId,
-      loggedUserService.getLoggedUserId());
-    openingRepository
-        .findById(openingId)
-        .orElseThrow(() -> {
-          log.info("Opening ID not found: {}", openingId);
-          return new OpeningNotFoundException();
-        });
+    log.info("Adding opening ID {} as favorite for user {}", openingId,
+        loggedUserService.getLoggedUserId());
+
+    if (openingRepository.findById(openingId).isEmpty()) {
+      log.info("Opening ID not found: {}", openingId);
+      throw new OpeningNotFoundException();
+    }
 
     log.info("Opening ID {} added as favorite for user {}", openingId,
         loggedUserService.getLoggedUserId());
