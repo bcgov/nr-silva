@@ -42,6 +42,7 @@ import {
 } from "../../../../utils/fileConversions";
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
+import { setOpeningFavorite } from '../../../../services/OpeningFavoriteService';
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -83,23 +84,26 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
   
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (rowId: string) => {
+  const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
-      if (prevSelectedRows.includes(rowId)) {
+      if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
-        return prevSelectedRows.filter((id) => id !== rowId);
+        return prevSelectedRows.filter((id) => id !== openingId);
       } else {
         // If the row is not selected, add it to the selected rows
-        return [...prevSelectedRows, rowId];
+        return [...prevSelectedRows, openingId];
       }
     });
   };
 
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (rowId: string) => {
-    console.log(rowId + " has been added as a favourite for the user")
-    //make a call to the api for the favourite opening when ready
-    setToastText(`Following "OpeningID ${rowId}"`);
+  const handleFavouriteOpening = (openingId: string) => {
+    try{
+      setOpeningFavorite(openingId);
+      setToastText(`Following "OpeningID ${openingId}"`);
+    } catch (error) {
+      console.error(`Failed to update favorite status for ${openingId}`); //TODO: Add error handling
+    }    
   }
 
   return (
