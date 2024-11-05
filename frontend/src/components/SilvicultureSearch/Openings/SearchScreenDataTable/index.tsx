@@ -103,11 +103,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     markAsViewedOpening(openingId, {
       onSuccess: () => {
         // setToastText(`Successfully marked opening ${openingId} as viewed.`);
-        console.log(`Successfully marked opening ${openingId} as viewed.`);
       },
       onError: (err: any) => {
         // setToastText(`Failed to mark as viewed: ${err.message}`);
-        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
