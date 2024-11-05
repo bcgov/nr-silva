@@ -9,50 +9,6 @@ import { IOpeningPerYear } from '../types/IOpeningPerYear';
 const backendUrl = env.VITE_BACKEND_URL;
 
 /**
- * Fetch recent openings data from backend.
- *
- * @returns {Promise<RecentOpening[]>} Array of objects found
- */
-export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
-  const authToken = getAuthIdToken();
-  try {
-    const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-        }
-    });
-
-    if (response.status >= 200 && response.status < 300) {
-      const { data } = response;
-
-      if (data.data) {
-        // Extracting row information from the fetched data
-        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
-          id: opening.openingId.toString(),
-          openingId: opening.openingId.toString(),
-          forestFileId: opening.forestFileId ? opening.forestFileId : '-',
-          cuttingPermit: opening.cuttingPermit ? opening.cuttingPermit : '-',
-          timberMark: opening.timberMark ? opening.timberMark : '-',
-          cutBlock: opening.cutBlock ? opening.cutBlock : '-',
-          grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          status: opening.status && opening.status.description? opening.status.description : '-',
-          category: opening.category && opening.category.description? opening.category.description : '-',
-          disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
-          entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
-          updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
-        }));
-  
-        return rows;
-      }
-    }
-    return [];
-  } catch (error) {
-    console.error('Error fetching recent openings:', error);
-    throw error;
-  }
-}
-
-/**
  * Fetch openings per year data from backend.
  *
  * @returns {Promise<OpeningPerYearChart[]>} Array of objects found

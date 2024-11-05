@@ -5,7 +5,6 @@ import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import OpeningScreenDataTable from '../OpeningScreenDataTable/index';
 import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/testData';
-import { fetchRecentOpenings } from '../../services/OpeningService';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
 import { InlineNotification } from '@carbon/react';
@@ -24,7 +23,6 @@ interface Props {
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
@@ -34,32 +32,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const { data, isFetching } = useUserRecentOpeningQuery(10);
   const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const rows: RecentOpening[] = await fetchRecentOpenings();
-        setOpeningRows(rows);
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-        setLoading(false);
-        setError('Failed to fetch recent openings');
-      }
-    };
-
-    const fetchAllowedPeople = async () => {
-      try {
-        const usersList: WmsLayersWhitelistUser[] = await getWmsLayersWhitelistUsers();
-        setWmsUsersWhitelist(usersList);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-      }
-    };
-
-    fetchData();
-    fetchAllowedPeople();
-  }, []);
+  
 
   useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
@@ -143,7 +116,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             className = "inline-notification"
           />
         ) : null }
-        {loading ? (
+        {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (
           <RecentOpeningsDataTable
