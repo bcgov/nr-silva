@@ -99,7 +99,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (openingId: string) => {
     try{
-      setOpeningFavorite(openingId);
+      setOpeningFavorite(parseInt(openingId));
       setToastText(`Following "OpeningID ${openingId}"`);
     } catch (error) {
       console.error(`Failed to update favorite status for ${openingId}`); //TODO: Add error handling
