@@ -15,7 +15,7 @@ jobs:
   tests-backend:
     name: Tests (Backend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: bcgov-nr/action-test-and-analyse-java@v1.0.2
         with:
@@ -37,7 +37,7 @@ jobs:
   lint-frontend:
     name: Lint (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.2.1
         with:
@@ -52,7 +52,7 @@ jobs:
   tests-frontend:
     name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: bcgov-nr/action-test-and-analyse@v1.2.1
         env:
@@ -83,7 +83,7 @@ jobs:
   trivy:
     name: Trivy Security Scan
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -107,6 +107,6 @@ jobs:
     name: Analysis Results
     if: always() && (!failure()) && (!cancelled())
     needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - run: echo "Workflow completed successfully!"
