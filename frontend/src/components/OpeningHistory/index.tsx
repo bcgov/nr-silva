@@ -11,10 +11,11 @@ import './styles.scss';
 import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
 import { useNotification } from '../../contexts/NotificationProvider';
 
+import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
+
 interface OpeningHistoryProps {
   histories: History[];
 }
-
 
 const OpeningHistory: React.FC<OpeningHistoryProps> = ({ histories }: OpeningHistoryProps) => {
   const { displayNotification } = useNotification();
@@ -44,6 +45,7 @@ const OpeningHistory: React.FC<OpeningHistoryProps> = ({ histories }: OpeningHis
   };
 
   return (
+
   <div className='px-3 pb-3'>
     <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (

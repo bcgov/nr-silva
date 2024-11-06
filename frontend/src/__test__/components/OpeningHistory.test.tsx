@@ -65,6 +65,7 @@ describe('OpeningHistory Component', () => {
 
     const favoriteButton = container.querySelector('.favorite-icon button')
     await act(async () => favoriteButton && favoriteButton.click());
+
     expect(deleteOpeningFavorite).toHaveBeenCalled();
   });
 });
