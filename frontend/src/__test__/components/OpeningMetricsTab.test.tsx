@@ -3,19 +3,49 @@ import React from 'react';
 import { render, act, waitFor, fireEvent, screen } from '@testing-library/react';
 import OpeningMetricsTab from '../../components/OpeningMetricsTab';
 import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
 
 vi.mock('../../services/OpeningFavoriteService', () => ({
   fetchOpeningTrends: vi.fn(),
 }));
+vi.mock('../../services/OpeningService', async () => {
+  const actual = await vi.importActual('../../services/OpeningService');
+  return {
+    ...actual,
+    fetchRecentOpenings: vi.fn(),
+    fetchOpeningsPerYear: vi.fn(),
+    fetchFreeGrowingMilestones: vi.fn(),    
+  };
+});
 
 describe('OpeningMetricsTab', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (fetchRecentOpenings as vi.Mock).mockResolvedValue([{
+      id: '123',
+      openingId: '123',
+      fileId: '1',
+      cuttingPermit: '1',
+      timberMark: '1',
+      cutBlock: '1',
+      grossAreaHa: 1,
+      statusDesc: 'Approved',
+      categoryDesc: 'Another:Another',
+      disturbanceStart: '1',
+      entryTimestamp: '1',
+      updateTimestamp: '1',
+    }]);
+    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([
+      { group: '2022', key: 'Openings', value: 10 },
+      { group: '2023', key: 'Openings', value: 15 },
+    ]);
+    (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
+    (fetchOpeningTrends as vi.Mock).mockResolvedValue([1, 2, 3]);
+    
   });
 
   it('should render the OpeningMetricsTab component with all sections', async () => {
-    const mockTrends = [1, 2, 3];
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue(mockTrends);
+    
     await act(async () => render(<OpeningMetricsTab />));
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
@@ -31,8 +61,7 @@ describe('OpeningMetricsTab', () => {
   });
 
   it('should call fetchOpeningTrends and set submissionTrends state', async () => {
-    const mockTrends = [1, 2, 3];
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue(mockTrends);
+    
 
     await act(async () => {
       render(<OpeningMetricsTab />);
@@ -47,8 +76,7 @@ describe('OpeningMetricsTab', () => {
   });
 
   it('should scroll to "Track Openings" section when scrollTo parameter is "trackOpenings"', async () => {
-    const mockTrends = [1, 2, 3];
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue(mockTrends);
+    
     const mockScrollIntoView = vi.fn();
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
@@ -64,8 +92,7 @@ describe('OpeningMetricsTab', () => {
   });
 
   it('should not scroll to "Track Openings" section when scrollTo parameter is not "trackOpenings"', async () => {
-    const mockTrends = [1, 2, 3];
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue(mockTrends);
+    
     const mockScrollIntoView = vi.fn();
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
