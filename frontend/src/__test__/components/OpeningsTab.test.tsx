@@ -1,51 +1,50 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { render, act, waitFor, screen } from '@testing-library/react';
-import OpeningsTab from '../../components/OpeningsTab';
-import { AuthProvider } from '../../contexts/AuthProvider';
-import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
-import { fetchRecentOpenings } from '../../services/OpeningService';
-import { RecentOpening } from '../../types/RecentOpening';
-import PaginationProvider from '../../contexts/PaginationProvider';
+// src/__test__/components/SilvicultureSearch/Openings/OpeningsSearchBar.test.tsx
 
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import OpeningsTab from "../../../src/components/OpeningsTab";
+import { Provider } from "react-redux";
+import store from "../../store";
 
-vi.mock('../../services/SecretsService', () => ({
-  getWmsLayersWhitelistUsers: vi.fn()
-}));
+describe("OpeningsTab", () => {
+  // Create a new QueryClient instance for each test
+  const queryClient = new QueryClient();
+    const showSpatial = false
+    const setShowSpatial = vi.fn()
 
-vi.mock('../../services/OpeningService', async () => {
-  const actual = await vi.importActual('../../services/OpeningService');
-  return {
-    ...actual,
-    fetchRecentOpenings: vi.fn(),
-  };
-});
-
-
-const rows: RecentOpening[] = [{
-  id: '123',
-  openingId: '123',
-  fileId: '1',
-  cuttingPermit: '1',
-  timberMark: '1',
-  cutBlock: '1',
-  grossAreaHa: 1,
-  statusDesc: 'Approved',
-  categoryDesc: 'Another:Another',
-  disturbanceStart: '1',
-  entryTimestamp: '1',
-  updateTimestamp: '1',
-}];
-
-describe('Openings Tab test',() => {
-
-  it('should render properly',async () =>{
-    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);
-    (fetchRecentOpenings as vi.Mock).mockResolvedValue(rows);
-    await act(async () => {
-    render(<AuthProvider><PaginationProvider><OpeningsTab showSpatial={false} setShowSpatial={vi.fn()}/></PaginationProvider></AuthProvider>);
-    });
-    expect(screen.getByText('Recent openings')).toBeInTheDocument();
+  it("renders the component successfully", () => {
+    render(
+        <QueryClientProvider client={queryClient}>
+            <Provider store={store}>
+                <OpeningsTab 
+                showSpatial={showSpatial}
+                setShowSpatial={setShowSpatial}
+                />
+            </Provider>
+      </QueryClientProvider>
+    );
+    // Check if the component is present with the correct text
+    const searchInput = screen.getByText(/Track the history of openings you have looked at and check spatial information by selecting the openings in the table below/i);
+    expect(searchInput).toBeInTheDocument();
   });
 
+  it("shows the spatial area with Hide Spatial Button", () => {
+    render(
+        <QueryClientProvider client={queryClient}>
+            <Provider store={store}>
+                <OpeningsTab 
+                showSpatial={true}
+                setShowSpatial={setShowSpatial}
+                />
+            </Provider>
+      </QueryClientProvider>
+    );
+    console.log(screen.debug())
+    // Check if the component is present with the correct text
+    const searchInput = screen.getByRole('button', { name: /Hide Spatial/i });
+    expect(searchInput).toBeInTheDocument();
+  });
 });
