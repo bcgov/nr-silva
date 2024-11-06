@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./OpeningsSearchBar.scss";
-import { Search, Button, Tag, FlexGrid, Row, Column } from "@carbon/react";
+import { Search, Button, FlexGrid, Row, Column } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
+import { DismissibleTag } from "@carbon/react";
 
 interface IOpeningsSearchBar {
   onSearchClick: Function;
@@ -78,15 +79,13 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
             <Column lg={4} max={4} className="p-0">
               <div className="advanced-search-field ms-lg-1" onClick={toggleDropdown}>
                 {filtersCount > 0 ? (
-                  <Tag
-                    filter
+                  <DismissibleTag
                     className="mx-1"
                     type="high-contrast"
-                    title="Clear Filter"
+                    text={"+" + filtersCount}
                     onClose={() => clearFilters()}
                   >
-                    {"+" + filtersCount}
-                  </Tag>
+                  </DismissibleTag>
                 ) : null}
                 <p className={filtersCount > 0 ? "text-active" : ""}>
                   Advanced Search

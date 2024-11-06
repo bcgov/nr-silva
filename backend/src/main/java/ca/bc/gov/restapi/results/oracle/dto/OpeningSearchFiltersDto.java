@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @ToString
 public class OpeningSearchFiltersDto {
-  private final String orgUnit;
-  private final String category;
+  private final List<String> orgUnit;
+  private final List<String> category;
   private final List<String> statusList;
   private final Boolean myOpenings;
   private final Boolean submittedToFrpa;
@@ -39,8 +39,8 @@ public class OpeningSearchFiltersDto {
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
-      String orgUnit,
-      String category,
+      List<String> orgUnit,
+      List<String> category,
       List<String> statusList,
       Boolean myOpenings,
       Boolean submittedToFrpa,
@@ -56,8 +56,18 @@ public class OpeningSearchFiltersDto {
       String cutBlockId,
       String timberMark,
       String mainSearchTerm) {
-    this.orgUnit = Objects.isNull(orgUnit) ? null : orgUnit.toUpperCase().trim();
-    this.category = Objects.isNull(category) ? null : category.toUpperCase().trim();
+    this.orgUnit = new ArrayList<>();
+    if (!Objects.isNull(orgUnit)) {
+        this.orgUnit.addAll(orgUnit.stream()
+            .map(s -> String.format("'%s'", s.toUpperCase().trim()))
+            .toList());
+    }
+    this.category = new ArrayList<>();
+    if (!Objects.isNull(category)) {
+        this.category.addAll(category.stream()
+            .map(s -> String.format("'%s'", s.toUpperCase().trim()))
+            .toList());
+    }
     this.statusList = new ArrayList<>();
     this.openingIds = new ArrayList<>();
     if (!Objects.isNull(statusList)) {
@@ -114,8 +124,8 @@ public class OpeningSearchFiltersDto {
    */
   public boolean hasValue(String prop) {
     return switch (prop) {
-      case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit);
-      case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category);
+      case SilvaOracleConstants.ORG_UNIT -> !this.orgUnit.isEmpty();
+      case SilvaOracleConstants.CATEGORY -> !this.category.isEmpty();
       case SilvaOracleConstants.STATUS_LIST -> !this.statusList.isEmpty();
       case SilvaOracleConstants.OPENING_IDS -> !this.openingIds.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
