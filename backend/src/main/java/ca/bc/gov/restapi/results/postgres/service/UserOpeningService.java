@@ -1,7 +1,14 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
@@ -11,13 +18,14 @@ import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.stereotype.Service;
 
-/** This class contains methods for handling User favourite Openings. */
+/**
+ * This class contains methods for handling User favourite Openings.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,6 +36,8 @@ public class UserOpeningService {
   private final UserOpeningRepository userOpeningRepository;
 
   private final OpeningsActivityRepository openingsActivityRepository;
+
+  private final OpeningRepository openingRepository;
 
   /**
    * Gets user's tracked Openings.
@@ -78,46 +88,63 @@ public class UserOpeningService {
     return resultList;
   }
 
-  /**
-   * Saves one or more Openings IDs to an user.
-   *
-   * @param openingId The opening ID.
-   */
-  @Transactional
-  public void saveOpeningToUser(Long openingId) {
-    log.info("Opening ID to save in the user favourites: {}", openingId);
+  public List<Long> listUserFavoriteOpenings() {
+    log.info("Loading user favorite openings for {}", loggedUserService.getLoggedUserId());
 
-    final String userId = loggedUserService.getLoggedUserId();
+    List<UserOpeningEntity> userList = userOpeningRepository
+        .findAllByUserId(loggedUserService.getLoggedUserId());
 
-    UserOpeningEntity entity = new UserOpeningEntity();
-    entity.setUserId(userId);
-    entity.setOpeningId(openingId);
-
-    userOpeningRepository.saveAndFlush(entity);
-    log.info("Opening ID saved in the user's favourites!");
-  }
-
-  /**
-   * Deletes one or more user opening from favourite.
-   *
-   * @param openingId The opening ID.
-   */
-  @Transactional
-  public void deleteOpeningFromUserFavourite(Long openingId) {
-    log.info("Opening ID to delete from the user's favourites: {}", openingId);
-    String userId = loggedUserService.getLoggedUserId();
-
-    UserOpeningEntityId openingPk = new UserOpeningEntityId(userId, openingId);
-
-    Optional<UserOpeningEntity> userOpeningsOp = userOpeningRepository.findById(openingPk);
-
-    if (userOpeningsOp.isEmpty()) {
-      log.info("Opening id {} not found in the user's favourite list!", openingId);
-      throw new UserOpeningNotFoundException();
+    if (userList.isEmpty()) {
+      log.info("No saved openings for {}", loggedUserService.getLoggedUserId());
+      return List.of();
     }
 
-    userOpeningRepository.delete(userOpeningsOp.get());
-    userOpeningRepository.flush();
-    log.info("Opening ID deleted from the favourites!");
+    return
+        userList
+            .stream()
+            .map(UserOpeningEntity::getOpeningId)
+            .toList();
+  }
+
+  @Transactional
+  public void addUserFavoriteOpening(Long openingId) {
+    log.info("Adding opening ID {} as favorite for user {}", openingId,
+        loggedUserService.getLoggedUserId());
+
+    if (openingRepository.findById(openingId).isEmpty()) {
+      log.info("Opening ID not found: {}", openingId);
+      throw new OpeningNotFoundException();
+    }
+
+    log.info("Opening ID {} added as favorite for user {}", openingId,
+        loggedUserService.getLoggedUserId());
+    userOpeningRepository.saveAndFlush(
+        new UserOpeningEntity(
+            loggedUserService.getLoggedUserId(),
+            openingId
+        )
+    );
+  }
+
+  @Transactional
+  public void removeUserFavoriteOpening(Long openingId) {
+    log.info("Removing opening ID {} from the favorites for user {}", openingId,
+        loggedUserService.getLoggedUserId());
+    userOpeningRepository.findById(
+        new UserOpeningEntityId(
+            loggedUserService.getLoggedUserId(),
+            openingId
+        )
+    ).ifPresentOrElse(
+        userOpening -> {
+          userOpeningRepository.delete(userOpening);
+          userOpeningRepository.flush();
+          log.info("Opening ID deleted from the favourites!");
+        },
+        () -> {
+          log.info("Opening id {} not found in the user's favourite list!", openingId);
+          throw new UserFavoriteNotFoundException();
+        }
+    );
   }
 }

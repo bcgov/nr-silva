@@ -8,6 +8,8 @@ interface FavoriteButtonProps {
   kind: string;
   size: string;
   fill: string;
+  favorited: boolean;
+  onFavoriteChange: (newStatus: boolean) => void;
 }
 
 /**
@@ -18,6 +20,7 @@ interface FavoriteButtonProps {
  * @param {string} props.kind - The favourite button kind.
  * @param {string} props.size - The favourite button size.
  * @param {string} props.fill - The favourite button fill.
+ * @param {boolean} props.favorited - The favourite button state.
  * @returns {JSX.Element} The FavoriteButton element to be rendered.
  */
 function FavoriteButton({
@@ -25,11 +28,14 @@ function FavoriteButton({
   kind,
   size,
   fill,
+  favorited = false,
+  onFavoriteChange
 }: FavoriteButtonProps): JSX.Element {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(favorited);
 
   const handleClick = () => {
     setIsFavorite(!isFavorite);
+    onFavoriteChange(!isFavorite);
   };
 
   const iconName = isFavorite ? 'FavoriteFilled' : 'Favorite';
@@ -39,7 +45,6 @@ function FavoriteButton({
   if (!Icon) {
     return <div>Invalid icon name</div>;
   }
-
   const CustomIcon = () => <Icon data-testid="favourite-button-icon" style={{ fill }} />;
 
   return (

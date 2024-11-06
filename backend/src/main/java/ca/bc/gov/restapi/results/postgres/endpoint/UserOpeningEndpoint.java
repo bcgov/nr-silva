@@ -45,8 +45,8 @@ public class UserOpeningEndpoint {
    * @return HTTP status code 201 if success, no response body.
    */
   @PostMapping("/{id}")
-  public ResponseEntity<Void> saveUserOpening(Long id) {
-    userOpeningService.saveOpeningToUser(id);
+  public ResponseEntity<Void> saveUserOpening(@PathVariable Long id) {
+    userOpeningService.addUserFavoriteOpening(id);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -60,7 +60,7 @@ public class UserOpeningEndpoint {
   public ResponseEntity<Void> deleteUserOpening(
       @PathVariable
       Long id) {
-    userOpeningService.deleteOpeningFromUserFavourite(id);
+    userOpeningService.removeUserFavoriteOpening(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
