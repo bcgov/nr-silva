@@ -11,8 +11,6 @@ import './styles.scss';
 import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
 import { useNotification } from '../../contexts/NotificationProvider';
 
-import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
-
 interface OpeningHistoryProps {
   histories: History[];
 }
