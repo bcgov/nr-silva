@@ -23,8 +23,6 @@ interface Props {
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
-  const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
