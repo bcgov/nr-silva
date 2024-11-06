@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, act } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
 import { BrowserRouter } from 'react-router-dom';
@@ -115,4 +115,69 @@ describe('Opening screen test cases', () => {
     //const subtitle = 'Create, manage or check opening information';
     //expect(screen.getByText(subtitle)).toBeDefined();
   });
+
+  describe('FavoriteCards test cases', () => {
+
+    it('should render FavoriteCard component', async () => {
+      
+      let container: HTMLElement = document.createElement('div');
+      await act(async () => {
+      ({ container } = render(
+        <BrowserRouter>
+          <PaginationContext.Provider value={paginationValueMock}>
+            <Opening />
+          </PaginationContext.Provider>
+        </BrowserRouter>
+      ));
+    });
+      
+      // check if first FavoriteCard has the correct title and is active      
+      expect(container.querySelector('#fav-card-1')).toBeDefined();
+      expect(container.querySelector('#fav-card-1')?.textContent).toContain('Silviculture search');
+      expect(container.querySelector('#fav-card-1')?.className).not.contain('cds--link--disable');
+      
+      // check if the second FavoriteCard has the correct title and is inactive
+      expect(container.querySelector('#fav-card-2')).toBeDefined();
+      expect(container.querySelector('#fav-card-2')?.textContent).toContain('Create an opening');
+      expect(container.querySelector('#fav-card-2')?.className).toContain('cds--link--disable');
+      
+      // check if the third FavoriteCard has the correct title and is inactive
+      expect(container.querySelector('#fav-card-3')).toBeDefined();
+      expect(container.querySelector('#fav-card-3')?.textContent).toContain('Reports');
+      expect(container.querySelector('#fav-card-3')?.className).toContain('cds--link--disable');
+
+      // check if the fourth FavoriteCard has the correct title and is inactive
+      expect(container.querySelector('#fav-card-4')).toBeDefined();
+      expect(container.querySelector('#fav-card-4')?.textContent).toContain('Upcoming activities');
+      expect(container.querySelector('#fav-card-4')?.className).toContain('cds--link--disable');
+
+    });
+
+    it('should not render tab when not selected', async () => {
+      let container: HTMLElement = document.createElement('div');
+      let getByText: any;
+      await act(async () => {
+      ({ container, getByText } = render(
+        <BrowserRouter>
+          <PaginationContext.Provider value={paginationValueMock}>
+            <Opening />
+          </PaginationContext.Provider>
+        </BrowserRouter>
+      ));
+    });
+
+      // check if the tab is not rendered
+      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(2);
+      expect(container.querySelector('div.tab-metrics')?.childNodes).toHaveLength(0);
+
+      await act(async () => getByText('Dashboard').click());
+
+      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(2);
+      expect(container.querySelector('div.tab-metrics')?.childNodes).toHaveLength(1);
+
+    });
+
+
+  });
+
 });

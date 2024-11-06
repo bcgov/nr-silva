@@ -85,13 +85,13 @@ const Opening: React.FC = () => {
           <Tab><div className="tab-header">Dashboard</div></Tab>
         </TabList>
         <TabPanels>
-          <TabPanel className="tab-content">
+          <TabPanel className="tab-content tab-openings">
             <OpeningsTab 
               showSpatial={showSpatial}
               setShowSpatial={setShowSpatial}
             />
           </TabPanel>
-          <TabPanel className="tab-content">
+          <TabPanel className="tab-content tab-metrics">
             {activeTab === 1 && <OpeningMetricsTab />}
           </TabPanel>
         </TabPanels>
