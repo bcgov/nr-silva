@@ -78,13 +78,13 @@ describe("fetchOpenings", () => {
 
   it("should fetch openings with the correct parameters and return flattened data", async () => {
     const result = await fetchOpenings(sampleFilters);
-
+    const expectedToken = 'mocked-token';
     // Verify that axios was called with the correct URL and headers
     expect(mockedAxios.get).toHaveBeenCalledWith(
       expect.stringContaining("/api/opening-search?"),
       expect.objectContaining({
         headers: {
-          Authorization: `Bearer mocked-token`,
+          Authorization: `Bearer ${expectedToken}`,
         },
       })
     );
