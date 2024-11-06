@@ -2,7 +2,8 @@ import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { DonutChart } from "@carbon/charts-react";
 import { Dropdown, DatePicker, DatePickerInput, TextInput } from "@carbon/react";
 import "./DoughnutChartView.scss";
-import { IFreeGrowingChartData, fetchFreeGrowingMilestones } from "../../services/OpeningService";
+import { fetchFreeGrowingMilestones } from "../../services/OpeningService";
+import { IFreeGrowingChartData } from "../../types/OpeningTypes";
 
 interface IDropdownItem {
   value: string,
