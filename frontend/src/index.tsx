@@ -16,6 +16,7 @@ import amplifyconfig from './amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
 import { AuthProvider } from './contexts/AuthProvider';
+import { NotificationProvider } from './contexts/NotificationProvider';
 
 const container: HTMLElement | null = document.getElementById('root');
 if (container) {
@@ -58,7 +59,9 @@ if (container) {
               <Provider store={store}>                
                   <PaginationProvider>
                     <OpeningsSearchProvider>
-                      <App />
+                      <NotificationProvider>
+                        <App />
+                      </NotificationProvider>
                     </OpeningsSearchProvider>
                   </PaginationProvider>                
               </Provider>

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor, act } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
+import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
@@ -96,7 +97,9 @@ describe('Opening screen test cases', () => {
     const { getByTestId } = render(
       <BrowserRouter>
         <PaginationContext.Provider value={paginationValueMock}>
-          <Opening />
+          <NotificationProvider>
+            <Opening />
+          </NotificationProvider>
         </PaginationContext.Provider>
       </BrowserRouter>
     );
@@ -117,7 +120,9 @@ describe('Opening screen test cases', () => {
       ({ container } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <Opening />
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));
@@ -152,7 +157,9 @@ describe('Opening screen test cases', () => {
       ({ container, getByText } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <Opening />
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));
@@ -171,7 +178,9 @@ describe('Opening screen test cases', () => {
       ({ container, getByText } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <Opening />
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));

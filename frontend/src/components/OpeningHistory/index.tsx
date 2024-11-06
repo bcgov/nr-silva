@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ProgressIndicator,
   ProgressStep
@@ -7,24 +8,42 @@ import History from '../../types/History';
 import statusClass from '../../utils/HistoryStatus';
 import FavoriteButton from '../FavoriteButton';
 import './styles.scss';
-
 import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
+import { useNotification } from '../../contexts/NotificationProvider';
 
 interface OpeningHistoryProps {
   histories: History[];
 }
 
-const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
-  try {
-    if(!newStatus){      
-      await deleteOpeningFavorite(openingId);
-    }
-  } catch (error) {
-    console.error(`Failed to update favorite status for ${openingId}`);
-  }
-};
 
-const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
+const OpeningHistory: React.FC<OpeningHistoryProps> = ({ histories }: OpeningHistoryProps) => {
+  const { displayNotification } = useNotification();
+
+  const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
+    try {
+      if(!newStatus){      
+        await deleteOpeningFavorite(openingId);
+        displayNotification({
+          title: 'Favorite Removed',
+          subTitle: `Opening Id ${openingId} removed from favorites`,
+          type: 'success',
+          dismissIn: 8000,
+          onClose: () => {}
+        });
+        
+      }
+    } catch (error) {
+      displayNotification({
+        title: 'Error',
+        subTitle: `Failed to update favorite status for ${openingId}`,
+        type: 'error',
+        dismissIn: 8000,
+        onClose: () => {}
+      });
+    }
+  };
+
+  return (
   <div className='px-3 pb-3'>
     <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (
@@ -68,5 +87,6 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
     </div>
   </div>
 );
+};
 
 export default OpeningHistory;

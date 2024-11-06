@@ -2,6 +2,7 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import OpeningHistory from '../../components/OpeningHistory';
+import { NotificationProvider } from '../../contexts/NotificationProvider';
 import History from '../../types/History';
 import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
 
@@ -28,7 +29,7 @@ describe('OpeningHistory Component', () => {
   it('renders correctly with given histories', async () => {
     let getByText;
     await act(async () => {
-      ({ getByText } = render(<OpeningHistory histories={mockHistories} /> ));
+      ({ getByText } = render(<NotificationProvider><OpeningHistory histories={mockHistories} /></NotificationProvider>));
     });
 
     // Check for the presence of Opening Ids
@@ -44,7 +45,7 @@ describe('OpeningHistory Component', () => {
   it('renders correctly with empty histories', async () => {
     let container;
     await act(async () => {
-      ({ container } = render(<OpeningHistory histories={[]} /> ));
+      ({ container } = render(<NotificationProvider><OpeningHistory histories={[]} /></NotificationProvider>));
     });
 
     // Select the div with the specific class
@@ -59,11 +60,11 @@ describe('OpeningHistory Component', () => {
   it('should call deleteOpeningFavorite when FavoriteButton is clicked', async () => {    
     let container;
     await act(async () => {
-      ({ container } = render(<OpeningHistory histories={mockHistories} /> ));
+      ({ container } = render(<NotificationProvider><OpeningHistory histories={mockHistories} /></NotificationProvider>));
     });
 
     const favoriteButton = container.querySelector('.favorite-icon button')
-    favoriteButton && favoriteButton.click();
+    await act(async () => favoriteButton && favoriteButton.click());
     expect(deleteOpeningFavorite).toHaveBeenCalled();
   });
 });
