@@ -164,7 +164,7 @@ describe('Opening screen test cases', () => {
 
     });
 
-    it.only('should render tab only when selected', async () => {
+    it('should render tab only when selected', async () => {
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
