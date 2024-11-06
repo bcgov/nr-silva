@@ -9,10 +9,11 @@ export interface OpeningFilters {
   searchInput?: string;
   startDate?: string;
   endDate?: string;
-  orgUnit?: string;
-  category?: string;
+  orgUnit?: string[];
+  category?: string[];
   clientAcronym?: string;
   blockStatus?: string;
+  dateType?: string;
   cutBlock?: string;
   cuttingPermit?: string;
   grossArea?: string;
