@@ -1,4 +1,4 @@
-export interface statusCategory {
+export interface StatusCategory {
   code: string;
   description: string;
 }
@@ -10,8 +10,8 @@ export interface RecentOpeningApi {
   timberMark: string | null;
   cutBlock: string | null;
   grossAreaHa: number | null;
-  status: statusCategory | null;
-  category: statusCategory | null;
+  status: StatusCategory | null;
+  category: StatusCategory | null;
   disturbanceStart: string | null;
   entryTimestamp: string | null;
   updateTimestamp: string | null;

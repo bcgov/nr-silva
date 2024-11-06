@@ -14,10 +14,10 @@ interface OpeningHistoryProps {
   histories: History[];
 }
 
-const handleFavoriteChange = (newStatus: boolean, openingId: number) => {
+const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
   try {
     if(!newStatus){      
-      deleteOpeningFavorite(openingId);
+      await deleteOpeningFavorite(openingId);
     }
   } catch (error) {
     console.error(`Failed to update favorite status for ${openingId}`);
