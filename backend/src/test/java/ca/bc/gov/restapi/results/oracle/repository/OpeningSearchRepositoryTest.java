@@ -42,8 +42,8 @@ class OpeningSearchRepositoryTest {
   private OpeningSearchRepository openingSearchRepository;
 
   private OpeningSearchFiltersDto mockFilter(
-      String orgUnit,
-      String category,
+      List<String> orgUnit,
+      List<String> category,
       List<String> statusList,
       Boolean myOpenings,
       Boolean submittedToFrpa,
@@ -79,7 +79,7 @@ class OpeningSearchRepositoryTest {
         mainSearchTerm);
   }
 
-  private OpeningSearchFiltersDto mockOrgUnit(String orgUnit) {
+  private OpeningSearchFiltersDto mockOrgUnit(List<String> orgUnit) {
     return mockFilter(
         orgUnit, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null);
@@ -87,8 +87,8 @@ class OpeningSearchRepositoryTest {
 
   private OpeningSearchFiltersDto mockAllFilters() {
     return mockFilter(
-        "DCR",
-        "FTML",
+        List.of("DCR"),
+        List.of("FTML"),
         List.of("APP"),
         true,
         false,
@@ -481,7 +481,7 @@ class OpeningSearchRepositoryTest {
   @Test
   @DisplayName("Search opening query org unit filter should succeed")
   void searchOpeningQuery_orgUnitFilter_shouldSucceed() {
-    OpeningSearchFiltersDto filters = mockOrgUnit("DCR");
+    OpeningSearchFiltersDto filters = mockOrgUnit(List.of("DCR"));
 
     PaginationParameters pagination = new PaginationParameters(0, 10);
 
@@ -575,7 +575,7 @@ class OpeningSearchRepositoryTest {
 
     Integer openingId = 123456789;
     String openingNumber = "589";
-    OpeningCategoryEnum category = OpeningCategoryEnum.of(filters.getCategory());
+    OpeningCategoryEnum category = OpeningCategoryEnum.of("FTML");
     OpeningStatusEnum status = OpeningStatusEnum.of(filters.getStatusList().get(0));
     String cuttingPermitId = "123";
     String timberMark = "EM2184";
@@ -583,7 +583,7 @@ class OpeningSearchRepositoryTest {
     BigDecimal openingGrossArea = new BigDecimal("11");
     Timestamp disturbanceStartDate = Timestamp.valueOf(LocalDateTime.now());
     String forestFileId = "TFL47";
-    String orgUnitCode = filters.getOrgUnit();
+    String orgUnitCode = "DCR";
     String orgUnitName = "Org Name";
     String clientNumber = "00012797";
     String clientLocation = "00";
@@ -655,7 +655,7 @@ class OpeningSearchRepositoryTest {
   @Test
   @DisplayName("Search opening query no records found should succeed")
   void searchOpeningQuery_noRecordsFound_shouldSucceed() {
-    OpeningSearchFiltersDto filters = mockOrgUnit("AAA");
+    OpeningSearchFiltersDto filters = mockOrgUnit(List.of("AAA"));
 
     PaginationParameters pagination = new PaginationParameters(0, 10);
 

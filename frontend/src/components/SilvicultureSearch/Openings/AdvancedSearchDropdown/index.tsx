@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Checkbox,
   CheckboxGroup,
@@ -17,7 +17,7 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import { color } from "@carbon/charts";
+import { FilterableMultiSelect } from "@carbon/react";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -28,10 +28,48 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
   const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
+   // Initialize selected items for OrgUnit MultiSelect based on existing filters
+   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
+   // Initialize selected items for category MultiSelect based on existing filters
+    const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+
+
+   useEffect(() => {
+     // Split filters.orgUnit into array and format as needed for selectedItems
+     if (filters.orgUnit) {
+       const orgUnitsArray = filters.orgUnit.map((orgUnit: String) => ({
+         text: orgUnit,
+         value: orgUnit,
+       }));
+       setSelectedOrgUnits(orgUnitsArray);
+     } else {
+        setSelectedOrgUnits([]);
+     }
+     // Split filters.category into array and format as needed for selectedItems
+     if (filters.category) {
+      const categoriesArray = filters.category.map((category: String) => ({
+        text: category,
+        value: category,
+      }));
+      setSelectedCategories(categoriesArray);
+    } else{
+      setSelectedCategories([]);
+    }
+   }, [filters.orgUnit, filters.category]);
+
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
     setFilters(newFilters);
   };
+
+  const handleMultiSelectChange = (group: string, selectedItems: any) => {
+    const updatedGroup = selectedItems.map((item: any) => item.value);
+    if (group === "orgUnit")
+    setSelectedOrgUnits(updatedGroup);
+    if (group === "category")
+    setSelectedCategories(updatedGroup);
+    handleFilterChange({ [group]: updatedGroup });
+  }
 
   const handleCheckboxChange = (value: string, group: string) => {
     const selectedGroup = filters[group as keyof typeof filters] as string[];
@@ -68,12 +106,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
   const dateTypeItems =
     data.dateTypes?.map((item: any) => ({
-      text: item.label,
-      value: item.value,
-    })) || [];
-
-  const blockStatusItems =
-    data.blockStatuses?.map((item: any) => ({
       text: item.label,
       value: item.value,
     })) || [];
@@ -119,41 +151,29 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
 
         <Row className="mb-3">
           <Column lg={8}>
-            <Dropdown
-              id="orguni-dropdown"
-              titleText="Org unit"
-              items={orgUnitItems}
-              itemToString={(item: any) => (item ? item.text : "")}
-              onChange={(e: any) =>
-                handleFilterChange({ orgUnit: e.selectedItem.value })
-              }
+            <FilterableMultiSelect
               label="Enter or choose an org unit"
-              selectedItem={
-                filters.orgUnit
-                  ? orgUnitItems.find(
-                      (item: any) => item.value === filters.orgUnit
-                    )
-                  : ""
-              }
+              id="orgunit-multiselect"
+              className="multi-select"
+              titleText="Org Unit"
+              items={orgUnitItems}
+              itemToString={(item: any) => (item ? item.value : "")}
+              selectionFeedback="top-after-reopen"
+              onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
+              selectedItems={selectedOrgUnits}
             />
           </Column>
           <Column lg={8}>
-            <Dropdown
-              id="category-dropdown"
+            <FilterableMultiSelect
+              label="Enter or choose a category"
+              id="category-multiselect"
+              className="multi-select"
               titleText="Category"
               items={categoryItems}
-              itemToString={(item: any) => (item ? item.text : "")}
-              onChange={(e: any) =>
-                handleFilterChange({ category: e.selectedItem.value })
-              }
-              label="Enter or choose a category"
-              selectedItem={
-                filters.category
-                  ? categoryItems.find(
-                      (item: any) => item.value === filters.category
-                    )
-                  : ""
-              }
+              itemToString={(item: any) => (item ? item.value : "")}
+              selectionFeedback="top-after-reopen"
+              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
+              selectedItems={selectedCategories}
             />
           </Column>
         </Row>
@@ -168,7 +188,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
                   label="If you don't remember the client information you can go to client search."
                 >
                   <button className="bx--tooltip__trigger" type="button">
-                    <Icons.Information/>
+                    <Icons.Information />
                   </button>
                 </Tooltip>
                 <TextInput
@@ -336,7 +356,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
         </Row>
 
         <Row className="">
-          
           <Column lg={16}>
             <CheckboxGroup
               orientation="horizontal"
