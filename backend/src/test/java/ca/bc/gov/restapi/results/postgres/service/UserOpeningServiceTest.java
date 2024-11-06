@@ -4,8 +4,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserOpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
@@ -31,6 +34,8 @@ class UserOpeningServiceTest {
 
   @Mock OpeningsActivityRepository openingsActivityRepository;
 
+  @Mock OpeningRepository openingRepository;
+
   private UserOpeningService userOpeningService;
 
   private static final String USER_ID = "TEST";
@@ -39,7 +44,7 @@ class UserOpeningServiceTest {
   void setup() {
     this.userOpeningService =
         new UserOpeningService(
-            loggedUserService, userOpeningRepository, openingsActivityRepository);
+            loggedUserService, userOpeningRepository, openingsActivityRepository,openingRepository);
   }
 
   @Test
@@ -90,15 +95,16 @@ class UserOpeningServiceTest {
 
   @Test
   @DisplayName("Save opening to user happy path should succeed")
-  void saveOpeningToUser_happyPath_shouldSucceed() {
+  void addUser_FavoriteOpening_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
+    when(openingRepository.findById(any())).thenReturn(Optional.of(new OpeningEntity()));
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
-    userOpeningService.saveOpeningToUser(112233L);
+    userOpeningService.addUserFavoriteOpening(112233L);
   }
 
   @Test
   @DisplayName("Delete opening from user's favourite happy path should succeed")
-  void deleteOpeningFromUserFavourite_happyPath_shouldSucceed() {
+  void removeUserFavoriteOpening_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
 
     UserOpeningEntity userEntity = new UserOpeningEntity();
@@ -107,19 +113,19 @@ class UserOpeningServiceTest {
     doNothing().when(userOpeningRepository).delete(any());
     doNothing().when(userOpeningRepository).flush();
 
-    userOpeningService.deleteOpeningFromUserFavourite(112233L);
+    userOpeningService.removeUserFavoriteOpening(112233L);
   }
 
   @Test
   @DisplayName("Delete opening from user's favourite not found should fail")
-  void deleteOpeningFromUserFavourite_notFound_shouldFail() {
+  void removeUserFavoriteOpening_notFound_shouldFail() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
     when(userOpeningRepository.findById(any())).thenReturn(Optional.empty());
 
     Assertions.assertThrows(
-        UserOpeningNotFoundException.class,
+        UserFavoriteNotFoundException.class,
         () -> {
-          userOpeningService.deleteOpeningFromUserFavourite(112233L);
+          userOpeningService.removeUserFavoriteOpening(112233L);
         });
   }
 }

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   ProgressIndicator,
   ProgressStep
@@ -10,9 +8,21 @@ import statusClass from '../../utils/HistoryStatus';
 import FavoriteButton from '../FavoriteButton';
 import './styles.scss';
 
+import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
+
 interface OpeningHistoryProps {
   histories: History[];
 }
+
+const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
+  try {
+    if(!newStatus){      
+      await deleteOpeningFavorite(openingId);
+    }
+  } catch (error) {
+    console.error(`Failed to update favorite status for ${openingId}`);
+  }
+};
 
 const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
   <div className='px-3 pb-3'>
@@ -28,6 +38,8 @@ const OpeningHistory = ({ histories }: OpeningHistoryProps) => (
                     kind="ghost"
                     size="sm"
                     fill="#0073E6"
+                    favorited={true}
+                    onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
                   />
                 </div>
                 {`Opening Id ${history.id}`}

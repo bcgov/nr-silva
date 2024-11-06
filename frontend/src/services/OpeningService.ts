@@ -4,27 +4,57 @@ import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
 import { RecentOpening } from '../types/RecentOpening';
-import { IOpeningPerYear } from '../types/IOpeningPerYear';
+import { 
+  RecentOpeningApi, 
+  IOpeningPerYear,
+  IFreeGrowingProps,
+  IFreeGrowingChartData
+} from '../types/OpeningTypes';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
-interface statusCategory {
-  code: string;
-  description: string;
-}
+/**
+ * Fetch recent openings data from backend.
+ *
+ * @returns {Promise<RecentOpening[]>} Array of objects found
+ */
+export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
+  const authToken = getAuthIdToken();
+  try {
+    const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+        }
+    });
 
-interface RecentOpeningApi {
-  openingId: number;
-  forestFileId: string;
-  cuttingPermit: string | null;
-  timberMark: string | null;
-  cutBlock: string | null;
-  grossAreaHa: number | null;
-  status: statusCategory | null;
-  category: statusCategory | null;
-  disturbanceStart: string | null;
-  entryTimestamp: string | null;
-  updateTimestamp: string | null;
+    if (response.status >= 200 && response.status < 300) {
+      const { data } = response;
+
+      if (data.data) {
+        // Extracting row information from the fetched data
+        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
+          id: opening.openingId.toString(),
+          openingId: opening.openingId.toString(),
+          forestFileId: opening.forestFileId ? opening.forestFileId : '-',
+          cuttingPermit: opening.cuttingPermit ? opening.cuttingPermit : '-',
+          timberMark: opening.timberMark ? opening.timberMark : '-',
+          cutBlock: opening.cutBlock ? opening.cutBlock : '-',
+          grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
+          status: opening.status && opening.status.description? opening.status.description : '-',
+          category: opening.category && opening.category.description? opening.category.description : '-',
+          disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
+          entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
+          updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
+        }));
+  
+        return rows;
+      }
+    }
+    return [];
+  } catch (error) {
+    console.error('Error fetching recent openings:', error);
+    throw error;
+  }
 }
 
 /**
@@ -70,51 +100,6 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
     console.error('Error fetching openings per year:', error);
     throw error;
   }
-}
-
-export const fetchOpeningsPerYearAPI = async (props: IOpeningPerYear): Promise<OpeningPerYearChart[]> => {
-  const authToken = getAuthIdToken();
-  
-  try {
-    let url = `${backendUrl}/api/dashboard-metrics/submission-trends`;
-    if (props.orgUnitCode || props.statusCode || props.entryDateStart || props.entryDateEnd) {
-      url += "?";
-      if (props.orgUnitCode) url += `orgUnitCode=${props.orgUnitCode}&`;
-      if (props.statusCode) url += `statusCode=${props.statusCode}&`;
-      if (props.entryDateStart) url += `entryDateStart=${props.entryDateStart}&`;
-      if (props.entryDateEnd) url += `entryDateEnd=${props.entryDateEnd}&`;
-      url = url.replace(/&$/, "");
-    }
-
-    const response = await axios.get(url, {
-      headers: { Authorization: `Bearer ${authToken}` }
-    });
-
-    if (response.data && Array.isArray(response.data)) {
-      return response.data.map(item => ({
-        group: "Openings",
-        key: item.monthName,
-        value: item.amount
-      }));
-    }
-    
-    return [];
-  } catch (error) {
-    console.error("Error fetching openings per year:", error);
-    throw error;
-  }
-};
-
-interface IFreeGrowingProps {
-  orgUnitCode: string;
-  clientNumber: string;
-  entryDateStart: string | null;
-  entryDateEnd: string | null;
-}
-
-export interface IFreeGrowingChartData {
-  group: string;
-  value: number;
 }
 
 /**
