@@ -43,35 +43,34 @@ const OpeningHistory: React.FC = () => {
   };
 
   return (
-
-  <div className='px-3 pb-3'>
-    <div className="row activity-history-container gx-4">
-      {histories.map((history, index) => (
-        <div key={index} className="col-12 col-sm-4">
-          <div className='d-flex'>
-            <div className="activity-history-header">
-              <div className="d-flex flex-row align-items-center" data-id={history.id}>
-                <div className="favorite-icon">
-                  <FavoriteButton
-                    tooltipPosition="bottom"
-                    kind="ghost"
-                    size="sm"
-                    fill="#0073E6"
-                    favorited={true}
-                    onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
-                  />
+    <div className='px-3 pb-3'>
+      <div className="row activity-history-container gx-4">
+        {histories.map((history, index) => (
+          <div key={index} className="col-12 col-sm-4">
+            <div className='d-flex'>
+              <div className="activity-history-header">              
+                <div className="d-flex flex-row align-items-center" data-id={history.id}>
+                  <div className="favorite-icon">
+                    <FavoriteButton
+                      tooltipPosition="bottom"
+                      kind="ghost"
+                      size="sm"
+                      fill="#0073E6"
+                      favorited={true}
+                      onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
+                    />
+                  </div>
+                  <span className="trend-title">Opening ID</span>
+                  &nbsp;
+                  {history.id}
                 </div>
-                <span className="trend-title">Opening ID</span>
-                &nbsp;
-                {history.id}
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default OpeningHistory;
