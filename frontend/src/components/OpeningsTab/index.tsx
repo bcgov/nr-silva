@@ -10,14 +10,13 @@ import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
 import { InlineNotification } from '@carbon/react';
 import { RecentOpening } from '../../types/RecentOpening';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
 import { generateHtmlFile } from './layersGenerator';
 import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
+import { useGetAuth } from '../../contexts/AuthProvider';
 
 interface Props {
   showSpatial: boolean;
-  setShowSpatial: Function;
+  setShowSpatial: (show: boolean) => void;
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
@@ -26,8 +25,8 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
-  const userDetails = useSelector((state: RootState) => state.userDetails);
+  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);  
+  const { user } = useGetAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,13 +58,12 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
-    setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
+      setShowSpatial(!showSpatial);
   };
 
   const onClickFn = () => {
-    const allowed: string[] = wmsUsersWhitelist.map((user: WmsLayersWhitelistUser) => user.userName);
-    const { userName } = userDetails.user;
-    if (allowed.includes(userName)) {
+    const allowed: string[] = wmsUsersWhitelist.map((wmsUser: WmsLayersWhitelistUser) => wmsUser.userName);    
+    if (allowed.includes(user?.userName || '')) {
       const newWindow = window.open();
       if (newWindow) {
         newWindow.document.body.innerHTML = generateHtmlFile();

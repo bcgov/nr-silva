@@ -2,8 +2,6 @@ window.global ||= window;
 import React from 'react';
 import './index.css';
 import { ClassPrefix } from '@carbon/react';
-import { Provider } from 'react-redux'
-import store from './store'
 import App from './App';
 import { ThemePreference } from './utils/ThemePreference';
 import { createRoot } from 'react-dom/client';
@@ -55,16 +53,14 @@ if (container) {
       <ClassPrefix prefix='bx'>
         <ThemePreference>
           <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-              <Provider store={store}>                
+            <QueryClientProvider client={queryClient}>        
                   <PaginationProvider>
                     <OpeningsSearchProvider>
                       <NotificationProvider>
                         <App />
                       </NotificationProvider>
                     </OpeningsSearchProvider>
-                  </PaginationProvider>                
-              </Provider>
+                  </PaginationProvider>
             </QueryClientProvider>
           </AuthProvider>
         </ThemePreference>

@@ -10,6 +10,7 @@ import { RecentOpening } from '../../types/RecentOpening';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
 import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { AuthProvider } from '../../contexts/AuthProvider';
 
 const data = {
   "activityType": "Update",
@@ -98,7 +99,9 @@ describe('Opening screen test cases', () => {
       <BrowserRouter>
         <PaginationContext.Provider value={paginationValueMock}>
           <NotificationProvider>
-            <Opening />
+            <AuthProvider>
+              <Opening />
+            </AuthProvider>
           </NotificationProvider>
         </PaginationContext.Provider>
       </BrowserRouter>
@@ -121,7 +124,9 @@ describe('Opening screen test cases', () => {
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
-              <Opening />
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
@@ -158,7 +163,9 @@ describe('Opening screen test cases', () => {
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
-              <Opening />
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
@@ -179,7 +186,9 @@ describe('Opening screen test cases', () => {
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
-              <Opening />
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
