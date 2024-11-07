@@ -130,7 +130,10 @@ objects:
               imagePullPolicy: Always
               env:
                 - name: ORACLEDB_HOST
-                  value: ${DATABASE_HOST}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-host
                 - name: ORACLEDB_SECRET
                   valueFrom:
                     secretKeyRef:
@@ -173,11 +176,17 @@ objects:
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
                 - name: DATABASE_HOST
-                  value: ${DATABASE_HOST}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-host
                 - name: DATABASE_PORT
                   value: ${DATABASE_PORT}
                 - name: SERVICE_NAME
-                  value: ${SERVICE_NAME}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-service
                 - name: AWS_COGNITO_ISSUER_URI
                   value: ${AWS_COGNITO_ISSUER_URI}
                 - name: DASHBOARD_JOB_IDIR_USERS

@@ -31,6 +31,8 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.ORACLE_DB_PASSWORD }}'
+            -p ORACLE_DB_HOST='${{ secrets.ORACLE_DB_HOST }}'
+            -p ORACLE_DB_SERVICE='${{ secrets.ORACLE_DB_SERVICE }}'
             -p POSTGRES_DB_PASSWORD='${{ secrets.POSTGRES_DB_PASSWORD }}'
             -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
@@ -104,6 +106,8 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.ORACLE_DB_PASSWORD }}'
+            -p ORACLE_DB_HOST='${{ secrets.ORACLE_DB_HOST }}'
+            -p ORACLE_DB_SERVICE='${{ secrets.ORACLE_DB_SERVICE }}'
             -p POSTGRES_DB_PASSWORD='${{ secrets.POSTGRES_DB_PASSWORD }}'
             -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
