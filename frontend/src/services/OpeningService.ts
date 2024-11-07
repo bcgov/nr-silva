@@ -164,17 +164,7 @@ export function fetchRecentActions(): RecentAction[] {
 
     // Temporarily use the sample data for testing
     // const { data } = response;
-    const data: RecentAction[] = [
-      {
-        "activityType": "Update",
-        "openingId": "1541297",
-        "statusCode": "APP",
-        "statusDescription": "Approved",
-        "lastUpdatedLabel": "1 minute ago",
-        "lastUpdated": "2024-05-16T19:59:21.635Z"
-      }
-      // Add more sample objects here if needed
-    ];
+    const data: RecentAction[] = [];
 
     if (Array.isArray(data)) {
       // Transforming response data into a format consumable by the component
