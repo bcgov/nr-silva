@@ -257,13 +257,13 @@ public class OpeningSearchRepository {
 
     // 1. Org Unit code
     if (filtersDto.hasValue(SilvaOracleConstants.ORG_UNIT)) {
-      log.info("Setting orgUnit filter value");
-      query.setParameter("orgUnit", filtersDto.getOrgUnit());
+      log.info("Setting orgUnit filter values");
+      // No need to set value since the query already dit it. Didn't work set through named param
     }
     // 2. Category code
     if (filtersDto.hasValue(SilvaOracleConstants.CATEGORY)) {
-      log.info("Setting category filter value");
-      query.setParameter("category", filtersDto.getCategory());
+      log.info("Setting category filter values");
+      // No need to set value since the query already dit it. Didn't work set through named param
     }
     // 3. Status list codes
     if (filtersDto.hasValue(SilvaOracleConstants.STATUS_LIST)) {
@@ -414,13 +414,15 @@ public class OpeningSearchRepository {
 
     // 1. Org Unit code
     if (filtersDto.hasValue(SilvaOracleConstants.ORG_UNIT)) {
-      log.info("Filter orgUnit detected! orgUnit={}", filtersDto.getOrgUnit());
-      builder.append("AND ou.ORG_UNIT_CODE = :orgUnit ");
+      String orgUnits = String.join(",", filtersDto.getOrgUnit());
+      log.info("Filter orgUnit detected! orgUnit={}", orgUnits);  
+      builder.append(String.format("AND ou.ORG_UNIT_CODE IN (%s) ", orgUnits));
     }
     // 2. Category code
     if (filtersDto.hasValue(SilvaOracleConstants.CATEGORY)) {
-      log.info("Filter category detected! category={}", filtersDto.getCategory());
-      builder.append("AND o.OPEN_CATEGORY_CODE = :category ");
+      String categories = String.join(",", filtersDto.getCategory());
+      log.info("Filter category detected! statusList={}", categories);
+      builder.append(String.format("AND o.OPEN_CATEGORY_CODE IN (%s) ", categories));
     }
     // 3. Status code
     if (filtersDto.hasValue(SilvaOracleConstants.STATUS_LIST)) {
