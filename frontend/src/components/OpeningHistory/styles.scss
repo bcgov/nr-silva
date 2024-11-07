@@ -13,9 +13,6 @@ p.activity-history-header {
   min-width: 11rem;
   height: 100%;
 }
-.activity-history-container{
-  overflow-x: scroll;
-}
 
 .activity-history-box > li.#{vars.$bcgov-prefix}--progress-step,
 .activity-history-box > li > button.#{vars.$bcgov-prefix}--progress-step-button {
@@ -29,4 +26,12 @@ p.activity-history-header {
 }
 .favorite-icon{
   margin-right: 4px;
+}
+
+.trend-title{
+  font-weight: bold;
+}
+
+.debug {
+  border: 1px solid red;
 }

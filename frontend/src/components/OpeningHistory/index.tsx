@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  ProgressIndicator,
-  ProgressStep
-} from '@carbon/react';
-
 import History from '../../types/History';
-import statusClass from '../../utils/HistoryStatus';
 import FavoriteButton from '../FavoriteButton';
 import './styles.scss';
 import { useNotification } from '../../contexts/NotificationProvider';
@@ -17,7 +11,7 @@ const OpeningHistory: React.FC = () => {
   const [histories, setHistories] = useState<History[]>([]);
 
   const loadTrends = async () => {    
-    const history = await fetchOpeningTrends();
+    const history = await fetchOpeningTrends();    
     setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
   };
 
@@ -54,7 +48,7 @@ const OpeningHistory: React.FC = () => {
     <div className="row activity-history-container gx-4">
       {histories.map((history, index) => (
         <div key={index} className="col-12 col-sm-4">
-          <div className='activity-history-col'>
+          <div className='d-flex'>
             <div className="activity-history-header">
               <div className="d-flex flex-row align-items-center" data-id={history.id}>
                 <div className="favorite-icon">
@@ -67,26 +61,11 @@ const OpeningHistory: React.FC = () => {
                     onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
                   />
                 </div>
-                {`Opening Id ${history.id}`}
+                <span className="trend-title">Opening ID</span>
+                &nbsp;
+                {history.id}
               </div>
             </div>
-            <ProgressIndicator vertical className="activity-history-box">
-              {history.steps.map((step) => {
-                const status = statusClass(step.status);
-                return (
-                  <ProgressStep
-                    key={step.step.toString()}
-                    complete={status.complete}
-                    current={status.current}
-                    invalid={status.invalid}
-                    disabled={status.disabled}
-                    label={step.description}
-                    secondaryLabel={step.subtitle}
-                    className = 'py-2'
-                  />
-                );
-              })}
-            </ProgressIndicator>
           </div>
         </div>
       ))}
