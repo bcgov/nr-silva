@@ -1,14 +1,15 @@
 import React from "react";
 import PageTitle from "../../components/PageTitle";
 import './SilvicultureSearch.scss'
-import { TabList } from "@carbon/react";
-import { Tabs } from "@carbon/react";
-import { Tab } from "@carbon/react";
-import { TabPanels } from "@carbon/react";
-import { TabPanel } from "@carbon/react";
+import { 
+  TabList,
+  Tabs,
+  Tab,
+  TabPanels,
+  TabPanel 
+} from "@carbon/react";
 import * as Icons from '@carbon/icons-react';
 import OpeningsSearchTab from "../../components/SilvicultureSearch/Openings/OpeningsSearchTab";
-import { OpeningsSearchProvider } from "../../contexts/search/OpeningsSearch";
 
 const SilvicultureSearch: React.FC = () => {
 
