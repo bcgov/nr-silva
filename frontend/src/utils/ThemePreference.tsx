@@ -20,7 +20,7 @@ function useThemePreference() {
 }
 
 interface ThemePreferenceProps {
-  children?: ReactNode
+  readonly children?: ReactNode
 }
 
 /**
