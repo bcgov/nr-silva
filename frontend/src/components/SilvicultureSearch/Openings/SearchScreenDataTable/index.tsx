@@ -40,7 +40,7 @@ import {
   downloadXLSX
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite } from '../../../../services/OpeningFavoriteService';
+import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { useNotification } from "../../../../contexts/NotificationProvider";
 
 interface ISearchScreenDataTable {

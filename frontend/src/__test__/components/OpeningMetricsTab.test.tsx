@@ -3,11 +3,11 @@ import React from 'react';
 import { render, act, waitFor, fireEvent, screen } from '@testing-library/react';
 import OpeningMetricsTab from '../../components/OpeningMetricsTab';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
-import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
 
-vi.mock('../../services/OpeningFavoriteService', () => ({
-  fetchOpeningTrends: vi.fn(),
+vi.mock('../../services/OpeningFavouriteService', () => ({
+  fetchOpeningFavourites: vi.fn(),
 }));
 vi.mock('../../services/OpeningService', async () => {
   const actual = await vi.importActual('../../services/OpeningService');
@@ -41,7 +41,7 @@ describe('OpeningMetricsTab', () => {
       { group: '2023', key: 'Openings', value: 15 },
     ]);
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue([1, 2, 3]);
+    (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1, 2, 3]);
     
   });
 
@@ -61,7 +61,7 @@ describe('OpeningMetricsTab', () => {
     expect(screen.getByText('Check your recent requests and files')).toBeInTheDocument();
   });
 
-  it('should call fetchOpeningTrends and set submissionTrends state', async () => {
+  it('should call fetchOpeningFavourites and set submissionTrends state', async () => {
     
 
     await act(async () => {
@@ -69,7 +69,7 @@ describe('OpeningMetricsTab', () => {
     });
 
     await waitFor(() => {
-      expect(fetchOpeningTrends).toHaveBeenCalled();
+      expect(fetchOpeningFavourites).toHaveBeenCalled();
       expect(screen.getByText('Opening Id 1')).toBeInTheDocument();
       expect(screen.getByText('Opening Id 2')).toBeInTheDocument();
       expect(screen.getByText('Opening Id 3')).toBeInTheDocument();

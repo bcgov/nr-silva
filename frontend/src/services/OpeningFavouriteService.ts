@@ -5,7 +5,7 @@ import { env } from '../env';
 const backendUrl = env.VITE_BACKEND_URL;
 
 /**
- * Fetches the submission trends/favorites from the backend.
+ * Fetches the submission trends/favourites from the backend.
  *
  * This function sends a GET request to the backend API to retrieve the user favorite openings.
  * It includes an authorization token in the request headers.
@@ -13,10 +13,10 @@ const backendUrl = env.VITE_BACKEND_URL;
  * @returns {Promise<number[]>} A promise that resolves to an array of numbers representing the opening ids.
  * If the response data is not an array, it returns an empty array.
  */
-export const fetchOpeningTrends = async (): Promise<number[]> =>{
+export const fetchOpeningFavourites = async (): Promise<number[]> =>{
   const authToken = getAuthIdToken();  
   const response = await axios.get(
-    `${backendUrl}/api/openings/favorites`, {
+    `${backendUrl}/api/openings/favourites`, {
     headers: {
       Authorization: `Bearer ${authToken}`
     }
@@ -40,7 +40,7 @@ export const fetchOpeningTrends = async (): Promise<number[]> =>{
 export const setOpeningFavorite = async (openingId: number): Promise<void> => {
   const authToken = getAuthIdToken();
   const response = await axios.put(
-    `${backendUrl}/api/openings/favorites/${openingId}`, null, {
+    `${backendUrl}/api/openings/favourites/${openingId}`, null, {
     headers: {
       Authorization: `Bearer ${authToken}`
     }
@@ -61,7 +61,7 @@ export const setOpeningFavorite = async (openingId: number): Promise<void> => {
 export const deleteOpeningFavorite = async (openingId: number): Promise<void> => {
   const authToken = getAuthIdToken();
   const response = await axios.delete(
-    `${backendUrl}/api/openings/favorites/${openingId}`, {
+    `${backendUrl}/api/openings/favourites/${openingId}`, {
     headers: {
       Authorization: `Bearer ${authToken}`
     }

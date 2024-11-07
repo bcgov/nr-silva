@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import History from '../../types/History';
 import FavoriteButton from '../FavoriteButton';
+import EmptySection from "../EmptySection";
 import './styles.scss';
 import { useNotification } from '../../contexts/NotificationProvider';
-import { fetchOpeningTrends, deleteOpeningFavorite } from "../../services/OpeningFavoriteService";
+import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 
 
 const OpeningHistory: React.FC = () => {
@@ -11,7 +12,7 @@ const OpeningHistory: React.FC = () => {
   const [histories, setHistories] = useState<History[]>([]);
 
   const loadTrends = async () => {    
-    const history = await fetchOpeningTrends();    
+    const history = await fetchOpeningFavourites();    
     setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
   };
 
@@ -45,7 +46,8 @@ const OpeningHistory: React.FC = () => {
   return (
     <div className='px-3 pb-3'>
       <div className="row activity-history-container gx-4">
-        {histories.map((history, index) => (
+        {histories && histories.length > 0 ?
+        histories.map((history, index) => (
           <div key={index} className="col-12 col-sm-4">
             <div className='d-flex'>
               <div className="activity-history-header">              
@@ -67,7 +69,17 @@ const OpeningHistory: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        )):
+        <div className="col-12">
+          <EmptySection 
+          pictogram="UserInsights"
+          fill="#0073E6"
+          title={"You don't have any favourites to show yet!"}
+          description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
+          
+          />
+        </div>
+        }
       </div>
     </div>
   );
