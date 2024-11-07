@@ -27,9 +27,9 @@ const SilvicultureSearch: React.FC = () => {
       <Tabs>
         <TabList className="search-tablist tab-list" aria-label="List of Tab" contained>
           <Tab renderIcon={Icons.MapBoundaryVegetation}><div className="tab-header">Openings</div></Tab>
-          <Tab renderIcon={Icons.Activity}><div className="tab-header">Activities</div></Tab>
-          <Tab renderIcon={Icons.Tree}><div className="tab-header">Stocking standards</div></Tab>
-          <Tab renderIcon={Icons.VegetationAsset}><div className="tab-header">Standard units</div></Tab>
+          <Tab renderIcon={Icons.Activity} disabled><div className="tab-header">Activities</div></Tab>
+          <Tab renderIcon={Icons.Tree} disabled><div className="tab-header">Stocking standards</div></Tab>
+          <Tab renderIcon={Icons.VegetationAsset} disabled><div className="tab-header">Standard units</div></Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">
