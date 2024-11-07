@@ -22,8 +22,9 @@ import {
   Row,
   Column,
   MenuItemDivider,
-  Modal,
-  ActionableNotification
+  Tooltip,
+  MenuItem,
+  FlexGrid
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -32,25 +33,22 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
-import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
-  downloadXLSX,
+  downloadXLSX
 } from "../../../../utils/fileConversions";
-import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { setOpeningFavorite } from '../../../../services/OpeningFavoriteService';
+import { useNotification } from "../../../../contexts/NotificationProvider";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
-  handleCheckboxChange: Function;
-  setOpeningId: Function;
-  toggleSpatial: Function;
+  handleCheckboxChange: (columnKey: string) => void;  
+  toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
 }
@@ -60,10 +58,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   headers,
   defaultColumns,
   handleCheckboxChange,
-  setOpeningId,
   toggleSpatial,
   showSpatial,
-  totalItems,
+  totalItems
 }) => {
   const {
     handlePageChange,
@@ -76,9 +73,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
-  const [toastText, setToastText] = useState<string | null>(null);
-  const [openingDetails, setOpeningDetails] = useState(false);
-  const { mutate: markAsViewedOpening, isError, error } = usePutViewedOpening();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,11 +92,21 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     });
   };
 
+  const { displayNotification } =  useNotification();
+
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (openingId: string) => {
     try{
       setOpeningFavorite(parseInt(openingId));
-      setToastText(`Following "OpeningID ${openingId}"`);
+      displayNotification({
+        title: "Success",
+        subTitle: `Following "OpeningID ${openingId}"`,
+        type: "success",
+        buttonLabel: "Go to track openings",
+        onClose: () => {
+          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
+        }
+      })
     } catch (error) {
       console.error(`Failed to update favorite status for ${openingId}`);
     }    
@@ -402,31 +406,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             handleItemsPerPageChange(page, pageSize);
           }}
         />
-      )}
-      {toastText != null ? (
-        <ActionableNotification
-          className="fav-toast"
-          title="Success"
-          subtitle={toastText}
-          lowContrast={true}
-          kind="success"
-          role="status"
-          closeOnEscape
-          onClose={() => setToastText(null)}
-          actionButtonLabel="Go to track openings"
-          onActionButtonClick={() =>
-            navigate("/opening?tab=metrics&scrollTo=trackOpenings")
-          }
-        />
-      ) : null}
-
-      <Modal
-        open={openingDetails}
-        onRequestClose={() => setOpeningDetails(false)}
-        passiveModal
-        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
-        modalLabel="Opening Details"
-      />
+      )}      
     </>
   );
 };

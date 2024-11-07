@@ -72,7 +72,7 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.typescript.tsconfigPaths=tsconfig.json
             -Dsonar.sources=src/
-            -Dsonar.exclusions=src/__test__/**
+            -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*
             -Dsonar.tests=src/__test__/
             -Dsonar.project.monorepo.enabled=true
           sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}

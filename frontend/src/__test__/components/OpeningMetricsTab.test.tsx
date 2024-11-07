@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { render, act, waitFor, fireEvent, screen } from '@testing-library/react';
 import OpeningMetricsTab from '../../components/OpeningMetricsTab';
+import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
 
@@ -46,7 +47,7 @@ describe('OpeningMetricsTab', () => {
 
   it('should render the OpeningMetricsTab component with all sections', async () => {
     
-    await act(async () => render(<OpeningMetricsTab />));
+    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Manage and track silvicultural information about openings')).toBeInTheDocument();
@@ -64,7 +65,7 @@ describe('OpeningMetricsTab', () => {
     
 
     await act(async () => {
-      render(<OpeningMetricsTab />);
+      render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>);
     });
 
     await waitFor(() => {
@@ -84,7 +85,7 @@ describe('OpeningMetricsTab', () => {
     delete window.location;
     window.location = { search: '?scrollTo=trackOpenings' } as any;
 
-    await act(async () => render(<OpeningMetricsTab />));
+    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
 
     expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
 
@@ -100,7 +101,7 @@ describe('OpeningMetricsTab', () => {
     delete window.location;
     window.location = { search: '' } as any;
 
-    await act(async () => render(<OpeningMetricsTab />));
+    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
 
     expect(mockScrollIntoView).not.toHaveBeenCalled();
 

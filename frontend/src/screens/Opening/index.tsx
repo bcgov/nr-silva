@@ -2,11 +2,13 @@ import React, {useEffect, useState} from "react";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import './Opening.scss'
-import { TabList } from "@carbon/react";
-import { Tabs } from "@carbon/react";
-import { Tab } from "@carbon/react";
-import { TabPanels } from "@carbon/react";
-import { TabPanel } from "@carbon/react";
+import { 
+  TabList,
+  Tabs,
+  Tab,
+  TabPanels,
+  TabPanel
+} from "@carbon/react";
 import OpeningsTab from "../../components/OpeningsTab";
 import OpeningMetricsTab from "../../components/OpeningMetricsTab";
 

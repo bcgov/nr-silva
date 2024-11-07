@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useThemePreference } from "../../utils/ThemePreference";
 import { toggleTheme } from "../../utils/ThemeFunction";
 import {
@@ -16,7 +15,7 @@ import {
   SideNavItems,
   HeaderSideNavItems,
 } from '@carbon/react';
-import { NavLink } from "react-router-dom";
+import { NavLink , Link} from "react-router-dom";
 import * as Icons from '@carbon/icons-react';
 import './BCHeader.scss'
 import { HeaderContainerProps } from "./definitions";
@@ -26,78 +25,76 @@ const BCHeader: React.FC = () => {
   const { theme, setTheme } = useThemePreference();
 
     return (
-      <>
-        <HeaderContainer
-          render={({ isSideNavExpanded, onClickSideNavExpand }: HeaderContainerProps) => (
-            <Header aria-label="React TS Carbon QuickStart"
-              className="spar-header"
-              data-testid="bc-header__header">
-              <SkipToContent />
-              <HeaderMenuButton
-                aria-label={isSideNavExpanded ? 'Close menu' : 'Open menu'}
-                onClick={onClickSideNavExpand}
-                isActive={isSideNavExpanded}
-              />
-              <Link to="/" className="header-link" data-testid="header-name">
-                SILVA
-              </Link>
-              <HeaderNavigation aria-label="BC-Gov Starter">
-                <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
-                <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
-                <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
-                <HeaderMenu isActive aria-label="Link 4" menuLinkName="Link 4">
-                  <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
-                  <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
-                  <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
-                </HeaderMenu>
-              </HeaderNavigation>
-              <HeaderGlobalBar>
+      <HeaderContainer
+        render={({ isSideNavExpanded, onClickSideNavExpand }: HeaderContainerProps) => (
+          <Header aria-label="React TS Carbon QuickStart"
+            className="spar-header"
+            data-testid="bc-header__header">
+            <SkipToContent />
+            <HeaderMenuButton
+              aria-label={isSideNavExpanded ? 'Close menu' : 'Open menu'}
+              onClick={onClickSideNavExpand}
+              isActive={isSideNavExpanded}
+            />
+            <Link to="/" className="header-link" data-testid="header-name">
+              SILVA
+            </Link>
+            <HeaderNavigation aria-label="BC-Gov Starter">
+              <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
+              <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
+              <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
+              <HeaderMenu isActive aria-label="Link 4" menuLinkName="Link 4">
+                <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
+                <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
+                <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
+              </HeaderMenu>
+            </HeaderNavigation>
+            <HeaderGlobalBar>
 
+            <HeaderGlobalAction
+                aria-label={theme==='g10'?'Switch to Dark Mode':'Switch to Light Mode'}
+                tooltipAlignment="end"
+                onClick = {()=>{toggleTheme(theme,setTheme)}}
+                >
+                {/* Must have a child component */}
+                <>{theme === 'g10'?<Icons.Asleep size={20} />:<Icons.Light size={20} />}</>
+            </HeaderGlobalAction>
+
+              <NavLink to='/help'>
+                <HeaderGlobalAction
+                  aria-label="Help"
+                >
+                  <Icons.Help size={20} />
+                </HeaderGlobalAction>
+              </NavLink>
+              
               <HeaderGlobalAction
-                  aria-label={theme==='g10'?'Switch to Dark Mode':'Switch to Light Mode'}
-                  tooltipAlignment="end"
-                  onClick = {()=>{toggleTheme(theme,setTheme)}}
-                  >
-                  {/* Must have a child component */}
-                  <>{theme === 'g10'?<Icons.Asleep size={20} />:<Icons.Light size={20} />}</>
+                aria-label="App Switch"
+                tooltipAlignment="end">
+                <Icons.Switcher size={20} />
               </HeaderGlobalAction>
 
-                <NavLink to='/help'>
-                  <HeaderGlobalAction
-                    aria-label="Help"
-                  >
-                    <Icons.Help size={20} />
-                  </HeaderGlobalAction>
-                </NavLink>
-                
-                <HeaderGlobalAction
-                  aria-label="App Switch"
-                  tooltipAlignment="end">
-                  <Icons.Switcher size={20} />
-                </HeaderGlobalAction>
-
-              </HeaderGlobalBar>
-                <SideNav
-                aria-label="Side navigation"
-                expanded={isSideNavExpanded}
-                isPersistent={false}>
-                  <SideNavItems>
-                    <HeaderSideNavItems>
-                      <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
-                      <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
-                      <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
-                      <HeaderMenu aria-label="Link 4" menuLinkName="Link 4">
-                        <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
-                        <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
-                        <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
-                      </HeaderMenu>
-                    </HeaderSideNavItems>
-                  </SideNavItems>
-              </SideNav>
-            </Header>
-          )}
-        />
-      </>
+            </HeaderGlobalBar>
+              <SideNav
+              aria-label="Side navigation"
+              expanded={isSideNavExpanded}
+              isPersistent={false}>
+                <SideNavItems>
+                  <HeaderSideNavItems>
+                    <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
+                    <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
+                    <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
+                    <HeaderMenu aria-label="Link 4" menuLinkName="Link 4">
+                      <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
+                      <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
+                      <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
+                    </HeaderMenu>
+                  </HeaderSideNavItems>
+                </SideNavItems>
+            </SideNav>
+          </Header>
+        )}
+      />
     );
   };
 
