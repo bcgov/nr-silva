@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./OpeningsSearchBar.scss";
-import { Search, Button, FlexGrid, Row, Column } from "@carbon/react";
+import { Search, Button, FlexGrid, Row, Column, DismissibleTag } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
-import { DismissibleTag } from "@carbon/react";
 
 interface IOpeningsSearchBar {
   onSearchClick: Function;
 }
 
 const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
-  onSearchClick,
+  onSearchClick
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -37,8 +36,6 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // setSearchInput(value);
-    // onSearchInputChange(value); // Call the function to update the search input in the parent component
   };
 
   const handleFiltersChanged = () => {
