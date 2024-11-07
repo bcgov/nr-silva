@@ -1,6 +1,5 @@
-import { MapLayer } from '../types/MapLayer';
 import { OpeningPolygon } from '../types/OpeningPolygon';
-import { shiftBcGwLngLat2LatLng, shiftLineStringCoordinates } from './BcGwLatLongUtils';
+import { shiftBcGwLngLat2LatLng } from './BcGwLatLongUtils';
 
 interface AppendProps {
   featureProps: object;
