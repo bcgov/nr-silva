@@ -5,7 +5,6 @@ import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
-import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
@@ -46,8 +45,6 @@ const state = {
   }
 };
 
-vi.spyOn(redux, 'useSelector')
-  .mockImplementation((callback) => callback(state));
 
 const rows: RecentOpening[] = [{
   id: '123',
