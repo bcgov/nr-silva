@@ -35,12 +35,12 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
 
   @Test
   @Order(1)
-  @DisplayName("No favorites to begin with")
+  @DisplayName("No favourites to begin with")
   void shouldBeEmpty() throws Exception {
 
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/api/openings/favorites")
+            MockMvcRequestBuilders.get("/api/openings/favourites")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isEmpty());
@@ -52,7 +52,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldAddToFavorite() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/api/openings/favorites/{openingId}", 101)
+            MockMvcRequestBuilders.put("/api/openings/favourites/{openingId}", 101)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())
@@ -70,7 +70,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldNotAddIfDoesNotExist() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/api/openings/favorites/{openingId}", 987)
+            MockMvcRequestBuilders.put("/api/openings/favourites/{openingId}", 987)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
@@ -87,11 +87,11 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
 
   @Test
   @Order(5)
-  @DisplayName("Should see list of favorites")
+  @DisplayName("Should see list of favourites")
   void shouldBeAbleToSeeOpening() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/api/openings/favorites")
+            MockMvcRequestBuilders.get("/api/openings/favourites")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -104,7 +104,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldRemoveFromFavorites() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/api/openings/favorites/{openingId}", 101)
+            MockMvcRequestBuilders.delete("/api/openings/favourites/{openingId}", 101)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent())
@@ -121,7 +121,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldThrownErrorIfNoFavoriteFound() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/api/openings/favorites/{openingId}", 101)
+            MockMvcRequestBuilders.delete("/api/openings/favourites/{openingId}", 101)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/openings/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/openings/favourites", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class OpeningFavoriteEndpoint {
 
