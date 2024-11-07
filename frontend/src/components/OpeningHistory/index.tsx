@@ -56,7 +56,7 @@ const OpeningHistory: React.FC = () => {
         <div key={index} className="col-12 col-sm-4">
           <div className='activity-history-col'>
             <div className="activity-history-header">
-              <div className="d-flex flex-row align-items-center">
+              <div className="d-flex flex-row align-items-center" data-id={history.id}>
                 <div className="favorite-icon">
                   <FavoriteButton
                     tooltipPosition="bottom"

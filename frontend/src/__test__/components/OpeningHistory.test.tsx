@@ -3,49 +3,31 @@ import { render, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import OpeningHistory from '../../components/OpeningHistory';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
-import History from '../../types/History';
-import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
-
-const mockHistories: History[] = [
-  {
-    id: 1,
-    steps: [],
-  },
-  {
-    id: 2,
-    steps: [
-      { step: 1, status: 'complete', description: 'Step 1', subtitle: 'Completed' },
-      { step: 2, status: 'invalid', description: 'Step 2', subtitle: 'Invalid' },
-      { step: 3, status: 'disabled', description: 'Step 3', subtitle: 'Disabled' },
-    ],
-  },
-];
+import { deleteOpeningFavorite, fetchOpeningTrends } from '../../services/OpeningFavoriteService';
 
 vi.mock('../../services/OpeningFavoriteService', () => ({
   deleteOpeningFavorite: vi.fn(),
+  fetchOpeningTrends: vi.fn(),
 }));
 
 describe('OpeningHistory Component', () => {
   it('renders correctly with given histories', async () => {
-    let getByText;
+    (fetchOpeningTrends as vi.Mock).mockReturnValueOnce(Promise.resolve([1, 2]));
+    let container;
     await act(async () => {
-      ({ getByText } = render(<NotificationProvider><OpeningHistory histories={mockHistories} /></NotificationProvider>));
+      ({ container } = render(<NotificationProvider><OpeningHistory /></NotificationProvider>));
     });
 
     // Check for the presence of Opening Ids
-    expect(getByText('Opening Id 1')).toBeInTheDocument();
-    expect(getByText('Opening Id 2')).toBeInTheDocument();
-
-    // Check for the presence of step descriptions
-    expect(getByText('Step 1')).toBeInTheDocument();
-    expect(getByText('Step 2')).toBeInTheDocument();
-    expect(getByText('Step 3')).toBeInTheDocument();
+    expect(container.querySelector('div[data-id="1"').innerHTML).toContain('Opening Id 1');
+    expect(container.querySelector('div[data-id="2"').innerHTML).toContain('Opening Id 2');    
   });
 
   it('renders correctly with empty histories', async () => {
+    (fetchOpeningTrends as vi.Mock).mockReturnValueOnce(Promise.resolve([]));
     let container;
     await act(async () => {
-      ({ container } = render(<NotificationProvider><OpeningHistory histories={[]} /></NotificationProvider>));
+      ({ container } = render(<NotificationProvider><OpeningHistory /></NotificationProvider>));
     });
 
     // Select the div with the specific class
@@ -58,9 +40,10 @@ describe('OpeningHistory Component', () => {
 
   // check if when clicked on the FavoriteButton, the deleteOpeningFavorite function is called
   it('should call deleteOpeningFavorite when FavoriteButton is clicked', async () => {    
+    (fetchOpeningTrends as vi.Mock).mockReturnValueOnce(Promise.resolve([1, 2]));
     let container;
     await act(async () => {
-      ({ container } = render(<NotificationProvider><OpeningHistory histories={mockHistories} /></NotificationProvider>));
+      ({ container } = render(<NotificationProvider><OpeningHistory /></NotificationProvider>));
     });
 
     const favoriteButton = container.querySelector('.favorite-icon button')
