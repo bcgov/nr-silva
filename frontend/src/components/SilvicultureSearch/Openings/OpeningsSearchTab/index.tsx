@@ -13,15 +13,13 @@ import { ITableHeader } from "../../../../types/TableHeader";
 import { countActiveFilters } from "../../../../utils/searchUtils";
 
 const OpeningsSearchTab: React.FC = () => {
-  const [showSpatial, setShowSpatial] = useState<boolean>(false);
-  const [loadId, setLoadId] = useState<number | null>(null);
-  const [openingPolygonNotFound, setOpeningPolygonNotFound] =
-    useState<boolean>(false);
+  const [showSpatial, setShowSpatial] = useState<boolean>(false);  
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
-  const { currentPage, itemsPerPage, totalResultItems } = useContext(PaginationContext);
+  const { currentPage, itemsPerPage } = useContext(PaginationContext);
   
   const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
