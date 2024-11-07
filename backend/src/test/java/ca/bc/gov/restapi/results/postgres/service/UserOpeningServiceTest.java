@@ -43,7 +43,7 @@ class UserOpeningServiceTest {
   void setup() {
     this.userOpeningService =
         new UserOpeningService(
-            loggedUserService, userOpeningRepository, openingsActivityRepository,
+            loggedUserService, userOpeningRepository,
             openingRepository);
   }
 
