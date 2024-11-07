@@ -35,6 +35,7 @@ public class OpeningSearchFiltersDto {
 
   @Setter
   private String requestUserId;
+  private List<String> openingIds;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -68,6 +69,7 @@ public class OpeningSearchFiltersDto {
             .toList());
     }
     this.statusList = new ArrayList<>();
+    this.openingIds = new ArrayList<>();
     if (!Objects.isNull(statusList)) {
       this.statusList.addAll(statusList.stream().map(s -> String.format("'%s'", s)).toList());
     }
@@ -92,6 +94,28 @@ public class OpeningSearchFiltersDto {
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
 
+  // Create a constructor with only the List<String> openingIds
+  public OpeningSearchFiltersDto(
+    List<String> openingIds) {
+    this.orgUnit = null;
+    this.category = null;
+    this.statusList = new ArrayList<>();
+    this.openingIds = openingIds;
+    this.myOpenings = null;
+    this.submittedToFrpa = false;
+    this.disturbanceDateStart = null;
+    this.disturbanceDateEnd = null;
+    this.regenDelayDateStart = null;
+    this.regenDelayDateEnd = null;
+    this.freeGrowingDateStart = null;
+    this.freeGrowingDateEnd = null;
+    this.updateDateStart = null;
+    this.updateDateEnd = null;
+    this.cuttingPermitId = null;
+    this.cutBlockId = null;
+    this.timberMark = null;
+    this.mainSearchTerm = null;
+  }
   /**
    * Define if a property has value.
    *
@@ -103,6 +127,7 @@ public class OpeningSearchFiltersDto {
       case SilvaOracleConstants.ORG_UNIT -> !this.orgUnit.isEmpty();
       case SilvaOracleConstants.CATEGORY -> !this.category.isEmpty();
       case SilvaOracleConstants.STATUS_LIST -> !this.statusList.isEmpty();
+      case SilvaOracleConstants.OPENING_IDS -> !this.openingIds.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
       case SilvaOracleConstants.DISTURBANCE_DATE_START ->

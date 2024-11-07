@@ -43,4 +43,5 @@ public class OpeningSearchResponseDto {
   private Boolean submittedToFrpa;
   private String forestFileId;
   private Long silvaReliefAppId;
+  private LocalDateTime lastViewDate;
 }
