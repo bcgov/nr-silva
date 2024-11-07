@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
   ProgressIndicator,
   ProgressStep
@@ -8,15 +8,21 @@ import History from '../../types/History';
 import statusClass from '../../utils/HistoryStatus';
 import FavoriteButton from '../FavoriteButton';
 import './styles.scss';
-import { deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
 import { useNotification } from '../../contexts/NotificationProvider';
+import { fetchOpeningTrends, deleteOpeningFavorite } from "../../services/OpeningFavoriteService";
 
-interface OpeningHistoryProps {
-  histories: History[];
-}
 
-const OpeningHistory: React.FC<OpeningHistoryProps> = ({ histories }: OpeningHistoryProps) => {
+const OpeningHistory: React.FC = () => {
   const { displayNotification } = useNotification();
+  const [histories, setHistories] = useState<History[]>([]);
+
+  const loadTrends = async () => {    
+    const history = await fetchOpeningTrends();
+    setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
+  };
+
+  useEffect(() => { loadTrends(); },[]);
+
 
   const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
     try {
@@ -29,7 +35,7 @@ const OpeningHistory: React.FC<OpeningHistoryProps> = ({ histories }: OpeningHis
           dismissIn: 8000,
           onClose: () => {}
         });
-        
+        loadTrends();
       }
     } catch (error) {
       displayNotification({
