@@ -21,7 +21,10 @@ import {
   CheckboxGroup,
   Row,
   Column,
-  MenuItemDivider
+  MenuItemDivider,
+  Tooltip,
+  MenuItem,
+  FlexGrid
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -30,15 +33,12 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
-import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
   downloadXLSX
 } from "../../../../utils/fileConversions";
-import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { setOpeningFavorite } from '../../../../services/OpeningFavoriteService';
 import { useNotification } from "../../../../contexts/NotificationProvider";
@@ -47,9 +47,8 @@ interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
-  handleCheckboxChange: Function;
-  setOpeningId: Function;
-  toggleSpatial: Function;
+  handleCheckboxChange: (columnKey: string) => void;  
+  toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
 }

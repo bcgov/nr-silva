@@ -140,8 +140,7 @@ const OpeningsSearchTab: React.FC = () => {
                   rows={data?.data || []}
                   headers={headers}
                   defaultColumns={columns}
-                  handleCheckboxChange={handleCheckboxChange}
-                  setOpeningId={setLoadId}
+                  handleCheckboxChange={handleCheckboxChange}                  
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
                   totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
