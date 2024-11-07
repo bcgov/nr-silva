@@ -1,8 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './custom.scss';
 import Landing from "./screens/Landing";
-import Help from "./screens/Help";
-import Reports from './screens/Reports';
 import SideLayout from './layouts/SideLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
@@ -34,14 +32,6 @@ const router = createBrowserRouter([
       {
         path: "/silviculture-search",
         element: <SideLayout pageContent={<SilvicultureSearch />} />
-      },
-      {
-        path: "/opening/reports",
-        element: <SideLayout pageContent={<Reports />} />
-      },
-      {
-        path: "/help",
-        element: <SideLayout pageContent={<Help />} />
       }
     ]
   },
