@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@carbon/react';
+import { Button, InlineNotification } from '@carbon/react';
 import './styles.scss'
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
@@ -8,7 +8,6 @@ import { headers } from '../OpeningScreenDataTable/testData';
 import { fetchRecentOpenings } from '../../services/OpeningService';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { InlineNotification } from '@carbon/react';
 import { RecentOpening } from '../../types/RecentOpening';
 import { generateHtmlFile } from './layersGenerator';
 import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
@@ -61,16 +60,6 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
       setShowSpatial(!showSpatial);
   };
 
-  const onClickFn = () => {
-    const allowed: string[] = wmsUsersWhitelist.map((wmsUser: WmsLayersWhitelistUser) => wmsUser.userName);    
-    if (allowed.includes(user?.userName || '')) {
-      const newWindow = window.open();
-      if (newWindow) {
-        newWindow.document.body.innerHTML = generateHtmlFile();
-      }
-    }
-  };
-
   return (
     <>
       <div className="container-fluid">
@@ -78,7 +67,6 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
           <SectionTitle
             title="Recent openings"
             subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below"
-            onClick={onClickFn}
           />
           <Button
             className="h-100 my-auto d-none d-sm-block"
