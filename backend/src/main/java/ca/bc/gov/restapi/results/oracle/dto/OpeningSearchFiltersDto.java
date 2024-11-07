@@ -97,8 +97,8 @@ public class OpeningSearchFiltersDto {
   // Create a constructor with only the List<String> openingIds
   public OpeningSearchFiltersDto(
     List<String> openingIds) {
-    this.orgUnit = null;
-    this.category = null;
+    this.orgUnit = new ArrayList<>();
+    this.category = new ArrayList<>();
     this.statusList = new ArrayList<>();
     this.openingIds = openingIds;
     this.myOpenings = null;
