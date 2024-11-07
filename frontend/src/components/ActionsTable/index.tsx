@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Table,
   TableHead,
@@ -14,8 +13,8 @@ import { ActivityTagFileFormatEnum, ActivityTagTypeEnum } from '../../types/Acti
 import { ITableHeader } from '../../types/TableHeader';
 
 interface IActionsTable {
-  rows: RecentAction[];
-  headers: ITableHeader[];
+  readonly rows: RecentAction[];
+  readonly headers: ITableHeader[];
 }
 
 /**
@@ -68,8 +67,8 @@ function ActionsTable(props: IActionsTable): JSX.Element {
         </TableRow>
       </TableHead>
       <TableBody>
-        {props.rows.map((row: RecentAction, idx: number) => (
-          <TableRow key={idx}>
+        {props.rows.map((row: RecentAction) => (
+          <TableRow key={row.openingId}>
             {headerKeys.map((key: string) => (
               <TableCell key={key}>
                 {key === "statusCode" ? (

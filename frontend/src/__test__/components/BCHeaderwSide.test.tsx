@@ -5,9 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import BCHeaderwSide from '../../components/BCHeaderwSide';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {leftMenu } from '../../components/BCHeaderwSide/constants';
-import * as redux from 'react-redux';
-import { Provider } from 'react-redux';
-import store from '../../store';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
 import { AuthProvider } from '../../contexts/AuthProvider';
@@ -31,12 +28,10 @@ const renderComponent = () => {
 
   render(
     <AuthProvider>
-      <QueryClientProvider client={qc}>
-        <Provider store={store}>
-          <BrowserRouter>
-            <BCHeaderwSide />
-          </BrowserRouter>
-        </Provider>
+      <QueryClientProvider client={qc}>        
+        <BrowserRouter>
+          <BCHeaderwSide />
+        </BrowserRouter>
       </QueryClientProvider>
     </AuthProvider>
   );
@@ -65,9 +60,6 @@ const state = {
   },
 };
 
-vi.spyOn(redux, 'useSelector')
-  .mockImplementation((callback) => callback(state));
-
 describe('BCHeaderwSide', () => {
   it('should renders the component', () => {
     renderComponent();
@@ -87,12 +79,6 @@ describe('BCHeaderwSide', () => {
     fireEvent.click(userSettingsButton);
     // expect(screen.queryByText('My Profile')).not.toBeVisible();
   });
-
-  // it('renders the correct number of top-level menu items', () => {
-  //   renderComponent();
-  //   const menuItems = screen.getAllByRole('button', { name: /.*Category.*/ });
-  //   expect(menuItems).toHaveLength(leftMenu.length);
-  // });
 
   it('renders the correct menu item names', () => {
     renderComponent();

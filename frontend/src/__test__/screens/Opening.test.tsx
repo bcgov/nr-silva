@@ -3,12 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor, act } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
+import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
-import * as redux from 'react-redux';
 import { RecentOpening } from '../../types/RecentOpening';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
 import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { AuthProvider } from '../../contexts/AuthProvider';
 
 const data = {
   "activityType": "Update",
@@ -44,8 +45,6 @@ const state = {
   }
 };
 
-vi.spyOn(redux, 'useSelector')
-  .mockImplementation((callback) => callback(state));
 
 const rows: RecentOpening[] = [{
   id: '123',
@@ -96,7 +95,11 @@ describe('Opening screen test cases', () => {
     const { getByTestId } = render(
       <BrowserRouter>
         <PaginationContext.Provider value={paginationValueMock}>
-          <Opening />
+          <NotificationProvider>
+            <AuthProvider>
+              <Opening />
+            </AuthProvider>
+          </NotificationProvider>
         </PaginationContext.Provider>
       </BrowserRouter>
     );
@@ -117,7 +120,11 @@ describe('Opening screen test cases', () => {
       ({ container } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));
@@ -152,7 +159,11 @@ describe('Opening screen test cases', () => {
       ({ container, getByText } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));
@@ -171,7 +182,11 @@ describe('Opening screen test cases', () => {
       ({ container, getByText } = render(
         <BrowserRouter>
           <PaginationContext.Provider value={paginationValueMock}>
-            <Opening />
+            <NotificationProvider>
+              <AuthProvider>
+                <Opening />
+              </AuthProvider>
+            </NotificationProvider>
           </PaginationContext.Provider>
         </BrowserRouter>
       ));

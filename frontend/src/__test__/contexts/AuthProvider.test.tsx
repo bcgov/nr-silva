@@ -91,7 +91,7 @@ describe('AuthProvider', () => {
   it('should handle login correctly', async () => {
     setAuthCookies(sampleAuthToken);
     const provider = 'idir';
-    const envProvider = 'TEST-IDIR';
+    const envProvider = `${env.VITE_ZONE ?? 'DEV'}-IDIR`;
 
     const TestComponent = () => {
       const { login } = useGetAuth();

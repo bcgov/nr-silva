@@ -1,14 +1,15 @@
 import React from "react";
 import PageTitle from "../../components/PageTitle";
 import './SilvicultureSearch.scss'
-import { TabList } from "@carbon/react";
-import { Tabs } from "@carbon/react";
-import { Tab } from "@carbon/react";
-import { TabPanels } from "@carbon/react";
-import { TabPanel } from "@carbon/react";
+import { 
+  TabList,
+  Tabs,
+  Tab,
+  TabPanels,
+  TabPanel 
+} from "@carbon/react";
 import * as Icons from '@carbon/icons-react';
 import OpeningsSearchTab from "../../components/SilvicultureSearch/Openings/OpeningsSearchTab";
-import { OpeningsSearchProvider } from "../../contexts/search/OpeningsSearch";
 
 const SilvicultureSearch: React.FC = () => {
 
@@ -26,9 +27,9 @@ const SilvicultureSearch: React.FC = () => {
       <Tabs>
         <TabList className="search-tablist tab-list" aria-label="List of Tab" contained>
           <Tab renderIcon={Icons.MapBoundaryVegetation}><div className="tab-header">Openings</div></Tab>
-          <Tab renderIcon={Icons.Activity}><div className="tab-header">Activities</div></Tab>
-          <Tab renderIcon={Icons.Tree}><div className="tab-header">Stocking standards</div></Tab>
-          <Tab renderIcon={Icons.VegetationAsset}><div className="tab-header">Standard units</div></Tab>
+          <Tab renderIcon={Icons.Activity} disabled><div className="tab-header">Activities</div></Tab>
+          <Tab renderIcon={Icons.Tree} disabled><div className="tab-header">Stocking standards</div></Tab>
+          <Tab renderIcon={Icons.VegetationAsset} disabled><div className="tab-header">Standard units</div></Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content">

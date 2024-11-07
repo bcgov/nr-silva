@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@carbon/react';
+import { Button, InlineNotification } from '@carbon/react';
 import './styles.scss'
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
@@ -8,16 +8,14 @@ import { headers } from '../OpeningScreenDataTable/testData';
 import { fetchRecentOpenings } from '../../services/OpeningService';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { InlineNotification } from '@carbon/react';
 import { RecentOpening } from '../../types/RecentOpening';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
 import { generateHtmlFile } from './layersGenerator';
 import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
+import { useGetAuth } from '../../contexts/AuthProvider';
 
 interface Props {
   showSpatial: boolean;
-  setShowSpatial: Function;
+  setShowSpatial: (show: boolean) => void;
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
@@ -26,8 +24,8 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
-  const userDetails = useSelector((state: RootState) => state.userDetails);
+  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);  
+  const { user } = useGetAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,18 +57,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
-    setShowSpatial((prevShowSpatial :boolean) => !prevShowSpatial);
-  };
-
-  const onClickFn = () => {
-    const allowed: string[] = wmsUsersWhitelist.map((user: WmsLayersWhitelistUser) => user.userName);
-    const { userName } = userDetails.user;
-    if (allowed.includes(userName)) {
-      const newWindow = window.open();
-      if (newWindow) {
-        newWindow.document.body.innerHTML = generateHtmlFile();
-      }
-    }
+      setShowSpatial(!showSpatial);
   };
 
   return (
@@ -80,7 +67,6 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
           <SectionTitle
             title="Recent openings"
             subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below"
-            onClick={onClickFn}
           />
           <Button
             className="h-100 my-auto d-none d-sm-block"

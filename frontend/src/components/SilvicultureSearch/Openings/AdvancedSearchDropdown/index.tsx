@@ -12,50 +12,48 @@ import {
   FlexGrid,
   Row,
   Column,
+  FilterableMultiSelect
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import { FilterableMultiSelect } from "@carbon/react";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = ({
-}) => {
-  const { filters, setFilters, clearFilters } = useOpeningsSearch();
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
+  const { filters, setFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
-   // Initialize selected items for OrgUnit MultiSelect based on existing filters
-   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
-   // Initialize selected items for category MultiSelect based on existing filters
-    const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  // Initialize selected items for OrgUnit MultiSelect based on existing filters
+  const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
+  // Initialize selected items for category MultiSelect based on existing filters
+  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
-
-   useEffect(() => {
-     // Split filters.orgUnit into array and format as needed for selectedItems
-     if (filters.orgUnit) {
-       const orgUnitsArray = filters.orgUnit.map((orgUnit: String) => ({
-         text: orgUnit,
-         value: orgUnit,
-       }));
-       setSelectedOrgUnits(orgUnitsArray);
-     } else {
-        setSelectedOrgUnits([]);
-     }
-     // Split filters.category into array and format as needed for selectedItems
-     if (filters.category) {
-      const categoriesArray = filters.category.map((category: String) => ({
-        text: category,
-        value: category,
+  useEffect(() => {
+    // Split filters.orgUnit into array and format as needed for selectedItems
+    if (filters.orgUnit) {
+      const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
+        text: orgUnit,
+        value: orgUnit,
       }));
-      setSelectedCategories(categoriesArray);
-    } else{
-      setSelectedCategories([]);
+      setSelectedOrgUnits(orgUnitsArray);
+    } else {
+      setSelectedOrgUnits([]);
     }
-   }, [filters.orgUnit, filters.category]);
+    // Split filters.category into array and format as needed for selectedItems
+    if (filters.category) {
+    const categoriesArray = filters.category.map((category: string) => ({
+      text: category,
+      value: category,
+    }));
+    setSelectedCategories(categoriesArray);
+  } else{
+    setSelectedCategories([]);
+  }
+  }, [filters.orgUnit, filters.category]);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     const newFilters = { ...filters, ...updatedFilters };
