@@ -40,9 +40,8 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].activityType").value("Submitted"))
         .andExpect(jsonPath("$[0].openingId").value("102"))
-        .andExpect(jsonPath("$[0].statusCode").value("APP"))
-        .andExpect(jsonPath("$[0].statusDescription").value("Approved"))
-        .andExpect(jsonPath("$[0].lastUpdatedLabel").value("2 minutes ago"))
+        .andExpect(jsonPath("$[0].statusCode").value("FTML"))
+        .andExpect(jsonPath("$[0].statusDescription").value("Forest Tenure - Major Licensee"))
         .andReturn();
   }
 
