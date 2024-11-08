@@ -32,15 +32,24 @@ public class SilvaConfiguration {
   private ExternalApiAddress forestClientApi;
   @NestedConfigurationProperty
   private ExternalApiAddress openMaps;
+  @NestedConfigurationProperty
+  private SilvaDataLimits limits;
 
   @Data
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
   public static class ExternalApiAddress {
-
     private String address;
     private String key;
+  }
+
+  @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class SilvaDataLimits {
+    private Integer maxActionsResults;
   }
 
 }

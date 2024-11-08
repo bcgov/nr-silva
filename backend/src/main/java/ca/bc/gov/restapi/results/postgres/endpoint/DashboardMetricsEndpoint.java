@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
-import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import java.util.List;
@@ -98,20 +97,4 @@ public class DashboardMetricsEndpoint {
     return ResponseEntity.ok(milestonesDto);
   }
 
-  /**
-   * Gets the last 5 most recent updated openings for the request user.
-   *
-   * @return A list of values to populate the chart or 204 no content if no data.
-   */
-  @GetMapping("/my-recent-actions/requests")
-  public ResponseEntity<List<MyRecentActionsRequestsDto>> getUserRecentOpeningsActions() {
-    List<MyRecentActionsRequestsDto> actionsDto =
-        dashboardMetricsService.getUserRecentOpeningsActions();
-
-    if (actionsDto.isEmpty()) {
-      return ResponseEntity.noContent().build();
-    }
-
-    return ResponseEntity.ok(actionsDto);
-  }
 }

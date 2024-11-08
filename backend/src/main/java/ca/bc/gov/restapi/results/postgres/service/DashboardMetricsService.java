@@ -24,6 +24,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class DashboardMetricsService {
   private final OpeningsActivityRepository openingsActivityRepository;
 
   private final LoggedUserService loggedUserService;
+
+  private final PrettyTime prettyTime = new PrettyTime();
 
   /**
    * Get openings submission trends data for the opening per year chart.
@@ -73,61 +76,6 @@ public class DashboardMetricsService {
     }
 
     return chartData;
-  }
-
-  private void filterOpeningSubmissions(
-      Map<Integer, List<OpeningsLastYearEntity>> resultMap,
-      List<OpeningsLastYearEntity> entities,
-      DashboardFiltersDto filters) {
-    // Iterate over the found records filtering and putting them into the right month
-    for (OpeningsLastYearEntity entity : entities) {
-      // Org Unit filter - District
-      if (!Objects.isNull(filters.orgUnit())
-          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
-        continue;
-      }
-
-      // Status filter
-      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
-        continue;
-      }
-
-      // Entry start date filter
-      if (!Objects.isNull(filters.entryDateStart())
-          && entity.getEntryTimestamp().isBefore(filters.entryDateStart())) {
-        continue;
-      }
-
-      // Entry end date filter
-      if (!Objects.isNull(filters.entryDateEnd())
-          && entity.getEntryTimestamp().isAfter(filters.entryDateEnd())) {
-        continue;
-      }
-
-      resultMap.get(entity.getEntryTimestamp().getMonthValue()).add(entity);
-    }
-  }
-
-  private Map<Integer, List<OpeningsLastYearEntity>> createBaseMonthsMap(
-      Map<Integer, String> monthNamesMap, Integer firstMonth) {
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
-
-    // Fill with 12 months
-    log.info("First month: {}", firstMonth);
-    while (resultMap.size() < 12) {
-      resultMap.put(firstMonth, new ArrayList<>());
-
-      String monthName = Month.of(firstMonth).name().toLowerCase();
-      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-      monthNamesMap.put(firstMonth, monthName);
-
-      firstMonth += 1;
-      if (firstMonth == 13) {
-        firstMonth = 1;
-      }
-    }
-
-    return resultMap;
   }
 
   /**
@@ -235,42 +183,85 @@ public class DashboardMetricsService {
   public List<MyRecentActionsRequestsDto> getUserRecentOpeningsActions() {
     log.info("Getting up to the last 5 openings activities for the requests tab");
 
-    String userId = loggedUserService.getLoggedUserId();
-
-    Sort sort = Sort.by("lastUpdated").descending();
     List<OpeningsActivityEntity> openingList =
-        openingsActivityRepository.findAllByEntryUserid(userId, sort);
+        openingsActivityRepository
+            .findAllByEntryUserid(
+                loggedUserService.getLoggedUserId(),
+                PageRequest.of(0, 5, Sort.by("lastUpdated").descending())
+            );
 
     if (openingList.isEmpty()) {
       log.info("No recent activities data found for the user!");
       return List.of();
     }
+    return
+        openingList
+            .stream()
+            .map(entity ->
+                new MyRecentActionsRequestsDto(
+                    Objects.toString(entity.getActivityTypeDesc(), "Created"),
+                    entity.getOpeningId(),
+                    entity.getStatusCode(),
+                    entity.getStatusDesc(),
+                    prettyTime.format(entity.getLastUpdated()),
+                    entity.getLastUpdated()
+                )
+            )
+            .toList();
+  }
 
-    PrettyTime prettyTime = new PrettyTime();
-
-    List<MyRecentActionsRequestsDto> chartData = new ArrayList<>();
-    for (OpeningsActivityEntity entity : openingList) {
-      String statusDesc = entity.getActivityTypeDesc();
-      if (Objects.isNull(statusDesc)) {
-        statusDesc = "Created";
+  private void filterOpeningSubmissions(
+      Map<Integer, List<OpeningsLastYearEntity>> resultMap,
+      List<OpeningsLastYearEntity> entities,
+      DashboardFiltersDto filters) {
+    // Iterate over the found records filtering and putting them into the right month
+    for (OpeningsLastYearEntity entity : entities) {
+      // Org Unit filter - District
+      if (!Objects.isNull(filters.orgUnit())
+          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
+        continue;
       }
 
-      MyRecentActionsRequestsDto dto =
-          new MyRecentActionsRequestsDto(
-              statusDesc,
-              entity.getOpeningId(),
-              entity.getStatusCode(),
-              entity.getStatusDesc(),
-              prettyTime.format(entity.getLastUpdated()),
-              entity.getLastUpdated());
+      // Status filter
+      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
+        continue;
+      }
 
-      chartData.add(dto);
+      // Entry start date filter
+      if (!Objects.isNull(filters.entryDateStart())
+          && entity.getEntryTimestamp().isBefore(filters.entryDateStart())) {
+        continue;
+      }
 
-      if (chartData.size() == 5) {
-        break;
+      // Entry end date filter
+      if (!Objects.isNull(filters.entryDateEnd())
+          && entity.getEntryTimestamp().isAfter(filters.entryDateEnd())) {
+        continue;
+      }
+
+      resultMap.get(entity.getEntryTimestamp().getMonthValue()).add(entity);
+    }
+  }
+
+  private Map<Integer, List<OpeningsLastYearEntity>> createBaseMonthsMap(
+      Map<Integer, String> monthNamesMap, Integer firstMonth) {
+    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
+
+    // Fill with 12 months
+    log.info("First month: {}", firstMonth);
+    while (resultMap.size() < 12) {
+      resultMap.put(firstMonth, new ArrayList<>());
+
+      String monthName = Month.of(firstMonth).name().toLowerCase();
+      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
+      monthNamesMap.put(firstMonth, monthName);
+
+      firstMonth += 1;
+      if (firstMonth == 13) {
+        firstMonth = 1;
       }
     }
 
-    return chartData;
+    return resultMap;
   }
 }
