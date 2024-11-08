@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import BCHeaderwSide from '../../components/BCHeaderwSide';
@@ -23,10 +23,10 @@ vi.mock('../../services/TestService', () => ({
   ]),
 }));
 
-const renderComponent = () => {
+const renderComponent = async () => {
   const qc = new QueryClient();
 
-  render(
+  await act(() => render(
     <AuthProvider>
       <QueryClientProvider client={qc}>        
         <BrowserRouter>
@@ -34,7 +34,7 @@ const renderComponent = () => {
         </BrowserRouter>
       </QueryClientProvider>
     </AuthProvider>
-  );
+  ));
 };
 
 const clientRoles: UserClientRolesType[] = [
@@ -60,18 +60,18 @@ const state = {
   },
 };
 
-describe('BCHeaderwSide', () => {
+describe('BCHeaderwSide', async () => {
   it('should renders the component', () => {
     renderComponent();
     expect(screen.getByTestId('header')).toBeDefined();
   });
 
-  it('should renders the site name', () => {
+  it('should renders the site name', async () => {
     renderComponent();
     expect(screen.getByText('SILVA')).toBeDefined();
   });
 
-  it('opens and closes the My Profile panel', () => {
+  it('opens and closes the My Profile panel', async () => {
     renderComponent();
     const userSettingsButton = screen.getByTestId('header-button__user');
     fireEvent.click(userSettingsButton);
@@ -80,14 +80,14 @@ describe('BCHeaderwSide', () => {
     // expect(screen.queryByText('My Profile')).not.toBeVisible();
   });
 
-  it('renders the correct menu item names', () => {
+  it('renders the correct menu item names', async () => {
     renderComponent();
     leftMenu.forEach(item => {
       expect(screen.getByText(item.name)).toBeInTheDocument();
     });
   });
 
-  it('renders sub menu items', () => {
+  it('renders sub menu items', async () => {
     renderComponent();
     const subMenuItem = leftMenu[0].items[0]; // Assuming the first item has sub items
     const menuItem = screen.getByText(subMenuItem.name);
