@@ -101,6 +101,8 @@ ca:
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts-path}
           secret: ${ORACLEDB_SECRET:changeit}
           host: ${DATABASE_HOST:nrcdb03.bcgov}
+        limits:
+          max-actions-results: ${MAX_ACTIONS_RESULTS:5}
 
 # Logging
 logging:
