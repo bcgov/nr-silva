@@ -22,7 +22,7 @@ describe('OpeningFavouriteService', () => {
 
     const result = await fetchOpeningFavourites();
 
-    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}` }
     });
     expect(result).toEqual(mockData);
@@ -34,7 +34,7 @@ describe('OpeningFavouriteService', () => {
 
     const result = await fetchOpeningFavourites();
 
-    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}` }
     });
     expect(result).toEqual(mockData);
@@ -52,7 +52,7 @@ describe('OpeningFavouriteService', () => {
 
       const result = await fetchOpeningFavourites();
 
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       expect(result).toEqual(mockData);
@@ -64,7 +64,7 @@ describe('OpeningFavouriteService', () => {
 
       const result = await fetchOpeningFavourites();
 
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       expect(result).toEqual(mockData);
@@ -82,7 +82,7 @@ describe('OpeningFavouriteService', () => {
 
       await setOpeningFavorite(openingId);
 
-      expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites/${openingId}`, null, {
+      expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, null, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
     });
@@ -100,7 +100,7 @@ describe('OpeningFavouriteService', () => {
 
       await deleteOpeningFavorite(openingId);
 
-      expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites/${openingId}`, {
+      expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
     });
