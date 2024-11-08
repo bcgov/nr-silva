@@ -40,7 +40,7 @@ import {
   downloadXLSX
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite } from '../../../../services/OpeningFavoriteService';
+import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { useNotification } from "../../../../contexts/NotificationProvider";
 
 interface ISearchScreenDataTable {
@@ -99,8 +99,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     try{
       setOpeningFavorite(parseInt(openingId));
       displayNotification({
-        title: "Success",
-        subTitle: `Following "OpeningID ${openingId}"`,
+        title: `Opening Id ${openingId} favourited`,
+        subTitle: 'You can follow this opening ID on your dashboard',
         type: "success",
         buttonLabel: "Go to track openings",
         onClose: () => {

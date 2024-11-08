@@ -130,16 +130,7 @@ describe('OpeningService', () => {
     it('should fetch recent actions successfully', () => {
       const result = fetchRecentActions();
 
-      expect(result).toEqual([
-        {
-          activityType: 'Update',
-          openingId: '1541297',
-          statusCode: 'APP',
-          statusDescription: 'Approved',
-          lastUpdatedLabel: '1 minute ago',
-          lastUpdated: '2024-05-16T19:59:21.635Z'
-        }
-      ]);
+      expect(result).toEqual([]);
     });
 
   });

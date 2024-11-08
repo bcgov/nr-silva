@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  ProgressIndicator,
-  ProgressStep
-} from '@carbon/react';
-
 import History from '../../types/History';
-import statusClass from '../../utils/HistoryStatus';
 import FavoriteButton from '../FavoriteButton';
+import EmptySection from "../EmptySection";
 import './styles.scss';
 import { useNotification } from '../../contexts/NotificationProvider';
-import { fetchOpeningTrends, deleteOpeningFavorite } from "../../services/OpeningFavoriteService";
+import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 
 
 const OpeningHistory: React.FC = () => {
@@ -17,20 +12,18 @@ const OpeningHistory: React.FC = () => {
   const [histories, setHistories] = useState<History[]>([]);
 
   const loadTrends = async () => {    
-    const history = await fetchOpeningTrends();
+    const history = await fetchOpeningFavourites();    
     setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
   };
 
   useEffect(() => { loadTrends(); },[]);
-
 
   const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
     try {
       if(!newStatus){      
         await deleteOpeningFavorite(openingId);
         displayNotification({
-          title: 'Favorite Removed',
-          subTitle: `Opening Id ${openingId} removed from favorites`,
+          title: `Opening Id ${openingId} unfavourited`,          
           type: 'success',
           dismissIn: 8000,
           onClose: () => {}
@@ -49,50 +42,45 @@ const OpeningHistory: React.FC = () => {
   };
 
   return (
-
-  <div className='px-3 pb-3'>
-    <div className="row activity-history-container gx-4">
-      {histories.map((history, index) => (
-        <div key={index} className="col-12 col-sm-4">
-          <div className='activity-history-col'>
-            <div className="activity-history-header">
-              <div className="d-flex flex-row align-items-center" data-id={history.id}>
-                <div className="favorite-icon">
-                  <FavoriteButton
-                    tooltipPosition="bottom"
-                    kind="ghost"
-                    size="sm"
-                    fill="#0073E6"
-                    favorited={true}
-                    onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
-                  />
+    <div className='px-3 pb-3'>
+      <div className="row activity-history-container gx-4">
+        {histories && histories.length > 0 ?
+        histories.map((history, index) => (
+          <div key={index} className="col-12 col-sm-4">
+            <div className='d-flex'>
+              <div className="activity-history-header">              
+                <div className="d-flex flex-row align-items-center" data-id={history.id}>
+                  <div className="favorite-icon">
+                    <FavoriteButton
+                      tooltipPosition="bottom"
+                      kind="ghost"
+                      size="sm"
+                      fill="#0073E6"
+                      favorited={true}
+                      onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
+                    />
+                  </div>
+                  <span className="trend-title">Opening ID</span>
+                  &nbsp;
+                  {history.id}
                 </div>
-                {`Opening Id ${history.id}`}
               </div>
             </div>
-            <ProgressIndicator vertical className="activity-history-box">
-              {history.steps.map((step) => {
-                const status = statusClass(step.status);
-                return (
-                  <ProgressStep
-                    key={step.step.toString()}
-                    complete={status.complete}
-                    current={status.current}
-                    invalid={status.invalid}
-                    disabled={status.disabled}
-                    label={step.description}
-                    secondaryLabel={step.subtitle}
-                    className = 'py-2'
-                  />
-                );
-              })}
-            </ProgressIndicator>
           </div>
+        )):
+        <div className="col-12">
+          <EmptySection 
+          pictogram="UserInsights"
+          fill="#0073E6"
+          title={"You don't have any favourites to show yet!"}
+          description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
+          
+          />
         </div>
-      ))}
+        }
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default OpeningHistory;

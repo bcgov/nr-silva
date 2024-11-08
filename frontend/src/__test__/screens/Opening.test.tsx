@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
-import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
 
 const data = {
@@ -20,8 +20,8 @@ const data = {
   "lastUpdated": "2024-05-16T19:59:21.635Z"
 };
 
-vi.mock('../../services/OpeningFavoriteService', () => ({
-  fetchOpeningTrends: vi.fn(),
+vi.mock('../../services/OpeningFavouriteService', () => ({
+  fetchOpeningFavourites: vi.fn(),
 }));
 
 vi.mock('../../services/SecretsService', () => ({
@@ -84,7 +84,7 @@ describe('Opening screen test cases', () => {
       { group: '2023', key: 'Openings', value: 15 },
     ]);
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue([1,2,3]);
+    (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1,2,3]);
 
     
 

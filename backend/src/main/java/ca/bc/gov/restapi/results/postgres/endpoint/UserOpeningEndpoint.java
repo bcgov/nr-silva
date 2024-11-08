@@ -24,21 +24,6 @@ public class UserOpeningEndpoint {
   private final UserOpeningService userOpeningService;
 
   /**
-   * Gets up to three tracked Openings to a user.
-   *
-   * @return A list of openings or the http code 204-No Content.
-   */
-  @GetMapping("/dashboard-track-openings")
-  public ResponseEntity<List<MyRecentActionsRequestsDto>> getUserTrackedOpenings() {
-    List<MyRecentActionsRequestsDto> userOpenings = userOpeningService.getUserTrackedOpenings();
-    if (userOpenings.isEmpty()) {
-      return ResponseEntity.noContent().build();
-    }
-
-    return ResponseEntity.ok(userOpenings);
-  }
-
-  /**
    * Saves one Opening ID as favourite to an user.
    *
    * @param id The opening ID.
