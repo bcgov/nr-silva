@@ -19,8 +19,8 @@ describe('OpeningHistory Component', () => {
     });
 
     // Check for the presence of Opening Ids
-    expect(container.querySelector('div[data-id="1"').innerHTML).toContain('Opening Id 1');
-    expect(container.querySelector('div[data-id="2"').innerHTML).toContain('Opening Id 2');    
+    expect(container.querySelector('div[data-id="1"').innerHTML).toContain('<span class="trend-title">Opening ID</span>&nbsp;1');
+    expect(container.querySelector('div[data-id="2"').innerHTML).toContain('<span class="trend-title">Opening ID</span>&nbsp;2');    
   });
 
   it('renders correctly with empty histories', async () => {
