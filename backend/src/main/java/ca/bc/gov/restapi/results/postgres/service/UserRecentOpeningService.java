@@ -80,28 +80,28 @@ public class UserRecentOpeningService {
     
         // Extract opening IDs as String
         Map<String,LocalDateTime> openingIds = recentOpenings.getContent().stream()
-                //.map(opening -> String.valueOf(opening.getOpeningId())) // Convert Integer to String
-                //.collect(Collectors.toList());
                 .collect(Collectors.toMap(UserRecentOpeningEntity::getOpeningId, UserRecentOpeningEntity::getLastViewed));
         log.info("User with the userId {} has the following openindIds {}", userId, openingIds);
         if (openingIds.isEmpty()) {
             return new PaginatedResult<>();
         }
-        // Call the oracle service method to fetch opening details for the given opening IDs
-        //convert the openingIds to a list of strings and pass it to the OpeningSearchFiltersDto constructor
-        OpeningSearchFiltersDto filtersDto = new OpeningSearchFiltersDto(new ArrayList<>(openingIds.keySet()));
-        PaginationParameters paginationParameters = new PaginationParameters(0, 10);
-        PaginatedResult<OpeningSearchResponseDto> pageResult = openingService.openingSearch(filtersDto, paginationParameters);
-        // perform the sorting and set the lastViewDate to the OpeningSearchResponseDto
-        pageResult.setData(
-            pageResult
-            .getData()
-            .stream()        
-            .peek(result -> result.setLastViewDate(openingIds.get(result.getOpeningId().toString())))
-            .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
-            .collect(Collectors.toList())
-        );
-        return pageResult;
+
+        PaginatedResult<OpeningSearchResponseDto> pageResult =
+            openingService
+                .openingSearch(
+                    new OpeningSearchFiltersDto(new ArrayList<>(openingIds.keySet())),
+                    new PaginationParameters(0, 10)
+                );
+
+        return pageResult
+            .withData(
+                pageResult
+                    .getData()
+                    .stream()
+                    .peek(result -> result.setLastViewDate(openingIds.get(result.getOpeningId().toString())))
+                    .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
+                    .collect(Collectors.toList())
+            );
     }
     
 }
