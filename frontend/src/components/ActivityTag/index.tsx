@@ -1,5 +1,4 @@
-import React from 'react';
-import * as Carbon from '@carbon/icons-react';
+import DynamicIcon from '../DynamicIcon';
 import { ActivityIconMap, FileIconMap } from './definitions';
 import './styles.scss';
 import { ActivityTagFileFormatEnum, ActivityTagTypeEnum } from '../../types/ActivityTagType';
@@ -10,19 +9,11 @@ type ActivityTagProps = {
 };
 
 const ActivityTag = ({ type, fileFormat }: ActivityTagProps) => {
-  const tagType: keyof typeof ActivityIconMap = Object.keys(ActivityIconMap).includes(type) ? type : 'Unknown';
-  let iconName;
-  if (fileFormat && FileIconMap[fileFormat]) {
-    iconName = FileIconMap[fileFormat];
-  }
-  else{
-    iconName = ActivityIconMap[tagType]; // get the icon name by the type name
-  }
-  const Icon = Carbon[iconName]; // get the icon component by the icon name
-
+  const iconName = (fileFormat && FileIconMap[fileFormat]) ? FileIconMap[fileFormat] : ActivityIconMap[type];
+  
   return (
     <>
-      <Icon size={18} /> {type}
+      <DynamicIcon iconName={iconName} size={18} />&nbsp;{type}
     </>
   );
 };

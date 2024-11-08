@@ -25,19 +25,10 @@ interface IActionsTable {
  * @returns {JSX.Element} The rendered ActionsTable component.
  */
 function ActionsTable(props: IActionsTable): JSX.Element {
-  const getTypeEnum = (typeStr: string): ActivityTagTypeEnum => {
-    switch (typeStr) {
-      case ActivityTagTypeEnum.OPENING_DETAILS:
-        return ActivityTagTypeEnum.OPENING_DETAILS;
-      case ActivityTagTypeEnum.OPENING_REPORT:
-        return ActivityTagTypeEnum.OPENING_REPORT;
-      case ActivityTagTypeEnum.OPENING_SPATIAL:
-        return ActivityTagTypeEnum.OPENING_SPATIAL;
-      case ActivityTagTypeEnum.UPDATE:
-        return ActivityTagTypeEnum.UPDATE;
-      default:
-        return ActivityTagTypeEnum.UNKNOWN;
-    }
+  const getTypeEnum = (value: string): ActivityTagTypeEnum => {
+    // Find the enum entry by value, or fall back to UNKNOWN if not found
+    const match = (Object.values(ActivityTagTypeEnum) as string[]).find(enumValue => enumValue === value);
+    return (match as ActivityTagTypeEnum) || ActivityTagTypeEnum.UNKNOWN;
   };
 
   const getFileFormatEnum = (formatStr: string): ActivityTagFileFormatEnum => {
