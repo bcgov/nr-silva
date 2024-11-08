@@ -127,21 +127,19 @@ const OpeningScreenDataTable: React.FC<IOpeningScreenDataTable> = ({
               <TableToolbarContent className="table-toolbar">
                 <TableToolbarSearch
                   tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0}
-                  //onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange(e)}
                   onKeyDown={(e: any) => handleSearchChange(e)}
                   placeholder="Filter by opening ID, File ID, timber mark, cut block, status..."
                   persistent
                   disabled={rows.length === 0}
                 />
                 <TableToolbarMenu iconDescription="More" tooltipposition="bottom" renderIcon={Icons.OverflowMenuVertical} tabIndex={batchActionProps.shouldShowBatchActions ? -1 : 0} className="d-block d-sm-none">
-                  <TableToolbarAction onClick={() => console.log('Download Click')} disabled={selectedRows.length === 0}>
+                  <TableToolbarAction onClick={() =>{}} disabled={selectedRows.length === 0}>
                     Print
                   </TableToolbarAction>
                   <TableToolbarAction
                     onClick={() => {
                       batchActionClick(selectedRows);
-                      batchActionProps.onCancel();
-                      console.log('Clicked print')
+                      batchActionProps.onCancel();                      
                     }}
                     disabled={selectedRows.length === 0}
                   >
