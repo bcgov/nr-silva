@@ -127,10 +127,35 @@ describe('OpeningService', () => {
   });
 
   describe('fetchRecentActions', () => {
-    it('should fetch recent actions successfully', () => {
-      const result = fetchRecentActions();
+    it('should fetch recent actions successfully', async () => {
+      const mockData = {
+        "activityType": "Update",
+        "openingId": "1541297",
+        "statusCode": "APP",
+        "statusDescription": "Approved",
+        "lastUpdatedLabel": "1 minute ago",
+        "lastUpdated": "2024-05-16T19:59:21.635Z"
+      };
+      (axios.get as vi.Mock).mockResolvedValue({ data: [mockData] });
 
-      expect(result).toEqual([]);
+      const result = await fetchRecentActions();
+
+      expect(result).toEqual([
+        {
+          activityType: mockData.activityType,
+          openingId: mockData.openingId.toString(),
+          statusCode: mockData.statusCode,
+          statusDescription: mockData.statusDescription,
+          lastUpdated: mockData.lastUpdated,
+          lastUpdatedLabel: mockData.lastUpdatedLabel
+        }
+      ]);
+    });
+
+    it('should handle error while fetching recent actions', async () => {
+      (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(fetchRecentActions()).rejects.toThrow('Network Error');
     });
 
   });
