@@ -18,14 +18,12 @@ const OpeningHistory: React.FC = () => {
 
   useEffect(() => { loadTrends(); },[]);
 
-
   const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
     try {
       if(!newStatus){      
         await deleteOpeningFavorite(openingId);
         displayNotification({
-          title: 'Favorite Removed',
-          subTitle: `Opening Id ${openingId} removed from favorites`,
+          title: `Opening Id ${openingId} unfavourited`,          
           type: 'success',
           dismissIn: 8000,
           onClose: () => {}

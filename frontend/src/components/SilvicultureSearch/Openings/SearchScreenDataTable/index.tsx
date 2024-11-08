@@ -99,8 +99,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     try{
       setOpeningFavorite(parseInt(openingId));
       displayNotification({
-        title: "Success",
-        subTitle: `Following "OpeningID ${openingId}"`,
+        title: `Opening Id ${openingId} favourited`,
+        subTitle: 'You can follow this opening ID on your dashboard',
         type: "success",
         buttonLabel: "Go to track openings",
         onClose: () => {
