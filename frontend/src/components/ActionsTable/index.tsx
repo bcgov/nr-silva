@@ -80,10 +80,17 @@ function ActionsTable(props: IActionsTable): JSX.Element {
               </TableCell>
             ))}
           </TableRow>
-        ))}        
+        ))}
+        {props.rows.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={headerKeys.length}>
+              {props.emptySection}
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>      
     </Table>
-    {props.rows.length === 0 && props.emptySection}
+    
   </>
   );
 };
