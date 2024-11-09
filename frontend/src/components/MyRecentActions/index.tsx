@@ -63,29 +63,31 @@ const MyRecentActions: React.FC = () => {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel className="tab-content">
-            {recentActions && recentActions.length > 0 ? (
-            <ActionsTable rows={recentActions} headers={headers}/>
-            ):(
+          <TabPanel className="tab-content">            
+            <ActionsTable 
+            rows={recentActions} 
+            headers={headers}
+            emptySection={
               <EmptySection 
               pictogram="Time"
               fill="#0073E6"
               title={"There is no actions to show yet!"}
               description={"Your recent actions and files will appear here once you generate them"}              
-              />
-            )}
+              />}
+            />
           </TabPanel>
-          <TabPanel className="tab-content">
-            {fileRows && fileRows.length > 0 ? (
-            <ActionsTable rows={fileRows} headers={fileHeaders} />
-            ) : (
+          <TabPanel className="tab-content">            
+            <ActionsTable 
+            rows={fileRows} 
+            headers={fileHeaders}
+            emptySection={
               <EmptySection 
               pictogram="Time"
               fill="#0073E6"
               title={"There is no files to show yet!"}
               description={"Your recent actions and files will appear here once you generate them"}              
-              />
-            )}
+              />}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

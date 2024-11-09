@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import {
   Table,
   TableHead,
@@ -15,6 +16,7 @@ import { ITableHeader } from '../../types/TableHeader';
 interface IActionsTable {
   readonly rows: RecentAction[];
   readonly headers: ITableHeader[];
+  readonly emptySection?: ReactNode;
 }
 
 /**
@@ -47,6 +49,7 @@ function ActionsTable(props: IActionsTable): JSX.Element {
   const headerKeys = props.headers.map(header => header.key);
 
   return (
+    <>
     <Table size="lg" useZebraStyles={false} aria-label="actions table">
       <TableHead>
         <TableRow>
@@ -78,8 +81,17 @@ function ActionsTable(props: IActionsTable): JSX.Element {
             ))}
           </TableRow>
         ))}
-      </TableBody>
+        {props.rows.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={headerKeys.length}>
+              {props.emptySection}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>      
     </Table>
+    
+  </>
   );
 };
 

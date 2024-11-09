@@ -7,7 +7,7 @@ import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
-import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
 
@@ -34,7 +34,8 @@ vi.mock('../../services/OpeningService', async () => {
     ...actual,
     fetchRecentOpenings: vi.fn(),
     fetchOpeningsPerYear: vi.fn(),
-    fetchFreeGrowingMilestones: vi.fn(),    
+    fetchFreeGrowingMilestones: vi.fn(),
+    fetchRecentActions: vi.fn(),
   };
 });
 
@@ -85,6 +86,7 @@ describe('Opening screen test cases', () => {
     ]);
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
     (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1,2,3]);
+    (fetchRecentActions as vi.Mock).mockResolvedValue([data]);
 
     
 
