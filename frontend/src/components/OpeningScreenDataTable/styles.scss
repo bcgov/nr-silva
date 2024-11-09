@@ -57,9 +57,13 @@
 }
 
 .table-toolbar{
-  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-  
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02); 
 }
+
+.#{vars.$bcgov-prefix}--search-input:disabled::placeholder {
+  color: var(--#{vars.$bcgov-prefix}-text-disabled) !important;
+}
+
 
 @media only screen and (max-width: 672px) {
   .#{vars.$bcgov-prefix}--data-table-content {
