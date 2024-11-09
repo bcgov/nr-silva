@@ -73,8 +73,9 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             renderIcon={Location}
             type="button"
             onClick={() => toggleSpatial()}
+            disabled
           >
-            {showSpatial ? 'Hide Spatial' : 'Show Spatial'}
+            {showSpatial ? 'Hide map' : 'Show map'}
           </Button>
         </div>
         {showSpatial ? (

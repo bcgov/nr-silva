@@ -152,19 +152,16 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
  *
  * @returns {RecentAction[]} Array with recent action objects.
  */
-export function fetchRecentActions(): RecentAction[] {
-  // const authToken = getAuthIdToken();
+export async function fetchRecentActions(): Promise<RecentAction[]> {
+  const authToken = getAuthIdToken();
   try {
-    // Comment out the actual API call for now
-    // const response = await axios.get(backendUrl.concat("/api/dashboard-metrics/my-recent-actions/requests"));
-    //     headers: {
-    //         Authorization: `Bearer ${authToken}`
-    //     }
-    // });
-
-    // Temporarily use the sample data for testing
-    // const { data } = response;
-    const data: RecentAction[] = [];
+    const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+    
+    const { data } = response;
 
     if (Array.isArray(data)) {
       // Transforming response data into a format consumable by the component

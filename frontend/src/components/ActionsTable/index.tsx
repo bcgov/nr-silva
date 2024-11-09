@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import {
   Table,
   TableHead,
@@ -15,6 +16,7 @@ import { ITableHeader } from '../../types/TableHeader';
 interface IActionsTable {
   readonly rows: RecentAction[];
   readonly headers: ITableHeader[];
+  readonly emptySection?: ReactNode;
 }
 
 /**
@@ -25,19 +27,10 @@ interface IActionsTable {
  * @returns {JSX.Element} The rendered ActionsTable component.
  */
 function ActionsTable(props: IActionsTable): JSX.Element {
-  const getTypeEnum = (typeStr: string): ActivityTagTypeEnum => {
-    switch (typeStr) {
-      case ActivityTagTypeEnum.OPENING_DETAILS:
-        return ActivityTagTypeEnum.OPENING_DETAILS;
-      case ActivityTagTypeEnum.OPENING_REPORT:
-        return ActivityTagTypeEnum.OPENING_REPORT;
-      case ActivityTagTypeEnum.OPENING_SPATIAL:
-        return ActivityTagTypeEnum.OPENING_SPATIAL;
-      case ActivityTagTypeEnum.UPDATE:
-        return ActivityTagTypeEnum.UPDATE;
-      default:
-        return ActivityTagTypeEnum.UNKNOWN;
-    }
+  const getTypeEnum = (value: string): ActivityTagTypeEnum => {
+    // Find the enum entry by value, or fall back to UNKNOWN if not found
+    const match = (Object.values(ActivityTagTypeEnum) as string[]).find(enumValue => enumValue === value);
+    return (match as ActivityTagTypeEnum) || ActivityTagTypeEnum.UNKNOWN;
   };
 
   const getFileFormatEnum = (formatStr: string): ActivityTagFileFormatEnum => {
@@ -56,6 +49,7 @@ function ActionsTable(props: IActionsTable): JSX.Element {
   const headerKeys = props.headers.map(header => header.key);
 
   return (
+    <>
     <Table size="lg" useZebraStyles={false} aria-label="actions table">
       <TableHead>
         <TableRow>
@@ -87,8 +81,17 @@ function ActionsTable(props: IActionsTable): JSX.Element {
             ))}
           </TableRow>
         ))}
-      </TableBody>
+        {props.rows.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={headerKeys.length}>
+              {props.emptySection}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>      
     </Table>
+    
+  </>
   );
 };
 

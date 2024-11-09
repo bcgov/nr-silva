@@ -9,11 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
-import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -148,45 +146,6 @@ class DashboardMetricsEndpointTest {
     mockMvc
         .perform(
             get("/api/dashboard-metrics/free-growing-milestones")
-                .with(csrf().asHeader())
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent())
-        .andReturn();
-  }
-
-  @Test
-  @DisplayName("User recent actions requests test happy path should succeed")
-  void getUserRecentOpeningsActions_happyPath_shouldSucceed() throws Exception {
-    MyRecentActionsRequestsDto actionDto =
-        new MyRecentActionsRequestsDto(
-            "Created", 48L, "PEN", "Pending", "2 minutes ago", LocalDateTime.now());
-    when(dashboardMetricsService.getUserRecentOpeningsActions()).thenReturn(List.of(actionDto));
-
-    mockMvc
-        .perform(
-            get("/api/dashboard-metrics/my-recent-actions/requests")
-                .with(csrf().asHeader())
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].activityType").value("Created"))
-        .andExpect(jsonPath("$[0].openingId").value("48"))
-        .andExpect(jsonPath("$[0].statusCode").value("PEN"))
-        .andExpect(jsonPath("$[0].statusDescription").value("Pending"))
-        .andExpect(jsonPath("$[0].lastUpdatedLabel").value("2 minutes ago"))
-        .andReturn();
-  }
-
-  @Test
-  @DisplayName("User recent actions requests test no data should succeed")
-  void getUserRecentOpeningsActions_noData_shouldSucceed() throws Exception {
-    when(dashboardMetricsService.getUserRecentOpeningsActions()).thenReturn(List.of());
-
-    mockMvc
-        .perform(
-            get("/api/dashboard-metrics/my-recent-actions/requests")
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))

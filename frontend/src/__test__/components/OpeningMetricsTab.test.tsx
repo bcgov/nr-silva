@@ -4,7 +4,7 @@ import { render, act, waitFor, screen } from '@testing-library/react';
 import OpeningMetricsTab from '../../components/OpeningMetricsTab';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
-import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
 
 vi.mock('../../services/OpeningFavouriteService', () => ({
   fetchOpeningFavourites: vi.fn(),
@@ -15,7 +15,8 @@ vi.mock('../../services/OpeningService', async () => {
     ...actual,
     fetchRecentOpenings: vi.fn(),
     fetchOpeningsPerYear: vi.fn(),
-    fetchFreeGrowingMilestones: vi.fn(),    
+    fetchFreeGrowingMilestones: vi.fn(),
+    fetchRecentActions: vi.fn(),
   };
 });
 
@@ -26,6 +27,15 @@ describe('OpeningMetricsTab', () => {
     (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
     (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1, 2, 3]);
+    (fetchRecentActions as vi.Mock).mockResolvedValue([
+      {
+        activityType: "Update",        
+        openingId: "1541297",
+        statusCode: "APP",
+        lastUpdated: "2024-05-16T19:59:21.635Z",
+        lastUpdatedLabel: "1 minute ago"
+      }
+    ]);
     
   });
 
