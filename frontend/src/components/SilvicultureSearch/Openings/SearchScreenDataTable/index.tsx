@@ -309,7 +309,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
-                        ref={el => (cellRefs.current[i] = el)}
+                        ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
                           header.key === "actions" && showSpatial ? "p-0" : 
