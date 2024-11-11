@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
@@ -145,19 +145,9 @@ class OpeningSearchEndpointTest {
   @Test
   @DisplayName("Get Opening Categories happy Path should Succeed")
   void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
-    OpenCategoryCodeEntity category = new OpenCategoryCodeEntity();
-    category.setCode("FTML");
-    category.setDescription("Free Growing");
-    category.setEffectiveDate(LocalDate.now().minusYears(3L));
-    category.setExpiryDate(LocalDate.now().plusYears(3L));
-    category.setUpdateTimestamp(LocalDate.now());
+    CodeDescriptionDto category = new CodeDescriptionDto("FTML", "Free Growing");
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String effectiveDateStr = category.getEffectiveDate().format(formatter);
-    String expiryDateStr = category.getExpiryDate().format(formatter);
-    String updateTimestampStr = category.getUpdateTimestamp().format(formatter);
-
-    List<OpenCategoryCodeEntity> openCategoryCodeEntityList = List.of(category);
+    List<CodeDescriptionDto> openCategoryCodeEntityList = List.of(category);
 
     when(openCategoryCodeService.findAllCategories(false)).thenReturn(openCategoryCodeEntityList);
 
@@ -168,11 +158,8 @@ class OpeningSearchEndpointTest {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].code").value(category.getCode()))
-        .andExpect(jsonPath("$[0].description").value(category.getDescription()))
-        .andExpect(jsonPath("$[0].effectiveDate").value(effectiveDateStr))
-        .andExpect(jsonPath("$[0].expiryDate").value(expiryDateStr))
-        .andExpect(jsonPath("$[0].updateTimestamp").value(updateTimestampStr))
+        .andExpect(jsonPath("$[0].code").value(category.code()))
+        .andExpect(jsonPath("$[0].description").value(category.description()))
         .andReturn();
   }
 
