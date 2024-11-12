@@ -43,8 +43,6 @@ import {
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
-import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
-import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 
@@ -54,6 +52,7 @@ interface ISearchScreenDataTable {
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
   handleCheckboxChange: Function;
+  setOpeningId: Function;
   toggleSpatial: Function;
   showSpatial: boolean;
   totalItems: number;
@@ -68,9 +67,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   headers,
   defaultColumns,
   handleCheckboxChange,
+  setOpeningId,
   toggleSpatial,
   showSpatial,
-  totalItems,
+  totalItems
 }) => {
   const {
     handlePageChange,
@@ -116,6 +116,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       if (prevSelectedRows.includes(rowId)) {
         // If the row is already selected, remove it from the selected rows
         return prevSelectedRows.filter((id) => id !== rowId);
+        return prevSelectedRows.filter((id) => id !== rowId);
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
@@ -128,15 +129,18 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     markAsViewedOpening(openingId, {
       onSuccess: () => {
         // setToastText(`Successfully marked opening ${openingId} as viewed.`);
+        console.log(`Successfully marked opening ${openingId} as viewed.`);
       },
       onError: (err: any) => {
         // setToastText(`Failed to mark as viewed: ${err.message}`);
+        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
+    console.log(rowId + " has been added as a favourite for the user")
     //make a call to the api for the favourite opening when ready
     setToastText(`Following "OpeningID ${rowId}"`);
   }
