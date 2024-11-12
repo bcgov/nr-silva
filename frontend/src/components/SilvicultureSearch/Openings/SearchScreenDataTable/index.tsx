@@ -365,11 +365,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
       {rows.length <= 0 ? (
         <EmptySection
-          pictogram="Magnify"
-          title={"There are no openings to show yet"}
-          description={
-            "Your recent openings will appear here once you generate one"
-          }
+          pictogram="UserSearch"
+          title={"Results not found"}
+          description={"Check spelling or try different parameters"}
           fill="#0073E6"
         />
       ) : null}
