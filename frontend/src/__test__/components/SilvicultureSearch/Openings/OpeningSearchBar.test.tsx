@@ -115,8 +115,6 @@ describe("OpeningsSearchBar", () => {
       </QueryClientProvider>
     );
 
-    console.log(screen.debug());
-
     // Check if an element with the class 'd-none' exists within the structure
     const dNoneElement = screen.getByText('+2');
     expect(dNoneElement).toBeInTheDocument();

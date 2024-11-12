@@ -292,7 +292,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </div>
           </TableToolbarContent>
         </TableToolbar>
-        <Table aria-label="sample table">
+        <Table aria-label="opening search result table">
           <TableHead>
             <TableRow>
               {headers.map((header) =>
