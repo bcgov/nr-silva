@@ -50,5 +50,30 @@ describe('FriendlyDate Component', () => {
     const {container} =  render(<FriendlyDate date="2024-02-22T00:00:00" />);
     expect(container.querySelector('span').getAttribute('data-tooltip')).toBe("Feb 22, 2024");
   });
+
+  it('renders an empty span for null dates', () => {
+    const {getByTestId} =  render(<FriendlyDate date={null} />);
+    expect(getByTestId("friendly-date")).toBeInTheDocument();
+
+  });
+
+  it('renders an empty span for undefined dates', () => {
+    const {getByTestId} = render(<FriendlyDate date={undefined} />);
+    expect(getByTestId("friendly-date")).toBeInTheDocument();
+
+  });
+
+  it('renders an empty span for invalid', () => {
+    const {getByTestId} = render(<FriendlyDate date="invalid-date" />);
+    expect(getByTestId("friendly-date")).toBeInTheDocument();
+
+  });
+
+  it('renders an empty span for empty', () => {
+    const {getByTestId} = render(<FriendlyDate date="" />);
+    expect(getByTestId("friendly-date")).toBeInTheDocument();
+
+  });
+  
   
 });
