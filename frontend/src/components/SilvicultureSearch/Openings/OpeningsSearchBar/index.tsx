@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./OpeningsSearchBar.scss";
-import { Search, Button, FlexGrid, Row, Column, DismissibleTag } from "@carbon/react";
+import { Search, Button, FlexGrid, Row, Column, DismissibleTag, InlineNotification } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
@@ -8,11 +8,13 @@ import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
 
 interface IOpeningsSearchBar {
-  onSearchClick: Function;
+  onSearchClick: () => void;
+  showNoFilterNotification?: boolean;
 }
 
 const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
-  onSearchClick
+  onSearchClick,
+  showNoFilterNotification = false
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -51,8 +53,19 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     <div>
       <div>
         <FlexGrid className="openings-searchbar-container">
+          {showNoFilterNotification && (
           <Row>
-            <Column lg={8} xl={6} max={10} className="p-0 mb-2 mb-lg-0">
+            <Column lg={14} className="p-0 pb-3">
+              <InlineNotification 
+                className="mw-100 w-100"
+                title="Missing at least one criteria to search" 
+                subtitle="Please, start searching for an opening ID, opening number, timber mark, file ID or apply advanced search criteria" 
+                lowContrast={true} />
+            </Column>
+          </Row>
+          )}
+          <Row>
+            <Column lg={8} xl={6} max={10} className="p-0 mb-2 mb-lg-0">            
                 <Search
                   size="md"
                   placeholder="Search by opening ID, opening number, timber mark or file ID"
