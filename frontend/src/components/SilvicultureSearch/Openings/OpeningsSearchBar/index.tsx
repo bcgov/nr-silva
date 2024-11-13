@@ -40,18 +40,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     setSearchTerm(value);
   };
 
-  const handleClearFilters = () => {
-    clearIndividualField('startDate');
-    clearIndividualField('endDate');
-    clearFilters();
-    handleFiltersChanged();
-    filters.startDate = null as Date | null;
-    filters.endDate = null as Date | null;
-    console.log("Clearing filters", filters);
-  }
-
   const handleFiltersChanged = () => {
-    console.log("Filters changed", filters);
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
     setFiltersList(filters);
