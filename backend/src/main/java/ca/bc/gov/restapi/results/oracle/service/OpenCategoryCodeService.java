@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeRepository;
 import java.time.LocalDate;
@@ -21,9 +22,9 @@ public class OpenCategoryCodeService {
    * Find all Opening categories. Option to include expired ones.
    *
    * @param includeExpired True to include expired, false otherwise.
-   * @return List of {@link OpenCategoryCodeEntity} with found categories.
+   * @return List of {@link CodeDescriptionDto} with found categories.
    */
-  public List<OpenCategoryCodeEntity> findAllCategories(boolean includeExpired) {
+  public List<CodeDescriptionDto> findAllCategories(boolean includeExpired) {
     log.info("Getting all open category codes. Include expired: {}", includeExpired);
 
     List<OpenCategoryCodeEntity> openCategoryCodes =
@@ -35,6 +36,9 @@ public class OpenCategoryCodeService {
         openCategoryCodes.size(),
         BooleanUtils.toString(includeExpired, "in", "ex")
     );
-    return openCategoryCodes;
+    return openCategoryCodes
+        .stream()
+        .map(entity -> new CodeDescriptionDto(entity.getCode(), entity.getDescription()))
+        .toList();
   }
 }

@@ -19,7 +19,8 @@ export const columns: ITableHeader[] = [
   {
     key: 'categoryDescription',
     header: 'Category',
-    selected: true
+    selected: true,
+    elipsis: true
   },
   {
     key: 'orgUnitName',
@@ -49,7 +50,7 @@ export const columns: ITableHeader[] = [
   {
     key: 'disturbanceStartDate',
     header: 'Disturbance Date',
-    selected: false
+    selected: true
   }
 ];
 

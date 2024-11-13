@@ -3,9 +3,9 @@ import PaginationContext, { PaginationContextData } from "./PaginationContext";
 
 const PaginationProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [data, setData] = useState<any[]>([]);
-  const [initialItemsPerPage, setInitialItemsPerPage] = useState<number>(0);
+  const [initialItemsPerPage, setInitialItemsPerPage] = useState<number>(20);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const [totalResultItems, setTotalResultItems] = useState<number>(0); // State for totalResultItems
 
   // Update the total number of pages when itemsPerPage changes

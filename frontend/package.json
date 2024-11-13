@@ -15,6 +15,7 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "aws-amplify": "^6.7.0",
     "axios": "^1.6.8",
+    "date-fns": "^4.1.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "leaflet": "^1.9.4",
