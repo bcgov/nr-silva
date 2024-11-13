@@ -133,14 +133,14 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                 }
               />
               <Checkbox
-                labelText={`Submitted to FRPA section 108`}
+                labelText={`FRPA section 108`}
                 id="checkbox-label-2"
                 checked={filters.openingFilters.includes(
-                  "Submitted to FRPA section 108"
+                  "FRPA section 108"
                 )}
                 onChange={() =>
                   handleCheckboxChange(
-                    "Submitted to FRPA section 108",
+                    "FRPA section 108",
                     "openingFilters"
                   )
                 }
