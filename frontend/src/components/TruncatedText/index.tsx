@@ -14,7 +14,7 @@ const TruncatedText: React.FC<{text: string, maxLength?: number, parentWidth?: n
             align="bottom-left"
             autoAlign
           > 
-            <span>{truncated}</span>
+            <span aria-label={text}>{truncated}</span>
           </Tooltip>;
 }
 

@@ -122,6 +122,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
             <Column lg={0} className="p-0 mt-2">
               <Button
                 className="search-button ms-xl-2"
+                data-testid="search-button"
                 renderIcon={Icons.Search}
                 type="button"
                 size="md"
