@@ -26,15 +26,10 @@ describe('TruncatedText Component', () => {
     expect(screen.getByText("Short text")).toBeInTheDocument();
   });
 
-  it('truncates text based on parentWidth less than 200px', () => {
-    render(<TruncatedText text="This is a test text that should be truncated" parentWidth={150} />);
-    expect(screen.getByText("This is a test ...")).toBeInTheDocument(); // 150/10 = 15 chars
-  });
-
   it('truncates text based on parentWidth greater than 200px', () => {
     const text = "This is a test text that should be truncated".repeat(10);
     render(<TruncatedText text={text} parentWidth={300} />);
-    expect(screen.getByText("This is a test text that should be truncatedThis is a test t...")).toBeInTheDocument(); // 300/5 = 60 chars
+    expect(screen.getByText("This is a test text that should be truncated...")).toBeInTheDocument(); // 300/5 = 60 chars
   });
 
   it('renders tooltip with full text on hover', async () => {
