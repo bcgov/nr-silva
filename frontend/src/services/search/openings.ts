@@ -68,7 +68,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     statusList: filters.status, // Keep it as an array
     entryUserId: filters.clientAcronym,
     cutBlockId: filters.cutBlock,
-    cuttinPermitId:filters.cuttingPermit,
+    cuttingPermitId:filters.cuttingPermit,
     timbermark:filters.timberMark,
     myOpenings:
       filters.openingFilters?.includes("Openings created by me") || undefined,
