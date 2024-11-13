@@ -43,6 +43,8 @@ import { useNavigate } from "react-router-dom";
 import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
+import FriendlyDate from "../../../FriendlyDate";
+
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -374,7 +376,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           <TruncatedText 
                             text={row["categoryCode"] + " - " + row["categoryDescription"]} 
                             parentWidth={cellWidths[i]} />
-                          ) : (
+                        ) : header.key === 'disturbanceStartDate' ? (
+                          <FriendlyDate date={row[header.key]} />
+                        ) : (
                           row[header.key]
                         )}
                       </TableCell>
@@ -401,7 +405,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           backwardText="Previous page"
           forwardText="Next page"
           pageSize={itemsPerPage}
-          pageSizes={[5, 20, 50, 200, 400]}
+          pageSizes={[20, 40, 60, 80, 100]}
           itemsPerPageText="Items per page"
           page={currentPage}
           onChange={({
