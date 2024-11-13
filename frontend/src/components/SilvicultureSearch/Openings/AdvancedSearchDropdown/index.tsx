@@ -18,6 +18,7 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -148,7 +149,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           </Column>
         </Row>
 
-        <Row className="mb-3">
+        <Row className="mb-3">          
           <Column lg={8}>
             <FilterableMultiSelect
               label="Enter or choose an org unit"
@@ -156,10 +157,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               className="multi-select"
               titleText="Org Unit"
               items={orgUnitItems}
-              itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
+              itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
               onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
               selectedItems={selectedOrgUnits}
+              sortItems={sortItems}
             />
           </Column>
           <Column lg={8}>
@@ -173,6 +175,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               selectionFeedback="top-after-reopen"
               onChange={(e: any) => handleMultiSelectChange("category",e.selectedItems)}
               selectedItems={selectedCategories}
+              sortItems={sortItems}
             />
           </Column>
         </Row>
