@@ -18,6 +18,7 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -25,6 +26,7 @@ interface AdvancedSearchDropdownProps {
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const { filters, setFilters } = useOpeningsSearch();
+  //TODO: pass this to parent and just pass the values as props
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
@@ -36,7 +38,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
-        text: orgUnit,
+        text: data?.orgUnits?.find((item: any) => item.orgUnitCode === orgUnit)?.orgUnitName || orgUnit,
         value: orgUnit,
       }));
       setSelectedOrgUnits(orgUnitsArray);
@@ -46,7 +48,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     // Split filters.category into array and format as needed for selectedItems
     if (filters.category) {
     const categoriesArray = filters.category.map((category: string) => ({
-      text: category,
+      text: data?.categories?.find((item: any) => item.code === category)?.description || category,
       value: category,
     }));
     setSelectedCategories(categoriesArray);
@@ -63,9 +65,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
     if (group === "orgUnit")
-    setSelectedOrgUnits(updatedGroup);
+      setSelectedOrgUnits(selectedItems);
     if (group === "category")
-    setSelectedCategories(updatedGroup);
+      setSelectedCategories(selectedItems);
     handleFilterChange({ [group]: updatedGroup });
   }
 
@@ -92,13 +94,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   const categoryItems =
     data.categories?.map((item: any) => ({
-      text: item.code,
+      text: item.description,
       value: item.code,
     })) || [];
 
   const orgUnitItems =
     data.orgUnits?.map((item: any) => ({
-      text: item.orgUnitCode,
+      text: item.orgUnitName,
       value: item.orgUnitCode,
     })) || [];
 
@@ -147,7 +149,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           </Column>
         </Row>
 
-        <Row className="mb-3">
+        <Row className="mb-3">          
           <Column lg={8}>
             <FilterableMultiSelect
               label="Enter or choose an org unit"
@@ -155,10 +157,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               className="multi-select"
               titleText="Org Unit"
               items={orgUnitItems}
-              itemToString={(item: any) => (item ? item.value : "")}
+              itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
               onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
               selectedItems={selectedOrgUnits}
+              sortItems={sortItems}
             />
           </Column>
           <Column lg={8}>
@@ -168,10 +171,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               className="multi-select"
               titleText="Category"
               items={categoryItems}
-              itemToString={(item: any) => (item ? item.value : "")}
+              itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
+              onChange={(e: any) => handleMultiSelectChange("category",e.selectedItems)}
               selectedItems={selectedCategories}
+              sortItems={sortItems}
             />
           </Column>
         </Row>
