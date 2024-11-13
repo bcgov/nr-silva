@@ -96,6 +96,6 @@ describe("AdvancedSearchDropdown", () => {
     expect(screen.getByText("Timber mark")).toBeInTheDocument();
     expect(screen.getByLabelText("Start Date")).toBeInTheDocument();
     expect(screen.getByLabelText("End Date")).toBeInTheDocument();    
-    expect(screen.getByText("Status (Select One)")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
   });
 });
