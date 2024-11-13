@@ -3,9 +3,9 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
@@ -121,10 +121,10 @@ public class OpeningSearchEndpoint {
    * Get all opening categories. Optionally you can ask for the expired ones.
    *
    * @param includeExpired Query param to include expired categories.
-   * @return List of OpenCategoryCodeEntity with found categories.
+   * @return List of {@link CodeDescriptionDto} with found categories.
    */
   @GetMapping("/categories")
-  public List<OpenCategoryCodeEntity> getOpeningCategories(
+  public List<CodeDescriptionDto> getOpeningCategories(
       @RequestParam(value = "includeExpired", required = false)
       Boolean includeExpired) {
     boolean addExpired = Boolean.TRUE.equals(includeExpired);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   TableToolbar,
   TableToolbarAction,
@@ -45,7 +45,9 @@ import { useNavigate } from "react-router-dom";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { useNotification } from "../../../../contexts/NotificationProvider";
+import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
+
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -55,6 +57,10 @@ interface ISearchScreenDataTable {
   toggleSpatial: Function;
   showSpatial: boolean;
   totalItems: number;
+}
+
+interface ICellRefs {
+  offsetWidth: number;
 }
 
 const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
@@ -81,6 +87,24 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openingDetails, setOpeningDetails] = useState(false);
   const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
+
+  // This ref is used to calculate the width of the container for each cell
+  const cellRefs = useRef([]);
+  // Holds the with of each cell in the table
+  const [cellWidths, setCellWidths] = useState<number[]>([]);
+
+  useEffect(() => {
+    const widths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
+    setCellWidths(widths);
+
+    const handleResize = () => {
+      const newWidths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
+      setCellWidths(newWidths);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);
@@ -274,7 +298,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </div>
           </TableToolbarContent>
         </TableToolbar>
-        <Table aria-label="sample table">
+        <Table aria-label="opening search result table">
           <TableHead>
             <TableRow>
               {headers.map((header) =>
@@ -299,9 +323,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
+                        ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                          header.key === "actions" && showSpatial ? "p-0" : 
+                          header.elipsis ? "ellipsis" :
+                          null
                         }
                       >
                         {header.key === "statusDescription" ? (
@@ -365,9 +392,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             </OverflowMenu>
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
-                          row["categoryCode"] +
-                          " - " +
-                          row["categoryDescription"]
+                          <TruncatedText 
+                            text={row["categoryCode"] + " - " + row["categoryDescription"]} 
+                            parentWidth={cellWidths[i]} />
                         ) : header.key === 'disturbanceStartDate' ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (

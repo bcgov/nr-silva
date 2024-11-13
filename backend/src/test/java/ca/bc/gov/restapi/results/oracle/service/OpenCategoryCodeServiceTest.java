@@ -1,8 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
-import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
-import java.time.LocalDate;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,20 +18,18 @@ class OpenCategoryCodeServiceTest extends AbstractTestContainerIntegrationTest {
   @DisplayName("Find all categories include expired false should succeed")
   void findAllCategories_includeExpiredFalse_shouldSucceed() {
 
-    List<OpenCategoryCodeEntity> entities = openCategoryCodeService.findAllCategories(false);
+    List<CodeDescriptionDto> entities = openCategoryCodeService.findAllCategories(false);
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(22, entities.size());
-    Assertions.assertTrue(entities.get(0).getExpiryDate().isAfter(LocalDate.now()));
   }
 
   @Test
   @DisplayName("Find all categories include expired true should succeed")
   void findAllCategories_includeExpiredTrue_shouldSucceed() {
-    List<OpenCategoryCodeEntity> entities = openCategoryCodeService.findAllCategories(true);
+    List<CodeDescriptionDto> entities = openCategoryCodeService.findAllCategories(true);
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(39, entities.size());
-    Assertions.assertTrue(entities.get(0).getExpiryDate().isBefore(LocalDate.now()));
   }
 }
