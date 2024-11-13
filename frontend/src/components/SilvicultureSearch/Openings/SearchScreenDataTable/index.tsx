@@ -52,7 +52,6 @@ interface ISearchScreenDataTable {
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
   handleCheckboxChange: Function;
-  setOpeningId: Function;
   toggleSpatial: Function;
   showSpatial: boolean;
   totalItems: number;
@@ -67,7 +66,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   headers,
   defaultColumns,
   handleCheckboxChange,
-  setOpeningId,
   toggleSpatial,
   showSpatial,
   totalItems
