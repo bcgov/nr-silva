@@ -3,15 +3,16 @@ import { Button, InlineNotification } from '@carbon/react';
 import './styles.scss'
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
-import OpeningScreenDataTable from '../OpeningScreenDataTable/index';
-import { headers } from '../OpeningScreenDataTable/testData';
-import { fetchRecentOpenings } from '../../services/OpeningService';
+import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
+import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/testData';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
 import { RecentOpening } from '../../types/RecentOpening';
 import { generateHtmlFile } from './layersGenerator';
 import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
+import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import { useGetAuth } from '../../contexts/AuthProvider';
+import { ITableHeader } from '../../types/TableHeader';
 
 interface Props {
   showSpatial: boolean;
@@ -26,38 +27,38 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);  
   const { user } = useGetAuth();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const rows: RecentOpening[] = await fetchRecentOpenings();
-        setOpeningRows(rows);
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-        setLoading(false);
-        setError('Failed to fetch recent openings');
-      }
-    };
-
-    const fetchAllowedPeople = async () => {
-      try {
-        const usersList: WmsLayersWhitelistUser[] = await getWmsLayersWhitelistUsers();
-        setWmsUsersWhitelist(usersList);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-      }
-    };
-
-    fetchData();
-    fetchAllowedPeople();
-  }, []);
+  const { data, isFetching } = useUserRecentOpeningQuery(10);
+  const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
   useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
       setShowSpatial(!showSpatial);
+  };
+
+  const handleCheckboxChange = (columnKey: string) => {
+    if(columnKey === "select-default"){
+      //set to the deafult
+      setHeaders(columns)
+    }
+    else if(columnKey === "select-all"){
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) => ({
+          ...header,
+          selected: true, // Select all headers
+        }))
+      );
+    }
+    else{
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) =>
+          header.key === columnKey
+            ? { ...header, selected: !header.selected }
+            : header
+        )
+      );
+    }
+    
   };
 
   return (
@@ -100,15 +101,19 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             className = "inline-notification"
           />
         ) : null }
-        {loading ? (
+        {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (
-          <OpeningScreenDataTable
-            headers={headers}
-            rows={openingRows}
-            setOpeningId={setLoadId}
-            showSpatial={showSpatial}
-          />
+          <RecentOpeningsDataTable
+              rows={data?.data || []}
+              headers={headers}
+              defaultColumns={headers}
+              handleCheckboxChange={handleCheckboxChange}
+              setOpeningId={setLoadId}
+              toggleSpatial={toggleSpatial}
+              showSpatial={showSpatial}
+              totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
+            />
         )}
       </div>
     </>

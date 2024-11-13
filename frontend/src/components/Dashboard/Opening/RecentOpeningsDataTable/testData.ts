@@ -2,11 +2,6 @@ import { ITableHeader } from "../../../../types/TableHeader";
 
 export const columns: ITableHeader[] = [
   {
-    key: 'actions',
-    header: 'Actions',
-    selected: true
-  },
-  {
     key: 'openingId',
     header: 'Opening Id',
     selected: true
@@ -17,23 +12,13 @@ export const columns: ITableHeader[] = [
     selected: true
   },
   {
-    key: 'categoryDescription',
-    header: 'Category',
-    selected: true
-  },
-  {
-    key: 'orgUnitName',
-    header: 'Org unit',
-    selected: true
-  },
-  {
-    key: 'statusDescription',
-    header: 'Status',
-    selected: true
-  },
-  {
     key: 'cuttingPermitId',
     header: 'Cutting permit',
+    selected: true
+  },
+  {
+    key: 'timberMark',
+    header: 'Timber mark',
     selected: true
   },
   {
@@ -46,9 +31,25 @@ export const columns: ITableHeader[] = [
     header: 'Gross Area',
     selected: true
   },
+  
+  {
+    key: 'statusDescription',
+    header: 'Status',
+    selected: true
+  },
+  {
+    key: 'categoryDescription',
+    header: 'Category',
+    selected: true
+  },
   {
     key: 'disturbanceStartDate',
     header: 'Disturbance Date',
     selected: false
+  },
+  {
+    key: 'actions',
+    header: 'Actions',
+    selected: true
   }
 ];
