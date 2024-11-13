@@ -19,6 +19,7 @@ const OpeningsSearchTab: React.FC = () => {
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
+  const [isNoFilterSearch, setIsNoFilterSearch] = useState<boolean>(false); // Handles the notification for no filters applied
   const { currentPage, itemsPerPage } = useContext(PaginationContext);
   
   const [headers, setHeaders] = useState<ITableHeader[]>(columns);
@@ -35,11 +36,18 @@ const OpeningsSearchTab: React.FC = () => {
     setFiltersApplied(!filtersApplied);
   };
 
+  const hasFilters = countActiveFilters(filters) > 0 || searchTerm.length > 0;
+
+
   const handleSearch = () => {
-    toggleFiltersApplied();
-    setFiltersApplied(true); // Set filters as applied to show results
-    setFinalParams({...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
-    setIsSearchTriggered(true); // Trigger the search
+    setIsNoFilterSearch(!hasFilters);
+    
+    if(hasFilters){    
+      toggleFiltersApplied();
+      setFiltersApplied(true); // Set filters as applied to show results
+      setFinalParams({...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
+      setIsSearchTriggered(true); // Trigger the search
+    }
   };
 
   const handleFiltersChanged = () => {
@@ -116,6 +124,7 @@ const OpeningsSearchTab: React.FC = () => {
     <>
       <div className="container-fluid p-0 pb-5 align-content-center">
         <OpeningsSearchBar
+          showNoFilterNotification={isNoFilterSearch}
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
