@@ -49,6 +49,6 @@ export const columns: ITableHeader[] = [
   {
     key: 'disturbanceStartDate',
     header: 'Disturbance Date',
-    selected: false
+    selected: true
   }
 ];

@@ -43,6 +43,9 @@ import {
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
+import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
+import { useNotification } from "../../../../contexts/NotificationProvider";
+import FriendlyDate from "../../../FriendlyDate";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -365,6 +368,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           row["categoryCode"] +
                           " - " +
                           row["categoryDescription"]
+                        ) : header.key === 'disturbanceStartDate' ? (
+                          <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
                         )}
@@ -394,7 +399,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           backwardText="Previous page"
           forwardText="Next page"
           pageSize={itemsPerPage}
-          pageSizes={[5, 20, 50, 200, 400]}
+          pageSizes={[20, 40, 60, 80, 100]}
           itemsPerPageText="Items per page"
           page={currentPage}
           onChange={({
