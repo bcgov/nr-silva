@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { InlineNotification } from "@carbon/react";
 import "./styles.scss";
 import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";

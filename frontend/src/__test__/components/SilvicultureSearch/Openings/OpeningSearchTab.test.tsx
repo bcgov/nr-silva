@@ -114,6 +114,7 @@ describe('OpeningSearchTab', () => {
     const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID') as HTMLInputElement;    
     await act(async () => userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
+    await act(async () => await screen.findByText('Actions'));
   });
 
   it('should display a message when no results are found', async () => {

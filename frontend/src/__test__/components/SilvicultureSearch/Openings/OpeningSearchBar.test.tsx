@@ -1,7 +1,7 @@
 // src/__test__/components/SilvicultureSearch/Openings/OpeningsSearchBar.test.tsx
 
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import OpeningsSearchBar from "../../../../components/SilvicultureSearch/Openings/OpeningsSearchBar";
 import { vi } from "vitest";
@@ -36,7 +36,7 @@ describe("OpeningsSearchBar", () => {
     expect(searchInput).toBeInTheDocument();
   });
 
-  it("should call the onSearchClick function when the search button is clicked", () => {
+  it("should call the onSearchClick function when the search button is clicked", async () => {
     // Create a mock function to pass as a prop
     const onSearchClick = vi.fn();
 
@@ -48,7 +48,7 @@ describe("OpeningsSearchBar", () => {
 
     // Click the search button
     const searchButton = screen.getAllByRole("button", { name: "Search" })[1];
-    searchButton.click();
+    await act(async () => searchButton.click());
 
     // Check if the onSearchClick function was called
     expect(onSearchClick).toHaveBeenCalled();
@@ -118,5 +118,26 @@ describe("OpeningsSearchBar", () => {
     // Check if an element with the class 'd-none' exists within the structure
     const dNoneElement = screen.getByText('+2');
     expect(dNoneElement).toBeInTheDocument();
+  });
+
+  it("should show inline notification when no filter provided", async () => {
+    // Create a mock function to pass as a prop
+    const onSearchClick = vi.fn();
+
+    const {container, getByText} = render(
+      <QueryClientProvider client={queryClient}>
+        <OpeningsSearchBar onSearchClick={onSearchClick} showNoFilterNotification={true} />
+      </QueryClientProvider>
+    );
+
+    // Click the search button
+    const searchButton = screen.getAllByRole("button", { name: "Search" })[1];
+    await act(async () => searchButton.click());
+
+    // Check if the onSearchClick function was called
+    expect(onSearchClick).toHaveBeenCalled();
+
+    expect(getByText("Missing at least one criteria to search")).toBeInTheDocument();
+
   });
 });
