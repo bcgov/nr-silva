@@ -4,6 +4,7 @@ import { render, act, waitFor, screen } from '@testing-library/react';
 import OpeningsTab from '../../components/OpeningsTab';
 import { AuthProvider } from '../../contexts/AuthProvider';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchRecentOpenings } from '../../services/OpeningService';
 import { RecentOpening } from '../../types/RecentOpening';
 import PaginationProvider from '../../contexts/PaginationProvider';
@@ -36,6 +37,7 @@ const rows: RecentOpening[] = [{
   entryTimestamp: '1',
   updateTimestamp: '1',
 }];
+const queryClient = new QueryClient();
 
 describe('Openings Tab test',() => {
 
@@ -43,7 +45,15 @@ describe('Openings Tab test',() => {
     (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);
     (fetchRecentOpenings as vi.Mock).mockResolvedValue(rows);
     await act(async () => {
-    render(<AuthProvider><PaginationProvider><OpeningsTab showSpatial={false} setShowSpatial={vi.fn()}/></PaginationProvider></AuthProvider>);
+    render(
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsTab showSpatial={false} setShowSpatial={vi.fn()} />
+          </PaginationProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    );
     });
     expect(screen.getByText('Recent openings')).toBeInTheDocument();
   });
