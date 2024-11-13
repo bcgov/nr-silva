@@ -18,10 +18,10 @@ const PageTitle: React.FC<PageTitleProps> = ({
   subtitle
 }: PageTitleProps) => {
 
+  const currentLocation = useLocation().pathname;
+
   // This will return up to the second level, even if we use just the first one
   const extractCurrentItems = (): LeftMenuItem[] => {
-    const currentLocation = useLocation().pathname;
-
     for (const item of leftMenu) {
       if (item.items) {
         for (const subItem of item.items) {
