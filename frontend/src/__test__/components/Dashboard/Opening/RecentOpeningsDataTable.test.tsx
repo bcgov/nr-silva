@@ -99,7 +99,6 @@ describe("OpeningsSearchBar", () => {
       </QueryClientProvider>
       </MemoryRouter>
     );
-    console.log(screen.debug())
     // Check if the search input field is present with the correct placeholder text
     const searchInput = screen.getByText(/Total Search Results: 1/i);
     expect(searchInput).toBeInTheDocument();
