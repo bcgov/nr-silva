@@ -129,18 +129,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     markAsViewedOpening(openingId, {
       onSuccess: () => {
         // setToastText(`Successfully marked opening ${openingId} as viewed.`);
-        console.log(`Successfully marked opening ${openingId} as viewed.`);
       },
       onError: (err: any) => {
         // setToastText(`Failed to mark as viewed: ${err.message}`);
-        console.log(`Failed to mark as viewed: ${err.message}`);
       }
     });
   };
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
-    console.log(rowId + " has been added as a favourite for the user")
     //make a call to the api for the favourite opening when ready
     setToastText(`Following "OpeningID ${rowId}"`);
   }

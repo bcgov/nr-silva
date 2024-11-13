@@ -90,6 +90,7 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
+    console.log(rowId + " has been added as a favourite for the user")
     //make a call to the api for the favourite opening when ready
     setToastText(`Following "OpeningID ${rowId}"`);
   }
@@ -187,6 +188,8 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
                 <TableRow
                   key={row.openingId + i.toString()}
                   onClick={async () => {
+                    //add the api call to send the viewed opening
+                    // await handleRowClick(row.openingId);
                     setOpeningDetails(true);
                   }}
                 >
