@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./OpeningsSearchBar.scss";
 import { Search, Button, FlexGrid, Row, Column, DismissibleTag } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
@@ -6,6 +6,8 @@ import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
+import { callbackify } from "util";
+import { c } from "vite/dist/node/types.d-aGj9QkWt";
 
 interface IOpeningsSearchBar {
   onSearchClick: Function;
@@ -19,7 +21,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
   const [filtersList, setFiltersList] = useState(null);
-  const { filters, clearFilters, searchTerm, setSearchTerm } = useOpeningsSearch();
+  const { filters, clearFilters, searchTerm, setSearchTerm, clearIndividualField } = useOpeningsSearch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -38,11 +40,23 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     setSearchTerm(value);
   };
 
+  const handleClearFilters = () => {
+    clearIndividualField('startDate');
+    clearIndividualField('endDate');
+    clearFilters();
+    handleFiltersChanged();
+    filters.startDate = null as Date | null;
+    filters.endDate = null as Date | null;
+    console.log("Clearing filters", filters);
+  }
+
   const handleFiltersChanged = () => {
+    console.log("Filters changed", filters);
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
     setFiltersList(filters);
-  };
+  }
+
   useEffect(() => {
     handleFiltersChanged();
   }, [filters]);

@@ -18,21 +18,22 @@ import "./AdvancedSearchDropdown.scss";
 import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
-  const { filters, setFilters } = useOpeningsSearch();
+  const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
-  // Initialize selected items for category MultiSelect based on existing filters
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log("Use Effect in child is being called.", filters);
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
@@ -45,14 +46,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     }
     // Split filters.category into array and format as needed for selectedItems
     if (filters.category) {
-    const categoriesArray = filters.category.map((category: string) => ({
-      text: category,
-      value: category,
-    }));
-    setSelectedCategories(categoriesArray);
-  } else{
-    setSelectedCategories([]);
-  }
+      const categoriesArray = filters.category.map((category: string) => ({
+        text: category,
+        value: category,
+      }));
+      setSelectedCategories(categoriesArray);
+    } else {
+      setSelectedCategories([]);
+    }
+
+
   }, [filters.orgUnit, filters.category]);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
@@ -60,12 +63,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     setFilters(newFilters);
   };
 
+
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
     if (group === "orgUnit")
-    setSelectedOrgUnits(updatedGroup);
+      setSelectedOrgUnits(updatedGroup);
     if (group === "category")
-    setSelectedCategories(updatedGroup);
+      setSelectedCategories(updatedGroup);
     handleFilterChange({ [group]: updatedGroup });
   }
 
@@ -271,8 +275,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                     selectedItem={
                       filters.dateType
                         ? dateTypeItems.find(
-                            (item: any) => item.value === filters.dateType
-                          )
+                          (item: any) => item.value === filters.dateType
+                        )
                         : ""
                     }
                     label="Date type"
@@ -310,10 +314,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                         size="md"
                         labelText="Start Date"
                         placeholder={
-                          filters.startDate !== null
+                          filters.startDate
                             ? filters.startDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
+                        value={formatDateForDatePicker(filters.startDate)}
                       />
                     </DatePicker>
 
@@ -344,6 +349,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                             ? filters.endDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
+                        value={formatDateForDatePicker(filters.endDate)}
                       />
                     </DatePicker>
                   </div>
