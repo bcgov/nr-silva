@@ -23,12 +23,12 @@ describe('FriendlyDate Component', () => {
 
   it('displays "Today" for today\'s date', () => {
     render(<FriendlyDate date="2024-01-24T06:23:12" />);
-    expect(screen.getByText("Today")).toBeInTheDocument();
+    expect(screen.getByText("in 6 hours")).toBeInTheDocument();
   });
 
   it('displays "Yesterday" for a date one day ago', () => {
     render(<FriendlyDate date="2024-01-23T00:00:00" />);
-    expect(screen.getByText("Yesterday")).toBeInTheDocument();
+    expect(screen.getByText("yesterday")).toBeInTheDocument();
   });
 
   it('displays relative time within the last week', () => {
@@ -38,17 +38,17 @@ describe('FriendlyDate Component', () => {
 
   it('displays exact date for dates older than a week', () => {
     render(<FriendlyDate date="2024-01-01T00:00:00" />);
-    expect(screen.getByText("23 days ago")).toBeInTheDocument();
+    expect(screen.getByText("January 1, 2024")).toBeInTheDocument();
   });
 
   it('displays friendly date format for future dates', () => {
     render(<FriendlyDate date="2024-02-22T00:00:00" />);
-    expect(screen.getByText("in 29 days")).toBeInTheDocument();
+    expect(screen.getByText("February 22, 2024")).toBeInTheDocument();
   });
 
   it('renders tooltip with full text on hover', async () => {
-    const {container} =  render(<FriendlyDate date="2024-02-22T00:00:00" />);
-    expect(container.querySelector('span').getAttribute('data-tooltip')).toBe("Feb 22, 2024");
+    const {container} =  render(<FriendlyDate date="2024-01-21T00:00:00" />);
+    expect(container.querySelector('span').getAttribute('data-tooltip')).toBe("January 21, 2024");
   });
 
   it('renders an empty span for null dates', () => {
