@@ -1,5 +1,6 @@
 interface TextValueData {
   value: string;
+  text: string;
 }
 
 interface SelectableTextValueData extends TextValueData {
