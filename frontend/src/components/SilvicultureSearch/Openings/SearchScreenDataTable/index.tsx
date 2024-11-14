@@ -127,10 +127,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     // Call the mutation to mark as viewed
     markAsViewedOpening(openingId, {
       onSuccess: () => {
-        // setToastText(`Successfully marked opening ${openingId} as viewed.`);
+        setOpeningDetails(true)
       },
       onError: (err: any) => {
-        // setToastText(`Failed to mark as viewed: ${err.message}`);
+        // Display error notification (UI needs to be designed for this)
       }
     });
   };
@@ -317,10 +317,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={async () => {
+                  onClick={() => {
                     //add the api call to send the viewed opening
-                    await handleRowClick(row.openingId);
-                    setOpeningDetails(true)
+                    handleRowClick(row.openingId);
                   }
                   }
                 >
