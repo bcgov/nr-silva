@@ -26,13 +26,11 @@ const PageTitle: React.FC<PageTitleProps> = ({
       if (item.items) {
         for (const subItem of item.items) {
           if (subItem.link === currentLocation && subItem.breadcrumb) {
-            console.log(`${subItem.name} - ${subItem.link} - ${subItem.breadcrumb}`);
             return [subItem];
           }
 
           if (subItem.subItems) {
             for (const subSubItem of subItem.subItems) {
-              console.log(`  ${subSubItem.name} - ${subSubItem.link} - ${subSubItem.breadcrumb}`);
               if (subSubItem.link === currentLocation && subSubItem.breadcrumb) {
                 return [subItem];
               }
