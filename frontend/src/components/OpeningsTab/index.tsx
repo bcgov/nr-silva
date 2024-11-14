@@ -4,7 +4,7 @@ import './styles.scss'
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
-import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/testData';
+import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
 import { RecentOpening } from '../../types/RecentOpening';
