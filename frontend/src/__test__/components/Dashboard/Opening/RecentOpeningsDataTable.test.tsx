@@ -104,7 +104,7 @@ describe("OpeningsSearchBar", () => {
     expect(tableHeader).toBeInTheDocument();
   });
 
-  it("should render the table with the correct headers", () => {
+  it("should render the table with the correct columns", () => {
     const data = { data: [{
       "openingId": 114203,
       "forestFileId": "TFL47",
@@ -120,12 +120,12 @@ describe("OpeningsSearchBar", () => {
   const headers = [{
       key: 'openingId',
       header: 'Opening Id',
-      selected: false
+      selected: true
     },
     {
       key: 'forestFileId',
       header: 'File Id',
-      selected: false
+      selected: true
     },
     {
       key: 'cuttingPermit',
@@ -160,7 +160,8 @@ describe("OpeningsSearchBar", () => {
       </QueryClientProvider>
       </MemoryRouter>
     );
-    const table = screen.getByRole('table');
-    expect(table).toBeInTheDocument();
+    expect(screen.getByText("114203")).toBeInTheDocument();
+    expect(screen.getByText("TFL47")).toBeInTheDocument();
+
   });
 });
