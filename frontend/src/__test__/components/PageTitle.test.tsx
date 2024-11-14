@@ -23,10 +23,24 @@ vi.mock('../../components/BCHeaderwSide/constants', async () => {
           {
             name: 'Submain',
             link: '/submain',
+            breadcrumb: true,
             subItems: [
               {
                 name: 'Test Page',
-                link: '/test'
+                link: '/test',
+                breadcrumb: true,
+              }
+            ]
+          },
+          {
+            name: 'Intramain',
+            link: '/intramain',
+            breadcrumb: false,
+            subItems: [
+              {
+                name: 'Internal Affairs',
+                link: '/intramain',
+                breadcrumb: false,
               }
             ]
           }
@@ -75,6 +89,22 @@ describe('PageTitle Component', () => {
       </MemoryRouter>
     );
     
+    const olElement = screen.getByRole('list');
+    const listItems = olElement.querySelectorAll('li');    
+    expect(olElement).toBeInTheDocument();
+    expect(listItems.length).toBe(0);
+  });
+
+  it('should not render breadcrumb if breadcrumb is false', () => {
+    (useLocation as vi.Mock).mockReturnValue({ pathname: '/intramain' });
+    render(
+      <MemoryRouter initialEntries={['/intramain']}>
+      <PageTitle 
+        title="Internal Affairs"
+        subtitle='Your secret, our secret' />
+      </MemoryRouter>
+    );
+
     const olElement = screen.getByRole('list');
     const listItems = olElement.querySelectorAll('li');    
     expect(olElement).toBeInTheDocument();
