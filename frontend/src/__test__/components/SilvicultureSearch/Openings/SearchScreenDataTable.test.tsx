@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/index';
 import { columns } from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/testData';
@@ -302,5 +302,33 @@ describe('Search Screen Data table test', () => {
     expect(container.querySelector('.total-search-results')).toContainHTML('Total Search Results');
     expect(container.querySelector('.total-search-results')).toContainHTML('0');
   });
+
+  it('should render the checkbox for showSPatial being true', () => {
+    render(
+      <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <PaginationProvider>
+          <OpeningsSearchProvider>
+            <NotificationProvider>
+              <SearchScreenDataTable
+                rows={rows}
+                headers={columns}
+                defaultColumns={columns}
+                showSpatial={false}
+                handleCheckboxChange={handleCheckboxChange}
+                toggleSpatial={toggleSpatial}
+                totalItems={0}
+              />
+            </NotificationProvider>
+          </OpeningsSearchProvider>
+        </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    );
+    const checkbox = document.querySelector('.cds--checkbox-group');
+    expect(checkbox).toBeInTheDocument();
+
+  });
+  
 
 });

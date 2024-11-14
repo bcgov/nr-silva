@@ -37,7 +37,6 @@ describe('Openings Tab test',() => {
       </AuthProvider>
     );
     });
-    console.log(screen.debug());
     expect(screen.getByText('Recent openings')).toBeInTheDocument();
   });
 
@@ -55,8 +54,31 @@ describe('Openings Tab test',() => {
       </AuthProvider>
     );
     });
-    console.log(screen.debug());
     expect(screen.getByText('Hide map')).toBeInTheDocument();
+  });
+
+  it('should render the table', async () => {
+    // Mocking state values
+    vi.spyOn(React, 'useState')
+      .mockImplementationOnce(() => [null, vi.fn()])  // for loadId
+      .mockImplementationOnce(() => [true, vi.fn()])  // for openingPolygonNotFound
+      .mockImplementationOnce(() => [{ userName: 'TEST' }, vi.fn()])  // for wmsUsersWhitelist
+      .mockImplementationOnce(() => [[], vi.fn()]);  // for headers
+
+    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{ userName: 'TEST' }]);
+
+    await act(async () => {
+      render(
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationProvider>
+              <OpeningsTab showSpatial={true} setShowSpatial={vi.fn()} />
+            </PaginationProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      );
+    });
+    expect(screen.getByRole('table')).toBeInTheDocument();
   });
 
 });
