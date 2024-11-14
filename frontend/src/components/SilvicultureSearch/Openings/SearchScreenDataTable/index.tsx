@@ -116,7 +116,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       if (prevSelectedRows.includes(rowId)) {
         // If the row is already selected, remove it from the selected rows
         return prevSelectedRows.filter((id) => id !== rowId);
-        return prevSelectedRows.filter((id) => id !== rowId);
       } else {
         // If the row is not selected, add it to the selected rows
         return [...prevSelectedRows, rowId];
