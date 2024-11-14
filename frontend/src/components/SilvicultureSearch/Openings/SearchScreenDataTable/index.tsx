@@ -43,6 +43,7 @@ import {
 import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
+import { useNotification } from '../../../../contexts/NotificationProvider';
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 
@@ -90,6 +91,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const cellRefs = useRef([]);
   // Holds the with of each cell in the table
   const [cellWidths, setCellWidths] = useState<number[]>([]);
+  const { displayNotification } = useNotification();
 
   useEffect(() => {
     const widths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
@@ -136,8 +138,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
-    //make a call to the api for the favourite opening when ready
-    setToastText(`Following "OpeningID ${rowId}"`);
+    displayNotification({
+      title: `Followinfg OpeningID ${rowId}`,          
+      type: 'success',
+      dismissIn: 8000,
+      onClose: () => {}
+    });
   }
 
   return (
