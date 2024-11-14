@@ -293,22 +293,6 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
           }}
         />
       )}
-      {toastText != null ? (
-        <ActionableNotification
-          className="fav-toast"
-          title="Success"
-          subtitle={toastText}
-          lowContrast={true}
-          kind="success"
-          role="status"
-          closeOnEscape
-          onClose={() => setToastText(null)}
-          actionButtonLabel="Go to track openings"
-          onActionButtonClick={() =>
-            navigate("/opening?tab=metrics&scrollTo=trackOpenings")
-          }
-        />
-      ) : null}
 
       <Modal
         open={openingDetails}
