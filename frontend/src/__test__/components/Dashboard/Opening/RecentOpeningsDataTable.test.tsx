@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PaginationProvider from "../../../../contexts/PaginationProvider";
 import RecentOpeningsDataTable from "../../../../components/Dashboard/Opening/RecentOpeningsDataTable";
 import { MemoryRouter } from "react-router-dom";
+import exp from "constants";
 
 describe("OpeningsSearchBar", () => {
   // Create a new QueryClient instance for each test
@@ -117,31 +118,59 @@ describe("OpeningsSearchBar", () => {
       "orgUnitName": "DCC - Cariboo chilcotin natural resources",
       "updateTimestamp": "2021-12-08"
     }], perPage: 1, totalPages: 1 }
-  const headers = [{
-      key: 'openingId',
-      header: 'Opening Id',
-      selected: true
-    },
-    {
-      key: 'forestFileId',
-      header: 'File Id',
-      selected: true
-    },
-    {
-      key: 'cuttingPermit',
-      header: 'Cutting permit',
-      selected: false
-    },
-    {
-      key: 'timberMark',
-      header: 'Timber mark',
-      selected: false
-    },
-    {
-      key: 'cutBlock',
-      header: 'Cut block',
-      selected: false
-    },]
+    const headers: any[]= [
+      {
+        key: 'openingId',
+        header: 'Opening Id',
+        selected: true
+      },
+      {
+        key: 'forestFileId',
+        header: 'File Id',
+        selected: true
+      },
+      {
+        key: 'cuttingPermitId',
+        header: 'Cutting permit',
+        selected: true
+      },
+      {
+        key: 'timberMark',
+        header: 'Timber mark',
+        selected: true
+      },
+      {
+        key: 'cutBlockId',
+        header: 'Cut block',
+        selected: true
+      },
+      {
+        key: 'openingGrossAreaHa',
+        header: 'Gross Area',
+        selected: true
+      },
+      
+      {
+        key: 'statusDescription',
+        header: 'Status',
+        selected: true
+      },
+      {
+        key: 'categoryDescription',
+        header: 'Category',
+        selected: true
+      },
+      {
+        key: 'disturbanceStartDate',
+        header: 'Disturbance Date',
+        selected: false
+      },
+      {
+        key: 'actions',
+        header: 'Actions',
+        selected: true
+      }
+    ];
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
@@ -161,6 +190,10 @@ describe("OpeningsSearchBar", () => {
       </MemoryRouter>
     );
     expect(screen.getByText("114203")).toBeInTheDocument();
+    expect(screen.getByText("12T")).toBeInTheDocument();
+    expect(screen.getByText("12-44A")).toBeInTheDocument();
+    expect(screen.getByText("Active")).toBeInTheDocument();
+    expect(screen.getByText(/FTML/i)).toBeInTheDocument();
     expect(screen.getByText("TFL47")).toBeInTheDocument();
 
   });
