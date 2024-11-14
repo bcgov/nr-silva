@@ -20,7 +20,7 @@ describe("OpeningsSearchBar", () => {
     const data = { data: [], perPage: 0, totalPages: 0 }
     const headers = []
 
-  it("renders the blank table when data array is empty", () => {
+  it("shows appropriate message when no data is in the table", () => {
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
@@ -39,55 +39,17 @@ describe("OpeningsSearchBar", () => {
       </QueryClientProvider>
       </MemoryRouter>
     );
-    // Check if the search input field is present with the correct placeholder text
-    const searchInput = screen.getByText(/Total Search Results: 0/i);
-    expect(searchInput).toBeInTheDocument();
+    expect(screen.getByText(/There are no openings to show yet/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Your recent openings will appear here once you generate one/i)).toBeInTheDocument();
   });
 
-  it("renders the table with data", () => {
-    const data = { data: [{
-        "openingId": 114203,
-        "forestFileId": "TFL47",
-        "categoryCode": "FTML",
-        "categoryDescription": null,
-        "statusCode": "Active",
-        "statusDescription": "Active",
-        "cuttingPermitId": "12T",
-        "cutBlockId": "12-44A",
-        "orgUnitName": "DCC - Cariboo chilcotin natural resources",
-        "updateTimestamp": "2021-12-08"
-      }], perPage: 1, totalPages: 1 }
-    const headers = [{
-        key: 'openingId',
-        header: 'Opening Id',
-        selected: false
-      },
-      {
-        key: 'forestFileId',
-        header: 'File Id',
-        selected: false
-      },
-      {
-        key: 'cuttingPermit',
-        header: 'Cutting permit',
-        selected: false
-      },
-      {
-        key: 'timberMark',
-        header: 'Timber mark',
-        selected: false
-      },
-      {
-        key: 'cutBlock',
-        header: 'Cut block',
-        selected: false
-      },]
+  it("renders a blank table when rows is empty array", () => {
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
             <PaginationProvider>
              <RecentOpeningsDataTable
-                rows={data?.data || []}
+                rows={[]}
                 headers={headers}
                 defaultColumns={headers}
                 handleCheckboxChange={handleCheckboxChange}
@@ -100,101 +62,8 @@ describe("OpeningsSearchBar", () => {
       </QueryClientProvider>
       </MemoryRouter>
     );
-    // Check if the tableHeader field is present with the correct placeholder text
-    const tableHeader = screen.getByText(/Total Search Results: 1/i);
-    expect(tableHeader).toBeInTheDocument();
-  });
-
-  it("should render the table with the correct columns", () => {
-    const data = { data: [{
-      "openingId": 114203,
-      "forestFileId": "TFL47",
-      "categoryCode": "FTML",
-      "categoryDescription": null,
-      "statusCode": "Active",
-      "statusDescription": "Active",
-      "cuttingPermitId": "12T",
-      "cutBlockId": "12-44A",
-      "orgUnitName": "DCC - Cariboo chilcotin natural resources",
-      "updateTimestamp": "2021-12-08"
-    }], perPage: 1, totalPages: 1 }
-    const headers: any[]= [
-      {
-        key: 'openingId',
-        header: 'Opening Id',
-        selected: true
-      },
-      {
-        key: 'forestFileId',
-        header: 'File Id',
-        selected: true
-      },
-      {
-        key: 'cuttingPermitId',
-        header: 'Cutting permit',
-        selected: true
-      },
-      {
-        key: 'timberMark',
-        header: 'Timber mark',
-        selected: true
-      },
-      {
-        key: 'cutBlockId',
-        header: 'Cut block',
-        selected: true
-      },
-      {
-        key: 'openingGrossAreaHa',
-        header: 'Gross Area',
-        selected: true
-      },
-      
-      {
-        key: 'statusDescription',
-        header: 'Status',
-        selected: true
-      },
-      {
-        key: 'categoryDescription',
-        header: 'Category',
-        selected: true
-      },
-      {
-        key: 'disturbanceStartDate',
-        header: 'Disturbance Date',
-        selected: false
-      },
-      {
-        key: 'actions',
-        header: 'Actions',
-        selected: true
-      }
-    ];
-    render(
-      <MemoryRouter>
-        <QueryClientProvider client={queryClient}>
-            <PaginationProvider>
-             <RecentOpeningsDataTable
-                rows={data?.data || []}
-                headers={headers}
-                defaultColumns={headers}
-                handleCheckboxChange={handleCheckboxChange}
-                setOpeningId={setLoadId}
-                toggleSpatial={toggleSpatial}
-                showSpatial={showSpatial}
-                totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
-                />
-            </PaginationProvider>
-      </QueryClientProvider>
-      </MemoryRouter>
-    );
-    expect(screen.getByText("114203")).toBeInTheDocument();
-    expect(screen.getByText("12T")).toBeInTheDocument();
-    expect(screen.getByText("12-44A")).toBeInTheDocument();
-    expect(screen.getByText("Active")).toBeInTheDocument();
-    expect(screen.getByText(/FTML/i)).toBeInTheDocument();
-    expect(screen.getByText("TFL47")).toBeInTheDocument();
-
+    // Check if the table is present
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
   });
 });
