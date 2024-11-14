@@ -7,11 +7,8 @@ import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTabl
 import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { RecentOpening } from '../../types/RecentOpening';
-import { generateHtmlFile } from './layersGenerator';
-import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
+import {  WmsLayersWhitelistUser } from '../../services/SecretsService';
 import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
-import { useGetAuth } from '../../contexts/AuthProvider';
 import { ITableHeader } from '../../types/TableHeader';
 
 interface Props {

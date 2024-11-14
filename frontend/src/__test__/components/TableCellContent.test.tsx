@@ -81,4 +81,19 @@ describe("TableCellContent", () => {
 
     expect(screen.getByText(/Unknown Value/i)).toBeInTheDocument();
   });
+
+  it("renders SpatialCheckbox when headerKey is 'actions' and showSpatial is true", () => {
+    render(
+      <TableCellContent
+        headerKey="actions"
+        row={row}
+        showSpatial={true}  // Set showSpatial to true
+        selectedRows={selectedRows}
+        handleRowSelectionChanged={handleRowSelectionChanged}
+      />
+    );
+    //check if the Checkbox text is present
+    expect(screen.getByText(/Click to view this opening's map activity./i)).toBeInTheDocument();
+  });
+  
 });
