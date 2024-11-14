@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/index';
-import { columns } from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/testData';
+import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/DataTable/index';
+import { columns } from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/headerData';
 import PaginationProvider from '../../../../contexts/PaginationProvider';
 import { NotificationProvider } from '../../../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';

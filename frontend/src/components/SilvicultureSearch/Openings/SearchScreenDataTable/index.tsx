@@ -52,8 +52,8 @@ interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
-  handleCheckboxChange: Function;
-  toggleSpatial: Function;
+  handleCheckboxChange: (columnKey: string) => void;
+  toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
 }
