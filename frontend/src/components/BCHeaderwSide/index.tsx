@@ -101,6 +101,8 @@ function BCHeaderwSide(): JSX.Element {
                           title={subItem.name}
                           renderIcon={IconComponent}
                           isActive={isActive}
+                          isSideNavExpanded={isActive}
+                          defaultExpanded={isActive}
                         >
                           {subItem.subItems.map(subSubItem => (
                             <SideNavMenuItem
