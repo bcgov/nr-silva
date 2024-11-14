@@ -20,13 +20,9 @@ interface Props {
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);  
-  const { user } = useGetAuth();
+  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
   const { data, isFetching } = useUserRecentOpeningQuery(10);
   const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 

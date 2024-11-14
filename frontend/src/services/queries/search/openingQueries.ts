@@ -11,7 +11,7 @@ export const useOpeningsQuery = (filters: OpeningFilters, enabled: boolean) => {
 
 export const useUserRecentOpeningQuery = (limit:number) => {
   return useQuery({
-    queryKey: ["userRecentOpenings"],
+    queryKey: ["userRecentOpenings", limit],
     queryFn: () => fetchUserRecentOpenings(limit),
     enabled: true,
     refetchOnMount: "always"
