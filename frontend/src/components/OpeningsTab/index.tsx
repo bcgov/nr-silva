@@ -1,15 +1,14 @@
+// OpeningsTab.tsx
 import React, { useEffect, useState } from 'react';
 import { Button, InlineNotification } from '@carbon/react';
-import './styles.scss'
+import './styles.scss';
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
-import { columns } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
+import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import {  WmsLayersWhitelistUser } from '../../services/SecretsService';
-import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
-import { ITableHeader } from '../../types/TableHeader';
+import { columns as headers } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
 
 interface Props {
   showSpatial: boolean;
@@ -19,39 +18,10 @@ interface Props {
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);
   const { data, isFetching } = useUserRecentOpeningQuery(10);
-  const [headers, setHeaders] = useState<ITableHeader[]>(columns);
-
-  useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
 
   const toggleSpatial = () => {
-      setShowSpatial(!showSpatial);
-  };
-
-  const handleCheckboxChange = (columnKey: string) => {
-    if(columnKey === "select-default"){
-      //set to the deafult
-      setHeaders(columns)
-    }
-    else if(columnKey === "select-all"){
-      setHeaders((prevHeaders) =>
-        prevHeaders.map((header) => ({
-          ...header,
-          selected: true, // Select all headers
-        }))
-      );
-    }
-    else{
-      setHeaders((prevHeaders) =>
-        prevHeaders.map((header) =>
-          header.key === columnKey
-            ? { ...header, selected: !header.selected }
-            : header
-        )
-      );
-    }
-    
+    setShowSpatial(!showSpatial);
   };
 
   return (
@@ -85,28 +55,28 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
       </div>
 
       <div className="container-fluid p-0 pb-5">
-        {openingPolygonNotFound? (
+        {openingPolygonNotFound ? (
           <InlineNotification
             title="Opening ID not found!"
             subtitle="Unable to find selected Opening Polygon!"
             kind="error"
             lowContrast
-            className = "inline-notification"
+            className="inline-notification"
           />
-        ) : null }
+        ) : null}
         {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (
           <RecentOpeningsDataTable
-              rows={data?.data || []}
-              headers={headers}
-              defaultColumns={headers}
-              handleCheckboxChange={handleCheckboxChange}
-              setOpeningId={setLoadId}
-              toggleSpatial={toggleSpatial}
-              showSpatial={showSpatial}
-              totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
-            />
+            rows={data?.data || []}
+            headers={headers}
+            defaultColumns={headers}
+            handleCheckboxChange={() => {}}
+            setOpeningId={setLoadId}
+            toggleSpatial={toggleSpatial}
+            showSpatial={showSpatial}
+            totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
+          />
         )}
       </div>
     </>

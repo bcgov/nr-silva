@@ -5,6 +5,7 @@ import StatusTag from "../StatusTag";
 import ActionButtons from "../ActionButtons";
 import SpatialCheckbox from "../SpatialCheckbox";
 import { OpeningsSearch } from "../../types/OpeningsSearch";
+import TruncatedText from "../TruncatedText";
 
 interface TableCellContentProps {
   headerKey: string;
@@ -39,9 +40,7 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
       );
     case "Category":
       return (
-        <>
-          {row["categoryCode"]} - {row["categoryDescription"]}
-        </>
+        <TruncatedText text={row["categoryCode"] + " - " + row["categoryDescription"]} />
       );
     default:
       return <>{row[headerKey as keyof OpeningsSearch]}</>;

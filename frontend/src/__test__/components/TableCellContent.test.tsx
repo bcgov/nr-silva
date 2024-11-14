@@ -64,8 +64,7 @@ describe("TableCellContent", () => {
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
     );
-
-    expect(screen.getByText(/A - Category A/i)).toBeInTheDocument();
+    expect(screen.getAllByText("A - Category A")[0]).toBeInTheDocument();
   });
 
   it("renders default content for other headerKey values", () => {
