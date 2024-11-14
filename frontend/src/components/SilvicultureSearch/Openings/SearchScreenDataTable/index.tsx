@@ -139,7 +139,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (rowId: string) => {
     displayNotification({
-      title: `Followinfg OpeningID ${rowId}`,          
+      title: `Following OpeningID ${rowId}`,          
       type: 'success',
       dismissIn: 8000,
       onClose: () => {}
