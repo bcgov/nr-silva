@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getAuthIdToken } from "../../AuthService";
+import { env } from "../../../env";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = env.VITE_BACKEND_URL;
 
 // Function to send the POST request
 export const postViewedOpening = async (openingId: string): Promise<any> => {
