@@ -335,11 +335,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
-                        className={header.key === "actions" && showSpatial ? "p-0" : null}
-                        onClick={() => { 
-                          if(header.key !== "actions")
-                            handleRowClick(row.openingId); 
-                          }
+                        className={
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : header.elipsis
+                            ? "ellipsis"
+                            : null
                         }
                       >
                         {header.key === "statusDescription" ? (
@@ -358,17 +359,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 align="bottom-left"
                                 autoAlign
                               >
-                                <div
-                                  className="mb-2 mx-2"
-                                  onClick={(e) => e.stopPropagation()}
-                                  role="button"
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      e.stopPropagation();
-                                    }
-                                  }}
-                                  tabIndex={0}
-                                >
+                                <div className="mb-2 mx-2" onClick={(e) => e.stopPropagation()}>
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
                                     data-testid={`checkbox-${row.openingId}`}
