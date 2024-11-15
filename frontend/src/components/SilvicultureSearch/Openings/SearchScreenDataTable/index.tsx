@@ -54,6 +54,7 @@ interface ISearchScreenDataTable {
   toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
+  setOpeningIds: (openingIds: number[]) => void;
 }
 
 interface ICellRefs {
@@ -67,7 +68,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   handleCheckboxChange,
   toggleSpatial,
   showSpatial,
-  totalItems
+  totalItems,
+  setOpeningIds
 }) => {
   const {
     handlePageChange,
@@ -105,15 +107,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
   
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (openingId: string) => {
+  const handleRowSelectionChanged = (openingId: string) => {        
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
-        return prevSelectedRows.filter((id) => id !== openingId);
+        const selectedValues = prevSelectedRows.filter((id) => id !== openingId);
+        setOpeningIds(selectedValues.map(parseFloat));
+        return selectedValues;
       } else {
-        // If the row is not selected, add it to the selected rows
-        return [...prevSelectedRows, openingId];
-      }
+        // If the row is not selected, add it to the selected rows        
+        const selectedValues = [...prevSelectedRows, openingId];
+        setOpeningIds(selectedValues.map(parseFloat));
+        return selectedValues;
+      }      
     });
   };
 
@@ -323,6 +329,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
                           <CheckboxGroup
+                          labelText=""
                             orientation="horizontal"
                             className="align-items-center justify-content-start"
                           >
@@ -337,6 +344,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 <div className="mb-2 mx-2">
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
+                                    labelText=""
                                     checked={selectedRows.includes(
                                       row.openingId
                                     )}
