@@ -1,17 +1,14 @@
+// OpeningsTab.tsx
 import React, { useEffect, useState } from 'react';
 import { Button, InlineNotification } from '@carbon/react';
-import './styles.scss'
+import './styles.scss';
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
-import OpeningScreenDataTable from '../OpeningScreenDataTable/index';
-import { headers } from '../OpeningScreenDataTable/testData';
-import { fetchRecentOpenings } from '../../services/OpeningService';
+import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
+import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { RecentOpening } from '../../types/RecentOpening';
-import { generateHtmlFile } from './layersGenerator';
-import { getWmsLayersWhitelistUsers, WmsLayersWhitelistUser } from '../../services/SecretsService';
-import { useGetAuth } from '../../contexts/AuthProvider';
+import { columns as headers } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
 
 interface Props {
   showSpatial: boolean;
@@ -19,45 +16,12 @@ interface Props {
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [openingRows, setOpeningRows] = useState<RecentOpening[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loadId, setLoadId] = useState<number | null>(null);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const [wmsUsersWhitelist, setWmsUsersWhitelist] = useState<WmsLayersWhitelistUser[]>([]);  
-  const { user } = useGetAuth();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const rows: RecentOpening[] = await fetchRecentOpenings();
-        setOpeningRows(rows);
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-        setLoading(false);
-        setError('Failed to fetch recent openings');
-      }
-    };
-
-    const fetchAllowedPeople = async () => {
-      try {
-        const usersList: WmsLayersWhitelistUser[] = await getWmsLayersWhitelistUsers();
-        setWmsUsersWhitelist(usersList);
-      } catch (error) {
-        console.error('Error fetching recent openings:', error);
-      }
-    };
-
-    fetchData();
-    fetchAllowedPeople();
-  }, []);
-
-  useEffect(() => {}, [loadId, openingPolygonNotFound, wmsUsersWhitelist]);
+  const { data, isFetching } = useUserRecentOpeningQuery(10);
 
   const toggleSpatial = () => {
-      setShowSpatial(!showSpatial);
+    setShowSpatial(!showSpatial);
   };
 
   return (
@@ -91,23 +55,27 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
       </div>
 
       <div className="container-fluid p-0 pb-5">
-        {openingPolygonNotFound? (
+        {openingPolygonNotFound ? (
           <InlineNotification
             title="Opening ID not found!"
             subtitle="Unable to find selected Opening Polygon!"
             kind="error"
             lowContrast
-            className = "inline-notification"
+            className="inline-notification"
           />
-        ) : null }
-        {loading ? (
+        ) : null}
+        {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (
-          <OpeningScreenDataTable
+          <RecentOpeningsDataTable
+            rows={data?.data || []}
             headers={headers}
-            rows={openingRows}
+            defaultColumns={headers}
+            handleCheckboxChange={() => {}}
             setOpeningId={setLoadId}
+            toggleSpatial={toggleSpatial}
             showSpatial={showSpatial}
+            totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
           />
         )}
       </div>

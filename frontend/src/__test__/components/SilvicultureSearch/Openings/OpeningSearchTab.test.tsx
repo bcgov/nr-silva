@@ -136,6 +136,6 @@ describe('OpeningSearchTab', () => {
     const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
     await act(async () => await userEvent.type(searchInput, 'potato'));
     await act(async () => (await screen.findByTestId('search-button')).click());
-    expect(screen.getByText('Results not found')).toBeInTheDocument();
+    expect(screen.getByText('There are no openings to show yet')).toBeInTheDocument();
   });
 });

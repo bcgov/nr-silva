@@ -6,6 +6,7 @@ import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
@@ -72,6 +73,7 @@ const paginationValueMock = {
   setPageData: vi.fn(),
   setInitialItemsPerPage: vi.fn(),
 };
+const queryClient = new QueryClient();
 
 describe('Opening screen test cases', () => {
 
@@ -96,6 +98,7 @@ describe('Opening screen test cases', () => {
   it('should renders Opening Page Title component', async () => {
     const { getByTestId } = render(
       <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
         <PaginationContext.Provider value={paginationValueMock}>
           <NotificationProvider>
             <AuthProvider>
@@ -103,6 +106,7 @@ describe('Opening screen test cases', () => {
             </AuthProvider>
           </NotificationProvider>
         </PaginationContext.Provider>
+        </QueryClientProvider>
       </BrowserRouter>
     );
 
@@ -121,6 +125,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -128,6 +133,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });
@@ -160,6 +166,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -167,6 +174,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });
@@ -183,6 +191,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -190,6 +199,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });
