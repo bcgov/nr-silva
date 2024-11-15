@@ -22,8 +22,6 @@ import {
   Row,
   Column,
   MenuItemDivider,
-  Modal,
-  ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -46,6 +44,7 @@ import { usePostViewedOpening } from "../../../../services/queries/dashboard/das
 import { useNotification } from '../../../../contexts/NotificationProvider';
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
+import ComingSoonModal from "../../../ComingSoonModal";
 
 
 interface ISearchScreenDataTable {
@@ -83,7 +82,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
-  const [openingDetails, setOpeningDetails] = useState(false);
+  const [openingDetails, setOpeningDetails] = useState('');
   const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
@@ -127,7 +126,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     // Call the mutation to mark as viewed
     markAsViewedOpening(openingId, {
       onSuccess: () => {
-        setOpeningDetails(true)
+        setOpeningDetails(openingId.toString());
       },
       onError: (err: any) => {
         // Display error notification (UI needs to be designed for this)
@@ -320,8 +319,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   onClick={() => {
                     //add the api call to send the viewed opening
                     handleRowClick(row.openingId);
-                  }
-                  }
+                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
@@ -329,9 +327,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : 
-                          header.elipsis ? "ellipsis" :
-                          null
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : header.elipsis
+                            ? "ellipsis"
+                            : null
                         }
                       >
                         {header.key === "statusDescription" ? (
@@ -349,7 +349,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 align="bottom-left"
                                 autoAlign
                               >
-                                <div className="mb-2 mx-2" onClick={(e) => e.stopPropagation()}>
+                                <div
+                                  className="mb-2 mx-2"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
                                     checked={selectedRows.includes(
@@ -395,10 +398,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             </OverflowMenu>
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
-                          <TruncatedText 
-                            text={row["categoryCode"] + " - " + row["categoryDescription"]} 
-                            parentWidth={cellWidths[i]} />
-                        ) : header.key === 'disturbanceStartDate' ? (
+                          <TruncatedText
+                            text={
+                              row["categoryCode"] +
+                              " - " +
+                              row["categoryDescription"]
+                            }
+                            parentWidth={cellWidths[i]}
+                          />
+                        ) : header.key === "disturbanceStartDate" ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
@@ -445,13 +453,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       )}
 
-      <Modal
-        open={openingDetails}
-        onRequestClose={() => setOpeningDetails(false)}
-        passiveModal
-        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
-        modalLabel="Opening Details"
-      />
+      <ComingSoonModal openingDetails={openingDetails} setOpeningDetails={setOpeningDetails} />
     </>
   );
 };
