@@ -349,7 +349,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 align="bottom-left"
                                 autoAlign
                               >
-                                <div className="mb-2 mx-2">
+                                <div className="mb-2 mx-2" onClick={(e) => e.stopPropagation()}>
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
                                     checked={selectedRows.includes(
