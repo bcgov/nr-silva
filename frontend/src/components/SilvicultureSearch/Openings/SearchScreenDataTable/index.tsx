@@ -366,6 +366,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                   onClick={(e) => e.stopPropagation()}
                                   role="button"
                                   tabIndex={0}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                      handleRowSelectionChanged(row.openingId);
+                                    }
+                                  }}
                                 >
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
