@@ -124,20 +124,28 @@ const OpeningsMap: React.FC<MapProps> = ({
   useEffect(() => {
     setSelectedOpeningIds(openingId ? [openingId] : []);
     if(!openingId){
-      getUserLocation();
+      (async () => {
+        await getUserLocation();
+      })();      
     }
   }, [openingId]);
 
   useEffect(() => {
     setSelectedOpeningIds(openingIds || []);
     if (!openingIds?.length) {
-      getUserLocation();
+      (async () => {
+        await getUserLocation();
+      })();
     }
   }, [openingIds]);
 
   useEffect(() => { loadOpeniningPolygons(selectedOpeningIds); }, [selectedOpeningIds]);
 
-  useEffect(() => { getUserLocation();},[])
+  useEffect(() => { 
+    (async () => {
+      await getUserLocation();
+    })();
+  },[])
   
   return (
     <MapContainer

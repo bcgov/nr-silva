@@ -183,6 +183,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               <div className="divider"></div>
               <Button
                 iconDescription="Show Map"
+                data-testid="toggle-spatial"
                 tooltipposition="bottom"
                 kind="ghost"
                 onClick={() => toggleSpatial()}
@@ -200,6 +201,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               >
                 <Button
                   iconDescription="Edit Columns"
+                  data-testid="edit-columns"
                   tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
@@ -314,7 +316,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key}>{header.header}</TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
                 ) : null
               )}
             </TableRow>

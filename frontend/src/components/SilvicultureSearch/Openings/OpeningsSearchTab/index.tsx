@@ -128,7 +128,8 @@ const OpeningsSearchTab: React.FC = () => {
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
-          <div className="search-spatial-container row p-0">
+          <div className="search-spatial-container row p-0" 
+          data-testid="openings-map">
             <div className="leaflet-container">
               <OpeningsMap
                 openingIds={selectedOpeningIds}
