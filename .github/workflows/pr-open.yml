@@ -98,6 +98,8 @@ jobs:
   deploys:
     name: Deploys
     needs: [builds, init]
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
     runs-on: ubuntu-latest
     strategy:
       matrix:
