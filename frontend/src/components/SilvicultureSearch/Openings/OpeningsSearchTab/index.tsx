@@ -4,7 +4,7 @@ import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
 import TableSkeleton from "../../../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
-import { columns } from "../SearchScreenDataTable/testData";
+import { columns } from "../SearchScreenDataTable/headerData";
 import OpeningsMap from "../../../OpeningsMap";
 import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";

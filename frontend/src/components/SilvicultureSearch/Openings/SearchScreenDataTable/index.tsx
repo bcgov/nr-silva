@@ -22,9 +22,8 @@ import {
   Row,
   Column,
   MenuItemDivider,
-  Tooltip,
-  MenuItem,
-  FlexGrid
+  Modal,
+  ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -33,15 +32,18 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
+import { FlexGrid } from "@carbon/react";
+import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
-  downloadXLSX
+  downloadXLSX,
 } from "../../../../utils/fileConversions";
+import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
-import { useNotification } from "../../../../contexts/NotificationProvider";
+import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
+import { useNotification } from '../../../../contexts/NotificationProvider';
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 
@@ -50,7 +52,7 @@ interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
-  handleCheckboxChange: (columnKey: string) => void;  
+  handleCheckboxChange: (columnKey: string) => void;
   toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
@@ -82,12 +84,16 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
+  const [toastText, setToastText] = useState<string | null>(null);
+  const [openingDetails, setOpeningDetails] = useState(false);
+  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   // This ref is used to calculate the width of the container for each cell
   const cellRefs = useRef([]);
   // Holds the with of each cell in the table
   const [cellWidths, setCellWidths] = useState<number[]>([]);
+  const { displayNotification } = useNotification();
 
   useEffect(() => {
     const widths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
@@ -107,9 +113,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
   
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (openingId: string) => {        
+
+  const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
-      if (prevSelectedRows.includes(openingId)) {
+      if (prevSelectedRows.includes(rowId)) {
         // If the row is already selected, remove it from the selected rows
         const selectedValues = prevSelectedRows.filter((id) => id !== openingId);
         setOpeningIds(selectedValues.map(parseFloat));
@@ -119,28 +126,30 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         const selectedValues = [...prevSelectedRows, openingId];
         setOpeningIds(selectedValues.map(parseFloat));
         return selectedValues;
-      }      
+      }
     });
   };
 
-  const { displayNotification } =  useNotification();
+  const handleRowClick = (openingId: string) => {
+    // Call the mutation to mark as viewed
+    markAsViewedOpening(openingId, {
+      onSuccess: () => {
+        setOpeningDetails(true)
+      },
+      onError: (err: any) => {
+        // Display error notification (UI needs to be designed for this)
+      }
+    });
+  };
 
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (openingId: string) => {
-    try{
-      setOpeningFavorite(parseInt(openingId));
-      displayNotification({
-        title: `Opening Id ${openingId} favourited`,
-        subTitle: 'You can follow this opening ID on your dashboard',
-        type: "success",
-        buttonLabel: "Go to track openings",
-        onClose: () => {
-          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
-        }
-      })
-    } catch (error) {
-      console.error(`Failed to update favorite status for ${openingId}`);
-    }    
+  const handleFavouriteOpening = (rowId: string) => {
+    displayNotification({
+      title: `Following OpeningID ${rowId}`,          
+      type: 'success',
+      dismissIn: 8000,
+      onClose: () => {}
+    });
   }
 
   return (
@@ -313,7 +322,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableBody>
             {rows &&
               rows.map((row: any, i: number) => (
-                <TableRow key={row.openingId + i.toString()}>
+                <TableRow
+                  key={row.openingId + i.toString()}
+                  onClick={() => {
+                    //add the api call to send the viewed opening
+                    handleRowClick(row.openingId);
+                  }
+                  }
+                >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
@@ -355,22 +371,29 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 </div>
                               </Tooltip>
                             )}
-                            <OverflowMenu size={"md"} ariaLabel="More actions">
+                            <OverflowMenu
+                              size={"md"}
+                              ariaLabel="More actions"
+                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
+                            >
                               <OverflowMenuItem
                                 itemText="Favourite opening"
-                                onClick={() =>
-                                  handleFavouriteOpening(row.openingId)
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  handleFavouriteOpening(row.openingId);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as PDF file"
-                                onClick={() =>
-                                  downloadPDF(defaultColumns, [row])
-                                }
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
+                                  downloadPDF(defaultColumns, [row]);
+                                }}
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as CSV file"
-                                onClick={() => {
+                                onClick={(e: any) => {
+                                  e.stopPropagation(); // Stop row onClick from triggering
                                   const csvData = convertToCSV(defaultColumns, [
                                     row,
                                   ]);
@@ -400,9 +423,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
       {rows.length <= 0 ? (
         <EmptySection
-          pictogram="UserSearch"
-          title={"Results not found"}
-          description={"Check spelling or try different parameters"}
+          pictogram="Magnify"
+          title={"There are no openings to show yet"}
+          description={
+            "Your recent openings will appear here once you generate one"
+          }
           fill="#0073E6"
         />
       ) : null}
@@ -427,7 +452,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             handleItemsPerPageChange(page, pageSize);
           }}
         />
-      )}      
+      )}
+
+      <Modal
+        open={openingDetails}
+        onRequestClose={() => setOpeningDetails(false)}
+        passiveModal
+        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
+        modalLabel="Opening Details"
+      />
     </>
   );
 };

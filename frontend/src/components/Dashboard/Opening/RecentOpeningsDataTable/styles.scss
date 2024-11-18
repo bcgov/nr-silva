@@ -1,0 +1,165 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+
+.search-data-table{
+  // nested elements for the search data table only
+  .table-toolbar{
+    border-top: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  }
+  .divider{
+    width: 1px;
+    height: 48px;
+    background-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  }
+  .total-results-container{
+    height: 100%;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    padding: 0px 16px 0px 32px;
+  }
+  .total-search-results {
+    @include type.type-style('body-compact-02');
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    color: var(--bx-text-secondary);
+  }
+  .bx--btn--ghost{
+    min-height: 48px;
+    align-items: center;
+  }
+  
+  
+}
+
+
+.edit-column-content{
+  width: 400px;
+  .dropdown-label {
+    padding:16px;
+    p {
+      @include type.type-style('label-02');
+      font-size: 12px;
+    }
+  }
+  .dropdown-container{
+    padding: 16px;
+    padding-top: 0px;
+  }
+  .menu-item{
+    font-size: 12px;
+  }
+  .checkbox-item .bx--checkbox-label-text{
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.16px;
+    font-weight: 400;
+  }
+
+}
+.download-column-content{
+  width: 240px;
+  .menu-item{
+    padding: 16px;
+  }
+
+}
+
+.checkbox-tip span{
+  @include type.type-style('body-compact-02');
+  max-width: 205px;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.16px;
+}
+
+.fav-toast{
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index:2;
+}
+
+//Need to find selector for specific screen
+.bx--overflow-menu-options{
+  width:260px !important
+}
+.bx--overflow-menu-options__option-content {
+  overflow:visible;
+}
+ 
+.activity-table {
+  margin-bottom: 2.5rem;
+
+  tr > th:first-child,
+  tr > td:first-child {
+    padding-left: 2.5rem;
+  }
+
+  tr > th:last-child,
+  tr > td:last-child {
+    padding-right: 2.5rem;
+  }
+
+  tr > th:last-child div,
+  tr > td:last-child {
+    text-align: center;
+  }
+
+  .activities-table-cell svg {
+    position: relative;
+    margin-right: 0.5rem;
+    top: 0.1875rem;
+  }
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th#blank {
+  min-width:50px;
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th  {
+  background-color: #F3F3F5;
+  border-top: 1px solid;
+  border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-01) !important;
+}
+
+.#{vars.$bcgov-prefix}--data-table thead tr th {
+  min-width:158px;
+}
+
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(even) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01) !important;
+  height: 64px;
+}
+.#{vars.$bcgov-prefix}--data-table tr:nth-child(odd) td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
+  height: 64px;
+}
+.#{vars.$bcgov-prefix}--data-table tr:hover td {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-accent-02) !important;
+  cursor: pointer;
+}
+.#{vars.$bcgov-prefix}--pagination {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02) !important;
+}
+
+.table-toolbar{
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+  
+}
+
+@media only screen and (max-width: 672px) {
+  .#{vars.$bcgov-prefix}--data-table-content {
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+  .activity-table {
+    width: 56.25rem;
+  }
+}
