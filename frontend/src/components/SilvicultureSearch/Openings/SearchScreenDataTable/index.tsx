@@ -335,12 +335,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
-                        className={
-                          header.key === "actions" && showSpatial
-                            ? "p-0"
-                            : header.elipsis
-                            ? "ellipsis"
-                            : null
+                        className={header.key === "actions" && showSpatial ? "p-0" : null}
+                        onClick={() => { 
+                          if(header.key !== "actions")
+                            handleRowClick(row.openingId); 
+                          }
                         }
                       >
                         {header.key === "statusDescription" ? (
