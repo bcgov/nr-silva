@@ -21,6 +21,7 @@ const OpeningsSearchTab: React.FC = () => {
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
   const [isNoFilterSearch, setIsNoFilterSearch] = useState<boolean>(false); // Handles the notification for no filters applied
   const { currentPage, itemsPerPage } = useContext(PaginationContext);
+  const [selectedOpeningIds,setSelectedOpeningIds] = useState<number[]>([]);
   
   const [headers, setHeaders] = useState<ITableHeader[]>(columns);
 
@@ -37,7 +38,6 @@ const OpeningsSearchTab: React.FC = () => {
   };
 
   const hasFilters = countActiveFilters(filters) > 0 || searchTerm.length > 0;
-
 
   const handleSearch = () => {
     setIsNoFilterSearch(!hasFilters);
@@ -128,9 +128,11 @@ const OpeningsSearchTab: React.FC = () => {
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
-          <div className="search-spatial-container row p-0">
+          <div className="search-spatial-container row p-0" 
+          data-testid="openings-map">
             <div className="leaflet-container">
               <OpeningsMap
+                openingIds={selectedOpeningIds}
                 openingId={null}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
               />
@@ -151,6 +153,7 @@ const OpeningsSearchTab: React.FC = () => {
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
                   totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
+                  setOpeningIds={setSelectedOpeningIds}
                 />
               )}
             </>
