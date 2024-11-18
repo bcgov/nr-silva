@@ -324,21 +324,17 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call to send the viewed opening
-                    handleRowClick(row.openingId);
-                  }
-                  }
                 >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
-                        className={
-                          header.key === "actions" && showSpatial ? "p-0" : 
-                          header.elipsis ? "ellipsis" :
-                          null
+                        className={header.key === "actions" && showSpatial ? "p-0" : null}
+                        onClick={() => { 
+                          if(header.key !== "actions")
+                            handleRowClick(row.openingId); 
+                          }
                         }
                       >
                         {header.key === "statusDescription" ? (
