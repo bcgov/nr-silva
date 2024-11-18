@@ -90,4 +90,4 @@ our [CONTRIBUTING](CONTRIBUTING.md) guide.
 
 As mentioned, we're here to help. Feel free to reach out and 
 start a conversation on Rocket chat, you can search for
-`@jazz.grewal` or `@ricardo.campos`.
+`@jazz.grewal` or `@paulushcgcj`.
