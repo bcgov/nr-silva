@@ -77,7 +77,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     return await getOpeningPolygonAndProps(currentOpeningId);
   };
 
-  const getUserLocation = () => {
+  const getUserLocation = async () => {
     if (navigator.geolocation) {
       const options = {
         enableHighAccuracy: true,
@@ -85,20 +85,30 @@ const OpeningsMap: React.FC<MapProps> = ({
         maximumAge: 0
       };
 
-      navigator.geolocation.getCurrentPosition((currentPosition: GeolocationPosition) => {
-        setPosition({lat: currentPosition.coords.latitude,lng: currentPosition.coords.longitude});
-        setZoomLevel(8);
-      }, (error: GeolocationPositionError) => {
-        setPosition({lat: 51.339506220208065,lng: -121.40991210937501});
-        setZoomLevel(6);
-      }, options);
+      const requestCurrentLocation = () =>{
+        navigator.geolocation.getCurrentPosition((currentPosition: GeolocationPosition) => {
+          setPosition({lat: currentPosition.coords.latitude,lng: currentPosition.coords.longitude});
+          setZoomLevel(8);
+        }, (error: GeolocationPositionError) => {
+          setPosition({lat: 51.339506220208065,lng: -121.40991210937501});
+          setZoomLevel(6);
+        }, options);
+      };
+
+      const permissionResult = await navigator.permissions.query({name:'geolocation'});
+      if (permissionResult.state === "granted") {        
+        requestCurrentLocation();
+      } else if (permissionResult.state === "prompt") {        
+        requestCurrentLocation();
+      }
+      
     }
     
   };
 
   const loadOpeniningPolygons = async (providedIds: number[]) : Promise<void> => {    
     setOpeningPolygonNotFound(false);    
-    if(providedIds && providedIds.length) {
+    if(providedIds?.length) {
       const results = await Promise.all(providedIds.map(callBcGwApi));
       setOpenings(results.filter((opening) => opening !== null));
 
@@ -122,7 +132,7 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   useEffect(() => {
     setSelectedOpeningIds(openingIds || []);
-    if(!openingIds || !openingIds.length){
+    if (!openingIds?.length) {
       getUserLocation();
     }
   }, [openingIds]);
