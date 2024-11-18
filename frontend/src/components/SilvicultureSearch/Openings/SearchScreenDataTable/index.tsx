@@ -41,16 +41,18 @@ import {
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
 import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
+import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
+import ComingSoonModal from "../../../ComingSoonModal";
 
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
   defaultColumns: ITableHeader[];
-  handleCheckboxChange: (columnKey: string) => void;  
+  handleCheckboxChange: (columnKey: string) => void;
   toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
@@ -80,12 +82,15 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
+  const [openingDetails, setOpeningDetails] = useState('');
+  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
   // This ref is used to calculate the width of the container for each cell
   const cellRefs = useRef([]);
   // Holds the with of each cell in the table
   const [cellWidths, setCellWidths] = useState<number[]>([]);
+  const { displayNotification } = useNotification();
 
   useEffect(() => {
     const widths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
@@ -119,6 +124,18 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
   const { displayNotification } =  useNotification();
 
+  const handleRowClick = (openingId: string) => {
+      // Call the mutation to mark as viewed
+      markAsViewedOpening(openingId, {
+        onSuccess: () => {
+          setOpeningDetails(openingId.toString());
+        },
+        onError: (err: any) => {
+          // Display error notification (UI needs to be designed for this)
+        }
+      });
+    };
+
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (openingId: string) => {
     try{
@@ -134,7 +151,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       })
     } catch (error) {
       console.error(`Failed to update favorite status for ${openingId}`);
-    }    
+    }
   }
 
   return (
@@ -307,16 +324,23 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableBody>
             {rows &&
               rows.map((row: any, i: number) => (
-                <TableRow key={row.openingId + i.toString()}>
+                <TableRow
+                  key={row.openingId + i.toString()}
+                  onClick={() =>{
+                    if(header.key !== "actions"){
+                      handleRowClick(row.openingId);
+                    }
+                  }}
+                >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : 
-                          header.elipsis ? "ellipsis" :
-                          null
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : null
                         }
                       >
                         {header.key === "statusDescription" ? (
@@ -373,8 +397,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             </OverflowMenu>
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
-                          <TruncatedText 
-                            text={row["categoryCode"] + " - " + row["categoryDescription"]} 
+                          <TruncatedText
+                            text={row["categoryCode"] + " - " + row["categoryDescription"]}
                             parentWidth={cellWidths[i]} />
                         ) : header.key === 'disturbanceStartDate' ? (
                           <FriendlyDate date={row[header.key]} />
@@ -419,7 +443,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             handleItemsPerPageChange(page, pageSize);
           }}
         />
-      )}      
+      )}
+
+      <ComingSoonModal openingDetails={openingDetails} setOpeningDetails={setOpeningDetails} />
     </>
   );
 };
