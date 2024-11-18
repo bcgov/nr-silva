@@ -86,7 +86,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(paginatedResult);
     Assertions.assertEquals(1, paginatedResult.getPageIndex());
-    Assertions.assertEquals(3, paginatedResult.getTotalPages());
+    Assertions.assertEquals(5, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
