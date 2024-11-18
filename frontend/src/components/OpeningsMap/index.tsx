@@ -96,9 +96,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       };
 
       const permissionResult = await navigator.permissions.query({name:'geolocation'});
-      if (permissionResult.state === "granted") {        
-        requestCurrentLocation();
-      } else if (permissionResult.state === "prompt") {        
+      if (permissionResult.state === "granted" || permissionResult.state === "prompt") {        
         requestCurrentLocation();
       }
       
