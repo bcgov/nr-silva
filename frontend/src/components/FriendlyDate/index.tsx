@@ -61,8 +61,6 @@ const FriendlyDate: React.FC<FriendlyDateProps> = ({ date }) => {
       ? formatFutureDateAtlassianStyle(parsedDate)
       : formatDateAtlassianStyle(parsedDate);
 
-      if(cleanDate === formattedDate)
-        console.log(`cleanDate: ${cleanDate} formattedDate: ${formattedDate}`);
     return (
       <>
       {(cleanDate === formattedDate) ? (<span>{formattedDate}</span>) : (
