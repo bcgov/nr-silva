@@ -116,7 +116,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
   const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
-      if (prevSelectedRows.includes(rowId)) {
+      if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
         const selectedValues = prevSelectedRows.filter((id) => id !== openingId);
         setOpeningIds(selectedValues.map(parseFloat));
