@@ -328,9 +328,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         key={header.key}
                         className={
                           header.key === "actions" && showSpatial
-                            ? "p-0"
-                            : header.elipsis
-                            ? "ellipsis"
+                            ? "p-0"                            
                             : null
                         }
                       >
