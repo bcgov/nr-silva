@@ -56,6 +56,7 @@ interface ISearchScreenDataTable {
   toggleSpatial: () => void;
   showSpatial: boolean;
   totalItems: number;
+  setOpeningIds: (openingIds: number[]) => void;
 }
 
 interface ICellRefs {
@@ -69,7 +70,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   handleCheckboxChange,
   toggleSpatial,
   showSpatial,
-  totalItems
+  totalItems,
+  setOpeningIds
 }) => {
   const {
     handlePageChange,
@@ -111,14 +113,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
   
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (rowId: string) => {
+
+  const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
-      if (prevSelectedRows.includes(rowId)) {
+      if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
-        return prevSelectedRows.filter((id) => id !== rowId);
+        const selectedValues = prevSelectedRows.filter((id) => id !== openingId);
+        setOpeningIds(selectedValues.map(parseFloat));
+        return selectedValues;
       } else {
-        // If the row is not selected, add it to the selected rows
-        return [...prevSelectedRows, rowId];
+        // If the row is not selected, add it to the selected rows        
+        const selectedValues = [...prevSelectedRows, openingId];
+        setOpeningIds(selectedValues.map(parseFloat));
+        return selectedValues;
       }
     });
   };
@@ -176,6 +183,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               <div className="divider"></div>
               <Button
                 iconDescription="Show Map"
+                data-testid="toggle-spatial"
                 tooltipposition="bottom"
                 kind="ghost"
                 onClick={() => toggleSpatial()}
@@ -193,6 +201,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               >
                 <Button
                   iconDescription="Edit Columns"
+                  data-testid="edit-columns"
                   tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
@@ -307,7 +316,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key}>{header.header}</TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
                 ) : null
               )}
             </TableRow>
@@ -317,27 +326,24 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call to send the viewed opening
-                    handleRowClick(row.openingId);
-                  }
-                  }
                 >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
-                        className={
-                          header.key === "actions" && showSpatial ? "p-0" : 
-                          header.elipsis ? "ellipsis" :
-                          null
+                        className={header.key === "actions" && showSpatial ? "p-0" : null}
+                        onClick={() => { 
+                          if(header.key !== "actions")
+                            handleRowClick(row.openingId); 
+                          }
                         }
                       >
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
                           <CheckboxGroup
+                          labelText=""
                             orientation="horizontal"
                             className="align-items-center justify-content-start"
                           >
@@ -352,6 +358,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 <div className="mb-2 mx-2">
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
+                                    data-testid={`checkbox-${row.openingId}`}
+                                    labelText=""
                                     checked={selectedRows.includes(
                                       row.openingId
                                     )}
