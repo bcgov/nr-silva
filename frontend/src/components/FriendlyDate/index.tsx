@@ -60,7 +60,7 @@ const FriendlyDate: React.FC<FriendlyDateProps> = ({ date }) => {
     const formattedDate = isFuture(parsedDate)
       ? formatFutureDateAtlassianStyle(parsedDate)
       : formatDateAtlassianStyle(parsedDate);
-      
+
     return (
       <>
       {(cleanDate === formattedDate) ? (<span>{formattedDate}</span>) : (

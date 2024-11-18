@@ -63,6 +63,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
+              -p ALLOWED_ORIGINS=https://silva-test.nrs.gov.bc.ca/
           - name: frontend
             file: frontend/openshift.deploy.yml
             overwrite: true
@@ -153,6 +154,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
+              -p ALLOWED_ORIGINS=https://silva.nrs.gov.bc.ca/
           - name: frontend
             file: frontend/openshift.deploy.yml
             overwrite: true
