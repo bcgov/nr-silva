@@ -21,8 +21,8 @@ import {
   CheckboxGroup,
   Row,
   Column,
-  MenuItemDivider,
-} from "@carbon/react";
+  MenuItemDivider
+, FlexGrid , MenuItem , Tooltip } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
 import "./styles.scss";
@@ -30,18 +30,16 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
-import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
-  downloadXLSX,
+  downloadXLSX
 } from "../../../../utils/fileConversions";
-import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
+import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
-import { useNotification } from '../../../../contexts/NotificationProvider';
+import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
@@ -77,13 +75,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     handleItemsPerPageChange,
     itemsPerPage,
     setInitialItemsPerPage,
-    currentPage,
+    currentPage
   } = useContext(PaginationContext);
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
-  const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState('');
   const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
@@ -141,14 +138,34 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     });
   };
 
+  const handleRowClick = (openingId: string) => {
+      // Call the mutation to mark as viewed
+      markAsViewedOpening(openingId, {
+        onSuccess: () => {
+          setOpeningDetails(openingId.toString());
+        },
+        onError: (err: any) => {
+          // Display error notification (UI needs to be designed for this)
+        }
+      });
+    };
+
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (rowId: string) => {
-    displayNotification({
-      title: `Following OpeningID ${rowId}`,          
-      type: 'success',
-      dismissIn: 8000,
-      onClose: () => {}
-    });
+  const handleFavouriteOpening = (openingId: string) => {
+    try{
+      setOpeningFavorite(parseInt(openingId));
+      displayNotification({
+        title: `Opening Id ${openingId} favourited`,
+        subTitle: 'You can follow this opening ID on your dashboard',
+        type: "success",
+        buttonLabel: "Go to track openings",
+        onClose: () => {
+          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
+        }
+      })
+    } catch (error) {
+      console.error(`Failed to update favorite status for ${openingId}`);
+    }
   }
 
   return (
@@ -327,9 +344,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call to send the viewed opening
-                    handleRowClick(row.openingId);
+                  onClick={() =>{
+                    if(header.key !== "actions"){
+                      handleRowClick(row.openingId);
+                    }
                   }}
                 >
                   {headers.map((header) =>
@@ -338,7 +356,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : null
                         }
                         onClick={() => {
                           if (header.key !== "actions")
@@ -410,7 +430,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 onClick={(e: any) => {
                                   e.stopPropagation(); // Stop row onClick from triggering
                                   const csvData = convertToCSV(defaultColumns, [
-                                    row,
+                                    row
                                   ]);
                                   downloadCSV(csvData, "openings-data.csv");
                                 }}
@@ -420,14 +440,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
                           <TruncatedText
-                            text={
-                              row["categoryCode"] +
-                              " - " +
-                              row["categoryDescription"]
-                            }
-                            parentWidth={cellWidths[i]}
-                          />
-                        ) : header.key === "disturbanceStartDate" ? (
+                            text={row["categoryCode"] + " - " + row["categoryDescription"]}
+                            parentWidth={cellWidths[i]} />
+                        ) : header.key === 'disturbanceStartDate' ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
@@ -463,7 +478,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           page={currentPage}
           onChange={({
             page,
-            pageSize,
+            pageSize
           }: {
             page: number;
             pageSize: number;
@@ -474,10 +489,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       )}
 
-      <ComingSoonModal
-        openingDetails={openingDetails}
-        setOpeningDetails={setOpeningDetails}
-      />
+      <ComingSoonModal openingDetails={openingDetails} setOpeningDetails={setOpeningDetails} />
     </>
   );
 };
