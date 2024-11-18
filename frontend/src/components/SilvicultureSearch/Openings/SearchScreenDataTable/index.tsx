@@ -358,6 +358,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 <div className="mb-2 mx-2">
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
+                                    data-testid={`checkbox-${row.openingId}`}
                                     labelText=""
                                     checked={selectedRows.includes(
                                       row.openingId
