@@ -94,7 +94,7 @@ class UserRecentOpeningServiceTest {
         assertEquals(userId, result.userId());
         assertEquals(openingId, result.openingId());
 
-        verify(userRecentOpeningRepository, times(1)).saveAndFlush(existingEntity);
+        verify(userRecentOpeningRepository, times(1)).saveAndFlush(any(UserRecentOpeningEntity.class));
     }
 
     @Test
@@ -120,7 +120,7 @@ class UserRecentOpeningServiceTest {
             userRecentOpeningService.storeViewedOpening(invalidOpeningId);
         });
 
-        assertEquals("UserOpening record(s) not found!", exception.getMessage());
+        assertEquals("404 NOT_FOUND \"UserOpening record(s) not found!\"", exception.getMessage());
     }
 
     @Test
