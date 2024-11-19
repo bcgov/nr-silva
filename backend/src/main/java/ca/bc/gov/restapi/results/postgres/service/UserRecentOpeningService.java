@@ -40,7 +40,12 @@ public class UserRecentOpeningService {
         log.info("Adding opening ID {} as recently viewed for user {}", openingId,
             loggedUserService.getLoggedUserId());
 
-        if (openingRepository.findById(openingId).isEmpty()) {
+        if(openingId == null) {
+            log.info("Opening ID is null");
+            throw new IllegalArgumentException("Opening ID must contain numbers only!");
+        }
+
+        if (!openingRepository.existsById(openingId)) {
             log.info("Opening ID not found: {}", openingId);
             throw new OpeningNotFoundException();
         }
