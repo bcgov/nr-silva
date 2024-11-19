@@ -85,7 +85,7 @@ const OpeningsSearchTab: React.FC = () => {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) => ({
           ...header,
-          selected: true, // Select all headers
+          selected: true // Select all headers
         }))
       );
     }
@@ -128,12 +128,12 @@ const OpeningsSearchTab: React.FC = () => {
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
-          <div className="search-spatial-container row p-0" 
-          data-testid="openings-map">
+          <div className="search-spatial-container row p-0" data-testid="openings-map">
             <div className="leaflet-container">
               <OpeningsMap
                 openingIds={selectedOpeningIds}
                 openingId={null}
+                openingIds={selectedOpeningIds}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
               />
             </div>

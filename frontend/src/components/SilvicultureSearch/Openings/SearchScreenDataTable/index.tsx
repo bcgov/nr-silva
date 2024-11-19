@@ -130,7 +130,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
       // Call the mutation to mark as viewed
       markAsViewedOpening(openingId, {
         onSuccess: () => {
-          setOpeningDetails(openingId.toString());
+          setOpeningDetails(openingId);
         },
         onError: (err: any) => {
           // Display error notification (UI needs to be designed for this)
@@ -140,7 +140,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (openingId: string) => {
-    try{
+    try{usePostViewedOpening
       setOpeningFavorite(parseInt(openingId));
       displayNotification({
         title: `Opening Id ${openingId} favourited`,
@@ -320,9 +320,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key} data-testid={header.header}>
-                    {header.header}
-                  </TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
                 ) : null
               )}
             </TableRow>
@@ -332,11 +330,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() =>{
-                    if(header.key !== "actions"){
-                      handleRowClick(row.openingId);
-                    }
-                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
@@ -348,9 +341,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             ? "p-0"
                             : null
                         }
-                        onClick={() => {
-                          if (header.key !== "actions")
+                        onClick={() =>{
+                          if(header.key !== "actions"){
                             handleRowClick(row.openingId);
+                          }
                         }}
                       >
                         {header.key === "statusDescription" ? (

@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const handleCheckboxChange = vi.fn();
 const toggleSpatial = vi.fn();
 const queryClient = new QueryClient();
+const setOpeningIds = vi.fn((openingIds: number[]) => {});
 
 const rows:any = [
   {
@@ -260,6 +261,7 @@ describe('Search Screen Data table test', () => {
                   handleCheckboxChange={handleCheckboxChange}
                   toggleSpatial={toggleSpatial}
                   totalItems={rows.length}
+                  setOpeningIds={setOpeningIds}
                 />
               </NotificationProvider>
             </OpeningsSearchProvider>
@@ -290,6 +292,7 @@ describe('Search Screen Data table test', () => {
                   handleCheckboxChange={handleCheckboxChange}
                   toggleSpatial={toggleSpatial}
                   totalItems={0}
+                  setOpeningIds={setOpeningIds}
                 />
               </NotificationProvider>
             </OpeningsSearchProvider>
@@ -304,34 +307,6 @@ describe('Search Screen Data table test', () => {
     expect(container.querySelector('.total-search-results')).toContainHTML('0');
   });
 
-
-  it('should render the checkbox for showSPatial being true', () => {
-    render(
-      <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <PaginationProvider>
-          <OpeningsSearchProvider>
-            <NotificationProvider>
-              <SearchScreenDataTable
-                rows={rows}
-                headers={columns}
-                defaultColumns={columns}
-                showSpatial={false}
-                handleCheckboxChange={handleCheckboxChange}
-                toggleSpatial={toggleSpatial}
-                totalItems={0}
-                setOpeningIds={setOpeningIds}
-              />
-            </NotificationProvider>
-          </OpeningsSearchProvider>
-        </PaginationProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
-    );
-    const checkbox = document.querySelector('.cds--checkbox-group');
-    expect(checkbox).toBeInTheDocument();
-
-  });
 
   it('should render the checkbox for showSpatial being true', () => {
     render(
@@ -394,6 +369,5 @@ describe('Search Screen Data table test', () => {
     expect(setOpeningIds).toHaveBeenCalledWith([parseFloat(rows[0].openingId)]);
 
   });
-  
 
 });
