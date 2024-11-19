@@ -135,7 +135,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           setOpeningDetails(openingId);
         },
         onError: (err: any) => {
-          // Display error notification (UI needs to be designed for this)
+          displayNotification({
+            title: 'Unable to process your request',
+            subTitle: 'Please try again in a few minutes',
+            type: "error",
+            onClose: () => {}
+          })
         }
       });
     };
@@ -154,7 +159,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         }
       })
     } catch (error) {
-      console.error(`Failed to update favorite status for ${openingId}`);
+      displayNotification({
+        title: 'Unable to process your request',
+        subTitle: 'Please try again in a few minutes',
+        type: "error",
+        onClose: () => {}
+      })
     }
   }
 
