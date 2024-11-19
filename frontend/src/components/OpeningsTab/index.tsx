@@ -7,7 +7,7 @@ import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTabl
 import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { columns as headers } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
+import { recentOpeningsColumns as headers } from '../../constants/tableConstants';
 
 interface Props {
   showSpatial: boolean;
