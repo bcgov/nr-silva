@@ -35,6 +35,7 @@ public class OpeningSearchFiltersDto {
 
   @Setter
   private String requestUserId;
+  private List<Long> openingIds;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -92,6 +93,28 @@ public class OpeningSearchFiltersDto {
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
 
+  // Create a constructor with only the List<String> openingIds
+  public OpeningSearchFiltersDto(
+    List<Long> openingIds) {
+    this.orgUnit = new ArrayList<>();
+    this.category = new ArrayList<>();
+    this.statusList = new ArrayList<>();
+    this.openingIds = openingIds;
+    this.myOpenings = null;
+    this.submittedToFrpa = null;
+    this.disturbanceDateStart = null;
+    this.disturbanceDateEnd = null;
+    this.regenDelayDateStart = null;
+    this.regenDelayDateEnd = null;
+    this.freeGrowingDateStart = null;
+    this.freeGrowingDateEnd = null;
+    this.updateDateStart = null;
+    this.updateDateEnd = null;
+    this.cuttingPermitId = null;
+    this.cutBlockId = null;
+    this.timberMark = null;
+    this.mainSearchTerm = null;
+  }
   /**
    * Define if a property has value.
    *

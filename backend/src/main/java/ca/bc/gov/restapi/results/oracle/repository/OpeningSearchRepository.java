@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -238,7 +239,8 @@ public class OpeningSearchRepository {
     return null;
   }
 
-  private Query setQueryParameters(OpeningSearchFiltersDto filtersDto, String nativeQuery) {
+  private Query setQueryParameters(Openin              -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+  gSearchFiltersDto filtersDto, String nativeQuery) {
     Query query = em.createNativeQuery(nativeQuery);
 
     // set parameters
@@ -390,6 +392,13 @@ public class OpeningSearchRepository {
     builder.append("WHERE 1=1 ");
 
     /* Filters */
+    // List of openings from the openingIds of the filterDto object for the recent openings
+    if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
+      String openingIds = filtersDto.getOpeningIds().stream().map(String::valueOf).collect(
+          Collectors.joining(","));
+      log.info("Filter for openingIds detected! openingIds={}", openingIds);
+      builder.append(String.format("AND o.OPENING_ID IN (%s) ", openingIds));
+    }
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number
