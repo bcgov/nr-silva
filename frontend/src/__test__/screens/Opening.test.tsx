@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { render, waitFor, act } from '@testing-library/react';
+import { render, waitFor, act, screen } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
@@ -46,7 +46,6 @@ const state = {
     name: 'User'
   }
 };
-
 
 const rows: RecentOpening[] = [{
   id: '123',
@@ -115,6 +114,27 @@ describe('Opening screen test cases', () => {
     //expect(screen.getByText(subtitle)).toBeDefined();
   });
 
+  it('should render Opening Page with dashboard tab selected', async () => {
+    window.history.pushState({}, 'Opening page with metrics','/opening?tab=metrics');
+
+    await act(async () => render(
+      <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <PaginationContext.Provider value={paginationValueMock}>
+          <NotificationProvider>
+            <AuthProvider>
+              <Opening />
+            </AuthProvider>
+          </NotificationProvider>
+        </PaginationContext.Provider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    ));
+
+    const headings = screen.getAllByText('Dashboard');
+    expect(headings).toHaveLength(2);
+  });
+
   describe('FavoriteCards test cases', () => {
 
     it('should render FavoriteCard component', async () => {
@@ -159,6 +179,7 @@ describe('Opening screen test cases', () => {
     });
 
     it('should not render tab when not selected', async () => {
+      window.history.pushState({}, 'Opening page with metrics','/opening?tab=openings');
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
@@ -184,6 +205,8 @@ describe('Opening screen test cases', () => {
     });
 
     it('should render tab only when selected', async () => {
+      window.history.pushState({}, 'Opening page with metrics','/opening');
+
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
@@ -204,7 +227,7 @@ describe('Opening screen test cases', () => {
 
       await act(async () => getByText('Dashboard').click());
 
-      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(2);
+      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(0);
       expect(container.querySelector('div.tab-metrics')?.childNodes).toHaveLength(1);
 
     });
