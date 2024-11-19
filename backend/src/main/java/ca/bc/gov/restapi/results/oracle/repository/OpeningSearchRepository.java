@@ -452,11 +452,7 @@ public class OpeningSearchRepository {
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA)) {
       Boolean value = filtersDto.getSubmittedToFrpa();
-      if (Boolean.FALSE.equals(value)) {
-        log.info(
-            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
-        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NULL ");
-      } else {
+      if (Boolean.TRUE.equals(value)) {
         log.info(
             "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
         builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");
