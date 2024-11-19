@@ -138,4 +138,60 @@ describe('OpeningSearchTab', () => {
     await act(async () => (await screen.findByTestId('search-button')).click());
     expect(screen.getByText('Results not found')).toBeInTheDocument();
   });
+
+  it('should display spatial/map view when the spatial toggle is clicked', async () => {
+    (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
+    
+    await act(async() => render(
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <OpeningSearchTab />              
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    ));
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    await act(async () => await userEvent.type(searchInput, 'test'));
+    await act(async () => (await screen.findByTestId('search-button')).click());
+    await act(async () => await screen.findByText('Actions'));
+    const spatialToggle = screen.getByTestId('toggle-spatial');
+    await act(async () => fireEvent.click(spatialToggle));
+    expect(screen.getByTestId('openings-map')).toBeInTheDocument();
+  });
+
+  it('should display more or less columns when checkboxes are clicked', async () => {
+    (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
+    
+    let container;
+    await act(async() => ({ container } = render(
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <OpeningSearchTab />              
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    )));
+
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    await act(async () => await userEvent.type(searchInput, 'test'));
+    await act(async () => (await screen.findByTestId('search-button')).click());
+    await act(async () => await screen.findByText('Actions'));        
+    expect(screen.getByTestId('Opening Id')).toBeInTheDocument();
+    const editColumnsBtn = screen.getByTestId('edit-columns');
+    await act(async () => fireEvent.click(editColumnsBtn));
+    const checkbox = container.querySelector('input[type="checkbox"]#checkbox-label-openingId');    
+    await act(async () => fireEvent.click(checkbox));
+    expect(screen.queryByTestId('Opening Id')).not.toBeInTheDocument();
+
+  });
 });

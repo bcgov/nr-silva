@@ -46,6 +46,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             <div className="leaflet-container">
               <OpeningsMap
                 openingId={loadId}
+                openingIds={null}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
               />
             </div>

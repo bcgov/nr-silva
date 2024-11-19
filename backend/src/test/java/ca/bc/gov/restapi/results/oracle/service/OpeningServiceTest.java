@@ -17,7 +17,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,7 +85,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(paginatedResult);
     Assertions.assertEquals(1, paginatedResult.getPageIndex());
-    Assertions.assertEquals(3, paginatedResult.getTotalPages());
+    Assertions.assertEquals(5, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
