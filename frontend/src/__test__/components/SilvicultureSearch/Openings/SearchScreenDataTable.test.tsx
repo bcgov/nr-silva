@@ -8,13 +8,13 @@ import { NotificationProvider } from '../../../../contexts/NotificationProvider'
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpeningsSearchProvider } from '../../../../contexts/search/OpeningsSearch';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const handleCheckboxChange = vi.fn();
 const toggleSpatial = vi.fn();
-const setOpeningIds = vi.fn((openingIds: number[]) => {});
 const queryClient = new QueryClient();
 
-export const rows:any = [
+const rows:any = [
   {
     id: '114207',
     openingId: '114207',
@@ -248,23 +248,22 @@ describe('Search Screen Data table test', () => {
     const { getByText, container } =
     render(
       <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <PaginationProvider>
-          <OpeningsSearchProvider>
-            <NotificationProvider>
-              <SearchScreenDataTable
-                rows={rows}
-                headers={columns}
-                defaultColumns={columns}
-                showSpatial={false}
-                handleCheckboxChange={handleCheckboxChange}
-                toggleSpatial={toggleSpatial}
-                totalItems={rows.length}
-                setOpeningIds={setOpeningIds}
-              />
-            </NotificationProvider>
-          </OpeningsSearchProvider>
-        </PaginationProvider>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <SearchScreenDataTable
+                  rows={rows}
+                  headers={columns}
+                  defaultColumns={columns}
+                  showSpatial={false}
+                  handleCheckboxChange={handleCheckboxChange}
+                  toggleSpatial={toggleSpatial}
+                  totalItems={rows.length}
+                />
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
         </QueryClientProvider>
       </BrowserRouter>
     );
@@ -279,12 +278,42 @@ describe('Search Screen Data table test', () => {
     const { getByText, container } =
     render(
       <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <SearchScreenDataTable
+                  rows={[]}
+                  headers={columns}
+                  defaultColumns={columns}
+                  showSpatial={false}
+                  handleCheckboxChange={handleCheckboxChange}
+                  toggleSpatial={toggleSpatial}
+                  totalItems={0}
+                />
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    );
+
+    expect(container).toBeInTheDocument();
+    expect(container.querySelector('.total-search-results')).toBeInTheDocument();
+    expect(container.querySelector('.total-search-results')).toContainHTML('Total Search Results');
+    expect(container.querySelector('.total-search-results')).toContainHTML('0');
+  });
+
+
+  it('should render the checkbox for showSPatial being true', () => {
+    render(
+      <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <PaginationProvider>
           <OpeningsSearchProvider>
             <NotificationProvider>
               <SearchScreenDataTable
-                rows={[]}
+                rows={rows}
                 headers={columns}
                 defaultColumns={columns}
                 showSpatial={false}
@@ -299,11 +328,9 @@ describe('Search Screen Data table test', () => {
         </QueryClientProvider>
       </BrowserRouter>
     );
+    const checkbox = document.querySelector('.cds--checkbox-group');
+    expect(checkbox).toBeInTheDocument();
 
-    expect(container).toBeInTheDocument();
-    expect(container.querySelector('.total-search-results')).toBeInTheDocument();
-    expect(container.querySelector('.total-search-results')).toContainHTML('Total Search Results');
-    expect(container.querySelector('.total-search-results')).toContainHTML('0');
   });
 
   it('should render the checkbox for showSpatial being true', () => {

@@ -151,6 +151,37 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
 };
 
 
+// Used to fetch the recent openings for a user based on a limit value
+export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
+  
+  // Retrieve the auth token
+  const authToken = getAuthIdToken();
+
+  // Make the API request with the Authorization header
+  const response = await axios.get(`${backendUrl}/api/openings/recent`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`
+    }
+  });
+
+  // Flatten the data part of the response
+  const flattenedData = response.data.data.map((item: OpeningItem) => ({
+    ...item,
+    statusCode: item.status?.code,
+    statusDescription: item.status?.description,
+    categoryCode: item.category?.code,
+    categoryDescription: item.category?.description,
+    status: undefined, // Remove the old nested status object
+    category: undefined // Remove the old nested category object
+  }));
+
+  // Returning the modified response data with the flattened structure
+  return {
+    ...response.data,
+    data: flattenedData
+  };
+};
+
 export const fetchCategories = async (): Promise<any> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();

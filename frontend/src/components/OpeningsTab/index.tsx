@@ -1,5 +1,4 @@
-// OpeningsTab.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, InlineNotification } from '@carbon/react';
 import './styles.scss';
 import { Location } from '@carbon/icons-react';
@@ -64,7 +63,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             lowContrast
             className="inline-notification"
           />
-        ) : null}
+        ) : null }
         {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (

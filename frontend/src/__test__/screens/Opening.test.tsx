@@ -8,9 +8,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
-import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentActions } from '../../services/OpeningService';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const data = {
   "activityType": "Update",
@@ -33,7 +34,6 @@ vi.mock('../../services/OpeningService', async () => {
   const actual = await vi.importActual('../../services/OpeningService');
   return {
     ...actual,
-    fetchRecentOpenings: vi.fn(),
     fetchOpeningsPerYear: vi.fn(),
     fetchFreeGrowingMilestones: vi.fn(),
     fetchRecentActions: vi.fn(),
@@ -75,13 +75,14 @@ const paginationValueMock = {
 };
 const queryClient = new QueryClient();
 
+const queryClient = new QueryClient();
+
 describe('Opening screen test cases', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);
-    (fetchRecentOpenings as vi.Mock).mockResolvedValue(rows);
+    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);    
     (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([
       { group: '2022', key: 'Openings', value: 10 },
       { group: '2023', key: 'Openings', value: 15 },
@@ -89,9 +90,6 @@ describe('Opening screen test cases', () => {
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
     (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1,2,3]);
     (fetchRecentActions as vi.Mock).mockResolvedValue([data]);
-
-    
-
 
   });
 
@@ -125,14 +123,14 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));
@@ -166,14 +164,14 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));
@@ -191,14 +189,14 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));

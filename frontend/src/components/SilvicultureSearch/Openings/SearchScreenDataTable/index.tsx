@@ -127,18 +127,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   };
 
   const handleRowClick = (openingId: string) => {
-    // Call the mutation to mark as viewed
-    markAsViewedOpening(openingId, {
-      onSuccess: () => {
-        setOpeningDetails(openingId.toString());
-      },
-      onError: (err: any) => {
-        // Display error notification (UI needs to be designed for this)
-      }
-    });
-  };
-
-  const handleRowClick = (openingId: string) => {
       // Call the mutation to mark as viewed
       markAsViewedOpening(openingId, {
         onSuccess: () => {
