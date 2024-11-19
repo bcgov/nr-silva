@@ -1,5 +1,15 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
@@ -9,6 +19,9 @@ import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,14 +30,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class UserRecentOpeningServiceTest {
 
@@ -48,7 +53,7 @@ class UserRecentOpeningServiceTest {
     @Test
     void storeViewedOpening_newOpening_savesEntity() {
         String userId = "user123";
-        String openingId = "123";
+        Long openingId = 123L;
         LocalDateTime lastViewed = LocalDateTime.now();
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
@@ -66,12 +71,12 @@ class UserRecentOpeningServiceTest {
     @Test
     void storeViewedOpening_existingOpening_updatesEntity() {
         String userId = "user123";
-        String openingId = "123";
+        Long openingId = 123L;
         LocalDateTime lastViewed = LocalDateTime.now();
         UserRecentOpeningEntity existingEntity = new UserRecentOpeningEntity(1L, userId, openingId, lastViewed.minusDays(1));
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
-        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(existingEntity);
+        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(Optional.of(existingEntity));
 
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
@@ -84,7 +89,7 @@ class UserRecentOpeningServiceTest {
 
     @Test
     void storeViewedOpening_invalidOpeningId_throwsException() {
-        String invalidOpeningId = "abc";
+        Long invalidOpeningId = null;
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             userRecentOpeningService.storeViewedOpening(invalidOpeningId);
@@ -120,8 +125,8 @@ class UserRecentOpeningServiceTest {
         int limit = 10;
         LocalDateTime now = LocalDateTime.now();
         
-        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(1L, userId, "123", now.minusDays(2));
-        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(2L, userId, "456", now.minusDays(1));
+        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(1L, userId, 123L, now.minusDays(2));
+        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(2L, userId, 456L, now.minusDays(1));
         
         List<UserRecentOpeningEntity> openings = List.of(opening1, opening2);
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
