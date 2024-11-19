@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable';
-import { columns } from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable/headerData';
+import { searchScreenColumns as columns } from '../../../../constants/tableConstants';
 import PaginationProvider from '../../../../contexts/PaginationProvider';
 import { NotificationProvider } from '../../../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
