@@ -9,15 +9,14 @@ import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -79,20 +78,23 @@ public class UserRecentOpeningService {
                 .findByUserIdOrderByLastViewedDesc(userId, pageable);
     
         // Extract opening IDs as String
-        Map<String,LocalDateTime> openingIds = recentOpenings.getContent().stream()
+        Map<String, LocalDateTime> openingIds = recentOpenings.getContent().stream()
                 .collect(Collectors.toMap(UserRecentOpeningEntity::getOpeningId, UserRecentOpeningEntity::getLastViewed));
-        log.info("User with the userId {} has the following openindIds {}", userId, openingIds);
+        log.info("User with the userId {} has the following openingIds {}", userId, openingIds);
+    
         if (openingIds.isEmpty()) {
-            return new PaginatedResult<>();
+            // Ensure an empty data list instead of null
+            return new PaginatedResult<OpeningSearchResponseDto>()
+                    .withData(Collections.emptyList());
         }
-
+    
         PaginatedResult<OpeningSearchResponseDto> pageResult =
             openingService
                 .openingSearch(
                     new OpeningSearchFiltersDto(new ArrayList<>(openingIds.keySet())),
                     new PaginationParameters(0, 10)
                 );
-
+    
         return pageResult
             .withData(
                 pageResult
@@ -103,5 +105,6 @@ public class UserRecentOpeningService {
                     .collect(Collectors.toList())
             );
     }
+    
     
 }
