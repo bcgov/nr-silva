@@ -122,8 +122,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     });
   };
 
-  const { displayNotification } =  useNotification();
-
   const handleRowClick = (openingId: string) => {
       // Call the mutation to mark as viewed
       markAsViewedOpening(openingId, {

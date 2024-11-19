@@ -5,6 +5,7 @@ import { fetchOpenings, OpeningFilters } from "../../../services/search/openings
 import { getAuthIdToken } from "../../../services/AuthService";
 import { createDateParams } from "../../../utils/searchUtils";
 import { describe, it, beforeEach, afterEach, vi, expect } from "vitest";
+import exp from "constants";
 
 // Mock dependencies
 vi.mock("axios");
@@ -53,10 +54,14 @@ const mockApiResponse = {
         orgUnitCode: "DPG",
         orgUnitName: "Prince George Natural Resource District",
         entryUserId: "Datafix107808",
-        statusCode: "APP",
-        statusDescription: "Approved",
-        categoryCode: "FTML",
-        categoryDescription: "Forest Tenure - Major Licensee",
+        category: {
+          code: "CONT",
+          description: "SP as a part of contractual agreement",
+        },
+        status: {
+          code: "APP",
+          description: "Approved",
+        },
       },
     ],
   },
@@ -105,5 +110,30 @@ describe("fetchOpenings", () => {
     mockedAxios.get.mockRejectedValueOnce(new Error("Network error"));
 
     await expect(fetchOpenings(sampleFilters)).rejects.toThrow("Network error");
+  });
+
+
+  it("should return flattened data structure with specific fields", async () => {
+    // Arrange: setting up the mock response for axios
+    mockedAxios.get.mockResolvedValue(mockApiResponse); 
+  
+    // Act: call the fetchOpenings function
+    const result = await fetchOpenings(sampleFilters);
+  
+    // Assert: check that the response data is correctly flattened
+    const firstOpening = result.data[0];
+    expect(firstOpening.openingId).toEqual(9100129);
+    expect(firstOpening.categoryCode).toEqual("CONT");
+    expect(firstOpening.categoryDescription).toEqual("SP as a part of contractual agreement");
+    expect(firstOpening.statusCode).toEqual("APP");
+    expect(firstOpening.statusDescription).toEqual("Approved");
+    expect(firstOpening.timberMark).toEqual("W1729S");
+    expect(firstOpening.cutBlockId).toEqual("06-03");
+    expect(firstOpening.entryUserId).toEqual("Datafix107808");
+
+  
+    // Confirm that original nested properties were removed
+    expect(firstOpening.status).toBeUndefined();
+    expect(firstOpening.category).toBeUndefined();
   });
 });

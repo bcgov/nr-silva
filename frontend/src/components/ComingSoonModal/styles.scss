@@ -1,0 +1,7 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.modal-subtext {
+  @include type.type-style('body-02');
+  font-size: 14px;
+}
