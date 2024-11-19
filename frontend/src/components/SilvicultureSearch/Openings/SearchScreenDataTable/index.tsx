@@ -22,6 +22,8 @@ import {
   Row,
   Column,
   MenuItemDivider,
+  Modal,
+  ActionableNotification
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -44,7 +46,6 @@ import { usePostViewedOpening } from "../../../../services/queries/dashboard/das
 import { useNotification } from '../../../../contexts/NotificationProvider';
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
-import ComingSoonModal from "../../../ComingSoonModal";
 
 
 interface ISearchScreenDataTable {
@@ -84,7 +85,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [toastText, setToastText] = useState<string | null>(null);
-  const [openingDetails, setOpeningDetails] = useState('');
+  const [openingDetails, setOpeningDetails] = useState(false);
   const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
 
@@ -133,7 +134,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     // Call the mutation to mark as viewed
     markAsViewedOpening(openingId, {
       onSuccess: () => {
-        setOpeningDetails(openingId.toString());
+        setOpeningDetails(true)
       },
       onError: (err: any) => {
         // Display error notification (UI needs to be designed for this)
@@ -315,9 +316,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key} data-testid={header.header}>
-                    {header.header}
-                  </TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
                 ) : null
               )}
             </TableRow>
@@ -327,29 +326,24 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call to send the viewed opening
-                    handleRowClick(row.openingId);
-                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
-                        className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                        className={header.key === "actions" && showSpatial ? "p-0" : null}
+                        onClick={() => { 
+                          if(header.key !== "actions")
+                            handleRowClick(row.openingId); 
+                          }
                         }
-                        onClick={() => {
-                          if (header.key !== "actions")
-                            handleRowClick(row.openingId);
-                        }}
                       >
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
                           <CheckboxGroup
-                            labelText=""
+                          labelText=""
                             orientation="horizontal"
                             className="align-items-center justify-content-start"
                           >
@@ -361,17 +355,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 align="bottom-left"
                                 autoAlign
                               >
-                                <div
-                                  className="mb-2 mx-2"
-                                  onClick={(e) => e.stopPropagation()}
-                                  role="button"
-                                  tabIndex={0}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      handleRowSelectionChanged(row.openingId);
-                                    }
-                                  }}
-                                >
+                                <div className="mb-2 mx-2">
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
                                     data-testid={`checkbox-${row.openingId}`}
@@ -419,15 +403,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             </OverflowMenu>
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
-                          <TruncatedText
-                            text={
-                              row["categoryCode"] +
-                              " - " +
-                              row["categoryDescription"]
-                            }
-                            parentWidth={cellWidths[i]}
-                          />
-                        ) : header.key === "disturbanceStartDate" ? (
+                          <TruncatedText 
+                            text={row["categoryCode"] + " - " + row["categoryDescription"]} 
+                            parentWidth={cellWidths[i]} />
+                        ) : header.key === 'disturbanceStartDate' ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
@@ -474,9 +453,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       )}
 
-      <ComingSoonModal
-        openingDetails={openingDetails}
-        setOpeningDetails={setOpeningDetails}
+      <Modal
+        open={openingDetails}
+        onRequestClose={() => setOpeningDetails(false)}
+        passiveModal
+        modalHeading="We are working hard to get this feature asap, unfortunately you cannot view the opening details from SILVA atm."
+        modalLabel="Opening Details"
       />
     </>
   );
