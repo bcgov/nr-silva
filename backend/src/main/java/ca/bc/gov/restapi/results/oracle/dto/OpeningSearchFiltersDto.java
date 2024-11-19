@@ -35,7 +35,7 @@ public class OpeningSearchFiltersDto {
 
   @Setter
   private String requestUserId;
-  private List<String> openingIds;
+  private List<Long> openingIds;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -96,7 +96,7 @@ public class OpeningSearchFiltersDto {
 
   // Create a constructor with only the List<String> openingIds
   public OpeningSearchFiltersDto(
-    List<String> openingIds) {
+    List<Long> openingIds) {
     this.orgUnit = new ArrayList<>();
     this.category = new ArrayList<>();
     this.statusList = new ArrayList<>();

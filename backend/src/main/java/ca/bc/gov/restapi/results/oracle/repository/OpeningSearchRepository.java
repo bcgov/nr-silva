@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -398,7 +399,8 @@ public class OpeningSearchRepository {
     /* Filters */
     // List of openings from the openingIds of the filterDto object for the recent openings
     if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
-      String openingIds = String.join(",", filtersDto.getOpeningIds());
+      String openingIds = filtersDto.getOpeningIds().stream().map(String::valueOf).collect(
+          Collectors.joining(","));
       log.info("Filter for openingIds detected! openingIds={}", openingIds);
       builder.append(String.format("AND o.OPENING_ID IN (%s) ", openingIds));
     }
@@ -450,11 +452,7 @@ public class OpeningSearchRepository {
     // 5. Submitted to FRPA
     if (filtersDto.hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA)) {
       Boolean value = filtersDto.getSubmittedToFrpa();
-      if (Boolean.FALSE.equals(value)) {
-        log.info(
-            "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
-        builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NULL ");
-      } else {
+      if (Boolean.TRUE.equals(value)) {
         log.info(
             "Filter submitted to FRPA detected! submitted={}", filtersDto.getSubmittedToFrpa());
         builder.append("AND sra.SILV_RELIEF_APPLICATION_ID IS NOT NULL ");

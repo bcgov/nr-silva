@@ -16,7 +16,7 @@ jobs:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
-      route: ${{ github.event.number }}
+      route: ${{ steps.route.outputs.route }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -25,26 +25,6 @@ jobs:
         id: route
         run: |
           echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
-
-      - name: PR Greeting
-        env:
-          DOMAIN: apps.silver.devops.gov.bc.ca
-          PREFIX: ${{ github.event.repository.name }}
-        uses: bcgov-nr/action-pr-description-add@v1.1.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          add_markdown: |
-            ---
-
-            Thanks for the PR!
-
-            Any successful deployments (not always required) will be available below.
-            
-            Backend: https://${{ env.PREFIX }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health
-            Frontend: https://${{ env.PREFIX }}-${{ steps.route.outputs.route }}-frontend.${{ env.DOMAIN }}
-
-            Once merged, code will be promoted and handed off to following workflow run.
-            [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
       - name: OpenShift Init
         uses: bcgov-nr/action-deployer-openshift@v3.0.1

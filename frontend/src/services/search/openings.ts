@@ -73,7 +73,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     myOpenings:
       filters.openingFilters?.includes("Openings created by me") || undefined,
     submittedToFrpa:
-      filters.openingFilters?.includes("Submitted to FRPA section 108") || undefined,
+      filters.openingFilters?.includes("FRPA section 108") || undefined,
     [dateStartKey]: filters.startDate,  // Use dynamic key for start date
     [dateEndKey]: filters.endDate,      // Use dynamic key for end date
     page: filters.page && filters.page - 1, // Adjust page index (-1)
@@ -155,7 +155,6 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
     data: flattenedData
   };
 };
-
 
 
 export const fetchCategories = async (): Promise<any> => {

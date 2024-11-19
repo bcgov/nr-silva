@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchOpeningFilters, fetchOpenings, fetchUserRecentOpenings, OpeningFilters } from "../../search/openings";
+import { fetchOpeningFilters, fetchOpenings, OpeningFilters, fetchUserRecentOpenings } from "../../search/openings";
 
 export const useOpeningsQuery = (filters: OpeningFilters, enabled: boolean) => {
   return useQuery({
@@ -9,18 +9,18 @@ export const useOpeningsQuery = (filters: OpeningFilters, enabled: boolean) => {
   });
 };
 
+export const useOpeningFiltersQuery = () => {
+  return useQuery({
+    queryKey: ["openingFilters"],
+    queryFn: fetchOpeningFilters
+  });
+};
+
 export const useUserRecentOpeningQuery = (limit:number) => {
   return useQuery({
     queryKey: ["userRecentOpenings", limit],
     queryFn: () => fetchUserRecentOpenings(limit),
     enabled: true,
     refetchOnMount: "always"
-  });
-};
-
-export const useOpeningFiltersQuery = () => {
-  return useQuery({
-    queryKey: ["openingFilters"],
-    queryFn: fetchOpeningFilters
   });
 };

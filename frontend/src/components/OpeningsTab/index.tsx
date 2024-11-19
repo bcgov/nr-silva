@@ -1,5 +1,4 @@
-// OpeningsTab.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, InlineNotification } from '@carbon/react';
 import './styles.scss';
 import { Location } from '@carbon/icons-react';
@@ -8,7 +7,7 @@ import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTabl
 import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import SectionTitle from '../SectionTitle';
 import TableSkeleton from '../TableSkeleton';
-import { columns as headers } from '../Dashboard/Opening/RecentOpeningsDataTable/headerData';
+import { recentOpeningsColumns as headers } from '../../constants/tableConstants';
 
 interface Props {
   showSpatial: boolean;
@@ -56,15 +55,15 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
       </div>
 
       <div className="container-fluid p-0 pb-5">
-        {openingPolygonNotFound ? (
+        {openingPolygonNotFound? (
           <InlineNotification
             title="Opening ID not found!"
             subtitle="Unable to find selected Opening Polygon!"
             kind="error"
             lowContrast
-            className="inline-notification"
+            className = "inline-notification"
           />
-        ) : null}
+        ) : null }
         {isFetching ? (
           <TableSkeleton headers={headers} />
         ) : (

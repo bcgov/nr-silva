@@ -6,13 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +30,7 @@ public class UserRecentOpeningEntity {
     private String userId;
 
     @Column(name = "opening_id", nullable = false)
-    private String openingId;
+    private Long openingId;
 
     @Column(name = "last_viewed", nullable = false)
     private LocalDateTime lastViewed;

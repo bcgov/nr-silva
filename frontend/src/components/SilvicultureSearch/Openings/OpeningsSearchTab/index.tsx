@@ -4,7 +4,7 @@ import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
 import TableSkeleton from "../../../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
-import { columns } from "../SearchScreenDataTable/headerData";
+import { searchScreenColumns } from "../../../../constants/tableConstants";
 import OpeningsMap from "../../../OpeningsMap";
 import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
@@ -23,7 +23,7 @@ const OpeningsSearchTab: React.FC = () => {
   const { currentPage, itemsPerPage } = useContext(PaginationContext);
   const [selectedOpeningIds,setSelectedOpeningIds] = useState<number[]>([]);
   
-  const [headers, setHeaders] = useState<ITableHeader[]>(columns);
+  const [headers, setHeaders] = useState<ITableHeader[]>(searchScreenColumns);
 
   // Only fetch when search is triggered and with finalParams
   const { data, isFetching } = useOpeningsQuery(finalParams, isSearchTriggered);
@@ -38,6 +38,7 @@ const OpeningsSearchTab: React.FC = () => {
   };
 
   const hasFilters = countActiveFilters(filters) > 0 || searchTerm.length > 0;
+
 
   const handleSearch = () => {
     setIsNoFilterSearch(!hasFilters);
@@ -79,7 +80,7 @@ const OpeningsSearchTab: React.FC = () => {
   const handleCheckboxChange = (columnKey: string) => {
     if(columnKey === "select-default"){
       //set to the deafult
-      setHeaders(columns)
+      setHeaders(searchScreenColumns)
     }
     else if(columnKey === "select-all"){
       setHeaders((prevHeaders) =>
@@ -128,12 +129,11 @@ const OpeningsSearchTab: React.FC = () => {
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
-          <div className="search-spatial-container row p-0" 
-          data-testid="openings-map">
+          <div className="search-spatial-container row p-0" data-testid="openings-map">
             <div className="leaflet-container">
               <OpeningsMap
-                openingIds={selectedOpeningIds}
                 openingId={null}
+                openingIds={selectedOpeningIds}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
               />
             </div>
@@ -148,7 +148,7 @@ const OpeningsSearchTab: React.FC = () => {
                 <SearchScreenDataTable
                   rows={data?.data || []}
                   headers={headers}
-                  defaultColumns={columns}
+                  defaultColumns={searchScreenColumns}
                   handleCheckboxChange={handleCheckboxChange}                  
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
