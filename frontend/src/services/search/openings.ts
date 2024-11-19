@@ -121,8 +121,6 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
 
 // Used to fetch the recent openings for a user based on a limit value
 export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
-  
-  // Retrieve the auth token
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
@@ -131,6 +129,14 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
       Authorization: `Bearer ${authToken}`
     }
   });
+
+  // Handle empty or invalid data gracefully
+  if (!response.data || response.data.data === null || response.data.data.length === 0) {
+    return {
+      ...response.data,
+      data: [] // Return empty array for `data` to signal no results
+    };
+  }
 
   // Flatten the data part of the response
   const flattenedData = response.data.data.map((item: OpeningItem) => ({
@@ -143,12 +149,13 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
     category: undefined // Remove the old nested category object
   }));
 
-  // Returning the modified response data with the flattened structure
+  // Return the modified response data with the flattened structure
   return {
     ...response.data,
     data: flattenedData
   };
 };
+
 
 
 export const fetchCategories = async (): Promise<any> => {
