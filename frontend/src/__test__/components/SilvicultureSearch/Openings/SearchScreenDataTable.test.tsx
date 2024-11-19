@@ -306,7 +306,6 @@ describe('Search Screen Data table test', () => {
     expect(container.querySelector('.total-search-results')).toContainHTML('0');
   });
 
-
   it('should render the checkbox for showSpatial being true', () => {
     render(
       <BrowserRouter>
