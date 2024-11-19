@@ -16,8 +16,7 @@ jobs:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
-      route: ${{ github.event.number }}
-      prefix: ${{ steps.route.outputs.route }}
+      route: ${{ steps.route.outputs.route }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -28,7 +27,6 @@ jobs:
           echo "route=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
 
       - name: PR Greeting
-        id: greeting
         env:
           DOMAIN: apps.silver.devops.gov.bc.ca
           PREFIX: ${{ github.event.repository.name }}
@@ -120,7 +118,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
-              -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.prefix }}-frontend.apps.silver.devops.gov.bc.ca
+              -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:
