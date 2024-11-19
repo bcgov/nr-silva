@@ -1,0 +1,40 @@
+name: PR Validate
+
+on:
+  pull_request:
+    types: [edited, opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-edit-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  init:
+    name: Initialize
+    outputs:
+      mod-tag: ${{ steps.mod-tag.outputs.mod-tag }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Get PR Number Mod 50
+        id: mod-tag
+        run: echo "mod-tag=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
+
+  validate:
+    name: Validate PR
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}
+    needs: [init]
+    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@v0.8.3
+    with:
+      markdown_links: |
+        - [Backend](https://${{ env.PREFIX }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/actuator/health)
+        - [Frontend](https://${{ env.PREFIX }}-${{ steps.route.outputs.mod-tag }}-frontend.${{ env.DOMAIN }})
+
+  results:
+    name: Validate Results
+    if: always() && (!failure()) && (!cancelled())
+    needs: [validate]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "Success!"
