@@ -6,9 +6,10 @@ import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
-import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings } from '../../services/OpeningService';
-import { fetchOpeningTrends } from '../../services/OpeningFavoriteService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
+import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
 
 const data = {
@@ -20,8 +21,8 @@ const data = {
   "lastUpdated": "2024-05-16T19:59:21.635Z"
 };
 
-vi.mock('../../services/OpeningFavoriteService', () => ({
-  fetchOpeningTrends: vi.fn(),
+vi.mock('../../services/OpeningFavouriteService', () => ({
+  fetchOpeningFavourites: vi.fn(),
 }));
 
 vi.mock('../../services/SecretsService', () => ({
@@ -34,7 +35,8 @@ vi.mock('../../services/OpeningService', async () => {
     ...actual,
     fetchRecentOpenings: vi.fn(),
     fetchOpeningsPerYear: vi.fn(),
-    fetchFreeGrowingMilestones: vi.fn(),    
+    fetchFreeGrowingMilestones: vi.fn(),
+    fetchRecentActions: vi.fn(),
   };
 });
 
@@ -71,6 +73,7 @@ const paginationValueMock = {
   setPageData: vi.fn(),
   setInitialItemsPerPage: vi.fn(),
 };
+const queryClient = new QueryClient();
 
 describe('Opening screen test cases', () => {
 
@@ -84,7 +87,8 @@ describe('Opening screen test cases', () => {
       { group: '2023', key: 'Openings', value: 15 },
     ]);
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
-    (fetchOpeningTrends as vi.Mock).mockResolvedValue([1,2,3]);
+    (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1,2,3]);
+    (fetchRecentActions as vi.Mock).mockResolvedValue([data]);
 
     
 
@@ -94,6 +98,7 @@ describe('Opening screen test cases', () => {
   it('should renders Opening Page Title component', async () => {
     const { getByTestId } = render(
       <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
         <PaginationContext.Provider value={paginationValueMock}>
           <NotificationProvider>
             <AuthProvider>
@@ -101,6 +106,7 @@ describe('Opening screen test cases', () => {
             </AuthProvider>
           </NotificationProvider>
         </PaginationContext.Provider>
+        </QueryClientProvider>
       </BrowserRouter>
     );
 
@@ -119,6 +125,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -126,6 +133,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });
@@ -158,6 +166,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -165,6 +174,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });
@@ -181,6 +191,7 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
           <PaginationContext.Provider value={paginationValueMock}>
             <NotificationProvider>
               <AuthProvider>
@@ -188,6 +199,7 @@ describe('Opening screen test cases', () => {
               </AuthProvider>
             </NotificationProvider>
           </PaginationContext.Provider>
+          </QueryClientProvider>
         </BrowserRouter>
       ));
     });

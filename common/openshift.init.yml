@@ -25,6 +25,12 @@ parameters:
   - name: ORACLE_DB_PASSWORD
     description: Oracle database password for API
     required: true
+  - name: ORACLE_DB_HOST
+    description: Oracle database hostname
+    required: true
+  - name: ORACLE_DB_SERVICE
+    description: Oracle database service name
+    required: true
   - name: ORACLEDB_SECRET
     description: Oracle database keystore secret/password
     value: changeit
@@ -65,6 +71,8 @@ objects:
       oracle-user: ${ORACLE_DB_USER}
       oracle-password: ${ORACLE_DB_PASSWORD}
       oracle-secret: ${ORACLEDB_SECRET}
+      oracle-service: ${ORACLE_DB_SERVICE}
+      oracle-host: ${ORACLE_DB_HOST}
       forest-client-api-key: ${FORESTCLIENTAPI_KEY}
   - apiVersion: v1
     kind: Secret

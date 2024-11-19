@@ -5,6 +5,7 @@ export type LeftMenuItem = {
   icon?: keyof typeof Icons;
   link: string;
   disabled: boolean;
+  breadcrumb: boolean;
   subItems?: LeftMenuItem[];
 }
 
@@ -22,16 +23,19 @@ const mainActivitiesItems: LeftMenu[] = [
         icon: 'MapBoundaryVegetation',
         link: '/opening',
         disabled: false,
+        breadcrumb: false,
         subItems: [
           {
             name: 'Home page',
             link: '/opening',
-            disabled: false
+            disabled: false,
+            breadcrumb: false
           },
           {
             name: 'Silviculture search',
             link: '/silviculture-search',
-            disabled: false
+            disabled: false,
+            breadcrumb: true
           }
         ]
       }
@@ -47,13 +51,15 @@ const managementItems: LeftMenu[] = [
         name: 'Settings',
         icon: 'Settings',
         link: '#',
-        disabled: true
+        disabled: true,
+        breadcrumb: false
       },
       {
         name: 'Notifications',
         icon: 'Notification',
         link: '#',
-        disabled: true
+        disabled: true,
+        breadcrumb: false
       }
     ]
   }

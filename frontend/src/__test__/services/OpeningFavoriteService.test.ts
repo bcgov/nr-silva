@@ -1,14 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
-import { fetchOpeningTrends} from '../../services/OpeningFavoriteService';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
-import { fetchOpeningTrends, setOpeningFavorite, deleteOpeningFavorite } from '../../services/OpeningFavoriteService';
+import { fetchOpeningFavourites, setOpeningFavorite, deleteOpeningFavorite } from '../../services/OpeningFavouriteService';
 
 vi.mock('axios');
 vi.mock('../../services/AuthService');
 
-describe('OpeningFavoriteService', () => {
+describe('OpeningFavouriteService', () => {
   const backendUrl = env.VITE_BACKEND_URL;
   const authToken = 'test-token';
 
@@ -21,9 +20,9 @@ describe('OpeningFavoriteService', () => {
     const mockData = [1, 2, 3];
     (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
-    const result = await fetchOpeningTrends();
+    const result = await fetchOpeningFavourites();
 
-    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}` }
     });
     expect(result).toEqual(mockData);
@@ -33,9 +32,9 @@ describe('OpeningFavoriteService', () => {
     const mockData = [];
     (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
-    const result = await fetchOpeningTrends();
+    const result = await fetchOpeningFavourites();
 
-    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+    expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}` }
     });
     expect(result).toEqual(mockData);
@@ -44,16 +43,16 @@ describe('OpeningFavoriteService', () => {
   it('should handle error while fetching submission trends', async () => {
     (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
 
-    await expect(fetchOpeningTrends()).rejects.toThrow('Network Error');
+    await expect(fetchOpeningFavourites()).rejects.toThrow('Network Error');
   });
 
     it('should fetch submission trends successfully', async () => {
       const mockData = [1, 2, 3];
       (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
-      const result = await fetchOpeningTrends();
+      const result = await fetchOpeningFavourites();
 
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       expect(result).toEqual(mockData);
@@ -63,9 +62,9 @@ describe('OpeningFavoriteService', () => {
       const mockData = [];
       (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
-      const result = await fetchOpeningTrends();
+      const result = await fetchOpeningFavourites();
 
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites`, {
+      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       expect(result).toEqual(mockData);
@@ -74,7 +73,7 @@ describe('OpeningFavoriteService', () => {
     it('should handle error while fetching submission trends', async () => {
       (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
 
-      await expect(fetchOpeningTrends()).rejects.toThrow('Network Error');
+      await expect(fetchOpeningFavourites()).rejects.toThrow('Network Error');
     });
 
     it('should set an opening as favorite successfully', async () => {
@@ -83,7 +82,7 @@ describe('OpeningFavoriteService', () => {
 
       await setOpeningFavorite(openingId);
 
-      expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites/${openingId}`, null, {
+      expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, null, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
     });
@@ -101,7 +100,7 @@ describe('OpeningFavoriteService', () => {
 
       await deleteOpeningFavorite(openingId);
 
-      expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favorites/${openingId}`, {
+      expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
     });

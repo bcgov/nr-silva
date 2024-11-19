@@ -3,7 +3,6 @@ import './styles.scss';
 import SectionTitle from "../SectionTitle";
 import BarChartGrouped from "../BarChartGrouped";
 import ChartContainer from "../ChartContainer";
-import DoughnutChartView from "../DoughnutChartView";
 import OpeningHistory from "../OpeningHistory";
 import MyRecentActions from "../MyRecentActions";
 
@@ -42,15 +41,7 @@ const OpeningMetricsTab: React.FC = () => {
               <OpeningHistory />
             </ChartContainer>
           </div>
-          <div className="col-xxl-6">
-            <ChartContainer
-              title="Free growing milestone declarations"
-              description="Check opening standards unit for inspections purposes"
-            >
-              <DoughnutChartView />
-            </ChartContainer>
-          </div>
-          <div className="col-xxl-6">
+          <div className="col-xxl-12">
             <ChartContainer
               title="My recent actions"
               description="Check your recent requests and files"

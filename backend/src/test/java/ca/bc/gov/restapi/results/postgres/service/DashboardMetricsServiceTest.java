@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
@@ -368,7 +369,8 @@ class DashboardMetricsServiceTest {
     activity.setEntryUserid(userId);
 
     Sort sort = Sort.by("lastUpdated").descending();
-    when(openingsActivityRepository.findAllByEntryUserid(userId, sort))
+    when(openingsActivityRepository.findAllByEntryUserid(userId,
+        PageRequest.of(0,5,sort)))
         .thenReturn(List.of(activity));
 
     List<MyRecentActionsRequestsDto> dtoList =
@@ -391,7 +393,7 @@ class DashboardMetricsServiceTest {
     when(loggedUserService.getLoggedUserId()).thenReturn(userId);
 
     Sort sort = Sort.by("lastUpdated").descending();
-    when(openingsActivityRepository.findAllByEntryUserid(userId, sort)).thenReturn(List.of());
+    when(openingsActivityRepository.findAllByEntryUserid(userId, PageRequest.of(0,5,sort))).thenReturn(List.of());
 
     List<MyRecentActionsRequestsDto> dtoList =
         dashboardMetricsService.getUserRecentOpeningsActions();

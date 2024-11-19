@@ -14,50 +14,6 @@ import {
 const backendUrl = env.VITE_BACKEND_URL;
 
 /**
- * Fetch recent openings data from backend.
- *
- * @returns {Promise<RecentOpening[]>} Array of objects found
- */
-export async function fetchRecentOpenings(): Promise<RecentOpening[]> {
-  const authToken = getAuthIdToken();
-  try {
-    const response = await axios.get(backendUrl.concat("/api/openings/recent-openings?page=0&perPage=100"), {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-        }
-    });
-
-    if (response.status >= 200 && response.status < 300) {
-      const { data } = response;
-
-      if (data.data) {
-        // Extracting row information from the fetched data
-        const rows: RecentOpening[] = data.data.map((opening: RecentOpeningApi) => ({
-          id: opening.openingId.toString(),
-          openingId: opening.openingId.toString(),
-          forestFileId: opening.forestFileId ? opening.forestFileId : '-',
-          cuttingPermit: opening.cuttingPermit ? opening.cuttingPermit : '-',
-          timberMark: opening.timberMark ? opening.timberMark : '-',
-          cutBlock: opening.cutBlock ? opening.cutBlock : '-',
-          grossAreaHa: opening.grossAreaHa ? opening.grossAreaHa.toString() : '-',
-          status: opening.status && opening.status.description? opening.status.description : '-',
-          category: opening.category && opening.category.description? opening.category.description : '-',
-          disturbanceStart: opening.disturbanceStart ? opening.disturbanceStart : '-',
-          entryTimestamp: opening.entryTimestamp ? opening.entryTimestamp.split('T')[0] : '-',
-          updateTimestamp: opening.updateTimestamp ? opening.updateTimestamp.split('T')[0] : '-'
-        }));
-  
-        return rows;
-      }
-    }
-    return [];
-  } catch (error) {
-    console.error('Error fetching recent openings:', error);
-    throw error;
-  }
-}
-
-/**
  * Fetch openings per year data from backend.
  *
  * @returns {Promise<OpeningPerYearChart[]>} Array of objects found
@@ -152,29 +108,16 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
  *
  * @returns {RecentAction[]} Array with recent action objects.
  */
-export function fetchRecentActions(): RecentAction[] {
-  // const authToken = getAuthIdToken();
+export async function fetchRecentActions(): Promise<RecentAction[]> {
+  const authToken = getAuthIdToken();
   try {
-    // Comment out the actual API call for now
-    // const response = await axios.get(backendUrl.concat("/api/dashboard-metrics/my-recent-actions/requests"));
-    //     headers: {
-    //         Authorization: `Bearer ${authToken}`
-    //     }
-    // });
-
-    // Temporarily use the sample data for testing
-    // const { data } = response;
-    const data: RecentAction[] = [
-      {
-        "activityType": "Update",
-        "openingId": "1541297",
-        "statusCode": "APP",
-        "statusDescription": "Approved",
-        "lastUpdatedLabel": "1 minute ago",
-        "lastUpdated": "2024-05-16T19:59:21.635Z"
+    const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
+      headers: {
+        Authorization: `Bearer ${authToken}`
       }
-      // Add more sample objects here if needed
-    ];
+    });
+    
+    const { data } = response;
 
     if (Array.isArray(data)) {
       // Transforming response data into a format consumable by the component

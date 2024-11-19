@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
 import { 
-  fetchRecentOpenings, 
   fetchOpeningsPerYear, 
   fetchFreeGrowingMilestones, 
   fetchRecentActions 
@@ -19,57 +18,6 @@ describe('OpeningService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (getAuthIdToken as vi.Mock).mockReturnValue(authToken);
-  });
-
-  describe('fetchRecentOpenings', () => {
-    it('should fetch recent openings successfully', async () => {
-      const mockData = {
-        data: [
-          {
-            openingId: 1,
-            forestFileId: '123',
-            cuttingPermit: '456',
-            timberMark: '789',
-            cutBlock: 'A',
-            grossAreaHa: 10,
-            status: { description: 'Active' },
-            category: { description: 'Category1' },
-            disturbanceStart: '2023-01-01',
-            entryTimestamp: '2023-01-01T00:00:00Z',
-            updateTimestamp: '2023-01-02T00:00:00Z'
-          }
-        ]
-      };
-      (axios.get as vi.Mock).mockResolvedValue({ status: 200, data: mockData });
-
-      const result = await fetchRecentOpenings();
-
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/recent-openings?page=0&perPage=100`, {
-        headers: { Authorization: `Bearer ${authToken}` }
-      });
-      expect(result).toEqual([
-        {
-          id: '1',
-          openingId: '1',
-          forestFileId: '123',
-          cuttingPermit: '456',
-          timberMark: '789',
-          cutBlock: 'A',
-          grossAreaHa: '10',
-          status: 'Active',
-          category: 'Category1',
-          disturbanceStart: '2023-01-01',
-          entryTimestamp: '2023-01-01',
-          updateTimestamp: '2023-01-02'
-        }
-      ]);
-    });
-
-    it('should handle error while fetching recent openings', async () => {
-      (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
-
-      await expect(fetchRecentOpenings()).rejects.toThrow('Network Error');
-    });
   });
 
   describe('fetchOpeningsPerYear', () => {
@@ -127,19 +75,35 @@ describe('OpeningService', () => {
   });
 
   describe('fetchRecentActions', () => {
-    it('should fetch recent actions successfully', () => {
-      const result = fetchRecentActions();
+    it('should fetch recent actions successfully', async () => {
+      const mockData = {
+        "activityType": "Update",
+        "openingId": "1541297",
+        "statusCode": "APP",
+        "statusDescription": "Approved",
+        "lastUpdatedLabel": "1 minute ago",
+        "lastUpdated": "2024-05-16T19:59:21.635Z"
+      };
+      (axios.get as vi.Mock).mockResolvedValue({ data: [mockData] });
+
+      const result = await fetchRecentActions();
 
       expect(result).toEqual([
         {
-          activityType: 'Update',
-          openingId: '1541297',
-          statusCode: 'APP',
-          statusDescription: 'Approved',
-          lastUpdatedLabel: '1 minute ago',
-          lastUpdated: '2024-05-16T19:59:21.635Z'
+          activityType: mockData.activityType,
+          openingId: mockData.openingId.toString(),
+          statusCode: mockData.statusCode,
+          statusDescription: mockData.statusDescription,
+          lastUpdated: mockData.lastUpdated,
+          lastUpdatedLabel: mockData.lastUpdatedLabel
         }
       ]);
+    });
+
+    it('should handle error while fetching recent actions', async () => {
+      (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(fetchRecentActions()).rejects.toThrow('Network Error');
     });
 
   });

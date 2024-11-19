@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.repository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserOpeningRepository
     extends JpaRepository<UserOpeningEntity, UserOpeningEntityId> {
 
-  List<UserOpeningEntity> findAllByUserId(String userId);
+
+  List<UserOpeningEntity> findAllByUserId(String userId, Pageable page);
 
 }

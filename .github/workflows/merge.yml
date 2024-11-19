@@ -31,6 +31,8 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.ORACLE_DB_PASSWORD }}'
+            -p ORACLE_DB_HOST='${{ secrets.ORACLE_DB_HOST }}'
+            -p ORACLE_DB_SERVICE='${{ secrets.ORACLE_DB_SERVICE }}'
             -p POSTGRES_DB_PASSWORD='${{ secrets.POSTGRES_DB_PASSWORD }}'
             -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
@@ -61,6 +63,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
+              -p ALLOWED_ORIGINS=https://silva-test.nrs.gov.bc.ca/
           - name: frontend
             file: frontend/openshift.deploy.yml
             overwrite: true
@@ -104,6 +107,8 @@ jobs:
             -p AWS_ACCESS_KEY_SECRET='${{ secrets.AWS_ACCESS_KEY_SECRET }}'
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.ORACLE_DB_PASSWORD }}'
+            -p ORACLE_DB_HOST='${{ secrets.ORACLE_DB_HOST }}'
+            -p ORACLE_DB_SERVICE='${{ secrets.ORACLE_DB_SERVICE }}'
             -p POSTGRES_DB_PASSWORD='${{ secrets.POSTGRES_DB_PASSWORD }}'
             -p FORESTCLIENTAPI_KEY='${{ secrets.FORESTCLIENTAPI_KEY }}'
             -p VITE_USER_POOLS_WEB_CLIENT_ID=${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
@@ -149,6 +154,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
+              -p ALLOWED_ORIGINS=https://silva.nrs.gov.bc.ca/
           - name: frontend
             file: frontend/openshift.deploy.yml
             overwrite: true

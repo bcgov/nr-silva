@@ -271,6 +271,12 @@ public class OpeningSearchRepository {
       log.info("Setting statusList filter values");
       // No need to set value since the query already dit it. Didn't work set through named param
     }
+    // similarly for openingIds
+    if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
+      log.info("Setting openingIds filter values");
+      // No need to set value since the query already dit it. Didn't work set through
+      // named param
+    }
     // 4. User entry id
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
       log.info("Setting myOpenings filter value");
@@ -390,6 +396,12 @@ public class OpeningSearchRepository {
     builder.append("WHERE 1=1 ");
 
     /* Filters */
+    // List of openings from the openingIds of the filterDto object for the recent openings
+    if (filtersDto.hasValue(SilvaOracleConstants.OPENING_IDS)) {
+      String openingIds = String.join(",", filtersDto.getOpeningIds());
+      log.info("Filter for openingIds detected! openingIds={}", openingIds);
+      builder.append(String.format("AND o.OPENING_ID IN (%s) ", openingIds));
+    }
     // 0. Main number filter [opening_id, opening_number, timber_mark, file_id]
     // if it's a number, filter by openingId or fileId, otherwise filter by timber mark and opening
     // number

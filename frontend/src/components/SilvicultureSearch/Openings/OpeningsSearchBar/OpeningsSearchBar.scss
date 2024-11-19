@@ -1,7 +1,9 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@carbon/type';
-
+.ddbbgg{
+  border: solid 1px pink !important;
+}
 .openings-searchbar-container{
   padding: 32px 32px;
 
