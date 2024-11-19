@@ -24,6 +24,16 @@ const Opening: React.FC = () => {
     //
   }, [showSpatial]);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.has('tab') && urlParams.get('tab')?.includes('metrics')) {      
+        setActiveTab(1);
+    }else{
+        setActiveTab(0);
+      }    
+  },[]);
+
   return (
     <>
       <div className="container-fluid">
@@ -81,17 +91,19 @@ const Opening: React.FC = () => {
         </div>
       )}
 
-      <Tabs onChange={tabChange}>
+      <Tabs onChange={tabChange} selectedIndex={activeTab}>
         <TabList className="tab-list" aria-label="List of Tab" contained>
           <Tab><div className="tab-header">Recent Openings</div></Tab>
           <Tab><div className="tab-header">Dashboard</div></Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content tab-openings">
+          {activeTab === 0 && 
             <OpeningsTab 
               showSpatial={showSpatial}
               setShowSpatial={setShowSpatial}
             />
+          }
           </TabPanel>
           <TabPanel className="tab-content tab-metrics">
             {activeTab === 1 && <OpeningMetricsTab />}

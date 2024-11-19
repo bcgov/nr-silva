@@ -25,11 +25,11 @@ spring:
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
-      keepaliveTime: 30000
+      keepaliveTime: 15000
       poolName: SilvaOracleConnPool
       minimumIdle: 1
       maximumPoolSize: 3
-      leakDetectionThreshold: 60000
+      leakDetectionThreshold: 30000
   datasource:
     jdbcUrl: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
     url: ${spring.datasource.jdbcUrl}

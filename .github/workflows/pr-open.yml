@@ -16,7 +16,7 @@ jobs:
     name: Initialize
     if: "!github.event.pull_request.head.repo.fork"
     outputs:
-      route: ${{ github.event.number }}
+      route: ${{ steps.route.outputs.route }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

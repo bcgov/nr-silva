@@ -22,6 +22,9 @@ import {
   Row,
   Column,
   MenuItemDivider,
+  Tooltip,
+  MenuItem,
+  FlexGrid
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -30,18 +33,16 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { FlexGrid } from "@carbon/react";
-import { MenuItem } from "@carbon/react";
 import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
-  downloadXLSX,
+  downloadXLSX
 } from "../../../../utils/fileConversions";
-import { Tooltip } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
+import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
-import { useNotification } from '../../../../contexts/NotificationProvider';
+import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
@@ -83,7 +84,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
-  const [toastText, setToastText] = useState<string | null>(null);
   const [openingDetails, setOpeningDetails] = useState('');
   const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
   const navigate = useNavigate();
@@ -112,7 +112,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
   
   // Function to handle row selection changes
-
   const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(openingId)) {
@@ -130,25 +129,43 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   };
 
   const handleRowClick = (openingId: string) => {
-    // Call the mutation to mark as viewed
-    markAsViewedOpening(openingId, {
-      onSuccess: () => {
-        setOpeningDetails(openingId.toString());
-      },
-      onError: (err: any) => {
-        // Display error notification (UI needs to be designed for this)
-      }
-    });
-  };
+      // Call the mutation to mark as viewed
+      markAsViewedOpening(openingId, {
+        onSuccess: () => {
+          setOpeningDetails(openingId);
+        },
+        onError: (err: any) => {
+          displayNotification({
+            title: 'Unable to process your request',
+            subTitle: 'Please try again in a few minutes',
+            type: "error",
+            onClose: () => {}
+          })
+        }
+      });
+    };
 
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (rowId: string) => {
-    displayNotification({
-      title: `Following OpeningID ${rowId}`,          
-      type: 'success',
-      dismissIn: 8000,
-      onClose: () => {}
-    });
+  const handleFavouriteOpening = (openingId: string) => {
+    try{
+      setOpeningFavorite(parseInt(openingId));
+      displayNotification({
+        title: `Opening Id ${openingId} favourited`,
+        subTitle: 'You can follow this opening ID on your dashboard',
+        type: "success",
+        buttonLabel: "Go to track openings",
+        onClose: () => {
+          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
+        }
+      })
+    } catch (error) {
+      displayNotification({
+        title: 'Unable to process your request',
+        subTitle: 'Please try again in a few minutes',
+        type: "error",
+        onClose: () => {}
+      })
+    }
   }
 
   return (
@@ -315,9 +332,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key} data-testid={header.header}>
-                    {header.header}
-                  </TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
                 ) : null
               )}
             </TableRow>
@@ -327,10 +342,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
-                  onClick={() => {
-                    //add the api call to send the viewed opening
-                    handleRowClick(row.openingId);
-                  }}
                 >
                   {headers.map((header) =>
                     header.selected ? (
@@ -338,11 +349,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : null
                         }
-                        onClick={() => {
-                          if (header.key !== "actions")
+                        onClick={() =>{
+                          if(header.key !== "actions"){
                             handleRowClick(row.openingId);
+                          }
                         }}
                       >
                         {header.key === "statusDescription" ? (
@@ -361,17 +375,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 align="bottom-left"
                                 autoAlign
                               >
-                                <div
-                                  className="mb-2 mx-2"
-                                  onClick={(e) => e.stopPropagation()}
-                                  role="button"
-                                  tabIndex={0}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      handleRowSelectionChanged(row.openingId);
-                                    }
-                                  }}
-                                >
+                                <div className="mb-2 mx-2">
                                   <Checkbox
                                     id={`checkbox-label-${row.openingId}`}
                                     data-testid={`checkbox-${row.openingId}`}
@@ -386,29 +390,22 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                 </div>
                               </Tooltip>
                             )}
-                            <OverflowMenu
-                              size={"md"}
-                              ariaLabel="More actions"
-                              onClick={(e: any) => e.stopPropagation()} // Stop row onClick from triggering
-                            >
+                            <OverflowMenu size={"md"} ariaLabel="More actions">
                               <OverflowMenuItem
                                 itemText="Favourite opening"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  handleFavouriteOpening(row.openingId);
-                                }}
+                                onClick={() =>
+                                  handleFavouriteOpening(row.openingId)
+                                }
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as PDF file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
-                                  downloadPDF(defaultColumns, [row]);
-                                }}
+                                onClick={() =>
+                                  downloadPDF(defaultColumns, [row])
+                                }
                               />
                               <OverflowMenuItem
                                 itemText="Download opening as CSV file"
-                                onClick={(e: any) => {
-                                  e.stopPropagation(); // Stop row onClick from triggering
+                                onClick={() => {
                                   const csvData = convertToCSV(defaultColumns, [
                                     row,
                                   ]);
@@ -420,14 +417,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
                           <TruncatedText
-                            text={
-                              row["categoryCode"] +
-                              " - " +
-                              row["categoryDescription"]
-                            }
-                            parentWidth={cellWidths[i]}
-                          />
-                        ) : header.key === "disturbanceStartDate" ? (
+                            text={row["categoryCode"] + " - " + row["categoryDescription"]}
+                            parentWidth={cellWidths[i]} />
+                        ) : header.key === 'disturbanceStartDate' ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
@@ -443,11 +435,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
 
       {rows.length <= 0 ? (
         <EmptySection
-          pictogram="Magnify"
-          title={"There are no openings to show yet"}
-          description={
-            "Your recent openings will appear here once you generate one"
-          }
+          pictogram="UserSearch"
+          title={"Results not found"}
+          description={"Check spelling or try different parameters"}
           fill="#0073E6"
         />
       ) : null}
@@ -474,10 +464,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       )}
 
-      <ComingSoonModal
-        openingDetails={openingDetails}
-        setOpeningDetails={setOpeningDetails}
-      />
+      <ComingSoonModal openingDetails={openingDetails} setOpeningDetails={setOpeningDetails} />
     </>
   );
 };
