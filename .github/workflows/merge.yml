@@ -25,7 +25,7 @@ jobs:
         uses: bcgov-nr/action-get-pr@v0.0.1
 
   deploys-test:
-    name: Deploys (${{ github.event.number }})
+    name: TEST Deploys (${{ needs.init.outputs.pr }})
     needs: [init]
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
