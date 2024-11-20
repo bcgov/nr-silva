@@ -146,18 +146,29 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     };
 
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (openingId: string) => {
+  const handleFavouriteOpening = (openingId: string, favorite: boolean) => {
     try{
-      setOpeningFavorite(parseInt(openingId));
-      displayNotification({
-        title: `Opening Id ${openingId} favourited`,
-        subTitle: 'You can follow this opening ID on your dashboard',
-        type: "success",
-        buttonLabel: "Go to track openings",
-        onClose: () => {
-          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
-        }
-      })
+      if(favorite){
+        setOpeningFavorite(parseInt(openingId));
+        displayNotification({
+          title: `Opening Id ${openingId} unfavourited`,          
+          type: 'success',
+          dismissIn: 8000,
+          onClose: () => {}
+        });
+      }else{
+        setOpeningFavorite(parseInt(openingId));
+        displayNotification({
+          title: `Opening Id ${openingId} favourited`,
+          subTitle: 'You can follow this opening ID on your dashboard',
+          type: "success",
+          buttonLabel: "Go to track openings",
+          onClose: () => {
+            navigate('/opening?tab=metrics&scrollTo=trackOpenings')
+          }
+        });
+      }
+      
     } catch (error) {
       displayNotification({
         title: 'Unable to process your request',
@@ -392,9 +403,11 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             )}
                             <OverflowMenu size={"md"} ariaLabel="More actions">
                               <OverflowMenuItem
-                                itemText="Favourite opening"
-                                onClick={() =>
-                                  handleFavouriteOpening(row.openingId)
+                                itemText={row.favourite ? "Unfavourite opening" : "Favourite opening"}
+                                onClick={() =>{
+                                  handleFavouriteOpening(row.openingId,row.favourite)
+                                  row.favourite = !row.favourite;
+                                  }
                                 }
                               />
                               <OverflowMenuItem
