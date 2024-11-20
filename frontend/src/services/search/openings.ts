@@ -97,6 +97,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(`${backendUrl}/api/opening-search${queryString}`, {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });
@@ -128,6 +130,8 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(`${backendUrl}/api/openings/recent`, {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });
@@ -157,6 +161,8 @@ export const fetchCategories = async (): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/categories", {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });
@@ -172,6 +178,8 @@ export const fetchOrgUnits = async (): Promise<any> => {
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/org-units", {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });

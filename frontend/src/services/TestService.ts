@@ -12,7 +12,9 @@ export const getForestClientByNumberOrAcronym = async (numberOrAcronym: string):
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${authToken}`
+        'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`
       }
     });
 

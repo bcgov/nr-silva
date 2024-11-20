@@ -18,7 +18,9 @@ export async function getWmsLayersWhitelistUsers(): Promise<WmsLayersWhitelistUs
   try {
     const response = await axios.get(backendUrl.concat("/api/secrets/wms-layers-whitelist"), {
       headers: {
-        Authorization: `Bearer ${authToken}`
+        'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`
         }
     });
 
