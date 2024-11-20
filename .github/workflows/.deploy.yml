@@ -86,8 +86,6 @@ jobs:
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
-            timeout: 15m
-            verification_path: /actuator/health
             parameters:
               -p MAX_REPLICAS=1
               -p MIN_REPLICAS=1
@@ -96,6 +94,7 @@ jobs:
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
               -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+            verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
             parameters:
