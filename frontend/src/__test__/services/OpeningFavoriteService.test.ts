@@ -23,7 +23,9 @@ describe('OpeningFavouriteService', () => {
     const result = await fetchOpeningFavourites();
 
     expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
     });
     expect(result).toEqual(mockData);
   });
@@ -35,7 +37,9 @@ describe('OpeningFavouriteService', () => {
     const result = await fetchOpeningFavourites();
 
     expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
     });
     expect(result).toEqual(mockData);
   });
@@ -53,7 +57,9 @@ describe('OpeningFavouriteService', () => {
       const result = await fetchOpeningFavourites();
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
       expect(result).toEqual(mockData);
     });
@@ -65,7 +71,9 @@ describe('OpeningFavouriteService', () => {
       const result = await fetchOpeningFavourites();
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
       expect(result).toEqual(mockData);
     });
@@ -83,7 +91,9 @@ describe('OpeningFavouriteService', () => {
       await setOpeningFavorite(openingId);
 
       expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, null, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
     });
 
@@ -101,7 +111,9 @@ describe('OpeningFavouriteService', () => {
       await deleteOpeningFavorite(openingId);
 
       expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
     });
 
