@@ -22,14 +22,14 @@ spring:
       url: ${spring.oracle.jdbcUrl}
       username: ${spring.oracle.username}
       password: ${spring.oracle.password}
-      connectionTimeout: 30000
-      idleTimeout: 250000
-      maxLifetime: 1800000
-      keepaliveTime: 30000
+      connectionTimeout: 30000         # 30 seconds
+      idleTimeout: 60000              # 1 minute
+      maxLifetime: 180000             # 3 minutes
+      keepaliveTime: 60000            # 1 minute
       poolName: SilvaOracleConnPool
       minimumIdle: 1
-      maximumPoolSize: 3
-      leakDetectionThreshold: 30000
+      maximumPoolSize: 5
+      leakDetectionThreshold: 60000
       connection-test-query: SELECT 1 FROM DUAL
   datasource:
     jdbcUrl: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
@@ -41,14 +41,15 @@ spring:
       jdbcUrl: ${spring.datasource.jdbcUrl}
       username: ${spring.datasource.username}
       password: ${spring.datasource.password}
-      connectionTimeout: 30000
-      idleTimeout: 600000
-      maxLifetime: 1800000
-      keepaliveTime: 30000
+      connectionTimeout: 30000         # 30 seconds
+      idleTimeout: 60000              # 1 minute
+      maxLifetime: 180000             # 3 minutes
+      keepaliveTime: 60000            # 1 minute
       poolName: SilvaPostgresConnPool
       minimumIdle: 1
       maximumPoolSize: 3
       leakDetectionThreshold: 60000
+      connection-test-query: SELECT 1
 
 # Common database settings
   jpa:
