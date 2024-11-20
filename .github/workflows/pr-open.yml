@@ -16,10 +16,8 @@ jobs:
       packages: write
     strategy:
       matrix:
-        name: [database, backend, frontend]
+        name: [backend, frontend]
         include:
-          - package: database
-            triggers: ('database/')
           - name: backend
             triggers: ('backend/')
           - name: frontend
