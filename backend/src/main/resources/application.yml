@@ -4,9 +4,6 @@ server:
     include-message: always
   port: ${SERVER_PORT:8080}
   shutdown: graceful
-  allowed:
-    cors:
-      origins: ${ALLOWED_ORIGINS:#{'http://127.*, http://localhost:300*'}}
 
 spring:
   application:
@@ -89,6 +86,7 @@ ca:
   bc:
     gov:
       nrs:
+        self-uri: ${SELF_URI:http://localhost:8080}
         dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS:NONE}
         wms-whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
         org-units: ${OPENING_SEARCH_ORG_UNITS:DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC}
@@ -103,6 +101,38 @@ ca:
           host: ${DATABASE_HOST:nrcdb03.bcgov}
         limits:
           max-actions-results: ${MAX_ACTIONS_RESULTS:5}
+        frontend:
+          url: ${ALLOWED_ORIGINS:http://localhost:3000}
+          cors:
+            headers:
+              - x-requested-with
+              - X-REQUESTED-WITH
+              - authorization
+              - Authorization
+              - Content-Type
+              - content-type
+              - credential
+              - CREDENTIAL
+              - X-XSRF-TOKEN
+              - access-control-allow-origin
+              - Access-Control-Allow-Origin
+              - DNT
+              - Keep-Alive,
+              - User-Agent,
+              - X-Requested-With,
+              - If-Modified-Since,
+              - Cache-Control,
+              - Content-Range,
+              - Range
+              - Location
+              - location
+            methods:
+              - OPTIONS
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            age: 5m
 
 # Logging
 logging:
