@@ -104,7 +104,6 @@ jobs:
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
           - name: fluentbit
             file: common/openshift.fluentbit.yml
-    steps:FAM_ROUTE
       - uses: bcgov-nr/action-deployer-openshift@v3.0.1
         id: deploys
         with:
