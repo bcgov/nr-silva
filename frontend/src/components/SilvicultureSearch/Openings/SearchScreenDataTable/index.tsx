@@ -236,7 +236,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   <FlexGrid className="dropdown-container">
                     {headers.map((header, index) =>
                       index > 0 && index % 2 === 1 ? ( // Start from index 1 and handle even-indexed pairs to skip the actions
-                        <Row key={`row-${index}`}>
+                        <Row key={`row-${index}`} className="my-3">
                           <Column sm={2} md={4} lg={8}>
                             <Checkbox
                               className="checkbox-item"

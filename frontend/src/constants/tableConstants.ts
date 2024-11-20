@@ -51,6 +51,36 @@ export const searchScreenColumns: ITableHeader[] = [
     key: 'disturbanceStartDate',
     header: 'Disturbance Date',
     selected: true
+  },
+  {
+    key: 'openingNumber',
+    header: 'Opening Number',
+    selected: false
+  },
+  {
+    key: 'timberMark',
+    header: 'Timber Mark',
+    selected: false
+  },
+  {
+    key: 'clientName',
+    header: 'Client',
+    selected: false
+  },
+  {
+    key: 'regenDelayDate',
+    header: 'Regen Delay Due Date',
+    selected: false
+  },
+  {
+    key: 'earlyFreeGrowingDate',
+    header: 'Free Growing Due Date',
+    selected: false
+  },
+  {
+    key: 'updateTimestamp',
+    header: 'Update Date',
+    selected: false
   }
 ];
 
@@ -68,8 +98,7 @@ const recentOpeningsColumnDefinitions = [
   { key: 'actions', header: 'Actions' },
 ];
 
-// Assign the selected flag to each column (true/false based on your requirements)
 export const recentOpeningsColumns: ITableHeader[] = recentOpeningsColumnDefinitions.map((col) => ({
   ...col,
-  selected: col.key !== 'disturbanceStartDate',  // Assuming 'Disturbance Date' is not selected
+  selected: col.key !== 'disturbanceStartDate',
 }));
