@@ -37,3 +37,20 @@ jobs:
     needs: [builds]
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
+
+  results:
+    name: PR Results
+    if: always()
+    # Include all needs that could have failures!
+    needs: [builds, deploys]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          # View results
+          echo "needs.*.result: ${{ toJson(needs.*.result) }}"
+
+      - if: contains(needs.*.result, 'failure')
+        run: |
+          # Job failure found
+          echo "At least one job has failed"
+          exit 1
