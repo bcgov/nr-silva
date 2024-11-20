@@ -102,11 +102,19 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
 
-
   results:
     name: Analysis Results
-    if: always() && (!failure()) && (!cancelled())
+    if: always()
+    # Include all needs that could have failures!
     needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Workflow completed successfully!"
+      - run: |
+          # View results
+          echo "needs.*.result: ${{ toJson(needs.*.result) }}"
+
+      - if: contains(needs.*.result, 'failure')
+        run: |
+          # Job failure found
+          echo "At least one job has failed"
+          exit 1
