@@ -38,7 +38,6 @@ jobs:
     steps:
       - name: FAM routing
         id: route
-        if: steps.triggers.outputs.core == 'true'
         run: |
           if [ ${{ github.event_name }} == 'pull_request' ]; then
             echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
@@ -102,10 +101,10 @@ jobs:
             parameters:
               -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
-              -p FAM_ROUTE="$(( ${{ needs.init.outputs.route }} % 50 ))"
+              -p FAM_ROUTE=${{ needs.init.outputs.route }}
           - name: fluentbit
             file: common/openshift.fluentbit.yml
-    steps:
+    steps:FAM_ROUTE
       - uses: bcgov-nr/action-deployer-openshift@v3.0.1
         id: deploys
         with:
