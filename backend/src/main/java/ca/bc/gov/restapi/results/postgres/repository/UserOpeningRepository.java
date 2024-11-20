@@ -12,7 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserOpeningRepository
     extends JpaRepository<UserOpeningEntity, UserOpeningEntityId> {
 
-
   List<UserOpeningEntity> findAllByUserId(String userId, Pageable page);
+
+  List<UserOpeningEntity> findAllByUserIdAndOpeningIdIn(String userId,List<Long> openingIds);
 
 }

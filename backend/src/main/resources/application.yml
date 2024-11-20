@@ -48,7 +48,7 @@ spring:
       leakDetectionThreshold: 60000
       connection-test-query: SELECT 1
 
-# Common database settings
+  # Common database settings
   jpa:
     show-sql: false
 

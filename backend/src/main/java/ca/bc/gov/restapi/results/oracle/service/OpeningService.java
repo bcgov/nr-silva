@@ -17,38 +17,37 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
+import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
+/**
+ * This class holds methods for fetching and handling {@link OpeningEntity} in general.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpeningService {
 
   private final OpeningRepository openingRepository;
-
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
-
   private final LoggedUserService loggedUserService;
-
   private final OpeningSearchRepository openingSearchRepository;
-
   private final ForestClientApiProvider forestClientApiProvider;
+  private final UserOpeningService userOpeningService;
 
   /**
    * Get recent openings given the opening creation date.
@@ -127,39 +126,60 @@ public class OpeningService {
     PaginatedResult<OpeningSearchResponseDto> result =
         openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
 
-    fetchClientAcronyms(result);
-
-    return result;
+    return fetchClientAcronyms(fetchFavorites(result));
   }
 
-  private void fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
-    List<String> clientNumbersWithDuplicates =
-        result.getData().stream()
-            .filter(o -> !Objects.isNull(o.getClientNumber()))
-            .map(OpeningSearchResponseDto::getClientNumber)
-            .toList();
-
-    // Recreate list without duplicates
-    List<String> clientNumbers = new ArrayList<>(new HashSet<>(clientNumbersWithDuplicates));
-
+  private PaginatedResult<OpeningSearchResponseDto> fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
     Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
+
+    List<String> clientNumbers =
+        result
+            .getData()
+            .stream()
+            .map(OpeningSearchResponseDto::getClientNumber)
+            .filter(StringUtils::isNotBlank)
+            .distinct()
+            .toList();
 
     // Forest client API doesn't have a single endpoint to fetch all at once, so we need to do
     // one request per client number :/
     for (String clientNumber : clientNumbers) {
       Optional<ForestClientDto> dto = forestClientApiProvider.fetchClientByNumber(clientNumber);
-      if (dto.isPresent()) {
-        forestClientsMap.put(clientNumber, dto.get());
-      }
+      dto.ifPresent(forestClientDto -> forestClientsMap.put(clientNumber, forestClientDto));
     }
 
-    for (OpeningSearchResponseDto response : result.getData()) {
-      ForestClientDto client = forestClientsMap.get(response.getClientNumber());
-      if (!Objects.isNull(client)) {
-        response.setClientAcronym(client.acronym());
-        response.setClientName(client.clientName());
-      }
+    result
+        .getData()
+        .forEach(response -> {
+          if (StringUtils.isNotBlank(response.getClientNumber()) && forestClientsMap.containsKey(
+              response.getClientNumber())) {
+            ForestClientDto client = forestClientsMap.get(response.getClientNumber());
+            response.setClientAcronym(client.acronym());
+            response.setClientName(client.clientName());
+          }
+        });
+
+    return result;
+  }
+
+  private PaginatedResult<OpeningSearchResponseDto> fetchFavorites(
+      PaginatedResult<OpeningSearchResponseDto> pagedResult
+  ) {
+
+    List<Long> favourites = userOpeningService.checkForFavorites(
+        pagedResult
+            .getData()
+            .stream()
+            .map(OpeningSearchResponseDto::getOpeningId)
+            .map(Integer::longValue)
+            .toList()
+    );
+
+    for (OpeningSearchResponseDto opening : pagedResult.getData()) {
+      opening.setFavourite(favourites.contains(opening.getOpeningId().longValue()));
     }
+
+    return pagedResult;
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
