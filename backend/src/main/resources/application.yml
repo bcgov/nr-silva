@@ -23,13 +23,14 @@ spring:
       username: ${spring.oracle.username}
       password: ${spring.oracle.password}
       connectionTimeout: 30000
-      idleTimeout: 600000
+      idleTimeout: 250000
       maxLifetime: 1800000
-      keepaliveTime: 15000
+      keepaliveTime: 30000
       poolName: SilvaOracleConnPool
       minimumIdle: 1
       maximumPoolSize: 3
       leakDetectionThreshold: 30000
+      connection-test-query: SELECT 1 FROM DUAL
   datasource:
     jdbcUrl: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:nr-silva}
     url: ${spring.datasource.jdbcUrl}
