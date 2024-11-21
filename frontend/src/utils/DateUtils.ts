@@ -14,7 +14,6 @@ export const dateStringToISO = (date: string): string => {
 };
 
 export const formatDateForDatePicker = (date: any) => {
-  console.log("date format: ", date);
   let year, month, day;
   if (date) {
     [year, month, day] = date.split("-");
