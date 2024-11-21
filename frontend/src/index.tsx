@@ -15,6 +15,7 @@ import amplifyconfig from './amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
 import { AuthProvider } from './contexts/AuthProvider';
+import { NotificationProvider } from './contexts/NotificationProvider';
 
 const container: HTMLElement | null = document.getElementById('root');
 if (container) {
@@ -53,8 +54,14 @@ if (container) {
       <ClassPrefix prefix='bx'>
         <ThemePreference>
           <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-                <App />
+          <QueryClientProvider client={queryClient}>        
+                  <PaginationProvider>
+                    <OpeningsSearchProvider>
+                      <NotificationProvider>
+                        <App />
+                      </NotificationProvider>
+                    </OpeningsSearchProvider>
+                  </PaginationProvider>
             </QueryClientProvider>
           </AuthProvider>
         </ThemePreference>
