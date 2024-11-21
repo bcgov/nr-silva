@@ -43,7 +43,7 @@ public class UserRecentOpeningEndpoint {
   @PutMapping("/{openingId}")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public void recordUserViewedOpening(
-      @PathVariable String openingId) {
+      @PathVariable Long openingId) {
     // Store the opening and return the DTO
     userRecentOpeningService.storeViewedOpening(openingId);
   }

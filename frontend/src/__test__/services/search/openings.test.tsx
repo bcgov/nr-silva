@@ -112,6 +112,7 @@ describe("fetchOpenings", () => {
     await expect(fetchOpenings(sampleFilters)).rejects.toThrow("Network error");
   });
 
+
   it("should return flattened data structure with specific fields", async () => {
     // Arrange: setting up the mock response for axios
     mockedAxios.get.mockResolvedValue(mockApiResponse); 
@@ -135,5 +136,4 @@ describe("fetchOpenings", () => {
     expect(firstOpening.status).toBeUndefined();
     expect(firstOpening.category).toBeUndefined();
   });
-  
 });

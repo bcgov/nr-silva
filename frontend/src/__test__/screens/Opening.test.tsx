@@ -1,16 +1,16 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { render, waitFor, act } from '@testing-library/react';
+import { render, waitFor, act, screen } from '@testing-library/react';
 import Opening from '../../screens/Opening';
 import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
-import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
+import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentActions } from '../../services/OpeningService';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const data = {
   "activityType": "Update",
@@ -33,7 +33,6 @@ vi.mock('../../services/OpeningService', async () => {
   const actual = await vi.importActual('../../services/OpeningService');
   return {
     ...actual,
-    fetchRecentOpenings: vi.fn(),
     fetchOpeningsPerYear: vi.fn(),
     fetchFreeGrowingMilestones: vi.fn(),
     fetchRecentActions: vi.fn(),
@@ -46,7 +45,6 @@ const state = {
     name: 'User'
   }
 };
-
 
 const rows: RecentOpening[] = [{
   id: '123',
@@ -73,6 +71,7 @@ const paginationValueMock = {
   setPageData: vi.fn(),
   setInitialItemsPerPage: vi.fn(),
 };
+
 const queryClient = new QueryClient();
 
 describe('Opening screen test cases', () => {
@@ -80,8 +79,7 @@ describe('Opening screen test cases', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);
-    (fetchRecentOpenings as vi.Mock).mockResolvedValue(rows);
+    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);    
     (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([
       { group: '2022', key: 'Openings', value: 10 },
       { group: '2023', key: 'Openings', value: 15 },
@@ -89,9 +87,6 @@ describe('Opening screen test cases', () => {
     (fetchFreeGrowingMilestones as vi.Mock).mockResolvedValue([{ group: '1-5', value: 11 }]);
     (fetchOpeningFavourites as vi.Mock).mockResolvedValue([1,2,3]);
     (fetchRecentActions as vi.Mock).mockResolvedValue([data]);
-
-    
-
 
   });
 
@@ -117,6 +112,27 @@ describe('Opening screen test cases', () => {
     //expect(screen.getByText(subtitle)).toBeDefined();
   });
 
+  it('should render Opening Page with dashboard tab selected', async () => {
+    window.history.pushState({}, 'Opening page with metrics','/opening?tab=metrics');
+
+    await act(async () => render(
+      <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <PaginationContext.Provider value={paginationValueMock}>
+          <NotificationProvider>
+            <AuthProvider>
+              <Opening />
+            </AuthProvider>
+          </NotificationProvider>
+        </PaginationContext.Provider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    ));
+
+    const headings = screen.getAllByText('Dashboard');
+    expect(headings).toHaveLength(2);
+  });
+
   describe('FavoriteCards test cases', () => {
 
     it('should render FavoriteCard component', async () => {
@@ -125,14 +141,14 @@ describe('Opening screen test cases', () => {
       await act(async () => {
       ({ container } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));
@@ -161,19 +177,20 @@ describe('Opening screen test cases', () => {
     });
 
     it('should not render tab when not selected', async () => {
+      window.history.pushState({}, 'Opening page with metrics','/opening?tab=openings');
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));
@@ -186,19 +203,21 @@ describe('Opening screen test cases', () => {
     });
 
     it('should render tab only when selected', async () => {
+      window.history.pushState({}, 'Opening page with metrics','/opening');
+
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
       ({ container, getByText } = render(
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaginationContext.Provider value={paginationValueMock}>
-            <NotificationProvider>
-              <AuthProvider>
-                <Opening />
-              </AuthProvider>
-            </NotificationProvider>
-          </PaginationContext.Provider>
+          <QueryClientProvider client={queryClient}>
+            <PaginationContext.Provider value={paginationValueMock}>
+              <NotificationProvider>
+                <AuthProvider>
+                  <Opening />
+                </AuthProvider>
+              </NotificationProvider>
+            </PaginationContext.Provider>
           </QueryClientProvider>
         </BrowserRouter>
       ));
@@ -206,7 +225,7 @@ describe('Opening screen test cases', () => {
 
       await act(async () => getByText('Dashboard').click());
 
-      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(2);
+      expect(container.querySelector('div.tab-openings')?.childNodes).toHaveLength(0);
       expect(container.querySelector('div.tab-metrics')?.childNodes).toHaveLength(1);
 
     });
