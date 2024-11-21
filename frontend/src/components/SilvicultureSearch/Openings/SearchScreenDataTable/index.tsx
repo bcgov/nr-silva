@@ -376,6 +376,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
                           <>
+                          {showSpatial && (
                             <CheckboxGroup
                               data-testid={`checkbox-group-${row.openingId}`}
                               labelText=""
@@ -383,7 +384,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                               className="align-items-center justify-content-start"
                             >
                               {/* Checkbox for selecting rows */}
-                              {showSpatial && (
+                              
                                 <Tooltip
                                   className="checkbox-tip"
                                   label="Click to view this opening's map activity."
@@ -404,9 +405,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                                     />
                                   </div>
                                 </Tooltip>
-                              )}
-                              
                             </CheckboxGroup>
+                            )}
+                            {!showSpatial &&(
                             <OverflowMenu size={"md"} ariaLabel="More actions" data-testid={`action-ofl-${row.openingId}`}>
                               <OverflowMenuItem
                                 data-testid={`action-fav-${row.openingId}`}
@@ -434,6 +435,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                               />
                               <OverflowMenuItem itemText="Delete opening" />
                             </OverflowMenu>
+                            )}
                           </>
                           
                           

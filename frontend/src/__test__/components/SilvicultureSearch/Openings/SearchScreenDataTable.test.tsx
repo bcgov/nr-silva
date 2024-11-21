@@ -332,8 +332,8 @@ describe('Search Screen Data table test', () => {
     expect(container.querySelector('.total-search-results')).toContainHTML('0');
   });
 
-  it('should render the checkbox for showSpatial being true', () => {
-    render(
+  it('should render the checkbox for showSpatial being true', async () => {    
+    await act(async () => render(
       <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <PaginationProvider>
@@ -343,7 +343,7 @@ describe('Search Screen Data table test', () => {
                 rows={rows}
                 headers={columns}
                 defaultColumns={columns}
-                showSpatial={false}
+                showSpatial={true}
                 handleCheckboxChange={handleCheckboxChange}
                 toggleSpatial={toggleSpatial}
                 totalItems={0}
@@ -354,7 +354,10 @@ describe('Search Screen Data table test', () => {
         </PaginationProvider>
         </QueryClientProvider>
       </BrowserRouter>
-    );
+    ));
+    
+    expect(screen.getByTestId('toggle-spatial')).toContainHTML('Hide map');
+
     const checkbox = document.querySelector('.cds--checkbox-group');
     expect(checkbox).toBeInTheDocument();
 
