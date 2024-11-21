@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable';
 import { searchScreenColumns as columns } from '../../../../constants/tableConstants';
@@ -8,6 +8,16 @@ import { NotificationProvider } from '../../../../contexts/NotificationProvider'
 import { BrowserRouter } from 'react-router-dom';
 import { OpeningsSearchProvider } from '../../../../contexts/search/OpeningsSearch';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { setOpeningFavorite, deleteOpeningFavorite } from '../../../../services/OpeningFavouriteService';
+
+vi.mock('../../../../services/OpeningFavouriteService', async () => {
+  const actual = await vi.importActual<typeof import('../../../../services/OpeningFavouriteService')>('../../../../services/OpeningFavouriteService');
+  return {
+    ...actual,
+    setOpeningFavorite: vi.fn((openingIds: number[]) => {}),
+    deleteOpeningFavorite: vi.fn((openingIds: number[]) => {})
+  };
+});
 
 const handleCheckboxChange = vi.fn();
 const toggleSpatial = vi.fn();
@@ -18,7 +28,7 @@ const rows:any = [
   {
     id: '114207',
     openingId: '114207',
-    fileId: 'TFL47',
+    fileId: 'TFL99',
     cuttingPermit: '12S',
     timberMark: '47/12S',
     cutBlock: '12-69',
@@ -28,7 +38,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2022-10-27',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-27'
+    lastViewed: '2022-10-27',
+    favourite: false
   },
   {
     id: '114206',
@@ -43,7 +54,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2022-09-04',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-27'
+    lastViewed: '2022-10-27',
+    favourite: true
   },
   {
     id: '114205',
@@ -58,7 +70,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2022-09-04',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-27'
+    lastViewed: '2022-10-27',
+    favourite: false
   },
   {
     id: '114204',
@@ -73,7 +86,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2022-01-16',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-26'
+    lastViewed: '2022-10-26',
+    favourite: false
   },
   {
     id: '114203',
@@ -88,7 +102,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-12-08',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-26'
+    lastViewed: '2022-10-26',
+    favourite: false
   },
   {
     id: '114202',
@@ -103,7 +118,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-11-15',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-25'
+    lastViewed: '2022-10-25',
+    favourite: false
   },
   {
     id: '114201',
@@ -118,7 +134,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-11-15',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-25'
+    lastViewed: '2022-10-25',
+    favourite: false
   },
   {
     id: '114200',
@@ -133,7 +150,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-10-20',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-24'
+    lastViewed: '2022-10-24',
+    favourite: false
   },
   {
     id: '114199',
@@ -148,7 +166,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-10-20',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-24'
+    lastViewed: '2022-10-24',
+    favourite: false
   },
   {
     id: '114198',
@@ -163,7 +182,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-09-12',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-23'
+    lastViewed: '2022-10-23',
+    favourite: false
   },
   {
     id: '114197',
@@ -178,7 +198,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-09-12',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-23'
+    lastViewed: '2022-10-23',
+    favourite: false
   },
   {
     id: '114196',
@@ -193,7 +214,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-08-05',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-22'
+    lastViewed: '2022-10-22',
+    favourite: false
   },
   {
     id: '114195',
@@ -208,7 +230,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-08-05',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-22'
+    lastViewed: '2022-10-22',
+    favourite: false
   },
   {
     id: '114194',
@@ -223,7 +246,8 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-07-10',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-21'
+    lastViewed: '2022-10-21',
+    favourite: false
   },
   {
     id: '114193',
@@ -238,9 +262,11 @@ const rows:any = [
     disturbanceStart: '-',
     createdAt: '2021-07-10',
     orgUnit: 'DCC - Cariboo chilcotin natural resources',
-    lastViewed: '2022-10-21'
+    lastViewed: '2022-10-21',
+    favourite: false
   }
 ];
+
 
 describe('Search Screen Data table test', () => {
 
@@ -366,6 +392,62 @@ describe('Search Screen Data table test', () => {
     expect(checkbox).toBeChecked();
     expect(setOpeningIds).toHaveBeenCalledWith([parseFloat(rows[0].openingId)]);
 
+  });
+
+  it('should favorite and unfavorite an opening', async () => {
+
+    (setOpeningFavorite as vi.Mock).mockResolvedValue({});
+    (deleteOpeningFavorite as vi.Mock).mockResolvedValue({});
+
+    let container;
+
+    await act(async () => 
+    ({ container } =
+    render(
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <SearchScreenDataTable
+                  rows={rows}
+                  headers={columns}
+                  defaultColumns={columns}
+                  showSpatial={false}
+                  handleCheckboxChange={handleCheckboxChange}
+                  toggleSpatial={toggleSpatial}
+                  totalItems={rows.length}
+                  setOpeningIds={setOpeningIds}
+                />
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    )));
+
+    expect(container).toBeInTheDocument();
+    expect(container.querySelector('.total-search-results')).toBeInTheDocument();
+    expect(container.querySelector('.total-search-results')).toContainHTML('Total Search Results');
+
+    await act(async () => expect(screen.getByTestId('row-114207')).toBeInTheDocument() );
+    await act(async () => expect(screen.getByTestId('cell-actions-114206')).toBeInTheDocument() );
+
+    const overflowMenu = screen.getByTestId('action-ofl-114207');
+    await act(async () => expect(overflowMenu).toBeInTheDocument() );
+    await act(async () => fireEvent.click(overflowMenu));
+    
+    const actionOverflow = screen.getByTestId(`action-fav-114207`);
+    await act(async () => expect(actionOverflow).toBeInTheDocument() );
+    expect(actionOverflow).toContainHTML('Favourite opening');
+    await act(async () => fireEvent.click(actionOverflow));
+
+    const overflowMenuAgain = screen.getByTestId('action-ofl-114207');
+    await act(async () => expect(overflowMenuAgain).toBeInTheDocument() );
+    await act(async () => fireEvent.click(overflowMenuAgain));
+
+    expect(screen.getByTestId(`action-fav-114207`)).toContainHTML('Unfavourite opening');
+    
   });
 
 });

@@ -40,7 +40,7 @@ import {
   downloadXLSX
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
+import { setOpeningFavorite, deleteOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
@@ -146,10 +146,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
     };
 
   //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = (openingId: string, favorite: boolean) => {
+  const handleFavouriteOpening = async (openingId: string, favorite: boolean) => {
     try{
       if(favorite){
-        setOpeningFavorite(parseInt(openingId));
+        await deleteOpeningFavorite(parseInt(openingId));
         displayNotification({
           title: `Opening Id ${openingId} unfavourited`,          
           type: 'success',
@@ -157,7 +157,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           onClose: () => {}
         });
       }else{
-        setOpeningFavorite(parseInt(openingId));
+        await setOpeningFavorite(parseInt(openingId));
         displayNotification({
           title: `Opening Id ${openingId} favourited`,
           subTitle: 'You can follow this opening ID on your dashboard',
@@ -169,7 +169,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         });
       }
       
-    } catch (error) {
+    } catch (favoritesError) {
       displayNotification({
         title: 'Unable to process your request',
         subTitle: 'Please try again in a few minutes',
@@ -353,10 +353,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               rows.map((row: any, i: number) => (
                 <TableRow
                   key={row.openingId + i.toString()}
+                  data-testid={`row-${row.openingId}`}
                 >
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
+                        data-testid={`cell-${header.key}-${row.openingId}`}
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
@@ -373,36 +375,41 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          <CheckboxGroup
-                            labelText=""
-                            orientation="horizontal"
-                            className="align-items-center justify-content-start"
-                          >
-                            {/* Checkbox for selecting rows */}
-                            {showSpatial && (
-                              <Tooltip
-                                className="checkbox-tip"
-                                label="Click to view this opening's map activity."
-                                align="bottom-left"
-                                autoAlign
-                              >
-                                <div className="mb-2 mx-2">
-                                  <Checkbox
-                                    id={`checkbox-label-${row.openingId}`}
-                                    data-testid={`checkbox-${row.openingId}`}
-                                    labelText=""
-                                    checked={selectedRows.includes(
-                                      row.openingId
-                                    )}
-                                    onChange={() =>
-                                      handleRowSelectionChanged(row.openingId)
-                                    }
-                                  />
-                                </div>
-                              </Tooltip>
-                            )}
-                            <OverflowMenu size={"md"} ariaLabel="More actions">
+                          <>
+                            <CheckboxGroup
+                              data-testid={`checkbox-group-${row.openingId}`}
+                              labelText=""
+                              orientation="horizontal"
+                              className="align-items-center justify-content-start"
+                            >
+                              {/* Checkbox for selecting rows */}
+                              {showSpatial && (
+                                <Tooltip
+                                  className="checkbox-tip"
+                                  label="Click to view this opening's map activity."
+                                  align="bottom-left"
+                                  autoAlign
+                                >
+                                  <div className="mb-2 mx-2">
+                                    <Checkbox
+                                      id={`checkbox-label-${row.openingId}`}
+                                      data-testid={`checkbox-${row.openingId}`}
+                                      labelText=""
+                                      checked={selectedRows.includes(
+                                        row.openingId
+                                      )}
+                                      onChange={() =>
+                                        handleRowSelectionChanged(row.openingId)
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              )}
+                              
+                            </CheckboxGroup>
+                            <OverflowMenu size={"md"} ariaLabel="More actions" data-testid={`action-ofl-${row.openingId}`}>
                               <OverflowMenuItem
+                                data-testid={`action-fav-${row.openingId}`}
                                 itemText={row.favourite ? "Unfavourite opening" : "Favourite opening"}
                                 onClick={() =>{
                                   handleFavouriteOpening(row.openingId,row.favourite)
@@ -427,7 +434,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                               />
                               <OverflowMenuItem itemText="Delete opening" />
                             </OverflowMenu>
-                          </CheckboxGroup>
+                          </>
+                          
+                          
                         ) : header.header === "Category" ? (
                           <TruncatedText
                             text={row["categoryCode"] + " - " + row["categoryDescription"]}
