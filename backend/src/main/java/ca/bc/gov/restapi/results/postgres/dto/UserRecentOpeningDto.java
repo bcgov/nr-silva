@@ -8,7 +8,7 @@ import lombok.With;
 @Builder
 public record UserRecentOpeningDto(
     String userId,
-    String openingId,
+    Long openingId,
     LocalDateTime lastViewed
 ) {
 

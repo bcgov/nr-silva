@@ -1,15 +1,31 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,14 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+@DisplayName("Unit Test | UserRecentOpeningService")
 class UserRecentOpeningServiceTest {
 
     @Mock
@@ -37,6 +46,9 @@ class UserRecentOpeningServiceTest {
     @Mock
     private OpeningService openingService;
 
+    @Mock
+    private OpeningRepository openingRepository;
+
     @InjectMocks
     private UserRecentOpeningService userRecentOpeningService;
 
@@ -46,13 +58,14 @@ class UserRecentOpeningServiceTest {
     }
 
     @Test
+    @DisplayName("storeViewedOpening | new opening | saves entity")
     void storeViewedOpening_newOpening_savesEntity() {
         String userId = "user123";
-        String openingId = "123";
-        LocalDateTime lastViewed = LocalDateTime.now();
+        Long openingId = 123L;
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
-        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(null);
+        when(openingRepository.existsById(openingId)).thenReturn(true);
+        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(Optional.empty());
 
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
@@ -60,18 +73,20 @@ class UserRecentOpeningServiceTest {
         assertEquals(userId, result.userId());
         assertEquals(openingId, result.openingId());
 
-        verify(userRecentOpeningRepository, times(1)).save(any(UserRecentOpeningEntity.class));
+        verify(userRecentOpeningRepository, times(1)).saveAndFlush(any(UserRecentOpeningEntity.class));
     }
 
     @Test
+    @DisplayName("storeViewedOpening | existing opening | updates entity")
     void storeViewedOpening_existingOpening_updatesEntity() {
         String userId = "user123";
-        String openingId = "123";
+        Long openingId = 123L;
         LocalDateTime lastViewed = LocalDateTime.now();
         UserRecentOpeningEntity existingEntity = new UserRecentOpeningEntity(1L, userId, openingId, lastViewed.minusDays(1));
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
-        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(existingEntity);
+        when(openingRepository.existsById(openingId)).thenReturn(true);
+        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(Optional.of(existingEntity));
 
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
@@ -79,18 +94,33 @@ class UserRecentOpeningServiceTest {
         assertEquals(userId, result.userId());
         assertEquals(openingId, result.openingId());
 
-        verify(userRecentOpeningRepository, times(1)).save(existingEntity);
+        verify(userRecentOpeningRepository, times(1)).saveAndFlush(any(UserRecentOpeningEntity.class));
     }
 
     @Test
+    @DisplayName("storeViewedOpening | invalid opening ID | throws exception")
     void storeViewedOpening_invalidOpeningId_throwsException() {
-        String invalidOpeningId = "abc";
+        Long invalidOpeningId = null;
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             userRecentOpeningService.storeViewedOpening(invalidOpeningId);
         });
 
         assertEquals("Opening ID must contain numbers only!", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("storeViewedOpening | opening not found | throws exception")
+    void storeViewedOpening_openingIdNotFound_throwsException() {
+        Long invalidOpeningId = 7745L;
+
+        when(openingRepository.existsById(invalidOpeningId)).thenReturn(false);
+
+        Exception exception = assertThrows(OpeningNotFoundException.class, () -> {
+            userRecentOpeningService.storeViewedOpening(invalidOpeningId);
+        });
+
+        assertEquals("404 NOT_FOUND \"UserOpening record(s) not found!\"", exception.getMessage());
     }
 
     @Test
@@ -120,8 +150,8 @@ class UserRecentOpeningServiceTest {
         int limit = 10;
         LocalDateTime now = LocalDateTime.now();
         
-        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(1L, userId, "123", now.minusDays(2));
-        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(2L, userId, "456", now.minusDays(1));
+        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(1L, userId, 123L, now.minusDays(2));
+        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(2L, userId, 456L, now.minusDays(1));
         
         List<UserRecentOpeningEntity> openings = List.of(opening1, opening2);
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);

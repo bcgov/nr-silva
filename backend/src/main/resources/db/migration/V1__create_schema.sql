@@ -56,7 +56,7 @@ CACHE 30;
 -- Use the sequence in your table creation or insert statements
 CREATE TABLE IF NOT EXISTS silva.user_recent_openings (
     id BIGINT PRIMARY KEY DEFAULT nextval('silva.user_recent_openings_seq'),
-    opening_id VARCHAR(255) NOT NULL,
+    opening_id DECIMAL(10,0) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     last_viewed TIMESTAMP DEFAULT NOW()
 );

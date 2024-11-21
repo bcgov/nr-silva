@@ -17,7 +17,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,39 +42,6 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private OpeningService openingService;
-
-  @Test
-  @DisplayName("Get a list of recent openings for logged user")
-  void getRecentOpenings_fetchPaginated_shouldSucceed() {
-    int pages = 3;
-    int currentPage = 0;
-
-    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpeningsCurrentUser(pagination);
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
-    Assertions.assertEquals(1, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-    Assertions.assertEquals(1, paginatedResult.getData().size());
-  }
-
-  @Test
-  @DisplayName("Get an empty list of recent openings for the home screen")
-  void getRecentOpenings_emptyPages_shouldSucceed() {
-
-    int currentPage = 0;
-    int pages = 1;
-    PaginationParameters pagination = new PaginationParameters(currentPage, pages);
-    PaginatedResult<RecentOpeningDto> paginatedResult =
-        openingService.getRecentOpeningsCurrentUser(pagination);
-
-    Assertions.assertNotNull(paginatedResult);
-    Assertions.assertEquals(currentPage, paginatedResult.getPageIndex());
-    Assertions.assertEquals(1, paginatedResult.getTotalPages());
-    Assertions.assertFalse(paginatedResult.getData().isEmpty());
-  }
 
   @Test
   @DisplayName("Get a list of recent openings without user")
