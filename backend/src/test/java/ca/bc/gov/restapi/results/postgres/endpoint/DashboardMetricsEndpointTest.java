@@ -74,7 +74,7 @@ class DashboardMetricsEndpointTest extends AbstractTestContainerIntegrationTest 
         .andExpect(jsonPath("$[0].index").value("0"))
         .andExpect(jsonPath("$[0].label").value("0 - 5 months"))
         .andExpect(jsonPath("$[0].amount").value("0"))
-        .andExpect(jsonPath("$[0].percentage").value(new BigDecimal("0")))
+        .andExpect(jsonPath("$[0].percentage").value("0.0"))
         .andReturn();
   }
 
