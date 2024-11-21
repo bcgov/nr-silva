@@ -40,7 +40,7 @@ import {
   downloadXLSX,
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite, deleteOpeningFavorite } from "../../../../services/OpeningFavouriteService";
+import { setOpeningFavorite, deleteOpeningFavorite } from '../../../../services/OpeningFavouriteService';
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
