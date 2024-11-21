@@ -9,7 +9,7 @@ on:
       ### Typical / recommended
       allowed_origins:
         description: Allowed origins for CORS
-        default: https://${{ github.event.repository.name }}-$(( {{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca
+        default: https://${{ github.event.repository.name }}-$(( ${{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca
         required: false
         type: string
       environment:
