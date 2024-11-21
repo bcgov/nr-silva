@@ -11,20 +11,79 @@
     .advanced-search-container{
         box-shadow: 0px 2px 6px 0px #0000004D;
     }
+
+    legend {
+        font-size: 16px;
+        line-height: 20px;
+        letter-spacing: 0.16px;
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
+    }
+
+    label {
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: 0.16px;
+      color: var(--#{vars.$bcgov-prefix}-text-primary);
+    }
+
     input{
         background-color: var(--bx-field-01);
         border-bottom: 1px solid var(--bx-border-strong-01);
     }
+
+    input::placeholder {
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+    input:disabled::placeholder {
+      color: #e311114d //var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+
+    #tooltip {
+      border: 0;
+      background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+    }
+
+    .bx--date-picker-container {
+      background-color: red;
+    }
+
+    .bx--list-box__wrapper {
+      background-color: blueviolet;
+    }
+
+    #date-type-dropdown {
+      width: 40%;
+      background-color: green;
+      border-bottom: 1px solid var(--bx-border-strong-01);
+    }
+
+    .bx--combo-box {
+      background-color: yellow;
+      width: 40%;
+    }
+
+    .bx--list-box {
+      background-color: pink;
+    }
+
+    #start-date-picker {
+      float: left;
+      width: 30%;
+    }
+
+    #end-date-picker {
+      float: right;
+      width: 30%;
+    }
+
+    #start-date-picker-input-id, #end-date-picker-input-id {
+        width: 50%;
+    }
+
     .multi-select .bx--list-box__field--wrapper{
         background-color: var(--bx-field-01);
         border-bottom: 1px solid var(--bx-border-strong-01);
     }
-
-}
-
-#date-type-dropdown {
-  background-color: var(--bx-field-01);
-  border-bottom: 1px solid var(--bx-border-strong-01);
 }
 
 .horizontal-checkbox-group {
