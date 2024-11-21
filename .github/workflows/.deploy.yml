@@ -7,6 +7,11 @@ on:
       # Nothing! Only `secrets: inherit` is required
 
       ### Typical / recommended
+      allowed_origins:
+        description: Allowed origins for CORS
+        default: https://${{ github.event.repository.name }}-$(( {{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca
+        required: false
+        type: string
       environment:
         description: GitHub/OpenShift environment; usually PR number, test or prod
         default: ''
@@ -94,7 +99,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
-              -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+              -p ALLOWED_ORIGINS=$${{ inputs.allowed_origins }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
