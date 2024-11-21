@@ -90,6 +90,8 @@ describe("fetchOpenings", () => {
       expect.objectContaining({
         headers: {
           Authorization: `Bearer ${expectedToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json"
         },
       })
     );

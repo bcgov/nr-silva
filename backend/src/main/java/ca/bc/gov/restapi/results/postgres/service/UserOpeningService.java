@@ -6,7 +6,6 @@ import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
-import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -45,6 +44,19 @@ public class UserOpeningService {
             .stream()
             .map(UserOpeningEntity::getOpeningId)
             .toList();
+  }
+
+  public List<Long> checkForFavorites(List<Long> openingIds) {
+    log.info("Checking {} favorite for openings from the following list of openings {}",
+        loggedUserService.getLoggedUserId(),
+        openingIds
+    );
+
+    return userOpeningRepository
+        .findAllByUserIdAndOpeningIdIn(loggedUserService.getLoggedUserId(), openingIds)
+        .stream()
+        .map(UserOpeningEntity::getOpeningId)
+        .toList();
   }
 
   @Transactional

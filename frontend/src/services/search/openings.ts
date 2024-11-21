@@ -56,6 +56,12 @@ export interface OpeningItem {
 
 const backendUrl = env.VITE_BACKEND_URL;
 
+const buildDefaultHeaders = (authToken: string|null) => ({
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': window.location.origin,
+  Authorization: `Bearer ${authToken}`
+});
+
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType
   // Get the date params based on dateType
@@ -96,9 +102,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
 
   // Make the API request with the Authorization header
   const response = await axios.get(`${backendUrl}/api/opening-search${queryString}`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`
-    }
+    headers: buildDefaultHeaders(authToken)
   });
 
   // Flatten the data part of the response
@@ -127,9 +131,7 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
 
   // Make the API request with the Authorization header
   const response = await axios.get(`${backendUrl}/api/openings/recent`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`
-    }
+    headers: buildDefaultHeaders(authToken)
   });
 
   // Flatten the data part of the response
@@ -156,9 +158,7 @@ export const fetchCategories = async (): Promise<any> => {
 
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/categories", {
-    headers: {
-      Authorization: `Bearer ${authToken}`
-    }
+    headers: buildDefaultHeaders(authToken)
   });
 
   // Returning the api response data
@@ -171,9 +171,7 @@ export const fetchOrgUnits = async (): Promise<any> => {
 
   // Make the API request with the Authorization header
   const response = await axios.get(backendUrl + "/api/opening-search/org-units", {
-    headers: {
-      Authorization: `Bearer ${authToken}`
-    }
+    headers: buildDefaultHeaders(authToken)
   });
 
   // Returning the api response data
