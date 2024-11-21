@@ -37,7 +37,6 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
 
   // Function to clear individual filter field by key
   const clearIndividualField = (key: string) => {
-    console.log("Clearing individual field", key);
     setFilters((prevFilters) => ({
       ...prevFilters,
       [key]: defaultFilters[key as keyof typeof defaultFilters],
