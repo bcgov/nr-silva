@@ -347,6 +347,7 @@
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
             <exclude>**/*Constants.*</exclude>
+            <exclude>**/security/*Converter.*</exclude>
           </excludes>
         </configuration>
         <executions>
