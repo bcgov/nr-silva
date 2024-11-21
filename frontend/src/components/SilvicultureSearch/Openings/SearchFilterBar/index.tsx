@@ -9,7 +9,7 @@ interface SearchFilterBarProps {
 
 const SearchFilterBar: React.FC<SearchFilterBarProps> = ({}) => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const { filters, clearFilters, clearIndividualField } = useOpeningsSearch();
+  const { filters, clearFilters, } = useOpeningsSearch();
 
   useEffect(() => {
     setActiveFilters(getActiveFilters(filters));

@@ -2,6 +2,7 @@ window.global ||= window;
 import React from 'react';
 import './index.css';
 import { ClassPrefix } from '@carbon/react';
+import { Provider } from 'react-redux'
 import App from './App';
 import { ThemePreference } from './utils/ThemePreference';
 import { createRoot } from 'react-dom/client';
@@ -14,7 +15,6 @@ import amplifyconfig from './amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
 import { AuthProvider } from './contexts/AuthProvider';
-import { NotificationProvider } from './contexts/NotificationProvider';
 
 const container: HTMLElement | null = document.getElementById('root');
 if (container) {
@@ -53,14 +53,8 @@ if (container) {
       <ClassPrefix prefix='bx'>
         <ThemePreference>
           <AuthProvider>
-            <QueryClientProvider client={queryClient}>        
-                  <PaginationProvider>
-                    <OpeningsSearchProvider>
-                      <NotificationProvider>
-                        <App />
-                      </NotificationProvider>
-                    </OpeningsSearchProvider>
-                  </PaginationProvider>
+            <QueryClientProvider client={queryClient}>
+                <App />
             </QueryClientProvider>
           </AuthProvider>
         </ThemePreference>
