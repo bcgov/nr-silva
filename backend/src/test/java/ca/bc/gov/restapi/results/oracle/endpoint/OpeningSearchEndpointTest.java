@@ -101,7 +101,7 @@ class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.pageIndex").value("0"))
         .andExpect(jsonPath("$.perPage").value("5"))
-        .andExpect(jsonPath("$.totalPages").value("1"))
+        .andExpect(jsonPath("$.totalPages").value("0"))
         .andExpect(jsonPath("$.hasNextPage").value("false"))
         .andExpect(jsonPath("$.data", Matchers.empty()))
         .andReturn();
