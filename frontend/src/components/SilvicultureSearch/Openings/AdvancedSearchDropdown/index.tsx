@@ -34,7 +34,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("Use Effect in child is being called.", filters);
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
