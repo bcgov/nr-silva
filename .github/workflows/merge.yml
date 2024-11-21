@@ -30,6 +30,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
+      allowed_origins: https://silva-test.nrs.gov.bc.ca/
       environment: test
       tag: ${{ needs.init.outputs.pr }}
       target: test
@@ -40,6 +41,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
+      allowed_origins: https://silva.nrs.gov.bc.ca/
       environment: prod
       tag: ${{ needs.init.outputs.pr }}
       target: prod

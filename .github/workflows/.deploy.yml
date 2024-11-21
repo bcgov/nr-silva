@@ -7,6 +7,10 @@ on:
       # Nothing! Only `secrets: inherit` is required
 
       ### Typical / recommended
+      allowed_origins:
+        description: Allowed origins for CORS
+        required: false
+        type: string
       environment:
         description: GitHub/OpenShift environment; usually PR number, test or prod
         default: ''
@@ -33,6 +37,7 @@ jobs:
     name: Deploy (init)
     environment: ${{ inputs.environment }}
     outputs:
+      allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
       route: ${{ steps.route.outputs.route }}
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +48,16 @@ jobs:
             echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
           else
             echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: ALLOWED_ORIGINS
+        id: allowed_origins
+        run: |
+          # If not set, use default routes
+          if [ -z ${{ inputs.allowed_origins }} ]; then
+            echo "allowed_origins=https://${{ github.event.repository.name }}-$(( ${{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
+          else
+            echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
@@ -94,7 +109,7 @@ jobs:
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
-              -p ALLOWED_ORIGINS=https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+              -p ALLOWED_ORIGINS=${{ needs.init.outputs.allowed_origins }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
