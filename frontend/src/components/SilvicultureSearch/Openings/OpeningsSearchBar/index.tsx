@@ -6,7 +6,6 @@ import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
-import { c } from "vite/dist/node/types.d-aGj9QkWt";
 
 interface IOpeningsSearchBar {
   onSearchClick: () => void;
