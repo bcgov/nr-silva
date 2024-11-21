@@ -25,33 +25,39 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 4. Create the AuthProvider component with explicit typing
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {  
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [userRoles, setUserRoles] = useState<string[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   const appEnv = env.VITE_ZONE ?? 'DEV';
 
+  const refreshUserState = async () => {
+    setIsLoading(true);
+    try {
+      const idToken = await loadUserToken();
+      if (idToken) {
+        setUser(parseToken(idToken));
+        setUserRoles(extractGroups(idToken.payload));
+      } else {
+        setUser(undefined);
+        setUserRoles(undefined);
+      }
+    } catch {
+      setUser(undefined);
+      setUserRoles(undefined);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  useEffect(() => {          
-      const checkUser = async () => {
-        try{
-          const idToken = await loadUserToken();
-          setIsLoggedIn(!!idToken);
-          setIsLoading(false);
-          if(idToken){
-            setUser(parseToken(idToken));
-            setUserRoles(extractGroups(idToken?.payload));
-          }
-        }catch(error){
-          setIsLoggedIn(false);
-          setUser(parseToken(undefined));
-          setIsLoading(false);
-        }
-      };  
-      checkUser();
+  useEffect(() => {
+    refreshUserState();    
+    const interval = setInterval(refreshUserState, 3 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
+
+  
 
   const login = async (provider: string) => {
     const envProvider = (provider.localeCompare('idir') === 0) 
@@ -65,18 +71,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {    
       await signOut();
-      setIsLoggedIn(false);
+      setUser(undefined);
+      setUserRoles(undefined);
       window.location.href = '/'; // Optional redirect after logout    
   };
 
   const contextValue = useMemo(() => ({
     user,
     userRoles,
-    isLoggedIn,
+    isLoggedIn: !!user,
     isLoading,
     login,
     logout
-  }), [user, userRoles, isLoggedIn, isLoading]);
+  }), [user, userRoles, isLoading]);
 
   return (
     <AuthContext.Provider value={contextValue}>
@@ -97,19 +104,16 @@ export const useGetAuth = (): AuthContextType => {
 
 const loadUserToken = async () : Promise<JWT|undefined> => {
   if(env.NODE_ENV !== 'test'){
-    const {idToken} = (await fetchAuthSession()).tokens ?? {};    
-    return Promise.resolve(idToken);
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    return idToken;
   } else {
     // This is for test only
     const token = getUserTokenFromCookie();
     if (token) {
-      const jwtBody = token
-        ? JSON.parse(atob(token.split(".")[1]))
-        : null;
-      return Promise.resolve({ payload: jwtBody });
-    } else {
-      return Promise.reject(new Error("No token found"));
-    }
+      const jwtBody = JSON.parse(atob(token.split(".")[1]));
+      return { payload: jwtBody };
+    } 
+    throw new Error("No token found");
   }
 };
 
@@ -117,9 +121,7 @@ const getUserTokenFromCookie = (): string|undefined => {
   const baseCookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
   const userId = encodeURIComponent(getCookie(`${baseCookieName}.LastAuthUser`));
   if (userId) {
-    const idTokenCookieName = `${baseCookieName}.${userId}.idToken`;
-    const idToken = getCookie(idTokenCookieName);
-    return idToken;
+    return getCookie(`${baseCookieName}.${userId}.idToken`);
   } else {
     return undefined;
   }

@@ -11,7 +11,9 @@ export const postViewedOpening = async (openingId: string): Promise<any> => {
     try {
       const response = await axios.put(`${backendUrl}/api/openings/recent/${openingId}`, null, {
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`,
         },
       });
       return response.data;

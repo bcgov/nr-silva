@@ -32,7 +32,9 @@ describe('OpeningService', () => {
       const result = await fetchOpeningsPerYear(props);
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/dashboard-metrics/submission-trends?orgUnitCode=001&statusCode=APP&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
       expect(result).toEqual([
         { group: 'Openings', key: 'January', value: 10 },
@@ -59,7 +61,9 @@ describe('OpeningService', () => {
       const result = await fetchFreeGrowingMilestones(props);
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/dashboard-metrics/free-growing-milestones?orgUnitCode=001&clientNumber=123&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${authToken}`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" }
       });
       expect(result).toEqual([
         { group: 'Milestone1', value: 10 },

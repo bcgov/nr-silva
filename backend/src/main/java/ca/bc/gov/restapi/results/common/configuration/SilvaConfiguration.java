@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import java.time.Duration;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,8 @@ public class SilvaConfiguration {
   private ExternalApiAddress openMaps;
   @NestedConfigurationProperty
   private SilvaDataLimits limits;
+  @NestedConfigurationProperty
+  private FrontEndConfiguration frontend;
 
   @Data
   @Builder
@@ -50,6 +53,35 @@ public class SilvaConfiguration {
   @AllArgsConstructor
   public static class SilvaDataLimits {
     private Integer maxActionsResults;
+  }
+
+  /**
+   * The Front end configuration.
+   */
+  @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class FrontEndConfiguration {
+
+    private String url;
+    @NestedConfigurationProperty
+    private FrontEndCorsConfiguration cors;
+
+  }
+
+  /**
+   * The Front end cors configuration.
+   */
+  @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class FrontEndCorsConfiguration {
+
+    private List<String> headers;
+    private List<String> methods;
+    private Duration age;
   }
 
 }
