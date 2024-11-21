@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState} from "react";
 import "./OpeningsSearchBar.scss";
 import { Search, Button, FlexGrid, Row, Column, DismissibleTag, InlineNotification } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
@@ -6,7 +6,6 @@ import AdvancedSearchDropdown from "../AdvancedSearchDropdown";
 import SearchFilterBar from "../SearchFilterBar";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { countActiveFilters } from "../../../../utils/searchUtils";
-import { callbackify } from "util";
 import { c } from "vite/dist/node/types.d-aGj9QkWt";
 
 interface IOpeningsSearchBar {
