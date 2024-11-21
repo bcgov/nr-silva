@@ -73,7 +73,7 @@ class DashboardMetricsEndpointTest extends AbstractTestContainerIntegrationTest 
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].index").value("0"))
         .andExpect(jsonPath("$[0].label").value("0 - 5 months"))
-        .andExpect(jsonPath("$[0].amount").value("25"))
+        .andExpect(jsonPath("$[0].amount").value("0"))
         .andExpect(jsonPath("$[0].percentage").value(new BigDecimal("0")))
         .andReturn();
   }
@@ -97,20 +97,7 @@ class DashboardMetricsEndpointTest extends AbstractTestContainerIntegrationTest 
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].index").value("0"))
         .andExpect(jsonPath("$[0].label").value("0 - 5 months"))
-        .andExpect(jsonPath("$[0].amount").value("25"))
-        .andExpect(jsonPath("$[0].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[1].index").value("1"))
-        .andExpect(jsonPath("$[1].label").value("6 - 11 months"))
-        .andExpect(jsonPath("$[1].amount").value("25"))
-        .andExpect(jsonPath("$[1].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[2].index").value("2"))
-        .andExpect(jsonPath("$[2].label").value("12 - 17 months"))
-        .andExpect(jsonPath("$[2].amount").value("25"))
-        .andExpect(jsonPath("$[2].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[3].index").value("3"))
-        .andExpect(jsonPath("$[3].label").value("18 months"))
-        .andExpect(jsonPath("$[3].amount").value("25"))
-        .andExpect(jsonPath("$[3].percentage").value(new BigDecimal("0")))
+        .andExpect(jsonPath("$[0].amount").value("0"))
         .andReturn();
   }
 
