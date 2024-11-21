@@ -46,6 +46,7 @@ import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
+import { Icon } from "@carbon/icons-react";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -242,7 +243,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   <div className="dropdown-label">
                     <p>Select Columns you want to see:</p>
                   </div>
-                  <FlexGrid className="dropdown-container scrollable">
+                  <FlexGrid className="dropdown-container scrollable" data-test-id="edit-columns-container">
                     {headers.map(
                       (header, index) =>
                         header &&
@@ -250,13 +251,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           <Row key={`row-${index}`} className="my-3">
                             <Column sm={2} md={4} lg={8} key={header.key}>
                               {header.key === "openingId" ? (
-                                <Checkbox
-                                  className="checkbox-item"
-                                  labelText="Opening ID"
-                                  id={`checkbox-label-${header.key}`}
-                                  checked={header.selected === true}
-                                  disabled
-                                />
+                                <div className="d-flex flex-row align-items-center checkbox-item cursor-pointer">
+                                  <Icons.CheckboxChecked size={21} />
+                                  <p className="bx--checkbox-label-text">{header.header}</p>
+                                </div>
                               ) : (
                                 <Checkbox
                                   className="checkbox-item"
