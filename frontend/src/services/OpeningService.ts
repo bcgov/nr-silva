@@ -3,9 +3,7 @@ import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
-import { RecentOpening } from '../types/RecentOpening';
 import { 
-  RecentOpeningApi, 
   IOpeningPerYear,
   IFreeGrowingProps,
   IFreeGrowingChartData
