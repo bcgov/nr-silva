@@ -22,6 +22,11 @@
 
 }
 
+#date-type-dropdown {
+  background-color: var(--bx-field-01);
+  border-bottom: 1px solid var(--bx-border-strong-01);
+}
+
 .horizontal-checkbox-group {
     display: flex;
     flex-wrap: wrap;
@@ -38,6 +43,7 @@
 
 .date-type-col{
     padding: 0px;
+    color:aqua;
     padding-left: 16px;
 }
 .date-selectors-col{

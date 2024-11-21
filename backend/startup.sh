@@ -66,4 +66,9 @@ if [ -f "/certs/zscaler-ca.crt" ]; then
   keytool -import -trustcacerts -file /certs/zscaler-ca.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
 fi
 
-mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5006"
+# Import certificates - Needed by CGI laptops for development
+if [ -f "zscaler-cgi.crt" ]; then
+  keytool -import -trustcacerts -file zscaler-cgi.crt -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -noprompt
+fi
+
+mvn -ntp spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5006" -Dspring-boot.run.profiles="dev-local"

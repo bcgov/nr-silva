@@ -59,7 +59,7 @@ parameters:
     value: development
   - name: DATABASE_HOST
     description: Where the database is hosted
-    value: nrcdb03.bcgov
+    value: 142.34.84.58 #nrcdb03.bcgov
   - name: DATABASE_PORT
     description: The port to be used for the connection to the database
     value: "1543"

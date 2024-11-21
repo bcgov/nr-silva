@@ -54,7 +54,7 @@ services:
       - $HOME/zscaler-certs:/certs
     working_dir: /app
     environment:
-      DATABASE_HOST: nrcdb03.bcgov
+      DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: "1543"
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
@@ -72,12 +72,12 @@ services:
     environment:
       <<: *db-vars
     volumes: ["/pgdata"]
-    ports: ["5432:5432"]
-    healthcheck:
-      test: pg_isready -U postgres
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    ports: ["${POSTGRES_EXPOSED_PORT}:5432"]  #changed to 5433 to avoid conflict with local postgres
+    # healthcheck:
+    #   test: pg_isready -U nr-silva
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
     image: postgis/postgis:13-master
 
   backend-native:
