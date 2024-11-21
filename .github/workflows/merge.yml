@@ -25,11 +25,12 @@ jobs:
         uses: bcgov-nr/action-get-pr@v0.0.1
 
   deploys-test:
-    name: Deploys (${{ github.event.number }})
+    name: TEST Deploys (${{ needs.init.outputs.pr }})
     needs: [init]
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
+      allowed_origins: https://silva-test.nrs.gov.bc.ca/
       environment: test
       tag: ${{ needs.init.outputs.pr }}
       target: test
@@ -40,6 +41,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
+      allowed_origins: https://silva.nrs.gov.bc.ca/
       environment: prod
       tag: ${{ needs.init.outputs.pr }}
       target: prod
@@ -50,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: [backend, frontend, oracle-api, sync]
+        package: [backend, frontend]
     steps:
       - uses: shrink/actions-docker-registry-tag@v4
         with:
