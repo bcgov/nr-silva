@@ -2,21 +2,22 @@ import { ITableHeader } from "../types/TableHeader";
 
 const searchScreenColumnDefinitions = [
   { key: 'actions', header: 'Actions' },
+  
   { key: 'openingId', header: 'Opening Id' },
+  { key: 'openingNumber', header: 'Opening number' },
   { key: 'forestFileId', header: 'File Id' },
   { key: 'categoryDescription', header: 'Category', elipsis: true },
   { key: 'orgUnitName', header: 'Org unit' },
   { key: 'statusDescription', header: 'Status' },
+  { key: 'clientNumber', header: 'Client number' },
+  { key: 'timberMark', header: 'Timber mark' },
   { key: 'cuttingPermitId', header: 'Cutting permit' },
   { key: 'cutBlockId', header: 'Cut block' },
   { key: 'openingGrossAreaHa', header: 'Gross Area' },
-  { key: 'disturbanceStartDate', header: 'Disturbance Date' },
-  { key: 'openingNumber', header: 'Opening Number' },
-  { key: 'timberMark', header: 'Timber Mark' },
-  { key: 'clientName', header: 'Client' },
-  { key: 'regenDelayDate', header: 'Regen Delay Due Date' },
-  { key: 'earlyFreeGrowingDate', header: 'Free Growing Due Date' },
-  { key: 'updateTimestamp', header: 'Update Date' },
+  { key: 'disturbanceStartDate', header: 'Disturbance date' },
+  { key: 'regenDelayDate', header: 'Regen delay due date' },
+  { key: 'earlyFreeGrowingDate', header: 'Free growing due date' },
+  { key: 'updateTimestamp', header: 'Update date' },
 ];
 
 export const searchScreenColumns: ITableHeader[] = searchScreenColumnDefinitions.map((col) => ({

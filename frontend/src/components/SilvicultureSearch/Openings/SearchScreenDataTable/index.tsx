@@ -24,7 +24,7 @@ import {
   MenuItemDivider,
   Tooltip,
   MenuItem,
-  FlexGrid
+  FlexGrid,
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import StatusTag from "../../../StatusTag";
@@ -37,16 +37,15 @@ import {
   convertToCSV,
   downloadCSV,
   downloadPDF,
-  downloadXLSX
+  downloadXLSX,
 } from "../../../../utils/fileConversions";
 import { useNavigate } from "react-router-dom";
-import { setOpeningFavorite } from '../../../../services/OpeningFavouriteService';
+import { setOpeningFavorite } from "../../../../services/OpeningFavouriteService";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
-
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -71,7 +70,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   toggleSpatial,
   showSpatial,
   totalItems,
-  setOpeningIds
+  setOpeningIds,
 }) => {
   const {
     handlePageChange,
@@ -84,8 +83,12 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
-  const [openingDetails, setOpeningDetails] = useState('');
-  const { mutate: markAsViewedOpening, isError, error } = usePostViewedOpening();
+  const [openingDetails, setOpeningDetails] = useState("");
+  const {
+    mutate: markAsViewedOpening,
+    isError,
+    error,
+  } = usePostViewedOpening();
   const navigate = useNavigate();
 
   // This ref is used to calculate the width of the container for each cell
@@ -95,14 +98,18 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const { displayNotification } = useNotification();
 
   useEffect(() => {
-    const widths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
+    const widths = cellRefs.current.map(
+      (cell: ICellRefs) => cell.offsetWidth || 0
+    );
     setCellWidths(widths);
 
     const handleResize = () => {
-      const newWidths = cellRefs.current.map((cell: ICellRefs) => cell.offsetWidth || 0);
+      const newWidths = cellRefs.current.map(
+        (cell: ICellRefs) => cell.offsetWidth || 0
+      );
       setCellWidths(newWidths);
     };
-    
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -110,17 +117,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);
   }, [rows, totalItems]);
-  
+
   // Function to handle row selection changes
   const handleRowSelectionChanged = (openingId: string) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
-        const selectedValues = prevSelectedRows.filter((id) => id !== openingId);
+        const selectedValues = prevSelectedRows.filter(
+          (id) => id !== openingId
+        );
         setOpeningIds(selectedValues.map(parseFloat));
         return selectedValues;
       } else {
-        // If the row is not selected, add it to the selected rows        
+        // If the row is not selected, add it to the selected rows
         const selectedValues = [...prevSelectedRows, openingId];
         setOpeningIds(selectedValues.map(parseFloat));
         return selectedValues;
@@ -129,44 +138,44 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   };
 
   const handleRowClick = (openingId: string) => {
-      // Call the mutation to mark as viewed
-      markAsViewedOpening(openingId, {
-        onSuccess: () => {
-          setOpeningDetails(openingId);
-        },
-        onError: (err: any) => {
-          displayNotification({
-            title: 'Unable to process your request',
-            subTitle: 'Please try again in a few minutes',
-            type: "error",
-            onClose: () => {}
-          })
-        }
-      });
-    };
+    // Call the mutation to mark as viewed
+    markAsViewedOpening(openingId, {
+      onSuccess: () => {
+        setOpeningDetails(openingId);
+      },
+      onError: (err: any) => {
+        displayNotification({
+          title: "Unable to process your request",
+          subTitle: "Please try again in a few minutes",
+          type: "error",
+          onClose: () => {},
+        });
+      },
+    });
+  };
 
   //Function to handle the favourite feature of the opening for a user
   const handleFavouriteOpening = (openingId: string) => {
-    try{
+    try {
       setOpeningFavorite(parseInt(openingId));
       displayNotification({
         title: `Opening Id ${openingId} favourited`,
-        subTitle: 'You can follow this opening ID on your dashboard',
+        subTitle: "You can follow this opening ID on your dashboard",
         type: "success",
         buttonLabel: "Go to track openings",
         onClose: () => {
-          navigate('/opening?tab=metrics&scrollTo=trackOpenings')
-        }
-      })
+          navigate("/opening?tab=metrics&scrollTo=trackOpenings");
+        },
+      });
     } catch (error) {
       displayNotification({
-        title: 'Unable to process your request',
-        subTitle: 'Please try again in a few minutes',
+        title: "Unable to process your request",
+        subTitle: "Please try again in a few minutes",
         type: "error",
-        onClose: () => {}
-      })
+        onClose: () => {},
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -233,36 +242,35 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   <div className="dropdown-label">
                     <p>Select Columns you want to see:</p>
                   </div>
-                  <FlexGrid className="dropdown-container">
-                    {headers.map((header, index) =>
-                      index > 0 && index % 2 === 1 ? ( // Start from index 1 and handle even-indexed pairs to skip the actions
-                        <Row key={`row-${index}`} className="my-3">
-                          <Column sm={2} md={4} lg={8}>
-                            <Checkbox
-                              className="checkbox-item"
-                              key={header.key}
-                              labelText={header.header}
-                              id={`checkbox-label-${header.key}`}
-                              checked={header.selected === true}
-                              onChange={() => handleCheckboxChange(header.key)}
-                            />
-                          </Column>
-                          {headers[index + 1] && (
-                            <Column sm={2} md={4} lg={8}>
-                              <Checkbox
-                                className="checkbox-item"
-                                key={headers[index + 1].key}
-                                labelText={headers[index + 1].header}
-                                id={`checkbox-label-${headers[index + 1].key}`}
-                                checked={headers[index + 1].selected === true}
-                                onChange={() =>
-                                  handleCheckboxChange(headers[index + 1].key)
-                                }
-                              />
+                  <FlexGrid className="dropdown-container scrollable">
+                    {headers.map(
+                      (header, index) =>
+                        header &&
+                        header.key !== "actions" && (
+                          <Row key={`row-${index}`} className="my-3">
+                            <Column sm={2} md={4} lg={8} key={header.key}>
+                              {header.key === "openingId" ? (
+                                <Checkbox
+                                  className="checkbox-item"
+                                  labelText="Opening ID"
+                                  id={`checkbox-label-${header.key}`}
+                                  checked={header.selected === true}
+                                  disabled
+                                />
+                              ) : (
+                                <Checkbox
+                                  className="checkbox-item"
+                                  labelText={header.header}
+                                  id={`checkbox-label-${header.key}`}
+                                  checked={header.selected === true}
+                                  onChange={() =>
+                                    handleCheckboxChange(header.key)
+                                  }
+                                />
+                              )}
                             </Column>
-                          )}
-                        </Row>
-                      ) : null
+                          </Row>
+                        )
                     )}
                   </FlexGrid>
 
@@ -332,7 +340,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             <TableRow>
               {headers.map((header) =>
                 header.selected ? (
-                  <TableHeader key={header.key} data-testid={header.header}>{header.header}</TableHeader>
+                  <TableHeader key={header.key} data-testid={header.header}>
+                    {header.header}
+                  </TableHeader>
                 ) : null
               )}
             </TableRow>
@@ -340,21 +350,17 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           <TableBody>
             {rows &&
               rows.map((row: any, i: number) => (
-                <TableRow
-                  key={row.openingId + i.toString()}
-                >
+                <TableRow key={row.openingId + i.toString()}>
                   {headers.map((header) =>
                     header.selected ? (
                       <TableCell
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial
-                            ? "p-0"
-                            : null
+                          header.key === "actions" && showSpatial ? "p-0" : null
                         }
-                        onClick={() =>{
-                          if(header.key !== "actions"){
+                        onClick={() => {
+                          if (header.key !== "actions") {
                             handleRowClick(row.openingId);
                           }
                         }}
@@ -417,9 +423,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                           </CheckboxGroup>
                         ) : header.header === "Category" ? (
                           <TruncatedText
-                            text={row["categoryCode"] + " - " + row["categoryDescription"]}
-                            parentWidth={cellWidths[i]} />
-                        ) : header.key === 'disturbanceStartDate' ? (
+                            text={
+                              row["categoryCode"] +
+                              " - " +
+                              row["categoryDescription"]
+                            }
+                            parentWidth={cellWidths[i]}
+                          />
+                        ) : header.key === "disturbanceStartDate" ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
@@ -464,7 +475,10 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         />
       )}
 
-      <ComingSoonModal openingDetails={openingDetails} setOpeningDetails={setOpeningDetails} />
+      <ComingSoonModal
+        openingDetails={openingDetails}
+        setOpeningDetails={setOpeningDetails}
+      />
     </>
   );
 };
