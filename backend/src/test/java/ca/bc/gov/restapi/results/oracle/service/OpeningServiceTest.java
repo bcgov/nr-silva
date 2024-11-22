@@ -86,7 +86,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getPageIndex());
-    Assertions.assertEquals(1, result.getPerPage());
+    Assertions.assertEquals(10, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
     Assertions.assertEquals(103, result.getData().get(0).getOpeningId());
@@ -144,7 +144,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getPageIndex());
-    Assertions.assertEquals(1, result.getPerPage());
+    Assertions.assertEquals(10, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
     Assertions.assertEquals(103, result.getData().get(0).getOpeningId());
