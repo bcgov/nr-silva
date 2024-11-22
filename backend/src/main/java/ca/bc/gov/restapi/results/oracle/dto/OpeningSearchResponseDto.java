@@ -44,4 +44,5 @@ public class OpeningSearchResponseDto {
   private String forestFileId;
   private Long silvaReliefAppId;
   private LocalDateTime lastViewDate;
+  private boolean favourite;
 }

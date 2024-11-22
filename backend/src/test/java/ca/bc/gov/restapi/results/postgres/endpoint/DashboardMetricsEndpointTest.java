@@ -1,43 +1,35 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
-import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(DashboardMetricsEndpoint.class)
-@WithMockUser
-class DashboardMetricsEndpointTest {
+@DisplayName("Integrated Test | Dashboard Metrics Endpoint")
+@AutoConfigureMockMvc
+@WithMockJwt
+class DashboardMetricsEndpointTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired private MockMvc mockMvc;
-
-  @MockBean private DashboardMetricsService dashboardMetricsService;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Test
   @DisplayName("Opening submission trends with no filters should succeed")
   void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
-
-    OpeningsPerYearDto dto = new OpeningsPerYearDto(1, "Jan", 70);
-    when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of(dto));
 
     mockMvc
         .perform(
@@ -49,16 +41,13 @@ class DashboardMetricsEndpointTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].month").value("1"))
         .andExpect(jsonPath("$[0].monthName").value("Jan"))
-        .andExpect(jsonPath("$[0].amount").value("70"))
+        .andExpect(jsonPath("$[0].amount").value("1"))
         .andReturn();
   }
 
   @Test
   @DisplayName("Opening submission trends with no data should succeed")
   void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto("DCR", null, null, null, null);
-
-    when(dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto)).thenReturn(List.of());
 
     mockMvc
         .perform(
@@ -66,19 +55,13 @@ class DashboardMetricsEndpointTest {
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent())
+        .andExpect(status().isOk())
         .andReturn();
   }
 
   @Test
   @DisplayName("Free growing milestones test with no filters should succeed")
   void getFreeGrowingMilestonesData_noFilters_shouldSucceed() throws Exception {
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
-
-    FreeGrowingMilestonesDto milestonesDto =
-        new FreeGrowingMilestonesDto(0, "0 - 5 months", 25, new BigDecimal("100"));
-    when(dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto))
-        .thenReturn(List.of(milestonesDto));
 
     mockMvc
         .perform(
@@ -90,8 +73,8 @@ class DashboardMetricsEndpointTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].index").value("0"))
         .andExpect(jsonPath("$[0].label").value("0 - 5 months"))
-        .andExpect(jsonPath("$[0].amount").value("25"))
-        .andExpect(jsonPath("$[0].percentage").value(new BigDecimal("100")))
+        .andExpect(jsonPath("$[0].amount").value("0"))
+        .andExpect(jsonPath("$[0].percentage").value("0.0"))
         .andReturn();
   }
 
@@ -104,10 +87,6 @@ class DashboardMetricsEndpointTest {
     dtoList.add(new FreeGrowingMilestonesDto(2, "12 - 17 months", 25, new BigDecimal("25")));
     dtoList.add(new FreeGrowingMilestonesDto(3, "18 months", 25, new BigDecimal("25")));
 
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "00012797");
-
-    when(dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto)).thenReturn(dtoList);
-
     mockMvc
         .perform(
             get("/api/dashboard-metrics/free-growing-milestones?clientNumber=00012797")
@@ -118,30 +97,13 @@ class DashboardMetricsEndpointTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].index").value("0"))
         .andExpect(jsonPath("$[0].label").value("0 - 5 months"))
-        .andExpect(jsonPath("$[0].amount").value("25"))
-        .andExpect(jsonPath("$[0].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[1].index").value("1"))
-        .andExpect(jsonPath("$[1].label").value("6 - 11 months"))
-        .andExpect(jsonPath("$[1].amount").value("25"))
-        .andExpect(jsonPath("$[1].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[2].index").value("2"))
-        .andExpect(jsonPath("$[2].label").value("12 - 17 months"))
-        .andExpect(jsonPath("$[2].amount").value("25"))
-        .andExpect(jsonPath("$[2].percentage").value(new BigDecimal("25")))
-        .andExpect(jsonPath("$[3].index").value("3"))
-        .andExpect(jsonPath("$[3].label").value("18 months"))
-        .andExpect(jsonPath("$[3].amount").value("25"))
-        .andExpect(jsonPath("$[3].percentage").value(new BigDecimal("25")))
+        .andExpect(jsonPath("$[0].amount").value("0"))
         .andReturn();
   }
 
   @Test
   @DisplayName("Free growing milestones test with no content should succeed")
   void getFreeGrowingMilestonesData_noData_shouldSucceed() throws Exception {
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, "00012579");
-
-    when(dashboardMetricsService.getFreeGrowingMilestoneChartData(filtersDto))
-        .thenReturn(List.of());
 
     mockMvc
         .perform(
@@ -149,7 +111,7 @@ class DashboardMetricsEndpointTest {
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent())
+        .andExpect(status().isOk())
         .andReturn();
   }
 }

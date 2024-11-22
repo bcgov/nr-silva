@@ -752,3 +752,46 @@ SELECT fc.client_number client_number
     FROM forest_client fc
    WHERE client_acronym IS NOT NULL
          WITH READ ONLY;
+
+
+CREATE OR REPLACE VIEW SILV_SILVICULTURE_SEARCH_V
+AS
+    SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
+       cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,
+       org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,
+       early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,
+       submitted_to_frpa108
+FROM (
+    SELECT
+        o.OPENING_ID AS opening_id,
+        o.OPENING_NUMBER AS opening_number,
+        o.OPEN_CATEGORY_CODE AS category,
+        o.OPENING_STATUS_CODE AS status,
+        cboa.CUTTING_PERMIT_ID AS cutting_permit_id,
+        cboa.TIMBER_MARK AS timber_mark,
+        cboa.CUT_BLOCK_ID AS cut_block_id,
+        cboa.OPENING_GROSS_AREA AS opening_gross_area,
+        cboa.DISTURBANCE_START_DATE AS disturbance_start_date,
+        cboa.FOREST_FILE_ID AS forest_file_id,
+        ou.ORG_UNIT_CODE AS org_unit_code,
+        ou.ORG_UNIT_NAME AS org_unit_name,
+        res.CLIENT_NUMBER AS client_number,
+        res.CLIENT_LOCN_CODE AS client_location,
+        ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) AS regen_delay_date,
+        ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) AS early_free_growing_date,
+        ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) AS late_free_growing_date,
+        o.UPDATE_TIMESTAMP AS update_timestamp,
+        o.ENTRY_USERID AS entry_user_id,
+        COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submitted_to_frpa108,
+        ROW_NUMBER() OVER (PARTITION BY o.OPENING_ID ORDER BY o.UPDATE_TIMESTAMP DESC) AS rn
+    FROM THE.OPENING o
+    LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
+    LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
+    LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
+    LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = o.OPENING_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+    LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
+    LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
+    LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+)
+WHERE rn = 1
+WITH READ ONLY;

@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,5 +83,25 @@ class UserOpeningServiceTest {
         () -> {
           userOpeningService.removeUserFavoriteOpening(112233L);
         });
+  }
+
+  @Test
+  @DisplayName("List user favourite openings happy path should succeed")
+  void listUserFavoriteOpenings_happyPath_shouldSucceed() {
+    when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
+    when(userOpeningRepository.findAllByUserId(any(), any())).thenReturn(List.of(new UserOpeningEntity()));
+    userOpeningService.listUserFavoriteOpenings();
+  }
+
+  @Test
+  @DisplayName("Check for favorites happy path should succeed")
+  void checkForFavorites_happyPath_shouldSucceed() {
+    when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
+    when(userOpeningRepository.findAllByUserIdAndOpeningIdIn(any(), any())).thenReturn(List.of(new UserOpeningEntity(USER_ID,112233L)));
+    assertThat(userOpeningService.checkForFavorites(List.of(112233L)))
+        .isNotNull()
+        .isNotEmpty()
+        .hasSize(1)
+        .contains(112233L);
   }
 }

@@ -236,6 +236,8 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-database
                       key: database-user
+                - name: SELF_URI
+                  value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
                 - name: RANDOM_EXPRESSION
                   value: ${RANDOM_EXPRESSION}
               resources:

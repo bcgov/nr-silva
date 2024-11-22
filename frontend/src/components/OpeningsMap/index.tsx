@@ -40,7 +40,9 @@ const OpeningsMap: React.FC<MapProps> = ({
   const getOpeningPolygonAndProps = async (selectedOpeningId: number | null): Promise<OpeningPolygon | null> => {
     const urlApi = `/api/feature-service/polygon-and-props/${selectedOpeningId}`;
     const response = await axios.get(backendUrl.concat(urlApi), {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}` }
     });
 
     const { data } = response;
