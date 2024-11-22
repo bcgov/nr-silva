@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  * Pagination parameters to be used in the processing of HTTP GET requests.
@@ -33,5 +34,9 @@ public record PaginationParameters(
 
   public Pageable toPageable(int maxPageSize) {
     return PageRequest.of(page, maxPageSize);
+  }
+
+  public Pageable toPageable(Sort sort) {
+    return PageRequest.of(page, perPage,sort);
   }
 }

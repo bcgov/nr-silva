@@ -13,11 +13,12 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +47,6 @@ public class OpeningService {
   private final OpeningRepository openingRepository;
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
   private final LoggedUserService loggedUserService;
-  private final OpeningSearchRepository openingSearchRepository;
   private final ForestClientApiProvider forestClientApiProvider;
   private final UserOpeningService userOpeningService;
 
@@ -103,33 +104,51 @@ public class OpeningService {
    * @param pagination An instance of {@link PaginationParameters} with pagination settings.
    * @return Paginated result with found content.
    */
+  @Transactional
   public PaginatedResult<OpeningSearchResponseDto> openingSearch(
       OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
     log.info(
-        "Search Openings with page index {} and page size {}",
+        "Search Openings with page index {} and page size {} with filters {}",
         pagination.page(),
-        pagination.perPage());
+        pagination.perPage(),
+        filtersDto
+    );
 
     if (pagination.perPage() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
     // Set the user in the filter, if required
-    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS) && Boolean.TRUE.equals(
+        filtersDto.getMyOpenings())) {
       String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
       if (!userId.startsWith("IDIR")) {
         userId = "BCEID" + userId.substring(5);
       }
       filtersDto.setRequestUserId(userId);
     }
+    Page<SilvicultureSearchProjection> searchResultPage =
+        openingRepository.searchBy(
+            filtersDto,
+            pagination.toPageable(Sort.by("opening_id").descending())
+        );
 
-    PaginatedResult<OpeningSearchResponseDto> result =
-        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+    PaginatedResult<OpeningSearchResponseDto> result = new PaginatedResult<>();
+    result.setTotalItems(searchResultPage.getTotalElements());
+    result.setPageIndex(pagination.page());
+    result.setPerPage(pagination.perPage());
+    result.setTotalPages(searchResultPage.getTotalPages());
+    result.setData(searchResultPage
+        .get()
+        .map(mapToSearchResponse())
+        .toList()
+    );
 
     return fetchClientAcronyms(fetchFavorites(result));
   }
 
-  private PaginatedResult<OpeningSearchResponseDto> fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
+  private PaginatedResult<OpeningSearchResponseDto> fetchClientAcronyms(
+      PaginatedResult<OpeningSearchResponseDto> result) {
     Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
 
     List<String> clientNumbers =
@@ -229,4 +248,37 @@ public class OpeningService {
 
     return recentOpeningDtos;
   }
+
+
+  private static Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
+    return projection ->
+        new OpeningSearchResponseDto(
+            projection.getOpeningId().intValue(),
+            projection.getOpeningNumber(),
+            OpeningCategoryEnum.of(projection.getCategory()),
+            OpeningStatusEnum.of(projection.getStatus()),
+            projection.getCuttingPermitId(),
+            projection.getTimberMark(),
+            projection.getCutBlockId(),
+            projection.getOpeningGrossArea(),
+            projection.getDisturbanceStartDate(),
+            projection.getOrgUnitCode(),
+            projection.getOrgUnitName(),
+            projection.getClientNumber(),
+            projection.getClientLocation(),
+            "",
+            "",
+            projection.getRegenDelayDate(),
+            projection.getEarlyFreeGrowingDate(),
+            projection.getLateFreeGrowingDate(),
+            projection.getUpdateTimestamp(),
+            projection.getEntryUserId(),
+            projection.getSubmittedToFrpa108() > 0,
+            projection.getForestFileId(),
+            projection.getSubmittedToFrpa108(),
+            null,
+            false
+        );
+  }
+
 }
