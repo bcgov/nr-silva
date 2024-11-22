@@ -1,13 +1,13 @@
 package ca.bc.gov.restapi.results.oracle.dto;
 
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 
 /** This record contains all possible filters when using the Opening Search API. */
 @Slf4j
@@ -18,7 +18,7 @@ public class OpeningSearchFiltersDto {
   private final List<String> category;
   private final List<String> statusList;
   private final Boolean myOpenings;
-  private final Boolean submittedToFrpa;
+  private final String submittedToFrpa;
   private final String disturbanceDateStart;
   private final String disturbanceDateEnd;
   private final String regenDelayDateStart;
@@ -35,7 +35,6 @@ public class OpeningSearchFiltersDto {
 
   @Setter
   private String requestUserId;
-  private List<Long> openingIds;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -56,25 +55,18 @@ public class OpeningSearchFiltersDto {
       String cutBlockId,
       String timberMark,
       String mainSearchTerm) {
-    this.orgUnit = new ArrayList<>();
-    if (!Objects.isNull(orgUnit)) {
-        this.orgUnit.addAll(orgUnit.stream()
-            .map(s -> String.format("'%s'", s.toUpperCase().trim()))
-            .toList());
-    }
-    this.category = new ArrayList<>();
-    if (!Objects.isNull(category)) {
-        this.category.addAll(category.stream()
-            .map(s -> String.format("'%s'", s.toUpperCase().trim()))
-            .toList());
-    }
-    this.statusList = new ArrayList<>();
-    this.openingIds = new ArrayList<>();
-    if (!Objects.isNull(statusList)) {
-      this.statusList.addAll(statusList.stream().map(s -> String.format("'%s'", s)).toList());
-    }
+    this.orgUnit = !Objects.isNull(orgUnit) ? orgUnit : null;
+    this.category = !Objects.isNull(category) ? category : null;
+    this.statusList = !Objects.isNull(statusList) ? statusList : null;
     this.myOpenings = myOpenings;
-    this.submittedToFrpa = submittedToFrpa;
+    this.submittedToFrpa =
+        BooleanUtils
+            .toString(
+                submittedToFrpa,
+                "YES",
+                "NO",
+                "NO"
+            );
     this.disturbanceDateStart =
         Objects.isNull(disturbanceDateStart) ? null : disturbanceDateStart.trim();
     this.disturbanceDateEnd = Objects.isNull(disturbanceDateEnd) ? null : disturbanceDateEnd.trim();
@@ -94,28 +86,6 @@ public class OpeningSearchFiltersDto {
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
 
-  // Create a constructor with only the List<String> openingIds
-  public OpeningSearchFiltersDto(
-    List<Long> openingIds) {
-    this.orgUnit = new ArrayList<>();
-    this.category = new ArrayList<>();
-    this.statusList = new ArrayList<>();
-    this.openingIds = openingIds;
-    this.myOpenings = null;
-    this.submittedToFrpa = null;
-    this.disturbanceDateStart = null;
-    this.disturbanceDateEnd = null;
-    this.regenDelayDateStart = null;
-    this.regenDelayDateEnd = null;
-    this.freeGrowingDateStart = null;
-    this.freeGrowingDateEnd = null;
-    this.updateDateStart = null;
-    this.updateDateEnd = null;
-    this.cuttingPermitId = null;
-    this.cutBlockId = null;
-    this.timberMark = null;
-    this.mainSearchTerm = null;
-  }
   /**
    * Define if a property has value.
    *
@@ -124,10 +94,9 @@ public class OpeningSearchFiltersDto {
    */
   public boolean hasValue(String prop) {
     return switch (prop) {
-      case SilvaOracleConstants.ORG_UNIT -> !this.orgUnit.isEmpty();
-      case SilvaOracleConstants.CATEGORY -> !this.category.isEmpty();
-      case SilvaOracleConstants.STATUS_LIST -> !this.statusList.isEmpty();
-      case SilvaOracleConstants.OPENING_IDS -> !this.openingIds.isEmpty();
+      case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit) && !this.orgUnit.isEmpty();
+      case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category) && !this.category.isEmpty();
+      case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList) && !this.statusList.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
       case SilvaOracleConstants.DISTURBANCE_DATE_START ->

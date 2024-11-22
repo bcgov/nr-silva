@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import './style.scss'; // Import the styles
@@ -47,6 +47,10 @@ function FavoriteButton({
   }
   const CustomIcon = () => <Icon data-testid="favourite-button-icon" style={{ fill }} />;
 
+  useEffect(() => {
+    setIsFavorite(favorited);
+  }, [favorited]);
+
   return (
     <Button
       className={isFavorite ? 'favorite-button favorite' : 'favorite-button'}
@@ -57,6 +61,7 @@ function FavoriteButton({
       onClick={handleClick}
       renderIcon={CustomIcon}
       size={size}
+      aria-pressed={isFavorite}
     />
   );
 };
