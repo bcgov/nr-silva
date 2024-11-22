@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,5 +46,10 @@ public class ForestClientService {
     } catch (NumberFormatException nfe) {
       return "00000000";
     }
+  }
+
+  public List<ForestClientDto> searchByNameAcronymNumber(String value) {
+    log.info("Received search value {}", value);
+    return forestClientApiProvider.searchByNameAcronymNumber(value);
   }
 }

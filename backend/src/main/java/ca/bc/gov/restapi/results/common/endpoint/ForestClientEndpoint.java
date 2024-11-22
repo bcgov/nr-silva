@@ -3,10 +3,12 @@ package ca.bc.gov.restapi.results.common.endpoint;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.ForestClientNotFoundException;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,5 +33,14 @@ public class ForestClientEndpoint {
     return forestClientService
         .getClientByNumber(clientNumber)
         .orElseThrow(ForestClientNotFoundException::new);
+  }
+
+
+  @GetMapping("/search")
+  public List<ForestClientDto> searchByNameAcronymNumber(
+      @RequestParam(name = "value")
+      String value
+  ) {
+    return forestClientService.searchByNameAcronymNumber(value);
   }
 }

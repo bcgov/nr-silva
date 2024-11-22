@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.common.provider;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -49,5 +51,20 @@ public class ForestClientApiProvider {
     }
 
     return Optional.empty();
+  }
+
+  public List<ForestClientDto> searchByNameAcronymNumber(String value) {
+
+    try{
+      return
+          restClient
+              .get()
+              .uri("/clients/search/by?name={value}&acronym={value}&number={value}", value,value,value)
+              .retrieve()
+              .body(new ParameterizedTypeReference<>() {});
+    } catch (HttpClientErrorException httpExc) {
+      log.error("Finished {} request - Response code error: {}", PROVIDER, httpExc.getStatusCode());
+      return List.of();
+    }
   }
 }
