@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
-import { env } from '../env';
+import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
 
-const backendUrl = env.VITE_BACKEND_URL;
 
 /**
  * Fetches the submission trends/favourites from the backend.
@@ -14,15 +13,7 @@ const backendUrl = env.VITE_BACKEND_URL;
  * If the response data is not an array, it returns an empty array.
  */
 export const fetchOpeningFavourites = async (): Promise<number[]> =>{
-  const authToken = getAuthIdToken();  
-  const response = await axios.get(
-    `${backendUrl}/api/openings/favourites`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
-    }
-  });
+  const response = await axios.get(API_ENDPOINTS.openingFavourites(), defaultHeaders(getAuthIdToken()));
 
   const { data } = response;
   if (data && Array.isArray(data)) {
@@ -30,6 +21,11 @@ export const fetchOpeningFavourites = async (): Promise<number[]> =>{
   } else {
     return [];
   }  
+}
+
+export const isOpeningFavourite = async (openingId: number): Promise<boolean> =>{
+  const response = await axios.get(API_ENDPOINTS.openingFavouriteWithId(openingId), defaultHeaders(getAuthIdToken()));
+  return response.data;
 }
 
 /**
@@ -40,15 +36,7 @@ export const fetchOpeningFavourites = async (): Promise<number[]> =>{
  * @throws {Error} Throws an error if the request fails with a status code other than 202.
  */
 export const setOpeningFavorite = async (openingId: number): Promise<void> => {
-  const authToken = getAuthIdToken();
-  const response = await axios.put(
-    `${backendUrl}/api/openings/favourites/${openingId}`, null, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
-    }
-  });
+  const response = await axios.put(API_ENDPOINTS.openingFavouriteWithId(openingId), null, defaultHeaders(getAuthIdToken()));
 
   if (response.status !== 202) {
     throw new Error(`Failed to set favorite opening. Status code: ${response.status}`);
@@ -63,15 +51,7 @@ export const setOpeningFavorite = async (openingId: number): Promise<void> => {
  * @throws {Error} Throws an error if the deletion fails or the response status is not 204.
  */
 export const deleteOpeningFavorite = async (openingId: number): Promise<void> => {
-  const authToken = getAuthIdToken();
-  const response = await axios.delete(
-    `${backendUrl}/api/openings/favourites/${openingId}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
-    }
-  });
+  const response = await axios.delete(API_ENDPOINTS.openingFavouriteWithId(openingId), defaultHeaders(getAuthIdToken()));
 
   if (response.status !== 204) {
     throw new Error(`Failed to remove favorite opening. Status code: ${response.status}`);
