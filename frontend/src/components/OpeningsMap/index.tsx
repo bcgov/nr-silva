@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { OpeningPolygon } from '../../types/OpeningPolygon';
-import { createPopupFromProps } from '../../map-services/BcGwWfsApi';
 import { MapLayer } from '../../types/MapLayer';
 import { allLayers } from './constants';
 import axios from 'axios';
@@ -60,7 +59,6 @@ const OpeningsMap: React.FC<MapProps> = ({
             id: data.features[i].id,
             positionLat: (data.bbox[1] + data.bbox[3]) / 2,
             positionLong: (data.bbox[0] + data.bbox[2]) / 2,
-            popup: createPopupFromProps(data.features[i].properties)
           };
           openingsList.push(openingObj);
         }
