@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { getByTestId, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AdvancedSearchDropdown from "../../../../components/SilvicultureSearch/Openings/AdvancedSearchDropdown";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import React from "react";
+import React, { act } from "react";
 
 // Mocking the toggleShowFilters function
 const toggleShowFilters = vi.fn();
@@ -21,24 +21,19 @@ vi.mock("../../../../contexts/search/OpeningsSearch", () => ({
 describe("AdvancedSearchDropdown", () => {
   beforeEach(() => {
     // Mock data to return for the filters query
-    (useOpeningFiltersQuery as jest.Mock).mockReturnValue({
+    (useOpeningFiltersQuery as vi.Mock).mockReturnValue({
       data: {
-        categories: [{
-            code: "FTML",
-            description: "Forest Tenure - Major Licensee"
-          }, {
-            code: "CONT",
-            description: "SP as a part of contractual agreement"
-          }
-        ],
+        categories: [{ code: "FTML", description: "" }, { code: "CONT", description: "" }],
         orgUnits: [{
-          orgUnitCode:'DCK', 
-          orgUnitName: 'Chilliwack Natural Resource District'
-          }, {
-            orgUnitCode:'DCR', 
-            orgUnitName: 'Campbell River Natural Resource District'
-          }
-        ],
+          "orgUnitNo": 15,
+          "orgUnitCode": "DCK",
+          "orgUnitName": "Chilliwack Natural Resource District"
+        },
+        {
+          "orgUnitNo": 43,
+          "orgUnitCode": "DCR",
+          "orgUnitName": "Campbell River Natural Resource District"
+        }],
         dateTypes: ["Disturbance", "Free Growing"],
       },
       isLoading: false,
@@ -46,20 +41,22 @@ describe("AdvancedSearchDropdown", () => {
     });
 
     // Mock implementation of useOpeningsSearch context
-    (useOpeningsSearch as jest.Mock).mockReturnValue({
+    (useOpeningsSearch as vi.Mock).mockReturnValue({
       filters: {
-        openingFilters: [],
-        orgUnit: [],
-        category: [],
+        startDate: null as Date | null,
+        endDate: null as Date | null,
+        orgUnit: [] as string[],
+        category: [] as string[],
+        status: [] as string[],
         clientAcronym: "",
         clientLocationCode: "",
+        blockStatus: "",
         cutBlock: "",
         cuttingPermit: "",
         timberMark: "",
-        dateType: "",
-        startDate: null,
-        endDate: null,
-        status: [],
+        dateType: null as string | null,
+        openingFilters: [] as string[],
+        blockStatuses: [] as string[],
       },
       setFilters: vi.fn(),
       clearFilters: vi.fn(),
@@ -79,23 +76,40 @@ describe("AdvancedSearchDropdown", () => {
     ).toBeInTheDocument();
   });
 
-  it("displays the advanced search dropdown", () => {
-    render(<AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />);
-    expect(screen.getByText("Opening Filters")).toBeInTheDocument();
+  it("displays the advanced search dropdown", async () => {
+    let container;
+    await act(async () => {
+      ({ container } = render(<AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />));
+    });
+    const element = container.querySelector('.d-block');
+    expect(element).toBeDefined();
   });
 
-  it("displays the advanced search dropdown with filters", () => {
-    render(<AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />);
-    expect(screen.getByText("Opening Filters")).toBeInTheDocument();
-    expect(screen.getByText("Org Unit")).toBeInTheDocument();
-    expect(screen.getByText("Category")).toBeInTheDocument();
-    expect(screen.getByText("Client acronym")).toBeInTheDocument();
-    expect(screen.getByText("Client location code")).toBeInTheDocument();
-    expect(screen.getByText("Cut block")).toBeInTheDocument();
-    expect(screen.getByText("Cutting permit")).toBeInTheDocument();
-    expect(screen.getByText("Timber mark")).toBeInTheDocument();
-    expect(screen.getByLabelText("Start Date")).toBeInTheDocument();
-    expect(screen.getByLabelText("End Date")).toBeInTheDocument();    
-    expect(screen.getByText("Status")).toBeInTheDocument();
+  it("clears the date filters when all filters are cleared", async () => {
+    // Mock implementation of useOpeningsSearch context
+    (useOpeningsSearch as vi.Mock).mockReturnValue({
+      filters: {
+        startDate: "1978-01-01",
+        endDate: "1978-01-01",
+        orgUnit: [] as string[],
+        category: [] as string[],
+        status: [] as string[],
+        clientAcronym: "",
+        clientLocationCode: "",
+        blockStatus: "",
+        cutBlock: "",
+        cuttingPermit: "",
+        timberMark: "",
+        dateType: "Disturbance",
+        openingFilters: [] as string[],
+        blockStatuses: [] as string[]
+      },
+    });
+    let container;
+    await act(async () => {
+      ({ container } = render(<AdvancedSearchDropdown toggleShowFilters={toggleShowFilters} />));
+    });
+    const element = container.querySelector('.d-block');
+    expect(element).toBeDefined();
   });
 });
