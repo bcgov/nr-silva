@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import "./OpeningsSearchBar.scss";
 import { Search, Button, FlexGrid, Row, Column, DismissibleTag, InlineNotification } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
@@ -21,7 +21,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
   const [filtersList, setFiltersList] = useState(null);
-  const { filters, clearFilters, searchTerm, setSearchTerm } = useOpeningsSearch();
+  const { filters, clearFilters, searchTerm, setSearchTerm, clearIndividualField } = useOpeningsSearch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -45,7 +45,8 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     const activeFiltersCount = countActiveFilters(filters);
     setFiltersCount(activeFiltersCount); // Update the state with the active filters count
     setFiltersList(filters);
-  };
+  }
+
   useEffect(() => {
     handleFiltersChanged();
   }, [filters]);
