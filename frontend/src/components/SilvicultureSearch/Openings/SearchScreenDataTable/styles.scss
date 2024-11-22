@@ -52,6 +52,19 @@
   }
   .menu-item{
     font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.32px;
+    font-family: 'BC Sans';
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+  }
+  .menu-item-container{
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+    padding: 16px;
+  }
+  .menu-item-container:hover{
+    background-color: var(--#{vars.$bcgov-prefix}-layer-accent-02);
+    cursor: pointer;
   }
   .checkbox-item .bx--checkbox-label-text{
     font-size: 14px;
