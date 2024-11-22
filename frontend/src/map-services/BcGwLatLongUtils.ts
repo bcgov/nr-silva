@@ -35,29 +35,8 @@ const createLatLngExpressionFromPointOrRing = (ringOrPoint: number[]|number[][])
  * @param geoJsonCoordinates - GeoJSON coordinates (Polygon or MultiPolygon format)
  * @returns Leaflet LatLng coordinates (Polygon or MultiPolygon format)
  */
-export const convertGeoJsonToLatLng = (
-  geoJsonCoordinates: number[][][] | number[][][][]
-): (LatLngExpression | LatLngExpression[])[][] => {
+export const convertGeoJsonToLatLng = (geoJsonCoordinates: number[][][] | number[][][][]): LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][] => {
   const polygons = geoJsonCoordinates.map((polygonOrRing) => polygonOrRing.map(createLatLngExpressionFromPointOrRing));
-  return polygons;
+  return polygons as LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 };
 
-
-
-/**
- * Shifts BC GW LineString response Lng-Lat to Lat-Lng format.
- *
- * @param {number[][]} coordinates point array from the api.
- * @returns {number[][]} the same array with lat and long shifted.
- */
-export const shiftLineStringCoordinates = (coordinates: number[][]): number[][] => {
-  const newCoord :number[][] = [];
-  for (let i = 0, len = coordinates.length; i < len; i++) {
-    const point = coordinates[i];
-    if (Array.isArray(point)) {
-      const newOne = point;
-      newCoord.push([newOne[1], newOne[0]]);
-    }
-  }
-  return newCoord;
-};
