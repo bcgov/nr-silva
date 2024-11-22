@@ -6,7 +6,7 @@ import { allLayers } from './constants';
 import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
-import { shiftBcGwLngLat2LatLng } from '../../map-services/BcGwLatLongUtils';
+import { convertGeoJsonToLatLng } from '../../map-services/BcGwLatLongUtils';
 import {
   LayersControl,
   MapContainer,
@@ -51,7 +51,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const openingsList: OpeningPolygon[] = [];
       for (let i = 0, len = data.features.length; i < len; i++) {
         if (data.features[i].geometry) {
-          const openingGeometry = shiftBcGwLngLat2LatLng(data.features[i].geometry.coordinates);
+          const openingGeometry = convertGeoJsonToLatLng(data.features[i].geometry.coordinates);
 
           const openingObj: OpeningPolygon = {
             key: data.features[i].id,

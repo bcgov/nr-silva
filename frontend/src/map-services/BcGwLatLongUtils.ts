@@ -23,6 +23,27 @@ export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]): LatLngExpress
   return newCoord;
 }
 
+const createLatLngExpressionFromPointOrRing = (ringOrPoint: number[]|number[][]): LatLngExpression | LatLngExpression[] => {
+  return Array.isArray(ringOrPoint[0])
+    ? (ringOrPoint as number[][]).map(([lng, lat]) => [lat, lng] as LatLngExpression)
+    : [ringOrPoint[1], ringOrPoint[0]] as LatLngExpression;
+}
+
+/**
+ * Convert GeoJSON coordinates to Leaflet LatLng format.
+ *
+ * @param geoJsonCoordinates - GeoJSON coordinates (Polygon or MultiPolygon format)
+ * @returns Leaflet LatLng coordinates (Polygon or MultiPolygon format)
+ */
+export const convertGeoJsonToLatLng = (
+  geoJsonCoordinates: number[][][] | number[][][][]
+): (LatLngExpression | LatLngExpression[])[][] => {
+  const polygons = geoJsonCoordinates.map((polygonOrRing) => polygonOrRing.map(createLatLngExpressionFromPointOrRing));
+  return polygons;
+};
+
+
+
 /**
  * Shifts BC GW LineString response Lng-Lat to Lat-Lng format.
  *
