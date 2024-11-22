@@ -14,7 +14,6 @@ import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
@@ -167,7 +166,9 @@ class UserRecentOpeningServiceTest {
         PaginatedResult<OpeningSearchResponseDto> pageResult = new PaginatedResult<>();
         pageResult.setData(List.of(dto1, dto2));
 
-        when(openingService.openingSearch(any(OpeningSearchFiltersDto.class), any(PaginationParameters.class)))
+        when(openingRepository.searchByOpeningIds(any(List.class), any(PageRequest.class)))
+            .thenReturn(new PageImpl<>(List.of(dto2, dto1)));
+        when(openingService.parsePageResult(any(PaginationParameters.class), any(Page.class)))
             .thenReturn(pageResult);
 
         PaginatedResult<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(limit);

@@ -133,6 +133,11 @@ public class OpeningService {
             pagination.toPageable(Sort.by("opening_id").descending())
         );
 
+    return parsePageResult(pagination, searchResultPage);
+  }
+
+  public PaginatedResult<OpeningSearchResponseDto> parsePageResult(
+      PaginationParameters pagination, Page<SilvicultureSearchProjection> searchResultPage) {
     PaginatedResult<OpeningSearchResponseDto> result = new PaginatedResult<>();
     result.setTotalItems(searchResultPage.getTotalElements());
     result.setPageIndex(pagination.page());
