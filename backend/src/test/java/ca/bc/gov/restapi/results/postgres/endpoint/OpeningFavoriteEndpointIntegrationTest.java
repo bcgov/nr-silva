@@ -48,6 +48,13 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
 
   @Test
   @Order(2)
+  @DisplayName("Should check if entry is favourite and get false")
+  void shouldCheckIfEntryIsFavouriteGetFails() throws Exception {
+    checkFavourite(101,false);
+  }
+
+  @Test
+  @Order(3)
   @DisplayName("Should add to favorite")
   void shouldAddToFavorite() throws Exception {
     mockMvc
@@ -65,7 +72,14 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   }
 
   @Test
-  @Order(3)
+  @Order(4)
+  @DisplayName("Should check if entry is favourite")
+  void shouldCheckIfEntryIsFavourite() throws Exception {
+    checkFavourite(101,true);
+  }
+
+  @Test
+  @Order(5)
   @DisplayName("Should not add to favorite if doesn't exist")
   void shouldNotAddIfDoesNotExist() throws Exception {
     mockMvc
@@ -75,18 +89,17 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string(StringUtils.EMPTY));
-        //.andExpect(content().string("UserOpening record(s) not found!"));
   }
 
   @Test
-  @Order(4)
+  @Order(6)
   @DisplayName("Multiple requests to add to favorite should not fail, nor duplicate")
   void shouldAddToFavoriteAgain() throws Exception {
     shouldAddToFavorite();
   }
 
   @Test
-  @Order(5)
+  @Order(7)
   @DisplayName("Should see list of favourites")
   void shouldBeAbleToSeeOpening() throws Exception {
     mockMvc
@@ -99,7 +112,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   }
 
   @Test
-  @Order(6)
+  @Order(8)
   @DisplayName("Should remove from favorite")
   void shouldRemoveFromFavorites() throws Exception {
     mockMvc
@@ -116,7 +129,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   }
 
   @Test
-  @Order(7)
+  @Order(9)
   @DisplayName("Should thrown an error if trying to remove entry that doesn't exist")
   void shouldThrownErrorIfNoFavoriteFound() throws Exception {
     mockMvc
@@ -127,6 +140,15 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
         .andExpect(status().isNotFound())
         .andExpect(content().string(StringUtils.EMPTY));
 
+  }
+
+  private void checkFavourite(long id, boolean expected) throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/api/openings/favourites/{id}", id)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().string(expected+""));
   }
 
 

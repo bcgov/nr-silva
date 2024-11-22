@@ -35,7 +35,6 @@ public class OpeningSearchFiltersDto {
 
   @Setter
   private String requestUserId;
-  private List<Long> openingIds;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -59,7 +58,6 @@ public class OpeningSearchFiltersDto {
     this.orgUnit = !Objects.isNull(orgUnit) ? orgUnit : null;
     this.category = !Objects.isNull(category) ? category : null;
     this.statusList = !Objects.isNull(statusList) ? statusList : null;
-    this.openingIds = null;
     this.myOpenings = myOpenings;
     this.submittedToFrpa =
         BooleanUtils
@@ -88,27 +86,6 @@ public class OpeningSearchFiltersDto {
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
   }
 
-  // Create a constructor with only the List<String> openingIds
-  public OpeningSearchFiltersDto(List<Long> openingIds) {
-    this.orgUnit = null;
-    this.category = null;
-    this.statusList = null;
-    this.openingIds = openingIds;
-    this.myOpenings = null;
-    this.submittedToFrpa = "NO";
-    this.disturbanceDateStart = null;
-    this.disturbanceDateEnd = null;
-    this.regenDelayDateStart = null;
-    this.regenDelayDateEnd = null;
-    this.freeGrowingDateStart = null;
-    this.freeGrowingDateEnd = null;
-    this.updateDateStart = null;
-    this.updateDateEnd = null;
-    this.cuttingPermitId = null;
-    this.cutBlockId = null;
-    this.timberMark = null;
-    this.mainSearchTerm = null;
-  }
   /**
    * Define if a property has value.
    *
@@ -120,7 +97,6 @@ public class OpeningSearchFiltersDto {
       case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit) && !this.orgUnit.isEmpty();
       case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category) && !this.category.isEmpty();
       case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList) && !this.statusList.isEmpty();
-      case SilvaOracleConstants.OPENING_IDS -> !Objects.isNull(this.openingIds) && !this.openingIds.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
       case SilvaOracleConstants.DISTURBANCE_DATE_START ->

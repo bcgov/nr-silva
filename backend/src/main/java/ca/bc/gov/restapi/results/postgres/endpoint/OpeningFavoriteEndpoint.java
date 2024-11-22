@@ -25,6 +25,11 @@ public class OpeningFavoriteEndpoint {
     return userOpeningService.listUserFavoriteOpenings();
   }
 
+  @GetMapping("/{id}")
+  public boolean checkFavorite(@PathVariable Long id) {
+    return !userOpeningService.checkForFavorites(List.of(id)).isEmpty();
+  }
+
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public void addToFavorites(@PathVariable Long id) {
