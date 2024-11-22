@@ -122,9 +122,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     })) || [];
 
   return (
-    <FlexGrid className="advanced-search-dropdown" >
+    <FlexGrid className="advanced-search-dropdown" condensed >
       <Row>
-        <Column sm={{ span: 4, offset: 0 }} md={{ span: 8, offset: 0 }}>
+        <Column sm={4}>
           <CheckboxGroup
             orientation="horizontal"
             legendText="Opening Filters"
@@ -158,12 +158,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             />
           </CheckboxGroup>
         </Column>
-        <Column sm={0} md={2} lg={3}></Column>
-        <Column sm={0} md={2} lg={3}></Column>
-        <Column sm={0} md={2} lg={3}></Column>
       </Row>
-      <Row narrow>
-        <Column sm={{ span: 2, offset: 0 }} md={{ span: 4, offset: 0 }}>
+      <Row>
+        <Column sm={2}>
           <Dropdown
             label="Enter or choose an org unit"
             selectedItem={
@@ -184,7 +181,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             sortItems={sortItems}
           />
         </Column>
-        <Column sm={{ span: 2, offset: 0 }} md={{ span: 4, offset: 0 }}>
+        <Column sm={2}>
           <Dropdown
             id="category-dropdown"
             titleText="Category"
@@ -206,25 +203,23 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             sortItems={sortItems}
           />
         </Column>
-        <Column sm={0} md={2} lg={3}></Column>
-        <Column sm={0} md={2} lg={3}></Column>
       </Row>
-      <Row narrow>
-        <Column>
-            <TextInput
+      <Row>
+        <Column sm={1}>
+          <TextInput
             id="client-acronym-code"
             type="text"
             labelText={
               <>
-              Client acronym
-              <Tooltip 
-                message="If you don't remember the client information you can go to client search."
-                position="right"
-              >
-                <button id="tooltip" type="button">
-                <Icons.Information />
-                </button>
-              </Tooltip>
+                Client acronym
+                <Tooltip
+                  message="If you don't remember the client information you can go to client search."
+                  position="right"
+                >
+                  <button id="tooltip" type="button">
+                    <Icons.Information />
+                  </button>
+                </Tooltip>
               </>
             }
             className=""
@@ -232,9 +227,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             onChange={(e: any) =>
               handleFilterChange({ clientAcronym: e.target.value })
             }
-            />
+          />
         </Column>
-        <Column>
+        <Column lg={4}>
           <TextInput
             id="client-location-code"
             labelText="Client location code"
@@ -246,7 +241,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             }
           />
         </Column>
-        <Column>
+        <Column sm={1}>
           <TextInput
             id="text-input-2"
             type="text"
@@ -257,7 +252,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             }
           />
         </Column>
-        <Column>
+        <Column sm={1}>
           <TextInput
             id="text-input-3"
             labelText="Cutting permit"
@@ -268,8 +263,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             }
           /></Column>
       </Row>
-      <Row narrow>
-        <Column sm={2} md={{ span: 4, offset: 0 }}>
+      <Row>
+        <Column md={4}>
           <TextInput
             id="timber-mark-input"
             type="number"
@@ -280,9 +275,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             }
           />
         </Column>
-        <Column sm={2} md={{ span: 4, offset: 0 }} id="date-type-col">
-          <span><ComboBox
-            id="date-type-dropdown"
+        <Column md={2}>
+          <ComboBox
             titleText="Date type"
             items={dateTypeItems}
             itemToString={(item: any) => (item ? item.text : "")}
@@ -291,10 +285,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             }
             label="Date type"
           />
-
+        </Column>
+        <Column md={1}>
           <DatePicker
-            id="start-date-picker"
-            datePickerType="single"
+            datePickerType="simple"
             onChange={(dates: [Date]) => {
               if (dates.length > 0) {
                 handleFilterChange({
@@ -314,9 +308,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             readOnly={!filters.dateType}
           >
             <DatePickerInput
-              id="start-date-picker-input-id"
-              size="md"
               labelText="Start Date"
+              size="sm"
               placeholder={
                 filters.startDate
                   ? filters.startDate // Display the date in YYYY-MM-DD format
@@ -327,9 +320,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               value={formatDateForDatePicker(filters.startDate)}
             />
           </DatePicker>
-          <DatePicker
-            id="end-date-picker"
-            datePickerType="single"
+        </Column>
+        <Column md={1}>
+        <DatePicker
+            datePickerType="simple"
             onChange={(dates: [Date]) => {
               if (dates.length > 0) {
                 handleFilterChange({
@@ -347,8 +341,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             readOnly={!filters.dateType}
           >
             <DatePickerInput
-              id="end-date-picker-input-id"
-              size="md"
+              size="sm"
               labelText="End Date"
               placeholder={
                 filters.endDate
@@ -361,14 +354,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               value={formatDateForDatePicker(filters.endDate)}
             />
           </DatePicker>
-          </span>
         </Column>
-        <Column></Column>
-        <Column></Column>
-        <Column></Column>
       </Row>
       <Row>
-        <Column>
+        <Column sm={4}>
           <CheckboxGroup
             orientation="horizontal"
             legendText="Status"
@@ -399,11 +388,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             />
           </CheckboxGroup>
         </Column>
-        <Column>
-
-        </Column>
-        <Column></Column>
-        <Column></Column>
       </Row>
     </FlexGrid>
   );
