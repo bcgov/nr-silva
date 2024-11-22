@@ -152,7 +152,7 @@ const OpeningsSearchTab: React.FC = () => {
                   handleCheckboxChange={handleCheckboxChange}                  
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
-                  totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
+                  totalItems={data?.totalItems || 0}
                   setOpeningIds={setSelectedOpeningIds}
                 />
               )}
