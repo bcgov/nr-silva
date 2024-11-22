@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState} from "react";
 import "./OpeningsSearchBar.scss";
 import { Search, Button, FlexGrid, Row, Column, DismissibleTag, InlineNotification } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
