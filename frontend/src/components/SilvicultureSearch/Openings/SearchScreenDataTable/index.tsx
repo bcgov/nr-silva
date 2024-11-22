@@ -306,6 +306,13 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                       handleCheckboxChange("select-all");
                       setColumnsSelected("select-all");
                     }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        handleCheckboxChange("select-all");
+                        setColumnsSelected("select-all");
+                      }
+                    }}
                   >
                     <p className="menu-item">Select all columns</p>
                     {columnsSelected === "select-all" && (
@@ -319,6 +326,13 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                     onClick={() => {
                       handleCheckboxChange("select-default");
                       setColumnsSelected("select-default");
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        handleCheckboxChange("select-default");
+                        setColumnsSelected("select-default");
+                      }
                     }}
                   >
                     <p className="menu-item">Reset columns to default</p>
