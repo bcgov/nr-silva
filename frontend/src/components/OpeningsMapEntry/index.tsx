@@ -46,7 +46,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
         >
           <Popup maxWidth={700}>
             <OpeningsMapEntryPopup 
-              openingId={parseFloat(polygon.properties?.OPENING_ID || 0)} 
+              openingId={parseFloat((polygon.properties?.OPENING_ID as string) || '0')} 
             />
           </Popup>
         </Polygon>

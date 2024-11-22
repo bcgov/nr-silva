@@ -61,6 +61,7 @@ function FavoriteButton({
       onClick={handleClick}
       renderIcon={CustomIcon}
       size={size}
+      aria-pressed={isFavorite}
     />
   );
 };
