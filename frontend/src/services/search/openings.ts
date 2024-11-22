@@ -1,9 +1,9 @@
 import axios from "axios";
 import qs from "qs";
 import { getAuthIdToken } from "../AuthService";
-import { env } from "../../env";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { createDateParams } from "../../utils/searchUtils";
+import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -54,14 +54,6 @@ export interface OpeningItem {
   silvaReliefAppId: string | null;
 }
 
-const backendUrl = env.VITE_BACKEND_URL;
-
-const buildDefaultHeaders = (authToken: string|null) => ({
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': window.location.origin,
-  Authorization: `Bearer ${authToken}`
-});
-
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType
   // Get the date params based on dateType
@@ -101,9 +93,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(`${backendUrl}/api/opening-search${queryString}`, {
-    headers: buildDefaultHeaders(authToken)
-  });
+  const response = await axios.get(API_ENDPOINTS.openingSearch(queryString), defaultHeaders(authToken));
 
   // Flatten the data part of the response
   const flattenedData = response.data.data.map((item: OpeningItem) => ({
@@ -130,9 +120,7 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(`${backendUrl}/api/openings/recent`, {
-    headers: buildDefaultHeaders(authToken)
-  });
+  const response = await axios.get(API_ENDPOINTS.recentOpenings(),defaultHeaders(authToken));
 
   // Flatten the data part of the response
   const flattenedData = response.data.data.map((item: OpeningItem) => ({
@@ -157,9 +145,7 @@ export const fetchCategories = async (): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(backendUrl + "/api/opening-search/categories", {
-    headers: buildDefaultHeaders(authToken)
-  });
+  const response = await axios.get(API_ENDPOINTS.categories(), defaultHeaders(authToken));
 
   // Returning the api response data
   return response.data;
@@ -170,9 +156,7 @@ export const fetchOrgUnits = async (): Promise<any> => {
   const authToken = getAuthIdToken();
 
   // Make the API request with the Authorization header
-  const response = await axios.get(backendUrl + "/api/opening-search/org-units", {
-    headers: buildDefaultHeaders(authToken)
-  });
+  const response = await axios.get(API_ENDPOINTS.orgUnits(),defaultHeaders(authToken));
 
   // Returning the api response data
   return response.data;
