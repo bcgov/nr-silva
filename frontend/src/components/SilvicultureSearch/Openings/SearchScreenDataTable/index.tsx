@@ -300,6 +300,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   <MenuItemDivider />
                   <div
                     className="w-100 d-flex flex-row justify-content-between menu-item-container"
+                    id="select-all-column"
+                    data-testid="select-all-column"
                     onClick={() => {
                       handleCheckboxChange("select-all");
                       setColumnsSelected("select-all");
@@ -312,6 +314,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   </div>
                   <div
                     className="w-100 d-flex flex-row justify-content-between menu-item-container"
+                    id="select-default-column"
+                    data-testid="select-default-column"
                     onClick={() => {
                       handleCheckboxChange("select-default");
                       setColumnsSelected("select-default");
