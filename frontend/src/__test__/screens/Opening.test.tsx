@@ -6,7 +6,6 @@ import PaginationContext from '../../contexts/PaginationContext';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { RecentOpening } from '../../types/RecentOpening';
-import { getWmsLayersWhitelistUsers } from '../../services/SecretsService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentActions } from '../../services/OpeningService';
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { AuthProvider } from '../../contexts/AuthProvider';
@@ -23,10 +22,6 @@ const data = {
 
 vi.mock('../../services/OpeningFavouriteService', () => ({
   fetchOpeningFavourites: vi.fn(),
-}));
-
-vi.mock('../../services/SecretsService', () => ({
-  getWmsLayersWhitelistUsers: vi.fn()
 }));
 
 vi.mock('../../services/OpeningService', async () => {
@@ -77,9 +72,7 @@ const queryClient = new QueryClient();
 describe('Opening screen test cases', () => {
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
-    (getWmsLayersWhitelistUsers as vi.Mock).mockResolvedValue([{userName: 'TEST'}]);    
+    vi.clearAllMocks(); 
     (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([
       { group: '2022', key: 'Openings', value: 10 },
       { group: '2023', key: 'Openings', value: 15 },

@@ -23,7 +23,9 @@ describe("postViewedOpening", () => {
     const result = await postViewedOpening(openingId);
 
     expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/recent/${openingId}`, null, {
-      headers: { Authorization: `Bearer testAuthToken` },
+      headers: { Authorization: `Bearer testAuthToken`,
+        "Access-Control-Allow-Origin": "http://localhost:3000",          
+        "Content-Type": "application/json" },
     });
     expect(result).toEqual(mockResponse.data);
   });
@@ -85,7 +87,9 @@ describe("usePostViewedOpening", () => {
     // Wait for axios call
     await waitFor(() =>
       expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/recent/123`, null, {
-        headers: { Authorization: `Bearer testAuthToken` },
+        headers: { Authorization: `Bearer testAuthToken`,
+          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Content-Type": "application/json" },
       })
     );
   });

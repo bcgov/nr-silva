@@ -13,42 +13,42 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningSearchRepository;
+import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
+/**
+ * This class holds methods for fetching and handling {@link OpeningEntity} in general.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpeningService {
 
   private final OpeningRepository openingRepository;
-
   private final CutBlockOpenAdminService cutBlockOpenAdminService;
-
   private final LoggedUserService loggedUserService;
-
-  private final OpeningSearchRepository openingSearchRepository;
-
   private final ForestClientApiProvider forestClientApiProvider;
+  private final UserOpeningService userOpeningService;
 
   /**
    * Get recent openings given the opening creation date.
@@ -104,62 +104,101 @@ public class OpeningService {
    * @param pagination An instance of {@link PaginationParameters} with pagination settings.
    * @return Paginated result with found content.
    */
+  @Transactional
   public PaginatedResult<OpeningSearchResponseDto> openingSearch(
       OpeningSearchFiltersDto filtersDto, PaginationParameters pagination) {
     log.info(
-        "Search Openings with page index {} and page size {}",
+        "Search Openings with page index {} and page size {} with filters {}",
         pagination.page(),
-        pagination.perPage());
+        pagination.perPage(),
+        filtersDto
+    );
 
     if (pagination.perPage() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
     // Set the user in the filter, if required
-    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)) {
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS) && Boolean.TRUE.equals(
+        filtersDto.getMyOpenings())) {
       String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
       if (!userId.startsWith("IDIR")) {
         userId = "BCEID" + userId.substring(5);
       }
       filtersDto.setRequestUserId(userId);
     }
+    Page<SilvicultureSearchProjection> searchResultPage =
+        openingRepository.searchBy(
+            filtersDto,
+            pagination.toPageable(Sort.by("opening_id").descending())
+        );
 
-    PaginatedResult<OpeningSearchResponseDto> result =
-        openingSearchRepository.searchOpeningQuery(filtersDto, pagination);
+    PaginatedResult<OpeningSearchResponseDto> result = new PaginatedResult<>();
+    result.setTotalItems(searchResultPage.getTotalElements());
+    result.setPageIndex(pagination.page());
+    result.setPerPage(pagination.perPage());
+    result.setTotalPages(searchResultPage.getTotalPages());
+    result.setData(searchResultPage
+        .get()
+        .map(mapToSearchResponse())
+        .toList()
+    );
 
-    fetchClientAcronyms(result);
-
-    return result;
+    return fetchClientAcronyms(fetchFavorites(result));
   }
 
-  private void fetchClientAcronyms(PaginatedResult<OpeningSearchResponseDto> result) {
-    List<String> clientNumbersWithDuplicates =
-        result.getData().stream()
-            .filter(o -> !Objects.isNull(o.getClientNumber()))
-            .map(OpeningSearchResponseDto::getClientNumber)
-            .toList();
-
-    // Recreate list without duplicates
-    List<String> clientNumbers = new ArrayList<>(new HashSet<>(clientNumbersWithDuplicates));
-
+  private PaginatedResult<OpeningSearchResponseDto> fetchClientAcronyms(
+      PaginatedResult<OpeningSearchResponseDto> result) {
     Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
+
+    List<String> clientNumbers =
+        result
+            .getData()
+            .stream()
+            .map(OpeningSearchResponseDto::getClientNumber)
+            .filter(StringUtils::isNotBlank)
+            .distinct()
+            .toList();
 
     // Forest client API doesn't have a single endpoint to fetch all at once, so we need to do
     // one request per client number :/
     for (String clientNumber : clientNumbers) {
       Optional<ForestClientDto> dto = forestClientApiProvider.fetchClientByNumber(clientNumber);
-      if (dto.isPresent()) {
-        forestClientsMap.put(clientNumber, dto.get());
-      }
+      dto.ifPresent(forestClientDto -> forestClientsMap.put(clientNumber, forestClientDto));
     }
 
-    for (OpeningSearchResponseDto response : result.getData()) {
-      ForestClientDto client = forestClientsMap.get(response.getClientNumber());
-      if (!Objects.isNull(client)) {
-        response.setClientAcronym(client.acronym());
-        response.setClientName(client.clientName());
-      }
+    result
+        .getData()
+        .forEach(response -> {
+          if (StringUtils.isNotBlank(response.getClientNumber()) && forestClientsMap.containsKey(
+              response.getClientNumber())) {
+            ForestClientDto client = forestClientsMap.get(response.getClientNumber());
+            response.setClientAcronym(client.acronym());
+            response.setClientName(client.clientName());
+          }
+        });
+
+    return result;
+  }
+
+  private PaginatedResult<OpeningSearchResponseDto> fetchFavorites(
+      PaginatedResult<OpeningSearchResponseDto> pagedResult
+  ) {
+
+    List<Long> favourites = userOpeningService.checkForFavorites(
+        pagedResult
+            .getData()
+            .stream()
+            .map(OpeningSearchResponseDto::getOpeningId)
+            .map(Integer::longValue)
+            .toList()
+    );
+
+    for (OpeningSearchResponseDto opening : pagedResult.getData()) {
+      opening.setFavourite(favourites.contains(opening.getOpeningId().longValue()));
     }
+
+    return pagedResult;
   }
 
   private List<RecentOpeningDto> createDtoFromEntity(
@@ -209,4 +248,37 @@ public class OpeningService {
 
     return recentOpeningDtos;
   }
+
+
+  private static Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
+    return projection ->
+        new OpeningSearchResponseDto(
+            projection.getOpeningId().intValue(),
+            projection.getOpeningNumber(),
+            OpeningCategoryEnum.of(projection.getCategory()),
+            OpeningStatusEnum.of(projection.getStatus()),
+            projection.getCuttingPermitId(),
+            projection.getTimberMark(),
+            projection.getCutBlockId(),
+            projection.getOpeningGrossArea(),
+            projection.getDisturbanceStartDate(),
+            projection.getOrgUnitCode(),
+            projection.getOrgUnitName(),
+            projection.getClientNumber(),
+            projection.getClientLocation(),
+            "",
+            "",
+            projection.getRegenDelayDate(),
+            projection.getEarlyFreeGrowingDate(),
+            projection.getLateFreeGrowingDate(),
+            projection.getUpdateTimestamp(),
+            projection.getEntryUserId(),
+            projection.getSubmittedToFrpa108() > 0,
+            projection.getForestFileId(),
+            projection.getSubmittedToFrpa108(),
+            null,
+            false
+        );
+  }
+
 }

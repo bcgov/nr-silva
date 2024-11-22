@@ -20,6 +20,7 @@ public class PaginatedResult<T> {
   private int pageIndex;
   private int perPage;
   private int totalPages;
+  private long totalItems;
   private boolean hasNextPage;
   private List<T> data;
 }

@@ -3,9 +3,7 @@ import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
-import { RecentOpening } from '../types/RecentOpening';
 import { 
-  RecentOpeningApi, 
   IOpeningPerYear,
   IFreeGrowingProps,
   IFreeGrowingChartData
@@ -35,7 +33,9 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
 
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${authToken}`
+        'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`
       }
     });
 
@@ -81,7 +81,9 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${authToken}`
+        'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`
       }
     });
 
@@ -113,7 +115,9 @@ export async function fetchRecentActions(): Promise<RecentAction[]> {
   try {
     const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
       headers: {
-        Authorization: `Bearer ${authToken}`
+        'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
+      Authorization: `Bearer ${authToken}`
       }
     });
     
