@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Polygon, useMap, Popup } from 'react-leaflet';
 import L,{LatLngExpression} from 'leaflet';
 import { OpeningPolygon } from '../../types/OpeningPolygon';
+import OpeningsMapEntryPopup from '../OpeningsMapEntryPopup';
 
 interface OpeningsMapEntryProps {
   polygons: OpeningPolygon[];
@@ -34,6 +35,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
     }
   }, [polygons, map]);
 
+
   return (
     <>
       {polygons.map((polygon) => (
@@ -43,7 +45,9 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
           pathOptions={resultsStyle}
         >
           <Popup maxWidth={700}>
-            {polygon.popup}
+            <OpeningsMapEntryPopup 
+              openingId={parseFloat(polygon.properties?.OPENING_ID || 0)} 
+            />
           </Popup>
         </Polygon>
       ))}
