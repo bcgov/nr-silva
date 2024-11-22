@@ -18,6 +18,8 @@ export const fetchOpeningFavourites = async (): Promise<number[]> =>{
   const response = await axios.get(
     `${backendUrl}/api/openings/favourites`, {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });
@@ -42,6 +44,8 @@ export const setOpeningFavorite = async (openingId: number): Promise<void> => {
   const response = await axios.put(
     `${backendUrl}/api/openings/favourites/${openingId}`, null, {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });
@@ -63,6 +67,8 @@ export const deleteOpeningFavorite = async (openingId: number): Promise<void> =>
   const response = await axios.delete(
     `${backendUrl}/api/openings/favourites/${openingId}`, {
     headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
       Authorization: `Bearer ${authToken}`
     }
   });

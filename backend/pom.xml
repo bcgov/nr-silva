@@ -347,6 +347,7 @@
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
             <exclude>**/*Constants.*</exclude>
+            <exclude>**/security/*Converter.*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -545,7 +546,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.46</version>
+        <version>9.47</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
