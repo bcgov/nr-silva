@@ -19,6 +19,7 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "leaflet": "^1.9.4",
+    "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "qs": "^6.13.0",
     "react": "^18.2.0",

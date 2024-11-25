@@ -4,8 +4,6 @@ import {
   CheckboxGroup,
   Dropdown,
   TextInput,
-  FormLabel,
-  Tooltip,
   DatePicker,
   DatePickerInput,
   Loading,
@@ -19,6 +17,9 @@ import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
+import { formatDateForDatePicker } from "../../../../utils/DateUtils";
+import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
+import AutocompleteClientLocation, { skipConditions, fetchValues} from "../../../AutocompleteClientLocation";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -26,7 +27,6 @@ interface AdvancedSearchDropdownProps {
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const { filters, setFilters } = useOpeningsSearch();
-  //TODO: pass this to parent and just pass the values as props
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
@@ -182,41 +182,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
         <Row className="mb-3">
           <Column lg={8}>
-            <div className="d-flex flex-auto mt-2 gap-1">
-              <div>
-                <FormLabel>Client acronym</FormLabel>
-                <Tooltip
-                  align="bottom"
-                  label="If you don't remember the client information you can go to client search."
-                >
-                  <button className="bx--tooltip__trigger" type="button">
-                    <Icons.Information />
-                  </button>
-                </Tooltip>
-                <TextInput
-                  id="text-input-1"
-                  type="text"
-                  labelText=""
-                  className="mt-2"
-                  value={filters.clientAcronym}
-                  onChange={(e: any) =>
-                    handleFilterChange({ clientAcronym: e.target.value })
-                  }
-                />
-              </div>
-              <>
-                <TextInput
-                  id="client-location-code"
-                  labelText="Client location code"
-                  type="text"
-                  className="mt-1"
-                  value={filters.clientLocationCode}
-                  onChange={(e: any) =>
-                    handleFilterChange({ clientLocationCode: e.target.value })
-                  }
-                />
-              </>
-            </div>
+            <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
+              <AutocompleteClientLocation setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })} />
+            </AutocompleteProvider>
           </Column>
           <Column lg={8}>
             <div className="d-flex flex-auto mt-2 gap-1">
@@ -314,10 +282,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                         size="md"
                         labelText="Start Date"
                         placeholder={
-                          filters.startDate !== null
+                          filters.startDate
                             ? filters.startDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
+                        value={formatDateForDatePicker(filters.startDate)}
                       />
                     </DatePicker>
 
@@ -348,6 +317,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                             ? filters.endDate // Display the date in YYYY-MM-DD format
                             : "yyyy/MM/dd"
                         }
+                        value={formatDateForDatePicker(filters.endDate)}
                       />
                     </DatePicker>
                   </div>
