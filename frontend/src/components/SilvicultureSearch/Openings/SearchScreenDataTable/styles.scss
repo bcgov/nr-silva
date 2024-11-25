@@ -52,12 +52,28 @@
   }
   .menu-item{
     font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.32px;
+    font-family: 'BC Sans';
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+  }
+  .menu-item-container{
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+    padding: 16px;
+  }
+  .menu-item-container:hover{
+    background-color: var(--#{vars.$bcgov-prefix}-layer-accent-02);
+    cursor: pointer;
   }
   .checkbox-item .bx--checkbox-label-text{
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.16px;
     font-weight: 400;
+  }
+  .bx--checkbox-label {
+    min-width: 300px;
   }
 
 }
@@ -152,6 +168,24 @@
   background-color: var(--#{vars.$bcgov-prefix}-layer-02);
   
 }
+
+.dropdown-container {
+  display: flex;
+  flex-direction: column; 
+  max-height: 265px;
+  overflow-y: auto;
+}
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+
 
 @media only screen and (max-width: 672px) {
   .#{vars.$bcgov-prefix}--data-table-content {
