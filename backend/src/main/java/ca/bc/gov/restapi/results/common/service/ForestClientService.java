@@ -1,8 +1,11 @@
 package ca.bc.gov.restapi.results.common.service;
 
+import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
+import ca.bc.gov.restapi.results.common.dto.IdNameDto;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,42 @@ public class ForestClientService {
     return forestClientApiProvider.fetchClientByNumber(fixedNumber);
   }
 
+  public List<ForestClientAutocompleteResultDto> searchClients(
+      int page,
+      int size,
+      String value
+  ) {
+    log.info("Searching forest client by {} as name, acronym or number with page {} and size {}",
+        value, page, size);
+    return forestClientApiProvider
+        .searchClients(page, size, value)
+        .stream()
+        .map(client -> new ForestClientAutocompleteResultDto(
+                client.clientNumber(),
+                client.name(),
+                client.acronym()
+            )
+        )
+        .toList();
+  }
+
+  public List<IdNameDto> getClientLocations(String clientNumber) {
+    String fixedNumber = checkClientNumber(clientNumber);
+
+    log.info("Fetching locations for client number {}", fixedNumber);
+
+    return
+        forestClientApiProvider
+            .fetchLocationsByClientNumber(fixedNumber)
+            .stream()
+            .map(location -> new IdNameDto(
+                location.locationCode(),
+                Objects.toString(location.locationName(), "No name provided")
+            ))
+            .toList();
+  }
+
+
   private String checkClientNumber(String clientNumber) {
     if (StringUtils.isEmpty(clientNumber)) {
       return "00000000";
@@ -48,8 +87,4 @@ public class ForestClientService {
     }
   }
 
-  public List<ForestClientDto> searchByNameAcronymNumber(String value) {
-    log.info("Received search value {}", value);
-    return forestClientApiProvider.searchByNameAcronymNumber(value);
-  }
 }
