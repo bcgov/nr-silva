@@ -25,13 +25,12 @@ interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
-  const { filters, setFilters } = useOpeningsSearch();
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
+  const { filters, setFilters, clearFilters } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
-  // Initialize selected items for category MultiSelect based on existing filters
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   useEffect(() => {
@@ -61,6 +60,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     const newFilters = { ...filters, ...updatedFilters };
     setFilters(newFilters);
   };
+
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
@@ -243,8 +243,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                     selectedItem={
                       filters.dateType
                         ? dateTypeItems.find(
-                            (item: any) => item.value === filters.dateType
-                          )
+                          (item: any) => item.value === filters.dateType
+                        )
                         : ""
                     }
                     label="Date type"
