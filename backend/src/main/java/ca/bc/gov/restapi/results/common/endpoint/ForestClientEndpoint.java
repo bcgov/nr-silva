@@ -1,16 +1,12 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
-import ca.bc.gov.restapi.results.common.dto.IdNameDto;
 import ca.bc.gov.restapi.results.common.exception.ForestClientNotFoundException;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,19 +31,5 @@ public class ForestClientEndpoint {
     return forestClientService
         .getClientByNumber(clientNumber)
         .orElseThrow(ForestClientNotFoundException::new);
-  }
-
-  @GetMapping("/byNameAcronymNumber")
-  public List<ForestClientAutocompleteResultDto> searchForestClients(
-      @RequestParam(value = "page",required = false,defaultValue = "0") Integer page,
-      @RequestParam(value = "size",required = false,defaultValue = "10") Integer size,
-      @RequestParam(value = "value") String value
-  ) {
-    return forestClientService.searchClients(page,size,value);
-  }
-
-  @GetMapping("/{clientNumber}/locations")
-  public List<IdNameDto> getForestClientLocations(@PathVariable String clientNumber) {
-    return forestClientService.getClientLocations(clientNumber);
   }
 }

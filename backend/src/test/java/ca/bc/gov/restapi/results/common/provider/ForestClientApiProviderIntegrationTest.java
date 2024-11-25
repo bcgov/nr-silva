@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.common.provider;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.serviceUnavailable;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
@@ -13,14 +12,10 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.web.client.RestClient;
 
 @DisplayName("Integrated Test | Forest Client API Provider")
@@ -91,89 +86,5 @@ class ForestClientApiProviderIntegrationTest {
     Optional<ForestClientDto> clientDto = forestClientApiProvider.fetchClientByNumber(clientNumber);
 
     Assertions.assertTrue(clientDto.isEmpty());
-  }
-
-  @ParameterizedTest
-  @DisplayName("Search clients by name, acronym, or number succeeded")
-  @MethodSource("searchByNameAcronymNumberOk")
-  void fetchClientByName_happyPath_shouldSucceed(
-      int resultSize,
-      String value
-  ){
-
-    clientApiStub.stubFor(
-        get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(okJson("""
-                [
-                  {
-                    "clientNumber": "00012797",
-                    "clientName": "MINISTRY OF FORESTS",
-                    "legalFirstName": null,
-                    "legalMiddleName": null,
-                    "clientStatusCode": "ACT",
-                    "clientTypeCode": "F",
-                    "acronym": "MOF"
-                  }
-                ]
-                """)
-            )
-    );
-
-    var clients = forestClientApiProvider.searchClients(1, 10, value);
-
-    Assertions.assertEquals(resultSize, clients.size());
-
-  }
-
-  @Test
-  @DisplayName("Search clients by name, acronym, or number not available should succeed")
-  void fetchClientByName_unavailable_shouldSucceed(){
-
-    clientApiStub.stubFor(
-        get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(serviceUnavailable())
-    );
-
-    var clients = forestClientApiProvider.searchClients(1, 10, "COMPANY");
-
-    Assertions.assertEquals(0, clients.size());
-
-  }
-
-  @Test
-  @DisplayName("Fetch client locations happy path should succeed")
-  void fetchClientLocations_happyPath_shouldSucceed(){
-
-    clientApiStub.stubFor(
-        get(urlPathEqualTo("/clients/00012797/locations"))
-            .willReturn(okJson("""
-                [
-                  {
-                    "locationCode": "00",
-                    "locationName": "Location 1"
-                  },
-                  {
-                    "locationCode": "01",
-                    "locationName": "Location 2"
-                  }
-                ]
-                """)
-            )
-    );
-
-    var locations = forestClientApiProvider.fetchLocationsByClientNumber("00012797");
-
-    Assertions.assertEquals(2, locations.size());
-
-  }
-
-
-  private static Stream<Arguments> searchByNameAcronymNumberOk() {
-    return Stream.of(
-        Arguments.of(1, "INDIA"),
-        Arguments.of(1, "SAMPLIBC"),
-        Arguments.of(1, "00000001"),
-        Arguments.of(1, "1")
-    );
   }
 }
