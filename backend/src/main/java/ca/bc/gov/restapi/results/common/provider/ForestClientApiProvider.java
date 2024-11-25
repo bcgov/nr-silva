@@ -1,11 +1,15 @@
 package ca.bc.gov.restapi.results.common.provider;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
+import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -44,10 +48,57 @@ public class ForestClientApiProvider {
                       .retrieve()
                       .body(ForestClientDto.class)
               );
-    } catch (HttpClientErrorException httpExc) {
+    } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
       log.error("Finished {} request - Response code error: {}", PROVIDER, httpExc.getStatusCode());
     }
 
     return Optional.empty();
+  }
+
+  public List<ForestClientDto> searchClients(
+      int page,
+      int size,
+      String value
+  ) {
+    log.info("Starting {} request to /clients/search/by?name={}&acronym={}&number={}", PROVIDER,value,value,value);
+
+    try {
+      return
+            restClient
+                .get()
+                .uri(uriBuilder ->
+                    uriBuilder
+                        .path("/clients/search/by")
+                        .queryParam("page", page)
+                        .queryParam("size", size)
+                        .queryParam("name", value)
+                        .queryParam("acronym", value)
+                        .queryParam("number", value)
+                        .build()
+                    )
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+    } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
+      log.error("{} requested on search by - Response code error: {}", PROVIDER, httpExc.getStatusCode());
+    }
+
+    return List.of();
+  }
+
+  public List<ForestClientLocationDto> fetchLocationsByClientNumber(String clientNumber) {
+    log.info("Starting {} request to /clients/{}/locations", PROVIDER, clientNumber);
+
+    try {
+      return
+          restClient
+              .get()
+              .uri("/clients/{clientNumber}/locations", clientNumber)
+              .retrieve()
+              .body(new ParameterizedTypeReference<>() {});
+    } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
+      log.error("Client location {} request - Response code error: {}", PROVIDER, httpExc.getStatusCode());
+    }
+
+    return List.of();
   }
 }
