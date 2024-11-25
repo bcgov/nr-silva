@@ -1,60 +1,41 @@
 import { ITableHeader } from "../types/TableHeader";
 
-export const searchScreenColumns: ITableHeader[] = [
-  {
-    key: 'actions',
-    header: 'Actions',
-    selected: true
-  },
-  {
-    key: 'openingId',
-    header: 'Opening Id',
-    selected: true
-  },
-  {
-    key: 'forestFileId',
-    header: 'File Id',
-    selected: true
-  },
-  {
-    key: 'categoryDescription',
-    header: 'Category',
-    selected: true,
-    elipsis: true
-  },
-  {
-    key: 'orgUnitName',
-    header: 'Org unit',
-    selected: true
-  },
-  {
-    key: 'statusDescription',
-    header: 'Status',
-    selected: true
-  },
-  {
-    key: 'cuttingPermitId',
-    header: 'Cutting permit',
-    selected: true
-  },
-  {
-    key: 'cutBlockId',
-    header: 'Cut block',
-    selected: true
-  },
-  {
-    key: 'openingGrossAreaHa',
-    header: 'Gross Area',
-    selected: true
-  },
-  {
-    key: 'disturbanceStartDate',
-    header: 'Disturbance Date',
-    selected: true
-  }
+const searchScreenColumnDefinitions = [
+  { key: 'actions', header: 'Actions' },
+  
+  { key: 'openingId', header: 'Opening Id' },
+  { key: 'openingNumber', header: 'Opening number' },
+  { key: 'forestFileId', header: 'File Id' },
+  { key: 'categoryDescription', header: 'Category', elipsis: true },
+  { key: 'orgUnitName', header: 'Org unit' },
+  { key: 'statusDescription', header: 'Status' },
+  { key: 'clientNumber', header: 'Client number' },
+  { key: 'timberMark', header: 'Timber mark' },
+  { key: 'cuttingPermitId', header: 'Cutting permit' },
+  { key: 'cutBlockId', header: 'Cut block' },
+  { key: 'openingGrossAreaHa', header: 'Gross Area' },
+  { key: 'disturbanceStartDate', header: 'Disturbance date' },
+  { key: 'regenDelayDate', header: 'Regen delay due date' },
+  { key: 'earlyFreeGrowingDate', header: 'Free growing due date' },
+  { key: 'updateTimestamp', header: 'Update date' },
 ];
 
-// List of column definitions with key and header
+export const searchScreenColumns: ITableHeader[] = searchScreenColumnDefinitions.map((col) => ({
+  ...col,
+  selected: [
+    'actions',
+    'openingId',
+    'forestFileId',
+    'categoryDescription',
+    'orgUnitName',
+    'statusDescription',
+    'cuttingPermitId',
+    'cutBlockId',
+    'openingGrossAreaHa',
+    'disturbanceStartDate',
+  ].includes(col.key),
+}));
+
 const recentOpeningsColumnDefinitions = [
   { key: 'openingId', header: 'Opening Id' },
   { key: 'forestFileId', header: 'File Id' },
@@ -68,8 +49,7 @@ const recentOpeningsColumnDefinitions = [
   { key: 'actions', header: 'Actions' },
 ];
 
-// Assign the selected flag to each column (true/false based on your requirements)
 export const recentOpeningsColumns: ITableHeader[] = recentOpeningsColumnDefinitions.map((col) => ({
   ...col,
-  selected: col.key !== 'disturbanceStartDate',  // Assuming 'Disturbance Date' is not selected
+  selected: col.key !== 'disturbanceStartDate',
 }));
