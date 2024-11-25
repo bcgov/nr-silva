@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { OpeningPolygon } from '../../types/OpeningPolygon';
-import { createPopupFromProps } from '../../map-services/BcGwWfsApi';
 import { MapLayer } from '../../types/MapLayer';
 import { allLayers } from './constants';
 import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
-import { shiftBcGwLngLat2LatLng } from '../../map-services/BcGwLatLongUtils';
+import { convertGeoJsonToLatLng } from '../../map-services/BcGwLatLongUtils';
 import {
   LayersControl,
   MapContainer,
@@ -51,7 +50,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const openingsList: OpeningPolygon[] = [];
       for (let i = 0, len = data.features.length; i < len; i++) {
         if (data.features[i].geometry) {
-          const openingGeometry = shiftBcGwLngLat2LatLng(data.features[i].geometry.coordinates);
+          const openingGeometry = convertGeoJsonToLatLng(data.features[i].geometry.coordinates);
 
           const openingObj: OpeningPolygon = {
             key: data.features[i].id,
@@ -60,7 +59,6 @@ const OpeningsMap: React.FC<MapProps> = ({
             id: data.features[i].id,
             positionLat: (data.bbox[1] + data.bbox[3]) / 2,
             positionLong: (data.bbox[0] + data.bbox[2]) / 2,
-            popup: createPopupFromProps(data.features[i].properties)
           };
           openingsList.push(openingObj);
         }
