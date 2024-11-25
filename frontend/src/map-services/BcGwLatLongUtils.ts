@@ -23,20 +23,20 @@ export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]): LatLngExpress
   return newCoord;
 }
 
+const createLatLngExpressionFromPointOrRing = (ringOrPoint: number[]|number[][]): LatLngExpression | LatLngExpression[] => {
+  return Array.isArray(ringOrPoint[0])
+    ? (ringOrPoint as number[][]).map(([lng, lat]) => [lat, lng] as LatLngExpression)
+    : [ringOrPoint[1], ringOrPoint[0]] as LatLngExpression;
+}
+
 /**
- * Shifts BC GW LineString response Lng-Lat to Lat-Lng format.
+ * Convert GeoJSON coordinates to Leaflet LatLng format.
  *
- * @param {number[][]} coordinates point array from the api.
- * @returns {number[][]} the same array with lat and long shifted.
+ * @param geoJsonCoordinates - GeoJSON coordinates (Polygon or MultiPolygon format)
+ * @returns Leaflet LatLng coordinates (Polygon or MultiPolygon format)
  */
-export const shiftLineStringCoordinates = (coordinates: number[][]): number[][] => {
-  const newCoord :number[][] = [];
-  for (let i = 0, len = coordinates.length; i < len; i++) {
-    const point = coordinates[i];
-    if (Array.isArray(point)) {
-      const newOne = point;
-      newCoord.push([newOne[1], newOne[0]]);
-    }
-  }
-  return newCoord;
+export const convertGeoJsonToLatLng = (geoJsonCoordinates: number[][][] | number[][][][]): LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][] => {
+  const polygons = geoJsonCoordinates.map((polygonOrRing) => polygonOrRing.map(createLatLngExpressionFromPointOrRing));
+  return polygons as LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 };
+
