@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState, useRef, useEffect } from "react";
-import debounce from "lodash.debounce";
+import { debounce, DebouncedFunc } from "lodash";
 
 // TODO: test this
 
@@ -23,7 +23,7 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
   const [options, setOptionsState] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const debouncedFetchMap = useRef<Map<string, (query: string) => void>>(new Map());
+  const debouncedFetchMap = useRef<Map<string, DebouncedFunc<(query: string) => Promise<void>>>>(new Map());
 
   const setOptions = (key: string, items: any[]) => {    
     setOptionsState((prev) => ({ ...prev, [key]: items }));
