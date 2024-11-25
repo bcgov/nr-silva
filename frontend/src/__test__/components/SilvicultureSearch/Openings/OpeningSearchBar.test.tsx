@@ -7,6 +7,7 @@ import OpeningsSearchBar from "../../../../components/SilvicultureSearch/Opening
 import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpeningsSearchProvider, useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import userEvent from "@testing-library/user-event";
 
 // Mock the useOpeningsSearch context to avoid rendering errors
 vi.mock("../../../../contexts/search/OpeningsSearch", () => ({
@@ -140,4 +141,26 @@ describe("OpeningsSearchBar", () => {
     expect(getByText("Missing at least one criteria to search")).toBeInTheDocument();
 
   });
+
+  //test if the handleSearch is called when the user hits enter on the serchInput
+  it("should call the onSearchClick function when the user hits enter on the search input", async () => {
+    // Create a mock function to pass as a prop
+    const onSearchClick = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <OpeningsSearchBar onSearchClick={onSearchClick} />
+      </QueryClientProvider>
+    );
+
+    // Check if the search input field is present with the correct placeholder text
+    const searchInput = screen.getByPlaceholderText(
+      "Search by opening ID, opening number, timber mark or file ID"
+    );
+    await act(async () => await userEvent.type(searchInput, 'tfl47'));
+    await act(async () => await userEvent.keyboard('{enter}'));
+
+    // Check if the onSearchClick function was called
+    expect(onSearchClick).toHaveBeenCalled();
+    });
 });
