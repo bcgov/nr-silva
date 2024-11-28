@@ -45,6 +45,7 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
         if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
           return;
         }
+        setLoading(true);
         setOptions(key, searchingForItems);
         const fetchedOptions = await fetchOptions(query, key);
         setOptions(key, fetchedOptions.length ? fetchedOptions : noDataFound);
@@ -56,16 +57,11 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
     }, 450);
   };
 
-  const fetchAndSetOptions = async (query: string, key: string) => {
+  const fetchAndSetOptions = (query: string, key: string) => {
     if(!key || !query) return;
     if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
       return;
     }
-    /*setLoading(true);
-    setOptions(key, searchingForItems);
-    const fetchedOptions = await fetchOptions(query, key);
-    setOptions(key, fetchedOptions.length ? fetchedOptions : noDataFound);
-    setLoading(false);*/
     if (!debouncedFetchMap.current.has(key)) {
       debouncedFetchMap.current.set(key, createDebouncedFetch(key));
     }
