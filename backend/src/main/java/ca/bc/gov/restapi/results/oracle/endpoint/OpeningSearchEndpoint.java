@@ -92,6 +92,8 @@ public class OpeningSearchEndpoint {
       String cuttingPermitId,
       @RequestParam(value = "cutBlockId", required = false)
       String cutBlockId,
+      @RequestParam(value = "clientLocationCode", required = false)
+      String clientLocationCode,
       @RequestParam(value = "timberMark", required = false)
       String timberMark,
       @Valid PaginationParameters paginationParameters) {
@@ -113,6 +115,7 @@ public class OpeningSearchEndpoint {
             cuttingPermitId,
             cutBlockId,
             timberMark,
+            clientLocationCode,
             mainSearchTerm);
     return openingService.openingSearch(filtersDto, paginationParameters);
   }
