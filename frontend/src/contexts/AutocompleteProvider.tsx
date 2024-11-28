@@ -44,7 +44,6 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
       } catch (fetchError) {
         setError("Error fetching options");
       } finally {
-        console.log('Disabling loading');
         setLoading(false);
       }
     }, 450);

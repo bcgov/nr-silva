@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { ComboBox, InlineLoading } from "@carbon/react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
+import { ComboBox } from "@carbon/react";
 import { useAutocomplete } from "../../contexts/AutocompleteProvider";
-import { fetchClientsByNameAcronymNumber, fetchClientLocations, ForestClientAutocomplete, ForestClientLocation } from "../../services/OpeningClientLocationService";
+import { 
+  fetchClientsByNameAcronymNumber,
+  fetchClientLocations,
+  ForestClientAutocomplete,
+  ForestClientLocation 
+} from "../../services/OpeningClientLocationService";
 
 
 interface AutocompleteProps {
@@ -15,6 +20,10 @@ interface AutocompleteComboboxProps{
 
 interface AutocompleteComponentProps {
   setValue: (value: string | null) => void;
+}
+
+export interface AutocompleteComponentRefProps {
+  reset: () => void;
 }
 
 // Defines when the fetch should be skipped for a specific key
@@ -55,28 +64,52 @@ export const fetchValues = async (query: string, key: string) => {
   return [];
 };
 
-const AutocompleteClientLocation: React.FC<AutocompleteComponentProps> = ({ setValue }) => {
+const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
+  ({ setValue }, ref) => {
   const { options, fetchOptions, setOptions } = useAutocomplete();
   const [isActive, setIsActive] = useState(false);
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
+  const [client, setClient] = useState<AutocompleteProps | null>(null);
 
-  const handleClientChange = async (e: AutocompleteComboboxProps) => {    
+  const clearLocation = () => {
+    setLocation(null);
+    setClient(null);
+    setValue(null);
+  };
 
-    const selectedItem = e.selectedItem;
+  const clearClient = () => {
+    setOptions("locations", []);
+    setOptions("clients", []);
+    setClient(null);
+    setValue(null);
+    setIsActive(false);
+    clearLocation();
+  };
+
+  const handleClientChange = async (autocompleteEvent: AutocompleteComboboxProps) => {    
+
+    const selectedItem = autocompleteEvent.selectedItem;
     if (selectedItem) {
       setIsActive(true);
+      setClient(selectedItem);
       await fetchOptions(selectedItem.id, "locations");
     }else{
-      setOptions("locations", []);
-      setLocation(null);
-      setIsActive(false);
+      clearClient();
     }
   };
 
   const handleLocationSelection = (e: AutocompleteComboboxProps) => {    
-    setValue(e?.selectedItem?.id as string || null)
-    setLocation(e?.selectedItem || null);
+    const selectedItem = e.selectedItem;
+    if(selectedItem){
+      setValue(selectedItem.id);
+      setLocation(selectedItem);
+    }else{
+      clearLocation();
+    }
   };
+  useImperativeHandle(ref, () => ({
+    reset: clearLocation
+  }));
 
   return (
     <div className="d-flex w-100 gap-1 mt-2">
@@ -84,6 +117,7 @@ const AutocompleteClientLocation: React.FC<AutocompleteComponentProps> = ({ setV
         id="client-name"
         className="flex-fill"
         allowCustomValue
+        selectedItem={client}
         onInputChange={(e: string) => fetchOptions(e, "clients")}
         onChange={handleClientChange}
         helperText="Search by client name, number or acronym"
@@ -103,6 +137,8 @@ const AutocompleteClientLocation: React.FC<AutocompleteComponentProps> = ({ setV
         typeahead />
       </div>
   );
-}
+});
+
+AutocompleteClientLocation.displayName = "AutocompleteClientLocation";
 
 export default AutocompleteClientLocation;
