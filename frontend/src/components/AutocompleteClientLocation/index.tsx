@@ -66,7 +66,7 @@ export const fetchValues = async (query: string, key: string) => {
 const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
   ({ setValue }, ref) => 
     {
-  const { options, fetchOptions, setOptions } = useAutocomplete();
+  const { options, fetchOptions, updateOptions } = useAutocomplete();
   const [isActive, setIsActive] = useState(false);
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
   const [client, setClient] = useState<AutocompleteProps | null>(null);
@@ -78,8 +78,8 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   };
 
   const clearClient = () => {
-    setOptions("locations", []);
-    setOptions("clients", []);
+    updateOptions("locations", []);
+    updateOptions("clients", []);
     setClient(null);
     setValue(null);
     setIsActive(false);

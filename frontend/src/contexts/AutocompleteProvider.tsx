@@ -13,7 +13,7 @@ interface AutocompleteContextType {
   loading: boolean;
   error: string | null;
   fetchOptions: (query: string, key: string) => void;
-  setOptions: (key: string, items: any[]) => void;
+  updateOptions: (key: string, items: any[]) => void;
 }
 
 const searchingForItems = [{
@@ -26,13 +26,13 @@ const noDataFound = [{ id: "", label: "No results found" }];
 const AutocompleteContext = createContext<AutocompleteContextType | undefined>(undefined);
 
 export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }: AutocompleteProviderProps) => {
-  const [options, setOptionsState] = useState<Record<string, any[]>>({});
+  const [options, setOptions] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const debouncedFetchMap = useRef<Map<string, DebouncedFunc<(query: string) => Promise<void>>>>(new Map());
 
-  const setOptions = (key: string, items: any[]) => {    
-    setOptionsState((prev) => ({ ...prev, [key]: items }));
+  const updateOptions = (key: string, items: any[]) => {    
+    setOptions((prev) => ({ ...prev, [key]: items }));
   };
 
   const createDebouncedFetch = (key: string) => {    
@@ -42,13 +42,13 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
         if(!key || !query) return;
         // If skipConditions are present and the condition is met, return, this avoids overwriting the existing
         // data when a condition to skip is met
-        if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
+        if (skipConditions?.[key]?.(query)) {
           return;
         }
         setLoading(true);
-        setOptions(key, searchingForItems);
+        setOptions((prev) => ({ ...prev, [key]: searchingForItems }));
         const fetchedOptions = await fetchOptions(query, key);
-        setOptions(key, fetchedOptions.length ? fetchedOptions : noDataFound);
+        setOptions((prev) => ({ ...prev, [key]: fetchedOptions.length ? fetchedOptions : noDataFound }));
       } catch (fetchError) {
         setError("Error fetching options");
       } finally {
@@ -59,7 +59,7 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
 
   const fetchAndSetOptions = (query: string, key: string) => {
     if(!key || !query) return;
-    if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
+    if (skipConditions?.[key]?.(query)) {
       return;
     }
     if (!debouncedFetchMap.current.has(key)) {
@@ -79,7 +79,7 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
   }, []);
 
   return (
-    <AutocompleteContext.Provider value={{ options, loading, error, fetchOptions: fetchAndSetOptions, setOptions }}>
+    <AutocompleteContext.Provider value={{ options, loading, error, fetchOptions: fetchAndSetOptions, updateOptions }}>
       {children}
     </AutocompleteContext.Provider>
   );
