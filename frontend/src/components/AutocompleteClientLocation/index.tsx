@@ -8,7 +8,6 @@ import {
   ForestClientLocation 
 } from "../../services/OpeningClientLocationService";
 
-
 interface AutocompleteProps {
   id: string,
   label: string,
@@ -65,7 +64,8 @@ export const fetchValues = async (query: string, key: string) => {
 };
 
 const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
-  ({ setValue }, ref) => {
+  ({ setValue }, ref) => 
+    {
   const { options, fetchOptions, setOptions } = useAutocomplete();
   const [isActive, setIsActive] = useState(false);
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
@@ -107,6 +107,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
       clearLocation();
     }
   };
+
   useImperativeHandle(ref, () => ({
     reset: clearLocation
   }));
@@ -116,23 +117,23 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
       <ComboBox
         id="client-name"
         className="flex-fill"
-        allowCustomValue
+        allowCustomValue={false}
         selectedItem={client}
-        onInputChange={(e: string) => fetchOptions(e, "clients")}
+        onInputChange={(value: string) => fetchOptions(value, "clients")}
         onChange={handleClientChange}
+        itemToElement={(item: AutocompleteProps) => item.label}
         helperText="Search by client name, number or acronym"
         items={options["clients"] || []}
-        titleText="Client"
-        typeahead />
+        titleText="Client" />
 
       <ComboBox
         disabled={!isActive}
         id="client-location"
         className="flex-fill"
-        allowCustomValue
         selectedItem={location}
-        onChange={handleLocationSelection}        
-        items={options["locations"] || []}
+        onChange={handleLocationSelection}
+        itemToElement={(item: AutocompleteProps) => item.label}
+        items={options["locations"] || [{ id: "", label: "No results found" }]}
         titleText="Location code"
         typeahead />
       </div>

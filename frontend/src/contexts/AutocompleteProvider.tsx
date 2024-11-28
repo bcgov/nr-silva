@@ -1,7 +1,6 @@
 import { createContext, useContext, ReactNode, useState, useRef, useEffect } from "react";
+import { InlineLoading } from "@carbon/react";
 import { debounce, DebouncedFunc } from "lodash";
-
-// TODO: test this
 
 interface AutocompleteProviderProps {
   fetchOptions: (query: string, key: string) => Promise<any[]>;
@@ -16,6 +15,13 @@ interface AutocompleteContextType {
   fetchOptions: (query: string, key: string) => void;
   setOptions: (key: string, items: any[]) => void;
 }
+
+const searchingForItems = [{
+  id: "",
+  label: (<InlineLoading status="active" iconDescription="Loading" description="Loading data..." />)
+}];
+
+const noDataFound = [{ id: "", label: "No results found" }];
 
 const AutocompleteContext = createContext<AutocompleteContextType | undefined>(undefined);
 
@@ -39,8 +45,9 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
         if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
           return;
         }
+        setOptions(key, searchingForItems);
         const fetchedOptions = await fetchOptions(query, key);
-        setOptions(key, fetchedOptions);
+        setOptions(key, fetchedOptions.length ? fetchedOptions : noDataFound);
       } catch (fetchError) {
         setError("Error fetching options");
       } finally {
@@ -49,8 +56,16 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
     }, 450);
   };
 
-  const fetchAndSetOptions = (query: string, key: string) => {
-    setLoading(true);
+  const fetchAndSetOptions = async (query: string, key: string) => {
+    if(!key || !query) return;
+    if (skipConditions && skipConditions[key] && skipConditions[key](query)) {
+      return;
+    }
+    /*setLoading(true);
+    setOptions(key, searchingForItems);
+    const fetchedOptions = await fetchOptions(query, key);
+    setOptions(key, fetchedOptions.length ? fetchedOptions : noDataFound);
+    setLoading(false);*/
     if (!debouncedFetchMap.current.has(key)) {
       debouncedFetchMap.current.set(key, createDebouncedFetch(key));
     }
