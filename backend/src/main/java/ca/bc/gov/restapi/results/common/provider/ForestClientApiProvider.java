@@ -92,7 +92,13 @@ public class ForestClientApiProvider {
       return
           restClient
               .get()
-              .uri("/clients/{clientNumber}/locations", clientNumber)
+              .uri(uriBuilder ->
+                  uriBuilder
+                      .path("/clients/{clientNumber}/locations")
+                      .queryParam("page",0)
+                      .queryParam("size",100)
+                      .build(clientNumber)
+                  )
               .retrieve()
               .body(new ParameterizedTypeReference<>() {});
     } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
