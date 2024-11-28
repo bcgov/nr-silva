@@ -37,14 +37,7 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
 
   const createDebouncedFetch = (key: string) => {    
     return debounce(async (query: string) => {      
-      try {        
-        // If no key or query, return
-        if(!key || !query) return;
-        // If skipConditions are present and the condition is met, return, this avoids overwriting the existing
-        // data when a condition to skip is met
-        if (skipConditions?.[key]?.(query)) {
-          return;
-        }
+      try {
         setLoading(true);
         setOptions((prev) => ({ ...prev, [key]: searchingForItems }));
         const fetchedOptions = await fetchOptions(query, key);
@@ -58,7 +51,10 @@ export const AutocompleteProvider = ({ fetchOptions, skipConditions, children }:
   };
 
   const fetchAndSetOptions = (query: string, key: string) => {
+    // If no key or query, return
     if(!key || !query) return;
+    // If skipConditions are present and the condition is met, return, this avoids overwriting the existing
+    // data when a condition to skip is met
     if (skipConditions?.[key]?.(query)) {
       return;
     }

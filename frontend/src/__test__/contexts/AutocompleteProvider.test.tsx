@@ -185,16 +185,127 @@ describe("AutocompleteProvider", () => {
   });
 
   it("does not fetch options if key or query is missing", async () => {
-    render(
+    const MockAutocompleteConsumer1 = () => {
+      const { options, loading, error, fetchOptions } = useAutocomplete();
+      return (
+        <div>
+          <button onClick={() => fetchOptions("", "key1")}>Fetch Options</button>
+          {loading && <div data-testid="loading">Loading...</div>}
+          {error && <div data-testid="error">{error}</div>}
+          <div data-testid="options">{JSON.stringify(options)}</div>
+        </div>
+      );
+    };
+    
+    await act(async () => render(
       <AutocompleteProvider fetchOptions={fetchOptionsMock}>
-        <MockAutocompleteConsumer />
+        <MockAutocompleteConsumer1 />
       </AutocompleteProvider>
-    );
+    ));
 
-    userEvent.click(screen.getByText("Fetch Options"));
+    await act(async () => userEvent.click(screen.getByText("Fetch Options")));
 
     await waitFor(() => {
       expect(fetchOptionsMock).not.toHaveBeenCalled();
     });
+  });
+
+  it("does not fetch options if condition to skip matches", async () => {
+    const MockAutocompleteConsumer2 = () => {
+      const { options, loading, error, fetchOptions } = useAutocomplete();
+      return (
+        <div>
+          <button onClick={() => fetchOptions("query", "key1")}>Fetch Options</button>
+          {loading && <div data-testid="loading">Loading...</div>}
+          {error && <div data-testid="error">{error}</div>}
+          <div data-testid="options">{JSON.stringify(options)}</div>
+        </div>
+      );
+    };
+
+    const conditions = {
+      key1: (query: string) => query === "query"
+    }
+    
+    await act(async () => render(
+      <AutocompleteProvider fetchOptions={fetchOptionsMock} skipConditions={conditions}>
+        <MockAutocompleteConsumer2 />
+      </AutocompleteProvider>
+    ));
+
+    await act(async () => userEvent.click(screen.getByText("Fetch Options")));
+
+    await waitFor(() => {
+      expect(fetchOptionsMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it("should fail when mounting without context", () => {
+    expect(() => render(<MockAutocompleteConsumer />)).toThrow(
+      "useAutocomplete must be used within an AutocompleteProvider"
+    );
+  })
+
+  it("handles no results with proper message", async () => {
+    fetchOptionsMock.mockResolvedValueOnce([]);
+
+    await act(async () =>render(
+      <AutocompleteProvider fetchOptions={fetchOptionsMock}>
+        <MockAutocompleteConsumer />
+      </AutocompleteProvider>
+    ));
+
+    await act(async () => userEvent.click(screen.getByText("Fetch Options")));
+
+    expect(fetchOptionsMock).toHaveBeenCalledWith("test-query", "key1");
+
+    await waitFor(() => {
+      expect(screen.getByTestId("options")).toHaveTextContent(
+        JSON.stringify({ key1: [{"id":"","label":"No results found"}] })
+      );
+    });
+  });
+
+  it("handles set options", async () => {
+    fetchOptionsMock.mockResolvedValueOnce(["option1", "option2"]);
+
+    const MockAutocompleteConsumer3 = () => {
+      const { options, loading, error, fetchOptions, updateOptions } = useAutocomplete();
+      return (
+        <div>
+          <button onClick={() => fetchOptions("query", "key1")}>Fetch Options</button>
+          <button onClick={() => updateOptions("key1", ["notalot"])}>Set Options</button>
+          {loading && <div data-testid="loading">Loading...</div>}
+          {error && <div data-testid="error">{error}</div>}
+          <div data-testid="options">{JSON.stringify(options)}</div>
+        </div>
+      );
+    };
+    
+    await act(async () => render(
+      <AutocompleteProvider fetchOptions={fetchOptionsMock}>
+        <MockAutocompleteConsumer3 />
+      </AutocompleteProvider>
+    ));
+
+    await act(async () => userEvent.click(screen.getByText("Fetch Options")));
+
+    expect(fetchOptionsMock).toHaveBeenCalledWith("query", "key1");
+
+    await waitFor(() => {
+      expect(screen.getByTestId("options")).toHaveTextContent(
+        JSON.stringify({ key1: ["option1", "option2"] })
+      );
+    });
+
+    await act(async () => userEvent.click(screen.getByText("Set Options")));
+
+
+    await waitFor(() => {
+      expect(screen.getByTestId("options")).toHaveTextContent(
+        JSON.stringify({ key1: ["notalot"] })
+      );
+    });
+
   });
 });
