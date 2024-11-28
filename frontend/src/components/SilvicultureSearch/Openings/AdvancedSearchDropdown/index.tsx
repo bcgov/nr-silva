@@ -280,6 +280,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             titleText="Date type"
             items={dateTypeItems}
             itemToString={(item: any) => (item ? item.text : "")}
+
             onChange={(e: any) =>
               handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
             }

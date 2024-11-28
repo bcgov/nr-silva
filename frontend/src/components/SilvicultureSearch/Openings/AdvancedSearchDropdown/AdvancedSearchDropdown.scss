@@ -44,7 +44,6 @@
   }
 
 
-
   input {
     background-color: var(--bx-field-01);
     border-bottom: 1px solid var(--bx-border-strong-01);
@@ -72,20 +71,6 @@
   .multi-select .bx--list-box__field--wrapper {
     background-color: var(--bx-field-01);
     border-bottom: 1px solid var(--bx-border-strong-01);
-  }
-}
-
-.horizontal-checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 462px;
-
-  .#{vars.$bcgov-prefix}--checkbox-label-text {
-    font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.16px;
-    margin-right: 16px;
-    color: var(--bx-text-primary);
   }
 }
 
