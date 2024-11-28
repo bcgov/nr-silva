@@ -48,7 +48,7 @@ class UserAuthenticationHelperTest {
     builder.claim("custom:idp_display_name", "from Baggings, Bilbo LWRS:EX");
     builder.claim("custom:idp_username", "BAGGINGS");
     builder.claim("custom:idp_name", "idir");
-    builder.claim("cognito:username", "IDIR@BAGGINGS");
+    builder.claim("cognito:username", "IDIR\\BAGGINGS");
     builder.claim("client_roles", List.of("admin", "manager"));
 
     when(authentication.getPrincipal()).thenReturn(builder.build());
@@ -85,7 +85,7 @@ class UserAuthenticationHelperTest {
     builder.claim("custom:idp_display_name", "Lord Sauron of Mordor");
     builder.claim("custom:idp_username", "MORDOR-BCEID");
     builder.claim("custom:idp_name", "bceidbusiness");
-    builder.claim("cognito:username", "BCEIDBUSINESS@MORDOR-BCEID");
+    builder.claim("cognito:username", "BCEIDBUSINESS\\MORDOR-BCEID");
 
     when(authentication.getPrincipal()).thenReturn(builder.build());
 
