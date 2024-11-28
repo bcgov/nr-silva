@@ -453,4 +453,41 @@ describe('Search Screen Data table test', () => {
     
   });
 
+  it('should call handleCheckboxChange appropriately when the select-all/default-column div is clicked', async () => {
+    const handleCheckboxChange = vi.fn();
+    let container;
+
+    await act(async () => 
+    ({ container } =
+    render(
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <PaginationProvider>
+            <OpeningsSearchProvider>
+              <NotificationProvider>
+                <SearchScreenDataTable
+                  rows={rows}
+                  headers={columns}
+                  defaultColumns={columns}
+                  showSpatial={false}
+                  handleCheckboxChange={handleCheckboxChange}
+                  toggleSpatial={toggleSpatial}
+                  totalItems={rows.length}
+                  setOpeningIds={setOpeningIds}
+                />
+              </NotificationProvider>
+            </OpeningsSearchProvider>
+          </PaginationProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    )));
+    expect(container).toBeInTheDocument();
+    const selectAllColumn = screen.getByTestId('select-all-column');
+    fireEvent.click(selectAllColumn);
+    expect(handleCheckboxChange).toHaveBeenCalledWith("select-all");
+    const selectDefaultColumn = screen.getByTestId('select-default-column');
+    fireEvent.click(selectDefaultColumn);
+    expect(handleCheckboxChange).toHaveBeenCalledWith("select-default");
+  });
+
 });

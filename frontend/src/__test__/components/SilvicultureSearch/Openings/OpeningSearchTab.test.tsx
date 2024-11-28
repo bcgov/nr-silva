@@ -189,9 +189,9 @@ describe('OpeningSearchTab', () => {
     expect(screen.getByTestId('Opening Id')).toBeInTheDocument();
     const editColumnsBtn = screen.getByTestId('edit-columns');
     await act(async () => fireEvent.click(editColumnsBtn));
-    const checkbox = container.querySelector('input[type="checkbox"]#checkbox-label-openingId');    
+    const checkbox = container.querySelector('#checkbox-label-openingNumber');  
     await act(async () => fireEvent.click(checkbox));
-    expect(screen.queryByTestId('Opening Id')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('Opening Number')).not.toBeInTheDocument();
 
   });
 
@@ -220,7 +220,7 @@ describe('OpeningSearchTab', () => {
     expect(screen.getByTestId('openings-map')).toBeInTheDocument();
   });
 
-  it('should display more or less columns when checkboxes are clicked', async () => {
+  it('should display openingNumber once users clicks the chekbox', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
     
     let container;
@@ -245,9 +245,9 @@ describe('OpeningSearchTab', () => {
     expect(screen.getByTestId('Opening Id')).toBeInTheDocument();
     const editColumnsBtn = screen.getByTestId('edit-columns');
     await act(async () => fireEvent.click(editColumnsBtn));
-    const checkbox = container.querySelector('input[type="checkbox"]#checkbox-label-openingId');    
+    const checkbox = container.querySelector('input[type="checkbox"]#checkbox-label-openingNumber');
     await act(async () => fireEvent.click(checkbox));
-    expect(screen.queryByTestId('Opening Id')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('Opening number')).toBeInTheDocument();
 
   });
 });

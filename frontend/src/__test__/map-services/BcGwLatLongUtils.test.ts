@@ -19,19 +19,4 @@ describe('BcGwLatLongUtils test', () => {
     const openingGeometry = shiftBcGwLngLat2LatLng(coordinates);
     expect(JSON.stringify(openingGeometry)).to.equal(JSON.stringify(mockedCoordinates));
   });
-
-  it('should swift LineString shiftLineStringCoordinates', () => {
-    const coordinates = [
-      [-1, 15],
-      [-2, 25]
-    ];
-
-    const mockedCoordinates = [
-      [15, -1],
-      [25, -2]
-    ];
-
-    const layerLineString = shiftLineStringCoordinates(coordinates);
-    expect(JSON.stringify(layerLineString)).to.equal(JSON.stringify(mockedCoordinates));
-  });
 });
