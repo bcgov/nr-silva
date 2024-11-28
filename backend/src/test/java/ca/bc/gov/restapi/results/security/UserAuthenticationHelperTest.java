@@ -57,7 +57,7 @@ class UserAuthenticationHelperTest {
     Assertions.assertTrue(userInfoOptional.isPresent());
 
     UserInfo userInfo = userInfoOptional.get();
-    Assertions.assertEquals("IDIR@BAGGINGS", userInfo.id());
+    Assertions.assertEquals("IDIR\\BAGGINGS", userInfo.id());
     Assertions.assertEquals("Bilbo", userInfo.firstName());
     Assertions.assertEquals("Baggings", userInfo.lastName());
     Assertions.assertEquals("bilbo.baggings@gov.bc.ca", userInfo.email());
@@ -93,7 +93,7 @@ class UserAuthenticationHelperTest {
     Assertions.assertTrue(userInfoOptional.isPresent());
 
     UserInfo userInfo = userInfoOptional.get();
-    Assertions.assertEquals("BCEIDBUSINESS@MORDOR-BCEID", userInfo.id());
+    Assertions.assertEquals("BCEIDBUSINESS\\MORDOR-BCEID", userInfo.id());
     Assertions.assertEquals("Lord", userInfo.firstName());
     Assertions.assertEquals("Sauron of Mordor", userInfo.lastName());
     Assertions.assertEquals("lord.sauron@mordor.middleearth", userInfo.email());
