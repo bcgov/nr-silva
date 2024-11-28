@@ -2,8 +2,6 @@ import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
 
-// TODO: move interfaces to types maybe?
-// TODO: test this
 export interface ForestClientAutocomplete {
   id: string;
   name: string;
