@@ -2,7 +2,6 @@ window.global ||= window;
 import React from 'react';
 import './index.css';
 import { ClassPrefix } from '@carbon/react';
-import { Provider } from 'react-redux'
 import App from './App';
 import { ThemePreference } from './utils/ThemePreference';
 import { createRoot } from 'react-dom/client';
