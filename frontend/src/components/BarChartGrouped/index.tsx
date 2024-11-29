@@ -5,6 +5,8 @@ import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
+import { FlexGrid, Row, Column, } from "@carbon/react";
+import { ComboBox } from "@carbon/react";
 
 interface IDropdownItem {
   value: string;
@@ -42,7 +44,7 @@ function BarChartGrouped(): JSX.Element {
         if (endDate) {
           formattedEndDate = formatDateToString(endDate);
         }
-    
+
         const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
           orgUnitCode,
           statusCode,
@@ -129,34 +131,33 @@ function BarChartGrouped(): JSX.Element {
   const setOrgUnitCodeSelected = ({
     selectedItem,
   }: {
-    selectedItem: IDropdownItem;
+    selectedItem: IDropdownItem | null;
   }) => {
-    setOrgUnitCode(selectedItem.value);
+    setOrgUnitCode(selectedItem ? selectedItem.value : null);
   };
 
   const setStatusCodeSelected = ({
     selectedItem,
   }: {
-    selectedItem: IDropdownItem;
+    selectedItem: IDropdownItem | null;
   }) => {
-    setStatusCode(selectedItem.value);
+    setStatusCode(selectedItem ? selectedItem.value : null);
   };
 
   return (
-    <div className="px-3">
-      <div className="row gy-2 gx-1 pb-3">
-        <div className="col-md-3">
-          <Dropdown
+    <FlexGrid className="openingSubmissionTrends" condensed>
+      <Row>
+        <Column lg={4}>
+          <ComboBox
             id="district-dropdown"
             titleText="District"
             items={orgUnitItems}
             itemToString={(item: IDropdownItem) => (item ? item.text : "")}
             onChange={setOrgUnitCodeSelected}
             label="District"
-          />
-        </div>
-        <div className="col-md-3">
-          <Dropdown
+          /></Column>
+        <Column lg={4}>
+          <ComboBox
             id="status-dropdown"
             titleText="Status"
             items={statusItems}
@@ -164,10 +165,10 @@ function BarChartGrouped(): JSX.Element {
             onChange={setStatusCodeSelected}
             label="Status"
           />
-        </div>
-        <div className="col-md-2 col-xxl-3 d-none d-md-block">
+        </Column>
+        <Column lg={8}>
           <DatePicker
-            datePickerType="single"
+            datePickerType="range"
             onChange={(dates: [Date]) => setStartDate(dates[0])}
           >
             <DatePickerInput
@@ -176,13 +177,6 @@ function BarChartGrouped(): JSX.Element {
               size="md"
               labelText="Start Date"
             />
-          </DatePicker>
-        </div>
-        <div className="col-md-2 col-xxl-3 d-none d-md-block">
-          <DatePicker
-            datePickerType="single"
-            onChange={(dates: [Date]) => setEndDate(dates[0])}
-          >
             <DatePickerInput
               id="end-date-picker-input-id"
               placeholder="yyyy/MM/dd"
@@ -190,16 +184,20 @@ function BarChartGrouped(): JSX.Element {
               labelText="End Date"
             />
           </DatePicker>
-        </div>
-      </div>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="bar-chart-container" data-testid="bar-chart">
-          <GroupedBarChart data={chartData} options={options} />
-        </div>
-      )}
-    </div>
+        </Column>
+      </Row>
+      <Row>
+        <Column sm={4}>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="bar-chart-container" data-testid="bar-chart">
+              <GroupedBarChart data={chartData} options={options} />
+            </div>
+          )}
+        </Column>
+      </Row>
+    </FlexGrid>
   );
 };
 

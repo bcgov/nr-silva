@@ -1,15 +1,36 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
+.openingSubmissionTrends {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+    padding: 17px;
+    z-index: 2;
+
+    .bx--row {
+        padding-bottom: 5px;
+    }
+
+    .multi-select .bx--list-box__field--wrapper{
+        background-color: var(--bx-field-01);
+        border-bottom: 1px solid var(--bx-border-strong-01);
+    }
+    
+    label {
+        font-size: 16px;
+        line-height: 20px;
+        letter-spacing: 0.16px;
+        white-space: nowrap;
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
+      } 
+}
+
 .cds--cc--axes g.axis g.tick text {
     fill: var(--#{vars.$bcgov-prefix}-text-secondary);
 }
 .cds--cc--grid rect.chart-grid-backdrop {
     fill: var(--#{vars.$bcgov-prefix}-layer-02);
 }
-.#{vars.$bcgov-prefix}--date-picker-container {
- min-height: 66px;
-}
+
 .bar-chart-container {
-    padding-bottom: 16px;
+    padding-bottom: 5px;
 }
