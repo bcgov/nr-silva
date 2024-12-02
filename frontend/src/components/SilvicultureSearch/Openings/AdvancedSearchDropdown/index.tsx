@@ -4,8 +4,6 @@ import {
   CheckboxGroup,
   Dropdown,
   TextInput,
-  FormLabel,
-  Tooltip,
   DatePicker,
   DatePickerInput,
   Loading,
@@ -14,24 +12,26 @@ import {
   Column,
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
-import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
 import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 import { ComboBox } from "@carbon/react";
+import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
+import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
-  const { filters, setFilters, clearFilters } = useOpeningsSearch();
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
+  const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
 
   useEffect(() => {
     console.log("Use Effect in child is being called.", filters);
@@ -57,15 +57,30 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     }
   }, [filters.orgUnit, filters.category]);
 
-  // const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
-  //   const newFilters = { ...filters, ...updatedFilters };
-  //   setFilters(newFilters);
-  // };
-  const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
-    const newFilters = { ...filters, ...updatedFilters };
-    setFilters(newFilters);
-  };
+  useEffect(() => {
 
+  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
+  // The idea is to keep the autocomplete component clear of any ties to the opening search context
+  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
+    ...previousIndividualFilters,
+    clientLocationCode: () => autoCompleteRef.current?.reset()
+  }));
+  },[]);
+
+  useEffect(() => {
+
+  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
+  // The idea is to keep the autocomplete component clear of any ties to the opening search context
+  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
+    ...previousIndividualFilters,
+    clientLocationCode: () => autoCompleteRef.current?.reset()
+  }));
+  },[]);
+
+
+  const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
+    setFilters({ ...filters, ...updatedFilters });
+  };
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
@@ -85,6 +100,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     handleFilterChange({ [group]: updatedGroup });
   };
 
+  
   if (isLoading) {
     return <Loading withOverlay={true} />;
   }

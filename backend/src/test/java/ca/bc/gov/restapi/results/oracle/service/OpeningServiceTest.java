@@ -79,6 +79,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
+                null,
                 "103"
             ),
             new PaginationParameters(0, 10)
@@ -137,7 +138,8 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
-                null
+                null,
+            null
             ),
             new PaginationParameters(0, 10)
         );
@@ -195,6 +197,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
+                null,
                 "ABCD"
             ),
             new PaginationParameters(0, 10)
@@ -216,6 +219,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
         () ->
             openingService.openingSearch(
                 new OpeningSearchFiltersDto(
+                    null,
                     null,
                     null,
                     null,
