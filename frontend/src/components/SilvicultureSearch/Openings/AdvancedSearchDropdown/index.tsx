@@ -353,12 +353,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   onChange={() => handleCheckboxChange("AMG", "status")}
                 />
                 <Checkbox
-                  labelText={`FG - Free Growing`}
-                  id="checkbox-label-fg"
-                  checked={filters.status.includes("FG")}
-                  onChange={() => handleCheckboxChange("FG", "status")}
-                />
-                <Checkbox
                   labelText={`AMD - Amended`}
                   id="checkbox-label-amd"
                   checked={filters.status.includes("AMD")}
@@ -377,16 +371,22 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   onChange={() => handleCheckboxChange("DFT", "status")}
                 />
                 <Checkbox
-                  labelText={`RET - Retired`}
-                  id="checkbox-label-ret"
-                  checked={filters.status.includes("RET")}
-                  onChange={() => handleCheckboxChange("RET", "status")}
+                  labelText={`FG - Free Growing`}
+                  id="checkbox-label-fg"
+                  checked={filters.status.includes("FG")}
+                  onChange={() => handleCheckboxChange("FG", "status")}
                 />
                 <Checkbox
                   labelText={`RMD - Removed`}
                   id="checkbox-label-rmd"
                   checked={filters.status.includes("RMD")}
                   onChange={() => handleCheckboxChange("RMD", "status")}
+                />
+                <Checkbox
+                  labelText={`RET - Retired`}
+                  id="checkbox-label-ret"
+                  checked={filters.status.includes("RET")}
+                  onChange={() => handleCheckboxChange("RET", "status")}
                 />
                 <Checkbox
                   labelText={`SUB - Submitted`}
