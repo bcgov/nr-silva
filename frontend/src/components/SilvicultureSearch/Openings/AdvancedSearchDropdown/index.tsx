@@ -226,7 +226,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           <Column lg={8}>
             <TextInput
               id="timber-mark-input"
-              type="number"
               labelText="Timber mark"
               value={filters.timberMark}
               onChange={(e: any) =>
