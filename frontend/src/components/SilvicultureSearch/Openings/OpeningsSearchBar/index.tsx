@@ -18,10 +18,9 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [searchInput, setSearchInput] = useState<string>("");
   const [filtersCount, setFiltersCount] = useState<number>(0);
   const [filtersList, setFiltersList] = useState(null);
-  const { filters, clearFilters, searchTerm, setSearchTerm, clearIndividualField } = useOpeningsSearch();
+  const { filters, clearFilters, searchTerm, setSearchTerm } = useOpeningsSearch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);

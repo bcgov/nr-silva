@@ -9,7 +9,6 @@ public class SilvaOracleConstants {
   public static final String ORG_UNIT = "orgUnit";
   public static final String CATEGORY = "category";
   public static final String STATUS_LIST = "statusList";
-  public static final String OPENING_IDS = "openingIds";
   public static final String MY_OPENINGS = "myOpenings";
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";
@@ -24,4 +23,5 @@ public class SilvaOracleConstants {
   public static final String CUT_BLOCK_ID = "cutBlockId";
   public static final String TIMBER_MARK = "timberMark";
   public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
+  public static final String LOCATION_CODE = "clientLocationCode";
 }
