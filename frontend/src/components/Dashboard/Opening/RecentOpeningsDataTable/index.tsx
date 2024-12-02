@@ -6,8 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableHeader,
-  TableRow,
-  Modal,
+  TableRow
 } from "@carbon/react";
 import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
