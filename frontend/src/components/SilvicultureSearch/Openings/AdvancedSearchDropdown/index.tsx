@@ -226,7 +226,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           <Column lg={8}>
             <TextInput
               id="timber-mark-input"
-              type="number"
               labelText="Timber mark"
               value={filters.timberMark}
               onChange={(e: any) =>
@@ -347,10 +346,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             >
               <div className="d-flex flex-status-list">
                 <Checkbox
-                  labelText={`DFT - Draft`}
-                  id="checkbox-label-dft"
-                  checked={filters.status.includes("DFT")}
-                  onChange={() => handleCheckboxChange("DFT", "status")}
+                  labelText={`AMG - Amalgamate`}
+                  id="checkbox-label-amg"
+                  checked={filters.status.includes("AMG")}
+                  onChange={() => handleCheckboxChange("AMG", "status")}
+                />
+                <Checkbox
+                  labelText={`AMD - Amended`}
+                  id="checkbox-label-amd"
+                  checked={filters.status.includes("AMD")}
+                  onChange={() => handleCheckboxChange("AMD", "status")}
                 />
                 <Checkbox
                   labelText={`APP - Approved`}
@@ -359,14 +364,32 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   onChange={() => handleCheckboxChange("APP", "status")}
                 />
                 <Checkbox
+                  labelText={`DFT - Draft`}
+                  id="checkbox-label-dft"
+                  checked={filters.status.includes("DFT")}
+                  onChange={() => handleCheckboxChange("DFT", "status")}
+                />
+                <Checkbox
                   labelText={`FG - Free Growing`}
-                  id="checkbox-label-rjc"
+                  id="checkbox-label-fg"
                   checked={filters.status.includes("FG")}
                   onChange={() => handleCheckboxChange("FG", "status")}
                 />
                 <Checkbox
+                  labelText={`RMD - Removed`}
+                  id="checkbox-label-rmd"
+                  checked={filters.status.includes("RMD")}
+                  onChange={() => handleCheckboxChange("RMD", "status")}
+                />
+                <Checkbox
+                  labelText={`RET - Retired`}
+                  id="checkbox-label-ret"
+                  checked={filters.status.includes("RET")}
+                  onChange={() => handleCheckboxChange("RET", "status")}
+                />
+                <Checkbox
                   labelText={`SUB - Submitted`}
-                  id="checkbox-label-cnl"
+                  id="checkbox-label-sub"
                   checked={filters.status.includes("SUB")}
                   onChange={() => handleCheckboxChange("SUB", "status")}
                 />

@@ -24,4 +24,5 @@ public class SilvaOracleConstants {
   public static final String TIMBER_MARK = "timberMark";
   public static final String MAIN_SEARCH_TERM = "mainSearchTerm";
   public static final String LOCATION_CODE = "clientLocationCode";
+  public static final String NOVALUE = "NOVALUE";
 }

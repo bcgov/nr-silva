@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,4 +39,9 @@ public class OpenCategoryCodeEntity {
 
   @Column(name = "UPDATE_TIMESTAMP", nullable = false)
   private LocalDate updateTimestamp;
+
+  @Transient
+  public boolean isExpired() {
+    return expiryDate != null && LocalDate.now().isAfter(expiryDate);
+  }
 }

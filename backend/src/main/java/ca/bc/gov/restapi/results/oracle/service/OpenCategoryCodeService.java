@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
-/** This class contains methods to handle Opening Categories. */
+/**
+ * This class contains methods to handle Opening Categories.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,13 @@ public class OpenCategoryCodeService {
     );
     return openCategoryCodes
         .stream()
-        .map(entity -> new CodeDescriptionDto(entity.getCode(), entity.getDescription()))
+        .map(entity -> new CodeDescriptionDto(
+                entity.getCode(),
+                entity.isExpired()
+                    ? entity.getDescription() + " (Expired)"
+                    : entity.getDescription()
+            )
+        )
         .toList();
   }
 }

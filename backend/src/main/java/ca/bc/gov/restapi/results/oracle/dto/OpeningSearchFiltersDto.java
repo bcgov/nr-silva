@@ -8,12 +8,16 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.util.CollectionUtils;
 
-/** This record contains all possible filters when using the Opening Search API. */
+/**
+ * This record contains all possible filters when using the Opening Search API.
+ */
 @Slf4j
 @Getter
 @ToString
 public class OpeningSearchFiltersDto {
+
   private final List<String> orgUnit;
   private final List<String> category;
   private final List<String> statusList;
@@ -37,7 +41,9 @@ public class OpeningSearchFiltersDto {
   @Setter
   private String requestUserId;
 
-  /** Creates an instance of the search opening filter dto. */
+  /**
+   * Creates an instance of the search opening filter dto.
+   */
   public OpeningSearchFiltersDto(
       List<String> orgUnit,
       List<String> category,
@@ -57,9 +63,12 @@ public class OpeningSearchFiltersDto {
       String timberMark,
       String clientLocationCode,
       String mainSearchTerm) {
-    this.orgUnit = !Objects.isNull(orgUnit) ? orgUnit : null;
-    this.category = !Objects.isNull(category) ? category : null;
-    this.statusList = !Objects.isNull(statusList) ? statusList : null;
+    this.orgUnit = !CollectionUtils.isEmpty(orgUnit) ? orgUnit : List.of(
+        SilvaOracleConstants.NOVALUE);
+    this.category = !CollectionUtils.isEmpty(category) ? category : List.of(
+        SilvaOracleConstants.NOVALUE);
+    this.statusList = !CollectionUtils.isEmpty(statusList) ? statusList : List.of(
+        SilvaOracleConstants.NOVALUE);
     this.myOpenings = myOpenings;
     this.submittedToFrpa =
         BooleanUtils
@@ -98,9 +107,12 @@ public class OpeningSearchFiltersDto {
    */
   public boolean hasValue(String prop) {
     return switch (prop) {
-      case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit) && !this.orgUnit.isEmpty();
-      case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category) && !this.category.isEmpty();
-      case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList) && !this.statusList.isEmpty();
+      case SilvaOracleConstants.ORG_UNIT ->
+          !Objects.isNull(this.orgUnit) && !this.orgUnit.isEmpty();
+      case SilvaOracleConstants.CATEGORY ->
+          !Objects.isNull(this.category) && !this.category.isEmpty();
+      case SilvaOracleConstants.STATUS_LIST ->
+          !Objects.isNull(this.statusList) && !this.statusList.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
       case SilvaOracleConstants.DISTURBANCE_DATE_START ->
@@ -124,4 +136,5 @@ public class OpeningSearchFiltersDto {
       }
     };
   }
+
 }
