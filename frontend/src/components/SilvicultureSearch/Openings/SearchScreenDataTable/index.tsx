@@ -507,7 +507,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             }
                             parentWidth={cellWidths[i]}
                           />
-                        ) : header.key === "disturbanceStartDate" ? (
+                        ) : header.key.includes("Date") || header.key.includes("Timestamp") ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
