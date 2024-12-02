@@ -67,8 +67,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   },[]);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
-    const newFilters = { ...filters, ...updatedFilters };
-    setFilters(newFilters);
+    setFilters({ ...filters, ...updatedFilters });
   };
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {

@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import { ComboBox } from "@carbon/react";
 import { useAutocomplete } from "../../contexts/AutocompleteProvider";
 import { 
@@ -74,19 +74,13 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
   const [client, setClient] = useState<AutocompleteProps | null>(null);
 
-  const clearLocation = () => {
-    setLocation(null);
-    setClient(null);
-    setValue(null);
-  };
-
   const clearClient = () => {
     updateOptions("locations", []);
     updateOptions("clients", []);
     setClient(null);
     setValue(null);
     setIsActive(false);
-    clearLocation();
+    setLocation(null);
   };
 
   const handleClientChange = (autocompleteEvent: AutocompleteComboboxProps) => {    
@@ -101,19 +95,13 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     }
   };
 
-  const handleLocationSelection = (e: AutocompleteComboboxProps) => {    
-    const selectedItem = e.selectedItem;
-    if(selectedItem){
-      setValue(selectedItem.id);
-      setLocation(selectedItem);
-    }else{
-      clearLocation();
-    }
-  };
-
   useImperativeHandle(ref, () => ({
-    reset: clearLocation
+    reset: () => setLocation(null)
   }));
+
+  useEffect(() => {
+    setValue(location?.id || null);
+  }, [location]);
 
   return (
     <div className="d-flex w-100 gap-1 mt-2">
@@ -133,12 +121,10 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
         disabled={!isActive}
         id="client-location"
         className="flex-fill"
-        selectedItem={location}
-        onChange={handleLocationSelection}
+        onChange={(item: AutocompleteComboboxProps) => setLocation(item.selectedItem)}
         itemToElement={(item: AutocompleteProps) => item.label}
         items={options["locations"] || [{ id: "", label: "No results found" }]}
-        titleText="Location code"
-        typeahead />
+        titleText="Location code" />
       </div>
   );
 });
