@@ -110,6 +110,7 @@ describe("AdvancedSearchDropdown", () => {
         blockStatuses: [] as string[]
       },
       setIndividualClearFieldFunctions: vi.fn(),
+      setFilters: vi.fn(),
     });
     let container;
     await act(async () => {

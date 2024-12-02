@@ -74,6 +74,7 @@ describe("AutocompleteClientLocation", () => {
 
   it("clears the location selection when the client is reset", async () => {
     const mockSetValue = vi.fn();
+    
     render(<AutocompleteClientLocation setValue={mockSetValue} />);
 
     // Select a client
@@ -81,15 +82,18 @@ describe("AutocompleteClientLocation", () => {
     await userEvent.type(clientInput, "Client");
     const clientOption = screen.getByText(mockClients[0].label);
     await userEvent.click(clientOption);
+    expect(mockFetchOptions).toHaveBeenCalledWith("1", "locations");
 
     // Select a location
     const locationInput = screen.getByRole("combobox", { name: /location code/i });
+    await userEvent.click(locationInput);
     const locationOption = screen.getByText(mockLocations[0].label);
     await userEvent.click(locationOption);
+    expect(mockSetValue).toHaveBeenCalledWith("A");
 
     // Clear client selection
-    const clientClearButton = screen.getByRole("button", { name: /clear/i });
-    fireEvent.click(clientClearButton);
+    const clientClearButton = screen.getAllByRole("button", { name: /clear/i });
+    fireEvent.click(clientClearButton[0]);
 
     expect(mockUpdateOptions).toHaveBeenCalledWith("locations", []);
     expect(mockUpdateOptions).toHaveBeenCalledWith("clients", []);
@@ -98,6 +102,7 @@ describe("AutocompleteClientLocation", () => {
 
   it("calls setValue when a location is selected", async () => {
     const mockSetValue = vi.fn();
+    
     render(<AutocompleteClientLocation setValue={mockSetValue} />);
 
     // Select a client
@@ -105,12 +110,13 @@ describe("AutocompleteClientLocation", () => {
     await userEvent.type(clientInput, "Client");
     const clientOption = screen.getByText(mockClients[0].label);
     await userEvent.click(clientOption);
+    expect(mockFetchOptions).toHaveBeenCalledWith("1", "locations");
 
     // Select a location
     const locationInput = screen.getByRole("combobox", { name: /location code/i });
+    await userEvent.click(locationInput);
     const locationOption = screen.getByText(mockLocations[0].label);
     await userEvent.click(locationOption);
-
     expect(mockSetValue).toHaveBeenCalledWith("A");
   });
 });

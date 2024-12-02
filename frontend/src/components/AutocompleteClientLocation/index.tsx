@@ -7,6 +7,7 @@ import {
   ForestClientAutocomplete,
   ForestClientLocation 
 } from "../../services/OpeningClientLocationService";
+import { update } from "lodash";
 
 interface AutocompleteProps {
   id: string,
