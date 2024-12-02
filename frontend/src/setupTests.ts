@@ -64,3 +64,5 @@ Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
     multiply: () => {}
   })
 });
+
+window.HTMLElement.prototype.scrollIntoView = function() {};

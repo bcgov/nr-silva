@@ -14,9 +14,13 @@ vi.mock("../../../../services/queries/search/openingQueries", () => ({
 }));
 
 // Mocking useOpeningsSearch to return the necessary functions and state
-vi.mock("../../../../contexts/search/OpeningsSearch", () => ({
-  useOpeningsSearch: vi.fn(),
-}));
+vi.mock("../../../../contexts/search/OpeningsSearch", async () => {
+  const actual = await vi.importActual<typeof import("../../../../contexts/search/OpeningsSearch")>("../../../../contexts/search/OpeningsSearch");
+  return {
+    ...actual,
+    useOpeningsSearch: vi.fn(),
+  }
+});
 
 describe("AdvancedSearchDropdown", () => {
   beforeEach(() => {
@@ -60,6 +64,7 @@ describe("AdvancedSearchDropdown", () => {
       },
       setFilters: vi.fn(),
       clearFilters: vi.fn(),
+      setIndividualClearFieldFunctions: vi.fn(),
     });
   });
 
@@ -104,6 +109,8 @@ describe("AdvancedSearchDropdown", () => {
         openingFilters: [] as string[],
         blockStatuses: [] as string[]
       },
+      setIndividualClearFieldFunctions: vi.fn(),
+      setFilters: vi.fn(),
     });
     let container;
     await act(async () => {

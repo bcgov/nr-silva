@@ -23,6 +23,7 @@ export interface OpeningFilters {
   blockStatuses?: string[];
   page?: number;
   perPage?: number;
+  clientLocationCode?: string;
 }
 
 export interface OpeningItem {
@@ -68,6 +69,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     cutBlockId: filters.cutBlock,
     cuttingPermitId:filters.cuttingPermit,
     timbermark:filters.timberMark,
+    clientLocationCode: filters.clientLocationCode,
     myOpenings:
       filters.openingFilters?.includes("Openings created by me") || undefined,
     submittedToFrpa:

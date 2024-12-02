@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Checkbox,
   CheckboxGroup,
   Dropdown,
   TextInput,
-  FormLabel,
-  Tooltip,
   DatePicker,
   DatePickerInput,
   Loading,
@@ -15,23 +13,25 @@ import {
   FilterableMultiSelect
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
-import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
 import { formatDateForDatePicker } from "../../../../utils/DateUtils";
+import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
+import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
-  const { filters, setFilters, clearFilters } = useOpeningsSearch();
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
+  const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
 
   useEffect(() => {
     // Split filters.orgUnit into array and format as needed for selectedItems
@@ -56,11 +56,19 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   }
   }, [filters.orgUnit, filters.category]);
 
-  const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
-    const newFilters = { ...filters, ...updatedFilters };
-    setFilters(newFilters);
-  };
+  useEffect(() => {
 
+  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
+  // The idea is to keep the autocomplete component clear of any ties to the opening search context
+  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
+    ...previousIndividualFilters,
+    clientLocationCode: () => autoCompleteRef.current?.reset()
+  }));
+  },[]);
+
+  const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
+    setFilters({ ...filters, ...updatedFilters });
+  };
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
@@ -80,6 +88,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     handleFilterChange({ [group]: updatedGroup });
   };
 
+  
   if (isLoading) {
     return <Loading withOverlay={true} />;
   }
@@ -182,41 +191,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
         <Row className="mb-3">
           <Column lg={8}>
-            <div className="d-flex flex-auto mt-2 gap-1">
-              <div>
-                <FormLabel>Client acronym</FormLabel>
-                <Tooltip
-                  align="bottom"
-                  label="If you don't remember the client information you can go to client search."
-                >
-                  <button className="bx--tooltip__trigger" type="button">
-                    <Icons.Information />
-                  </button>
-                </Tooltip>
-                <TextInput
-                  id="text-input-1"
-                  type="text"
-                  labelText=""
-                  className="mt-2"
-                  value={filters.clientAcronym}
-                  onChange={(e: any) =>
-                    handleFilterChange({ clientAcronym: e.target.value })
-                  }
+            <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
+              <AutocompleteClientLocation 
+                setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })} 
+                ref={autoCompleteRef}
                 />
-              </div>
-              <>
-                <TextInput
-                  id="client-location-code"
-                  labelText="Client location code"
-                  type="text"
-                  className="mt-1"
-                  value={filters.clientLocationCode}
-                  onChange={(e: any) =>
-                    handleFilterChange({ clientLocationCode: e.target.value })
-                  }
-                />
-              </>
-            </div>
+            </AutocompleteProvider>
           </Column>
           <Column lg={8}>
             <div className="d-flex flex-auto mt-2 gap-1">
