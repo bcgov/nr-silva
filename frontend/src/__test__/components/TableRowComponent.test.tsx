@@ -65,7 +65,7 @@ describe("TableRowComponent", () => {
     fireEvent.click(tableRow);
 
     // Verify that setOpeningDetails was called with true
-    expect(setOpeningDetails).toHaveBeenCalledWith(true);
+    expect(setOpeningDetails).toHaveBeenCalledWith("1");
   });
 
   it("renders TableCell components only for selected headers", () => {

@@ -12,7 +12,7 @@ interface TableRowComponentProps {
   showSpatial: boolean;
   selectedRows: string[];
   handleRowSelectionChanged: (rowId: string) => void;
-  setOpeningDetails: (show: boolean) => void;
+  setOpeningDetails: (openingId: string) => void;
 }
 
 const TableRowComponent: React.FC<TableRowComponentProps> = ({
@@ -21,9 +21,9 @@ const TableRowComponent: React.FC<TableRowComponentProps> = ({
   showSpatial,
   selectedRows,
   handleRowSelectionChanged,
-  setOpeningDetails,
+  setOpeningDetails
 }) => (
-  <TableRow onClick={() => setOpeningDetails(true)}>
+  <TableRow onClick={() => setOpeningDetails(row.openingId.toString())}>
     {headers.map((header) =>
       header.selected ? (
         <TableCell key={header.key}>
