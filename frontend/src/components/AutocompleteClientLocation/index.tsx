@@ -7,7 +7,6 @@ import {
   ForestClientAutocomplete,
   ForestClientLocation 
 } from "../../services/OpeningClientLocationService";
-import { update } from "lodash";
 
 interface AutocompleteProps {
   id: string,
@@ -101,7 +100,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   }));
 
   useEffect(() => {
-    setValue(location?.id || null);
+    setValue(location?.id ?? null);
   }, [location]);
 
   return (
