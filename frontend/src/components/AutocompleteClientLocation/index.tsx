@@ -28,7 +28,10 @@ export interface AutocompleteComponentRefProps {
 // Defines when the fetch should be skipped for a specific key
 export const skipConditions = {
   // Skip when the query value matches the selected text by the user on the dropdown
-  clients: (query: string) => query.match(/^[a-zA-Z\s]*,\s[a-zA-Z\s]*,*/) ? true : false,  
+  clients: (query: string) => {
+    const regex = /^[a-zA-Z\s]*,\s[a-zA-Z\s]*,*/;
+    return regex.exec(query) !== null;
+  },
   // Never skips for locations  
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locations: (query: string) => false
@@ -86,13 +89,13 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     clearLocation();
   };
 
-  const handleClientChange = async (autocompleteEvent: AutocompleteComboboxProps) => {    
+  const handleClientChange = (autocompleteEvent: AutocompleteComboboxProps) => {    
 
     const selectedItem = autocompleteEvent.selectedItem;
     if (selectedItem) {
       setIsActive(true);
       setClient(selectedItem);
-      await fetchOptions(selectedItem.id, "locations");
+      fetchOptions(selectedItem.id, "locations");
     }else{
       clearClient();
     }

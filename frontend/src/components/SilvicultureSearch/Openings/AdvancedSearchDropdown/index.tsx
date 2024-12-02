@@ -13,7 +13,6 @@ import {
   FilterableMultiSelect
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
-import * as Icons from "@carbon/icons-react";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
