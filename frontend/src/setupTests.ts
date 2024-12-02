@@ -66,7 +66,3 @@ Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
 });
 
 window.HTMLElement.prototype.scrollIntoView = function() {};
-
-window.SVGElement.prototype.baseVal = {
-  consolidate: vi.fn(() => {})
-};
