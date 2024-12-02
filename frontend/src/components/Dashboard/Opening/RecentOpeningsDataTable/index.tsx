@@ -15,6 +15,7 @@ import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
 import { useNavigate } from "react-router-dom";
 import TableRowComponent from "../../../TableRowComponent";
+import ComingSoonModal from "../../../ComingSoonModal";
 
 interface IRecentOpeningsDataTable {
   rows: OpeningsSearch[];
@@ -38,7 +39,7 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
     setInitialItemsPerPage,
   } = useContext(PaginationContext);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [openingDetails, setOpeningDetails] = useState(false);
+  const [openingDetails, setOpeningDetails] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,13 +96,9 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
             fill="#0073E6"
           />
         )}
-
-        <Modal
-          open={openingDetails}
-          onRequestClose={() => setOpeningDetails(false)}
-          passiveModal
-          modalHeading="Feature coming soon"
-          modalLabel="Opening Details"
+        <ComingSoonModal
+          openingDetails={openingDetails}
+          setOpeningDetails={setOpeningDetails}
         />
       </TableContainer>
     </>
