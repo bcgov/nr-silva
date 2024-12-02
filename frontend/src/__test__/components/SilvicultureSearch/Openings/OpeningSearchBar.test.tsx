@@ -10,14 +10,19 @@ import { OpeningsSearchProvider, useOpeningsSearch } from "../../../../contexts/
 import userEvent from "@testing-library/user-event";
 
 // Mock the useOpeningsSearch context to avoid rendering errors
-vi.mock("../../../../contexts/search/OpeningsSearch", () => ({
-  useOpeningsSearch: vi.fn().mockReturnValue({
-    filters: [],
-    clearFilters: vi.fn(),
-    searchTerm: "",
-    setSearchTerm: vi.fn(),
-  }),
-}));
+vi.mock("../../../../contexts/search/OpeningsSearch", async () => {
+  const actual = await vi.importActual<typeof import("../../../../contexts/search/OpeningsSearch")>("../../../../contexts/search/OpeningsSearch");
+  return {
+    ...actual,
+    useOpeningsSearch: vi.fn().mockReturnValue({
+      filters: [],
+      clearFilters: vi.fn(),
+      searchTerm: "",
+      setSearchTerm: vi.fn(),
+      setIndividualClearFieldFunctions: vi.fn(),
+    }),
+  }
+});
 
 describe("OpeningsSearchBar", () => {
   // Create a new QueryClient instance for each test
@@ -106,7 +111,6 @@ describe("OpeningsSearchBar", () => {
     vi.spyOn(React, 'useState')
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking isOpen state as false
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking showFilters state as false
-      .mockImplementationOnce(() => ["", vi.fn()])  // Mocking searchInput state
       .mockImplementationOnce(() => [2, vi.fn()])    // Mocking filtersCount state
       .mockImplementationOnce(() => [null, vi.fn()]); // Mocking filtersList state
     

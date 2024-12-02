@@ -11,7 +11,9 @@ const API_ENDPOINTS = {
   openingSearch: (filters: string) => `${API_BASE_URL}/api/opening-search${filters}`,
   recentOpenings: () => `${API_BASE_URL}/api/openings/recent`,
   categories: () => `${API_BASE_URL}/api/opening-search/categories`,
-  orgUnits: () => `${API_BASE_URL}/api/opening-search/org-units`
+  orgUnits: () => `${API_BASE_URL}/api/opening-search/org-units`,
+  clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/api/forest-clients/byNameAcronymNumber?value=${query}`,
+  clientLocations: (clientId: string) => `${API_BASE_URL}/api/forest-clients/${clientId}/locations`
 };
 
 // Define the default headers for the API requests, including ones used by CORS

@@ -32,6 +32,7 @@ public class OpeningSearchFiltersDto {
   private final String timberMark;
   // Main input, it can be one of Opening ID, Opening Number, Timber Mark ID, or File ID
   private final String mainSearchTerm;
+  private final String clientLocationCode;
 
   @Setter
   private String requestUserId;
@@ -54,6 +55,7 @@ public class OpeningSearchFiltersDto {
       String cuttingPermitId,
       String cutBlockId,
       String timberMark,
+      String clientLocationCode,
       String mainSearchTerm) {
     this.orgUnit = !Objects.isNull(orgUnit) ? orgUnit : null;
     this.category = !Objects.isNull(category) ? category : null;
@@ -84,6 +86,8 @@ public class OpeningSearchFiltersDto {
     this.timberMark = Objects.isNull(timberMark) ? null : timberMark.toUpperCase().trim();
     this.mainSearchTerm =
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
+    this.clientLocationCode =
+        Objects.isNull(clientLocationCode) ? null : clientLocationCode.trim();
   }
 
   /**
@@ -113,6 +117,7 @@ public class OpeningSearchFiltersDto {
       case SilvaOracleConstants.CUT_BLOCK_ID -> !Objects.isNull(this.cutBlockId);
       case SilvaOracleConstants.TIMBER_MARK -> !Objects.isNull(this.timberMark);
       case SilvaOracleConstants.MAIN_SEARCH_TERM -> !Objects.isNull(this.mainSearchTerm);
+      case SilvaOracleConstants.LOCATION_CODE -> !Objects.isNull(this.clientLocationCode);
       default -> {
         log.warn("Prop not found {}", prop);
         yield false;
