@@ -25,6 +25,6 @@ public enum YesNoEnum {
         return c;
       }
     }
-    throw new IllegalArgumentException(value);
+    return null;
   }
 }
