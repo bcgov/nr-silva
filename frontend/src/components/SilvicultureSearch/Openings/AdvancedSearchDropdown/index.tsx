@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Checkbox,
   CheckboxGroup,
-  Dropdown,
   TextInput,
   DatePicker,
   DatePickerInput,
@@ -120,12 +119,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       value: item.value
     })) || [];
 
-  const blockStatusItems =
-    data.blockStatuses?.map((item: any) => ({
-      text: item.label,
-      value: item.value
-    })) || [];
-
   return (
     <FlexGrid className="advanced-search-dropdown" condensed >
       <Row>
@@ -233,7 +226,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
         <Column sm={2} className="timeberMarkCol">
           <TextInput
               id="timber-mark-input"
-              type="number"
               labelText="Timber mark"
               value={filters.timberMark}
               onChange={(e: any) =>
@@ -246,7 +238,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               titleText="Date type"
               items={dateTypeItems}
               itemToString={(item: any) => (item ? item.text : "")}
-
               onChange={(e: any) =>
                   handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
               }
@@ -259,14 +250,14 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               onChange={(dates: [Date]) => {
                 if (dates.length > 0) {
                   handleFilterChange({
-                    startDate: dates[0].toISOString().slice(0, 10),
+                    startDate: dates[0].toISOString().slice(0, 10)
                   });
                 }
               }}
               onClose={(dates: [Date]) => {
                 if (dates.length > 0) {
                   handleFilterChange({
-                    startDate: dates[0].toISOString().slice(0, 10),
+                    startDate: dates[0].toISOString().slice(0, 10)
                   });
                 }
               }}
