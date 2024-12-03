@@ -110,10 +110,10 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   @Query(
       value = """
-          SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,\s
-                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,\s
-                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,\s
-                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,\s
+          SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
+                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,
+                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,
+                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,
                  submitted_to_frpa108
           FROM (
               SELECT
@@ -142,7 +142,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
               LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = o.OPENING_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+              LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
@@ -158,13 +159,13 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
             )
             )
             AND (
-                NVL(:#{#filter.orgUnit},'NOVALUE') = 'NOVALUE' OR ORG_UNIT_CODE IN (:#{#filter.orgUnit})
+                'NOVALUE' in (:#{#filter.orgUnit}) OR ORG_UNIT_CODE IN (:#{#filter.orgUnit})
             )
             AND (
-                NVL(:#{#filter.category},'NOVALUE') = 'NOVALUE' OR CATEGORY IN (:#{#filter.category})
+                'NOVALUE' in (:#{#filter.category}) OR CATEGORY IN (:#{#filter.category})
             )
             AND (
-                NVL(:#{#filter.statusList},'NOVALUE') = 'NOVALUE' OR STATUS IN (:#{#filter.statusList})
+                'NOVALUE' in (:#{#filter.statusList}) OR STATUS IN (:#{#filter.statusList})
             )
             AND (
                 NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR ENTRY_USER_ID = :#{#filter.requestUserId}
@@ -216,7 +217,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
              LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
              LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
              LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = o.OPENING_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+             LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
              LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
              LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
              LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
@@ -231,13 +233,13 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
              )
            )
            AND (
-               NVL(:#{#filter.orgUnit},'NOVALUE') = 'NOVALUE' OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
+               'NOVALUE' in (:#{#filter.orgUnit}) OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
            )
            AND (
-               NVL(:#{#filter.category},'NOVALUE') = 'NOVALUE' OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
+               'NOVALUE' in (:#{#filter.category}) OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
            )
            AND (
-               NVL(:#{#filter.statusList},'NOVALUE') = 'NOVALUE' OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
+               'NOVALUE' in (:#{#filter.statusList}) OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
            )
            AND (
                NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR o.ENTRY_USERID = :#{#filter.requestUserId}
@@ -324,7 +326,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
               LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = o.OPENING_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+              LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
@@ -336,7 +339,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
              LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
              LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
              LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = o.OPENING_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+             LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
              LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
              LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
              LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')

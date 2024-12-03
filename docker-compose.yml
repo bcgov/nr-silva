@@ -48,13 +48,14 @@ services:
     entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
     image: maven:3.9.9-eclipse-temurin-17
-    network_mode: host
+    # network_mode: host
+    ports: [8080:8080]
     volumes: 
       - ./backend:/app
       - $HOME/zscaler-certs:/certs
     working_dir: /app
     environment:
-      DATABASE_HOST: nrcdb03.bcgov
+      DATABASE_HOST: ${DATABASE_HOST} #nrcdb03.bcgov
       DATABASE_PORT: "1543"
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
@@ -62,7 +63,7 @@ services:
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
       AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: database
       DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
       <<: *db-vars
     <<: *backend
@@ -74,7 +75,7 @@ services:
     volumes: ["/pgdata"]
     ports: ["5432:5432"]
     healthcheck:
-      test: pg_isready -U postgres
+      test: pg_isready -U nr-silva
       interval: 5s
       timeout: 5s
       retries: 5
@@ -90,7 +91,7 @@ services:
   wiremock:
     image: "wiremock/wiremock:latest"
     container_name: forest-client-api-stub
-    ports: ["9000:9000","9001:9001"]
+    ports: ["9002:9000","9001:9001"]
     volumes: 
       - ./stub/:/home/wiremock/
     entrypoint: ["/docker-entrypoint.sh", "--enable-stub-cors","--global-response-templating","--port","9000","--https-port","9001","--verbose"]

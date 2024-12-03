@@ -128,7 +128,7 @@ public class OpeningSearchEndpoint {
    */
   @GetMapping("/categories")
   public List<CodeDescriptionDto> getOpeningCategories(
-      @RequestParam(value = "includeExpired", required = false)
+      @RequestParam(value = "includeExpired", required = false, defaultValue = "true")
       Boolean includeExpired) {
     boolean addExpired = Boolean.TRUE.equals(includeExpired);
     return openCategoryCodeService.findAllCategories(addExpired);
@@ -152,7 +152,7 @@ public class OpeningSearchEndpoint {
    */
   @GetMapping("/org-units-by-code")
   public List<OrgUnitEntity> getOpeningOrgUnitsByCode(
-      @RequestParam(value = "orgUnitCodes", required = true)
+      @RequestParam(value = "orgUnitCodes")
       String[] codes) {
     return orgUnitService.findAllOrgUnitsByCode(Arrays.asList(codes));
   }

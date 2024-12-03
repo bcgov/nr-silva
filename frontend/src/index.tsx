@@ -53,7 +53,7 @@ if (container) {
       <ClassPrefix prefix='bx'>
         <ThemePreference>
           <AuthProvider>
-            <QueryClientProvider client={queryClient}>        
+          <QueryClientProvider client={queryClient}>        
                   <PaginationProvider>
                     <OpeningsSearchProvider>
                       <NotificationProvider>

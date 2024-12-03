@@ -49,8 +49,6 @@ import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
-import { Icon } from "@carbon/icons-react";
-import { set } from "date-fns";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
@@ -509,7 +507,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             }
                             parentWidth={cellWidths[i]}
                           />
-                        ) : header.key === "disturbanceStartDate" ? (
+                        ) : header.key.includes("Date") || header.key.includes("Timestamp") ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]

@@ -25,6 +25,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ rowId }) => (
       renderIcon={Icons.DocumentDownload}
       onClick={() => null}
       size="md"
+      disabled
     />
   </>
 );
