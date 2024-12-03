@@ -10,6 +10,11 @@
   position: absolute;
   z-index: 2;
   box-shadow: 0px 2px 6px 0px #0000004D;
+
+  .autoClientLocation {
+    padding-left: 10px;
+    padding-right: 0px;
+  }
   
   legend {
     font-size: 16px;
@@ -31,18 +36,29 @@
     padding: 5px;
   }
 
+  .bx--col-md-3 {
+    padding-right: 10px;
+  }
+
   .orgUnitCol {
-    padding-right: 10px;
+    padding-right: 15px;
   }
 
-  .clientLocationCodeCol {
-    padding-right: 10px;
-  }
-  
   .timeberMarkCol {
-    padding-right: 10px;
+    padding-right: 15px;
   }
 
+  .cutBlock {
+    padding-top: 6px;
+  }
+
+  .cuttingPermit {
+    padding-top: 6px;
+  }
+
+  .clientLocation {
+    padding-right: 5px;
+  }
 
   input {
     background-color: var(--bx-field-01);
@@ -61,12 +77,6 @@
     color: var(--#{vars.$bcgov-prefix}-text-secondary);
   }
 
-  #tooltip {
-    border: 0;
-    padding-bottom: 0px;
-    padding-top: 0px;
-    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-  }
 
   .multi-select .bx--list-box__field--wrapper {
     background-color: var(--bx-field-01);

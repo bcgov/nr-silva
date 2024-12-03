@@ -8,6 +8,7 @@ import {
   DatePickerInput,
   Loading,
   FlexGrid,
+  FilterableMultiSelect,
   Row,
   Column
 , ComboBox } from "@carbon/react";
@@ -17,13 +18,13 @@ import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
 import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
-import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
+import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps } from "../../../AutocompleteClientLocation";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
@@ -58,24 +59,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   useEffect(() => {
 
-  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
-  // The idea is to keep the autocomplete component clear of any ties to the opening search context
-  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
-    ...previousIndividualFilters,
-    clientLocationCode: () => autoCompleteRef.current?.reset()
-  }));
-  },[]);
-
-  useEffect(() => {
-
-  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
-  // The idea is to keep the autocomplete component clear of any ties to the opening search context
-  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
-    ...previousIndividualFilters,
-    clientLocationCode: () => autoCompleteRef.current?.reset()
-  }));
-  },[]);
-
+    // In here, we're defining the function that will be called when the user clicks on the "Clear" button
+    // The idea is to keep the autocomplete component clear of any ties to the opening search context
+    setIndividualClearFieldFunctions((previousIndividualFilters) => ({
+      ...previousIndividualFilters,
+      clientLocationCode: () => autoCompleteRef.current?.reset()
+    }));
+  }, []);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     setFilters({ ...filters, ...updatedFilters });
@@ -99,7 +89,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     handleFilterChange({ [group]: updatedGroup });
   };
 
-  
+
   if (isLoading) {
     return <Loading withOverlay={true} />;
   }
@@ -137,47 +127,46 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     })) || [];
 
   return (
-    <div className="advanced-search-dropdown">
-      <FlexGrid className="container-fluid advanced-search-container p-32">
-        <Row className="pb-32">
-          <Column sm={4} className="group-1">
-            <CheckboxGroup
-              orientation="horizontal"
-              legendText="Opening Filters"
-            >
-              <Checkbox
-                labelText={`Openings created by me`}
-                id="checkbox-label-1"
-                checked={filters.openingFilters.includes(
-                  "Openings created by me"
-                )}
-                onChange={() =>
-                  handleCheckboxChange(
-                    "Openings created by me",
-                    "openingFilters"
-                  )
-                }
-              />
-              <Checkbox
-                labelText={`FRPA section 108`}
-                id="checkbox-label-2"
-                checked={filters.openingFilters.includes(
-                  "FRPA section 108"
-                )}
-                onChange={() =>
-                  handleCheckboxChange(
-                    "FRPA section 108",
-                    "openingFilters"
-                  )
-                }
-              />
-            </CheckboxGroup>
-          </Column>
-        </Row>
-
-        <Row className="mb-3">          
-          <Column lg={8}>
-            <FilterableMultiSelect
+    <FlexGrid className="advanced-search-dropdown" condensed >
+      <Row>
+        <Column sm={4}>
+          <CheckboxGroup
+            orientation="horizontal"
+            legendText="Opening Filters"
+            className="horizontal-checkbox-group"
+          >
+            <Checkbox
+              labelText={`Openings created by me`}
+              id="checkbox-label-1"
+              checked={filters.openingFilters.includes(
+                "Openings created by me"
+              )}
+              onChange={() =>
+                handleCheckboxChange(
+                  "Openings created by me",
+                  "openingFilters"
+                )
+              }
+            />
+            <Checkbox
+              labelText={`FRPA section 108`}
+              id="checkbox-label-2"
+              checked={filters.openingFilters.includes(
+                "FRPA section 108"
+              )}
+              onChange={() =>
+                handleCheckboxChange(
+                  "FRPA section 108",
+                  "openingFilters"
+                )
+              }
+            />
+          </CheckboxGroup>
+        </Column>
+      </Row>
+      <Row>
+        <Column sm={2} className="orgUnitCol">
+          <FilterableMultiSelect
               label="Enter or choose an org unit"
               id="orgunit-multiselect"
               className="multi-select"
@@ -188,10 +177,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
               selectedItems={selectedOrgUnits}
               sortItems={sortItems}
-            />
-          </Column>
-          <Column lg={8}>
-            <FilterableMultiSelect
+          />
+        </Column>
+        <Column sm={2}>
+          <FilterableMultiSelect
               label="Enter or choose a category"
               id="category-multiselect"
               className="multi-select"
@@ -199,200 +188,179 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               items={categoryItems}
               itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("category",e.selectedItems)}
+              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
               selectedItems={selectedCategories}
               sortItems={sortItems}
-            />
-          </Column>
-        </Row>
-
-        <Row className="mb-3">
-          <Column lg={8}>
-            <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
-              <AutocompleteClientLocation 
-                setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })} 
+          />
+        </Column>
+      </Row>
+      <Row>
+        <Column sm={2}>
+          <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
+            <AutocompleteClientLocation
+                setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })}
                 ref={autoCompleteRef}
-                />
-            </AutocompleteProvider>
-          </Column>
-          <Column lg={8}>
-            <div className="d-flex flex-auto mt-2 gap-1">
-              <TextInput
-                id="text-input-2"
-                type="text"
-                labelText="Cut block"
-                value={filters.cutBlock}
-                onChange={(e: any) =>
+            />
+          </AutocompleteProvider>
+        </Column>
+        <Column sm={1}>
+          <TextInput
+              id="text-input-2"
+              className="cutBlock"
+              type="text"
+              labelText="Cut block"
+              value={filters.cutBlock}
+              onChange={(e: any) =>
                   handleFilterChange({ cutBlock: e.target.value })
-                }
-              />
-              <TextInput
-                id="text-input-3"
-                labelText="Cutting permit"
-                type="text"
-                value={filters.cuttingPermit}
-                onChange={(e: any) =>
+              }
+          />
+        </Column>
+        <Column sm={1}>
+          <TextInput
+              id="text-input-3"
+              className="cuttingPermit"
+              labelText="Cutting permit"
+              type="text"
+              value={filters.cuttingPermit}
+              onChange={(e: any) =>
                   handleFilterChange({ cuttingPermit: e.target.value })
-                }
-              />
-            </div>
-          </Column>
-        </Row>
+              }
+          />
+        </Column>
+      </Row>
 
-        <Row className="mb-3">
-          <Column lg={8}>
-            <TextInput
+      <Row>
+        <Column sm={2} className="timeberMarkCol">
+          <TextInput
               id="timber-mark-input"
               type="number"
               labelText="Timber mark"
               value={filters.timberMark}
               onChange={(e: any) =>
-                handleFilterChange({ timberMark: e.target.value })
+                  handleFilterChange({ timberMark: e.target.value })
               }
+          />
+        </Column>
+        <Column lg={2} className="dateTypeCol">
+          <ComboBox
+              titleText="Date type"
+              items={dateTypeItems}
+              itemToString={(item: any) => (item ? item.text : "")}
+
+              onChange={(e: any) =>
+                  handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
+              }
+              label="Date type"
+          />
+        </Column>
+        <Column lg={4} className="startEndDateCol">
+          <DatePicker
+              datePickerType="range"
+              onChange={(dates: [Date]) => {
+                if (dates.length > 0) {
+                  handleFilterChange({
+                    startDate: dates[0].toISOString().slice(0, 10),
+                  });
+                }
+              }}
+              onClose={(dates: [Date]) => {
+                if (dates.length > 0) {
+                  handleFilterChange({
+                    startDate: dates[0].toISOString().slice(0, 10),
+                  });
+                }
+              }}
+              disabled={!filters.dateType}
+              enabled={filters.dateType}
+              readOnly={!filters.dateType}
+          >
+            <DatePickerInput
+                labelText="Start Date"
+                size="sm"
+                placeholder={
+                  filters.startDate
+                      ? filters.startDate // Display the date in YYYY-MM-DD format
+                      : "yyyy/MM/dd"
+                }
+                disabled={!filters.dateType}
+                enabled={filters.dateType}
+                value={formatDateForDatePicker(filters.startDate)}
             />
-          </Column>
-          <Column lg={8}>
-            <FlexGrid className="p-0">
-              <Row>
-                <Column
-                  sm={4}
-                  lg={16}
-                  xl={16}
-                  max={5}
-                  className="date-type-col mt-sm-2 mt-lg-0"
-                >
-                  <Dropdown
-                    id="date-type-dropdown"
-                    titleText="Date type"
-                    items={dateTypeItems}
-                    itemToString={(item: any) => (item ? item.text : "")}
-                    onChange={(e: any) =>
-                      handleFilterChange({ dateType: e.selectedItem.value })
-                    }
-                    selectedItem={
-                      filters.dateType
-                        ? dateTypeItems.find(
-                          (item: any) => item.value === filters.dateType
-                        )
-                        : ""
-                    }
-                    label="Date type"
-                  />
-                </Column>
-                <Column
-                  sm={4}
-                  lg={16}
-                  xl={16}
-                  max={11}
-                  className="date-selectors-col"
-                >
-                  <div className="d-flex flex-auto">
-                    <DatePicker
-                      datePickerType="single"
-                      className="me-1"
-                      onChange={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            startDate: dates[0].toISOString().slice(0, 10)
-                          });
-                        }
-                      }}
-                      onClose={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            startDate: dates[0].toISOString().slice(0, 10)
-                          });
-                        }
-                      }}
-                      readOnly={!filters.dateType}
-                    >
-                      <DatePickerInput
-                        id="start-date-picker-input-id"
-                        size="md"
-                        labelText="Start Date"
-                        placeholder={
-                          filters.startDate
-                            ? filters.startDate // Display the date in YYYY-MM-DD format
-                            : "yyyy/MM/dd"
-                        }
-                        value={formatDateForDatePicker(filters.startDate)}
-                      />
-                    </DatePicker>
-
-                    <DatePicker
-                      datePickerType="single"
-                      onChange={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            endDate: dates[0].toISOString().slice(0, 10)
-                          });
-                        }
-                      }}
-                      onClose={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            endDate: dates[0].toISOString().slice(0, 10)
-                          });
-                        }
-                      }}
-                      readOnly={!filters.dateType}
-                    >
-                      <DatePickerInput
-                        id="end-date-picker-input-id"
-                        size="md"
-                        labelText="End Date"
-                        placeholder={
-                          filters.endDate
-                            ? filters.endDate // Display the date in YYYY-MM-DD format
-                            : "yyyy/MM/dd"
-                        }
-                        value={formatDateForDatePicker(filters.endDate)}
-                      />
-                    </DatePicker>
-                  </div>
-                </Column>
-              </Row>
-            </FlexGrid>
-          </Column>
-        </Row>
-
-        <Row className="">
-          <Column lg={16}>
-            <CheckboxGroup
+            <DatePickerInput
+                size="sm"
+                labelText="End Date"
+                placeholder={
+                  filters.endDate
+                      ? filters.endDate // Display the date in YYYY-MM-DD format
+                      : "yyyy/MM/dd"
+                }
+                disabled={!filters.dateType}
+                enabled={filters.dateType}
+                readOnly={!filters.dateType}
+                value={formatDateForDatePicker(filters.endDate)}
+            />
+          </DatePicker>
+        </Column>
+      </Row>
+      <Row>
+        <Column sm={4}>
+          <CheckboxGroup
               orientation="horizontal"
               legendText="Status"
-            >
-              <div className="d-flex flex-status-list">
-                <Checkbox
-                  labelText={`DFT - Draft`}
-                  id="checkbox-label-dft"
-                  checked={filters.status.includes("DFT")}
-                  onChange={() => handleCheckboxChange("DFT", "status")}
-                />
-                <Checkbox
-                  labelText={`APP - Approved`}
-                  id="checkbox-label-app"
-                  checked={filters.status.includes("APP")}
-                  onChange={() => handleCheckboxChange("APP", "status")}
-                />
-                <Checkbox
-                  labelText={`FG - Free Growing`}
-                  id="checkbox-label-rjc"
-                  checked={filters.status.includes("FG")}
-                  onChange={() => handleCheckboxChange("FG", "status")}
-                />
-                <Checkbox
-                  labelText={`SUB - Submitted`}
-                  id="checkbox-label-cnl"
-                  checked={filters.status.includes("SUB")}
-                  onChange={() => handleCheckboxChange("SUB", "status")}
-                />
-              </div>
-            </CheckboxGroup>
-          </Column>
-        </Row>
-      </FlexGrid>
-    </div>
+          >
+            <Checkbox
+                labelText={`AMG - Amalgamate`}
+                id="checkbox-label-amg"
+                checked={filters.status.includes("AMG")}
+                onChange={() => handleCheckboxChange("AMG", "status")}
+            />
+            <Checkbox
+                labelText={`AMD - Amended`}
+                id="checkbox-label-amd"
+                checked={filters.status.includes("AMD")}
+                onChange={() => handleCheckboxChange("AMD", "status")}
+            />
+            <Checkbox
+                labelText={`APP - Approved`}
+                id="checkbox-label-app"
+                checked={filters.status.includes("APP")}
+                onChange={() => handleCheckboxChange("APP", "status")}
+            />
+            <Checkbox
+                labelText={`DFT - Draft`}
+                id="checkbox-label-dft"
+                checked={filters.status.includes("DFT")}
+                onChange={() => handleCheckboxChange("DFT", "status")}
+            />
+            <Checkbox
+                labelText={`FG - Free Growing`}
+                id="checkbox-label-fg"
+                checked={filters.status.includes("FG")}
+                onChange={() => handleCheckboxChange("FG", "status")}
+            />
+            <Checkbox
+                labelText={`RMD - Removed`}
+                id="checkbox-label-rmd"
+                checked={filters.status.includes("RMD")}
+                onChange={() => handleCheckboxChange("RMD", "status")}
+            />
+            <Checkbox
+                labelText={`RET - Retired`}
+                id="checkbox-label-ret"
+                checked={filters.status.includes("RET")}
+                onChange={() => handleCheckboxChange("RET", "status")}
+            />
+            <Checkbox
+                labelText={`SUB - Submitted`}
+                id="checkbox-label-sub"
+                checked={filters.status.includes("SUB")}
+                onChange={() => handleCheckboxChange("SUB", "status")}
+            />
+          </CheckboxGroup>
+        </Column>
+      </Row>
+
+    </FlexGrid>
   );
 };
 

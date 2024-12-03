@@ -48,7 +48,8 @@ services:
     entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
     image: maven:3.9.9-eclipse-temurin-17
-    network_mode: host
+    # network_mode: host
+    ports: [8080:8080]
     volumes: 
       - ./backend:/app
       - $HOME/zscaler-certs:/certs
@@ -62,7 +63,7 @@ services:
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
       AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: database
       DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
       <<: *db-vars
     <<: *backend
@@ -72,12 +73,12 @@ services:
     environment:
       <<: *db-vars
     volumes: ["/pgdata"]
-    ports: ["${POSTGRES_EXPOSED_PORT}:5432"]  #changed to 5433 to avoid conflict with local postgres
-    # healthcheck:
-    #   test: pg_isready -U nr-silva
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
+    ports: ["5432:5432"]
+    healthcheck:
+      test: pg_isready -U nr-silva
+      interval: 5s
+      timeout: 5s
+      retries: 5
     image: postgis/postgis:13-master
 
   backend-native:
