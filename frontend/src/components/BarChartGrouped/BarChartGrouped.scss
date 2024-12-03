@@ -3,11 +3,14 @@
 
 .openingSubmissionTrends {
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-    padding: 17px;
     z-index: 2;
 
-    .bx--row {
-        padding-bottom: 5px;
+    .bx--col-sm-4 {
+        padding-inline: 0rem;
+    }
+
+    .bx--col-lg-4 {
+        padding: 1rem;
     }
 
     .multi-select .bx--list-box__field--wrapper{

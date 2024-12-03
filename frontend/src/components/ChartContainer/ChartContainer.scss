@@ -6,12 +6,8 @@
     border-color: var(--#{vars.$bcgov-prefix}-border-subtle-02);
     border-radius: 4px;
     height: 100%;
-    min-width: 591px;
-    padding: 0px;
+    padding: 10px;
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-}
-.chart-container .content{
-    padding: 5px;
 }
 
 .#{vars.$bcgov-prefix}--list-box__label {

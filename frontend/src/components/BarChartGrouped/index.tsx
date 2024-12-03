@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
-import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
+import { DatePicker, DatePickerInput, FlexGrid, Row, Column, ComboBox } from "@carbon/react";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
-import { FlexGrid, Row, Column, } from "@carbon/react";
-import { ComboBox } from "@carbon/react";
 
 interface IDropdownItem {
   value: string;
@@ -49,7 +47,7 @@ function BarChartGrouped(): JSX.Element {
           orgUnitCode,
           statusCode,
           entryDateStart: formattedStartDate,
-          entryDateEnd: formattedEndDate,
+          entryDateEnd: formattedEndDate
         });
         setChartData(data);
         setIsLoading(false);
@@ -73,63 +71,63 @@ function BarChartGrouped(): JSX.Element {
   };
 
   const colors = {
-    Openings: "#1192E8",
+    Openings: "#1192E8"
   };
 
   const options = {
     axes: {
       left: {
-        mapsTo: "value",
+        mapsTo: "value"
       },
       bottom: {
         scaleType: ScaleTypes.LABELS,
-        mapsTo: "key",
-      },
+        mapsTo: "key"
+      }
     },
     color: {
-      scale: colors,
+      scale: colors
     },
     height: "18.5rem",
     grid: {
       x: {
         enabled: false,
         color: "#d3d3d3",
-        strokeDashArray: "2,2",
+        strokeDashArray: "2,2"
       },
       y: {
         enabled: true,
         color: "#d3d3d3",
-        strokeDashArray: "2,2",
-      },
+        strokeDashArray: "2,2"
+      }
     },
     toolbar: {
       enabled: false,
       numberOfIcons: 2,
       controls: [
         {
-          type: "Make fullscreen",
+          type: "Make fullscreen"
         },
         {
-          type: "Make fullscreen",
-        },
-      ],
-    },
+          type: "Make fullscreen"
+        }
+      ]
+    }
   };
 
   const orgUnitItems = [
     { value: "DCR", text: "DCR" },
-    { value: "XYZ", text: "District 2" },
+    { value: "XYZ", text: "District 2" }
     // Add more options as needed
   ];
 
   const statusItems = [
     { value: "APP", text: "Approved" },
-    { value: "NAN", text: "Not Approved" },
+    { value: "NAN", text: "Not Approved" }
     // Add more options as needed
   ];
 
   const setOrgUnitCodeSelected = ({
-    selectedItem,
+    selectedItem
   }: {
     selectedItem: IDropdownItem | null;
   }) => {
@@ -137,7 +135,7 @@ function BarChartGrouped(): JSX.Element {
   };
 
   const setStatusCodeSelected = ({
-    selectedItem,
+    selectedItem
   }: {
     selectedItem: IDropdownItem | null;
   }) => {
@@ -147,7 +145,7 @@ function BarChartGrouped(): JSX.Element {
   return (
     <FlexGrid className="openingSubmissionTrends" condensed>
       <Row>
-        <Column lg={4}>
+        <Column sm={1}>
           <ComboBox
             id="district-dropdown"
             titleText="District"
@@ -156,7 +154,7 @@ function BarChartGrouped(): JSX.Element {
             onChange={setOrgUnitCodeSelected}
             label="District"
           /></Column>
-        <Column lg={4}>
+        <Column sm={1}>
           <ComboBox
             id="status-dropdown"
             titleText="Status"
@@ -166,22 +164,21 @@ function BarChartGrouped(): JSX.Element {
             label="Status"
           />
         </Column>
-        <Column lg={8}>
+        <Column lsm={2}>
           <DatePicker
             datePickerType="range"
-            onChange={(dates: [Date]) => setStartDate(dates[0])}
+            onChange={(dates: [Date, Date]) => {
+              setStartDate(dates[0]);
+              setEndDate(dates[1]);
+            }}
           >
             <DatePickerInput
-              id="start-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
               labelText="Start Date"
+              placeholder="yyyy/MM/dd"
             />
             <DatePickerInput
-              id="end-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
               labelText="End Date"
+              placeholder="yyyy/MM/dd"
             />
           </DatePicker>
         </Column>
@@ -199,6 +196,6 @@ function BarChartGrouped(): JSX.Element {
       </Row>
     </FlexGrid>
   );
-};
+}
 
 export default BarChartGrouped;

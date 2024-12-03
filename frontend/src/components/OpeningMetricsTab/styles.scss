@@ -1,33 +1,48 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
-/* leaflet sizing */
-.leaflet-container{
-    height: 380px;
-    width: 100%;
-    padding: 0;
-    margin: 0;
+.metricsContainer {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-right: 20px;
+  z-index: 2;
+  box-shadow: 0px 2px 6px 0px #0000004D;
+  
+  .bx--row {
+    padding-bottom: 20px;
   }
+}
 
+/* leaflet sizing */
+.leaflet-container {
+  height: 380px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.favourite-activities {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+  padding: 2rem;
+}
+
+.tab-padding {
+  padding: 40px;
+  padding-top: 32px;
+}
+
+.pb-32 {
+  padding-bottom: 32px;
+}
+
+.p-32 {
+  padding: 32px;
+}
+
+@media only screen and (max-width: 671px) {
   .favourite-activities {
     background-color: var(--#{vars.$bcgov-prefix}-layer-01);
-    padding: 2rem;
+    padding: 5px;
   }
-
-  .tab-padding{
-    padding: 40px;
-    padding-top: 32px;
-  }
-  .pb-32{
-    padding-bottom: 32px;
-  }
-  .p-32{
-    padding: 32px;
-  }
-
-  @media only screen and (max-width: 671px) {
-    .favourite-activities {
-      background-color: var(--#{vars.$bcgov-prefix}-layer-01);
-      padding: 5px;
-    }
-  }
+}
