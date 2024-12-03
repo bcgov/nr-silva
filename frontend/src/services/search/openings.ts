@@ -65,17 +65,14 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     orgUnit: filters.orgUnit, //Keep it as an array
     category: filters.category, // Keep it as an array
     statusList: filters.status, // Keep it as an array
-    entryUserId: filters.clientAcronym,
-    cutBlockId: filters.cutBlock,
-    cuttingPermitId:filters.cuttingPermit,
-    timbermark:filters.timberMark,
-    clientLocationCode: filters.clientLocationCode,
-    myOpenings:
-      filters.openingFilters?.includes("Openings created by me") || undefined,
-    submittedToFrpa:
-      filters.openingFilters?.includes("FRPA section 108") || undefined,
+    myOpenings: filters.openingFilters?.includes("Openings created by me") || undefined,
+    submittedToFrpa: filters.openingFilters?.includes("FRPA section 108") || undefined,
     [dateStartKey]: filters.startDate,  // Use dynamic key for start date
     [dateEndKey]: filters.endDate,      // Use dynamic key for end date
+    cuttingPermitId:filters.cuttingPermit,
+    cutBlockId: filters.cutBlock,
+    clientLocationCode: filters.clientLocationCode,
+    timberMark:filters.timberMark,
     page: filters.page && filters.page - 1, // Adjust page index (-1)
     perPage: filters.perPage
   };

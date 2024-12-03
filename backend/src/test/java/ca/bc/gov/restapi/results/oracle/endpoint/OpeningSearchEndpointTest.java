@@ -110,10 +110,8 @@ class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
   @Test
   @DisplayName("Get Opening Categories happy Path should Succeed")
   void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
-    CodeDescriptionDto category = new CodeDescriptionDto("CONT",
-        "SP as a part of contractual agreement");
-
-    List<CodeDescriptionDto> openCategoryCodeEntityList = List.of(category);
+    CodeDescriptionDto category = new CodeDescriptionDto("BLCF",
+        "Backlog SP Area - Community Forest (Expired)");
 
     mockMvc
         .perform(
