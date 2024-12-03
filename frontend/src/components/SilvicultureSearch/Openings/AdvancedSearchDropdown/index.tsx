@@ -33,7 +33,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
 
   useEffect(() => {
-    console.log("Use Effect in child is being called.", filters);
+    //console.log("Use Effect in child is being called.", filters);
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
@@ -188,7 +188,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
         </Column>
       </Row>
       <Row>
-        <Column sm={2}>
+        <Column sm={2} className="clientLocationCol">
           <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
             <AutocompleteClientLocation
                 setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })}
@@ -233,7 +233,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               }
           />
         </Column>
-        <Column lg={2} className="dateTypeCol">
+        <Column lg={4} className="dateTypeCol">
           <ComboBox
               titleText="Date type"
               items={dateTypeItems}

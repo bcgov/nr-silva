@@ -17,7 +17,7 @@
   }
   
   legend {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 20px;
     letter-spacing: 0.16px;
     color: var(--bx-text-primary);
@@ -25,15 +25,19 @@
   }
 
   label {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 20px;
     letter-spacing: 0.16px;
     white-space: nowrap;
     color: var(--#{vars.$bcgov-prefix}-text-primary);
   } 
 
+  .startEndDateCol {
+    padding-top: 5px;
+  }
+
   .bx--row {
-    padding: 5px;
+    padding: 10px;
   }
 
   .bx--col-md-3 {
@@ -41,23 +45,27 @@
   }
 
   .orgUnitCol {
-    padding-right: 15px;
+    padding-right: 2rem;
+  }
+
+  .locationCodeCombo {
+    width:96%
   }
 
   .timeberMarkCol {
-    padding-right: 15px;
+    padding-right: 2rem;
   }
 
   .cutBlock {
-    padding-top: 6px;
+    padding-top: 10px;
   }
 
   .cuttingPermit {
-    padding-top: 6px;
+    padding-top: 10px;
   }
 
-  .clientLocation {
-    padding-right: 5px;
+  .clientLocationCol {
+    padding-right: 2rem;
   }
 
   input {
@@ -76,11 +84,20 @@
   .bx--label--disabled {
     color: var(--#{vars.$bcgov-prefix}-text-secondary);
   }
-
-
+  .bx--text-input {
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+  }
   .multi-select .bx--list-box__field--wrapper {
     background-color: var(--bx-field-01);
     border-bottom: 1px solid var(--bx-border-strong-01);
+  }
+
+  .bx--date-picker--range .bx--date-picker-container, .bx--date-picker--range .bx--date-picker__input {
+    width: 90%
+  }
+
+  .bx--date-picker__input[readonly] {
+    width: 90%;
   }
 }
 

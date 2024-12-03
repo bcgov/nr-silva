@@ -105,7 +105,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     return (
       <FlexGrid className="autoClientLocation" condensed>
         <Row condensed>
-          <Column lg={10}>
+          <Column lg={11}>
             <ComboBox
               id="client-name"
               allowCustomValue={false}
@@ -118,7 +118,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
               titleText="Client" />
           </Column>
           <Column lg={5}>
-            <ComboBox
+            <ComboBox className="locationCodeCombo"
               disabled={!isActive}
               id="client-location"
               onChange={(item: AutocompleteComboboxProps) => setLocation(item.selectedItem)}
@@ -126,7 +126,6 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
               items={options["locations"] || [{ id: "", label: "No results found" }]}
               titleText="Location code" />
           </Column>
-          <Column lg={1}></Column>
         </Row>
       </FlexGrid>
     );
