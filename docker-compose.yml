@@ -54,7 +54,7 @@ services:
       - $HOME/zscaler-certs:/certs
     working_dir: /app
     environment:
-      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_HOST: ${DATABASE_HOST} #nrcdb03.bcgov
       DATABASE_PORT: "1543"
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
@@ -90,7 +90,7 @@ services:
   wiremock:
     image: "wiremock/wiremock:latest"
     container_name: forest-client-api-stub
-    ports: ["9000:9000","9001:9001"]
+    ports: ["9002:9000","9001:9001"]
     volumes: 
       - ./stub/:/home/wiremock/
     entrypoint: ["/docker-entrypoint.sh", "--enable-stub-cors","--global-response-templating","--port","9000","--https-port","9001","--verbose"]
