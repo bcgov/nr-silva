@@ -46,7 +46,6 @@ import SpatialCheckbox from "../../../SpatialCheckbox";
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
-  defaultColumns: ITableHeader[];
   handleCheckboxChange: (columnKey: string) => void;
   toggleSpatial: () => void;
   showSpatial: boolean;

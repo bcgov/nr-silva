@@ -34,7 +34,7 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
             />
             </div>)}
           <ActionButtons 
-            favorited={row.favourite as boolean} 
+            favorited={row.favourite} 
             rowId={row.openingId.toString()} 
           />
         </div>
