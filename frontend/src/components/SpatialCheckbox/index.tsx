@@ -1,7 +1,5 @@
-// SpatialCheckbox.tsx
-
 import React from "react";
-import { Checkbox, CheckboxGroup, Tooltip } from "@carbon/react";
+import { Checkbox, Tooltip } from "@carbon/react";
 
 interface SpatialCheckboxProps {
   rowId: string;
@@ -12,17 +10,21 @@ interface SpatialCheckboxProps {
 const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
   rowId,
   selectedRows,
-  handleRowSelectionChanged,
+  handleRowSelectionChanged
 }) => (
-  <CheckboxGroup orientation="horizontal">
-    <Tooltip label="Click to view this opening's map activity.">
-      <Checkbox
-        id={`checkbox-label-${rowId}`}
-        checked={selectedRows.includes(rowId)}
-        onChange={() => handleRowSelectionChanged(rowId)}
-      />
-    </Tooltip>
-  </CheckboxGroup>
+  <Tooltip
+    className="align-self-stretch"
+    align="bottom-left"
+    autoAlign
+    label="Click to view this opening's map activity.">
+    <Checkbox
+      data-testid={`checkbox-${rowId}`}
+      className="align-self-stretch"
+      id={`checkbox-label-${rowId}`}
+      checked={selectedRows.includes(rowId)}
+      onChange={() => handleRowSelectionChanged(rowId)}
+    />
+  </Tooltip>
 );
 
 export default SpatialCheckbox;

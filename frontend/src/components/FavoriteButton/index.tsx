@@ -4,6 +4,7 @@ import * as Icons from '@carbon/icons-react';
 import './style.scss'; // Import the styles
 
 interface FavoriteButtonProps {
+  id?: string
   tooltipPosition: string;
   kind: string;
   size: string;
@@ -24,6 +25,7 @@ interface FavoriteButtonProps {
  * @returns {JSX.Element} The FavoriteButton element to be rendered.
  */
 function FavoriteButton({
+  id,
   tooltipPosition,
   kind,
   size,
@@ -53,7 +55,9 @@ function FavoriteButton({
 
   return (
     <Button
-      className={isFavorite ? 'favorite-button favorite' : 'favorite-button'}
+      id={`action-fav-${id}`}
+      data-testid={`action-fav-${id}`}
+      className={isFavorite ? 'favorite-button favorite align-self-stretch' : 'favorite-button align-self-stretch'}
       hasIconOnly
       iconDescription={iconDescription}
       tooltipPosition={tooltipPosition}
