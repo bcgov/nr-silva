@@ -1,5 +1,3 @@
-// TableCellContent.tsx
-
 import React from "react";
 import StatusTag from "../StatusTag";
 import ActionButtons from "../ActionButtons";
@@ -20,23 +18,26 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
   row,
   showSpatial,
   selectedRows,
-  handleRowSelectionChanged,
+  handleRowSelectionChanged
 }) => {
   switch (headerKey) {
     case "statusDescription":
       return <StatusTag code={row[headerKey] as string} />;
     case "actions":
       return (
-        <>
-          <ActionButtons rowId={row.openingId.toString()} />
-          {showSpatial && (
+        <div className="d-flex">
+          {showSpatial && (<div className="pt-3">
             <SpatialCheckbox
               rowId={row.openingId.toString()}
               selectedRows={selectedRows}
               handleRowSelectionChanged={handleRowSelectionChanged}
             />
-          )}
-        </>
+            </div>)}
+          <ActionButtons 
+            favorited={row.favourite} 
+            rowId={row.openingId.toString()} 
+          />
+        </div>
       );
     case "Category":
       return (

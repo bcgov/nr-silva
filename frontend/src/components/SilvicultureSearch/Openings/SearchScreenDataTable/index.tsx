@@ -13,16 +13,12 @@ import {
   TableRow,
   Button,
   Pagination,
-  OverflowMenu,
-  OverflowMenuItem,
   Popover,
   PopoverContent,
   Checkbox,
-  CheckboxGroup,
   Row,
   Column,
   MenuItemDivider,
-  Tooltip,
   MenuItem,
   FlexGrid,
 } from "@carbon/react";
@@ -39,21 +35,17 @@ import {
   downloadPDF,
   downloadXLSX,
 } from "../../../../utils/fileConversions";
-import { useNavigate } from "react-router-dom";
-import {
-  setOpeningFavorite,
-  deleteOpeningFavorite,
-} from "../../../../services/OpeningFavouriteService";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
 import FriendlyDate from "../../../FriendlyDate";
 import ComingSoonModal from "../../../ComingSoonModal";
+import ActionButtons from "../../../ActionButtons";
+import SpatialCheckbox from "../../../SpatialCheckbox";
 
 interface ISearchScreenDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
-  defaultColumns: ITableHeader[];
   handleCheckboxChange: (columnKey: string) => void;
   toggleSpatial: () => void;
   showSpatial: boolean;
@@ -68,7 +60,6 @@ interface ICellRefs {
 const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   rows,
   headers,
-  defaultColumns,
   handleCheckboxChange,
   toggleSpatial,
   showSpatial,
@@ -87,14 +78,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
   const [openingDetails, setOpeningDetails] = useState("");
-  const [columnsSelected, setColumnsSelected] =
-    useState<String>("select-default");
-  const {
-    mutate: markAsViewedOpening,
-    isError,
-    error,
-  } = usePostViewedOpening();
-  const navigate = useNavigate();
+  const [columnsSelected, setColumnsSelected] = useState<string>("select-default");
+  const { mutate: markAsViewedOpening } = usePostViewedOpening();
 
   // This ref is used to calculate the width of the container for each cell
   const cellRefs = useRef([]);
@@ -157,42 +142,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         });
       },
     });
-  };
-
-  //Function to handle the favourite feature of the opening for a user
-  const handleFavouriteOpening = async (
-    openingId: string,
-    favorite: boolean
-  ) => {
-    try {
-      if (favorite) {
-        await deleteOpeningFavorite(parseInt(openingId));
-        displayNotification({
-          title: `Opening Id ${openingId} unfavourited`,
-          type: "success",
-          dismissIn: 8000,
-          onClose: () => {},
-        });
-      } else {
-        await setOpeningFavorite(parseInt(openingId));
-        displayNotification({
-          title: `Opening Id ${openingId} favourited`,
-          subTitle: "You can follow this opening ID on your dashboard",
-          type: "success",
-          buttonLabel: "Go to track openings",
-          onClose: () => {
-            navigate("/opening?tab=metrics&scrollTo=trackOpenings");
-          },
-        });
-      }
-    } catch (favoritesError) {
-      displayNotification({
-        title: "Unable to process your request",
-        subTitle: "Please try again in a few minutes",
-        type: "error",
-        onClose: () => {},
-      });
-    }
   };
 
   return (
@@ -425,79 +374,20 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          <>
-                            {showSpatial && (
-                              <CheckboxGroup
-                                data-testid={`checkbox-group-${row.openingId}`}
-                                labelText=""
-                                orientation="horizontal"
-                                className="align-items-center justify-content-start"
-                              >
-                                {/* Checkbox for selecting rows */}
-
-                                <Tooltip
-                                  className="checkbox-tip"
-                                  label="Click to view this opening's map activity."
-                                  align="bottom-left"
-                                  autoAlign
-                                >
-                                  <div className="mb-2 mx-2">
-                                    <Checkbox
-                                      id={`checkbox-label-${row.openingId}`}
-                                      data-testid={`checkbox-${row.openingId}`}
-                                      labelText=""
-                                      checked={selectedRows.includes(
-                                        row.openingId
-                                      )}
-                                      onChange={() =>
-                                        handleRowSelectionChanged(row.openingId)
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                              </CheckboxGroup>
-                            )}
-                            {!showSpatial && (
-                              <OverflowMenu
-                                size={"md"}
-                                ariaLabel="More actions"
-                                data-testid={`action-ofl-${row.openingId}`}
-                              >
-                                <OverflowMenuItem
-                                  data-testid={`action-fav-${row.openingId}`}
-                                  itemText={
-                                    row.favourite
-                                      ? "Unfavourite opening"
-                                      : "Favourite opening"
-                                  }
-                                  onClick={() => {
-                                    handleFavouriteOpening(
-                                      row.openingId,
-                                      row.favourite
-                                    );
-                                    row.favourite = !row.favourite;
-                                  }}
+                          
+                          <div className={showSpatial ? 'd-flex space-left-1' : 'd-flex'}>
+                            {showSpatial && (<div className="pt-3">
+                              <SpatialCheckbox
+                                rowId={row.openingId.toString()}
+                                selectedRows={selectedRows}
+                                handleRowSelectionChanged={handleRowSelectionChanged}
                                 />
-                                <OverflowMenuItem
-                                  itemText="Download opening as PDF file"
-                                  onClick={() =>
-                                    downloadPDF(defaultColumns, [row])
-                                  }
-                                />
-                                <OverflowMenuItem
-                                  itemText="Download opening as CSV file"
-                                  onClick={() => {
-                                    const csvData = convertToCSV(
-                                      defaultColumns,
-                                      [row]
-                                    );
-                                    downloadCSV(csvData, "openings-data.csv");
-                                  }}
-                                />
-                                <OverflowMenuItem itemText="Delete opening" />
-                              </OverflowMenu>
-                            )}
-                          </>
+                            </div>)}
+                            <ActionButtons 
+                              favorited={row.favourite}
+                              rowId={row.openingId}
+                            />
+                          </div>
                         ) : header.header === "Category" ? (
                           <TruncatedText
                             text={
