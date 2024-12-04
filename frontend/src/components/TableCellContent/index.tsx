@@ -20,7 +20,7 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
   row,
   showSpatial,
   selectedRows,
-  handleRowSelectionChanged,
+  handleRowSelectionChanged
 }) => {
   switch (headerKey) {
     case "statusDescription":
@@ -28,14 +28,17 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
     case "actions":
       return (
         <>
-          <ActionButtons rowId={row.openingId.toString()} />
-          {showSpatial && (
+        {showSpatial && (
             <SpatialCheckbox
               rowId={row.openingId.toString()}
               selectedRows={selectedRows}
               handleRowSelectionChanged={handleRowSelectionChanged}
             />
           )}
+          <ActionButtons 
+            favorited={row.favourite as boolean} 
+            rowId={row.openingId.toString()} 
+          />
         </>
       );
     case "Category":
