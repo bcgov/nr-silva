@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import TableCellContent from "../../components/TableCellContent";
 import { OpeningsSearch } from "../../types/OpeningsSearch";
+import { NotificationProvider } from "../../contexts/NotificationProvider"
 
 // Mock components
 vi.mock("../StatusTag", () => ({
@@ -28,6 +29,7 @@ describe("TableCellContent", () => {
 
   it("renders StatusTag when headerKey is 'statusDescription'", () => {
     render(
+      <NotificationProvider>
       <TableCellContent
         headerKey="statusDescription"
         row={row}
@@ -35,6 +37,7 @@ describe("TableCellContent", () => {
         selectedRows={selectedRows}
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
+      </NotificationProvider>
     );
 
     expect(screen.getByText(/Active/i)).toBeInTheDocument();
@@ -42,6 +45,7 @@ describe("TableCellContent", () => {
 
   it("renders ActionButtons and optionally SpatialCheckbox when headerKey is 'actions'", () => {
     const { rerender } = render(
+      <NotificationProvider>
       <TableCellContent
         headerKey="actions"
         row={row}
@@ -49,13 +53,15 @@ describe("TableCellContent", () => {
         selectedRows={selectedRows}
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
+      </NotificationProvider>
     );
     console.log(screen.debug());
-    expect(screen.queryByText(/View/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Favorite Opening/i)).toBeInTheDocument();
   });
 
   it("renders category code and description when headerKey is 'Category'", () => {
     render(
+      <NotificationProvider>
       <TableCellContent
         headerKey="Category"
         row={row}
@@ -63,12 +69,14 @@ describe("TableCellContent", () => {
         selectedRows={selectedRows}
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
+      </NotificationProvider>
     );
     expect(screen.getAllByText("A - Category A")[0]).toBeInTheDocument();
   });
 
   it("renders default content for other headerKey values", () => {
     render(
+      <NotificationProvider>
       <TableCellContent
         headerKey="unknownKey"
         row={{ ...row, unknownKey: "Unknown Value" } as OpeningsSearch}
@@ -76,6 +84,7 @@ describe("TableCellContent", () => {
         selectedRows={selectedRows}
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
+      </NotificationProvider>
     );
 
     expect(screen.getByText(/Unknown Value/i)).toBeInTheDocument();
@@ -83,6 +92,7 @@ describe("TableCellContent", () => {
 
   it("renders SpatialCheckbox when headerKey is 'actions' and showSpatial is true", () => {
     render(
+      <NotificationProvider>
       <TableCellContent
         headerKey="actions"
         row={row}
@@ -90,6 +100,7 @@ describe("TableCellContent", () => {
         selectedRows={selectedRows}
         handleRowSelectionChanged={handleRowSelectionChanged}
       />
+      </NotificationProvider>
     );
     //check if the Checkbox text is present
     expect(screen.getByText(/Click to view this opening's map activity./i)).toBeInTheDocument();
