@@ -148,7 +148,6 @@ const OpeningsSearchTab: React.FC = () => {
                 <SearchScreenDataTable
                   rows={data?.data || []}
                   headers={headers}
-                  defaultColumns={searchScreenColumns}
                   handleCheckboxChange={handleCheckboxChange}                  
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
