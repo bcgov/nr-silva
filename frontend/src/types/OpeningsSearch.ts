@@ -9,4 +9,5 @@ export interface OpeningsSearch {
   cutBlockId: string | null;
   orgUnitName: string;
   updateTimestamp: string;
+  favourite: boolean;
 }
