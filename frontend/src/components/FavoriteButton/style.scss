@@ -8,5 +8,11 @@
     .bx--tooltip__trigger {
       overflow: visible !important;
     }
+
+    .bx--tooltip,
+    .bx--tooltip-container {
+      z-index: 9999 !important;
+    }
+
   }
   
