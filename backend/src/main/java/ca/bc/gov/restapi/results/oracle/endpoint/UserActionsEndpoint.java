@@ -61,11 +61,11 @@ public class UserActionsEndpoint {
 
     List<OpeningsPerYearDto> resultList =
         openingTrendsService.getOpeningSubmissionTrends(
-            getDateOrDefault(entryDateStart,LocalDate.now()),
+            getDateOrDefault(entryDateStart,LocalDate.now().minusYears(1)),
             getDateOrDefault(entryDateEnd,
                 //If we have an end date, we get it, otherwise we use the current date,
                 // and no matter if we have the start date or not, we add a year to the end date
-                getDateOrDefault(entryDateStart,LocalDate.now()).plusYears(1)
+                getDateOrDefault(entryDateStart,LocalDate.now().minusYears(1)).plusYears(1)
             ),
             orgUnits,
             statusCodes
