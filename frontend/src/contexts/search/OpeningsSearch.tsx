@@ -30,7 +30,7 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
     timberMark: "",
     dateType: null as string | null,
     openingFilters: [] as string[],
-    blockStatuses: [] as string[],
+    blockStatuses: [] as string[]
   };
 
   const [filters, setFilters] = useState(defaultFilters);
@@ -47,11 +47,10 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
   };
 
   const clearFilters = () => {
-    setFilters(defaultFilters);
-
     Object.keys(defaultFilters).forEach((key) => {
       individualClearFieldFunctions[key] && individualClearFieldFunctions[key]();
     });
+    setFilters(defaultFilters);
   
   };
 
