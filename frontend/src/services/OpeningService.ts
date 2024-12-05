@@ -20,7 +20,7 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
   const authToken = getAuthIdToken();
   try {
     // Construct URL with optional parameters
-    let url = backendUrl.concat("/api/dashboard-metrics/submission-trends");
+    let url = backendUrl.concat("/api/users/submission-trends");
     if (props.orgUnitCode || props.statusCode || props.entryDateStart || props.entryDateEnd) {
       url += '?';
       if (props.orgUnitCode) url += `orgUnitCode=${props.orgUnitCode}&`;
