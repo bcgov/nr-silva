@@ -12,7 +12,6 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
-import { useNavigate } from "react-router-dom";
 import TableRowComponent from "../../../TableRowComponent";
 import ComingSoonModal from "../../../ComingSoonModal";
 
@@ -39,7 +38,6 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   } = useContext(PaginationContext);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [openingDetails, setOpeningDetails] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     setInitialItemsPerPage(itemsPerPage);

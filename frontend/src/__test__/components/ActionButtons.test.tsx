@@ -1,39 +1,41 @@
 // ActionButtons.test.tsx
 import React from "react";
-import { vi } from "vitest";
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen, fireEvent } from "@testing-library/react";
 import ActionButtons from "../../components/ActionButtons";
-
-// Mock console.log
-const consoleLogMock = vi.spyOn(console, "log").mockImplementationOnce(() =>vi.fn()) ;
-
-afterEach(() => {
-  consoleLogMock.mockClear();
-});
-
-afterAll(() => {
-  consoleLogMock.mockRestore();
-});
+import { NotificationProvider } from "../../contexts/NotificationProvider"
 
 describe("ActionButtons", () => {
-  const rowId = "test-row-id";
+  const rowId = "123456";
+  const favorited = false;
 
-  it("renders the 'View' and 'Document Download' buttons", () => {
-    render(<ActionButtons rowId={rowId} />);
+  it("renders the 'Favorite Opening' and 'Document Download' buttons", () => {
+    render(
+      <MemoryRouter>
+        <NotificationProvider>
+          <ActionButtons favorited={favorited} rowId={rowId} />
+        </NotificationProvider>
+      </MemoryRouter>
+    );
 
     // Check that both buttons are in the document
-    expect(screen.getByRole("button", { name: /View/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Favorite Opening/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Document Download/i })).toBeInTheDocument();
   });
 
-  it("calls console.log with rowId when the 'View' button is clicked", () => {
-    render(<ActionButtons rowId={rowId} />);
+  it("set the 'Favorite Opening' as favorited when button is clicked", () => {
+    render(
+      <MemoryRouter>
+        <NotificationProvider>
+          <ActionButtons favorited={favorited} rowId={rowId} />
+        </NotificationProvider>
+      </MemoryRouter>
+    );
 
     // Find the "View" button and click it
-    const viewButton = screen.getByRole("button", { name: /View/i });
+    const viewButton = screen.getByRole("button", { name: /Favorite Opening/i });
+    expect(viewButton.classList).toContain('favorite-button');
     fireEvent.click(viewButton);
-
-    // Check if console.log was called with the correct rowId
-    expect(consoleLogMock).toHaveBeenCalledWith(rowId);
+    expect(screen.getByRole("button", { name: /Favorite Opening/i }).classList).toContain('favorite');
   });
 });

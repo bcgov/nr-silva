@@ -61,8 +61,8 @@ describe("TableRowComponent", () => {
     );
 
     // Simulate click on the row
-    const tableRow = screen.getByRole("row");
-    fireEvent.click(tableRow);
+    const tableRow = screen.getAllByRole("cell");
+    fireEvent.click(tableRow[1]);
 
     // Verify that setOpeningDetails was called with true
     expect(setOpeningDetails).toHaveBeenCalledWith("1");

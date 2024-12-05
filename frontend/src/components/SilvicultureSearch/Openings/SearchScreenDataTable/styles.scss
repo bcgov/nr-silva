@@ -2,6 +2,9 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@carbon/type';
 
+.space-left-1 {
+  margin-left: 1rem;
+}
 
 .search-data-table{
   // nested elements for the search data table only
@@ -33,9 +36,7 @@
     align-items: center;
   }
   
-  
 }
-
 
 .edit-column-content{
   width: 400px;
@@ -107,7 +108,7 @@
 .bx--overflow-menu-options__option-content {
   overflow:visible;
 }
- 
+
 .activity-table {
   margin-bottom: 2.5rem;
 

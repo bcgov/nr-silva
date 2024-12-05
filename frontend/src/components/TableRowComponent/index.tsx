@@ -23,10 +23,16 @@ const TableRowComponent: React.FC<TableRowComponentProps> = ({
   handleRowSelectionChanged,
   setOpeningDetails
 }) => (
-  <TableRow onClick={() => setOpeningDetails(row.openingId.toString())}>
+  <TableRow>
     {headers.map((header) =>
       header.selected ? (
-        <TableCell key={header.key}>
+        <TableCell 
+          key={header.key}
+          onClick={() => {
+            if (header.key !== "actions")
+            setOpeningDetails(row.openingId.toString())
+          }}
+        >
           <TableCellContent
             headerKey={header.key}
             row={row}

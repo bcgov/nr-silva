@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import SearchScreenDataTable from '../../../../components/SilvicultureSearch/Openings/SearchScreenDataTable';
 import { searchScreenColumns as columns } from '../../../../constants/tableConstants';
@@ -358,7 +358,7 @@ describe('Search Screen Data table test', () => {
     
     expect(screen.getByTestId('toggle-spatial')).toContainHTML('Hide map');
 
-    const checkbox = document.querySelector('.cds--checkbox-group');
+    const checkbox = await screen.findByTestId('checkbox-114207');
     expect(checkbox).toBeInTheDocument();
 
   });
@@ -386,13 +386,13 @@ describe('Search Screen Data table test', () => {
         </QueryClientProvider>
       </BrowserRouter>
     );
-    const checkboxGroup = document.querySelector('.cds--checkbox-group');
-    expect(checkboxGroup).toBeInTheDocument();
+    const checkbox = screen.getByTestId(`checkbox-${rows[0].openingId}`);
+    expect(checkbox).toBeInTheDocument();
 
     expect(screen.getByTestId(`checkbox-${rows[0].openingId}`)).toBeInTheDocument();
-    const checkbox = screen.getByTestId(`checkbox-${rows[0].openingId}`);
-    fireEvent.click(checkbox);
-    expect(checkbox).toBeChecked();
+    const checkbox2 = screen.getByTestId(`checkbox-${rows[0].openingId}`);
+    fireEvent.click(checkbox2);
+    expect(checkbox2).toBeChecked();
     expect(setOpeningIds).toHaveBeenCalledWith([parseFloat(rows[0].openingId)]);
 
   });
@@ -435,21 +435,13 @@ describe('Search Screen Data table test', () => {
 
     await act(async () => expect(screen.getByTestId('row-114207')).toBeInTheDocument() );
     await act(async () => expect(screen.getByTestId('cell-actions-114206')).toBeInTheDocument() );
-
-    const overflowMenu = screen.getByTestId('action-ofl-114207');
-    await act(async () => expect(overflowMenu).toBeInTheDocument() );
-    await act(async () => fireEvent.click(overflowMenu));
     
     const actionOverflow = screen.getByTestId(`action-fav-114207`);
     await act(async () => expect(actionOverflow).toBeInTheDocument() );
-    expect(actionOverflow).toContainHTML('Favourite opening');
+    expect(actionOverflow).toHaveAttribute('aria-pressed', 'false');
     await act(async () => fireEvent.click(actionOverflow));
 
-    const overflowMenuAgain = screen.getByTestId('action-ofl-114207');
-    await act(async () => expect(overflowMenuAgain).toBeInTheDocument() );
-    await act(async () => fireEvent.click(overflowMenuAgain));
-
-    expect(screen.getByTestId(`action-fav-114207`)).toContainHTML('Unfavourite opening');
+    expect(screen.getByTestId(`action-fav-114207`)).toHaveAttribute('aria-pressed', 'true');
     
   });
 
