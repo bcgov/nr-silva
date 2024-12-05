@@ -14,27 +14,23 @@ describe("OpeningsSearchBar", () => {
   // Create a new QueryClient instance for each test
   const queryClient = new QueryClient();
   const handleCheckboxChange = vi.fn()
-  const setLoadId = vi.fn()
-    const toggleSpatial = vi.fn()
-    const showSpatial = false
-    const data = { data: [], perPage: 0, totalPages: 0 }
-    const headers = []
+  const setOpeningIds = vi.fn()
+  const showSpatial = false
+  const data = { data: [], perPage: 0, totalPages: 0 }
+  const headers = []
 
   it("shows appropriate message when no data is in the table", () => {
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
             <PaginationProvider>
-             <RecentOpeningsDataTable
+              <RecentOpeningsDataTable
                 rows={data?.data || []}
                 headers={headers}
-                defaultColumns={headers}
-                handleCheckboxChange={handleCheckboxChange}
-                setOpeningId={setLoadId}
-                toggleSpatial={toggleSpatial}
+                setOpeningIds={setOpeningIds}
                 showSpatial={showSpatial}
                 totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
-                />
+              />
             </PaginationProvider>
       </QueryClientProvider>
       </MemoryRouter>
@@ -48,16 +44,13 @@ describe("OpeningsSearchBar", () => {
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
             <PaginationProvider>
-             <RecentOpeningsDataTable
+              <RecentOpeningsDataTable
                 rows={[]}
                 headers={headers}
-                defaultColumns={headers}
-                handleCheckboxChange={handleCheckboxChange}
-                setOpeningId={setLoadId}
-                toggleSpatial={toggleSpatial}
+                setOpeningIds={setOpeningIds}
                 showSpatial={showSpatial}
                 totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
-                />
+              />
             </PaginationProvider>
       </QueryClientProvider>
       </MemoryRouter>
