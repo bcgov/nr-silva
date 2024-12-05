@@ -55,6 +55,18 @@ export interface OpeningItem {
   silvaReliefAppId: string | null;
 }
 
+export interface OrgUnit {
+  orgUnitNo: number;
+  orgUnitCode: string;
+  orgUnitName: string;
+}
+
+export interface CodeDescription {
+  code: string;
+  description: string;
+}
+
+
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType
   // Get the date params based on dateType
@@ -139,7 +151,7 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
   };
 };
 
-export const fetchCategories = async (): Promise<any> => {
+export const fetchCategories = async (): Promise<CodeDescription[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 
@@ -150,7 +162,7 @@ export const fetchCategories = async (): Promise<any> => {
   return response.data;
 };
 
-export const fetchOrgUnits = async (): Promise<any> => {
+export const fetchOrgUnits = async (): Promise<OrgUnit[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 

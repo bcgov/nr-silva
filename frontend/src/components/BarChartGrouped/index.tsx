@@ -1,66 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
-import { Dropdown, DatePicker, DatePickerInput } from "@carbon/react";
+import { FilterableMultiSelect, DatePicker, DatePickerInput } from "@carbon/react";
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
+import {  fetchOrgUnits} from "../../services/search/openings";
+import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
 
-interface IDropdownItem {
-  value: string;
-  text: string;
+interface MultiSelectEvent {
+  selectedItems: TextValueData[];
 }
 
-/**
- * Renders an Bar Chart Grouped component.
- *
- * @returns {JSX.Element} The rendered BarChartGrouped component.
- */
-function BarChartGrouped(): JSX.Element {
+const BarChartGrouped = (): JSX.Element => {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [chartData, setChartData] = useState<OpeningPerYearChart[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orgUnitCode, setOrgUnitCode] = useState<string | null>(null);
-  const [statusCode, setStatusCode] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const [orgUnitItems, setOrgUnitItems] = useState<TextValueData[]>([]);
+  const [statusItems, setStatusItems] = useState<TextValueData[]>([]);
+  const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
+  const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
+
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
   };
 
   useEffect(() => {
-    const fetchChartData = async () => {
-      try {
-        setIsLoading(true);
-        let formattedStartDate: string | null = null;
-        let formattedEndDate: string | null = null;
 
-        if (startDate) {
-          formattedStartDate = formatDateToString(startDate);
-        }
-        if (endDate) {
-          formattedEndDate = formatDateToString(endDate);
-        }
-    
-        const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
-          orgUnitCode,
-          statusCode,
-          entryDateStart: formattedStartDate,
-          entryDateEnd: formattedEndDate,
-        });
-        setChartData(data);
-        setIsLoading(false);
+    const fetchOrgUnitsData = async () => {
+      try {
+        const data = await fetchOrgUnits();
+        setOrgUnitItems(data.map((orgUnit) => ({ value: orgUnit.orgUnitCode, text: orgUnit.orgUnitName })));
       } catch (error) {
-        console.error("Error fetching chart data:", error);
-        setIsLoading(false);
+        console.error("Error fetching org units:", error);
       }
     };
 
-    fetchChartData();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [orgUnitCode, statusCode, startDate, endDate]);
+    setStatusItems([
+      {value:'AMG', text: 'Amalgamate'},
+      {value:'AMD', text: 'Amended'},
+      {value:'APP', text: 'Approved'},
+      {value:'DFT', text: 'Draft'},
+      {value:'FG', text: 'Free Growing'},
+      {value:'RMD', text: 'Removed'},
+      {value:'RET', text: 'Retired'},
+      {value:'SUB', text: 'Submitted'}
+    ]);
+    fetchOrgUnitsData();
+
+  },[]);
 
   const formatDateToString = (dateToFormat: Date) => {
     if (!dateToFormat) return null;
@@ -114,55 +106,75 @@ function BarChartGrouped(): JSX.Element {
     },
   };
 
-  const orgUnitItems = [
-    { value: "DCR", text: "DCR" },
-    { value: "XYZ", text: "District 2" },
-    // Add more options as needed
-  ];
+  useEffect(() =>{
 
-  const statusItems = [
-    { value: "APP", text: "Approved" },
-    { value: "NAN", text: "Not Approved" },
-    // Add more options as needed
-  ];
+    console.log(`For search`, selectedOrgUnits, selectedStatusCodes, startDate, endDate);
 
-  const setOrgUnitCodeSelected = ({
-    selectedItem,
-  }: {
-    selectedItem: IDropdownItem;
-  }) => {
-    setOrgUnitCode(selectedItem.value);
-  };
+    const fetchChartData = async () => {
+      try {
+        setIsLoading(true);
+        let formattedStartDate: string | null = null;
+        let formattedEndDate: string | null = null;
 
-  const setStatusCodeSelected = ({
-    selectedItem,
-  }: {
-    selectedItem: IDropdownItem;
-  }) => {
-    setStatusCode(selectedItem.value);
-  };
+        if (startDate) {
+          formattedStartDate = formatDateToString(startDate);
+        }
+        if (endDate) {
+          formattedEndDate = formatDateToString(endDate);
+        }
+
+        const orgUnits = selectedOrgUnits?.map((orgUnit) => orgUnit.value);
+        const statusCodes = selectedStatusCodes?.map((statusCode) => statusCode.value);
+    
+        const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
+          orgUnitCode: orgUnits,
+          statusCode: statusCodes,
+          entryDateStart: formattedStartDate,
+          entryDateEnd: formattedEndDate,
+        });
+        setChartData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchChartData();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+
+  },[selectedOrgUnits, selectedStatusCodes, startDate, endDate])
 
   return (
     <div className="px-3">
       <div className="row gy-2 gx-1 pb-3">
         <div className="col-md-3">
-          <Dropdown
+          <FilterableMultiSelect
+            label="District"
             id="district-dropdown"
             titleText="District"
             items={orgUnitItems}
-            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
-            onChange={setOrgUnitCodeSelected}
-            label="District"
+            itemToString={(item: TextValueData) => (item ? item.text : "")}
+            selectionFeedback="top-after-reopen"
+            onChange={(e: MultiSelectEvent) => setSelectedOrgUnits(e.selectedItems)}
+            selectedItems={selectedOrgUnits}
+            sortItems={sortItems}
+            
           />
         </div>
         <div className="col-md-3">
-          <Dropdown
+          <FilterableMultiSelect
+            label="Status"
             id="status-dropdown"
             titleText="Status"
             items={statusItems}
-            itemToString={(item: IDropdownItem) => (item ? item.text : "")}
-            onChange={setStatusCodeSelected}
-            label="Status"
+            itemToString={(item: TextValueData) => (item ? item.text : "")}
+            selectionFeedback="top-after-reopen"
+            onChange={(e: MultiSelectEvent) => setSelectedStatusCodes(e.selectedItems)}
+            selectedItems={selectedStatusCodes}
+            sortItems={sortItems}
+            
           />
         </div>
         <div className="col-md-2 col-xxl-3 d-none d-md-block">
