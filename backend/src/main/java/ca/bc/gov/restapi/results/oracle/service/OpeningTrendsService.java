@@ -41,8 +41,18 @@ public class OpeningTrendsService {
         openingRepository.getOpeningTrends(
             startDate.format(DateTimeFormatter.ISO_DATE),
             endDate.format(DateTimeFormatter.ISO_DATE),
-            orgUnits == null ? List.of("NOVALUE") : orgUnits,
-            statusCodes == null ? List.of("NOVALUE") : statusCodes
+            statusCodes == null ? List.of("NOVALUE") : statusCodes,
+            orgUnits == null ? List.of("NOVALUE") : orgUnits
+        );
+
+    entities
+        .forEach(
+            entity -> log.info(
+                "Opening Submission Trends data found: {} {} {}",
+                entity.getOpeningId(),
+                entity.getOrgUnitCode(),
+                entity.getOrgUnitName()
+            )
         );
 
     if (entities.isEmpty()) {
