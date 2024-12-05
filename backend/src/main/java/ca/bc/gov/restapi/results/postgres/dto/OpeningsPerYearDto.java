@@ -11,7 +11,7 @@ import lombok.With;
 public record OpeningsPerYearDto(
     Integer month,
     String monthName,
-    Integer amount
+    Long amount
 ) {
 
 }

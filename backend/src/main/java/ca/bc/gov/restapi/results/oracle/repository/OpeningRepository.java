@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.oracle.dto.DashboardResultsAuditDto;
 import ca.bc.gov.restapi.results.oracle.dto.DashboardStockingEventDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -350,5 +351,35 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
   Page<SilvicultureSearchProjection> searchByOpeningIds(
       List<Long> openingIds,
       Pageable pageable
+  );
+
+  @Query(
+      nativeQuery = true,
+      value = """
+          SELECT
+              o.OPENING_ID,
+              o.ENTRY_USERID as user_id,
+              o.ENTRY_TIMESTAMP,
+              o.UPDATE_TIMESTAMP,
+              o.OPENING_STATUS_CODE as status,
+              ou.ORG_UNIT_CODE AS org_unit_code,
+              ou.ORG_UNIT_NAME AS org_unit_name,
+              res.CLIENT_NUMBER AS client_number
+          FROM THE.OPENING o
+          LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
+          LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
+          WHERE
+              (
+                  o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+                  OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+              )
+              AND ( 'NOVALUE' in (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList) )
+              AND ( 'NOVALUE' in (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList) )
+          ORDER BY o.ENTRY_TIMESTAMP""")
+  List<OpeningTrendsProjection> getOpeningTrends(
+      String startDate,
+      String endDate,
+      List<String> statusList,
+      List<String> orgUnitList
   );
 }

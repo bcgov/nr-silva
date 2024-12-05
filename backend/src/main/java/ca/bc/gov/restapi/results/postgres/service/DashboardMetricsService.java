@@ -6,17 +6,14 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +25,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** This class contains methods for gathering and grouping data for the dashboard metrics screen. */
+/**
+ * This class contains methods for gathering and grouping data for the dashboard metrics screen.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,41 +41,6 @@ public class DashboardMetricsService {
 
   private final PrettyTime prettyTime = new PrettyTime();
 
-  /**
-   * Get openings submission trends data for the opening per year chart.
-   *
-   * @param filters Possible filter, see {@link DashboardFiltersDto} for more.
-   * @return A list of {@link OpeningsPerYearDto} for the opening chart.
-   */
-  public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltersDto filters) {
-    log.info("Getting Opening Submission Trends with filters {}", filters.toString());
-
-    LocalDateTime baseDateTime = LocalDateTime.now().minusMonths(12);
-    List<OpeningsLastYearEntity> entities =
-        openingsLastYearRepository.findAllFromLastYear(
-            baseDateTime, Sort.by("entryTimestamp").ascending());
-
-    if (entities.isEmpty()) {
-      log.info("No Opening Submission Trends data found!");
-      return List.of();
-    }
-
-    Map<Integer, String> monthNamesMap = new HashMap<>();
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap =
-        createBaseMonthsMap(monthNamesMap, entities.get(0).getEntryTimestamp().getMonthValue());
-
-    filterOpeningSubmissions(resultMap, entities, filters);
-
-    List<OpeningsPerYearDto> chartData = new ArrayList<>();
-    for (Integer monthKey : resultMap.keySet()) {
-      List<OpeningsLastYearEntity> monthDataList = resultMap.get(monthKey);
-      String monthName = monthNamesMap.get(monthKey);
-      log.info("Value {} for the month: {}", monthDataList.size(), monthName);
-      chartData.add(new OpeningsPerYearDto(monthKey, monthName, monthDataList.size()));
-    }
-
-    return chartData;
-  }
 
   /**
    * Get free growing milestone declarations data for the chart.

@@ -28,38 +28,6 @@ class DashboardMetricsEndpointTest extends AbstractTestContainerIntegrationTest 
   private MockMvc mockMvc;
 
   @Test
-  @DisplayName("Opening submission trends with no filters should succeed")
-  void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
-
-    mockMvc
-        .perform(
-            get("/api/dashboard-metrics/submission-trends")
-                .with(csrf().asHeader())
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].month").value("1"))
-        .andExpect(jsonPath("$[0].monthName").value("Jan"))
-        .andExpect(jsonPath("$[0].amount").value("1"))
-        .andReturn();
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with no data should succeed")
-  void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
-
-    mockMvc
-        .perform(
-            get("/api/dashboard-metrics/submission-trends")
-                .with(csrf().asHeader())
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andReturn();
-  }
-
-  @Test
   @DisplayName("Free growing milestones test with no filters should succeed")
   void getFreeGrowingMilestonesData_noFilters_shouldSucceed() throws Exception {
 
