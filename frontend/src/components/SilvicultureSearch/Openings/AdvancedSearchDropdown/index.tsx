@@ -265,7 +265,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               enabled={filters.dateType}
               readOnly={!filters.dateType}
           >
-            <DatePickerInput
+            <DatePickerInput 
                 labelText="Start Date"
                 size="sm"
                 placeholder={
