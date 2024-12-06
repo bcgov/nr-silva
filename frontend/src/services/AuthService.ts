@@ -21,7 +21,7 @@ export interface FamLoginUser {
 }
 
 // Function to set the authIdToken variable
-const setAuthIdToken = (token: string | null) => {
+export const setAuthIdToken = (token: string | null) => {
   authIdToken = token;
 };
 
@@ -71,7 +71,6 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
     email,
     idpProvider,
     clientRoles: rolesArray,
-    exp: idToken?.payload.exp,
     firstName: sanitizedFirstName,
     lastName,
     providerUsername: `${idpProvider}\\${userName}`
