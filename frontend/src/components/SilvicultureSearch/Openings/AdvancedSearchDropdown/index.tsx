@@ -274,7 +274,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               labelText="Start Date"
               placeholder="yyyy/MM/dd"
               disabled={!filters.dateType}
-              // enabled={filters.dateType}
               value={formatDateForDatePicker(filters.startDate)}
             />
             <DatePickerInput
