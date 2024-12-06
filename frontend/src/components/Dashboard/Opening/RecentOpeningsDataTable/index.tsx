@@ -18,10 +18,7 @@ import ComingSoonModal from "../../../ComingSoonModal";
 interface IRecentOpeningsDataTable {
   rows: OpeningsSearch[];
   headers: ITableHeader[];
-  defaultColumns: ITableHeader[];
-  handleCheckboxChange: Function;
-  setOpeningId: Function;
-  toggleSpatial: Function;
+  setOpeningIds: (openingIds: number[]) => void;
   showSpatial: boolean;
   totalItems: number;
 }
@@ -30,7 +27,8 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   rows,
   headers,
   showSpatial,
-  totalItems,
+  setOpeningIds,
+  totalItems
 }) => {
   const {
     itemsPerPage,
@@ -43,6 +41,10 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
     setInitialItemsPerPage(itemsPerPage);
   }, [rows, totalItems]);
 
+  useEffect(() => {
+    setOpeningIds(selectedRows.map((id) => parseFloat(id)));
+  },[selectedRows]);
+
   // Function to handle row selection changes
   const handleRowSelectionChanged = (rowId: string) => {
     setSelectedRows((prevSelectedRows) =>
@@ -53,12 +55,7 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   };
 
   return (
-    <>
-      <TableContainer className="search-data-table">
-        <TableToolbar aria-label="data table toolbar">
-          {/* Toolbar content... */}
-        </TableToolbar>
-
+    <TableContainer className="search-data-table">
         <Table aria-label="sample table">
           <TableHead>
             <TableRow>
@@ -98,7 +95,6 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
           setOpeningDetails={setOpeningDetails}
         />
       </TableContainer>
-    </>
-  );
+    );
 };
 export default RecentOpeningsDataTable;

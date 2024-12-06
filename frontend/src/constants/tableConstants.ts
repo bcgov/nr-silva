@@ -9,7 +9,7 @@ const searchScreenColumnDefinitions = [
   { key: 'categoryDescription', header: 'Category', elipsis: true },
   { key: 'orgUnitName', header: 'Org unit' },
   { key: 'statusDescription', header: 'Status' },
-  { key: 'clientNumber', header: 'Client number' },
+  { key: 'clientName', header: 'Client' },
   { key: 'timberMark', header: 'Timber mark' },
   { key: 'cuttingPermitId', header: 'Cutting permit' },
   { key: 'cutBlockId', header: 'Cut block' },

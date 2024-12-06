@@ -111,7 +111,6 @@ const OpeningsMap: React.FC<MapProps> = ({
       setOpenings(results.filter((opening) => opening !== null));
 
     } else {
-      setOpeningPolygonNotFound(true);
       setOpenings([]);
     }
 

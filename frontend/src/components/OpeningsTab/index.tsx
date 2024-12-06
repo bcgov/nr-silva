@@ -15,7 +15,7 @@ interface Props {
 }
 
 const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
-  const [loadId, setLoadId] = useState<number | null>(null);
+  const [selectedOpeningIds,setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const { data, isFetching } = useUserRecentOpeningQuery(10);
 
@@ -36,7 +36,6 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
             renderIcon={Location}
             type="button"
             onClick={() => toggleSpatial()}
-            disabled
           >
             {showSpatial ? 'Hide map' : 'Show map'}
           </Button>
@@ -45,8 +44,8 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
           <div className="row px-2">
             <div className="leaflet-container">
               <OpeningsMap
-                openingId={loadId}
-                openingIds={null}
+                openingId={null}
+                openingIds={selectedOpeningIds}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
               />
             </div>
@@ -70,10 +69,7 @@ const OpeningsTab: React.FC<Props> = ({ showSpatial, setShowSpatial }) => {
           <RecentOpeningsDataTable
             rows={data?.data || []}
             headers={headers}
-            defaultColumns={headers}
-            handleCheckboxChange={() => {}}
-            setOpeningId={setLoadId}
-            toggleSpatial={toggleSpatial}
+            setOpeningIds={setSelectedOpeningIds}
             showSpatial={showSpatial}
             totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
           />

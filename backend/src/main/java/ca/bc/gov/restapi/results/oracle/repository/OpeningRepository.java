@@ -117,27 +117,26 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
                  submitted_to_frpa108
           FROM (
               SELECT
-                  o.OPENING_ID AS opening_id,
-                  o.OPENING_NUMBER AS opening_number,
-                  o.OPEN_CATEGORY_CODE AS category,
-                  o.OPENING_STATUS_CODE AS status,
-                  cboa.CUTTING_PERMIT_ID AS cutting_permit_id,
-                  cboa.TIMBER_MARK AS timber_mark,
-                  cboa.CUT_BLOCK_ID AS cut_block_id,
-                  cboa.OPENING_GROSS_AREA AS opening_gross_area,
-                  cboa.DISTURBANCE_START_DATE AS disturbance_start_date,
-                  cboa.FOREST_FILE_ID AS forest_file_id,
-                  ou.ORG_UNIT_CODE AS org_unit_code,
-                  ou.ORG_UNIT_NAME AS org_unit_name,
-                  res.CLIENT_NUMBER AS client_number,
-                  res.CLIENT_LOCN_CODE AS client_location,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) AS regen_delay_date,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) AS early_free_growing_date,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) AS late_free_growing_date,
-                  o.UPDATE_TIMESTAMP AS update_timestamp,
-                  o.ENTRY_USERID AS entry_user_id,
-                  COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submitted_to_frpa108,
-                  ROW_NUMBER() OVER (PARTITION BY o.OPENING_ID ORDER BY o.UPDATE_TIMESTAMP DESC) AS rn
+                o.OPENING_ID AS opening_id,
+                MAX(o.OPENING_NUMBER) AS opening_number,
+                MAX(o.OPEN_CATEGORY_CODE) AS category,
+                MAX(o.OPENING_STATUS_CODE) AS status,
+                MAX(cboa.CUTTING_PERMIT_ID) AS cutting_permit_id,
+                MAX(cboa.TIMBER_MARK) AS timber_mark,
+                MAX(cboa.CUT_BLOCK_ID) AS cut_block_id,
+                MAX(cboa.OPENING_GROSS_AREA) AS opening_gross_area,
+                MAX(cboa.DISTURBANCE_START_DATE) AS disturbance_start_date,
+                MAX(cboa.FOREST_FILE_ID) AS forest_file_id,
+                MAX(ou.ORG_UNIT_CODE) AS org_unit_code,
+                MAX(ou.ORG_UNIT_NAME) AS org_unit_name,
+                MAX(res.CLIENT_NUMBER) AS client_number,
+                MAX(res.CLIENT_LOCN_CODE) AS client_location,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12))) AS regen_delay_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12))) AS early_free_growing_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12))) AS late_free_growing_date,
+                MAX(o.UPDATE_TIMESTAMP) AS update_timestamp,
+                MAX(o.ENTRY_USERID) AS entry_user_id,
+                MAX(COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0)) AS submitted_to_frpa108
               FROM THE.OPENING o
               LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
@@ -147,8 +146,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+              GROUP BY o.OPENING_ID
           )
-          WHERE rn = 1 AND (
+          WHERE (
             NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
                 REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
                 AND OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
@@ -212,116 +212,29 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
                 NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR client_location = :#{#filter.clientLocationCode}
             )""",
       countQuery = """
-          SELECT count(o.OPENING_ID) as total
-             FROM THE.OPENING o
-             LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
-             LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
-             LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-             LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
-             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
-             LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
-             LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
-             LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
-         WHERE (
-           NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
-               REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
-               AND o.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
-             ) OR (
-                 o.OPENING_NUMBER = :#{#filter.mainSearchTerm} OR
-                 cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
-                 cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
-             )
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.orgUnit}) OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.category}) OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.statusList}) OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
-           )
-           AND (
-               NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR o.ENTRY_USERID = :#{#filter.requestUserId}
-           )
-           AND (
-               NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
-               NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) > 0
-             )
-           )
-           AND (
-             NVL(:#{#filter.disturbanceDateStart},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE >= TO_TIMESTAMP(:#{#filter.disturbanceDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.disturbanceDateEnd},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE <= TO_TIMESTAMP(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.regenDelayDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.regenDelayDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.freeGrowingDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.freeGrowingDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) >= TO_TIMESTAMP(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) <= TO_TIMESTAMP(:#{#filter.updateDateEnd}, 'YYYY-MM-DD')
-           )
-           AND (
-               NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.CUTTING_PERMIT_ID = :#{#filter.cuttingPermitId}
-           )
-           AND (
-               NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.CUT_BLOCK_ID = :#{#filter.cutBlockId}
-           )
-           AND (
-               NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.TIMBER_MARK = :#{#filter.timberMark}
-           )
-           AND (
-               NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR res.CLIENT_LOCN_CODE = :#{#filter.clientLocationCode}
-           )""",
-      nativeQuery = true
-  )
-  Page<SilvicultureSearchProjection> searchBy(
-      OpeningSearchFiltersDto filter,
-      Pageable pageable
-  );
-
-  @Query(
-      value = """
-          SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,\s
-                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,\s
-                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,\s
-                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,\s
-                 submitted_to_frpa108
-          FROM (
+          SELECT count(opening_id) as total
+             FROM (
               SELECT
-                  o.OPENING_ID AS opening_id,
-                  o.OPENING_NUMBER AS opening_number,
-                  o.OPEN_CATEGORY_CODE AS category,
-                  o.OPENING_STATUS_CODE AS status,
-                  cboa.CUTTING_PERMIT_ID AS cutting_permit_id,
-                  cboa.TIMBER_MARK AS timber_mark,
-                  cboa.CUT_BLOCK_ID AS cut_block_id,
-                  cboa.OPENING_GROSS_AREA AS opening_gross_area,
-                  cboa.DISTURBANCE_START_DATE AS disturbance_start_date,
-                  cboa.FOREST_FILE_ID AS forest_file_id,
-                  ou.ORG_UNIT_CODE AS org_unit_code,
-                  ou.ORG_UNIT_NAME AS org_unit_name,
-                  res.CLIENT_NUMBER AS client_number,
-                  res.CLIENT_LOCN_CODE AS client_location,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) AS regen_delay_date,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) AS early_free_growing_date,
-                  ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) AS late_free_growing_date,
-                  o.UPDATE_TIMESTAMP AS update_timestamp,
-                  o.ENTRY_USERID AS entry_user_id,
-                  COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) AS submitted_to_frpa108,
-                  ROW_NUMBER() OVER (PARTITION BY o.OPENING_ID ORDER BY o.UPDATE_TIMESTAMP DESC) AS rn
+                o.OPENING_ID AS opening_id,
+                MAX(o.OPENING_NUMBER) AS opening_number,
+                MAX(o.OPEN_CATEGORY_CODE) AS category,
+                MAX(o.OPENING_STATUS_CODE) AS status,
+                MAX(cboa.CUTTING_PERMIT_ID) AS cutting_permit_id,
+                MAX(cboa.TIMBER_MARK) AS timber_mark,
+                MAX(cboa.CUT_BLOCK_ID) AS cut_block_id,
+                MAX(cboa.OPENING_GROSS_AREA) AS opening_gross_area,
+                MAX(cboa.DISTURBANCE_START_DATE) AS disturbance_start_date,
+                MAX(cboa.FOREST_FILE_ID) AS forest_file_id,
+                MAX(ou.ORG_UNIT_CODE) AS org_unit_code,
+                MAX(ou.ORG_UNIT_NAME) AS org_unit_name,
+                MAX(res.CLIENT_NUMBER) AS client_number,
+                MAX(res.CLIENT_LOCN_CODE) AS client_location,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12))) AS regen_delay_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12))) AS early_free_growing_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12))) AS late_free_growing_date,
+                MAX(o.UPDATE_TIMESTAMP) AS update_timestamp,
+                MAX(o.ENTRY_USERID) AS entry_user_id,
+                MAX(COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0)) AS submitted_to_frpa108
               FROM THE.OPENING o
               LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
@@ -331,20 +244,160 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+            WHERE (
+             NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
+                 REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
+                 AND o.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
+               ) OR (
+                   o.OPENING_NUMBER = :#{#filter.mainSearchTerm} OR
+                   cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
+                   cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
+               )
+             )
+             AND (
+                 'NOVALUE' in (:#{#filter.orgUnit}) OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
+             )
+             AND (
+                 'NOVALUE' in (:#{#filter.category}) OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
+             )
+             AND (
+                 'NOVALUE' in (:#{#filter.statusList}) OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
+             )
+             AND (
+                 NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR o.ENTRY_USERID = :#{#filter.requestUserId}
+             )
+             AND (
+                 NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
+                 NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) > 0
+               )
+             )
+             AND (
+               NVL(:#{#filter.disturbanceDateStart},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE >= TO_TIMESTAMP(:#{#filter.disturbanceDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.disturbanceDateEnd},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE <= TO_TIMESTAMP(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.regenDelayDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.regenDelayDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.freeGrowingDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.freeGrowingDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) >= TO_TIMESTAMP(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) <= TO_TIMESTAMP(:#{#filter.updateDateEnd}, 'YYYY-MM-DD')
+             )
+             AND (
+                 NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.CUTTING_PERMIT_ID = :#{#filter.cuttingPermitId}
+             )
+             AND (
+                 NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.CUT_BLOCK_ID = :#{#filter.cutBlockId}
+             )
+             AND (
+                 NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.TIMBER_MARK = :#{#filter.timberMark}
+             )
+             AND (
+                 NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR res.CLIENT_LOCN_CODE = :#{#filter.clientLocationCode}
+             )
+            GROUP BY o.OPENING_ID
+          )""",
+      nativeQuery = true
+  )
+  Page<SilvicultureSearchProjection> searchBy(
+      OpeningSearchFiltersDto filter,
+      Pageable pageable
+  );
+
+  @Query(
+      value = """
+          SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
+                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,
+                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,
+                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,
+                 submitted_to_frpa108
+          FROM (
+              SELECT
+                o.OPENING_ID AS opening_id,
+                MAX(o.OPENING_NUMBER) AS opening_number,
+                MAX(o.OPEN_CATEGORY_CODE) AS category,
+                MAX(o.OPENING_STATUS_CODE) AS status,
+                MAX(cboa.CUTTING_PERMIT_ID) AS cutting_permit_id,
+                MAX(cboa.TIMBER_MARK) AS timber_mark,
+                MAX(cboa.CUT_BLOCK_ID) AS cut_block_id,
+                MAX(cboa.OPENING_GROSS_AREA) AS opening_gross_area,
+                MAX(cboa.DISTURBANCE_START_DATE) AS disturbance_start_date,
+                MAX(cboa.FOREST_FILE_ID) AS forest_file_id,
+                MAX(ou.ORG_UNIT_CODE) AS org_unit_code,
+                MAX(ou.ORG_UNIT_NAME) AS org_unit_name,
+                MAX(res.CLIENT_NUMBER) AS client_number,
+                MAX(res.CLIENT_LOCN_CODE) AS client_location,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12))) AS regen_delay_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12))) AS early_free_growing_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12))) AS late_free_growing_date,
+                MAX(o.UPDATE_TIMESTAMP) AS update_timestamp,
+                MAX(o.ENTRY_USERID) AS entry_user_id,
+                MAX(COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0)) AS submitted_to_frpa108
+              FROM THE.OPENING o
+              LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
+              LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
+              LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
+              LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+              LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
+              LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
+              LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+              GROUP BY o.OPENING_ID
           )
-          WHERE rn = 1 AND OPENING_ID IN :openingIds""",
+          WHERE OPENING_ID IN :openingIds""",
       countQuery = """
-          SELECT count(o.OPENING_ID) as total
-             FROM THE.OPENING o
-             LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
-             LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
-             LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
-             LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
-             LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
-             LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
-             LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
-             LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
-         WHERE o.OPENING_ID IN :openingIds""",
+          SELECT count(opening_id) as total
+             SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
+                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,
+                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,
+                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,
+                 submitted_to_frpa108
+          FROM (
+              SELECT
+                o.OPENING_ID AS opening_id,
+                MAX(o.OPENING_NUMBER) AS opening_number,
+                MAX(o.OPEN_CATEGORY_CODE) AS category,
+                MAX(o.OPENING_STATUS_CODE) AS status,
+                MAX(cboa.CUTTING_PERMIT_ID) AS cutting_permit_id,
+                MAX(cboa.TIMBER_MARK) AS timber_mark,
+                MAX(cboa.CUT_BLOCK_ID) AS cut_block_id,
+                MAX(cboa.OPENING_GROSS_AREA) AS opening_gross_area,
+                MAX(cboa.DISTURBANCE_START_DATE) AS disturbance_start_date,
+                MAX(cboa.FOREST_FILE_ID) AS forest_file_id,
+                MAX(ou.ORG_UNIT_CODE) AS org_unit_code,
+                MAX(ou.ORG_UNIT_NAME) AS org_unit_name,
+                MAX(res.CLIENT_NUMBER) AS client_number,
+                MAX(res.CLIENT_LOCN_CODE) AS client_location,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12))) AS regen_delay_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12))) AS early_free_growing_date,
+                MAX(ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12))) AS late_free_growing_date,
+                MAX(o.UPDATE_TIMESTAMP) AS update_timestamp,
+                MAX(o.ENTRY_USERID) AS entry_user_id,
+                MAX(COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0)) AS submitted_to_frpa108
+              FROM THE.OPENING o
+              LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = o.OPENING_ID)
+              LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
+              LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
+              LEFT JOIN THE.ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = o.OPENING_ID
+              LEFT JOIN THE.SILV_RELIEF_APPLICATION sra ON (sra.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID AND sra.SILV_RELIEF_APPL_STATUS_CODE = 'APP')
+              LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
+              LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
+              LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+              GROUP BY o.OPENING_ID
+          )
+          WHERE opening_id IN :openingIds""",
       nativeQuery = true
   )
   Page<SilvicultureSearchProjection> searchByOpeningIds(
