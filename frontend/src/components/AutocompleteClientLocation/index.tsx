@@ -99,20 +99,29 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     selectClient(autocompleteEvent.selectedItem)
   };
 
+  // This is here because when deployed the ComboBox tends to fail to call the onChange
   useEffect(() => {
+    // We use the useEffect to do a lookup on the clients options
+    // It will fill with the autocomplete triggering the fetchOptions
     const selectedItem = options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped);
+
+    // If there's text typed and we found a client based on the label selected, we select it
     if(valueTyped && selectedItem){
       selectClient(selectedItem);
     }
     
+    // This also triggers the autocomplete to fetch the options
     if(valueTyped)
       fetchOptions(valueTyped, "clients")
   },[valueTyped]);
 
+  // This is here because when deployed the ComboBox tends to fail to call the onChange
   useEffect(() => {
-
+    // We use the useEffect to do a lookup on the locations options
     const selectedItem = options["locations"]?.find((item: AutocompleteProps) => item.label === locationName);
+    // If there's text typed and we found a location based on the label selected, we select it
     if(locationName && selectedItem){
+      // This triggers the location useEffect to set the value
       setLocation(selectedItem);
     }
   }, [locationName]);
@@ -121,6 +130,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     reset: () => setLocation(null)
   }));
 
+  // Why do we keep this then? Because of the onChange start to work, this will work as it was intended
   useEffect(() => {
     setValue(location?.id ?? null);
   }, [location]);
