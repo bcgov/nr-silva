@@ -74,6 +74,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
   const [client, setClient] = useState<AutocompleteProps | null>(null);
   const [valueTyped, setValueTyped] = useState<string | null>(null);
+  const [locationName, setLocationName] = useState<string | null>(null);
 
   const clearClient = () => {
     updateOptions("locations", []);
@@ -98,21 +99,23 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     selectClient(autocompleteEvent.selectedItem)
   };
 
-  const handleBlur = () => {
-    console.log("handleBlur",valueTyped,options["clients"]);
-    console.log("handleBlur",valueTyped,options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped));
-  }
-
   useEffect(() => {
     const selectedItem = options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped);
     if(valueTyped && selectedItem){
-      console.log("handleClientChange",selectedItem);
       selectClient(selectedItem);
     }
     
     if(valueTyped)
       fetchOptions(valueTyped, "clients")
   },[valueTyped]);
+
+  useEffect(() => {
+
+    const selectedItem = options["locations"]?.find((item: AutocompleteProps) => item.label === locationName);
+    if(locationName && selectedItem){
+      setLocation(selectedItem);
+    }
+  }, [locationName]);
 
   useImperativeHandle(ref, () => ({
     reset: () => setLocation(null)
@@ -131,7 +134,6 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
         selectedItem={client}
         onInputChange={setValueTyped}
         onChange={handleClientChange}
-        onBlur={handleBlur}
         itemToElement={(item: AutocompleteProps) => item.label}
         helperText="Search by client name, number or acronym"
         items={options["clients"] || []}
@@ -141,6 +143,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
         disabled={!isActive}
         id="client-location"
         className="flex-fill"
+        onInputChange={setLocationName}
         onChange={(item: AutocompleteComboboxProps) => setLocation(item.selectedItem)}
         itemToElement={(item: AutocompleteProps) => item.label}
         items={options["locations"] || [{ id: "", label: "No results found" }]}
