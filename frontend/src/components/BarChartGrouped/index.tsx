@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOMServer from "react-dom/server";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { 
   FilterableMultiSelect, 
@@ -11,9 +12,10 @@ import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
-import { fetchOrgUnits} from "../../services/search/openings";
+import { fetchOrgUnits, status } from "../../services/search/openings";
 import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
 import { differenceInDays, addDays } from "date-fns";
+import BarChartTooltip from "../BarChartTooltip";
 
 interface MultiSelectEvent {
   selectedItems: TextValueData[];
@@ -46,17 +48,7 @@ const BarChartGrouped = (): JSX.Element => {
         console.error("Error fetching org units:", error);
       }
     };
-
-    setStatusItems([
-      {value:'AMG', text: 'Amalgamate'},
-      {value:'AMD', text: 'Amended'},
-      {value:'APP', text: 'Approved'},
-      {value:'DFT', text: 'Draft'},
-      {value:'FG', text: 'Free Growing'},
-      {value:'RMD', text: 'Removed'},
-      {value:'RET', text: 'Retired'},
-      {value:'SUB', text: 'Submitted'}
-    ]);
+    setStatusItems(status);
     fetchOrgUnitsData();
 
   },[]);
@@ -69,48 +61,53 @@ const BarChartGrouped = (): JSX.Element => {
     return `${year}-${month}-${day}`;
   };
 
-  const colors = {
-    Openings: "#1192E8",
-  };
+  const tooltip = (data:OpeningPerYearChart[], defaultHTML: string, datum: OpeningPerYearChart) => {
+    const tooltipContent = <BarChartTooltip data={data} defaultHTML={defaultHTML} datum={datum} />;
+    return ReactDOMServer.renderToString(tooltipContent);
+  }
+
+  const colors = { Openings: "#1192E8" };
 
   const options = {
     axes: {
-      left: {
-        mapsTo: "value",
-      },
+      left: { mapsTo: "value" },
       bottom: {
         scaleType: ScaleTypes.LABELS,
-        mapsTo: "key",
-      },
+        mapsTo: "key"
+      }
     },
     color: {
-      scale: colors,
+      scale: colors
     },
     height: "18.5rem",
     grid: {
       x: {
         enabled: false,
         color: "#d3d3d3",
-        strokeDashArray: "2,2",
+        strokeDashArray: "2,2"
       },
       y: {
         enabled: true,
         color: "#d3d3d3",
-        strokeDashArray: "2,2",
-      },
+        strokeDashArray: "2,2"
+      }
     },
     toolbar: {
       enabled: false,
       numberOfIcons: 2,
       controls: [
         {
-          type: "Make fullscreen",
+          type: "Make fullscreen"
         },
         {
-          type: "Make fullscreen",
-        },
-      ],
+          type: "Make fullscreen"
+        }
+      ]
     },
+    tooltip:{
+      enabled: true,
+      customHTML: tooltip
+    }
   };
 
 
@@ -128,8 +125,6 @@ const BarChartGrouped = (): JSX.Element => {
   }
 
   useEffect(() =>{
-
-    console.log(`For search`, selectedOrgUnits, selectedStatusCodes, startDate, endDate);
 
     const fetchChartData = async () => {
       try {
