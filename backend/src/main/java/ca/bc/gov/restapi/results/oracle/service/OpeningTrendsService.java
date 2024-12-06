@@ -9,6 +9,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,27 +46,27 @@ public class OpeningTrendsService {
             orgUnits == null ? List.of("NOVALUE") : orgUnits
         );
 
-    entities
-        .forEach(
-            entity -> log.info(
-                "Opening Submission Trends data found: {} {} {}",
-                entity.getOpeningId(),
-                entity.getOrgUnitCode(),
-                entity.getOrgUnitName()
-            )
-        );
-
     if (entities.isEmpty()) {
       log.info("No Opening Submission Trends data found!");
       return List.of();
     }
 
-    // Map to count entries grouped by month
-    Map<Integer, Long> monthToCountMap = entities.stream()
+    // Group by month and status
+    Map<Integer, Map<String, Long>> monthToStatusCountMap = entities.stream()
         .filter(entity -> entity.getEntryTimestamp() != null) // Ensure timestamp is not null
         .collect(Collectors.groupingBy(
             entity -> entity.getEntryTimestamp().getMonthValue(), // Extract month value
-            Collectors.counting() // Count occurrences
+            Collectors.groupingBy(
+                OpeningTrendsProjection::getStatus, // Group by status
+                Collectors.counting() // Count occurrences
+            )
+        ));
+
+    // Map to count total entries grouped by month
+    Map<Integer, Long> monthToCountMap = monthToStatusCountMap.entrySet().stream()
+        .collect(Collectors.toMap(
+            Map.Entry::getKey, // Month
+            entry -> entry.getValue().values().stream().mapToLong(Long::longValue).sum() // Sum counts per status
         ));
 
     // Generate a 12-month sequence starting from the start date
@@ -78,7 +79,8 @@ public class OpeningTrendsService {
         .map(month -> new OpeningsPerYearDto(
             month,
             getMonthName(month),
-            monthToCountMap.getOrDefault(month, 0L) // Use 0 if no entries for this month
+            monthToCountMap.getOrDefault(month, 0L), // Total count for the month
+            monthToStatusCountMap.getOrDefault(month, Collections.emptyMap()) // Status counts map
         ))
         .toList();
   }

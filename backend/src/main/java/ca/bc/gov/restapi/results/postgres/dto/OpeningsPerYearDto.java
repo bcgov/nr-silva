@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
+import java.util.Map;
 import lombok.Builder;
 import lombok.With;
 
@@ -11,7 +12,8 @@ import lombok.With;
 public record OpeningsPerYearDto(
     Integer month,
     String monthName,
-    Long amount
+    Long amount,
+    Map<String,Long> statusCounts
 ) {
 
 }
