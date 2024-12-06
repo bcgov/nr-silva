@@ -243,7 +243,13 @@ const BarChartGrouped = (): JSX.Element => {
           <p>Loading...</p>
         ) : (
           <div className="bar-chart-container" data-testid="bar-chart">
-            {chartData.length === 0 && <EmptySection
+            {chartData.length === 0 && !searchParameters && <EmptySection
+            pictogram="Touch"
+            title="You don't have any openings to show yet"
+            description="Select a filter to bring up the openings"
+            fill="#0073E6"
+          />}
+          {chartData.length === 0 && searchParameters && <EmptySection
             pictogram="UserSearch"
             title="No results found"
             description={`Nothing found when searching for ${searchParameters}, try adjusting your filters to find what you want.`}
