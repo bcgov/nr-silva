@@ -12,7 +12,6 @@ import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -174,58 +173,4 @@ public class DashboardMetricsService {
             .toList();
   }
 
-  private void filterOpeningSubmissions(
-      Map<Integer, List<OpeningsLastYearEntity>> resultMap,
-      List<OpeningsLastYearEntity> entities,
-      DashboardFiltersDto filters) {
-    // Iterate over the found records filtering and putting them into the right month
-    for (OpeningsLastYearEntity entity : entities) {
-      // Org Unit filter - District
-      if (!Objects.isNull(filters.orgUnit())
-          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
-        continue;
-      }
-
-      // Status filter
-      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
-        continue;
-      }
-
-      // Entry start date filter
-      if (!Objects.isNull(filters.entryDateStart())
-          && entity.getEntryTimestamp().isBefore(filters.entryDateStart())) {
-        continue;
-      }
-
-      // Entry end date filter
-      if (!Objects.isNull(filters.entryDateEnd())
-          && entity.getEntryTimestamp().isAfter(filters.entryDateEnd())) {
-        continue;
-      }
-
-      resultMap.get(entity.getEntryTimestamp().getMonthValue()).add(entity);
-    }
-  }
-
-  private Map<Integer, List<OpeningsLastYearEntity>> createBaseMonthsMap(
-      Map<Integer, String> monthNamesMap, Integer firstMonth) {
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
-
-    // Fill with 12 months
-    log.info("First month: {}", firstMonth);
-    while (resultMap.size() < 12) {
-      resultMap.put(firstMonth, new ArrayList<>());
-
-      String monthName = Month.of(firstMonth).name().toLowerCase();
-      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-      monthNamesMap.put(firstMonth, monthName);
-
-      firstMonth += 1;
-      if (firstMonth == 13) {
-        firstMonth = 1;
-      }
-    }
-
-    return resultMap;
-  }
 }
