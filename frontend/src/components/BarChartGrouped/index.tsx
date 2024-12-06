@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
-import { FilterableMultiSelect, DatePicker, DatePickerInput } from "@carbon/react";
+import { 
+  FilterableMultiSelect, 
+  DatePicker, 
+  DatePickerInput, 
+  Grid, 
+  Column
+} from '@carbon/react';
 import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
 import {  fetchOrgUnits} from "../../services/search/openings";
 import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
+import { differenceInDays, addDays } from "date-fns";
 
 interface MultiSelectEvent {
   selectedItems: TextValueData[];
@@ -106,6 +113,20 @@ const BarChartGrouped = (): JSX.Element => {
     },
   };
 
+
+  const setDates = (dates: Date[]) => {
+    // Only apply dates if we have both selected
+    if(dates.length === 2) {
+      // If the difference between the dates is greater than 365 days, set the end date to 365 days after the start date
+      if(differenceInDays(dates[1], dates[0]) > 365){
+        dates[1] = addDays(dates[0], 365);
+      }
+      // Set the start and end date
+      setStartDate(dates[0]);
+      setEndDate(dates[1]);
+    }
+  }
+
   useEffect(() =>{
 
     console.log(`For search`, selectedOrgUnits, selectedStatusCodes, startDate, endDate);
@@ -147,71 +168,72 @@ const BarChartGrouped = (): JSX.Element => {
   },[selectedOrgUnits, selectedStatusCodes, startDate, endDate])
 
   return (
-    <div className="px-3">
-      <div className="row gy-2 gx-1 pb-3">
-        <div className="col-md-3">
-          <FilterableMultiSelect
-            label="District"
-            id="district-dropdown"
-            titleText="District"
-            items={orgUnitItems}
-            itemToString={(item: TextValueData) => (item ? item.text : "")}
-            selectionFeedback="top-after-reopen"
-            onChange={(e: MultiSelectEvent) => setSelectedOrgUnits(e.selectedItems)}
-            selectedItems={selectedOrgUnits}
-            sortItems={sortItems}
-            
+    <Grid condensed>
+      <Column sm={4} md={3} lg={5}>
+        <FilterableMultiSelect
+          label="District"
+          id="district-dropdown"
+          titleText="District"
+          items={orgUnitItems}
+          itemToString={(item: TextValueData) => (item ? item.text : "")}
+          selectionFeedback="top-after-reopen"
+          onChange={(e: MultiSelectEvent) => setSelectedOrgUnits(e.selectedItems)}
+          selectedItems={selectedOrgUnits}
+          sortItems={sortItems}
+          placeholder="Filter by district"
+        />
+      </Column>
+      <Column sm={4} md={3} lg={5}>
+        <FilterableMultiSelect
+          label="Status"
+          id="status-dropdown"
+          titleText="Status"
+          items={statusItems}
+          itemToString={(item: TextValueData) => (item ? item.text : "")}
+          selectionFeedback="top-after-reopen"
+          onChange={(e: MultiSelectEvent) => setSelectedStatusCodes(e.selectedItems)}
+          selectedItems={selectedStatusCodes}
+          sortItems={sortItems}
+          placeholder="Filter by status"
+        />
+      </Column>
+      <Column sm={4} md={2} lg={6}>
+        <DatePicker
+          datePickerType="range"
+            dateFormat="Y/m/d"
+            allowInput={true}
+            maxDate={new Date()}
+            onChange={setDates}
+            /*parseDate*/
+            /*short*/
+          /*onChange={(dates: [Date]) => setStartDate(dates[0])}*/
+        >
+          <DatePickerInput
+            autocomplete="off"
+            id="start-date-picker-input-id"
+            placeholder="yyyy/MM/dd"
+            size="md"
+            labelText="Start Date"
           />
-        </div>
-        <div className="col-md-3">
-          <FilterableMultiSelect
-            label="Status"
-            id="status-dropdown"
-            titleText="Status"
-            items={statusItems}
-            itemToString={(item: TextValueData) => (item ? item.text : "")}
-            selectionFeedback="top-after-reopen"
-            onChange={(e: MultiSelectEvent) => setSelectedStatusCodes(e.selectedItems)}
-            selectedItems={selectedStatusCodes}
-            sortItems={sortItems}
-            
+          <DatePickerInput
+            autocomplete="off"
+            id="end-date-picker-input-id"
+            placeholder="yyyy/MM/dd"
+            size="md"
+            labelText="End Date"
           />
-        </div>
-        <div className="col-md-2 col-xxl-3 d-none d-md-block">
-          <DatePicker
-            datePickerType="single"
-            onChange={(dates: [Date]) => setStartDate(dates[0])}
-          >
-            <DatePickerInput
-              id="start-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
-              labelText="Start Date"
-            />
-          </DatePicker>
-        </div>
-        <div className="col-md-2 col-xxl-3 d-none d-md-block">
-          <DatePicker
-            datePickerType="single"
-            onChange={(dates: [Date]) => setEndDate(dates[0])}
-          >
-            <DatePickerInput
-              id="end-date-picker-input-id"
-              placeholder="yyyy/MM/dd"
-              size="md"
-              labelText="End Date"
-            />
-          </DatePicker>
-        </div>
-      </div>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="bar-chart-container" data-testid="bar-chart">
-          <GroupedBarChart data={chartData} options={options} />
-        </div>
-      )}
-    </div>
+        </DatePicker>
+      </Column>
+      <Column sm={4} md={8} lg={16} xlg={16}>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="bar-chart-container" data-testid="bar-chart">
+            <GroupedBarChart data={chartData} options={options} />
+          </div>
+        )}
+      </Column>
+    </Grid>
   );
 };
 
