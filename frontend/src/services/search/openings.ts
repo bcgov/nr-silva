@@ -4,6 +4,7 @@ import { getAuthIdToken } from "../AuthService";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { createDateParams } from "../../utils/searchUtils";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
+import { TextValueData } from "../../utils/multiSelectSortUtils";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -66,6 +67,16 @@ export interface CodeDescription {
   description: string;
 }
 
+export const status: TextValueData[] = [
+  {value:'AMG', text: 'Amalgamate'},
+  {value:'AMD', text: 'Amended'},
+  {value:'APP', text: 'Approved'},
+  {value:'DFT', text: 'Draft'},
+  {value:'FG', text: 'Free Growing'},
+  {value:'RMD', text: 'Removed'},
+  {value:'RET', text: 'Retired'},
+  {value:'SUB', text: 'Submitted'}
+];
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType

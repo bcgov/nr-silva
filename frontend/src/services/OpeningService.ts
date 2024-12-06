@@ -52,7 +52,8 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
       const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
         key: item.monthName,
-        value: item.amount
+        value: item.amount,
+        statusCount: item.statusCounts
       }));
 
       return formattedData;
