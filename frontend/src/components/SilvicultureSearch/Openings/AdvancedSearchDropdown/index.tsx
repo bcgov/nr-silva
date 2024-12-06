@@ -252,7 +252,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
         <Column lg={4} className="startEndDateCol">
           <DatePicker
             datePickerType="range"
-            onChange={(dates: [Date]) => {
+            onChange={(dates: [Date, Date]) => {
               if (dates.length > 0) {
                 handleFilterChange({
                   startDate: dates[0].toISOString().slice(0, 10),
@@ -260,7 +260,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                 });
               }
             }}
-            onClose={(dates: [Date]) => {
+            onClose={(dates: [Date, Date]) => {
               if (dates.length > 0) {
                 handleFilterChange({
                   startDate: dates[0].toISOString().slice(0, 10),
@@ -269,8 +269,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               }
             }}
             disabled={!filters.dateType}
-          // enabled={filters.dateType}
-          // readOnly={!filters.dateType}
           >
             <DatePickerInput
               labelText="Start Date"
@@ -283,8 +281,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               labelText="End Date"
               placeholder="yyyy/MM/dd"
               disabled={!filters.dateType}
-              // enabled={filters.dateType}
-              // readOnly={!filters.dateType}
               value={formatDateForDatePicker(filters.endDate)}
             />
           </DatePicker>
