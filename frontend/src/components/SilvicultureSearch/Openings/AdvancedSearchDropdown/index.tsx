@@ -254,10 +254,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             datePickerType="range"
             onChange={(dates: [Date]) => {
               if (dates.length > 0) {
-
                 handleFilterChange({
                   startDate: dates[0].toISOString().slice(0, 10),
-                  endDate: dates[1].toISOString().slice(0, 10)
+                  endDate: dates[1] ? dates[1].toISOString().slice(0, 10) : null
                 });
               }
             }}
@@ -265,7 +264,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               if (dates.length > 0) {
                 handleFilterChange({
                   startDate: dates[0].toISOString().slice(0, 10),
-                  endDate: dates[1].toISOString().slice(0, 10)
+                  endDate: dates[1] ? dates[1].toISOString().slice(0, 10) : null
                 });
               }
             }}
