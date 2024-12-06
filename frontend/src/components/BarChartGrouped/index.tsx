@@ -16,6 +16,7 @@ import { fetchOrgUnits, status } from "../../services/search/openings";
 import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
 import { differenceInDays, addDays } from "date-fns";
 import BarChartTooltip from "../BarChartTooltip";
+import EmptySection from "../EmptySection";
 
 interface MultiSelectEvent {
   selectedItems: TextValueData[];
@@ -27,11 +28,12 @@ const BarChartGrouped = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
+  const [dateRange, setDateRange] = useState<Date[]>([]);
   const [orgUnitItems, setOrgUnitItems] = useState<TextValueData[]>([]);
   const [statusItems, setStatusItems] = useState<TextValueData[]>([]);
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
+  const [searchParameters, setSearchParameters] = useState<string>("");
 
 
   const handleResize = () => {
@@ -110,8 +112,8 @@ const BarChartGrouped = (): JSX.Element => {
     }
   };
 
-
   const setDates = (dates: Date[]) => {
+    setDateRange(dates);
     // Only apply dates if we have both selected
     if(dates.length === 2) {
       // If the difference between the dates is greater than 365 days, set the end date to 365 days after the start date
@@ -121,32 +123,52 @@ const BarChartGrouped = (): JSX.Element => {
       // Set the start and end date
       setStartDate(dates[0]);
       setEndDate(dates[1]);
+    } else {
+      setStartDate(null);
+      setEndDate(null);
     }
   }
+
+  const maxDate = () => formatDateToString(new Date());
 
   useEffect(() =>{
 
     const fetchChartData = async () => {
       try {
+
+        const searchValues: string[] = [];
+
         setIsLoading(true);
         let formattedStartDate: string | null = null;
         let formattedEndDate: string | null = null;
 
         if (startDate) {
           formattedStartDate = formatDateToString(startDate);
+          searchValues.push(`Start Date: ${formattedStartDate}`);
         }
         if (endDate) {
           formattedEndDate = formatDateToString(endDate);
+          searchValues.push(`End Date: ${formattedEndDate}`);
         }
 
         const orgUnits = selectedOrgUnits?.map((orgUnit) => orgUnit.value);
         const statusCodes = selectedStatusCodes?.map((statusCode) => statusCode.value);
-    
+
+
+        if(orgUnits.length > 0) {
+          searchValues.push(`Districts: ${orgUnits.join(", ")}`);
+        }
+        if(statusCodes.length > 0) {
+          searchValues.push(`Status: ${statusCodes.join(", ")}`);
+        }
+
+        setSearchParameters(searchValues.join(", "));
+
         const data: OpeningPerYearChart[] = await fetchOpeningsPerYear({
           orgUnitCode: orgUnits,
           statusCode: statusCodes,
           entryDateStart: formattedStartDate,
-          entryDateEnd: formattedEndDate,
+          entryDateEnd: formattedEndDate
         });
         setChartData(data);
         setIsLoading(false);
@@ -155,7 +177,6 @@ const BarChartGrouped = (): JSX.Element => {
         setIsLoading(false);
       }
     };
-
     fetchChartData();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -195,20 +216,21 @@ const BarChartGrouped = (): JSX.Element => {
       <Column sm={4} md={2} lg={6}>
         <DatePicker
           datePickerType="range"
-            dateFormat="Y/m/d"
-            allowInput={true}
-            maxDate={new Date()}
-            onChange={setDates}
+          dateFormat="Y/m/d"
+          allowInput={true}
+          maxDate={maxDate()}
+          onChange={setDates}
+          value={dateRange}
         >
           <DatePickerInput
-            autocomplete="off"
+            autoComplete="off"
             id="start-date-picker-input-id"
             placeholder="yyyy/MM/dd"
             size="md"
             labelText="Start Date"
           />
           <DatePickerInput
-            autocomplete="off"
+            autoComplete="off"
             id="end-date-picker-input-id"
             placeholder="yyyy/MM/dd"
             size="md"
@@ -221,7 +243,13 @@ const BarChartGrouped = (): JSX.Element => {
           <p>Loading...</p>
         ) : (
           <div className="bar-chart-container" data-testid="bar-chart">
-            <GroupedBarChart data={chartData} options={options} />
+            {chartData.length === 0 && <EmptySection
+            pictogram="UserSearch"
+            title="No results found"
+            description={`Nothing found when searching for ${searchParameters}, try adjusting your filters to find what you want.`}
+            fill="#0073E6"
+          />}
+            {chartData.length > 0 && <GroupedBarChart data={chartData} options={options} />}
           </div>
         )}
       </Column>
