@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from 'react';
 import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
-import { parseToken, FamLoginUser } from "../services/AuthService";
+import { parseToken, FamLoginUser, setAuthIdToken } from "../services/AuthService";
 import { extractGroups } from '../utils/famUtils';
 import { env } from '../env';
 import { JWT } from '../types/amplify';
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     refreshUserState();    
-    const interval = setInterval(refreshUserState, 3 * 60 * 1000);
+    const interval = setInterval(loadUserToken, 3 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -105,6 +105,7 @@ export const useGetAuth = (): AuthContextType => {
 const loadUserToken = async () : Promise<JWT|undefined> => {
   if(env.NODE_ENV !== 'test'){
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    setAuthIdToken(idToken?.toString() || null);
     return idToken;
   } else {
     // This is for test only

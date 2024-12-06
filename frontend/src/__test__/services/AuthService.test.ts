@@ -34,8 +34,7 @@ describe('AuthService', () => {
           "custom:idp_name": "idir",
           "given_name": "Jack",
           "name": "Jack Ryan",
-          "family_name": "Ryan",
-          exp: 1234567890
+          "family_name": "Ryan"
         },
         toString: () => 'mockTokenString',
       };
@@ -51,7 +50,6 @@ describe('AuthService', () => {
         email: 'jack.ryan@gov.bc.ca',
         idpProvider: 'IDIR',
         clientRoles: [{ role: 'role1' }, { role: 'role2' }],
-        exp: 1234567890,
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
@@ -74,8 +72,7 @@ describe('AuthService', () => {
           "custom:idp_name": "idir",
           "given_name": "Jack",
           "name": "Jack Ryan",
-          "family_name": "Ryan",
-          exp: 1234567890
+          "family_name": "Ryan"
         },
         toString: () => 'mockTokenString',
       };
@@ -91,7 +88,6 @@ describe('AuthService', () => {
         email: 'jack.ryan@gov.bc.ca',
         idpProvider: 'IDIR',
         clientRoles: [{ role: 'role1' }, { role: 'role2' }],
-        exp: 1234567890,
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
@@ -103,8 +99,7 @@ describe('AuthService', () => {
         payload: {
           'custom:idp_display_name': 'Doe, John',
           'custom:idp_username': 'johndoe',
-          'email': 'john.doe@example.com',
-          exp: 1234567890,
+          'email': 'john.doe@example.com'
         },
         toString: () => 'mockTokenString',
       };
@@ -120,7 +115,6 @@ describe('AuthService', () => {
         email: 'john.doe@example.com',
         idpProvider: '',
         clientRoles: [{ role: 'role1' }, { role: 'role2' }],
-        exp: 1234567890,
         firstName: 'John',
         lastName: 'Doe',
         providerUsername: '\\johndoe',
