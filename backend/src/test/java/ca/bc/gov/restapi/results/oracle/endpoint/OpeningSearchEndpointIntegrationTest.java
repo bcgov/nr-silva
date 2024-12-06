@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @WithMockJwt
 @DisplayName("Integrated Test | Opening Search Endpoint")
-class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
+class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
