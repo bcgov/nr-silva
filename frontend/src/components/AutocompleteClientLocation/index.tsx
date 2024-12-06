@@ -73,6 +73,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   const [isActive, setIsActive] = useState(false);
   const [location, setLocation] = useState<AutocompleteProps | null>(null);
   const [client, setClient] = useState<AutocompleteProps | null>(null);
+  const [valueTyped, setValueTyped] = useState<string | null>(null);
 
   const clearClient = () => {
     updateOptions("locations", []);
@@ -95,6 +96,16 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     }
   };
 
+  const handleBlur = () => {
+    console.log("handleBlur",valueTyped,options["clients"]);
+    console.log("handleBlur",valueTyped,options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped));
+  }
+
+  useEffect(() => {
+    if(valueTyped)
+      fetchOptions(valueTyped, "clients")
+  },[valueTyped]);
+
   useImperativeHandle(ref, () => ({
     reset: () => setLocation(null)
   }));
@@ -110,13 +121,14 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
         className="flex-fill"
         allowCustomValue={false}
         selectedItem={client}
-        onInputChange={(value: string) => fetchOptions(value, "clients")}
+        onInputChange={setValueTyped}
         onChange={handleClientChange}
+        onBlur={handleBlur}
         itemToElement={(item: AutocompleteProps) => item.label}
         helperText="Search by client name, number or acronym"
         items={options["clients"] || []}
-        titleText="Client" />
-
+        titleText="Client" 
+      />
       <ComboBox
         disabled={!isActive}
         id="client-location"
