@@ -84,9 +84,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     setLocation(null);
   };
 
-  const handleClientChange = (autocompleteEvent: AutocompleteComboboxProps) => {    
-
-    const selectedItem = autocompleteEvent.selectedItem;
+  const selectClient = (selectedItem: AutocompleteProps) => {
     if (selectedItem) {
       setIsActive(true);
       setClient(selectedItem);
@@ -94,6 +92,10 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     }else{
       clearClient();
     }
+  }
+
+  const handleClientChange = (autocompleteEvent: AutocompleteComboboxProps) => {
+    selectClient(autocompleteEvent.selectedItem)
   };
 
   const handleBlur = () => {
@@ -102,6 +104,12 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   }
 
   useEffect(() => {
+    const selectedItem = options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped);
+    if(valueTyped && selectedItem){
+      console.log("handleClientChange",selectedItem);
+      selectClient(selectedItem);
+    }
+    
     if(valueTyped)
       fetchOptions(valueTyped, "clients")
   },[valueTyped]);
