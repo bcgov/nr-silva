@@ -1,6 +1,4 @@
 import React from "react";
-import { Button } from "@carbon/react";
-import * as Icons from "@carbon/icons-react";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import { status } from "../../services/search/openings";
 
@@ -18,29 +16,10 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
 
   return (
     <div>
-      <div>
-        <Button
-        hasIconOnly
-        kind="ghost"
-        renderIcon={Icons.MapBoundary}
-        onClick={() => null}
-        size="md"
-      />
-          {datum.value} {datum.group}</div>
-      <div>
-        <ul>
-          {Object.keys(datum.statusCount).map((status, index) => (<li key={index}>{datum.statusCount[status]} {statusDescription(status)}</li>))}
-        </ul>
-      </div>
-      <Button
-        iconDescription="Go to the Openings search page"
-        tooltipPosition="bottom"
-        renderIcon={Icons.List}
-        onClick={() => null}
-        size="md"
-      >
-        Go to openings
-      </Button>
+      <h4><b>{datum.value} {datum.group}</b></h4>
+      <ul>
+        {Object.keys(datum.statusCount).map((key, index) => (<li key={index}><p><b>{datum.statusCount[key]} {statusDescription(key)}</b></p></li>))}
+      </ul>
     </div>
   );
 };
