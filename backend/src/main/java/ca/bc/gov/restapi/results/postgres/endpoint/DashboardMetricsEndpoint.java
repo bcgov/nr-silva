@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 import ca.bc.gov.restapi.results.common.util.TimestampUtil;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.service.DashboardMetricsService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,43 +22,6 @@ public class DashboardMetricsEndpoint {
 
   private final DashboardMetricsService dashboardMetricsService;
 
-  /**
-   * Gets data for the Opening submission trends Chart (Openings per year) on the Dashboard SILVA
-   * page.
-   *
-   * @param orgUnitCode    Optional district code filter.
-   * @param statusCode     Optional opening status code filter.
-   * @param entryDateStart Optional opening entry timestamp start date filter.
-   * @param entryDateEnd   Optional opening entry timestamp end date filter.
-   * @return A list of values to populate the chart or 204 no content if no data.
-   */
-  @GetMapping("/submission-trends")
-  public ResponseEntity<List<OpeningsPerYearDto>> getOpeningsSubmissionTrends(
-      @RequestParam(value = "orgUnitCode", required = false)
-      String orgUnitCode,
-      @RequestParam(value = "statusCode", required = false)
-      String statusCode,
-      @RequestParam(value = "entryDateStart", required = false)
-      String entryDateStart,
-      @RequestParam(value = "entryDateEnd", required = false)
-      String entryDateEnd) {
-    DashboardFiltersDto filtersDto =
-        new DashboardFiltersDto(
-            orgUnitCode,
-            statusCode,
-            TimestampUtil.parseDateString(entryDateStart),
-            TimestampUtil.parseDateString(entryDateEnd),
-            null);
-
-    List<OpeningsPerYearDto> resultList =
-        dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    if (resultList.isEmpty()) {
-      return ResponseEntity.noContent().build();
-    }
-
-    return ResponseEntity.ok(resultList);
-  }
 
   /**
    * Gets data for the Free growing Chart on the Dashboard SILVA page.
