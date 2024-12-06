@@ -11,7 +11,7 @@ import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
-import {  fetchOrgUnits} from "../../services/search/openings";
+import { fetchOrgUnits} from "../../services/search/openings";
 import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
 import { differenceInDays, addDays } from "date-fns";
 
@@ -175,7 +175,7 @@ const BarChartGrouped = (): JSX.Element => {
           id="district-dropdown"
           titleText="District"
           items={orgUnitItems}
-          itemToString={(item: TextValueData) => (item ? item.text : "")}
+          itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
           selectionFeedback="top-after-reopen"
           onChange={(e: MultiSelectEvent) => setSelectedOrgUnits(e.selectedItems)}
           selectedItems={selectedOrgUnits}
@@ -189,7 +189,7 @@ const BarChartGrouped = (): JSX.Element => {
           id="status-dropdown"
           titleText="Status"
           items={statusItems}
-          itemToString={(item: TextValueData) => (item ? item.text : "")}
+          itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
           selectionFeedback="top-after-reopen"
           onChange={(e: MultiSelectEvent) => setSelectedStatusCodes(e.selectedItems)}
           selectedItems={selectedStatusCodes}
@@ -204,9 +204,6 @@ const BarChartGrouped = (): JSX.Element => {
             allowInput={true}
             maxDate={new Date()}
             onChange={setDates}
-            /*parseDate*/
-            /*short*/
-          /*onChange={(dates: [Date]) => setStartDate(dates[0])}*/
         >
           <DatePickerInput
             autocomplete="off"
