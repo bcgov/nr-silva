@@ -10,7 +10,8 @@ import {
   FilterableMultiSelect,
   Row,
   Column
-, ComboBox } from "@carbon/react";
+  , ComboBox
+} from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
@@ -67,6 +68,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   }, []);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
+    if (updatedFilters.dateType === "") {
+      updatedFilters.startDate = null as Date | null;
+      updatedFilters.endDate = null as Date | null;
+    }
     setFilters({ ...filters, ...updatedFilters });
   };
 
@@ -160,30 +165,30 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       <Row>
         <Column sm={2} className="orgUnitCol">
           <FilterableMultiSelect
-              label="Enter or choose an org unit"
-              id="orgunit-multiselect"
-              className="multi-select"
-              titleText="Org Unit"
-              items={orgUnitItems}
-              itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
-              selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
-              selectedItems={selectedOrgUnits}
-              sortItems={sortItems}
+            label="Enter or choose an org unit"
+            id="orgunit-multiselect"
+            className="multi-select"
+            titleText="Org Unit"
+            items={orgUnitItems}
+            itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
+            selectionFeedback="top-after-reopen"
+            onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
+            selectedItems={selectedOrgUnits}
+            sortItems={sortItems}
           />
         </Column>
         <Column sm={2}>
           <FilterableMultiSelect
-              label="Enter or choose a category"
-              id="category-multiselect"
-              className="multi-select"
-              titleText="Category"
-              items={categoryItems}
-              itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
-              selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
-              selectedItems={selectedCategories}
-              sortItems={sortItems}
+            label="Enter or choose a category"
+            id="category-multiselect"
+            className="multi-select"
+            titleText="Category"
+            items={categoryItems}
+            itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
+            selectionFeedback="top-after-reopen"
+            onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
+            selectedItems={selectedCategories}
+            sortItems={sortItems}
           />
         </Column>
       </Row>
@@ -191,33 +196,33 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
         <Column sm={2} className="clientLocationCol">
           <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
             <AutocompleteClientLocation
-                setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })}
-                ref={autoCompleteRef}
+              setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })}
+              ref={autoCompleteRef}
             />
           </AutocompleteProvider>
         </Column>
         <Column sm={1}>
           <TextInput
-              id="text-input-2"
-              className="cutBlock"
-              type="text"
-              labelText="Cut block"
-              value={filters.cutBlock}
-              onChange={(e: any) =>
-                  handleFilterChange({ cutBlock: e.target.value })
-              }
+            id="text-input-2"
+            className="cutBlock"
+            type="text"
+            labelText="Cut block"
+            value={filters.cutBlock}
+            onChange={(e: any) =>
+              handleFilterChange({ cutBlock: e.target.value })
+            }
           />
         </Column>
         <Column sm={1}>
           <TextInput
-              id="text-input-3"
-              className="cuttingPermit"
-              labelText="Cutting permit"
-              type="text"
-              value={filters.cuttingPermit}
-              onChange={(e: any) =>
-                  handleFilterChange({ cuttingPermit: e.target.value })
-              }
+            id="text-input-3"
+            className="cuttingPermit"
+            labelText="Cutting permit"
+            type="text"
+            value={filters.cuttingPermit}
+            onChange={(e: any) =>
+              handleFilterChange({ cuttingPermit: e.target.value })
+            }
           />
         </Column>
       </Row>
@@ -225,70 +230,63 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       <Row>
         <Column sm={2} className="timeberMarkCol">
           <TextInput
-              id="timber-mark-input"
-              labelText="Timber mark"
-              value={filters.timberMark}
-              onChange={(e: any) =>
-                  handleFilterChange({ timberMark: e.target.value })
-              }
+            id="timber-mark-input"
+            labelText="Timber mark"
+            value={filters.timberMark}
+            onChange={(e: any) =>
+              handleFilterChange({ timberMark: e.target.value })
+            }
           />
         </Column>
         <Column lg={4} className="dateTypeCol">
           <ComboBox
-              titleText="Date type"
-              items={dateTypeItems}
-              itemToString={(item: any) => (item ? item.text : "")}
-              onChange={(e: any) =>
-                  handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
-              }
-              label="Date type"
+            titleText="Date type"
+            items={dateTypeItems}
+            itemToString={(item: any) => (item ? item.text : "")}
+            onChange={(e: any) =>
+              handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
+            }
+            label="Date type"
           />
         </Column>
         <Column lg={4} className="startEndDateCol">
           <DatePicker
-              datePickerType="range"
-              onChange={(dates: [Date]) => {
-                if (dates.length > 0) {
-                  handleFilterChange({
-                    startDate: dates[0].toISOString().slice(0, 10)
-                  });
-                }
-              }}
-              onClose={(dates: [Date]) => {
-                if (dates.length > 0) {
-                  handleFilterChange({
-                    startDate: dates[0].toISOString().slice(0, 10)
-                  });
-                }
-              }}
-              disabled={!filters.dateType}
-              enabled={filters.dateType}
-              readOnly={!filters.dateType}
+            datePickerType="range"
+            onChange={(dates: [Date]) => {
+              if (dates.length > 0) {
+
+                handleFilterChange({
+                  startDate: dates[0].toISOString().slice(0, 10),
+                  endDate: dates[1].toISOString().slice(0, 10)
+                });
+              }
+            }}
+            onClose={(dates: [Date]) => {
+              if (dates.length > 0) {
+                handleFilterChange({
+                  startDate: dates[0].toISOString().slice(0, 10),
+                  endDate: dates[1].toISOString().slice(0, 10)
+                });
+              }
+            }}
+            disabled={!filters.dateType}
+          // enabled={filters.dateType}
+          // readOnly={!filters.dateType}
           >
-            <DatePickerInput 
-                labelText="Start Date"
-                size="sm"
-                placeholder={
-                  filters.startDate
-                      ? filters.startDate // Display the date in YYYY-MM-DD format
-                      : "yyyy/MM/dd"
-                }
-                disabled={!filters.dateType}
-                enabled={filters.dateType}
-                value={formatDateForDatePicker(filters.startDate)}
+            <DatePickerInput
+              labelText="Start Date"
+              placeholder="yyyy/MM/dd"
+              disabled={!filters.dateType}
+              // enabled={filters.dateType}
+              value={formatDateForDatePicker(filters.startDate)}
             />
             <DatePickerInput
-                size="sm"
-                labelText="End Date"
-                placeholder={
-                  filters.endDate
-                      ? filters.endDate // Display the date in YYYY-MM-DD format
-                      : "yyyy/MM/dd"
-                }
-                disabled={!filters.dateType}
-                enabled={filters.dateType}
-                readOnly={!filters.dateType}
-                value={formatDateForDatePicker(filters.endDate)}
+              labelText="End Date"
+              placeholder="yyyy/MM/dd"
+              disabled={!filters.dateType}
+              // enabled={filters.dateType}
+              // readOnly={!filters.dateType}
+              value={formatDateForDatePicker(filters.endDate)}
             />
           </DatePicker>
         </Column>
@@ -296,56 +294,56 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       <Row>
         <Column sm={4}>
           <CheckboxGroup
-              orientation="horizontal"
-              legendText="Status"
+            orientation="horizontal"
+            legendText="Status"
           >
             <Checkbox
-                labelText={`AMG - Amalgamate`}
-                id="checkbox-label-amg"
-                checked={filters.status.includes("AMG")}
-                onChange={() => handleCheckboxChange("AMG", "status")}
+              labelText={`AMG - Amalgamate`}
+              id="checkbox-label-amg"
+              checked={filters.status.includes("AMG")}
+              onChange={() => handleCheckboxChange("AMG", "status")}
             />
             <Checkbox
-                labelText={`AMD - Amended`}
-                id="checkbox-label-amd"
-                checked={filters.status.includes("AMD")}
-                onChange={() => handleCheckboxChange("AMD", "status")}
+              labelText={`AMD - Amended`}
+              id="checkbox-label-amd"
+              checked={filters.status.includes("AMD")}
+              onChange={() => handleCheckboxChange("AMD", "status")}
             />
             <Checkbox
-                labelText={`APP - Approved`}
-                id="checkbox-label-app"
-                checked={filters.status.includes("APP")}
-                onChange={() => handleCheckboxChange("APP", "status")}
+              labelText={`APP - Approved`}
+              id="checkbox-label-app"
+              checked={filters.status.includes("APP")}
+              onChange={() => handleCheckboxChange("APP", "status")}
             />
             <Checkbox
-                labelText={`DFT - Draft`}
-                id="checkbox-label-dft"
-                checked={filters.status.includes("DFT")}
-                onChange={() => handleCheckboxChange("DFT", "status")}
+              labelText={`DFT - Draft`}
+              id="checkbox-label-dft"
+              checked={filters.status.includes("DFT")}
+              onChange={() => handleCheckboxChange("DFT", "status")}
             />
             <Checkbox
-                labelText={`FG - Free Growing`}
-                id="checkbox-label-fg"
-                checked={filters.status.includes("FG")}
-                onChange={() => handleCheckboxChange("FG", "status")}
+              labelText={`FG - Free Growing`}
+              id="checkbox-label-fg"
+              checked={filters.status.includes("FG")}
+              onChange={() => handleCheckboxChange("FG", "status")}
             />
             <Checkbox
-                labelText={`RMD - Removed`}
-                id="checkbox-label-rmd"
-                checked={filters.status.includes("RMD")}
-                onChange={() => handleCheckboxChange("RMD", "status")}
+              labelText={`RMD - Removed`}
+              id="checkbox-label-rmd"
+              checked={filters.status.includes("RMD")}
+              onChange={() => handleCheckboxChange("RMD", "status")}
             />
             <Checkbox
-                labelText={`RET - Retired`}
-                id="checkbox-label-ret"
-                checked={filters.status.includes("RET")}
-                onChange={() => handleCheckboxChange("RET", "status")}
+              labelText={`RET - Retired`}
+              id="checkbox-label-ret"
+              checked={filters.status.includes("RET")}
+              onChange={() => handleCheckboxChange("RET", "status")}
             />
             <Checkbox
-                labelText={`SUB - Submitted`}
-                id="checkbox-label-sub"
-                checked={filters.status.includes("SUB")}
-                onChange={() => handleCheckboxChange("SUB", "status")}
+              labelText={`SUB - Submitted`}
+              id="checkbox-label-sub"
+              checked={filters.status.includes("SUB")}
+              onChange={() => handleCheckboxChange("SUB", "status")}
             />
           </CheckboxGroup>
         </Column>
