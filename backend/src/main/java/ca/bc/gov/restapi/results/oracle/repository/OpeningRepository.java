@@ -245,71 +245,71 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
-              GROUP BY o.OPENING_ID
-          )
-          WHERE (
-           NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
-               REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
-               AND o.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
-             ) OR (
-                 o.OPENING_NUMBER = :#{#filter.mainSearchTerm} OR
-                 cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
-                 cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
+            WHERE (
+             NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
+                 REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
+                 AND o.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
+               ) OR (
+                   o.OPENING_NUMBER = :#{#filter.mainSearchTerm} OR
+                   cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
+                   cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
+               )
              )
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.orgUnit}) OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.category}) OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
-           )
-           AND (
-               'NOVALUE' in (:#{#filter.statusList}) OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
-           )
-           AND (
-               NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR o.ENTRY_USERID = :#{#filter.requestUserId}
-           )
-           AND (
-               NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
-               NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) > 0
+             AND (
+                 'NOVALUE' in (:#{#filter.orgUnit}) OR ou.ORG_UNIT_CODE IN (:#{#filter.orgUnit})
              )
-           )
-           AND (
-             NVL(:#{#filter.disturbanceDateStart},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE >= TO_TIMESTAMP(:#{#filter.disturbanceDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.disturbanceDateEnd},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE <= TO_TIMESTAMP(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.regenDelayDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.regenDelayDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.freeGrowingDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.freeGrowingDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) >= TO_TIMESTAMP(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
-           )
-           AND (
-             NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) <= TO_TIMESTAMP(:#{#filter.updateDateEnd}, 'YYYY-MM-DD')
-           )
-           AND (
-               NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.CUTTING_PERMIT_ID = :#{#filter.cuttingPermitId}
-           )
-           AND (
-               NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.CUT_BLOCK_ID = :#{#filter.cutBlockId}
-           )
-           AND (
-               NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.TIMBER_MARK = :#{#filter.timberMark}
-           )
-           AND (
-               NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR res.CLIENT_LOCN_CODE = :#{#filter.clientLocationCode}
-           )""",
+             AND (
+                 'NOVALUE' in (:#{#filter.category}) OR o.OPEN_CATEGORY_CODE IN (:#{#filter.category})
+             )
+             AND (
+                 'NOVALUE' in (:#{#filter.statusList}) OR o.OPENING_STATUS_CODE IN (:#{#filter.statusList})
+             )
+             AND (
+                 NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR o.ENTRY_USERID = :#{#filter.requestUserId}
+             )
+             AND (
+                 NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
+                 NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.SILV_RELIEF_APPLICATION_ID, 0) > 0
+               )
+             )
+             AND (
+               NVL(:#{#filter.disturbanceDateStart},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE >= TO_TIMESTAMP(:#{#filter.disturbanceDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.disturbanceDateEnd},'NOVALUE') = 'NOVALUE' OR cboa.DISTURBANCE_START_DATE <= TO_TIMESTAMP(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.regenDelayDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.regenDelayDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMRG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.freeGrowingDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.EARLY_OFFSET_YEARS, 0) * 12)) > TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.freeGrowingDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) < TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) >= TO_TIMESTAMP(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
+             )
+             AND (
+               NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' OR ADD_MONTHS(cboa.DISTURBANCE_START_DATE, (COALESCE(SMFG.LATE_OFFSET_YEARS, 0) * 12)) <= TO_TIMESTAMP(:#{#filter.updateDateEnd}, 'YYYY-MM-DD')
+             )
+             AND (
+                 NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.CUTTING_PERMIT_ID = :#{#filter.cuttingPermitId}
+             )
+             AND (
+                 NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.CUT_BLOCK_ID = :#{#filter.cutBlockId}
+             )
+             AND (
+                 NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.TIMBER_MARK = :#{#filter.timberMark}
+             )
+             AND (
+                 NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR res.CLIENT_LOCN_CODE = :#{#filter.clientLocationCode}
+             )
+            GROUP BY o.OPENING_ID
+          )""",
       nativeQuery = true
   )
   Page<SilvicultureSearchProjection> searchBy(
