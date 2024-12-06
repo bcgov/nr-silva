@@ -52,7 +52,7 @@ class OpeningTrendsServiceTest {
 
   @Test
   @DisplayName("Opening submission trends with no filters should succeed")
-  void getOpeningSubmissionTrends_noFilters_shouldSucceed() throws Exception {
+  void getOpeningSubmissionTrends_noFilters_shouldSucceed() {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
@@ -76,7 +76,7 @@ class OpeningTrendsServiceTest {
 
   @Test
   @DisplayName("Opening submission trends with Org Unit filter should succeed")
-  void getOpeningSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
+  void getOpeningSubmissionTrends_orgUnitFilter_shouldSucceed() {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
@@ -194,6 +194,7 @@ class OpeningTrendsServiceTest {
   @AllArgsConstructor
   static
   class TestOpeningTrendsProjection implements OpeningTrendsProjection {
+
     private Long openingId;
     private String userId;
     private LocalDateTime entryTimestamp;
