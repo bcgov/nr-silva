@@ -57,4 +57,54 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andReturn();
   }
 
+  @Test
+  @DisplayName("Openings submission trends happy path should succeed")
+  void getOpeningsSubmissionTrends_happyPath_shouldSucceed() throws Exception {
+
+    mockMvc.perform(get("/api/users/submission-trends")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$[0].month").value("12"))
+        .andExpect(jsonPath("$[0].amount").value(0))
+        .andExpect(jsonPath("$[1].monthName").value("Jan"))
+        .andExpect(jsonPath("$[1].amount").value(3));
+  }
+
+  @Test
+  @DisplayName("Openings submission trends no data should return no content")
+  void getOpeningsSubmissionTrends_noData_shouldReturnNoContent() throws Exception {
+
+    mockMvc.perform(get("/api/users/submission-trends")
+            .param("orgUnitCode", "ORG1")
+            .param("statusCode", "STATUS1")
+            .param("entryDateStart", "2022-01-01")
+            .param("entryDateEnd", "2023-01-01")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("Openings submission trends with filters should succeed")
+  void getOpeningsSubmissionTrends_withFilters_shouldSucceed() throws Exception {
+
+    mockMvc.perform(get("/api/users/submission-trends")
+            .param("statusCode", "APP")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$[0].month").value("12"))
+        .andExpect(jsonPath("$[0].amount").value(0));
+  }
+
+  @Test
+  @DisplayName("Openings submission trends with invalid date range should return no content")
+  void getOpeningsSubmissionTrends_invalidDateRange_shouldReturnNoContent() throws Exception {
+
+    mockMvc.perform(get("/api/users/submission-trends")
+            .param("entryDateStart", "2023-01-01")
+            .param("entryDateEnd", "2022-01-01")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
 }

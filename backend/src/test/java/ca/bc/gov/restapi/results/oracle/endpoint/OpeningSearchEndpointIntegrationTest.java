@@ -194,7 +194,6 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Get Opening Org Units By Code not Found should Succeed")
   void getOpeningOrgUnitsByCode_notFound_shouldSucceed() throws Exception {
-    //when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(List.of());
 
     mockMvc
         .perform(
