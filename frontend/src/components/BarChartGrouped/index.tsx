@@ -64,7 +64,7 @@ const BarChartGrouped = (): JSX.Element => {
   };
 
   const tooltip = (data:OpeningPerYearChart[], defaultHTML: string, datum: OpeningPerYearChart) => {
-    const tooltipContent = <BarChartTooltip data={data} defaultHTML={defaultHTML} datum={datum} />;
+    const tooltipContent = <BarChartTooltip datum={datum} />;
     return ReactDOMServer.renderToString(tooltipContent);
   }
 
