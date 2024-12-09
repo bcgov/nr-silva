@@ -1,6 +1,10 @@
 // Centralized API configuration file
 import { env } from '../env';
 
+const resolveQueryString = (queryString: string | null) => {
+  return queryString ? `?${queryString}` : '';
+}
+
 // Define the API base URL from the environment variables
 const API_BASE_URL = env.VITE_BACKEND_URL;
 
@@ -13,7 +17,8 @@ const API_ENDPOINTS = {
   categories: () => `${API_BASE_URL}/api/opening-search/categories`,
   orgUnits: () => `${API_BASE_URL}/api/opening-search/org-units`,
   clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/api/forest-clients/byNameAcronymNumber?value=${query}`,
-  clientLocations: (clientId: string) => `${API_BASE_URL}/api/forest-clients/${clientId}/locations`
+  clientLocations: (clientId: string) => `${API_BASE_URL}/api/forest-clients/${clientId}/locations`,
+  submissionTrends: (queryString: string | null) => `${API_BASE_URL}/api/users/submission-trends${resolveQueryString(queryString)}`
 };
 
 // Define the default headers for the API requests, including ones used by CORS
