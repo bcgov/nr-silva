@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
-import { ComboBox } from "@carbon/react";
+import { ComboBox, FlexGrid, Row, Column } from "@carbon/react";
 import { useAutocomplete } from "../../contexts/AutocompleteProvider";
-import { 
+import {
   fetchClientsByNameAcronymNumber,
   fetchClientLocations,
   ForestClientAutocomplete,
-  ForestClientLocation 
+  ForestClientLocation
 } from "../../services/OpeningClientLocationService";
 
 interface AutocompleteProps {
@@ -13,7 +13,7 @@ interface AutocompleteProps {
   label: string,
 }
 
-interface AutocompleteComboboxProps{
+interface AutocompleteComboboxProps {
   selectedItem: AutocompleteProps
 }
 
@@ -41,17 +41,17 @@ export const skipConditions = {
 export const fetchValues = async (query: string, key: string) => {
 
   // If there is no query, return an empty array
-  if(!key || !query) return [];
-  
+  if (!key || !query) return [];
+
   // For clients, it will do the autocomplete search based on the name, acronym, or number
   if (key === "clients") {
     const response = await fetchClientsByNameAcronymNumber(query);
     const apiresponse = response;
     return apiresponse.map((item: ForestClientAutocomplete) => ({
       id: item.id,
-      label: `${item.name}, ${item.id}, ${item.acronym? item.acronym : ''}`
+      label: `${item.name}, ${item.id}, ${item.acronym ? item.acronym : ''}`
     }));
-  } 
+  }
 
   // For locations, it will just load the value based on the selected client id
   if (key === "locations") {
@@ -67,6 +67,7 @@ export const fetchValues = async (query: string, key: string) => {
 };
 
 const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
+
   ({ setValue }, ref) => 
     {
   const { options, fetchOptions, updateOptions } = useAutocomplete();
