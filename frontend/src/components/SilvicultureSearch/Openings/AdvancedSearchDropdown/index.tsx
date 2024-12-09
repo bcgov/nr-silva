@@ -9,8 +9,8 @@ import {
   FlexGrid,
   FilterableMultiSelect,
   Row,
-  Column
-  , ComboBox
+  Column,
+  ComboBox
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
@@ -31,7 +31,26 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const [dateTypeValue, setDateTypeValue] = useState<string | null>(null);
   const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
+
+  const categoryItems =
+    data?.categories?.map((item: any) => ({
+      text: item.description,
+      value: item.code
+    })) || [];
+
+  const orgUnitItems =
+    data?.orgUnits?.map((item: any) => ({
+      text: item.orgUnitName,
+      value: item.orgUnitCode
+    })) || [];
+
+  const dateTypeItems =
+    data?.dateTypes?.map((item: any) => ({
+      text: item.label,
+      value: item.value
+    })) || [];
 
   useEffect(() => {
     //console.log("Use Effect in child is being called.", filters);
@@ -66,6 +85,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       clientLocationCode: () => autoCompleteRef.current?.reset()
     }));
   }, []);
+
+  useEffect(() => {
+    // We use the useEffect to do a lookup on the clients options
+    // It will fill with the autocomplete triggering the fetchOptions
+    const selectedItem = dateTypeItems?.find((item: any) => item.text === dateTypeValue) || null;
+
+    if (selectedItem) {
+      handleFilterChange({ dateType: selectedItem.value });
+    }
+
+  }, [dateTypeValue]);
 
   const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
     if (updatedFilters.dateType === "") {
@@ -106,23 +136,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     );
   }
 
-  const categoryItems =
-    data.categories?.map((item: any) => ({
-      text: item.description,
-      value: item.code
-    })) || [];
-
-  const orgUnitItems =
-    data.orgUnits?.map((item: any) => ({
-      text: item.orgUnitName,
-      value: item.orgUnitCode
-    })) || [];
-
-  const dateTypeItems =
-    data.dateTypes?.map((item: any) => ({
-      text: item.label,
-      value: item.value
-    })) || [];
 
   return (
     <FlexGrid className="advanced-search-dropdown" condensed >
@@ -243,6 +256,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             titleText="Date type"
             items={dateTypeItems}
             itemToString={(item: any) => (item ? item.text : "")}
+            onInputChange={setDateTypeValue}
             onChange={(e: any) =>
               handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
             }
