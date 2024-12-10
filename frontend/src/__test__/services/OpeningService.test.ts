@@ -23,8 +23,8 @@ describe('OpeningService', () => {
   describe('fetchOpeningsPerYear', () => {
     it('should fetch openings per year successfully', async () => {
       const mockData = [
-        { monthName: 'Jan', amount: 10, statusCounts: { APP: 5, FG: 2 } },
-        { monthName: 'Feb', amount: 20, statusCounts: { APP: 5, FG: 2 }  }
+        { monthName: 'Jan', amount: 10, statusCounts: { APP: 5, FG: 2 }, month: 1, year: 2023 },
+        { monthName: 'Feb', amount: 20, statusCounts: { APP: 5, FG: 2 }, month: 2, year: 2023 }
       ];
       (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
@@ -37,8 +37,8 @@ describe('OpeningService', () => {
           "Content-Type": "application/json" }
       });
       expect(result).toEqual([
-        { group: 'Openings', key: 'Jan', value: 10, statusCount: { APP: 5, FG: 2 } },
-        { group: 'Openings', key: 'Feb', value: 20, statusCount: { APP: 5, FG: 2 } }
+        { group: 'Openings', key: 'Jan 2023', value: 10, statusCount: { APP: 5, FG: 2 }, month: 1, year: 2023 },
+        { group: 'Openings', key: 'Feb 2023', value: 20, statusCount: { APP: 5, FG: 2 }, month: 2, year: 2023 }
       ]);
     });
 
