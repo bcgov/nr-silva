@@ -123,30 +123,27 @@ const OpeningsSearchTab: React.FC = () => {
     handleSearchInputChange(searchTerm);
   },[searchTerm]);
 
-  //initally when the screen loads check if there was a earch term present
-  useEffect (()=>{
-    if(searchTerm.length>0 || countActiveFilters(filters)>0){
-      handleSearch();
-    }
-  },[])
-
   // Check if we have query parms and if the params align with the filter fields
   useEffect(() => {
     // Get the query params
     const urlParams = new URLSearchParams(window.location.search);
 
-    if(urlParams.keys().toArray().length > 0){
-      // Here we do a match between the query params and the filter fields
-      Object.keys(filters).forEach((key) => {
-        // This is to avoid setting the filter fields with the query params if they don't exist on the filter
-        if(urlParams.has(key)){
-          setFilters((prevFilters: OpeningFilters) => ({
-            ...prevFilters,
-            [key]: urlParams.get(key)
-          }));
-        }
-      });
+    // Here we do a match between the query params and the filter fields
+    Object.keys(filters).forEach((key) => {
+      // This is to avoid setting the filter fields with the query params if they don't exist on the filter
+      if(urlParams.has(key)){
+        setFilters((prevFilters: OpeningFilters) => ({
+          ...prevFilters,
+          [key]: urlParams.get(key)
+        }));
+      }
+    });
+
+    //initally when the screen loads check if there was a earch term present
+    if(searchTerm.length>0 || countActiveFilters(filters)>0){
+      handleSearch();
     }
+    
     
   },[]);
 
