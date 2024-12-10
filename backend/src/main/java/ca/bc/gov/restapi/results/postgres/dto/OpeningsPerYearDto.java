@@ -11,6 +11,7 @@ import lombok.With;
 @With
 public record OpeningsPerYearDto(
     Integer month,
+    Integer year,
     String monthName,
     Long amount,
     Map<String,Long> statusCounts

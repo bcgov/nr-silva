@@ -70,17 +70,18 @@ public class OpeningTrendsService {
         ));
 
     // Generate a 12-month sequence starting from the start date
-    List<Integer> monthSequence = IntStream.range(0, 12) // Always 12 months
-        .mapToObj(offset -> YearMonth.from(startDate).plusMonths(offset).getMonthValue())
+    List<YearMonth> yearMonths = IntStream.range(0, 12) // Always 12 months
+        .mapToObj(offset -> YearMonth.from(startDate).plusMonths(offset))
         .toList();
 
     // Generate the DTOs in the custom order
-    return monthSequence.stream()
-        .map(month -> new OpeningsPerYearDto(
-            month,
-            getMonthName(month),
-            monthToCountMap.getOrDefault(month, 0L), // Total count for the month
-            monthToStatusCountMap.getOrDefault(month, Collections.emptyMap()) // Status counts map
+    return yearMonths.stream()
+        .map(yearMonth -> new OpeningsPerYearDto(
+            yearMonth.getMonthValue(),
+            yearMonth.getYear(),
+            getMonthName(yearMonth.getMonthValue()),
+            monthToCountMap.getOrDefault(yearMonth.getMonthValue(), 0L), // Total count for the month
+            monthToStatusCountMap.getOrDefault(yearMonth.getMonthValue(), Collections.emptyMap()) // Status counts map
         ))
         .toList();
   }
