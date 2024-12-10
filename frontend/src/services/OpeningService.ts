@@ -51,7 +51,9 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
       // Format data for BarChartGrouped component
       const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
-        key: item.monthName,
+        key: `${item.monthName} ${item.year}`,
+        year: item.year,
+        month: item.month,
         value: item.amount,
         statusCount: item.statusCounts
       }));

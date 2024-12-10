@@ -1,0 +1,14 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+ul.bar--tooltip_status li {
+  list-style-type: disc;
+  margin-left: 2.5rem;
+  @include type.type-style('body-compact-02');
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.16px;
+  color: var(--bx-text-secondary);
+}

@@ -1,25 +1,43 @@
-import React, { useState, useEffect } from "react";
+// React imports
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
+
+// Third-party library imports
 import { GroupedBarChart, ScaleTypes } from "@carbon/charts-react";
 import { 
   FilterableMultiSelect, 
   DatePicker, 
   DatePickerInput, 
   Grid, 
-  Column
-} from '@carbon/react';
-import { fetchOpeningsPerYear } from "../../services/OpeningService";
-import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+  Column 
+} from "@carbon/react";
+import { differenceInDays, addDays, startOfMonth, endOfMonth, format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+
+// Styles
 import "@carbon/charts/styles.css";
 import "./BarChartGrouped.scss";
+
+// Utility functions
+import { fetchOpeningsPerYear } from "../../services/OpeningService";
 import { fetchOrgUnits, status } from "../../services/search/openings";
-import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils"
-import { differenceInDays, addDays } from "date-fns";
+import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils";
+
+// Types
+import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+
+// Local components
 import BarChartTooltip from "../BarChartTooltip";
 import EmptySection from "../EmptySection";
 
 interface MultiSelectEvent {
   selectedItems: TextValueData[];
+}
+
+interface BarChartGroupedEvent {
+  detail: {
+    datum: OpeningPerYearChart;
+  }
 }
 
 const BarChartGrouped = (): JSX.Element => {
@@ -34,6 +52,8 @@ const BarChartGrouped = (): JSX.Element => {
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
   const [searchParameters, setSearchParameters] = useState<string>("");
+  const chartRef = useRef(null);
+  const navigate = useNavigate();
 
 
   const handleResize = () => {
@@ -181,11 +201,26 @@ const BarChartGrouped = (): JSX.Element => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
 
-  },[selectedOrgUnits, selectedStatusCodes, startDate, endDate])
+  },[selectedOrgUnits, selectedStatusCodes, startDate, endDate]);
+
+  useEffect(() => {
+    if(chartRef.current){
+      const { chart }:GroupedBarChart = chartRef.current;
+      if(chart){
+      chart.services.events.addEventListener("bar-click", (event: BarChartGroupedEvent) => {
+        const { datum } = event.detail;
+        const searchDateStart = format(startOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
+        const searchDateEnd = format(endOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
+        navigate(`/silviculture-search?tab=openings&dateType=update&startDate=${searchDateStart}&endDate=${searchDateEnd}`);
+      });
+      }
+    }
+  },[chartRef,isLoading]);
 
   return (
     <Grid condensed>
       <Column sm={4} md={3} lg={5}>
+      <p>{searchParameters}</p>
         <FilterableMultiSelect
           label="District"
           id="district-dropdown"
@@ -199,6 +234,7 @@ const BarChartGrouped = (): JSX.Element => {
           placeholder="Filter by district"
         />
       </Column>
+
       <Column sm={4} md={3} lg={5}>
         <FilterableMultiSelect
           label="Status"
@@ -213,6 +249,7 @@ const BarChartGrouped = (): JSX.Element => {
           placeholder="Filter by status"
         />
       </Column>
+
       <Column sm={4} md={2} lg={6}>
         <DatePicker
           datePickerType="range"
@@ -238,6 +275,7 @@ const BarChartGrouped = (): JSX.Element => {
           />
         </DatePicker>
       </Column>
+
       <Column sm={4} md={8} lg={16} xlg={16}>
         {isLoading ? (
           <p>Loading...</p>
@@ -255,7 +293,7 @@ const BarChartGrouped = (): JSX.Element => {
             description={`Nothing found when searching for ${searchParameters}, try adjusting your filters to find what you want.`}
             fill="#0073E6"
           />}
-            {chartData.length > 0 && <GroupedBarChart data={chartData} options={options} />}
+            {chartData.length > 0 && <GroupedBarChart ref={chartRef} data={chartData} options={options} />}
           </div>
         )}
       </Column>
