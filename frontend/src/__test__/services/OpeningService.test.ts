@@ -23,22 +23,22 @@ describe('OpeningService', () => {
   describe('fetchOpeningsPerYear', () => {
     it('should fetch openings per year successfully', async () => {
       const mockData = [
-        { monthName: 'January', amount: 10 },
-        { monthName: 'February', amount: 20 }
+        { monthName: 'Jan', amount: 10, statusCounts: { APP: 5, FG: 2 }, month: 1, year: 2023 },
+        { monthName: 'Feb', amount: 20, statusCounts: { APP: 5, FG: 2 }, month: 2, year: 2023 }
       ];
       (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
-      const props = { orgUnitCode: '001', statusCode: 'APP', entryDateStart: '2023-01-01', entryDateEnd: '2023-12-31' };
+      const props = { orgUnitCode: ['001'], statusCode: ['APP'], entryDateStart: '2023-01-01', entryDateEnd: '2023-12-31' };
       const result = await fetchOpeningsPerYear(props);
 
-      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/dashboard-metrics/submission-trends?orgUnitCode=001&statusCode=APP&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
+      expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/users/submission-trends?orgUnitCode=001&statusCode=APP&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
         headers: { Authorization: `Bearer ${authToken}`,
           "Access-Control-Allow-Origin": "http://localhost:3000",          
           "Content-Type": "application/json" }
       });
       expect(result).toEqual([
-        { group: 'Openings', key: 'January', value: 10 },
-        { group: 'Openings', key: 'February', value: 20 }
+        { group: 'Openings', key: 'Jan 2023', value: 10, statusCount: { APP: 5, FG: 2 }, month: 1, year: 2023 },
+        { group: 'Openings', key: 'Feb 2023', value: 20, statusCount: { APP: 5, FG: 2 }, month: 2, year: 2023 }
       ]);
     });
 
