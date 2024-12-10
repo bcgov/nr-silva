@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
+
+// Styles
 import "./styles.scss";
+
+// Utility functions
+import { searchScreenColumns } from "../../../../constants/tableConstants";
+import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
+import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
+import { countActiveFilters } from "../../../../utils/searchUtils";
+
+// Types
+import { ITableHeader } from "../../../../types/TableHeader";
+import { OpeningFilters } from "../../../../services/search/openings";
+
+// Local components
 import EmptySection from "../../../EmptySection";
 import OpeningsSearchBar from "../OpeningsSearchBar";
 import TableSkeleton from "../../../TableSkeleton";
 import SearchScreenDataTable from "../SearchScreenDataTable";
-import { searchScreenColumns } from "../../../../constants/tableConstants";
 import OpeningsMap from "../../../OpeningsMap";
-import { useOpeningsQuery } from "../../../../services/queries/search/openingQueries";
-import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import PaginationContext from "../../../../contexts/PaginationContext";
-import { ITableHeader } from "../../../../types/TableHeader";
-import { countActiveFilters } from "../../../../utils/searchUtils";
 
 const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);  
@@ -27,7 +36,7 @@ const OpeningsSearchTab: React.FC = () => {
 
   // Only fetch when search is triggered and with finalParams
   const { data, isFetching } = useOpeningsQuery(finalParams, isSearchTriggered);
-  const { filters, searchTerm } = useOpeningsSearch();
+  const { filters, searchTerm, setFilters } = useOpeningsSearch();
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
@@ -120,6 +129,26 @@ const OpeningsSearchTab: React.FC = () => {
       handleSearch();
     }
   },[])
+
+  // Check if we have query parms and if the params align with the filter fields
+  useEffect(() => {
+    // Get the query params
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.keys().toArray().length > 0){
+      // Here we do a match between the query params and the filter fields
+      Object.keys(filters).forEach((key) => {
+        // This is to avoid setting the filter fields with the query params if they don't exist on the filter
+        if(urlParams.has(key)){
+          setFilters((prevFilters: OpeningFilters) => ({
+            ...prevFilters,
+            [key]: urlParams.get(key)
+          }));
+        }
+      });
+    }
+    
+  },[]);
 
   return (
     <>

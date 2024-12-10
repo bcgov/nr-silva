@@ -211,7 +211,7 @@ const BarChartGrouped = (): JSX.Element => {
         const { datum } = event.detail;
         const searchDateStart = format(startOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
         const searchDateEnd = format(endOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
-        navigate(`/silviculture-search?tab=openings&dateType=update&startDate=${searchDateStart}&endDate=${searchDateEnd}`);
+        navigate(`/silviculture-search?tab=openings&dateType=Update&startDate=${searchDateStart}&endDate=${searchDateEnd}`);
       });
       }
     }
