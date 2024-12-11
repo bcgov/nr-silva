@@ -4,6 +4,7 @@ import { getAuthIdToken } from "../AuthService";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { createDateParams } from "../../utils/searchUtils";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
+import { TextValueData } from "../../utils/multiSelectSortUtils";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -77,6 +78,28 @@ export interface OpeningItem {
   forestFileId: string | null;
   silvaReliefAppId: string | null;
 }
+
+export interface OrgUnit {
+  orgUnitNo: number;
+  orgUnitCode: string;
+  orgUnitName: string;
+}
+
+export interface CodeDescription {
+  code: string;
+  description: string;
+}
+
+export const status: TextValueData[] = [
+  {value:'AMG', text: 'Amalgamate'},
+  {value:'AMD', text: 'Amended'},
+  {value:'APP', text: 'Approved'},
+  {value:'DFT', text: 'Draft'},
+  {value:'FG', text: 'Free Growing'},
+  {value:'RMD', text: 'Removed'},
+  {value:'RET', text: 'Retired'},
+  {value:'SUB', text: 'Submitted'}
+];
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Get the date params based on dateType
@@ -163,7 +186,7 @@ export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
   };
 };
 
-export const fetchCategories = async (): Promise<any> => {
+export const fetchCategories = async (): Promise<CodeDescription[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 
@@ -174,7 +197,7 @@ export const fetchCategories = async (): Promise<any> => {
   return response.data;
 };
 
-export const fetchOrgUnits = async (): Promise<any> => {
+export const fetchOrgUnits = async (): Promise<OrgUnit[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 
