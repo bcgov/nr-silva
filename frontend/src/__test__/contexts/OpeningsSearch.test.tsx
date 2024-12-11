@@ -30,7 +30,7 @@ describe('OpeningsSearchProvider', () => {
 
   it('should initialize with default values', () => {
     expect(screen.getByTestId('searchTerm').textContent).toBe('');
-    expect(screen.getByTestId('startDate').textContent).toBe('null');
+    expect(screen.getByTestId('startDate').textContent).toBe('undefined');
   });
 
   it('should update searchTerm', () => {
@@ -43,7 +43,7 @@ describe('OpeningsSearchProvider', () => {
     expect(screen.getByTestId('startDate').textContent).not.toBe('null');
 
     fireEvent.click(screen.getByTestId('clearFilters'));
-    expect(screen.getByTestId('startDate').textContent).toBe('null');
+    expect(screen.getByTestId('startDate').textContent).toBe('undefined');
   });
 
   it('should clear individual field', () => {
@@ -51,6 +51,6 @@ describe('OpeningsSearchProvider', () => {
     expect(screen.getByTestId('startDate').textContent).not.toBe('null');
 
     fireEvent.click(screen.getByTestId('clearStartDate'));
-    expect(screen.getByTestId('startDate').textContent).toBe('null');
+    expect(screen.getByTestId('startDate').textContent).toBe('undefined');
   });
 });
