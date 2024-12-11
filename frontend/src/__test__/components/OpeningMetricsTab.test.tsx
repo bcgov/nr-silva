@@ -1,11 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+// React and test imports
 import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, act, waitFor, screen } from '@testing-library/react';
-import OpeningMetricsTab from '../../components/OpeningMetricsTab';
-import { NotificationProvider } from '../../contexts/NotificationProvider';
+
+// Third-party library imports
+import { BrowserRouter } from "react-router-dom";
+
+// Utility functions
 import { fetchOpeningFavourites } from '../../services/OpeningFavouriteService';
 import { fetchFreeGrowingMilestones, fetchOpeningsPerYear, fetchRecentOpenings, fetchRecentActions } from '../../services/OpeningService';
 
+// Local components
+import OpeningMetricsTab from '../../components/OpeningMetricsTab';
+import { NotificationProvider } from '../../contexts/NotificationProvider';
+
+
+// Mock services
 vi.mock('../../services/OpeningFavouriteService', () => ({
   fetchOpeningFavourites: vi.fn(),
 }));
@@ -41,7 +51,7 @@ describe('OpeningMetricsTab', () => {
 
   it('should render the OpeningMetricsTab component with all sections', async () => {
     
-    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
+    await act(async () => render(<BrowserRouter><NotificationProvider><OpeningMetricsTab /></NotificationProvider></BrowserRouter>));
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Manage and track silvicultural information about openings')).toBeInTheDocument();
@@ -57,7 +67,7 @@ describe('OpeningMetricsTab', () => {
     
     let container;
     await act(async () => {
-      ({ container } = render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
+      ({ container } = render(<BrowserRouter><NotificationProvider><OpeningMetricsTab /></NotificationProvider></BrowserRouter>));
     });
 
     await waitFor(() => {
@@ -97,7 +107,7 @@ describe('OpeningMetricsTab', () => {
     delete window.location;
     window.location = { search: '?scrollTo=trackOpenings' } as any;
 
-    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
+    await act(async () => render(<BrowserRouter><NotificationProvider><OpeningMetricsTab /></NotificationProvider></BrowserRouter>));
 
     expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
 
@@ -113,7 +123,7 @@ describe('OpeningMetricsTab', () => {
     delete window.location;
     window.location = { search: '' } as any;
 
-    await act(async () => render(<NotificationProvider><OpeningMetricsTab /></NotificationProvider>));
+    await act(async () => render(<BrowserRouter><NotificationProvider><OpeningMetricsTab /></NotificationProvider></BrowserRouter>));
 
     expect(mockScrollIntoView).not.toHaveBeenCalled();
 

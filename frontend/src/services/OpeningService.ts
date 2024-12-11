@@ -8,6 +8,7 @@ import {
   IFreeGrowingProps,
   IFreeGrowingChartData
 } from '../types/OpeningTypes';
+import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
@@ -19,33 +20,42 @@ const backendUrl = env.VITE_BACKEND_URL;
 export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<OpeningPerYearChart[]> {
   const authToken = getAuthIdToken();
   try {
-    // Construct URL with optional parameters
-    let url = backendUrl.concat("/api/dashboard-metrics/submission-trends");
-    if (props.orgUnitCode || props.statusCode || props.entryDateStart || props.entryDateEnd) {
-      url += '?';
-      if (props.orgUnitCode) url += `orgUnitCode=${props.orgUnitCode}&`;
-      if (props.statusCode) url += `statusCode=${props.statusCode}&`;
-      if (props.entryDateStart) url += `entryDateStart=${props.entryDateStart}&`;
-      if (props.entryDateEnd) url += `entryDateEnd=${props.entryDateEnd}&`;
-      // Remove trailing '&' if present
-      url = url.replace(/&$/, '');
+    const args: string[] = [];
+
+    if(props.orgUnitCode) {
+      props.orgUnitCode.forEach((orgUnit) => {
+        args.push(`orgUnitCode=${orgUnit}`);
+      });
     }
 
-    const response = await axios.get(url, {
-      headers: {
-        'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
-      }
-    });
+    if(props.statusCode) {
+      props.statusCode.forEach((status) => {
+        args.push(`statusCode=${status}`);
+      });
+    }
+
+    if(props.entryDateStart) {
+      args.push(`entryDateStart=${props.entryDateStart}`);
+    }
+
+    if(props.entryDateEnd) {
+      args.push(`entryDateEnd=${props.entryDateEnd}`);
+    }
+
+    const urlParams = args.join('&');
+
+    const response = await axios.get(API_ENDPOINTS.submissionTrends(urlParams), defaultHeaders(authToken));
 
     const { data } = response;
     if (data && Array.isArray(data)) {
       // Format data for BarChartGrouped component
       const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
-        key: item.monthName,
-        value: item.amount
+        key: `${item.monthName} ${item.year}`,
+        year: item.year,
+        month: item.month,
+        value: item.amount,
+        statusCount: item.statusCounts
       }));
 
       return formattedData;

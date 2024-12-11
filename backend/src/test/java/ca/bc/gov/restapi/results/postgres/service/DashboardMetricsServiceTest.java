@@ -1,13 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
@@ -28,11 +26,14 @@ import org.springframework.data.domain.Sort;
 @ExtendWith(MockitoExtension.class)
 class DashboardMetricsServiceTest {
 
-  @Mock OpeningsLastYearRepository openingsLastYearRepository;
+  @Mock
+  OpeningsLastYearRepository openingsLastYearRepository;
 
-  @Mock OpeningsActivityRepository openingsActivityRepository;
+  @Mock
+  OpeningsActivityRepository openingsActivityRepository;
 
-  @Mock LoggedUserService loggedUserService;
+  @Mock
+  LoggedUserService loggedUserService;
 
   private DashboardMetricsService dashboardMetricsService;
 
@@ -57,126 +58,6 @@ class DashboardMetricsServiceTest {
     dashboardMetricsService =
         new DashboardMetricsService(
             openingsLastYearRepository, openingsActivityRepository, loggedUserService);
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with no filters should succeed")
-  void getOpeningsSubmissionTrends_noFilters_shouldSucceed() throws Exception {
-    LocalDateTime now = LocalDateTime.now();
-    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
-
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-
-    Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(1, list.get(0).amount());
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with Org Unit filter should succeed")
-  void getOpeningsSubmissionTrends_orgUnitFilter_shouldSucceed() throws Exception {
-    LocalDateTime now = LocalDateTime.now();
-    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
-
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto("AAA", null, null, null, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-
-    Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(0, list.get(0).amount());
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with Status filter should succeed")
-  void getOpeningsSubmissionTrends_statusFilter_shouldSucceed() {
-    LocalDateTime now = LocalDateTime.now();
-    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
-
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, "APP", null, null, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-
-    Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(1, list.get(0).amount());
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with Status filter not matching should succeed")
-  void getOpeningsSubmissionTrends_statusFilterNot_shouldSucceed() {
-    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
-
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, "UPD", null, null, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(0, list.get(0).amount());
-    Assertions.assertEquals(0, list.get(1).amount());
-    Assertions.assertEquals(0, list.get(2).amount());
-    Assertions.assertEquals(0, list.get(3).amount());
-    Assertions.assertEquals(0, list.get(4).amount());
-    Assertions.assertEquals(0, list.get(5).amount());
-    Assertions.assertEquals(0, list.get(6).amount());
-    Assertions.assertEquals(0, list.get(7).amount());
-    Assertions.assertEquals(0, list.get(8).amount());
-    Assertions.assertEquals(0, list.get(9).amount());
-    Assertions.assertEquals(0, list.get(10).amount());
-    Assertions.assertEquals(0, list.get(11).amount());
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with Dates filter should succeed")
-  void getOpeningsSubmissionTrends_datesFilter_shouldSucceed() {
-    List<OpeningsLastYearEntity> entities = mockOpeningsEntityList();
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(entities);
-
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime oneMonthBefore = now.minusMonths(1L);
-    LocalDateTime oneMonthLater = now.plusMonths(1L);
-
-    DashboardFiltersDto filtersDto =
-        new DashboardFiltersDto(null, null, oneMonthBefore, oneMonthLater, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-
-    Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(1, list.get(0).amount());
-  }
-
-  @Test
-  @DisplayName("Opening submission trends with no data should succeed")
-  void getOpeningsSubmissionTrends_noData_shouldSucceed() {
-    when(openingsLastYearRepository.findAllFromLastYear(any(), any())).thenReturn(List.of());
-
-    DashboardFiltersDto filtersDto = new DashboardFiltersDto(null, null, null, null, null);
-    List<OpeningsPerYearDto> list = dashboardMetricsService.getOpeningsSubmissionTrends(filtersDto);
-
-    Assertions.assertTrue(list.isEmpty());
   }
 
   @Test
@@ -370,7 +251,7 @@ class DashboardMetricsServiceTest {
 
     Sort sort = Sort.by("lastUpdated").descending();
     when(openingsActivityRepository.findAllByEntryUserid(userId,
-        PageRequest.of(0,5,sort)))
+        PageRequest.of(0, 5, sort)))
         .thenReturn(List.of(activity));
 
     List<MyRecentActionsRequestsDto> dtoList =
@@ -393,7 +274,8 @@ class DashboardMetricsServiceTest {
     when(loggedUserService.getLoggedUserId()).thenReturn(userId);
 
     Sort sort = Sort.by("lastUpdated").descending();
-    when(openingsActivityRepository.findAllByEntryUserid(userId, PageRequest.of(0,5,sort))).thenReturn(List.of());
+    when(openingsActivityRepository.findAllByEntryUserid(userId,
+        PageRequest.of(0, 5, sort))).thenReturn(List.of());
 
     List<MyRecentActionsRequestsDto> dtoList =
         dashboardMetricsService.getUserRecentOpeningsActions();

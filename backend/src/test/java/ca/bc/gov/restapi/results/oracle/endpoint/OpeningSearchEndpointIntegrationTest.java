@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @WithMockJwt
 @DisplayName("Integrated Test | Opening Search Endpoint")
-class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
+class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -194,7 +194,6 @@ class OpeningSearchEndpointTest extends AbstractTestContainerIntegrationTest {
   @Test
   @DisplayName("Get Opening Org Units By Code not Found should Succeed")
   void getOpeningOrgUnitsByCode_notFound_shouldSucceed() throws Exception {
-    //when(orgUnitService.findAllOrgUnitsByCode(List.of("DAS"))).thenReturn(List.of());
 
     mockMvc
         .perform(

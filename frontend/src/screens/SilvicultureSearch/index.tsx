@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import './SilvicultureSearch.scss'
 import { 
@@ -12,6 +12,19 @@ import * as Icons from '@carbon/icons-react';
 import OpeningsSearchTab from "../../components/SilvicultureSearch/Openings/OpeningsSearchTab";
 
 const SilvicultureSearch: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
+
+  const tabChange = (tabSelection:{selectedIndex: number}) => {
+    setActiveTab(tabSelection.selectedIndex);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.has('tab') && urlParams.get('tab')?.includes('openings')) {      
+        setActiveTab(0);
+    }    
+  },[]);
 
   return (
     <>
@@ -24,7 +37,7 @@ const SilvicultureSearch: React.FC = () => {
         </div>
       </div>
 
-      <Tabs>
+      <Tabs onChange={tabChange} selectedIndex={activeTab}>
         <TabList className="search-tablist tab-list" aria-label="List of Tab" contained>
           <Tab renderIcon={Icons.MapBoundaryVegetation}><div className="tab-header">Openings</div></Tab>
           <Tab renderIcon={Icons.Activity} disabled><div className="tab-header">Activities</div></Tab>
