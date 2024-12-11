@@ -6,17 +6,13 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
-import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningsLastYearRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** This class contains methods for gathering and grouping data for the dashboard metrics screen. */
+/**
+ * This class contains methods for gathering and grouping data for the dashboard metrics screen.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,41 +40,6 @@ public class DashboardMetricsService {
 
   private final PrettyTime prettyTime = new PrettyTime();
 
-  /**
-   * Get openings submission trends data for the opening per year chart.
-   *
-   * @param filters Possible filter, see {@link DashboardFiltersDto} for more.
-   * @return A list of {@link OpeningsPerYearDto} for the opening chart.
-   */
-  public List<OpeningsPerYearDto> getOpeningsSubmissionTrends(DashboardFiltersDto filters) {
-    log.info("Getting Opening Submission Trends with filters {}", filters.toString());
-
-    LocalDateTime baseDateTime = LocalDateTime.now().minusMonths(12);
-    List<OpeningsLastYearEntity> entities =
-        openingsLastYearRepository.findAllFromLastYear(
-            baseDateTime, Sort.by("entryTimestamp").ascending());
-
-    if (entities.isEmpty()) {
-      log.info("No Opening Submission Trends data found!");
-      return List.of();
-    }
-
-    Map<Integer, String> monthNamesMap = new HashMap<>();
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap =
-        createBaseMonthsMap(monthNamesMap, entities.get(0).getEntryTimestamp().getMonthValue());
-
-    filterOpeningSubmissions(resultMap, entities, filters);
-
-    List<OpeningsPerYearDto> chartData = new ArrayList<>();
-    for (Integer monthKey : resultMap.keySet()) {
-      List<OpeningsLastYearEntity> monthDataList = resultMap.get(monthKey);
-      String monthName = monthNamesMap.get(monthKey);
-      log.info("Value {} for the month: {}", monthDataList.size(), monthName);
-      chartData.add(new OpeningsPerYearDto(monthKey, monthName, monthDataList.size()));
-    }
-
-    return chartData;
-  }
 
   /**
    * Get free growing milestone declarations data for the chart.
@@ -210,58 +173,4 @@ public class DashboardMetricsService {
             .toList();
   }
 
-  private void filterOpeningSubmissions(
-      Map<Integer, List<OpeningsLastYearEntity>> resultMap,
-      List<OpeningsLastYearEntity> entities,
-      DashboardFiltersDto filters) {
-    // Iterate over the found records filtering and putting them into the right month
-    for (OpeningsLastYearEntity entity : entities) {
-      // Org Unit filter - District
-      if (!Objects.isNull(filters.orgUnit())
-          && !filters.orgUnit().equals(entity.getOrgUnitCode())) {
-        continue;
-      }
-
-      // Status filter
-      if (!Objects.isNull(filters.status()) && !filters.status().equals(entity.getStatus())) {
-        continue;
-      }
-
-      // Entry start date filter
-      if (!Objects.isNull(filters.entryDateStart())
-          && entity.getEntryTimestamp().isBefore(filters.entryDateStart())) {
-        continue;
-      }
-
-      // Entry end date filter
-      if (!Objects.isNull(filters.entryDateEnd())
-          && entity.getEntryTimestamp().isAfter(filters.entryDateEnd())) {
-        continue;
-      }
-
-      resultMap.get(entity.getEntryTimestamp().getMonthValue()).add(entity);
-    }
-  }
-
-  private Map<Integer, List<OpeningsLastYearEntity>> createBaseMonthsMap(
-      Map<Integer, String> monthNamesMap, Integer firstMonth) {
-    Map<Integer, List<OpeningsLastYearEntity>> resultMap = new LinkedHashMap<>();
-
-    // Fill with 12 months
-    log.info("First month: {}", firstMonth);
-    while (resultMap.size() < 12) {
-      resultMap.put(firstMonth, new ArrayList<>());
-
-      String monthName = Month.of(firstMonth).name().toLowerCase();
-      monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-      monthNamesMap.put(firstMonth, monthName);
-
-      firstMonth += 1;
-      if (firstMonth == 13) {
-        firstMonth = 1;
-      }
-    }
-
-    return resultMap;
-  }
 }

@@ -60,7 +60,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ favorited, rowId }) => {
       className="align-self-stretch"
       hasIconOnly
       iconDescription="Document Download"
-      tooltipPosition="bottom-left"
+      tooltipPosition="right"
       kind="ghost"
       renderIcon={Icons.Download}
       onClick={() => null}

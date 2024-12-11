@@ -1,11 +1,15 @@
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig, UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const config: UserConfig = {
-    define: {},
+  const define = {
+    global:{}
+  }
+  return {
+    define,
     plugins: [
       {
         name: 'build-html',
@@ -45,13 +49,27 @@ export default defineConfig(({ mode }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
-  };
-
-  if (mode === 'development') {
-    if (config.define) {
-      config.define.global = {};
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './src/setupTests.ts',
+      css: false,
+      coverage: {
+        provider: 'v8',
+        reporter: ['lcov', 'cobertura', 'html'],
+        include: ['src/**/*'],
+        exclude: [
+          'src/amplifyconfiguration.ts',
+          'src/module.d.ts',
+          'src/react-app-env.d.ts',
+          'src/reportWebVitals.ts'
+        ],
+      },
+      server: {
+        deps: {
+          inline: [/^(?!.*vitest).*$/]
+        }
+      }
     }
-  }
-
-  return config;
+  };
 });
