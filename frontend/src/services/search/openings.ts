@@ -24,7 +24,30 @@ export interface OpeningFilters {
   page?: number;
   perPage?: number;
   clientLocationCode?: string;
+  clientNumber?: string;
 }
+
+export const openingFiltersKeys = [
+  "searchInput",
+  "startDate",
+  "endDate",
+  "orgUnit",
+  "category",
+  "clientAcronym",
+  "blockStatus",
+  "dateType",
+  "cutBlock",
+  "cuttingPermit",
+  "grossArea",
+  "timberMark",
+  "status",
+  "openingFilters",
+  "blockStatuses",
+  "page",
+  "perPage",
+  "clientLocationCode",
+  "clientNumber"
+] as const;
 
 export interface OpeningItem {
   openingId: number;
@@ -72,6 +95,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     cuttingPermitId:filters.cuttingPermit,
     cutBlockId: filters.cutBlock,
     clientLocationCode: filters.clientLocationCode,
+    clientNumber: filters.clientNumber,
     timberMark:filters.timberMark,
     page: filters.page && filters.page - 1, // Adjust page index (-1)
     perPage: filters.perPage

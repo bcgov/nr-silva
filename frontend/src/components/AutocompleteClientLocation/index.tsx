@@ -18,7 +18,8 @@ interface AutocompleteComboboxProps{
 }
 
 interface AutocompleteComponentProps {
-  setValue: (value: string | null) => void;
+  setLocationValue: (value: string | null) => void;
+  setClientValue: (value: string | null) => void;
 }
 
 export interface AutocompleteComponentRefProps {
@@ -67,7 +68,7 @@ export const fetchValues = async (query: string, key: string) => {
 };
 
 const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
-  ({ setValue }, ref) => 
+  ({ setLocationValue, setClientValue }, ref) => 
     {
   const { options, fetchOptions, updateOptions } = useAutocomplete();
   const [isActive, setIsActive] = useState(false);
@@ -80,16 +81,23 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
     updateOptions("locations", []);
     updateOptions("clients", []);
     setClient(null);
-    setValue(null);
+    setLocationValue(null);
     setIsActive(false);
     setLocation(null);
   };
+
+  const clearValues = () => {
+    setClient(null);
+    setClient(null);
+    setLocation(null);
+  }
 
   const selectClient = (selectedItem: AutocompleteProps) => {
     if (selectedItem) {
       setIsActive(true);
       setClient(selectedItem);
       fetchOptions(selectedItem.id, "locations");
+      setClientValue(selectedItem.id);
     }else{
       clearClient();
     }
@@ -127,12 +135,12 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
   }, [locationName]);
 
   useImperativeHandle(ref, () => ({
-    reset: () => setLocation(null)
+    reset: () => clearValues()
   }));
 
   // Why do we keep this then? Because of the onChange start to work, this will work as it was intended
   useEffect(() => {
-    setValue(location?.id ?? null);
+    setLocationValue(location?.id ?? null);
   }, [location]);
 
   return (
@@ -153,6 +161,7 @@ const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteCo
         disabled={!isActive}
         id="client-location"
         className="flex-fill"
+        selectedItem={location}
         onInputChange={setLocationName}
         onChange={(item: AutocompleteComboboxProps) => setLocation(item.selectedItem)}
         itemToElement={(item: AutocompleteProps) => item.label}
