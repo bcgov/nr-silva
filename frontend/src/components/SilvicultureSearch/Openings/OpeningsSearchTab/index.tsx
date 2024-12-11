@@ -31,6 +31,7 @@ const OpeningsSearchTab: React.FC = () => {
   const [isNoFilterSearch, setIsNoFilterSearch] = useState<boolean>(false); // Handles the notification for no filters applied
   const { currentPage, itemsPerPage } = useContext(PaginationContext);
   const [selectedOpeningIds,setSelectedOpeningIds] = useState<number[]>([]);
+  const [hasExternalParams, setHasExternalParams] = useState<boolean>(false);
   
   const [headers, setHeaders] = useState<ITableHeader[]>(searchScreenColumns);
 
@@ -123,15 +124,23 @@ const OpeningsSearchTab: React.FC = () => {
     handleSearchInputChange(searchTerm);
   },[searchTerm]);
 
+  useEffect(() => {
+    if(hasExternalParams){
+      handleSearch();
+    }
+  },[hasExternalParams]);
+
   // Check if we have query parms and if the params align with the filter fields
   useEffect(() => {
     // Get the query params
     const urlParams = new URLSearchParams(window.location.search);
+    let hasParams = false;
 
     // Here we do a match between the query params and the filter fields
     Object.keys(filters).forEach((key) => {
       // This is to avoid setting the filter fields with the query params if they don't exist on the filter
       if(urlParams.has(key)){
+        hasParams = true;
         setFilters((prevFilters: OpeningFilters) => ({
           ...prevFilters,
           [key]: urlParams.get(key)
@@ -143,7 +152,8 @@ const OpeningsSearchTab: React.FC = () => {
     if(searchTerm.length>0 || countActiveFilters(filters)>0){
       handleSearch();
     }
-    
+
+    setHasExternalParams(hasParams);
     
   },[]);
 
