@@ -19,6 +19,7 @@ import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils
 import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
 import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
+import { OpeningFilters, openingFiltersKeys } from '../../../../services/search/openings';
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -57,16 +58,16 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   }, [filters.orgUnit, filters.category]);
 
   useEffect(() => {
+    // In here, we're defining the function that will be called when the user clicks on the "Clear" button
+    // The idea is to keep the autocomplete component clear of any ties to the opening search context
+    setIndividualClearFieldFunctions((previousIndividualFilters) => ({
+      ...previousIndividualFilters,
+      clientLocationCode: () => autoCompleteRef.current?.reset()
+    }));
 
-  // In here, we're defining the function that will be called when the user clicks on the "Clear" button
-  // The idea is to keep the autocomplete component clear of any ties to the opening search context
-  setIndividualClearFieldFunctions((previousIndividualFilters) => ({
-    ...previousIndividualFilters,
-    clientLocationCode: () => autoCompleteRef.current?.reset()
-  }));
   },[]);
 
-  const handleFilterChange = (updatedFilters: Partial<typeof filters>) => {
+  const handleFilterChange = (updatedFilters: Partial<OpeningFilters>) => {
     setFilters({ ...filters, ...updatedFilters });
   };
 
@@ -81,6 +82,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   const handleCheckboxChange = (value: string, group: string) => {
     const selectedGroup = filters[group as keyof typeof filters] as string[];
+    console.log(`selectedGroup: ${selectedGroup}`);
     const updatedGroup = selectedGroup.includes(value)
       ? selectedGroup.filter((item) => item !== value)
       : [...selectedGroup, value];
@@ -131,7 +133,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               <Checkbox
                 labelText={`Openings created by me`}
                 id="checkbox-label-1"
-                checked={filters.openingFilters.includes(
+                checked={filters.openingFilters?.includes(
                   "Openings created by me"
                 )}
                 onChange={() =>
@@ -144,7 +146,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               <Checkbox
                 labelText={`FRPA section 108`}
                 id="checkbox-label-2"
-                checked={filters.openingFilters.includes(
+                checked={filters.openingFilters?.includes(
                   "FRPA section 108"
                 )}
                 onChange={() =>
@@ -193,7 +195,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           <Column lg={8}>
             <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
               <AutocompleteClientLocation 
-                setValue={(value: string | null) => handleFilterChange({ clientLocationCode: value })} 
+                setLocationValue={(value: string | null) => handleFilterChange({ clientLocationCode: value ?? undefined })} 
+                setClientValue={(value: string | null) => handleFilterChange({ clientNumber: value ?? undefined })}
                 ref={autoCompleteRef}
                 />
             </AutocompleteProvider>
@@ -348,49 +351,49 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                 <Checkbox
                   labelText={`AMG - Amalgamate`}
                   id="checkbox-label-amg"
-                  checked={filters.status.includes("AMG")}
+                  checked={filters.status?.includes("AMG")}
                   onChange={() => handleCheckboxChange("AMG", "status")}
                 />
                 <Checkbox
                   labelText={`AMD - Amended`}
                   id="checkbox-label-amd"
-                  checked={filters.status.includes("AMD")}
+                  checked={filters.status?.includes("AMD")}
                   onChange={() => handleCheckboxChange("AMD", "status")}
                 />
                 <Checkbox
                   labelText={`APP - Approved`}
                   id="checkbox-label-app"
-                  checked={filters.status.includes("APP")}
+                  checked={filters.status?.includes("APP")}
                   onChange={() => handleCheckboxChange("APP", "status")}
                 />
                 <Checkbox
                   labelText={`DFT - Draft`}
                   id="checkbox-label-dft"
-                  checked={filters.status.includes("DFT")}
+                  checked={filters.status?.includes("DFT")}
                   onChange={() => handleCheckboxChange("DFT", "status")}
                 />
                 <Checkbox
                   labelText={`FG - Free Growing`}
                   id="checkbox-label-fg"
-                  checked={filters.status.includes("FG")}
+                  checked={filters.status?.includes("FG")}
                   onChange={() => handleCheckboxChange("FG", "status")}
                 />
                 <Checkbox
                   labelText={`RMD - Removed`}
                   id="checkbox-label-rmd"
-                  checked={filters.status.includes("RMD")}
+                  checked={filters.status?.includes("RMD")}
                   onChange={() => handleCheckboxChange("RMD", "status")}
                 />
                 <Checkbox
                   labelText={`RET - Retired`}
                   id="checkbox-label-ret"
-                  checked={filters.status.includes("RET")}
+                  checked={filters.status?.includes("RET")}
                   onChange={() => handleCheckboxChange("RET", "status")}
                 />
                 <Checkbox
                   labelText={`SUB - Submitted`}
                   id="checkbox-label-sub"
-                  checked={filters.status.includes("SUB")}
+                  checked={filters.status?.includes("SUB")}
                   onChange={() => handleCheckboxChange("SUB", "status")}
                 />
               </div>

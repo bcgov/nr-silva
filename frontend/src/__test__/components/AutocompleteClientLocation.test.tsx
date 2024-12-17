@@ -38,18 +38,18 @@ describe("AutocompleteClientLocation", () => {
   });
 
   it("renders both ComboBoxes and their titles", () => {
-    render(<AutocompleteClientLocation setValue={vi.fn()} />);
+    render(<AutocompleteClientLocation setLocationValue={vi.fn()} setClientValue={vi.fn()}/>);
     expect(screen.getByText("Client")).toBeInTheDocument();
     expect(screen.getByText("Location code")).toBeInTheDocument();
   });
 
   it("disables the Location ComboBox initially", () => {
-    render(<AutocompleteClientLocation setValue={vi.fn()} />);
+    render(<AutocompleteClientLocation setLocationValue={vi.fn()} setClientValue={vi.fn()} />);
     expect(screen.getByRole("combobox", { name: /location code/i })).toBeDisabled();
   });
 
   it("calls fetchOptions when typing in the Client ComboBox", async () => {
-    render(<AutocompleteClientLocation setValue={vi.fn()} />);
+    render(<AutocompleteClientLocation setLocationValue={vi.fn()} setClientValue={vi.fn()} />);
 
     const clientInput = screen.getByRole("combobox", { name: /client/i });
     await userEvent.type(clientInput, "Client");
@@ -60,7 +60,7 @@ describe("AutocompleteClientLocation", () => {
   });
 
   it("enables the Location ComboBox when a client is selected", async () => {
-    render(<AutocompleteClientLocation setValue={vi.fn()} />);
+    render(<AutocompleteClientLocation setLocationValue={vi.fn()} setClientValue={vi.fn()} />);
 
     const clientInput = screen.getByRole("combobox", { name: /client/i });
     await userEvent.type(clientInput, "Client");
@@ -73,9 +73,10 @@ describe("AutocompleteClientLocation", () => {
   });
 
   it("clears the location selection when the client is reset", async () => {
-    const mockSetValue = vi.fn();
+    const mockSetLocationValue = vi.fn();
+    const mockSetClientValue = vi.fn();
     
-    render(<AutocompleteClientLocation setValue={mockSetValue} />);
+    render(<AutocompleteClientLocation setLocationValue={mockSetLocationValue} setClientValue={mockSetClientValue} />);
 
     // Select a client
     const clientInput = screen.getByRole("combobox", { name: /client/i });
@@ -89,7 +90,7 @@ describe("AutocompleteClientLocation", () => {
     await userEvent.click(locationInput);
     const locationOption = screen.getByText(mockLocations[0].label);
     await userEvent.click(locationOption);
-    expect(mockSetValue).toHaveBeenCalledWith("A");
+    expect(mockSetLocationValue).toHaveBeenCalledWith("A");
 
     // Clear client selection
     const clientClearButton = screen.getAllByRole("button", { name: /clear/i });
@@ -97,13 +98,14 @@ describe("AutocompleteClientLocation", () => {
 
     expect(mockUpdateOptions).toHaveBeenCalledWith("locations", []);
     expect(mockUpdateOptions).toHaveBeenCalledWith("clients", []);
-    expect(mockSetValue).toHaveBeenCalledWith(null);
+    expect(mockSetLocationValue).toHaveBeenCalledWith(null);
   });
 
   it("calls setValue when a location is selected", async () => {
-    const mockSetValue = vi.fn();
+    const mockSetLocationValue = vi.fn();
+    const mockSetClientValue = vi.fn();
     
-    render(<AutocompleteClientLocation setValue={mockSetValue} />);
+    render(<AutocompleteClientLocation setLocationValue={mockSetLocationValue} setClientValue={mockSetClientValue} />);
 
     // Select a client
     const clientInput = screen.getByRole("combobox", { name: /client/i });
@@ -117,6 +119,6 @@ describe("AutocompleteClientLocation", () => {
     await userEvent.click(locationInput);
     const locationOption = screen.getByText(mockLocations[0].label);
     await userEvent.click(locationOption);
-    expect(mockSetValue).toHaveBeenCalledWith("A");
+    expect(mockSetLocationValue).toHaveBeenCalledWith("A");
   });
 });

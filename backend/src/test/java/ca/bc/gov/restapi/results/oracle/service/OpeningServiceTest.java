@@ -62,7 +62,9 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   void openingSearch_fileId_shouldSucceed() {
 
     PaginatedResult<OpeningSearchResponseDto> result =
-        openingService.openingSearch(new OpeningSearchFiltersDto(
+        openingService.openingSearch(
+            new OpeningSearchFiltersDto(
+                null,
                 null,
                 null,
                 null,
@@ -121,7 +123,8 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   void openingSearch_orgUnit_shouldSucceed() {
 
     PaginatedResult<OpeningSearchResponseDto> result =
-        openingService.openingSearch(new OpeningSearchFiltersDto(
+        openingService.openingSearch(
+            new OpeningSearchFiltersDto(
                 List.of("TWO"),
                 null,
                 null,
@@ -139,7 +142,8 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
-            null
+                null,
+                null
             ),
             new PaginationParameters(0, 10)
         );
@@ -198,6 +202,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
+                null,
                 "ABCD"
             ),
             new PaginationParameters(0, 10)
@@ -219,6 +224,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
         () ->
             openingService.openingSearch(
                 new OpeningSearchFiltersDto(
+                    null,
                     null,
                     null,
                     null,

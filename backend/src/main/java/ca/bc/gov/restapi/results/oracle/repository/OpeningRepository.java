@@ -211,6 +211,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
             )
             AND (
                 NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR client_location = :#{#filter.clientLocationCode}
+            )
+            AND (
+               NVL(:#{#filter.clientNumber},'NOVALUE') = 'NOVALUE' OR client_number = :#{#filter.clientNumber}
             )""",
       countQuery = """
           SELECT count(opening_id) as total
@@ -307,6 +310,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
              )
              AND (
                  NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR res.CLIENT_LOCN_CODE = :#{#filter.clientLocationCode}
+             )
+             AND (
+                 NVL(:#{#filter.clientNumber},'NOVALUE') = 'NOVALUE' OR res.CLIENT_NUMBER = :#{#filter.clientNumber}
              )
             GROUP BY o.OPENING_ID
           )""",
