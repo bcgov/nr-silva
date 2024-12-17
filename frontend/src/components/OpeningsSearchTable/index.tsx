@@ -62,7 +62,7 @@ const OpeningsSearchTable: React.FC<IOpeningsSearchTable> = ({
   };
 
   const clickViewAction = useCallback((id: string) => {
-    console.log(`Clicked view on id ${id}`);
+    //console.log(`Clicked view on id ${id}`);
   }, []);
 
   const selectRowEvent = useCallback((openingId: string, selected: boolean) => {
@@ -72,7 +72,7 @@ const OpeningsSearchTable: React.FC<IOpeningsSearchTable> = ({
   }, []);
 
   const batchActionClick = (selectedRows: any[]) => () => {
-    console.log('Batch action clicked with selected rows:', selectedRows);
+    //console.log('Batch action clicked with selected rows:', selectedRows);
     // Add your logic to handle batch actions here
   };
 
@@ -96,7 +96,7 @@ const OpeningsSearchTable: React.FC<IOpeningsSearchTable> = ({
         selectedRows,
         getTableProps,
         getTableContainerProps,
-        selectRow,
+        selectRow
       }:{
         rows: any[],
         headers: any[],
