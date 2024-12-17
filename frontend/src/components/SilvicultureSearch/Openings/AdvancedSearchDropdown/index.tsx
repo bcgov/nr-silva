@@ -19,9 +19,15 @@ import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils
 import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
 import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps } from "../../../AutocompleteClientLocation";
+import { setDate } from "date-fns";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
+}
+
+interface TextValueProps {
+  text: string;
+  value: string;
 }
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
@@ -32,6 +38,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
   const [dateTypeValue, setDateTypeValue] = useState<string | null>(null);
+  const [dateTypeItem, setDateTypeItem] = useState<TextValueProps | null>(null);
   const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
 
   const categoryItems =
@@ -76,13 +83,23 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     }
   }, [filters.orgUnit, filters.category]);
 
-  useEffect(() => {
+  const clearDates = () => {
+    handleFilterChange({
+      startDate: null,
+      endDate: null,
+      dateType: ""
+    });
+    setDateTypeValue(null);
+    setDateTypeItem(null);
+  };
 
+  useEffect(() => {
     // In here, we're defining the function that will be called when the user clicks on the "Clear" button
     // The idea is to keep the autocomplete component clear of any ties to the opening search context
     setIndividualClearFieldFunctions((previousIndividualFilters) => ({
       ...previousIndividualFilters,
-      clientLocationCode: () => autoCompleteRef.current?.reset()
+      clientLocationCode: () => autoCompleteRef.current?.reset(),
+      startDate: clearDates
     }));
   }, []);
 
@@ -92,6 +109,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     const selectedItem = dateTypeItems?.find((item: any) => item.text === dateTypeValue) || null;
 
     if (selectedItem) {
+      setDateTypeItem(selectedItem);
       handleFilterChange({ dateType: selectedItem.value });
     }
 
@@ -257,6 +275,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
             items={dateTypeItems}
             itemToString={(item: any) => (item ? item.text : "")}
             onInputChange={setDateTypeValue}
+            selectedItem={dateTypeItem}
             onChange={(e: any) =>
               handleFilterChange({ dateType: e.selectedItem === null ? "" : e.selectedItem.value })
             }
