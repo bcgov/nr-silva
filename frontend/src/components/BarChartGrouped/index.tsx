@@ -220,7 +220,6 @@ const BarChartGrouped = (): JSX.Element => {
   return (
     <Grid condensed>
       <Column sm={4} md={3} lg={5}>
-      <p>{searchParameters}</p>
         <FilterableMultiSelect
           label="District"
           id="district-dropdown"
