@@ -91,6 +91,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     });
     setDateTypeValue(null);
     setDateTypeItem(null);
+    setFilters({ ...filters, startDate: null, endDate: null, dateType: "" });
   };
 
   useEffect(() => {
