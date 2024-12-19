@@ -9,7 +9,7 @@ COPY .mvn/ ./.mvn
 COPY InstallCert.java .
 
 # Build
-RUN ./mvnw package -Pnative -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
+RUN ./mvnw package -Pnative native:compile -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
 
 ### Deployer
 FROM eclipse-temurin:17.0.13_11-jdk-jammy AS deploy
