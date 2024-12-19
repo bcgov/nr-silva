@@ -16,10 +16,10 @@ import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
-import { formatDateForDatePicker } from "../../../../utils/DateUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
 import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
-import { OpeningFilters, openingFiltersKeys } from '../../../../services/search/openings';
+import { OpeningFilters } from '../../../../services/search/openings';
+import { format } from "date-fns";
 
 interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
@@ -33,6 +33,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
   const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
+  const [dateRange, setDateRange] = useState<Date[]>([]);
+
+  const maxDate = () => format(new Date(), "yyyy/MM/dd");
+  const getDateRangeValue = (dates: Date[], index: number) => {
+    return dates && dates.length > index ? format(dates[index],"yyyy/MM/dd") : "";
+  }
 
   useEffect(() => {
     // Split filters.orgUnit into array and format as needed for selectedItems
@@ -62,7 +68,10 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     // The idea is to keep the autocomplete component clear of any ties to the opening search context
     setIndividualClearFieldFunctions((previousIndividualFilters) => ({
       ...previousIndividualFilters,
-      clientLocationCode: () => autoCompleteRef.current?.reset()
+      clientLocationCode: () => autoCompleteRef.current?.reset(),
+      startDate: () => setDateRange([]),
+      endDate: () => setDateRange([]),
+      dateType: () => setDateRange([])
     }));
 
   },[]);
@@ -70,6 +79,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const handleFilterChange = (updatedFilters: Partial<OpeningFilters>) => {
     setFilters({ ...filters, ...updatedFilters });
   };
+
+  useEffect(() =>{
+    handleFilterChange({ 
+      startDate: dateRange && dateRange.length > 0 ? format(dateRange[0], "yyyy-MM-dd") : undefined,
+      endDate: dateRange && dateRange.length > 1 ? format(dateRange[1], "yyyy-MM-dd") : undefined
+    });
+  },[dateRange]);
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
@@ -271,70 +287,33 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   max={11}
                   className="date-selectors-col"
                 >
-                  <div className="d-flex flex-auto">
-                    <DatePicker
-                      datePickerType="single"
-                      className="me-1"
-                      onChange={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            startDate: dates[0].toISOString().slice(0, 10),
-                          });
-                        }
-                      }}
-                      onClose={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            startDate: dates[0].toISOString().slice(0, 10),
-                          });
-                        }
-                      }}
-                      readOnly={!filters.dateType}
-                    >
-                      <DatePickerInput
-                        id="start-date-picker-input-id"
-                        size="md"
-                        labelText="Start Date"
-                        placeholder={
-                          filters.startDate
-                            ? filters.startDate // Display the date in YYYY-MM-DD format
-                            : "yyyy/MM/dd"
-                        }
-                        value={formatDateForDatePicker(filters.startDate)}
-                      />
-                    </DatePicker>
-
-                    <DatePicker
-                      datePickerType="single"
-                      onChange={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            endDate: dates[0].toISOString().slice(0, 10),
-                          });
-                        }
-                      }}
-                      onClose={(dates: [Date]) => {
-                        if (dates.length > 0) {
-                          handleFilterChange({
-                            endDate: dates[0].toISOString().slice(0, 10),
-                          });
-                        }
-                      }}
-                      readOnly={!filters.dateType}
-                    >
-                      <DatePickerInput
-                        id="end-date-picker-input-id"
-                        size="md"
-                        labelText="End Date"
-                        placeholder={
-                          filters.endDate
-                            ? filters.endDate // Display the date in YYYY-MM-DD format
-                            : "yyyy/MM/dd"
-                        }
-                        value={formatDateForDatePicker(filters.endDate)}
-                      />
-                    </DatePicker>
-                  </div>
+                  <DatePicker
+                    datePickerType="range"
+                    dateFormat="Y/m/d"
+                    allowInput={true}
+                    maxDate={maxDate()}
+                    onChange={setDateRange}
+                    value={dateRange}
+                  >
+                    <DatePickerInput
+                      autoComplete="off"
+                      id="start-date-picker-input-id"
+                      placeholder="yyyy/MM/dd"
+                      size="md"
+                      labelText="Start Date"
+                      disabled={!filters.dateType}
+                      value={getDateRangeValue(dateRange, 0)}
+                    />
+                    <DatePickerInput
+                      autoComplete="off"
+                      id="end-date-picker-input-id"
+                      placeholder="yyyy/MM/dd"
+                      size="md"
+                      labelText="End Date"
+                      disabled={!filters.dateType}
+                      value={getDateRangeValue(dateRange, 1)}
+                    />
+                  </DatePicker>
                 </Column>
               </Row>
             </FlexGrid>
