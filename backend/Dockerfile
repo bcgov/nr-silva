@@ -28,5 +28,7 @@ USER 1001
 EXPOSE 8080
 HEALTHCHECK CMD curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
 
+ENV SPRING_PROFILES_ACTIVE=container,prod
+
 # Startup
 ENTRYPOINT ["/app/dockerfile-entrypoint.sh"]

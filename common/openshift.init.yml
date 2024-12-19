@@ -7,18 +7,6 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
-  - name: AWS_ACCESS_KEY_ID
-    description: AWS Access Key ID
-    required: true
-  - name: AWS_ACCESS_KEY_SECRET
-    description: AWS Access Key Secret
-    required: true
-  - name: AWS_KINESIS_STREAM
-    description: AWS Kinesis stream name
-    required: true
-  - name: AWS_KINESIS_ROLE_ARN
-    description: AWS Kinesis Role ARN
-    required: true
   - name: ORACLE_DB_USER
     description: Oracle database username for API
     required: true
@@ -50,19 +38,8 @@ parameters:
     description: Cognito user pools ID
     required: true
 objects:
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: ${NAME}-${ZONE}-fluentbit
-      labels:
-        app: ${NAME}-${ZONE}
-    stringData:
-      aws-access-key-id: ${AWS_ACCESS_KEY_ID}
-      aws-access-key-secret: ${AWS_ACCESS_KEY_SECRET}
-      aws-kinesis-stream: ${AWS_KINESIS_STREAM}
-      aws-kinesis-role-arn: ${AWS_KINESIS_ROLE_ARN}
-  - apiVersion: v1
-    kind: Secret
+  - kind: Secret
+    apiVersion: v1
     metadata:
       name: ${NAME}-${ZONE}-backend
       labels:
@@ -74,8 +51,8 @@ objects:
       oracle-service: ${ORACLE_DB_SERVICE}
       oracle-host: ${ORACLE_DB_HOST}
       forest-client-api-key: ${FORESTCLIENTAPI_KEY}
-  - apiVersion: v1
-    kind: Secret
+  - kind: Secret
+    apiVersion: v1
     metadata:
       name: ${NAME}-${ZONE}-${PG_DATABASE}
       labels:
@@ -84,8 +61,29 @@ objects:
       database-name: ${NAME}
       database-password: ${POSTGRES_DB_PASSWORD}
       database-user: ${NAME}
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-${ZONE}-frontend
+      labels:
+        app: ${NAME}-${ZONE}
+    stringData:
+      vite-user-pools-web-client-id: ${VITE_USER_POOLS_WEB_CLIENT_ID}
+      vite-user-pools-id: ${VITE_USER_POOLS_ID}
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-same-namespace
+      labels:
+        template: nr-results-backend-network-security-policy
+    spec:
+      ingress:
+        - from:
+            - podSelector: {}
+      policyTypes:
+        - Ingress
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: allow-from-openshift-ingress
       labels:
@@ -96,26 +94,5 @@ objects:
             - namespaceSelector:
                 matchLabels:
                   network.openshift.io/policy-group: ingress
-      policyTypes:
-        - Ingress
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: ${NAME}-${ZONE}-frontend
-      labels:
-        app: ${NAME}-${ZONE}
-    stringData:
-      vite-user-pools-web-client-id: ${VITE_USER_POOLS_WEB_CLIENT_ID}
-      vite-user-pools-id: ${VITE_USER_POOLS_ID}
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-same-namespace
-      labels:
-        template: nr-results-backend-network-security-policy
-    spec:
-      ingress:
-        - from:
-            - podSelector: {}
       policyTypes:
         - Ingress
