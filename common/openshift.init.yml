@@ -7,18 +7,6 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
-  - name: AWS_ACCESS_KEY_ID
-    description: AWS Access Key ID
-    required: true
-  - name: AWS_ACCESS_KEY_SECRET
-    description: AWS Access Key Secret
-    required: true
-  - name: AWS_KINESIS_STREAM
-    description: AWS Kinesis stream name
-    required: true
-  - name: AWS_KINESIS_ROLE_ARN
-    description: AWS Kinesis Role ARN
-    required: true
   - name: ORACLE_DB_USER
     description: Oracle database username for API
     required: true
