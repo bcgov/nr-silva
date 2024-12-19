@@ -37,7 +37,7 @@ describe("OpeningsSearchBar", () => {
 
     // Check if the search input field is present with the correct placeholder text
     const searchInput = screen.getByPlaceholderText(
-      "Search by opening ID, opening number, timber mark or file ID"
+      "Search by opening ID, opening number or file ID"
     );
     expect(searchInput).toBeInTheDocument();
   });
@@ -159,7 +159,7 @@ describe("OpeningsSearchBar", () => {
 
     // Check if the search input field is present with the correct placeholder text
     const searchInput = screen.getByPlaceholderText(
-      "Search by opening ID, opening number, timber mark or file ID"
+      "Search by opening ID, opening number or file ID"
     );
     await act(async () => await userEvent.type(searchInput, 'tfl47'));
     await act(async () => await userEvent.keyboard('{enter}'));

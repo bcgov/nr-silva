@@ -66,7 +66,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
               <InlineNotification 
                 className="mw-100 w-100"
                 title="Missing at least one criteria to search" 
-                subtitle="Please, start searching for an opening ID, opening number, timber mark, file ID or apply advanced search criteria" 
+                subtitle="Please, start searching for an opening ID, opening number, file ID or apply advanced search criteria" 
                 lowContrast={true} />
             </Column>
           </Row>
@@ -75,7 +75,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
             <Column lg={8} xl={6} max={10} className="p-0 mb-2 mb-lg-0">            
                 <Search
                   size="md"
-                  placeholder="Search by opening ID, opening number, timber mark or file ID"
+                  placeholder="Search by opening ID, opening number or file ID"
                   labelText="Search"
                   closeButtonLabelText="Clear search input"
                   id={`search-1`}
