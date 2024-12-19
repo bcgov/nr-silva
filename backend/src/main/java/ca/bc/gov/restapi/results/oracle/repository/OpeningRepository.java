@@ -254,7 +254,6 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
                  AND o.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
                ) OR (
                    o.OPENING_NUMBER = :#{#filter.mainSearchTerm} OR
-                   cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
                    cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
                )
              )
