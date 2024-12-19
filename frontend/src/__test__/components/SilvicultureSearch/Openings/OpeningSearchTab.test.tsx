@@ -92,7 +92,7 @@ describe('OpeningSearchTab', () => {
         </QueryClientProvider>
       </BrowserRouter>
     );
-    expect(screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search by opening ID, opening number or file ID')).toBeInTheDocument();
   });
 
   it('should display search results when search is performed', async () => {
@@ -111,7 +111,7 @@ describe('OpeningSearchTab', () => {
         </QueryClientProvider>
       </BrowserRouter>
     );
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID') as HTMLInputElement;    
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID') as HTMLInputElement;    
     await act(async () => userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));
@@ -133,7 +133,7 @@ describe('OpeningSearchTab', () => {
         </QueryClientProvider>
       </BrowserRouter>
     );
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'potato'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     expect(screen.getByText('Results not found')).toBeInTheDocument();
@@ -155,7 +155,7 @@ describe('OpeningSearchTab', () => {
         </QueryClientProvider>
       </BrowserRouter>
     ));
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));
@@ -182,7 +182,7 @@ describe('OpeningSearchTab', () => {
       </BrowserRouter>
     )));
 
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));        
@@ -211,7 +211,7 @@ describe('OpeningSearchTab', () => {
         </QueryClientProvider>
       </BrowserRouter>
     ));
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));
@@ -238,7 +238,7 @@ describe('OpeningSearchTab', () => {
       </BrowserRouter>
     )));
 
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number, timber mark or file ID');
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));        
