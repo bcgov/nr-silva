@@ -92,7 +92,7 @@ objects:
         - ReadWriteOnce
       resources:
         requests:
-          storage: "${PVC_SIZE}"
+          storage: "50Mi"
       storageClassName: netapp-file-standard
   - kind: Deployment
     apiVersion: apps/v1
