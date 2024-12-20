@@ -3,16 +3,18 @@ package ca.bc.gov.restapi.results.common.configuration;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -31,20 +33,28 @@ public class OracleJpaConfiguration {
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
+      @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
         .dataSource(dataSource)
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
-            "hibernate.boot.allow_jdbc_metadata_access","false",
+            "hibernate.boot.allow_jdbc_metadata_access", "false",
             "hibernate.hikari.connection.provider_class",
             "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
             "hibernate.connection.datasource", dataSource
         ))
         .packages("ca.bc.gov.restapi.results.oracle")
+        .managedTypes(persistenceManagedTypes)
         .persistenceUnit("oracle")
         .build();
+  }
+
+  @Bean(name = "oracleManagedTypes")
+  public PersistenceManagedTypes oracleManagedTypes(ResourceLoader resourceLoader) {
+    return new PersistenceManagedTypesScanner(resourceLoader)
+        .scan("ca.bc.gov.restapi.results.oracle");
   }
 
   @Bean(name = "oracleDataSource")

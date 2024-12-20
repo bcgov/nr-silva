@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,6 @@ public class DashboardMetricsService {
 
   private final LoggedUserService loggedUserService;
 
-  private final PrettyTime prettyTime = new PrettyTime();
 
 
   /**
@@ -166,7 +164,6 @@ public class DashboardMetricsService {
                     entity.getOpeningId(),
                     entity.getStatusCode(),
                     entity.getStatusDesc(),
-                    prettyTime.format(entity.getLastUpdated()),
                     entity.getLastUpdated()
                 )
             )

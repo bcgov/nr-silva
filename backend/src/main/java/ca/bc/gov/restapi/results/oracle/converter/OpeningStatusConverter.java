@@ -5,7 +5,9 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.util.Objects;
 
-/** This class represents a column converter for the opening status column. */
+/**
+ * This class represents a column converter for the opening status column.
+ */
 @Converter(autoApply = true)
 public class OpeningStatusConverter implements AttributeConverter<OpeningStatusEnum, String> {
 

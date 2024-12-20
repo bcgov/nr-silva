@@ -1,0 +1,21 @@
+apiVersion: ops.gov.bc.ca/v1alpha1
+kind: SysdigTeam
+metadata:
+  name: d41ea0-sysdigteam
+  namespace: d41ea0-tools
+spec:
+  team:
+    description: The Sysdig Team for SILVA
+    users:
+      - name: derek.roberts@gov.bc.ca
+        role: ROLE_TEAM_EDIT
+      - name: caroline.wood@gov.bc.ca
+        role: ROLE_TEAM_MANAGER
+      - name: michelle.douville@gov.bc.ca
+        role: ROLE_TEAM_MANAGER
+      - name: paulushc@gmail.com
+        role: ROLE_TEAM_MANAGER
+      - name: paulo.cruz@gov.bc.ca
+        role: ROLE_TEAM_MANAGER
+      - name: craig.yu@gov.bc.ca
+        role: ROLE_TEAM_MANAGER
