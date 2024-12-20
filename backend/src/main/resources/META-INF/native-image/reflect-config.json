@@ -20,5 +20,23 @@
   {
     "name": "ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery",
     "allDeclaredMethods": true
+  },
+  {
+    "name": "org.hibernate.query.sqm.tree.select.SqmQueryPart",
+    "methods": [
+      {
+        "name": "*",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.hibernate.query.sqm.tree.select.SqmQueryPart[]",
+    "methods": [
+      {
+        "name": "*",
+        "parameterTypes": []
+      }
+    ]
   }
 ]
