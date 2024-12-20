@@ -9,10 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents an Electronic Submission for the Openings in the database.
  */
+@RegisterReflectionForBinding
 @Data
 @Builder
 @With

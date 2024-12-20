@@ -13,7 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
+@RegisterReflectionForBinding
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

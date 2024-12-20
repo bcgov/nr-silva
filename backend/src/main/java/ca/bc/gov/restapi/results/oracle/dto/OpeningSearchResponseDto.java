@@ -9,10 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents a record of the opening search api response.
  */
+@RegisterReflectionForBinding
 @Data
 @Builder
 @With

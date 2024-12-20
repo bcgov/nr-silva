@@ -11,10 +11,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents a CUT_BLOCK_OPEN_ADMIN entity in the database.
  */
+@RegisterReflectionForBinding
 @Data
 @Builder
 @With

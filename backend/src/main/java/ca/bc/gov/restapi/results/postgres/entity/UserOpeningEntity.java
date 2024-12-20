@@ -10,10 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents an Opening saved as favourite to the user.
  */
+@RegisterReflectionForBinding
 @Data
 @Builder
 @With

@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /** Composite key for {@link OpeningsActivityEntity}. */
+@RegisterReflectionForBinding
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @RequiredArgsConstructor
 @Data

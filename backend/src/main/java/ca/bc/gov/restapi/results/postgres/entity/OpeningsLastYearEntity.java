@@ -10,10 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents a record in the database for the openings_last_year table.
  */
+@RegisterReflectionForBinding
 @Data
 @Builder
 @With

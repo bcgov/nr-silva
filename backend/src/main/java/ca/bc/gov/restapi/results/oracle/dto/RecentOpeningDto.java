@@ -7,10 +7,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.With;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * Represents a Recent Opening in the Home screen.
  */
+@RegisterReflectionForBinding
 @Builder
 @With
 public record RecentOpeningDto(

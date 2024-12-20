@@ -4,5 +4,17 @@
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true,
     "allDeclaredFields": true
+  },
+  {
+    "name": "ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "ca.bc.gov.restapi.results.oracle.entity.ResultsAuditEventProjection",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection",
+    "allDeclaredMethods": true
   }
 ]
