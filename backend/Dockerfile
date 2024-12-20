@@ -25,5 +25,7 @@ HEALTHCHECK CMD curl -f http://localhost:${PORT}/actuator/health | grep '"status
 
 ENV SPRING_PROFILES_ACTIVE=container,prod
 
+ENV SPRING_PROFILES_ACTIVE=container,prod
+
 # Startup
 ENTRYPOINT ["/app/results"]
