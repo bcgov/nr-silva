@@ -3,18 +3,14 @@ package ca.bc.gov.restapi.results.postgres.entity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.With;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
-/** Composite key for {@link OpeningsActivityEntity}. */
-@RegisterReflectionForBinding
+/**
+ * Composite key for {@link OpeningsActivityEntity}.
+ */
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @RequiredArgsConstructor
 @Data
@@ -22,7 +18,9 @@ import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 @With
 public class OpeningsActivityEntityId {
 
-  @NonNull private Integer activityId;
+  @NonNull
+  private Integer activityId;
 
-  @NonNull private Long openingId;
+  @NonNull
+  private Long openingId;
 }

@@ -7,13 +7,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.With;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.data.annotation.Transient;
 
 /**
  * This record represents a Forest Client object.
  */
-@RegisterReflectionForBinding
 @Builder
 @With
 public record ForestClientDto(

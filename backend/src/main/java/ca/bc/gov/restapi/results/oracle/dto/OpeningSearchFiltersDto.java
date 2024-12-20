@@ -8,13 +8,11 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.util.CollectionUtils;
 
 /**
  * This record contains all possible filters when using the Opening Search API.
  */
-@RegisterReflectionForBinding
 @Slf4j
 @Getter
 @ToString

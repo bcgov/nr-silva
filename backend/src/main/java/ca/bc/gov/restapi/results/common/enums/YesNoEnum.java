@@ -2,9 +2,7 @@ package ca.bc.gov.restapi.results.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
-@RegisterReflectionForBinding
 public enum YesNoEnum {
   YES("Y"),
   NO("N");

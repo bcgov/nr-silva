@@ -2,14 +2,12 @@ package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Objects;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This enumeration represents all possible values for the Opening Status column from the Opening
  * table.
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@RegisterReflectionForBinding
 public enum OpeningStatusEnum {
   AMD("AMD", "Amended"),
   AMG("AMG", "Amalgamate"),

@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@RegisterReflectionForBinding
 public enum AuditActionCodeEnum {
   UPD("UPD", "Update"),
   COR("COR", "Correction"),

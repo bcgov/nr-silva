@@ -1,14 +1,12 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This enumeration represents all possible values for the Opening Category column from the Opening
  * table.
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@RegisterReflectionForBinding
 public enum OpeningCategoryEnum {
   CONT("CONT", "SP as a part of contractual agreement"),
   EXCLU("EXCLU", "Openings excluded from Crown managed forests"),

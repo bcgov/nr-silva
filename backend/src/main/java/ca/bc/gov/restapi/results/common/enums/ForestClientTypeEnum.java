@@ -3,12 +3,12 @@ package ca.bc.gov.restapi.results.common.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
-/** This enum contains all forest client types codes and descriptions. */
+/**
+ * This enum contains all forest client types codes and descriptions.
+ */
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@RegisterReflectionForBinding
 public enum ForestClientTypeEnum {
   @JsonProperty("A")
   ASSOCIATION('A', "Association"),

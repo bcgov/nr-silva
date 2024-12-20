@@ -3,9 +3,7 @@ package ca.bc.gov.restapi.results.common.dto;
 import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import java.time.LocalDate;
 import lombok.With;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
-@RegisterReflectionForBinding
 @With
 public record ForestClientLocationDto(
     String clientNumber,

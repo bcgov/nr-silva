@@ -13,12 +13,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * This class represents a log message in the database, for the oracle extraction flow.
  */
-@RegisterReflectionForBinding
 @Data
 @Builder
 @NoArgsConstructor
