@@ -111,12 +111,6 @@
                   <goal>compile-no-fork</goal>
                 </goals>
                 <phase>package</phase>
-                <configuration>
-                <buildArgs>
-                    --initialize-at-build-time=ca.bc.gov.restapi.results.oracle.entity
-                    --initialize-at-build-time=ca.bc.gov.restapi.results.postgres.entity
-                </buildArgs>
-            </configuration>
               </execution>
             </executions>
           </plugin>
