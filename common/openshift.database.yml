@@ -94,6 +94,21 @@ objects:
         requests:
           storage: "50Mi"
       storageClassName: netapp-file-standard
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+    data:
+      checksum.sql: |
+        SELECT 
+          concat(table_schema,'.',table_name) as full_table_name,
+          (SELECT MD5(ARRAY_AGG(t.*::text)::text) AS checksum FROM concat(table_schema,'.',table_name) AS t) as checksum
+        FROM information_schema.tables
+        WHERE table_type = 'BASE TABLE'
+        AND table_schema NOT IN ('pg_catalog', 'information_schema')
+        ORDER BY table_schema, table_name;
   - kind: Deployment
     apiVersion: apps/v1
     metadata:
@@ -241,11 +256,22 @@ objects:
                     -Fc \
                     --file=${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump \
                     &&
+                    PAGER= psql \
+                    -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d ${POSTGRES_DB} \
+                    -f /tmp/restore/checksum.sql \
+                    --quiet \
+                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/original.checksum &&
+                    pg_restore --list ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
                     find "${BACKUP_DIR}" -type f -mtime +$NUM_BACKUPS -exec rm -f {} \; &&
                     cp -r ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump ${BACKUP_DIR}/W0__restore.dump
                   volumeMounts:
                     - mountPath: "${BACKUP_DIR}"
                       name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                    - mountPath: "/tmp/restore/checksum.sql"
+                      subPath: checksum.sql
+                      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
                   env:
                     - name: BACKUP_DIR
                       value: "${BACKUP_DIR}"
@@ -277,6 +303,9 @@ objects:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-backup
                   persistentVolumeClaim:
                     claimName: ${NAME}-${ZONE}-${COMPONENT}-backup
+                - name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  configMap:
+                    name: ${NAME}-${ZONE}-${COMPONENT}-checksum
               restartPolicy: "Never"
               terminationGracePeriodSeconds: 30
               activeDeadlineSeconds: 1600
