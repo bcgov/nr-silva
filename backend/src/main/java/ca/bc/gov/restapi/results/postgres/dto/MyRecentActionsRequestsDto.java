@@ -14,7 +14,6 @@ public record MyRecentActionsRequestsDto(
     Long openingId,
     String statusCode,
     String statusDescription,
-    String lastUpdatedLabel,
     LocalDateTime lastUpdated
 ) {
 

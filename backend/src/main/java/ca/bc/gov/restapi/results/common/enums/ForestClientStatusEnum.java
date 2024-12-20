@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
-/** This enum contains all forest client statuses codes and descriptions. */
+/**
+ * This enum contains all forest client statuses codes and descriptions.
+ */
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ForestClientStatusEnum {

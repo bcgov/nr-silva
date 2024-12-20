@@ -7,7 +7,6 @@ import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,7 +17,6 @@ public class UserActionsService {
   private final ResultsAuditActivityRepository auditActivityRepository;
   private final LoggedUserService loggedUserService;
   private final SilvaConfiguration silvaConfiguration;
-  private final PrettyTime prettyTime = new PrettyTime();
 
   public List<MyRecentActionsRequestsDto> getResultsAuditActivity() {
     String userId = loggedUserService.getLoggedUserId();
@@ -35,7 +33,6 @@ public class UserActionsService {
                     entity.getOpeningId(),
                     entity.getCategoryCode(),
                     entity.getCategoryCodeDescription(),
-                    prettyTime.format(entity.getEntryTimestamp()),
                     entity.getEntryTimestamp()
                 )
             )

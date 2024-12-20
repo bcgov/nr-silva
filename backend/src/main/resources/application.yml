@@ -7,7 +7,7 @@ server:
 
 spring:
   application:
-  name: results-api
+    name: results-api
   oracle:
     jdbcUrl: jdbc:oracle:thin:@tcps://${DATABASE_HOST:nrcdb03.bcgov}:${DATABASE_PORT:1543}/${SERVICE_NAME:dbq01.nrs.bcgov}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
     url: ${spring.datasource.oracle.jdbcUrl}
@@ -47,10 +47,28 @@ spring:
       maximumPoolSize: 3
       leakDetectionThreshold: 60000
       connection-test-query: SELECT 1
-
-  # Common database settings
   jpa:
     show-sql: false
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  sleuth:
+    propagation-keys:
+      - X-TRACE-ID
+      - X-USER
+    baggage-keys:
+      - X-TRACE-ID
+      - X-USER
+    log:
+      slf4j:
+        whitelisted-mdc-keys:
+          - X-TRACE-ID
+          - X-USER
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
 
 # FAM
   security:
@@ -74,7 +92,10 @@ nr-results-team-email-address: Team.Silva@gov.bc.ca
   
 # Actuator and ops
 management:
+  enable-native-support: true
   endpoint:
+    metrics:
+      enabled: false
     health:
       show-details: always
 
