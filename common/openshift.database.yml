@@ -230,7 +230,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-cron
-                  image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
+                  image: postgis/postgis:15-master
                   command: ["/bin/sh", "-c"]
                   args:
                   - |
