@@ -345,7 +345,6 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                   - |
-                    pg_restore --list ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
                     psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
                     pg_restore -U ${POSTGRES_USER} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
                     PAGER= psql \
