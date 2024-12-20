@@ -255,7 +255,7 @@ objects:
                 httpGet:
                   path: /actuator/health
                   port: probe-port
-                initialDelaySeconds: 120
+                initialDelaySeconds: 15
                 failureThreshold: 30
               readinessProbe:
                 httpGet:
