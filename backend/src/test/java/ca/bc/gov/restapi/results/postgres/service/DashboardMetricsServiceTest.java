@@ -263,7 +263,6 @@ class DashboardMetricsServiceTest {
     Assertions.assertEquals(112233L, dtoList.get(0).openingId());
     Assertions.assertEquals("APP", dtoList.get(0).statusCode());
     Assertions.assertEquals("Approved", dtoList.get(0).statusDescription());
-    Assertions.assertEquals("2 hours ago", dtoList.get(0).lastUpdatedLabel());
   }
 
   @Test
