@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Checkbox,
   CheckboxGroup,
+  Dropdown,
   TextInput,
   DatePicker,
   DatePickerInput,
   Loading,
   FlexGrid,
-  FilterableMultiSelect,
   Row,
   Column,
-  ComboBox
-} from "@carbon/react";
+  FilterableMultiSelect
+, ComboBox } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
@@ -25,20 +25,13 @@ interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-interface TextValueProps {
-  text: string;
-  value: string;
-}
-
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
   const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
-  const [dateTypeValue, setDateTypeValue] = useState<string | null>(null);
-  const [dateTypeItem, setDateTypeItem] = useState<TextValueProps | null>(null);
   const autoCompleteRef = useRef<AutocompleteComponentRefProps>(null);
   const [dateRange, setDateRange] = useState<Date[]>([]);
 
@@ -48,7 +41,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   }
 
   useEffect(() => {
-    //console.log("Use Effect in child is being called.", filters);
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
@@ -61,26 +53,15 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     }
     // Split filters.category into array and format as needed for selectedItems
     if (filters.category) {
-      const categoriesArray = filters.category.map((category: string) => ({
-        text: data?.categories?.find((item: any) => item.code === category)?.description || category,
-        value: category
-      }));
-      setSelectedCategories(categoriesArray);
-    } else {
-      setSelectedCategories([]);
-    }
+    const categoriesArray = filters.category.map((category: string) => ({
+      text: data?.categories?.find((item: any) => item.code === category)?.description || category,
+      value: category
+    }));
+    setSelectedCategories(categoriesArray);
+  } else{
+    setSelectedCategories([]);
+  }
   }, [filters.orgUnit, filters.category]);
-
-  const clearDates = () => {
-    handleFilterChange({
-      startDate: null,
-      endDate: null,
-      dateType: ""
-    });
-    setDateTypeValue(null);
-    setDateTypeItem(null);
-    setFilters({ ...filters, startDate: null, endDate: null, dateType: "" });
-  };
 
   useEffect(() => {
     // In here, we're defining the function that will be called when the user clicks on the "Clear" button
@@ -96,6 +77,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   },[]);
 
   const handleFilterChange = (updatedFilters: Partial<OpeningFilters>) => {
+
     setFilters({ ...filters, ...updatedFilters });
   };
 
@@ -125,7 +107,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     handleFilterChange({ [group]: updatedGroup });
   };
 
-
+  
   if (isLoading) {
     return <Loading withOverlay={true} />;
   }
@@ -138,6 +120,28 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     );
   }
 
+  const onDateTypeChange = ({ selectedItem }: { selectedItem: { value: string } | null }) => {
+    dateRange && setDateRange([]);
+    handleFilterChange({ dateType: selectedItem?.value, startDate: undefined, endDate: undefined });  
+  }
+
+  const categoryItems =
+    data.categories?.map((item: any) => ({
+      text: item.description,
+      value: item.code
+    })) || [];
+
+  const orgUnitItems =
+    data.orgUnits?.map((item: any) => ({
+      text: item.orgUnitName,
+      value: item.orgUnitCode
+    })) || [];
+
+  const dateTypeItems =
+    data.dateTypes?.map((item: any) => ({
+      text: item.label,
+      value: item.value
+    })) || [];
 
   return (
     <div className="advanced-search-dropdown">
@@ -264,14 +268,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   max={5}
                   className="date-type-col mt-sm-2 mt-lg-0"
                 >
-                  <Dropdown
+                  <ComboBox
                     id="date-type-dropdown"
                     titleText="Date type"
                     items={dateTypeItems}
                     itemToString={(item: any) => (item ? item.text : "")}
-                    onChange={(e: any) =>
-                      handleFilterChange({ dateType: e.selectedItem.value })
-                    }
+                    onChange={onDateTypeChange}
                     selectedItem={
                       filters.dateType
                         ? dateTypeItems.find(
