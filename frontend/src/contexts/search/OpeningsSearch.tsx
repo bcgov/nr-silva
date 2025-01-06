@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { OpeningFilters,openingFiltersKeys } from '../../services/search/openings';
 
 // Define the shape of the search filters context
 interface OpeningsSearchContextProps {
-  filters: any; //In the future, this should be a type that represents the filters
-  setFilters: React.Dispatch<React.SetStateAction<any>>;
+  filters: OpeningFilters;
+  setFilters: React.Dispatch<React.SetStateAction<OpeningFilters>>;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>
   clearFilters: () => void;
@@ -16,38 +17,22 @@ const OpeningsSearchContext = createContext<OpeningsSearchContextProps | undefin
 
 // Create the provider component
 export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const defaultFilters = {
-    startDate: null as Date | null,
-    endDate: null as Date | null,
-    orgUnit: [] as string[],
-    category: [] as string[],
-    status: [] as string[],
-    clientAcronym: "",
-    clientLocationCode: "",
-    blockStatus: "",
-    cutBlock: "",
-    cuttingPermit: "",
-    timberMark: "",
-    dateType: null as string | null,
-    openingFilters: [] as string[],
-    blockStatuses: [] as string[]
-  };
-
-  const [filters, setFilters] = useState(defaultFilters);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState<OpeningFilters>({status:[], openingFilters:[]});
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [individualClearFieldFunctions, setIndividualClearFieldFunctions] = useState<Record<string, () => void>>({});
 
   // Function to clear individual filter field by key
   const clearIndividualField = (key: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [key]: defaultFilters[key as keyof typeof defaultFilters]
+      [key]: undefined
     }));
     individualClearFieldFunctions[key] && individualClearFieldFunctions[key]();
   };
 
   const clearFilters = () => {
-    Object.keys(defaultFilters).forEach((key) => {
+    setFilters({status:[], openingFilters:[]});
+    openingFiltersKeys.forEach((key) => {
       individualClearFieldFunctions[key] && individualClearFieldFunctions[key]();
     });
     

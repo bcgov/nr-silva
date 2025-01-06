@@ -20,20 +20,20 @@ import lombok.With;
 @With
 @Builder
 @Entity
-@EqualsAndHashCode(exclude = {"id","lastViewed"})
+@EqualsAndHashCode(exclude = {"id", "lastViewed"})
 @Table(schema = "silva", name = "user_recent_openings")
 public class UserRecentOpeningEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+  @Column(name = "user_id", nullable = false)
+  private String userId;
 
-    @Column(name = "opening_id", nullable = false)
-    private Long openingId;
+  @Column(name = "opening_id", nullable = false)
+  private Long openingId;
 
-    @Column(name = "last_viewed", nullable = false)
-    private LocalDateTime lastViewed;
+  @Column(name = "last_viewed", nullable = false)
+  private LocalDateTime lastViewed;
 }

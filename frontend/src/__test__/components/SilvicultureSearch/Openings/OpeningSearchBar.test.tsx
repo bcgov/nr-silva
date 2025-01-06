@@ -6,7 +6,6 @@ import "@testing-library/jest-dom";
 import OpeningsSearchBar from "../../../../components/SilvicultureSearch/Openings/OpeningsSearchBar";
 import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { OpeningsSearchProvider, useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
 import userEvent from "@testing-library/user-event";
 
 // Mock the useOpeningsSearch context to avoid rendering errors
@@ -20,6 +19,7 @@ vi.mock("../../../../contexts/search/OpeningsSearch", async () => {
       searchTerm: "",
       setSearchTerm: vi.fn(),
       setIndividualClearFieldFunctions: vi.fn(),
+      setFilters: vi.fn(),
     }),
   }
 });
@@ -37,7 +37,7 @@ describe("OpeningsSearchBar", () => {
 
     // Check if the search input field is present with the correct placeholder text
     const searchInput = screen.getByPlaceholderText(
-      "Search by opening ID, opening number, timber mark or file ID"
+      "Search by opening ID, opening number or file ID"
     );
     expect(searchInput).toBeInTheDocument();
   });
@@ -159,7 +159,7 @@ describe("OpeningsSearchBar", () => {
 
     // Check if the search input field is present with the correct placeholder text
     const searchInput = screen.getByPlaceholderText(
-      "Search by opening ID, opening number, timber mark or file ID"
+      "Search by opening ID, opening number or file ID"
     );
     await act(async () => await userEvent.type(searchInput, 'tfl47'));
     await act(async () => await userEvent.keyboard('{enter}'));

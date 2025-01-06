@@ -26,4 +26,5 @@ public record RecentOpeningDto(
     LocalDateTime entryTimestamp,
     LocalDateTime updateTimestamp
 ) {
+
 }

@@ -14,7 +14,7 @@ public record OpeningsPerYearDto(
     Integer year,
     String monthName,
     Long amount,
-    Map<String,Long> statusCounts
+    Map<String, Long> statusCounts
 ) {
 
 }
