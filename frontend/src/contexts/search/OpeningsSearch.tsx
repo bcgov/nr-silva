@@ -35,9 +35,6 @@ export const OpeningsSearchProvider: React.FC<{ children: ReactNode }> = ({ chil
     openingFiltersKeys.forEach((key) => {
       individualClearFieldFunctions[key] && individualClearFieldFunctions[key]();
     });
-    
-    setFilters(defaultFilters);
-  
   };
 
   return (
