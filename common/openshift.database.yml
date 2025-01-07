@@ -345,6 +345,14 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                   - |
+                    set -e
+                    echo "Starting Postgres instance in the background" &&
+                    postgres &  # Start Postgres in the background
+                    echo "Waiting for Postgres to be ready" &&
+                    until pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}; do
+                      echo "Postgres is not ready yet, waiting..." &&
+                      sleep 2
+                    done
                     echo "Creating test database" &&
                     psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
                     echo "Test database created, Restoring backup" &&
