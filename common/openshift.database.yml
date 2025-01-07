@@ -345,26 +345,21 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                   - |
-                    set -e
-                    echo "Starting Postgres instance in the background" &&
-                    postgres &  # Start Postgres in the background
-                    echo "Waiting for Postgres to be ready" &&
-                    until pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}; do
-                      echo "Postgres is not ready yet, waiting..." &&
-                      sleep 2
-                    done
                     echo "Creating test database" &&
-                    psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
+                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
                     echo "Test database created, Restoring backup" &&
-                    pg_restore -U ${POSTGRES_USER} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
+                    pg_restore -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
                     echo "Backup restored, running checksum" &&
                     PAGER= psql \
                     -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
                     -d backup_test_db \
                     -f /tmp/restore/checksum.sql \
                     --quiet \
                     -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
-                    echo "Checksums created, comparing" &&
+                    echo "Checksums created, removing temporary database" &&
+                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'DROP DATABASE backup_test_db;' &&
+                    echo "Database removed, comparing checksums" &&
                     diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
                     rm -rf ${BACKUP_DIR}/restored.checksum
                   volumeMounts:
