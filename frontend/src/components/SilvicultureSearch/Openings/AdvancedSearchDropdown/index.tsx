@@ -11,7 +11,7 @@ import {
   Row,
   Column,
   FilterableMultiSelect
-} from "@carbon/react";
+, ComboBox } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
@@ -45,7 +45,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
         text: data?.orgUnits?.find((item: any) => item.orgUnitCode === orgUnit)?.orgUnitName || orgUnit,
-        value: orgUnit,
+        value: orgUnit
       }));
       setSelectedOrgUnits(orgUnitsArray);
     } else {
@@ -55,7 +55,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     if (filters.category) {
     const categoriesArray = filters.category.map((category: string) => ({
       text: data?.categories?.find((item: any) => item.code === category)?.description || category,
-      value: category,
+      value: category
     }));
     setSelectedCategories(categoriesArray);
   } else{
@@ -119,22 +119,28 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     );
   }
 
+  const onDateTypeChange = ({ selectedItem }: { selectedItem: { value: string } | null }) => {
+    dateRange && setDateRange([]);
+    handleFilterChange({ dateType: selectedItem?.value, startDate: undefined, endDate: undefined });  
+  }
+
+
   const categoryItems =
     data.categories?.map((item: any) => ({
       text: item.description,
-      value: item.code,
+      value: item.code
     })) || [];
 
   const orgUnitItems =
     data.orgUnits?.map((item: any) => ({
       text: item.orgUnitName,
-      value: item.orgUnitCode,
+      value: item.orgUnitCode
     })) || [];
 
   const dateTypeItems =
     data.dateTypes?.map((item: any) => ({
       text: item.label,
-      value: item.value,
+      value: item.value
     })) || [];
 
   return (
@@ -262,14 +268,12 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                   max={5}
                   className="date-type-col mt-sm-2 mt-lg-0"
                 >
-                  <Dropdown
+                  <ComboBox
                     id="date-type-dropdown"
                     titleText="Date type"
                     items={dateTypeItems}
                     itemToString={(item: any) => (item ? item.text : "")}
-                    onChange={(e: any) =>
-                      handleFilterChange({ dateType: e.selectedItem.value })
-                    }
+                    onChange={onDateTypeChange}
                     selectedItem={
                       filters.dateType
                         ? dateTypeItems.find(
