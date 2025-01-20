@@ -17,7 +17,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.2
+      - uses: bcgov/action-test-and-analyse-java@v1.0.2
         with:
           commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
           dir: backend
@@ -39,7 +39,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
-      - uses: bcgov-nr/action-test-and-analyse@v1.2.1
+      - uses: bcgov/action-test-and-analyse@v1.2.1
         with:
           commands: |
             npm ci
@@ -54,7 +54,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
-      - uses: bcgov-nr/action-test-and-analyse@v1.2.1
+      - uses: bcgov/action-test-and-analyse@v1.2.1
         env:
           VITE_ZONE: test
           VITE_USER_POOLS_ID: ca-central-1_abc123
