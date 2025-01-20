@@ -18,7 +18,7 @@ jobs:
     name: Initialize
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
         # Get PR number for squash merges to main
       - id: pr
@@ -49,7 +49,7 @@ jobs:
   promote:
     name: Promote Images
     needs: [init, deploys-prod]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         package: [backend, frontend]

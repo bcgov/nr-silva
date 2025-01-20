@@ -11,7 +11,7 @@ concurrency:
 jobs:
   builds:
     name: Builds
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -43,7 +43,7 @@ jobs:
     if: always()
     # Include all needs that could have failures!
     needs: [builds, deploys]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: |
           # View results

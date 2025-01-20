@@ -15,7 +15,7 @@ jobs:
   tests-backend:
     name: Tests (Backend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov/action-test-and-analyse-java@v1.0.2
         with:
@@ -37,7 +37,7 @@ jobs:
   lint-frontend:
     name: Lint (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov/action-test-and-analyse@v1.2.1
         with:
@@ -52,7 +52,7 @@ jobs:
   tests-frontend:
     name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov/action-test-and-analyse@v1.2.1
         env:
@@ -83,7 +83,7 @@ jobs:
   trivy:
     name: Trivy Security Scan
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -107,7 +107,7 @@ jobs:
     if: always()
     # Include all needs that could have failures!
     needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: |
           # View results

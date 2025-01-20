@@ -39,7 +39,7 @@ jobs:
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
       route: ${{ steps.route.outputs.route }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: FAM routing
         id: route
@@ -84,7 +84,7 @@ jobs:
     name: Deploy
     environment: ${{ inputs.environment }}
     needs: [init]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       matrix:
