@@ -36,7 +36,8 @@ body:
     id: acceptance_criteria
     attributes:
       label: Acceptance Criteria
-      description: Define the conditions of success using Gherkin syntax. Example:  
+      description: |
+        Define the conditions of success using Gherkin syntax. Example:  
         - [ ] **Given** [Context], **When** [Action], **Then** [Outcome]  
       placeholder: |
         - [ ] Given [Context], When [Action carried out], Then [Expected outcome]  
