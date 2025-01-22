@@ -13,7 +13,8 @@ body:
     id: user_story
     attributes:
       label: User Story
-      description: Use the format below:  
+      description: |
+        Use the format below:  
         **As a** _(User Type/Persona)_  
         **I want** _(Feature/Enhancement)_  
         **So That** _(Value or purpose of this request)_
