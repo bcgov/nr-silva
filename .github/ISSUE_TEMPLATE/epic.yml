@@ -20,7 +20,8 @@ body:
     id: user_story
     attributes:
       label: Epic Goal or User Story
-      description: Use the format below:  
+      description: |
+        Use the format below:  
         **As a** _(User Type/Persona)_  
         **I want** _(High-level objective or goal)_  
         **So That** _(Value or purpose of this epic)_
@@ -42,7 +43,8 @@ body:
     id: acceptance_criteria
     attributes:
       label: Acceptance Criteria
-      description: Define the high-level conditions of success using Gherkin syntax. Example:  
+      description: |
+        Define the high-level conditions of success using Gherkin syntax. Example:  
         - [ ] **Given** [Context], **When** [Action], **Then** [Outcome]  
       placeholder: |
         - [ ] Given [Context], When [Action carried out], Then [Expected outcome]  
