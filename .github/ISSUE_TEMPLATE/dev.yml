@@ -13,7 +13,6 @@ body:
     attributes:
       label: Task Summary
       placeholder: Provide a concise summary of the task.
-      required: true
 
   - type: textarea
     id: task_details
@@ -21,7 +20,6 @@ body:
       label: Task Details
       description: Describe the task requirements and technical details. Markdown formatting is supported.
       placeholder: Include any specifications, dependencies, or constraints.
-      required: true
 
   - type: checkboxes
     id: environment

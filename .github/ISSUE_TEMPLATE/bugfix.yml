@@ -14,7 +14,6 @@ body:
     attributes:
       label: Bug Summary
       placeholder: Provide a concise summary of the bug.
-      required: true
 
   - type: textarea
     id: bug_description
@@ -22,7 +21,6 @@ body:
       label: Describe the Bug
       description: A clear and concise description of what the bug is.
       placeholder: e.g., The feature breaks when X happens.
-      required: true
 
   - type: textarea
     id: steps_to_reproduce
@@ -34,7 +32,6 @@ body:
         2. Click on '...'
         3. Scroll down to '...'
         4. See error
-      required: true
 
   - type: textarea
     id: expected_behavior
@@ -42,7 +39,6 @@ body:
       label: Expected Behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: e.g., The system should display a confirmation dialog.
-      required: true
 
   - type: textarea
     id: actual_behavior
@@ -50,7 +46,6 @@ body:
       label: Actual Behavior
       description: A clear and concise description of what actually happened.
       placeholder: e.g., The system crashes when the dialog is triggered.
-      required: true
 
   - type: textarea
     id: screenshots

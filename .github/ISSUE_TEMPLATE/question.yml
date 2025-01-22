@@ -15,7 +15,6 @@ body:
       label: Question Summary
       description: Provide a concise summary of your question.
       placeholder: e.g., How does the authentication flow work?
-      required: true
 
   - type: textarea
     id: question_details
