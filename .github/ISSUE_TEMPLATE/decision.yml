@@ -15,7 +15,6 @@ body:
       label: Decision Summary
       description: Summarize the decision being made.
       placeholder: e.g., Switch to microservices architecture.
-      required: true
 
   - type: textarea
     id: decision_context
@@ -23,7 +22,6 @@ body:
       label: Context
       description: Explain why this decision is being made.
       placeholder: e.g., Include background information, alternatives considered, or constraints.
-      required: true
 
   - type: textarea
     id: impacted_areas
@@ -40,7 +38,6 @@ body:
       description: Provide specific details about the decision.
       placeholder: e.g., Implementation plan, timeline, or expected outcomes.
       render: shell
-      required: true
 
   - type: textarea
     id: risks

@@ -15,7 +15,6 @@ body:
       label: Figma File URL
       description: Provide the link to the Figma file related to this task.
       placeholder: e.g., https://www.figma.com/file/abc123/Project
-      required: true
 
   - type: textarea
     id: description
@@ -23,7 +22,6 @@ body:
       label: Task Description
       description: Provide a detailed description of the task. Markdown formatting is supported.
       placeholder: Include goals, requirements, and key details.
-      required: true
 
   - type: textarea
     id: screenshots

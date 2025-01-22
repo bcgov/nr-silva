@@ -13,7 +13,6 @@ body:
     attributes:
       label: Documentation Topic
       placeholder: What topic needs to be documented or updated?
-      required: true
 
   - type: textarea
     id: description
@@ -21,7 +20,6 @@ body:
       label: Description
       description: Provide details about the documentation task. Markdown formatting is supported.
       placeholder: Include what should be covered, examples, or references.
-      required: true
 
   - type: input
     id: related_files

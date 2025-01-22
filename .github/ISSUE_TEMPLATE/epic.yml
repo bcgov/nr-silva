@@ -15,7 +15,6 @@ body:
       label: Epic Summary
       description: Provide a high-level summary of the epic.
       placeholder: Summarize the problem or goal this epic addresses.
-      required: true
 
   - type: textarea
     id: user_story
@@ -26,7 +25,6 @@ body:
         **I want** _(High-level objective or goal)_  
         **So That** _(Value or purpose of this epic)_
       placeholder: As a [User Type], I want [Objective], so that [Purpose].
-      required: true
 
   - type: textarea
     id: additional_context
@@ -50,7 +48,6 @@ body:
         - [ ] Given [Context], When [Action carried out], Then [Expected outcome]  
         - [ ] Given [Context], When [Action carried out], Then [Expected outcome]
       render: shell
-      required: true
 
   - type: markdown
     attributes:
