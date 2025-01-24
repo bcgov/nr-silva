@@ -1,7 +1,8 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@carbon/type';
-.openings-searchbar-container{
+
+.openings-searchbar-container {
   padding: 32px 32px;
 
   //these are for the nested elements
@@ -10,6 +11,7 @@
     border-block-end : none;
     border-bottom: 1px solid var(--bx-border-strong-01);
   }
+
   input::placeholder {
     font-weight: 400;
     font-size: 14px;
@@ -17,9 +19,11 @@
     letter-spacing: 0.16px;
     color: var(--bx-text-secondary);
   }
+
   .multi-dropdown{
     margin-top: -14px;
   }
+
   .#{vars.$bcgov-prefix}--list-box__field--wrapper{
     background-color: white;
   }
@@ -60,24 +64,4 @@
     }
   }
   
-}
-
-.search-spatial-container {
-  /* leaflet sizing */
-  .leaflet-container{
-    height: 380px!important;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    margin-bottom:32px !important;
-    z-index: 1;
-  }
-}
-
-.demo-content {
-  background-color: pink;
-  border: 1px solid #ccc;
-  padding: 20px;
-  text-align: center;
-  color: #333;
 }

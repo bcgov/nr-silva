@@ -1,3 +1,4 @@
+//TODO: remove this file
 export const dateTypes = [
     { value: "Disturbance", label: "Disturbance" },
     { value: "Regen Delay", label: "Regen Delay" },

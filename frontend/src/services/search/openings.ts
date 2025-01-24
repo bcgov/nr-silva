@@ -6,6 +6,28 @@ import { createDateParams } from "../../utils/searchUtils";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
 import { TextValueData } from "../../utils/multiSelectSortUtils";
 
+export interface OpeningSearchFilters {
+  mainSearchTerm?: string;
+  orgUnit?: string[];
+  category?: string[];
+  statusList?: string[];
+  myOpenings?: boolean;
+  submittedToFrpa?: boolean;
+  disturbanceDateStart?: string;
+  disturbanceDateEnd?: string;
+  regenDelayDateStart?: string;
+  regenDelayDateEnd?: string;
+  freeGrowingDateStart?: string;
+  freeGrowingDateEnd?: string;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  cuttingPermitId?: string;
+  cutBlockId?: string;
+  clientLocationCode?: string;
+  clientNumber?: string;
+  timberMark?: string;
+}
+
 export interface OpeningFilters {
   searchInput?: string;
   startDate?: string;
@@ -101,7 +123,16 @@ export const status: TextValueData[] = [
   {value:'SUB', text: 'Submitted'}
 ];
 
-export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
+export interface PagedResult<T> {
+  data: T[];
+  hasNextPage: boolean;
+  pageIndex: number;
+  perPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResult<OpeningItem>> => {
   // Get the date params based on dateType
   // Get the date params based on dateType
   const { dateStartKey, dateEndKey } = createDateParams(filters);
