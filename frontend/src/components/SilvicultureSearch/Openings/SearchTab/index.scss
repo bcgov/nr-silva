@@ -63,5 +63,11 @@
       color: var(--#{vars.$bcgov-prefix}-text-primary) !important;
     }
   }
+  #orgunit-multiselect {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);    
+  }
+  #category-multiselect {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
   
 }

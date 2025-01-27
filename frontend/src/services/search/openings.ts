@@ -29,7 +29,7 @@ export interface OpeningSearchFilters {
 }
 
 export interface OpeningFilters {
-  searchInput?: string;
+  mainSearchTerm?: string;
   startDate?: string;
   endDate?: string;
   orgUnit?: string[];
@@ -46,6 +46,7 @@ export interface OpeningFilters {
   blockStatuses?: string[];
   page?: number;
   perPage?: number;
+  size?: number;
   clientLocationCode?: string;
   clientNumber?: string;
 }
@@ -138,7 +139,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResul
   const { dateStartKey, dateEndKey } = createDateParams(filters);
 
   const params = {
-    mainSearchTerm: filters.searchInput,
+    mainSearchTerm: filters.mainSearchTerm,
     orgUnit: filters.orgUnit, //Keep it as an array
     category: filters.category, // Keep it as an array
     statusList: filters.status, // Keep it as an array
@@ -152,7 +153,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResul
     clientNumber: filters.clientNumber,
     timberMark:filters.timberMark,
     page: filters.page && filters.page - 1, // Adjust page index (-1)
-    perPage: filters.perPage
+    perPage: filters.size
   };
 
   // Remove undefined, null, or empty string values from the params object

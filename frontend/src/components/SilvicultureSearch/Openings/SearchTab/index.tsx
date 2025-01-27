@@ -33,6 +33,7 @@ import TableToolbarFilter from "@/components/TableToolbarFilter";
 import SearchTable from "@/components/SilvicultureSearch/Openings/SearchTable";
 import SearchBar from "@/components/SilvicultureSearch/Openings/SearchBar";
 import OpeningsMap from "@/components/OpeningsMap";
+import SearchFilterBar from "@/components/SilvicultureSearch/Openings/SearchFilterBar";
 
 // API Requests
 import {
@@ -52,6 +53,7 @@ import { searchScreenColumns } from "@/constants/tableConstants";
 
 // Styles and others
 import "./index.scss";
+import { on } from 'events';
 
 interface SelectEvent {
   selectedItems: TextValueData[];
@@ -61,15 +63,19 @@ interface TextInputEvent extends SyntheticEvent {
 }
 
 const SearchTab: React.FC = () => {
+  // Search Filters itself
   const [filters, setFilters] = useState<OpeningSearchFilters>({});
+  // Data for multi-selects
   const [categories, setCategories] = useState<CodeDescription[]>([]);
   const [orgUnits, setOrgUnits] = useState<OrgUnit[]>([]);
 
+  // Search results and state
+  const [page, setPage] = useState<{page: number, size: number}>({page: 1, size: 20});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFetched, setIsFetched] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<PagedResult<OpeningItem>>({data:[], hasNextPage: false, pageIndex:0, perPage:0, totalItems:0,totalPages:0 });
 
-
+  // Suplemtary state for maping things
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -79,19 +85,45 @@ const SearchTab: React.FC = () => {
     console.log(`DEBUG :: ${name}`, e);
   };
 
+  const cleanValues = (filterValues: OpeningSearchFilters) => {
+    return Object.fromEntries(
+      Object.entries(filterValues).filter(([_, v]) => v !== undefined && v !== null && (Array.isArray(v) ? v.length > 0 : true))
+    );
+  }
+
   const setValue = (value: Partial<OpeningSearchFilters>) => {
-    debugEvent("setValue", value as never);
-    setTimeout(() => { setFilters({...filters, ...value}) },0);
+    setTimeout(() => { setFilters(cleanValues({...filters, ...value})) },0);
+  }
+
+  const clearFilter = (key: string, value: string|undefined) => {                 
+    if(value) {
+      const values = (filters[key as keyof typeof filters]  as Array<string>)?.filter((item) => item !== value);
+      setValue({[key]: values})
+    } else {
+      setValue({[key]: undefined}) 
+    }
+  }
+
+  const clearFilters = () => { setTimeout(() => { setFilters({}) },0); }
+
+  const onSearch = async () => {
+    setIsLoading(true);
+    setIsFetched(false);
+
+    if(hasFilters(true)) {
+      const openings = await fetchOpenings({...filters, page: page.page - 1, size: page.size});
+      setSearchResults(openings);
+    }
+
+    setIsLoading(false);
+    setIsFetched(true);
   }
 
   const onSearchTermChange = (e: TextInputEvent) => {
     setValue({ mainSearchTerm: e.target.value });
   };
 
-  const setMuliSelectValue = (field: string, value: TextValueData[] | CodeDescription[] | OrgUnit[]) => {    
-    debugEvent("setMuliSelectValue", field as never);
-    debugEvent("setMuliSelectValue", value as never);
-    
+  const setMuliSelectValue = (field: string, value: TextValueData[] | CodeDescription[] | OrgUnit[]) => {
     if (field === "orgUnit" && value.every((item): item is OrgUnit => 'orgUnitCode' in item)) {
       setValue({ orgUnit: value.map((item: OrgUnit) => item.orgUnitCode) });
     } else if (field === "category" && value.every((item): item is CodeDescription => 'code' in item)) {
@@ -102,27 +134,43 @@ const SearchTab: React.FC = () => {
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    debugEvent("onKeyDown", e as never);
     if(e.key === "Enter") onSearch();
   }
 
-  const onSearch = async () => {
-    debugEvent("onSearch", filters as never);
-    console.log("Search button clicked",filters);
+  const filterHasValue = (key: string) => {
+    const filterValue = filters[key as keyof typeof filters];
+    if(filterValue && Array.isArray(filterValue)) {
+      return filterValue.length > 0;
+    }
+    return filters[key as keyof typeof filters];
+  }
 
-    setIsLoading(true);
-    setIsFetched(false);
+  const hasFilters = (ignoreSearchBar: boolean) => {    
+    return Object
+      .keys(filters)
+      .some(key => (ignoreSearchBar || key !== 'mainSearchTerm') && filterHasValue(key));
+  }
 
-    const openings = await fetchOpenings(filters);
-    setSearchResults(openings);
-
-    setIsLoading(false);
-    setIsFetched(true);
+  const countFilters = () => {
+    return Object.keys(filters).filter((key) => key !== 'mainSearchTerm' && filterHasValue(key)).length;
   }
 
   useEffect(() => {
-    debugEvent("filters", filters as never);
-  }, [filters]);
+    // Only trigger pagination when there are filters
+    if(hasFilters(true)){
+      onSearch();
+    }
+  },[page]);
+
+  useEffect(() => {
+    //When all filters are cleared, clear the search results
+    if(!hasFilters(true)) {
+      setSearchResults({data:[], hasNextPage: false, pageIndex:0, perPage:0, totalItems:0,totalPages:0 });
+      setIsFetched(false);
+      setIsLoading(false);
+      setPage({page: 1, size: 20});
+    }
+  },[filters]);
 
   useEffect(() => {
 
@@ -160,7 +208,7 @@ const SearchTab: React.FC = () => {
             <FilterableMultiSelect
               label="Enter or choose a category"
               id="category-multiselect"
-              className="multi-select category-multi-select"                                
+              className="multi-select category-multi-select ms-1"                                
               items={categories}
               itemToString={(item: CodeDescription) => (item ? `${item.code} - ${item.description}` : "")}
               selectionFeedback="top-after-reopen"
@@ -174,7 +222,7 @@ const SearchTab: React.FC = () => {
             <FilterableMultiSelect
               label="Enter or choose an org unit"
               id="orgunit-multiselect"
-              className="multi-select orgunit-multi-select"              
+              className="multi-select orgunit-multi-select ms-1"              
               items={orgUnits}
               itemToString={(item: OrgUnit) => (item ? `${item.orgUnitCode} - ${item.orgUnitName}` : "")}
               selectionFeedback="top-after-reopen"
@@ -185,15 +233,46 @@ const SearchTab: React.FC = () => {
           </Column>
 
           <Column lg={2} max={2} className="p-0 ml-2">
-            <Dropdown
-              titleText=""
-              id="advanced-search-dropdown"                
-              items={[]}                
-              onChange={(e: SelectEvent) => { debugEvent('Drop is down',e as never) }}
-              onClick={(e: React.MouseEvent<HTMLDivElement>) => { debugEvent('Drop is clicked',e as never) }}
-              label="Advanced search"
-              selectedItem={null}
-            />
+            
+            <Layer level={0}>
+              <div className="advanced-search-field ms-1" 
+                onClick={() => setIsOpen(!isOpen)}
+                onKeyUp={(e) => { if(e.key === "Enter") setIsOpen(!isOpen) }}
+                role="button"
+                tabIndex={0}
+                >
+                {hasFilters(false) && (
+                  <DismissibleTag
+                    className="mx-1"
+                    type="high-contrast"
+                    text={"+" + countFilters()}
+                    onClose={() => clearFilters()}
+                  >
+                  </DismissibleTag>
+                )}
+                <p className={hasFilters(false) ? "text-active" : ""}>
+                  Advanced Search
+                </p>
+                {isOpen ? <Icons.ChevronSortUp /> : <Icons.ChevronSortDown />}
+              </div>
+              <Popover
+                isTabTip
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                align="bottom-left"
+                className="filter-popover"
+              >
+                <PopoverContent className="p-3">
+                  {/* Advanced search dropdown receiving the filter state and a function to modify the state */}
+                  <TableToolbarFilter 
+                    filters={filters} 
+                    onFilterChange={setFilters} 
+                    categories={categories.map(({code,description}) => ({value: code, text: description}))}
+                    orgUnits={orgUnits.map(({orgUnitCode,orgUnitName}) => ({value: orgUnitCode, text: orgUnitName}))}
+                  />
+                </PopoverContent>
+              </Popover>              
+            </Layer>
           </Column>
 
           <Column sm={0} lg={1} max={1} className="p-0">
@@ -207,7 +286,15 @@ const SearchTab: React.FC = () => {
               Search
             </Button>
           </Column>
-
+        </Row>
+        <Row>
+        <Column lg={14} className="p-0">
+            {hasFilters(false) && <SearchFilterBar 
+              filters={filters}
+              clearFilter={clearFilter}
+              clearFilters={clearFilters}
+            />}
+          </Column>
         </Row>
 
       </FlexGrid>
@@ -236,8 +323,8 @@ const SearchTab: React.FC = () => {
           total={searchResults.totalItems}
           entriesPerPage={searchResults.perPage}
           currentPage={searchResults.pageIndex + 1}
-          onPageChange={(page: number) => {}}
-          onSizeChange={(page: number, size: number) => {}}
+          onPageChange={(pageNumber: number) => setPage({ page: pageNumber, size: page.size })}
+          onSizeChange={(pageNumber: number, size: number) => setPage({ page: pageNumber, size })}
           />
       </div>
     </div>
