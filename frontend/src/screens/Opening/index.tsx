@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import './Opening.scss'
-import { 
+import {
   TabList,
   Tabs,
   Tab,
@@ -21,17 +21,13 @@ const Opening: React.FC = () => {
   };
 
   useEffect(() => {
-    //
-  }, [showSpatial]);
-
-  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
-    if(urlParams.has('tab') && urlParams.get('tab')?.includes('metrics')) {      
+    if(urlParams.has('tab') && urlParams.get('tab')?.includes('metrics')) {
         setActiveTab(1);
     }else{
         setActiveTab(0);
-      }    
+      }
   },[]);
 
   return (
@@ -98,8 +94,8 @@ const Opening: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content tab-openings">
-          {activeTab === 0 && 
-            <OpeningsTab 
+          {activeTab === 0 &&
+            <OpeningsTab
               showSpatial={showSpatial}
               setShowSpatial={setShowSpatial}
             />

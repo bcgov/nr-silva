@@ -1,3 +1,5 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ClickableTile } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import './styles.scss';
@@ -15,12 +17,12 @@ interface FavouriteCardProps {
  * A card component that displays a favourite item.
  *
  * @param {FavouriteCardProps} props - The component props.
- * @property {number} props.index - The index of the card.
- * @property {string} props.title - The title of the card.
- * @property {string} props.link - The link to navigate to when the card is clicked.
- * @property {string} props.icon - The name of the Carbon icon to display on the card.
- * @property {string} props.description - The description of the card.
- * @returns {JSX.Element} The rendered card component.
+ * @property {number} index - The index of the card.
+ * @property {string} title - The title of the card.
+ * @property {string} link - The link to navigate to when the card is clicked.
+ * @property {string} icon - The name of the Carbon icon to display on the card.
+ * @property {string} description - The description of the card.
+ * @returns {React.ReactElement} The rendered card component.
  */
 function FavouriteCard ({
   index,
@@ -30,14 +32,15 @@ function FavouriteCard ({
   description,
   disabled = false
 }: FavouriteCardProps): JSX.Element {
-  const Icon = Icons[String(icon)];
+  const navigate = useNavigate();
+  const Icon = Icons[icon];
 
   return (
     <ClickableTile
       id={`fav-card-${index}`}
-      className={'fav-card-main' }
+      className='fav-card-main'
       tabIndex={index}
-      href={link}
+      onClick={() => navigate(link)}
       disabled={disabled}
     >
       <div className="fav-card-header">
@@ -52,6 +55,6 @@ function FavouriteCard ({
       </div>
     </ClickableTile>
   );
-};
+}
 
 export default FavouriteCard;
