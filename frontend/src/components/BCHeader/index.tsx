@@ -33,7 +33,7 @@ const BCHeader: React.FC = () => {
         <BrowserRouter>
           <Header
             aria-label="React TS Carbon QuickStart"
-            className="spar-header"
+            className="bcgov-header"
             data-testid="bc-header__header"
           >
             <SkipToContent />
