@@ -1,9 +1,24 @@
-import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from 'react';
-import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
-import { parseToken, FamLoginUser, setAuthIdToken } from "../services/AuthService";
-import { extractGroups } from '../utils/famUtils';
-import { env } from '../env';
-import { JWT } from '../types/amplify';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  ReactNode
+} from "react";
+import {
+  fetchAuthSession,
+  signInWithRedirect,
+  signOut
+} from "aws-amplify/auth";
+import {
+  parseToken,
+  FamLoginUser,
+  setAuthIdToken
+} from "../services/AuthService";
+import { extractGroups } from "../utils/famUtils";
+import { env } from "../env";
+import { JWT } from "../types/amplify";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -13,7 +28,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: (provider: string) => void;
   logout: () => void;
-
 }
 
 // 2. Define an interface for the provider's props
@@ -25,12 +39,12 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 4. Create the AuthProvider component with explicit typing
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {  
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [userRoles, setUserRoles] = useState<string[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  const appEnv = env.VITE_ZONE ?? 'DEV';
+  const appEnv = env.VITE_ZONE ?? "DEV";
 
   const refreshUserState = async () => {
     setIsLoading(true);
@@ -52,38 +66,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    refreshUserState();    
+    refreshUserState();
     const interval = setInterval(loadUserToken, 3 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
-  
-
   const login = async (provider: string) => {
-    const envProvider = (provider.localeCompare('idir') === 0) 
-    ?`${(appEnv).toLocaleUpperCase()}-IDIR`
-    : `${(appEnv).toLocaleUpperCase()}-BCEIDBUSINESS`;
+    const envProvider =
+      provider.localeCompare("idir") === 0
+        ? `${appEnv.toLocaleUpperCase()}-IDIR`
+        : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
 
-      signInWithRedirect({
-        provider: { custom: envProvider.toUpperCase() }
-      });    
+    signInWithRedirect({
+      provider: { custom: envProvider.toUpperCase() }
+    });
   };
 
-  const logout = async () => {    
-      await signOut();
-      setUser(undefined);
-      setUserRoles(undefined);
-      window.location.href = '/'; // Optional redirect after logout    
+  const logout = async () => {
+    await signOut();
+    setUser(undefined);
+    setUserRoles(undefined);
   };
 
-  const contextValue = useMemo(() => ({
-    user,
-    userRoles,
-    isLoggedIn: !!user,
-    isLoading,
-    login,
-    logout
-  }), [user, userRoles, isLoading]);
+  const contextValue: AuthContextType = useMemo(
+    () => ({
+      user,
+      userRoles,
+      isLoggedIn: !!user,
+      isLoading,
+      login,
+      logout
+    }),
+    [user, userRoles, isLoading]
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>
@@ -97,13 +112,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 export const useGetAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useGetAuth must be used within an AuthProvider');
+    throw new Error("useGetAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-const loadUserToken = async () : Promise<JWT|undefined> => {
-  if(env.NODE_ENV !== 'test'){
+const loadUserToken = async (): Promise<JWT | undefined> => {
+  if (env.NODE_ENV !== "test") {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
     setAuthIdToken(idToken?.toString() || null);
     return idToken;
@@ -113,14 +128,16 @@ const loadUserToken = async () : Promise<JWT|undefined> => {
     if (token) {
       const jwtBody = JSON.parse(atob(token.split(".")[1]));
       return { payload: jwtBody };
-    } 
+    }
     throw new Error("No token found");
   }
 };
 
-const getUserTokenFromCookie = (): string|undefined => {
+const getUserTokenFromCookie = (): string | undefined => {
   const baseCookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
-  const userId = encodeURIComponent(getCookie(`${baseCookieName}.LastAuthUser`));
+  const userId = encodeURIComponent(
+    getCookie(`${baseCookieName}.LastAuthUser`)
+  );
   if (userId) {
     return getCookie(`${baseCookieName}.${userId}.idToken`);
   } else {

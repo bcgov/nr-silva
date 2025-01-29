@@ -3,8 +3,17 @@
         "titleBar.activeForeground": "#000",
         "titleBar.inactiveForeground": "#000000cc",
         "titleBar.activeBackground": "#5d9857",
-        "titleBar.inactiveBackground": "#5d9857",
-      },
+        "titleBar.inactiveBackground": "#5d9857"
+    },
     "peacock.color": "#1857a4",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "eslint.format.enable": true,
+    "eslint.alwaysShowStatus": true
 }

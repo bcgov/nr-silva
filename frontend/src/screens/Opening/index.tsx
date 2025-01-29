@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import './Opening.scss'
-import { 
+import {
   TabList,
   Tabs,
   Tab,
@@ -16,23 +16,19 @@ const Opening: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
 
-  const tabChange = (tabSelection:{selectedIndex: number}) => {
+  const tabChange = (tabSelection: { selectedIndex: number }) => {
     setActiveTab(tabSelection.selectedIndex);
   };
 
   useEffect(() => {
-    //
-  }, [showSpatial]);
-
-  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
-    if(urlParams.has('tab') && urlParams.get('tab')?.includes('metrics')) {      
-        setActiveTab(1);
-    }else{
-        setActiveTab(0);
-      }    
-  },[]);
+    if (urlParams.has('tab') && urlParams.get('tab')?.includes('metrics')) {
+      setActiveTab(1);
+    } else {
+      setActiveTab(0);
+    }
+  }, []);
 
   return (
     <>
@@ -98,12 +94,12 @@ const Opening: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel className="tab-content tab-openings">
-          {activeTab === 0 && 
-            <OpeningsTab 
-              showSpatial={showSpatial}
-              setShowSpatial={setShowSpatial}
-            />
-          }
+            {activeTab === 0 &&
+              <OpeningsTab
+                showSpatial={showSpatial}
+                setShowSpatial={setShowSpatial}
+              />
+            }
           </TabPanel>
           <TabPanel className="tab-content tab-metrics">
             {activeTab === 1 && <OpeningMetricsTab />}
