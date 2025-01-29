@@ -1,9 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { screen } from '@testing-library/react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Landing from '../../screens/Landing';
 import { useGetAuth } from '../../contexts/AuthProvider';
 import { useLottie } from 'lottie-react';
@@ -64,23 +62,5 @@ describe('Landing', () => {
 
     fireEvent.click(getByTestId('landing-button__bceid'));
     expect(mockLogin).toHaveBeenCalledWith('bceid');
-  });
-
-
-  it('should redirect to /opening if user is already logged in', async () => {
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true });
-
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/opening" />} />
-          <Route path="/opening" element={<div data-testid="opening-page">Opening Page</div>} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('opening-page')).toBeInTheDocument();
-    });
   });
 });
