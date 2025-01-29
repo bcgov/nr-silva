@@ -1,30 +1,34 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject, RouterProvider } from 'react-router-dom';
 import './custom.scss';
 import Landing from "./screens/Landing";
 import SideLayout from './layouts/SideLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
-import DashboardRedirect from './screens/DashboardRedirect';
 import SilvicultureSearch from './screens/SilvicultureSearch';
 import ErrorHandling from './screens/ErrorHandling';
+import { useGetAuth } from './contexts/AuthProvider';
+import { Loading } from '@carbon/react';
 
+const publicRoutes: RouteObject[] = [
+  {
+    path: '*',
+    element: <Landing />
+  }
+];
 
-// Create the router instance
-const router = createBrowserRouter([
+const protectedRoutes: RouteObject[] = [
   {
-    path: "/",
-    element: <Landing />,
-    errorElement: <ErrorHandling /> // Handle errors for the Landing page route
-  },
-  {
-    path: "/dashboard",
-    element: <DashboardRedirect />,
-    errorElement: <ErrorHandling /> // Handle errors for the dashboard route
-  },
-  {
-    element: <ProtectedRoute requireAuth />,
+    element: <ProtectedRoute />,
     errorElement: <ErrorHandling />, // Global error element for protected routes
     children: [
+      {
+        path: "/",
+        element: <Navigate to="/opening" replace /> // Redirect `/` to `/opening` for logged-in users
+      },
+      {
+        path: "/dashboard",
+        element: <Navigate to="/opening" replace />
+      },
       {
         path: "/opening",
         element: <SideLayout pageContent={<Opening />} />
@@ -40,10 +44,19 @@ const router = createBrowserRouter([
     path: "*",
     element: <ErrorHandling />
   }
-]);
+];
+
 
 const App: React.FC = () => {
-  return <RouterProvider router={router} />;
+  const auth = useGetAuth();
+
+  if (auth.isLoading) {
+    return <Loading withOverlay={true} />;
+  }
+
+  const browserRouter = createBrowserRouter(auth.isLoggedIn ? protectedRoutes : publicRoutes);
+
+  return <RouterProvider router={browserRouter} />;
 };
 
 export default App;

@@ -29,6 +29,7 @@
   ],
   "ignorePatterns": ["**/__test__/*", "**/assets/*", "**/*.scss", "**/*.css", "**/*.svg"],
   "rules": {
+    "indent": ["error", 2],
     "react/require-default-props": "off",
     "linebreak-style": 0,
     "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],

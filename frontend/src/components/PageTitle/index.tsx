@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Column, Breadcrumb, BreadcrumbItem } from "@carbon/react";
 import { leftMenu, LeftMenuItem } from '../../components/BCHeaderwSide/constants';
 import Subtitle from '../Subtitle';
@@ -17,7 +17,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
   title,
   subtitle
 }: PageTitleProps) => {
-
+  const navigate = useNavigate();
   const currentLocation = useLocation().pathname;
 
   // This will return up to the second level, even if we use just the first one
@@ -46,10 +46,12 @@ const PageTitle: React.FC<PageTitleProps> = ({
   return (
     <Column className="title-section">
       <Breadcrumb>
-          {extractCurrentItems().map(item => (
-            <BreadcrumbItem key={item.name} href={item.link}>{item.name}</BreadcrumbItem>
-          ))}
-          </Breadcrumb>
+        {
+          extractCurrentItems().map(item => (
+            <BreadcrumbItem key={item.name} onClick={() => navigate(item.link)}>{item.name}</BreadcrumbItem>
+          ))
+        }
+      </Breadcrumb>
       <div className="title-favourite">
         <h1>{title}</h1>
       </div>
