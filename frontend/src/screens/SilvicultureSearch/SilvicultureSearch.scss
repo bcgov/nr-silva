@@ -4,6 +4,7 @@
 
   .search-tablist{
     .tab-content {
+      height: 100vh;
       background-color: var(--#{vars.$bcgov-prefix}-layer-01);
     }
     .tab-header{
@@ -28,4 +29,7 @@
       background-color: var(--#{vars.$bcgov-prefix}-layer-01);
       padding: 5px;
     }
+  }
+  .tab-content {
+    height: 100vh;
   }

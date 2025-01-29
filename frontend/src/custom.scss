@@ -88,3 +88,7 @@
   @include theme.add-component-tokens($notification-tokens);
   @include react.theme(light.$light-theme);
 }
+
+#root {
+  height: 100vh;
+}
