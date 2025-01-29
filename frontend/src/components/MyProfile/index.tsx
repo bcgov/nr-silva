@@ -4,7 +4,6 @@ import { Asleep, Light, UserFollow } from '@carbon/icons-react';
 import AvatarImage from '../AvatarImage';
 import { useThemePreference } from '../../utils/ThemePreference';
 import PanelSectionName from '../PanelSectionName';
-import OrganizationSelection from '../OrganizationSelection';
 import './MyProfile.scss';
 import { useGetAuth } from '../../contexts/AuthProvider';
 
@@ -39,7 +38,7 @@ const MyProfile = () => {
         <div className="user-data">
           <p className="user-name">{`${authUser?.firstName} ${authUser?.lastName}`}</p>
           <p>{`IDIR: ${authUser?.userName}`}</p>
-          <p>{`Email:${authUser?.email}`}</p>
+          <p>{`Email: ${authUser?.email}`}</p>
 
         </div>
       </div>
@@ -47,18 +46,12 @@ const MyProfile = () => {
       <nav className="account-nav">
         <ul>
           <li>
-            <PanelSectionName title="Select organization" light />
-            <div className="org-selection-container">
-              <OrganizationSelection simpleView />
-            </div>
-          </li>
-          <li>
             <hr className="divisory" />
             <PanelSectionName title="Options" light />
           </li>
           <SideNavLink
             className="cursor-pointer"
-            renderIcon={theme === 'g10'? Asleep : Light}
+            renderIcon={theme === 'g10' ? Asleep : Light}
             onClick={() => { changeTheme(); }}
           >
             Change theme
@@ -66,11 +59,11 @@ const MyProfile = () => {
           <SideNavLink
             className="cursor-pointer"
             renderIcon={UserFollow}
-            onClick={()=>{ logout() }}
+            onClick={() => { logout() }}
           >
             Log out
           </SideNavLink>
-          
+
         </ul>
         <hr className="divisory mt-5" />
       </nav>

@@ -42,7 +42,7 @@ describe('MyProfile Component', () => {
     render(<MyProfile />);
     expect(screen.getByText('John Doe')).toBeDefined();
     expect(screen.getByText('IDIR: johndoe')).toBeDefined();
-    expect(screen.getByText('Email:john.doe@example.com')).toBeDefined();
+    expect(screen.getByText('Email: john.doe@example.com')).toBeDefined();
   });
 
   it('should change theme when "Change theme" button is clicked', () => {
@@ -58,11 +58,6 @@ describe('MyProfile Component', () => {
     const logoutButton = screen.getByText('Log out');
     fireEvent.click(logoutButton);
     expect(mockLogout).toHaveBeenCalled();
-  });
-
-  it('should render organization selection section', () => {
-    render(<MyProfile />);
-    expect(screen.getByText('Select organization')).toBeDefined();
   });
 
   it('should render options section', () => {

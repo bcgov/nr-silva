@@ -1,22 +1,22 @@
-import React ,{ ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 import './SideLayout.scss';
 import BCHeaderwSide from "../../components/BCHeaderwSide";
 
 interface SideLayoutProps {
-    pageContent: ReactNode;
+  pageContent: ReactNode;
 }
 
-const SideLayout: React.FC<SideLayoutProps> = ({pageContent}) => {
-    return (
-      <>
-         <BCHeaderwSide/>
+const SideLayout: React.FC<SideLayoutProps> = ({ pageContent }) => {
+  return (
+    <>
+      <BCHeaderwSide />
 
-         <div className="sidelayout-page-content">
-            {pageContent}
-         </div>
-      </>
-    );
-  };
+      <div className="sidelayout-page-content">
+        {pageContent}
+      </div>
+    </>
+  );
+};
 
 export default SideLayout;
