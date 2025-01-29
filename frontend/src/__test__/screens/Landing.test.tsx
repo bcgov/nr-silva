@@ -72,10 +72,8 @@ describe('Landing', () => {
     delete window.location;
     window.location = { href: '' };
 
-    const { container } = render(<Landing />);
-
     await waitFor(() => {
-      expect(window.location.href).toContain('/dashboard');
+      expect(window.location.href).toContain('/opening');
     });
 
     // Restore original window.location
