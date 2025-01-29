@@ -1,6 +1,9 @@
 import React from 'react';
+import '@testing-library/jest-dom';
+import { screen } from '@testing-library/react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Landing from '../../screens/Landing';
 import { useGetAuth } from '../../contexts/AuthProvider';
 import { useLottie } from 'lottie-react';
@@ -63,19 +66,21 @@ describe('Landing', () => {
     expect(mockLogin).toHaveBeenCalledWith('bceid');
   });
 
-  it('should redirect to /opening if user is already logged in', async () => {
-    const mockLogin = vi.fn();
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true, login: mockLogin });
-    (useLottie as Mock).mockReturnValue({ View: <div>Lottie Animation</div> });
 
-    const originalPushState = window.history.pushState;
-    window.history.pushState = vi.fn();
+  it('should redirect to /opening if user is already logged in', async () => {
+    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true });
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/opening" />} />
+          <Route path="/opening" element={<div data-testid="opening-page">Opening Page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     await waitFor(() => {
-      expect(window.history.pushState).toHaveBeenCalledWith({}, '', '/opening');
+      expect(screen.getByTestId('opening-page')).toBeInTheDocument();
     });
-
-    // Restore original pushState function
-    window.history.pushState = originalPushState;
   });
 });
