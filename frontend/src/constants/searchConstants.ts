@@ -1,10 +1,10 @@
 import { TextValueData } from '@/utils/multiSelectSortUtils';
 
 export const dateTypes: TextValueData[] = [
-  { value: "Disturbance", text: "Disturbance" },
-  { value: "Regen Delay", text: "Regen Delay" },
-  { value: "Free Growing", text: "Free Growing" },
-  { value: "Update", text: "Update" }
+  { value: "disturbance", text: "Disturbance" },
+  { value: "regenDelay", text: "Regen Delay" },
+  { value: "freeGrowing", text: "Free Growing" },
+  { value: "update", text: "Update" }
 ];
 
 export const statusTypes: TextValueData[]= [
