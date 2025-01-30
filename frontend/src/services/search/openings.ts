@@ -28,27 +28,9 @@ export interface OpeningSearchFilters {
   timberMark?: string;
 }
 
-export interface OpeningFilters {
-  mainSearchTerm?: string;
-  startDate?: string;
-  endDate?: string;
-  orgUnit?: string[];
-  category?: string[];
-  clientAcronym?: string;
-  blockStatus?: string;
-  dateType?: string;
-  cutBlock?: string;
-  cuttingPermit?: string;
-  grossArea?: string;
-  timberMark?: string;
-  status?: string[];
-  openingFilters?: string[];
-  blockStatuses?: string[];
+export interface OpeningFilters extends OpeningSearchFilters {
   page?: number;
   perPage?: number;
-  size?: number;
-  clientLocationCode?: string;
-  clientNumber?: string;
 }
 
 export const openingFiltersKeys = [
@@ -134,31 +116,10 @@ export interface PagedResult<T> {
 }
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResult<OpeningItem>> => {
-  // Get the date params based on dateType
-  // Get the date params based on dateType
-  const { dateStartKey, dateEndKey } = createDateParams(filters);
-
-  const params = {
-    mainSearchTerm: filters.mainSearchTerm,
-    orgUnit: filters.orgUnit, //Keep it as an array
-    category: filters.category, // Keep it as an array
-    statusList: filters.status, // Keep it as an array
-    myOpenings: filters.openingFilters?.includes("Openings created by me") || undefined,
-    submittedToFrpa: filters.openingFilters?.includes("FRPA section 108") || undefined,
-    [dateStartKey]: filters.startDate,  // Use dynamic key for start date
-    [dateEndKey]: filters.endDate,      // Use dynamic key for end date
-    cuttingPermitId:filters.cuttingPermit,
-    cutBlockId: filters.cutBlock,
-    clientLocationCode: filters.clientLocationCode,
-    clientNumber: filters.clientNumber,
-    timberMark:filters.timberMark,
-    page: filters.page && filters.page - 1, // Adjust page index (-1)
-    perPage: filters.size
-  };
 
   // Remove undefined, null, or empty string values from the params object
   const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([_, v]) => v !== undefined && v !== null && v !== "")
+    Object.entries(filters).filter(([_, v]) => v !== undefined && v !== null && v !== "")
   );
 
   // Stringify the cleanedParams using qs with arrayFormat: 'repeat'

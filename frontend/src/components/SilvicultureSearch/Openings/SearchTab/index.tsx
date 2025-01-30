@@ -118,7 +118,7 @@ const SearchTab: React.FC = () => {
       const openings = await fetchOpenings({
         ...filters,
         page: page.page - 1,
-        size: page.size,
+        perPage: page.size,
       });
       setSearchResults(openings);
     }
