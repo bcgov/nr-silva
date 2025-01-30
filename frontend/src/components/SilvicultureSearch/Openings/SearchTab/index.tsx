@@ -220,121 +220,130 @@ const SearchTab: React.FC = () => {
   }, []);
 
   return (
-    <div className="container-fluid p-0 pb-5 align-content-center">
+    <>
       <FlexGrid className="openings-searchbar-container">
         <Row>
-          <Column lg={8} max={8} className="p-0 mb-2 mb-lg-0">
-            <Search
-              size="md"
-              placeholder="Search by opening ID, opening number or file ID"
-              labelText="Search"
-              closeButtonLabelText="Clear search input"
-              id={`search-1`}
-              onChange={onSearchTermChange}
-              onKeyDown={onKeyDown}
-              value={filters.mainSearchTerm}
-            />
-          </Column>
-
-          <Column lg={2} max={2} className="p-0 ml-2">
-            <FilterableMultiSelect
-              label="Enter or choose a category"
-              id="category-multiselect"
-              className="multi-select category-multi-select ms-1"
-              items={categories}
-              itemToString={(item: CodeDescription) =>
-                item ? `${item.code} - ${item.description}` : ""
-              }
-              selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvents) => {
-                setMuliSelectValue("category", e.selectedItems);
-              }}
-              selectedItems={
-                filters.category
-                  ? categories.filter((item) =>
-                      filters.category?.includes(item.code)
-                    )
-                  : []
-              }
-              sortItems={sortItems}
-            />
-          </Column>
-
-          <Column lg={2} max={2} className="p-0 ml-2">
-            <FilterableMultiSelect
-              label="Enter or choose an org unit"
-              id="orgunit-multiselect"
-              className="multi-select orgunit-multi-select ms-1"
-              items={orgUnits}
-              itemToString={(item: OrgUnit) =>
-                item ? `${item.orgUnitCode} - ${item.orgUnitName}` : ""
-              }
-              selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvents) => {
-                setMuliSelectValue("orgUnit", e.selectedItems);
-              }}
-              selectedItems={
-                filters.orgUnit
-                  ? orgUnits.filter((item) =>
-                      filters.orgUnit?.includes(item.orgUnitCode)
-                    )
-                  : []
-              }
-              sortItems={sortItems}
-            />
-          </Column>
-
-          <Column lg={2} max={2} className="p-0 ml-2">
-            <Layer level={0}>
-              <div
-                className="advanced-search-field ms-1"
-                onClick={() => setIsOpen(!isOpen)}
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") setIsOpen(!isOpen);
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                {hasFilters(false) && (
-                  <DismissibleTag
-                    className="mx-1"
-                    type="high-contrast"
-                    text={"+" + countFilters()}
-                    onClose={() => clearFilters()}
-                  ></DismissibleTag>
-                )}
-                <p className={hasFilters(false) ? "text-active" : ""}>
-                  Advanced Search
-                </p>
-                {isOpen ? <Icons.ChevronSortUp /> : <Icons.ChevronSortDown />}
-              </div>
-              <Popover
-                isTabTip
-                open={isOpen}
-                onClose={() => setIsOpen(false)}
-                align="bottom-left"
-                className="filter-popover"
-              >
-                <PopoverContent className="p-3">
-                  {/* Advanced search dropdown receiving the filter state and a function to modify the state */}
-                  <OpeningTableFilter
-                    filters={filters}
-                    onFilterChange={setFilters}
-                    categories={categories.map(({ code, description }) => ({
-                      id: code,
-                      text: description,
-                    }))}
-                    orgUnits={orgUnits.map(({ orgUnitCode, orgUnitName }) => ({
-                      id: orgUnitCode,
-                      text: orgUnitName,
-                    }))}
+          <Column sm={4} md={8} lg={16} max={14} className="p-0">
+            <FlexGrid className="opening-searchbar-inner">
+              <Row>
+                <Column sm={4} md={8} lg={16} max={7} className="p-0 mb-1">
+                  <Search
+                    size="md"
+                    placeholder="Search by opening ID, opening number or file ID"
+                    labelText="Search"
+                    closeButtonLabelText="Clear search input"
+                    id={`search-1`}
+                    onChange={onSearchTermChange}
+                    onKeyDown={onKeyDown}
+                    value={filters.mainSearchTerm}
                   />
-                </PopoverContent>
-              </Popover>
-            </Layer>
+                </Column>
+
+                <Column sm={4} md={8} lg={5} max={3} className="p-0 mb-1">
+                  <FilterableMultiSelect
+                    label="Enter or choose a category"
+                    id="category-multiselect"
+                    className="multi-select category-multi-select ms-1"
+                    items={categories}
+                    itemToString={(item: CodeDescription) =>
+                      item ? `${item.code} - ${item.description}` : ""
+                    }
+                    selectionFeedback="top-after-reopen"
+                    onChange={(e: SelectEvents) => {
+                      setMuliSelectValue("category", e.selectedItems);
+                    }}
+                    selectedItems={
+                      filters.category
+                        ? categories.filter((item) =>
+                            filters.category?.includes(item.code)
+                          )
+                        : []
+                    }
+                    sortItems={sortItems}
+                  />
+                </Column>
+
+                <Column sm={4} md={8} lg={5} max={3} className="p-0 mb-1">
+                  <FilterableMultiSelect
+                    label="Enter or choose an org unit"
+                    id="orgunit-multiselect"
+                    className="multi-select orgunit-multi-select ms-1"
+                    items={orgUnits}
+                    itemToString={(item: OrgUnit) =>
+                      item ? `${item.orgUnitCode} - ${item.orgUnitName}` : ""
+                    }
+                    selectionFeedback="top-after-reopen"
+                    onChange={(e: SelectEvents) => {
+                      setMuliSelectValue("orgUnit", e.selectedItems);
+                    }}
+                    selectedItems={
+                      filters.orgUnit
+                        ? orgUnits.filter((item) =>
+                            filters.orgUnit?.includes(item.orgUnitCode)
+                          )
+                        : []
+                    }
+                    sortItems={sortItems}
+                  />
+                </Column>
+
+                <Column sm={4} md={8} lg={6} max={3} className="p-0">
+                  <div
+                    className="advanced-search-field ms-1"
+                    onClick={() => setIsOpen(!isOpen)}
+                    onKeyUp={(e) => {
+                      if (e.key === "Enter") setIsOpen(!isOpen);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {hasFilters(false) && (
+                      <DismissibleTag
+                        className="mx-1"
+                        type="high-contrast"
+                        text={"+" + countFilters()}
+                        onClose={() => clearFilters()}
+                      ></DismissibleTag>
+                    )}
+                    <p className={hasFilters(false) ? "text-active" : ""}>
+                      Advanced Search
+                    </p>
+                    {isOpen ? (
+                      <Icons.ChevronSortUp />
+                    ) : (
+                      <Icons.ChevronSortDown />
+                    )}
+                  </div>
+                  <Popover
+                    isTabTip
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    align="bottom-left"
+                    className="filter-popover"
+                  >
+                    <PopoverContent>
+                      <OpeningTableFilter
+                        filters={filters}
+                        onFilterChange={setFilters}
+                        categories={categories.map(({ code, description }) => ({
+                          id: code,
+                          text: description,
+                        }))}
+                        orgUnits={orgUnits.map(
+                          ({ orgUnitCode, orgUnitName }) => ({
+                            id: orgUnitCode,
+                            text: orgUnitName,
+                          })
+                        )}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </Column>
+              </Row>
+            </FlexGrid>
           </Column>
 
-          <Column sm={0} lg={1} max={1} className="p-0">
+          <Column sm={4} md={8} lg={16} max={2} className="p-0">
             <Button
               className="search-button ms-xl-2"
               renderIcon={Icons.Search}
@@ -346,6 +355,7 @@ const SearchTab: React.FC = () => {
             </Button>
           </Column>
         </Row>
+
         <Row>
           <Column lg={14} className="p-0">
             {hasFilters(false) && (
@@ -390,7 +400,7 @@ const SearchTab: React.FC = () => {
           }
         />
       </div>
-    </div>
+    </>
   );
 };
 
