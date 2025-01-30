@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import './SearchFilterBar.scss'
-import { Tag, Link } from '@carbon/react';
+import React, { useEffect, useState } from "react";
+import "./SearchFilterBar.scss";
+import { Tag, Link } from "@carbon/react";
 import { OpeningSearchFilters } from "@/services/search/openings";
 
 interface SearchFilterBarProps {
   filters: OpeningSearchFilters;
-  clearFilter: (key: string, value: string|undefined) => void;
+  clearFilter: (key: string, value: string | undefined) => void;
   clearFilters: () => void;
 }
 
@@ -19,21 +19,32 @@ interface ActiveFilter {
 // Utility functions
 const formatKey = (key: string) => {
   return key
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^\w/, (c) => c.toUpperCase());
 };
 
-const getActiveFilters = (filters: OpeningSearchFilters) : ActiveFilter[] => {
+const getActiveFilters = (filters: OpeningSearchFilters): ActiveFilter[] => {
   const activeFilters: ActiveFilter[] = [];
 
   for (const key in filters) {
-    if (filters && filters[key as keyof typeof filters] && filters[key as keyof typeof filters]?.length !== 0) {
+    if (filters && filters[key as keyof typeof filters]) {
       if (Array.isArray(filters[key as keyof typeof filters])) {
-        const values = filters[key as keyof typeof filters] as Array<string>;        
-        values.forEach((value) => activeFilters.push({key: key, value, isArray: true, display: `${formatKey(key)}: ${value}`}));
-        //activeFilters.push(`${formatKey(key)}: ${filters[key as keyof typeof filters].join(', ')}`);
+        const values = filters[key as keyof typeof filters] as Array<string>;
+        values.forEach((value) =>
+          activeFilters.push({
+            key: key,
+            value,
+            isArray: true,
+            display: `${formatKey(key)}: ${value}`,
+          })
+        );
       } else {
-        activeFilters.push({ key: key, value: filters[key as keyof typeof filters], isArray: false, display: `${formatKey(key)}: ${filters[key as keyof typeof filters]}`});
+        activeFilters.push({
+          key: key,
+          value: filters[key as keyof typeof filters],
+          isArray: false,
+          display: `${formatKey(key)}: ${filters[key as keyof typeof filters]}`,
+        });
       }
     }
   }
@@ -41,16 +52,22 @@ const getActiveFilters = (filters: OpeningSearchFilters) : ActiveFilter[] => {
   return activeFilters;
 };
 
-
-const SearchFilterBar: React.FC<SearchFilterBarProps> = ({ filters, clearFilter, clearFilters}) => {
+const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
+  filters,
+  clearFilter,
+  clearFilters,
+}) => {
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  
+
   useEffect(() => {
     setActiveFilters(getActiveFilters(filters));
   }, [filters]);
 
   const handleClearFilter = (filter: ActiveFilter) => {
-    clearFilter(filter.key, filter.isArray ? filter.value?.toString() : undefined);
+    clearFilter(
+      filter.key,
+      filter.isArray ? filter.value?.toString() : undefined
+    );
   };
 
   return (
@@ -74,7 +91,9 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({ filters, clearFilter,
           </div>
         </div>
         <div className="clear-button-container">
-          <Link className="clear-filters-button" onClick={clearFilters}>Clear all filters</Link>
+          <Link className="clear-filters-button" onClick={clearFilters}>
+            Clear all filters
+          </Link>
         </div>
       </div>
     </div>
