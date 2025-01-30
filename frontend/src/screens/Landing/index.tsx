@@ -4,10 +4,10 @@ import { Button } from "@carbon/react";
 import { Login } from '@carbon/icons-react';
 import './Landing.scss';
 import '../../custom.scss';
-import { useGetAuth } from "../../contexts/AuthProvider";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const Landing: React.FC = () => {
-  const { login } = useGetAuth();
+  const { login } = useAuth();
 
   return (
     <div className="container-fluid">

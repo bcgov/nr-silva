@@ -3,10 +3,10 @@ import { render } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { describe, it, expect, vi, Mock } from 'vitest';
 import ProtectedRoute from '../../routes/ProtectedRoute';
-import { useGetAuth } from '../../contexts/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 
 vi.mock('../../contexts/AuthProvider', () => ({
-  useGetAuth: vi.fn(),
+  useAuth: vi.fn(),
 }));
 
 vi.mock('@carbon/react', () => ({
@@ -15,7 +15,7 @@ vi.mock('@carbon/react', () => ({
 
 describe('ProtectedRoute', () => {
   it('should redirect to unauthorized when requiredRoles are not met', () => {
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['user'] });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['user'] });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
@@ -30,7 +30,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should render child routes when all checks pass', () => {
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['admin'] });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['admin'] });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
@@ -47,7 +47,7 @@ describe('ProtectedRoute', () => {
 
   it('should log out and redirect to login when user is not logged in', () => {
     const mockLogout = vi.fn();
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: false, logout: mockLogout });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: false, logout: mockLogout });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>

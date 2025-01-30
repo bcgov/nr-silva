@@ -3,11 +3,11 @@ import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import Landing from '../../screens/Landing';
-import { useGetAuth } from '../../contexts/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { useLottie } from 'lottie-react';
 
 vi.mock('../../contexts/AuthProvider', () => ({
-  useGetAuth: vi.fn(),
+  useAuth: vi.fn(),
 }));
 
 vi.mock('lottie-react', () => ({
@@ -32,7 +32,7 @@ describe('Landing', () => {
   });
 
   it('should render the landing page with title and subtitle', () => {
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: false, login: vi.fn() });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: vi.fn() });
     (useLottie as Mock).mockReturnValue({ View: <div>Lottie Animation</div> });
 
     const { getByTestId, getByText } = render(<Landing />);
@@ -44,7 +44,7 @@ describe('Landing', () => {
 
   it('should call login with "idir" when Login with IDIR button is clicked', () => {
     const mockLogin = vi.fn();
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
     (useLottie as Mock).mockReturnValue({ View: <div>Lottie Animation</div> });
 
     const { getByTestId } = render(<Landing />);
@@ -55,7 +55,7 @@ describe('Landing', () => {
 
   it('should call login with "bceid" when Login with Business BCeID button is clicked', () => {
     const mockLogin = vi.fn();
-    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
     (useLottie as Mock).mockReturnValue({ View: <div>Lottie Animation</div> });
 
     const { getByTestId } = render(<Landing />);
