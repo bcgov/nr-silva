@@ -4,7 +4,7 @@ import { getAuthIdToken } from "../AuthService";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { createDateParams } from "../../utils/searchUtils";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
-import { TextValueData } from "../../utils/multiSelectSortUtils";
+import { TextValueData } from "@/types/GeneralTypes";
 
 export interface OpeningSearchFilters {
   mainSearchTerm?: string;

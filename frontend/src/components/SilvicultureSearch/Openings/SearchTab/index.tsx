@@ -38,7 +38,9 @@ import { searchScreenColumns } from "@/constants/tableConstants";
 import {
   TextValueData,
   SelectEvent,
+  SelectEvents,
   TextInputEvent,
+  IdTextValueData,
 } from "@/types/GeneralTypes";
 
 // Styles and others
@@ -131,7 +133,7 @@ const SearchTab: React.FC = () => {
 
   const setMuliSelectValue = (
     field: string,
-    value: TextValueData[] | CodeDescription[] | OrgUnit[]
+    value: IdTextValueData[] | CodeDescription[] | OrgUnit[]
   ) => {
     if (
       field === "orgUnit" &&
@@ -145,9 +147,9 @@ const SearchTab: React.FC = () => {
       setValue({ category: value.map((item: CodeDescription) => item.code) });
     } else if (
       field === "status" &&
-      value.every((item): item is TextValueData => "value" in item)
+      value.every((item): item is IdTextValueData => "value" in item)
     ) {
-      setValue({ statusList: value.map((item: TextValueData) => item.value) });
+      setValue({ statusList: value.map((item: IdTextValueData) => item.id) });
     }
   };
 
@@ -244,7 +246,7 @@ const SearchTab: React.FC = () => {
                 item ? `${item.code} - ${item.description}` : ""
               }
               selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvent) => {
+              onChange={(e: SelectEvents) => {
                 setMuliSelectValue("category", e.selectedItems);
               }}
               selectedItems={
@@ -268,7 +270,7 @@ const SearchTab: React.FC = () => {
                 item ? `${item.orgUnitCode} - ${item.orgUnitName}` : ""
               }
               selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvent) => {
+              onChange={(e: SelectEvents) => {
                 setMuliSelectValue("orgUnit", e.selectedItems);
               }}
               selectedItems={
@@ -319,11 +321,11 @@ const SearchTab: React.FC = () => {
                     filters={filters}
                     onFilterChange={setFilters}
                     categories={categories.map(({ code, description }) => ({
-                      value: code,
+                      id: code,
                       text: description,
                     }))}
                     orgUnits={orgUnits.map(({ orgUnitCode, orgUnitName }) => ({
-                      value: orgUnitCode,
+                      id: orgUnitCode,
                       text: orgUnitName,
                     }))}
                   />

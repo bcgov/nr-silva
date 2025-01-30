@@ -11,7 +11,7 @@ interface SearchFilterBarProps {
 
 interface ActiveFilter {
   key: string;
-  value: string | boolean | undefined;
+  value: string | boolean | string[] | undefined;
   isArray: boolean;
   display: string;
 }
