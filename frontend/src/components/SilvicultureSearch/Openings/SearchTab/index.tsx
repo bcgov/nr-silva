@@ -8,30 +8,15 @@ import {
   Row,
   Column,
   DismissibleTag,
-  InlineNotification,
-  DataTable,
-  TableContainer,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  TableToolbarMenu,
-  TableToolbarAction,
-  Table,
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
-  TableCell,
   Popover,
   PopoverContent,
-  Layer,
+  Layer
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 
 // Custom components
-import TableToolbarFilter from "@/components/TableToolbarFilter";
-import SearchTable from "@/components/SilvicultureSearch/Openings/SearchTable";
-import SearchBar from "@/components/SilvicultureSearch/Openings/SearchBar";
+import OpeningTableFilter from "@/components/OpeningTableFilter";
+import SearchTable from "@/components/SearchTable";
 import OpeningsMap from "@/components/OpeningsMap";
 import SearchFilterBar from "@/components/SilvicultureSearch/Openings/SearchFilterBar";
 
@@ -48,19 +33,12 @@ import {
 
 //Types
 import { OpeningSearchFilters } from "@/services/search/openings";
-import { TextValueData, sortItems } from "@/utils/multiSelectSortUtils";
+import { sortItems } from "@/utils/multiSelectSortUtils";
 import { searchScreenColumns } from "@/constants/tableConstants";
+import { TextValueData, SelectEvent, TextInputEvent } from "@/types/GeneralTypes";
 
 // Styles and others
 import "./index.scss";
-import { on } from 'events';
-
-interface SelectEvent {
-  selectedItems: TextValueData[];
-}
-interface TextInputEvent extends SyntheticEvent {
-  target: HTMLInputElement;
-}
 
 const SearchTab: React.FC = () => {
   // Search Filters itself
@@ -80,10 +58,6 @@ const SearchTab: React.FC = () => {
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const debugEvent = (name: string, e: never) => {
-    console.log(`DEBUG :: ${name}`, e);
-  };
 
   const cleanValues = (filterValues: OpeningSearchFilters) => {
     return Object.fromEntries(
@@ -264,7 +238,7 @@ const SearchTab: React.FC = () => {
               >
                 <PopoverContent className="p-3">
                   {/* Advanced search dropdown receiving the filter state and a function to modify the state */}
-                  <TableToolbarFilter 
+                  <OpeningTableFilter 
                     filters={filters} 
                     onFilterChange={setFilters} 
                     categories={categories.map(({code,description}) => ({value: code, text: description}))}
