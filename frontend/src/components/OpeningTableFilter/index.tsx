@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FlexGrid,
   Row,
@@ -12,7 +12,16 @@ import {
   ComboBox
 } from "@carbon/react";
 
-import { TextValueData, sortItems } from '@/utils/multiSelectSortUtils';
+// Types
+import { 
+  IdTextValueData, 
+  AutocompleteProps, 
+  SelectEvent, 
+  SelectEvents, 
+  AutocompleteComboboxProps,
+  TextInputEvent
+} from '@/types/GeneralTypes';
+import { sortItems } from '@/utils/multiSelectSortUtils';
 import { OpeningSearchFilters } from "@/services/search/openings";
 import { statusTypes, dateTypes } from '@/constants/searchConstants';
 
@@ -20,54 +29,32 @@ import { statusTypes, dateTypes } from '@/constants/searchConstants';
 import { format } from "date-fns";
 
 // AutoComplete section
-import { AutocompleteProvider } from '@/contexts/AutocompleteProvider';
-import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from '@/components/AutocompleteClientLocation';
+import { 
+  fetchClientsByNameAcronymNumber,
+  fetchClientLocations,
+  ForestClientAutocomplete,
+  ForestClientLocation 
+} from "@/services/OpeningClientLocationService";
 
 import './index.scss';
 
 interface FilterProps {
   filters: OpeningSearchFilters;
-  categories: TextValueData[];
-  orgUnits: TextValueData[];
+  categories: IdTextValueData[];
+  orgUnits: IdTextValueData[];
   onFilterChange: (updatedFilter: OpeningSearchFilters) => void;
 }
 
-interface TextInputEvent extends SyntheticEvent {
-  target: HTMLInputElement;
-}
-
-interface SelectEvents {
-  selectedItems: TextValueData[];
-}
-
-interface SelectEvent {
-  selectedItem: IdTextValueData;
-}
-
-interface AutocompleteProps {
-  id: string,
-  label: string,
-}
-
-interface AutocompleteComboboxProps{
-  selectedItem: AutocompleteProps
-}
-
-interface IdTextValueData {
-  id: string;
-  text: string;
-}
 
 const dateFormat = 'yyyy-MM-dd';
 
-const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) => {
+const OpeningTableFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) => {
 
   const [isClientLocationActive,setIsClientLocationActive] = useState(false);
   const [dateKind, setDateKind] = useState<IdTextValueData | null>(null);
   const [dates, setDates] = useState<string[]>([]);
-  
-  const locations : AutocompleteProps[] = [];
-  const clients: AutocompleteProps[] = [];
+  const [clients, setClients] = useState<AutocompleteProps[]>([]);
+  const [locations, setLocations] = useState<AutocompleteProps[]>([]);
 
   // The setTimeout is to avoid carbon complaining about updates on components
   const setValue = (value: Partial<OpeningSearchFilters>) => {
@@ -76,13 +63,53 @@ const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) 
 
   // This is the autocomplete selection function that is used to select the value based on the text entered
   // This is to cover the problem ComboBoxes have with the selected item when deployed
-  const selectBy = (entries: AutocompleteProps[], value: string, field: string) => {
+  const selectBy = (entries: AutocompleteProps[], value: string, field: string) => {    
     // We use the useEffect to do a lookup on the entries options
     const selectedItem = entries.find((item: AutocompleteProps) => item.label === value);
     // If there's text typed and we found an entry based on the value selected, we select it
     if(value && selectedItem){
       // This triggers the useEffect to set the value
       onFilterChange({...filters, [field]: selectedItem.id});
+    }
+  }
+
+  const clientAutocompleteBy = async (entries: AutocompleteProps[], value: string, field: string) => {
+    // We use a regex to validate the format of the client name, number, acronym
+    const regex = /^[A-Z\s.,]+,\s\d{8},\s([A-Z]+)?$/;
+
+    // We only fetch if the value is more than 2 characters and it doesn't match
+    // If it matches, it means that it is a selected value from the dropdown, so avoid a new fetch
+    if(value && value.length > 2 && !regex.test(value)){
+      // Fetch if the value is more than 2 characters
+      const response = await fetchClientsByNameAcronymNumber(value);
+      // Once we have the response, we map it to the autocomplete format
+      const results = response.map((item: ForestClientAutocomplete) => ({
+          id: item.id,
+          label: `${item.name}, ${item.id}, ${item.acronym? item.acronym : ''}`
+        }));
+        // We set the clients to the results for the autocomplete dropdown
+      setClients(results);
+    }
+
+    // We use the selectBy function to select the value based on the text entered
+    if(regex.test(value)){
+      setIsClientLocationActive(true);
+      selectBy(clients, value, field);
+    }
+
+    // When receiving an empty value, it means we are cleaning the selected value
+    if(!value){
+      setValue({[field]: undefined});
+    }
+  }
+
+  const locationAutocompleteBy = (value: string) => {
+    // We use the selectBy function to select the value based on the text entered
+    if(value){
+      selectBy(locations, value, "clientLocationCode");
+    } else {
+      // When receiving an empty value, it means we are cleaning the selected value
+      setValue({clientLocationCode: undefined});
     }
   }
 
@@ -140,6 +167,19 @@ const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) 
     }    
   },[dateKind,dates]);
 
+  useEffect(() => {
+    if(isClientLocationActive && filters.clientNumber){
+      fetchClientLocations(filters.clientNumber || '')
+      .then((response) => {
+        return response.map((item: ForestClientLocation) => ({
+          id: item.id,
+          label: `${item.id} - ${item.name}`
+        }));
+      })
+      .then(setLocations);
+    }
+  }, [isClientLocationActive]);
+
   return (
     <div className="advanced-search-dropdown">
       <FlexGrid className="container-fluid advanced-search-container">
@@ -172,37 +212,34 @@ const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) 
               id="status-multiselect"
               className="multi-select status-multi-select"              
               items={statusTypes}
-              itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
+              itemToString={(item: IdTextValueData) => (item ? `${item.id} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvents) => { setValue({ statusList: e.selectedItems.map((item: TextValueData) => item.value) }); }}
-              selectedItems={ filters.statusList ? statusTypes.filter(item => filters.statusList?.includes(item.value)) : []}
+              onChange={(e: SelectEvents) => { setValue({ statusList: e.selectedItems.map((item: IdTextValueData) => item.id) }); }}
+              selectedItems={ filters.statusList ? statusTypes.filter(item => filters.statusList?.includes(item.id)) : []}
               sortItems={sortItems}
             />
           </Column>
 
           <Column sm={4} md={8} lg={16} className="separator-top">
-            <ComboBox
-              id="client-name"
-              className="flex-fill"
-              allowCustomValue={false}              
-              selectedItem={ filters.clientNumber ? clients.filter(item => item.id === filters.clientNumber ) : {}}
-              onInputChange={(value: string) => selectBy(locations, value, "clientNumber")}           
-              onChange={(item: AutocompleteComboboxProps) => onFilterChange({...filters, clientNumber: item.selectedItem.id})}
-              itemToElement={(item: AutocompleteProps) => item.label}
-              helperText="Search by client name, number or acronym"
-              items={clients || []}
-              titleText="Client" 
-            />
+              <ComboBox
+                id="client-name"                
+                selectedItem={ filters.clientNumber ? clients.find(item => item.id === filters.clientNumber ) : null}
+                onInputChange={(value: string) => clientAutocompleteBy(locations, value, "clientNumber") }
+                onChange={(item: AutocompleteComboboxProps) => selectBy(clients, item?.selectedItem?.label, "clientNumber")}
+                itemToString={(item: AutocompleteProps) => item ? item.label : ''}
+                helperText="Search by client name, number or acronym"
+                items={clients}
+                titleText="Client" 
+              />
           </Column>
           <Column sm={4} md={8} lg={16}>
             <ComboBox
-              disabled={!isClientLocationActive}
+              disabled={!filters.clientNumber}
               id="client-location"
-              className="flex-fill"
-              selectedItem={ filters.clientLocationCode ? locations.filter(item => item.id === filters.clientLocationCode ) : {}}
-              onInputChange={(value: string) => selectBy(locations, value, "clientLocationCode")}
-              onChange={(item: AutocompleteComboboxProps) => onFilterChange({...filters, clientLocationCode: item.selectedItem.id})}
-              itemToElement={(item: AutocompleteProps) => item.label}
+              selectedItem={ filters.clientLocationCode ? locations.find(item => item.id === filters.clientLocationCode ) : null}
+              onInputChange={(value: string) => locationAutocompleteBy(value)}
+              onChange={(item: AutocompleteComboboxProps) => selectBy(clients, item?.selectedItem?.label, "clientLocationCode")}
+              itemToString={(item: AutocompleteProps) => item ? item.label : ''}
               items={locations || [{ id: "", label: "No results found" }]}
               titleText="Location code" />
           </Column>
@@ -239,7 +276,7 @@ const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) 
           <Column sm={4} md={8} lg={16} className="separator-top">
             <ComboBox 
               id="date-type-combobox"
-              items={dateTypes.map(item => ({id: item.value, text: item.text}))} 
+              items={dateTypes} 
               itemToString={(item: IdTextValueData) => item ? item.text : ''} 
               titleText="Date type"
               onChange={(item: SelectEvent) => setDateKind(item.selectedItem || null)}
@@ -285,4 +322,4 @@ const TableToolbarFilter: React.FC<FilterProps> = ({ filters, onFilterChange }) 
     </div>);
 }
 
-export default TableToolbarFilter;
+export default OpeningTableFilter;
