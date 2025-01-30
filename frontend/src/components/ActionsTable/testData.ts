@@ -22,30 +22,30 @@ export const rows = [
     openingID:'1541297', 
     status:'Approved', 
     lastUpdated:'Nov 20, 2023'
-   },
-   {
+  },
+  {
     activityType:'Opening details', 
     openingID:'1541299', 
     status:'In progress', 
     lastUpdated:'Now'
-   }
+  }
 ];
 
-  export const headers = [
-    {
-      key: 'activityType',
-      header: 'Activity Type'
-    },
-    {
-      key: 'openingID',
-      header: 'Opening ID'
-    },
-    {
-      key: 'status',
-      header: 'Status'
-    },
-    {
-      key: 'lastUpdated',
-      header: 'Last Updated'
-    }
-  ];
+export const headers = [
+  {
+    key: 'activityType',
+    header: 'Activity Type'
+  },
+  {
+    key: 'openingID',
+    header: 'Opening ID'
+  },
+  {
+    key: 'status',
+    header: 'Status'
+  },
+  {
+    key: 'lastUpdated',
+    header: 'Last Updated'
+  }
+];
