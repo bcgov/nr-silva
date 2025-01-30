@@ -1,18 +1,4 @@
-interface TextValueData {
-  value: string;
-  text: string;
-}
-
-interface SelectableTextValueData extends TextValueData {
-  isSelectAll?: boolean;
-}
-
-interface SortOptions {
-  selectedItems?: TextValueData[];
-  itemToString: (item: TextValueData) => string;
-  compareItems: (a: string, b: string, options: { locale: string }) => number;
-  locale?: string;
-}
+import { SelectableTextValueData, SortOptions } from '@/types/GeneralTypes';
 
 const sortItems = (
   items: SelectableTextValueData[],
@@ -32,4 +18,4 @@ const sortItems = (
   });
 };
 
-export { sortItems, type TextValueData, type SelectableTextValueData, type SortOptions };
+export { sortItems };
