@@ -23,17 +23,11 @@ const formatKey = (key: string) => {
     .replace(/^\w/, (c) => c.toUpperCase());
 };
 
-const reverseFormatKey = (formattedKey: string) => {
-  return formattedKey
-    .toLowerCase()
-    .replace(/ ([a-z])/g, (match) => match.trim().toUpperCase());
-};
-
 const getActiveFilters = (filters: OpeningSearchFilters) : ActiveFilter[] => {
   const activeFilters: ActiveFilter[] = [];
 
   for (const key in filters) {
-    if (filters && filters[key as keyof typeof filters] && filters[key as keyof typeof filters].length !== 0) {
+    if (filters && filters[key as keyof typeof filters] && filters[key as keyof typeof filters]?.length !== 0) {
       if (Array.isArray(filters[key as keyof typeof filters])) {
         const values = filters[key as keyof typeof filters] as Array<string>;        
         values.forEach((value) => activeFilters.push({key: key, value, isArray: true, display: `${formatKey(key)}: ${value}`}));
@@ -55,9 +49,8 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({ filters, clearFilter,
     setActiveFilters(getActiveFilters(filters));
   }, [filters]);
 
-  const handleClearFilter = (filter: ActiveFilter) => {    
-    console.log('handleClearFilter', filter);
-    clearFilter(filter.key, filter.isArray ? filter.value : undefined);
+  const handleClearFilter = (filter: ActiveFilter) => {
+    clearFilter(filter.key, filter.isArray ? filter.value?.toString() : undefined);
   };
 
   return (
