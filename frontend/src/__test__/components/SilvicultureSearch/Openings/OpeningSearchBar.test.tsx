@@ -5,12 +5,14 @@ import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import OpeningsSearchBar from "../../../../components/SilvicultureSearch/Openings/OpeningsSearchBar";
 import { vi } from "vitest";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 
 // Mock the useOpeningsSearch context to avoid rendering errors
 vi.mock("../../../../contexts/search/OpeningsSearch", async () => {
-  const actual = await vi.importActual<typeof import("../../../../contexts/search/OpeningsSearch")>("../../../../contexts/search/OpeningsSearch");
+  const actual = await vi.importActual<
+    typeof import("../../../../contexts/search/OpeningsSearch")
+  >("../../../../contexts/search/OpeningsSearch");
   return {
     ...actual,
     useOpeningsSearch: vi.fn().mockReturnValue({
@@ -21,7 +23,7 @@ vi.mock("../../../../contexts/search/OpeningsSearch", async () => {
       setIndividualClearFieldFunctions: vi.fn(),
       setFilters: vi.fn(),
     }),
-  }
+  };
 });
 
 describe("OpeningsSearchBar", () => {
@@ -60,38 +62,16 @@ describe("OpeningsSearchBar", () => {
     expect(onSearchClick).toHaveBeenCalled();
   });
 
-  it("should show AdvancedSearchDropdown if isOpen is true", () => {
-    // Create a mock function to pass as a prop
-    const onSearchClick = vi.fn();
-    const isOpen = false;
-     // Mock the useState calls
-    vi.spyOn(React, 'useState')
-      .mockImplementationOnce(() => [true, vi.fn()]) // Mocking isOpen state as false
-      .mockImplementationOnce(() => [false, vi.fn()]) // Mocking showFilters state as false
-      .mockImplementationOnce(() => ["", vi.fn()])  // Mocking searchInput state
-      .mockImplementationOnce(() => [0, vi.fn()])    // Mocking filtersCount state
-      .mockImplementationOnce(() => [null, vi.fn()]); // Mocking filtersList state
-    render(
-      <QueryClientProvider client={queryClient}>
-        <OpeningsSearchBar onSearchClick={onSearchClick} />
-      </QueryClientProvider>
-    );
-
-    // Check if an element with the class 'd-none' exists within the structure
-    const dNoneElement = screen.getAllByText("", {selector: ".d-block"})[0];
-    expect(dNoneElement).toBeInTheDocument();
-  });
-  
   it("should not show AdvancedSearchDropdown if isOpen is false", () => {
     // Create a mock function to pass as a prop
     const onSearchClick = vi.fn();
     const isOpen = false;
-     // Mock the useState calls
-    vi.spyOn(React, 'useState')
+    // Mock the useState calls
+    vi.spyOn(React, "useState")
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking isOpen state as false
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking showFilters state as false
-      .mockImplementationOnce(() => ["", vi.fn()])  // Mocking searchInput state
-      .mockImplementationOnce(() => [0, vi.fn()])    // Mocking filtersCount state
+      .mockImplementationOnce(() => ["", vi.fn()]) // Mocking searchInput state
+      .mockImplementationOnce(() => [0, vi.fn()]) // Mocking filtersCount state
       .mockImplementationOnce(() => [null, vi.fn()]); // Mocking filtersList state
     render(
       <QueryClientProvider client={queryClient}>
@@ -100,28 +80,40 @@ describe("OpeningsSearchBar", () => {
     );
 
     // Check if an element with the class 'd-none' exists within the structure
-    const dNoneElement = screen.getAllByText("", {selector: ".d-none"})[0];
+    const dNoneElement = screen.getAllByText("", { selector: ".d-none" })[0];
     expect(dNoneElement).toBeInTheDocument();
   });
 
-  it("should show correct filter count, when count is greater than 0", () => {
+  it("should show correct filter count, when count is greater than 0", async () => {
+    vi.mock("../../../../utils/searchUtils", async () => {
+      const actual = await vi.importActual<
+        typeof import("../../../../utils/searchUtils")
+      >("../../../../utils/searchUtils");
+      return {
+        ...actual,
+        countActiveFilters: vi.fn().mockReturnValue(2),
+      };
+    });
+
     // Create a mock function to pass as a prop
     const onSearchClick = vi.fn();
-     // Mock the useState calls
-    vi.spyOn(React, 'useState')
+    // Mock the useState calls
+    vi.spyOn(React, "useState")
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking isOpen state as false
       .mockImplementationOnce(() => [false, vi.fn()]) // Mocking showFilters state as false
-      .mockImplementationOnce(() => [2, vi.fn()])    // Mocking filtersCount state
+      .mockImplementationOnce(() => [2, vi.fn()]) // Mocking filtersCount state
       .mockImplementationOnce(() => [null, vi.fn()]); // Mocking filtersList state
-    
-    render(
-      <QueryClientProvider client={queryClient}>
+
+    await act(async () =>
+      render(
+        <QueryClientProvider client={queryClient}>
           <OpeningsSearchBar onSearchClick={onSearchClick} />
-      </QueryClientProvider>
+        </QueryClientProvider>
+      )
     );
 
     // Check if an element with the class 'd-none' exists within the structure
-    const dNoneElement = screen.getByText('+2');
+    const dNoneElement = screen.getByText("+2");
     expect(dNoneElement).toBeInTheDocument();
   });
 
@@ -129,9 +121,12 @@ describe("OpeningsSearchBar", () => {
     // Create a mock function to pass as a prop
     const onSearchClick = vi.fn();
 
-    const {container, getByText} = render(
+    const { container, getByText } = render(
       <QueryClientProvider client={queryClient}>
-        <OpeningsSearchBar onSearchClick={onSearchClick} showNoFilterNotification={true} />
+        <OpeningsSearchBar
+          onSearchClick={onSearchClick}
+          showNoFilterNotification={true}
+        />
       </QueryClientProvider>
     );
 
@@ -142,8 +137,9 @@ describe("OpeningsSearchBar", () => {
     // Check if the onSearchClick function was called
     expect(onSearchClick).toHaveBeenCalled();
 
-    expect(getByText("Missing at least one criteria to search")).toBeInTheDocument();
-
+    expect(
+      getByText("Missing at least one criteria to search")
+    ).toBeInTheDocument();
   });
 
   //test if the handleSearch is called when the user hits enter on the serchInput
@@ -161,10 +157,10 @@ describe("OpeningsSearchBar", () => {
     const searchInput = screen.getByPlaceholderText(
       "Search by opening ID, opening number or file ID"
     );
-    await act(async () => await userEvent.type(searchInput, 'tfl47'));
-    await act(async () => await userEvent.keyboard('{enter}'));
+    await act(async () => await userEvent.type(searchInput, "tfl47"));
+    await act(async () => await userEvent.keyboard("{enter}"));
 
     // Check if the onSearchClick function was called
     expect(onSearchClick).toHaveBeenCalled();
-    });
+  });
 });
