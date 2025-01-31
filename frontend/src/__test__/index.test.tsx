@@ -1,16 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
-import { render } from '@testing-library/react';
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
 import { Amplify } from 'aws-amplify';
-import App from '../App';
-import store from '../store';
-import { ThemePreference } from '../utils/ThemePreference';
-import PaginationProvider from '../contexts/PaginationProvider';
-import { OpeningsSearchProvider } from '../contexts/search/OpeningsSearch';
-import { AuthProvider } from '../contexts/AuthProvider';
 import amplifyconfig from '../amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';

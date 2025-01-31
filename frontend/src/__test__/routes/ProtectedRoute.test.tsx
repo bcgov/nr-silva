@@ -1,10 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, Mock } from 'vitest';
 import ProtectedRoute from '../../routes/ProtectedRoute';
 import { useGetAuth } from '../../contexts/AuthProvider';
-import { Loading } from "@carbon/react";
 
 vi.mock('../../contexts/AuthProvider', () => ({
   useGetAuth: vi.fn(),
@@ -15,35 +14,8 @@ vi.mock('@carbon/react', () => ({
 }));
 
 describe('ProtectedRoute', () => {
-  it('should render loading component when isLoading is true', () => {
-    (useGetAuth as vi.Mock).mockReturnValue({ isLoading: true });
-
-    const { getByText } = render(
-      <MemoryRouter>
-        <ProtectedRoute />
-      </MemoryRouter>
-    );
-
-    expect(getByText('Loading...')).toBeDefined();
-  });
-
-  it('should redirect to login when requireAuth is true and user is not logged in', () => {
-    (useGetAuth as vi.Mock).mockReturnValue({ isLoading: false, isLoggedIn: false });
-
-    const { container } = render(
-      <MemoryRouter initialEntries={['/protected']}>
-        <Routes>
-          <Route path="/login" element={<div>Login Page</div>} />
-          <Route path="/protected" element={<ProtectedRoute requireAuth redirectTo="/login" />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    expect(container.innerHTML).toContain('Login Page');
-  });
-
   it('should redirect to unauthorized when requiredRoles are not met', () => {
-    (useGetAuth as vi.Mock).mockReturnValue({ isLoading: false, isLoggedIn: true, userRoles: ['user'] });
+    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['user'] });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
@@ -58,7 +30,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should render child routes when all checks pass', () => {
-    (useGetAuth as vi.Mock).mockReturnValue({ isLoading: false, isLoggedIn: true, userRoles: ['admin'] });
+    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['admin'] });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
@@ -71,5 +43,22 @@ describe('ProtectedRoute', () => {
     );
 
     expect(container.innerHTML).toContain('Protected Content');
+  });
+
+  it('should log out and redirect to login when user is not logged in', () => {
+    const mockLogout = vi.fn();
+    (useGetAuth as Mock).mockReturnValue({ isLoggedIn: false, logout: mockLogout });
+
+    const { container } = render(
+      <MemoryRouter initialEntries={['/protected']}>
+        <Routes>
+          <Route path="/" element={<div>Login Page</div>} />
+          <Route path="/protected" element={<ProtectedRoute />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(mockLogout).toHaveBeenCalled();
+    expect(container.innerHTML).toContain('Login Page');
   });
 });

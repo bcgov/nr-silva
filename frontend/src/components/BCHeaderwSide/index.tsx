@@ -18,7 +18,6 @@ import * as Icons from '@carbon/icons-react';
 import RightPanelTitle from '../RightPanelTitle';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
-import ExpandingSearch from '../ExpandingSearch';
 import { leftMenu } from './constants';
 import './BCHeaderwSide.scss';
 
@@ -61,9 +60,6 @@ function BCHeaderwSide(): JSX.Element {
             SILVA
           </Link>
           <HeaderGlobalBar className="align-items-center w-100">
-            <div className="mx-2">
-              <ExpandingSearch />
-            </div>
             <div className="mx-2">
               <ThemeToggle />
             </div>

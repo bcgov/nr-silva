@@ -1,6 +1,6 @@
 ## Use this section once builds are fixed
 
-FROM node:20.18.1-bullseye-slim AS build
+FROM node:20.18.2-bullseye-slim AS build
 
 # Build static files
 WORKDIR /app
@@ -11,7 +11,7 @@ RUN npm ci --ignore-scripts && \
     rm -rf node_modules
 
 # Caddy
-FROM caddy:2.8.4-alpine
+FROM caddy:2.9.1-alpine
 ENV LOG_LEVEL=info
 
 # Copy static files and config
