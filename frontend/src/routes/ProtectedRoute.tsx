@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useGetAuth } from '../contexts/AuthProvider';
-import { Loading } from "@carbon/react";
+import { useAuth } from '../contexts/AuthProvider';
 
 interface ProtectedRouteProps {
   requireAuth?: boolean;
@@ -9,19 +8,15 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  requireAuth = false, 
-  requiredRoles = [], 
-  redirectTo = '/' 
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  requiredRoles = [],
+  redirectTo = '/'
 }) => {
-  const { isLoggedIn, isLoading, userRoles } = useGetAuth();
-
-  if(isLoading) {
-    return <Loading className={'some-class'} withOverlay={true} />;
-  }
+  const { isLoggedIn, userRoles, logout } = useAuth();
 
   // 1. If authentication is required and the user is not logged in, redirect to login
-  if (requireAuth && !isLoggedIn) {
+  if (!isLoggedIn) {
+    logout();
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -29,7 +24,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (requiredRoles.length > 0 && !requiredRoles.some(role => userRoles?.includes(role))) {
     return <Navigate to="/unauthorized" replace />;
   }
-  
+
   // 3. If all checks pass, render child routes
   return <Outlet />;
 };

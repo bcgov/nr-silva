@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import "jspdf-autotable"; // Add this for table support in jsPDF
 
 

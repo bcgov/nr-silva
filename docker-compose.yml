@@ -10,7 +10,7 @@ x-frontend: &frontend
     timeout: 5s
     retries: 5
   restart: always
-  
+
 
 x-backend: &backend
   healthcheck:
@@ -49,7 +49,7 @@ services:
     #image: maven:3.9.6-amazoncorretto-21
     image: maven:3.9.9-eclipse-temurin-17
     network_mode: host
-    volumes: 
+    volumes:
       - ./backend:/app
       - $HOME/zscaler-certs:/certs
     working_dir: /app
@@ -86,11 +86,30 @@ services:
     build: ./backend
     ports: ["8080:8080"]
     <<: *backend
-  
+
   wiremock:
     image: "wiremock/wiremock:latest"
     container_name: forest-client-api-stub
     ports: ["9000:9000","9001:9001"]
-    volumes: 
+    volumes:
       - ./stub/:/home/wiremock/
     entrypoint: ["/docker-entrypoint.sh", "--enable-stub-cors","--global-response-templating","--port","9000","--https-port","9001","--verbose"]
+
+  legacydb:
+    # profiles ensure the legacydb won't run on default `docker compose up`
+    # To start the legacy db along with other services, use `docker compose --profile legacy up`
+    profiles: ["legacy"]
+    container_name: oracle
+    environment:
+      APP_USER_PASSWORD: default
+      APP_USER: THE
+      ORACLE_RANDOM_PASSWORD: yes
+    platform: "linux/amd64"
+    image: gvenzl/oracle-free:23.6-slim-faststart
+    ports: [1521:1521]
+    volumes: [/opt/oracle/oradata]
+    healthcheck:
+      test: [ "CMD-SHELL", "healthcheck.sh" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10

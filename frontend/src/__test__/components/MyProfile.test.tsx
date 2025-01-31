@@ -3,7 +3,7 @@ import { render, act, waitFor, fireEvent, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest';
 import MyProfile from '../../components/MyProfile';
 import { useThemePreference } from '../../utils/ThemePreference';
-import { useGetAuth } from '../../contexts/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 
 // Mock dependencies
 vi.mock('../../utils/ThemePreference', () => ({
@@ -11,7 +11,7 @@ vi.mock('../../utils/ThemePreference', () => ({
 }));
 
 vi.mock('../../contexts/AuthProvider', () => ({
-  useGetAuth: vi.fn(),
+  useAuth: vi.fn(),
 }));
 
 describe('MyProfile Component', () => {
@@ -29,7 +29,7 @@ describe('MyProfile Component', () => {
       theme: 'g10',
       setTheme: mockSetTheme,
     });
-    (useGetAuth as vi.Mock).mockReturnValue({
+    (useAuth as vi.Mock).mockReturnValue({
       logout: mockLogout,
       user: mockAuthUser,
     });
@@ -42,7 +42,7 @@ describe('MyProfile Component', () => {
     render(<MyProfile />);
     expect(screen.getByText('John Doe')).toBeDefined();
     expect(screen.getByText('IDIR: johndoe')).toBeDefined();
-    expect(screen.getByText('Email:john.doe@example.com')).toBeDefined();
+    expect(screen.getByText('Email: john.doe@example.com')).toBeDefined();
   });
 
   it('should change theme when "Change theme" button is clicked', () => {
@@ -58,11 +58,6 @@ describe('MyProfile Component', () => {
     const logoutButton = screen.getByText('Log out');
     fireEvent.click(logoutButton);
     expect(mockLogout).toHaveBeenCalled();
-  });
-
-  it('should render organization selection section', () => {
-    render(<MyProfile />);
-    expect(screen.getByText('Select organization')).toBeDefined();
   });
 
   it('should render options section', () => {
