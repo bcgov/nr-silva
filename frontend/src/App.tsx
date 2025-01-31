@@ -6,7 +6,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import Opening from './screens/Opening';
 import SilvicultureSearch from './screens/SilvicultureSearch';
 import ErrorHandling from './screens/ErrorHandling';
-import { useGetAuth } from './contexts/AuthProvider';
+import { useAuth } from './contexts/AuthProvider';
 import { Loading } from '@carbon/react';
 
 const publicRoutes: RouteObject[] = [
@@ -48,7 +48,7 @@ const protectedRoutes: RouteObject[] = [
 
 
 const App: React.FC = () => {
-  const auth = useGetAuth();
+  const auth = useAuth();
 
   if (auth.isLoading) {
     return <Loading withOverlay={true} />;

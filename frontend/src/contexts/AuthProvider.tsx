@@ -18,7 +18,7 @@ import {
 } from "../services/AuthService";
 import { extractGroups } from "../utils/famUtils";
 import { env } from "../env";
-import { JWT } from "../types/amplify";
+import { JWT, ProviderType } from "../types/amplify";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -26,7 +26,7 @@ interface AuthContextType {
   userRoles: string[] | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (provider: string) => void;
+  login: (provider: ProviderType) => void;
   logout: () => void;
 }
 
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const login = async (provider: string) => {
+  const login = async (provider: ProviderType) => {
     const envProvider =
       provider.localeCompare("idir") === 0
         ? `${appEnv.toLocaleUpperCase()}-IDIR`
@@ -109,10 +109,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 // This is a helper hook to use the Auth context more easily
 // 5. Create a custom hook to consume the context safely
-export const useGetAuth = (): AuthContextType => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useGetAuth must be used within an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
