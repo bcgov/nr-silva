@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -28,14 +28,10 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   setOpeningIds,
   totalItems,
 }) => {
-  const { itemsPerPage, setInitialItemsPerPage } =
-    useContext(PaginationContext);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [openingDetails, setOpeningDetails] = useState("");
 
-  useEffect(() => {
-    setInitialItemsPerPage(itemsPerPage);
-  }, [rows, totalItems]);
+  useEffect(() => {}, [rows, totalItems]);
 
   useEffect(() => {
     setOpeningIds(selectedRows.map((id) => parseFloat(id)));
