@@ -42,7 +42,7 @@ const BCHeader: React.FC = () => {
               to="/"
               className="header-link"
             >
-              SILVA
+              Silva
             </Link>
             <HeaderGlobalBar>
               <HeaderGlobalAction

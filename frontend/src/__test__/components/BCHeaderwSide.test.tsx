@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import BCHeaderwSide from '../../components/BCHeaderwSide';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {leftMenu } from '../../components/BCHeaderwSide/constants';
+import { leftMenu } from '../../components/BCHeaderwSide/constants';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
 import { AuthProvider } from '../../contexts/AuthProvider';
@@ -28,7 +28,7 @@ const renderComponent = async () => {
 
   await act(() => render(
     <AuthProvider>
-      <QueryClientProvider client={qc}>        
+      <QueryClientProvider client={qc}>
         <BrowserRouter>
           <BCHeaderwSide />
         </BrowserRouter>
@@ -68,7 +68,7 @@ describe('BCHeaderwSide', async () => {
 
   it('should renders the site name', async () => {
     renderComponent();
-    expect(screen.getByText('SILVA')).toBeDefined();
+    expect(screen.getByText('Silva')).toBeDefined();
   });
 
   it('opens and closes the My Profile panel', async () => {
