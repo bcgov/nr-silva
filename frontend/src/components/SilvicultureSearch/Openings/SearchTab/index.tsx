@@ -10,7 +10,9 @@ import {
   DismissibleTag,
   Popover,
   PopoverContent,
-  Layer,
+  TableToolbar,
+  TableToolbarContent,
+  TableContainer,
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 
@@ -19,6 +21,7 @@ import OpeningTableFilter from "@/components/OpeningTableFilter";
 import SearchTable from "@/components/SearchTable";
 import OpeningsMap from "@/components/OpeningsMap";
 import SearchFilterBar from "@/components/SilvicultureSearch/Openings/SearchFilterBar";
+import SearchTableColumnSelector from "@/components/SearchTableColumnSelector";
 
 // API Requests
 import {
@@ -34,14 +37,16 @@ import {
 
 //Types
 import { sortItems } from "@/utils/multiSelectSortUtils";
-import { searchScreenColumns } from "@/constants/tableConstants";
 import {
-  TextValueData,
-  SelectEvent,
+  searchScreenColumns,
+  defaultsearchScreenColumnsSelection,
+} from "@/constants/tableConstants";
+import {
   SelectEvents,
   TextInputEvent,
   IdTextValueData,
 } from "@/types/GeneralTypes";
+import { ITableHeader } from "@/types/TableHeader";
 
 // Styles and others
 import "./index.scss";
@@ -70,10 +75,13 @@ const SearchTab: React.FC = () => {
   });
 
   // Suplemtary state for maping things
+  const [selectedHeaders, setSelectedHeaders] =
+    useState<ITableHeader[]>(searchScreenColumns);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
   const [showMap, setShowMap] = useState<boolean>(false);
+  const [showColumnEditor, setShowColumnEditor] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const cleanValues = (filterValues: OpeningSearchFilters) => {
@@ -113,6 +121,7 @@ const SearchTab: React.FC = () => {
   const onSearch = async () => {
     setIsLoading(true);
     setIsFetched(false);
+    setIsOpen(false);
 
     if (hasFilters(true)) {
       const openings = await fetchOpenings({
@@ -318,7 +327,9 @@ const SearchTab: React.FC = () => {
                     isTabTip
                     open={isOpen}
                     onClose={() => setIsOpen(false)}
-                    align="bottom-left"
+                    align={
+                      document?.dir === "rtl" ? "bottom-right" : "bottom-left"
+                    }
                     className="filter-popover"
                   >
                     <PopoverContent>
@@ -384,8 +395,54 @@ const SearchTab: React.FC = () => {
         </div>
       )}
       <div className="row">
+        {isFetched && searchResults.data.length > 0 && (
+          <TableContainer className="search-data-table">
+            <TableToolbar aria-label="data table toolbar">
+              <TableToolbarContent>
+                <Button
+                  iconDescription="Show Map"
+                  data-testid="toggle-spatial"
+                  tooltipposition="bottom"
+                  kind="ghost"
+                  onClick={() => setShowMap(!showMap)}
+                  renderIcon={Icons.Location}
+                  size="md"
+                >
+                  {showMap ? "Hide map" : "Show map"}
+                </Button>
+                <Popover
+                  open={showColumnEditor}
+                  isTabTip
+                  align={
+                    document?.dir === "rtl" ? "bottom-left" : "bottom-right"
+                  }
+                  onRequestClose={() => setShowColumnEditor(false)}
+                >
+                  <Button
+                    iconDescription="Edit Columns"
+                    data-testid="edit-columns"
+                    tooltipposition="bottom"
+                    kind="ghost"
+                    onClick={() => setShowColumnEditor(!showColumnEditor)}
+                    renderIcon={Icons.Column}
+                    size="md"
+                  >
+                    Edit columns
+                  </Button>
+                  <PopoverContent className="edit-column-content">
+                    <SearchTableColumnSelector
+                      headers={selectedHeaders}
+                      defaultSelection={defaultsearchScreenColumnsSelection}
+                      onChangeSelection={setSelectedHeaders}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </TableToolbarContent>
+            </TableToolbar>
+          </TableContainer>
+        )}
         <SearchTable
-          headers={searchScreenColumns}
+          headers={selectedHeaders}
           rows={searchResults.data}
           loading={isLoading}
           fetched={isFetched}

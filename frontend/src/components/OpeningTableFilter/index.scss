@@ -3,9 +3,7 @@
 @use '@carbon/type';
 
 .advanced-search-dropdown {
-  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-  //width: 65.66%;
-  //these are for the nested elements
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);  
   .advanced-search-container{
       box-shadow: 0px 2px 6px 0px #0000004D;
   }

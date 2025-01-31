@@ -1,24 +1,25 @@
 import React from "react";
-import { 
+import {
   Table,
   TableHead,
   TableRow,
   TableHeader,
   TableBody,
   TableCell,
-  Pagination
+  Pagination,
 } from "@carbon/react";
+import * as Icons from "@carbon/icons-react";
 
 // Custom components
 import EmptySection from "@/components/EmptySection";
 import TableSkeleton from "@/components/TableSkeleton";
 
 // Types
-import { ITableHeader } from '@/types/TableHeader';
+import { ITableHeader } from "@/types/TableHeader";
 
 interface SearchTableProps {
   headers: ITableHeader[];
-  rows: Record<string,any>[];
+  rows: Record<string, any>[];
   loading: boolean;
   fetched: boolean;
   total: number;
@@ -28,21 +29,20 @@ interface SearchTableProps {
   onSizeChange: (page: number, size: number) => void;
 }
 
-const SearchTable: React.FC<SearchTableProps> = ({ 
-  headers, 
-  rows, 
-  loading, 
+const SearchTable: React.FC<SearchTableProps> = ({
+  headers,
+  rows,
+  loading,
   fetched,
   total,
   entriesPerPage,
   currentPage,
   onPageChange,
-  onSizeChange
+  onSizeChange,
 }) => {
-
   // If is loading, show skeleton
-  if(loading) {
-    return (<TableSkeleton headers={headers} />)
+  if (loading) {
+    return <TableSkeleton headers={headers} />;
   }
 
   // Not loading, not fetched
@@ -60,14 +60,14 @@ const SearchTable: React.FC<SearchTableProps> = ({
   }
 
   // After fetch, but no data
-  if(!rows.length) {
+  if (!rows.length) {
     return (
       <EmptySection
-          pictogram="UserSearch"
-          title={"Results not found"}
-          description={"Check spelling or try different parameters"}
-          fill="#0073E6"
-        />
+        pictogram="UserSearch"
+        title={"Results not found"}
+        description={"Check spelling or try different parameters"}
+        fill="#0073E6"
+      />
     );
   }
 
@@ -77,26 +77,31 @@ const SearchTable: React.FC<SearchTableProps> = ({
       <Table aria-label="sample table">
         <TableHead>
           <TableRow>
-            {headers.filter(header => header.selected).map(header => <TableHeader key={header.key}>{header.header}</TableHeader>)}
+            {headers
+              .filter((header) => header.selected)
+              .map((header) => (
+                <TableHeader key={header.key}>{header.header}</TableHeader>
+              ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {
-            rows
-            .map(row => 
-              <TableRow key={`${row['openingId']}-row`}>
-              {
-                headers
-                .filter(header => header.selected)
-                .map(header =>
-                  row[header.key] 
-                  ? <TableCell key={`${row['openingId']}-${header.key}`}>{row[header.key]}</TableCell> 
-                  : <TableCell key={`${row['openingId']}-${header.key}`}></TableCell>            
-                )
-              }
-              </TableRow>
-            )
-          }
+          {rows.map((row) => (
+            <TableRow key={`${row["openingId"]}-row`}>
+              {headers
+                .filter((header) => header.selected)
+                .map((header) =>
+                  row[header.key] ? (
+                    <TableCell key={`${row["openingId"]}-${header.key}`}>
+                      {row[header.key]}
+                    </TableCell>
+                  ) : (
+                    <TableCell
+                      key={`${row["openingId"]}-${header.key}`}
+                    ></TableCell>
+                  )
+                )}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <Pagination
@@ -107,10 +112,7 @@ const SearchTable: React.FC<SearchTableProps> = ({
         pageSizes={[20, 40, 60, 80, 100]}
         itemsPerPageText="Items per page"
         page={currentPage}
-        onChange={({ page, pageSize }: {
-          page: number;
-          pageSize: number;
-        }) => {
+        onChange={({ page, pageSize }: { page: number; pageSize: number }) => {
           onPageChange(page);
           onSizeChange(page, pageSize);
         }}

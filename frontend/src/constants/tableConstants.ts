@@ -1,8 +1,7 @@
-import { ITableHeader } from "../types/TableHeader";
+import { ITableHeader } from "@/types/TableHeader";
 
 const searchScreenColumnDefinitions = [
   { key: 'actions', header: 'Actions' },
-  
   { key: 'openingId', header: 'Opening Id' },
   { key: 'openingNumber', header: 'Opening number' },
   { key: 'forestFileId', header: 'File Id' },
@@ -17,24 +16,24 @@ const searchScreenColumnDefinitions = [
   { key: 'disturbanceStartDate', header: 'Disturbance date' },
   { key: 'regenDelayDate', header: 'Regen delay due date' },
   { key: 'earlyFreeGrowingDate', header: 'Free growing due date' },
-  { key: 'updateTimestamp', header: 'Update date' },
+  { key: 'updateTimestamp', header: 'Update date' }
 ];
 
-export const searchScreenColumns: ITableHeader[] = searchScreenColumnDefinitions.map((col) => ({
-  ...col,
-  selected: [
-    'actions',
-    'openingId',
-    'forestFileId',
-    'categoryDescription',
-    'orgUnitName',
-    'statusDescription',
-    'cuttingPermitId',
-    'cutBlockId',
-    'openingGrossAreaHa',
-    'disturbanceStartDate',
-  ].includes(col.key),
-}));
+export const defaultsearchScreenColumnsSelection = [
+  'actions',
+  'openingId',
+  'forestFileId',
+  'categoryDescription',
+  'orgUnitName',
+  'statusDescription',
+  'cuttingPermitId',
+  'cutBlockId',
+  'openingGrossAreaHa',
+  'disturbanceStartDate'
+];
+
+export const searchScreenColumns: ITableHeader[] = searchScreenColumnDefinitions
+  .map((col) => ({...col, selected: defaultsearchScreenColumnsSelection.includes(col.key)}));
 
 const recentOpeningsColumnDefinitions = [
   { key: 'actions', header: 'Actions' },
@@ -51,5 +50,5 @@ const recentOpeningsColumnDefinitions = [
 
 export const recentOpeningsColumns: ITableHeader[] = recentOpeningsColumnDefinitions.map((col) => ({
   ...col,
-  selected: col.key !== 'disturbanceStartDate',
+  selected: col.key !== 'disturbanceStartDate'
 }));

@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  TableToolbar,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@carbon/react";
 import EmptySection from "../../../EmptySection";
-import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningsSearch } from "../../../../types/OpeningsSearch";
 import { ITableHeader } from "../../../../types/TableHeader";
 import TableRowComponent from "../../../TableRowComponent";
@@ -28,12 +26,10 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
   headers,
   showSpatial,
   setOpeningIds,
-  totalItems
+  totalItems,
 }) => {
-  const {
-    itemsPerPage,
-    setInitialItemsPerPage,
-  } = useContext(PaginationContext);
+  const { itemsPerPage, setInitialItemsPerPage } =
+    useContext(PaginationContext);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [openingDetails, setOpeningDetails] = useState("");
 
@@ -43,7 +39,7 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
 
   useEffect(() => {
     setOpeningIds(selectedRows.map((id) => parseFloat(id)));
-  },[selectedRows]);
+  }, [selectedRows]);
 
   // Function to handle row selection changes
   const handleRowSelectionChanged = (rowId: string) => {
@@ -56,45 +52,45 @@ const RecentOpeningsDataTable: React.FC<IRecentOpeningsDataTable> = ({
 
   return (
     <TableContainer className="search-data-table">
-        <Table aria-label="sample table">
-          <TableHead>
-            <TableRow>
-              {headers.map((header) =>
-                header.selected ? (
-                  <TableHeader key={header.key}>{header.header}</TableHeader>
-                ) : null
-              )}
-            </TableRow>
-          </TableHead>
+      <Table aria-label="sample table">
+        <TableHead>
+          <TableRow>
+            {headers.map((header) =>
+              header.selected ? (
+                <TableHeader key={header.key}>{header.header}</TableHeader>
+              ) : null
+            )}
+          </TableRow>
+        </TableHead>
 
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRowComponent
-                key={row.openingId + index.toString()}
-                row={row}
-                headers={headers}
-                showSpatial={showSpatial}
-                selectedRows={selectedRows}
-                handleRowSelectionChanged={handleRowSelectionChanged}
-                setOpeningDetails={setOpeningDetails}
-              />
-            ))}
-          </TableBody>
-        </Table>
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRowComponent
+              key={row.openingId + index.toString()}
+              row={row}
+              headers={headers}
+              showSpatial={showSpatial}
+              selectedRows={selectedRows}
+              handleRowSelectionChanged={handleRowSelectionChanged}
+              setOpeningDetails={setOpeningDetails}
+            />
+          ))}
+        </TableBody>
+      </Table>
 
-        {rows.length <= 0 && (
-          <EmptySection
-            pictogram="Magnify"
-            title="There are no openings to show yet"
-            description="Your recent openings will appear here once you generate one"
-            fill="#0073E6"
-          />
-        )}
-        <ComingSoonModal
-          openingDetails={openingDetails}
-          setOpeningDetails={setOpeningDetails}
+      {rows.length <= 0 && (
+        <EmptySection
+          pictogram="Magnify"
+          title="There are no openings to show yet"
+          description="Your recent openings will appear here once you generate one"
+          fill="#0073E6"
         />
-      </TableContainer>
-    );
+      )}
+      <ComingSoonModal
+        openingDetails={openingDetails}
+        setOpeningDetails={setOpeningDetails}
+      />
+    </TableContainer>
+  );
 };
 export default RecentOpeningsDataTable;
