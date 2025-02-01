@@ -34,7 +34,7 @@ class PaginationUtilTest {
   }
 
   @Test
-  @DisplayName("")
+  @DisplayName("End index test")
   void getEndIndexTest() {
     Assertions.assertEquals(40, PaginationUtil.getEndIndex(30, 10, 47));
     Assertions.assertEquals(47, PaginationUtil.getEndIndex(40, 10, 47));
