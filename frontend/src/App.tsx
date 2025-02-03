@@ -3,7 +3,7 @@ import './custom.scss';
 import Landing from "./screens/Landing";
 import SideLayout from './layouts/SideLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
-import Opening from './screens/Opening';
+import Dashboard from './screens/Dashboard';
 import SilvicultureSearch from './screens/SilvicultureSearch';
 import ErrorHandling from './screens/ErrorHandling';
 import { useAuth } from './contexts/AuthProvider';
@@ -31,7 +31,7 @@ const protectedRoutes: RouteObject[] = [
       },
       {
         path: "/opening",
-        element: <SideLayout pageContent={<Opening />} />
+        element: <SideLayout pageContent={<Dashboard />} />
       },
       {
         path: "/silviculture-search",
