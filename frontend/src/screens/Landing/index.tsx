@@ -36,7 +36,7 @@ const Landing: React.FC = () => {
   return (
     <Grid fullWidth className="landing-grid">
       {/* First - Column */}
-      <Column className="landing-content-col" sm={4} md={8} lg={10}>
+      <Column className="landing-content-col" sm={4} md={8} lg={8}>
         <div className="landing-content-wrapper" style={{ "gap": `${elementGap}rem` }}>
           {/* Logo */}
           <div >
@@ -81,7 +81,7 @@ const Landing: React.FC = () => {
       </Column>
 
       {/* Landing cover */}
-      <Column className="landing-img-col" sm={4} md={8} lg={6}>
+      <Column className="landing-img-col" sm={4} md={8} lg={8}>
         <img
           src={LandingImg}
           alt="Landing cover"
