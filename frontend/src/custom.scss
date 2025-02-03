@@ -5,17 +5,13 @@
 
 @use '@bcgov-nr/nr-theme/style-sheets/carbon-components-overrides.scss';
 
-@use '@carbon/type/scss/_font-family.scss' with (
-  $font-families: types.$type-family,
-  $font-weights: types.$font-weights
-);
+@use '@carbon/type/scss/_font-family.scss' with ($font-families: types.$type-family,
+  $font-weights: types.$font-weights);
 
 // Set the correct light theme
 @use '@carbon/react/scss/themes';
-@use '@carbon/react/scss/theme' with (
-  $fallback: themes.$white,
-  $theme: (light.$light-theme)
-);
+@use '@carbon/react/scss/theme' with ($fallback: themes.$white,
+  $theme: (light.$light-theme));
 @use '@carbon/themes/scss/utilities';
 
 
@@ -46,20 +42,14 @@
 }
 
 [data-carbon-theme='g100'] {
-  $button-tokens: utilities.merge(
-    button-tokens.$button-tokens,
-    dark-button-overrides.$dark-button-token-overrides
-  );
+  $button-tokens: utilities.merge(button-tokens.$button-tokens,
+      dark-button-overrides.$dark-button-token-overrides );
 
-  $tag-tokens: utilities.merge(
-    tag-tokens.$tag-tokens,
-    dark-tag-overrides.$dark-tag-token-overrides
-  );
+  $tag-tokens: utilities.merge(tag-tokens.$tag-tokens,
+      dark-tag-overrides.$dark-tag-token-overrides );
 
-  $notification-tokens: utilities.merge(
-    notification-tokens.$notification-tokens,
-    dark-notification-overrides.$dark-notification-token-overrides
-  );
+  $notification-tokens: utilities.merge(notification-tokens.$notification-tokens,
+      dark-notification-overrides.$dark-notification-token-overrides );
 
   @include theme.add-component-tokens($button-tokens);
   @include theme.add-component-tokens($tag-tokens);
@@ -68,23 +58,40 @@
 }
 
 [data-carbon-theme='g10'] {
-  $button-tokens: utilities.merge(
-    button-tokens.$button-tokens,
-    light-button-overrides.$light-button-token-overrides
-  );
+  $button-tokens: utilities.merge(button-tokens.$button-tokens,
+      light-button-overrides.$light-button-token-overrides );
 
-  $tag-tokens: utilities.merge(
-    tag-tokens.$tag-tokens,
-    light-tag-overrides.$light-tag-token-overrides
-  );
+  $tag-tokens: utilities.merge(tag-tokens.$tag-tokens,
+      light-tag-overrides.$light-tag-token-overrides );
 
-  $notification-tokens: utilities.merge(
-    notification-tokens.$notification-tokens,
-    light-notification-overrides.$light-notification-token-overrides
-);
+  $notification-tokens: utilities.merge(notification-tokens.$notification-tokens,
+      light-notification-overrides.$light-notification-token-overrides);
 
   @include theme.add-component-tokens($button-tokens);
   @include theme.add-component-tokens($tag-tokens);
   @include theme.add-component-tokens($notification-tokens);
   @include react.theme(light.$light-theme);
+}
+
+.default-grid {
+  margin: 0;
+  width: 100%;
+  padding: 2rem;
+  max-inline-size: none;
+  row-gap: 2.5rem;
+}
+
+// Small
+@media only screen and (max-width: 320px) {
+  .default-grid {
+    padding: 2rem 1rem;
+    // row-gap: 2rem;
+  }
+}
+
+// md
+@media only screen and (max-width: 1312px) {
+  .default-grid {
+    row-gap: 2rem;
+  }
 }

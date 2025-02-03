@@ -2,16 +2,16 @@ import React from 'react';
 import {
   DataTableSkeleton
 } from '@carbon/react';
-import './styles.scss'
 import { ITableHeader } from '../../types/TableHeader';
 
+import './styles.scss';
 interface Props {
   headers: ITableHeader[];
 }
 
-const TableSkeleton: React.FC<Props> = ({headers}) => (
+const TableSkeleton: React.FC<Props> = ({ headers }) => (
   <div>
-    <DataTableSkeleton 
+    <DataTableSkeleton
       headers={headers}
       aria-label="loading table"
     />

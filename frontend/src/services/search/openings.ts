@@ -130,7 +130,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   );
 
   // Stringify the cleanedParams using qs with arrayFormat: 'repeat'
-  const queryString = qs.stringify(cleanedParams, { 
+  const queryString = qs.stringify(cleanedParams, {
     addQueryPrefix: true,
     arrayFormat: 'repeat'  // This will format arrays like statusList=DUB&statusList=APP
   });
@@ -160,8 +160,8 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
 };
 
 // Used to fetch the recent openings for a user based on a limit value
-export const fetchUserRecentOpenings = async (limit: number): Promise<any> => {
-  
+export const fetchUserRecentOpenings = async (): Promise<any> => {
+
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 

@@ -2,15 +2,10 @@ import React, { useEffect, useState } from "react";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import {
-  TabList,
-  Tabs,
-  Tab,
-  TabPanels,
-  TabPanel,
   Grid,
   Column
 } from "@carbon/react";
-import OpeningsTab from "../../components/OpeningsTab";
+import RecentOpenings from "../../components/RecentOpenings";
 import OpeningMetricsTab from "../../components/OpeningMetricsTab";
 import { FavouriteCards } from "./constants";
 
@@ -18,8 +13,8 @@ import './styles.scss'
 
 const Dashboard: React.FC = () => {
 
-  // const [showSpatial, setShowSpatial] = useState<boolean>(false);
-  // const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
+  const [showSpatial, setShowSpatial] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
 
   // const tabChange = (tabSelection: { selectedIndex: number }) => {
   //   setActiveTab(tabSelection.selectedIndex);
@@ -36,7 +31,7 @@ const Dashboard: React.FC = () => {
   // }, []);
 
   return (
-    <Grid className="dashboard-grid">
+    <Grid className="default-grid">
       <Column sm={4} md={8} lg={16}>
         <PageTitle
           title="Dashboard"
@@ -45,6 +40,7 @@ const Dashboard: React.FC = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16}>
+        {/* Fav cards sub-grid */}
         <Grid>
           {
             FavouriteCards.map((card) => (
@@ -59,6 +55,10 @@ const Dashboard: React.FC = () => {
             ))
           }
         </Grid>
+      </Column>
+
+      <Column sm={4} md={8} lg={16}>
+        <RecentOpenings />
       </Column>
     </Grid>
   );

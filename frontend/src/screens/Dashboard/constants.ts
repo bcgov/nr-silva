@@ -6,11 +6,5 @@ export const FavouriteCards: FavouriteCardProps[] = [
     title: 'Silviculture search',
     link: "/silviculture-search",
     icon:'SearchLocate'
-  },
-  {
-    index: 1,
-    title: 'Silviculture search',
-    link: "/silviculture-search",
-    icon:'SearchLocate'
   }
 ]

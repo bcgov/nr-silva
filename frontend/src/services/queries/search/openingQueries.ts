@@ -16,11 +16,10 @@ export const useOpeningFiltersQuery = () => {
   });
 };
 
-export const useUserRecentOpeningQuery = (limit:number) => {
+export const useUserRecentOpeningQuery = () => {
   return useQuery({
-    queryKey: ["userRecentOpenings", limit],
-    queryFn: () => fetchUserRecentOpenings(limit),
-    enabled: true,
+    queryKey: ["opening", "recent"],
+    queryFn: () => fetchUserRecentOpenings(),
     refetchOnMount: "always"
   });
 };
