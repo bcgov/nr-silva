@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -64,8 +65,7 @@ class OpeningTrendsServiceTest {
         null
     );
 
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
+    String monthName =  getMonthName(now.getMonth().getValue());
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(12, list.size());
@@ -111,8 +111,7 @@ class OpeningTrendsServiceTest {
         List.of("APP")
     );
 
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
+    String monthName =  getMonthName(now.getMonth().getValue());
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(12, list.size());
@@ -204,6 +203,10 @@ class OpeningTrendsServiceTest {
     private String orgUnitName;
     private String clientNumber;
 
+  }
+
+  private String getMonthName(int month) {
+    return Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CANADA);
   }
 
 }
