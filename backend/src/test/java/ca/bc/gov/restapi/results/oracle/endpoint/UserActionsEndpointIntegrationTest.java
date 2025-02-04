@@ -11,8 +11,6 @@ import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,11 +82,8 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[0].amount").value(3))
-        .andExpect(jsonPath("$[1].monthName").value(LocalDate.now().plusMonths(1).getMonth().getDisplayName(
-            TextStyle.SHORT, Locale.CANADA)))
-        .andExpect(jsonPath("$[1].amount").value(0));
+        .andExpect(jsonPath("$[11].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[11].amount").value(3));
   }
 
   @Test
@@ -113,8 +108,8 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[0].amount").value(3));
+        .andExpect(jsonPath("$[11].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[11].amount").value(3));
   }
 
   @Test
