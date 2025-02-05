@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
@@ -8,6 +10,7 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -55,23 +58,21 @@ class OpeningTrendsServiceTest {
   void getOpeningSubmissionTrends_noFilters_shouldSucceed() {
     LocalDateTime now = LocalDateTime.now();
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
-    when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
+    when(openingRepository.getOpeningTrends(anyString(), anyString(), anyList(), anyList()))
+        .thenReturn(entities);
 
     List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        LocalDate.now(),
-        LocalDate.now(),
+        LocalDate.now().minusMonths(4),
+        LocalDate.now().plusMonths(2),
         null,
         null
     );
 
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
-
     Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(1, list.get(0).amount());
+    Assertions.assertEquals(7, list.size());
+    Assertions.assertEquals(now.minusMonths(4).getMonthValue(), list.get(0).month());
+    Assertions.assertEquals(getMonthName(now.minusMonths(4).getMonth().getValue()), list.get(0).monthName());
+    Assertions.assertEquals(1, list.get(4).amount());
   }
 
   @Test
@@ -82,19 +83,17 @@ class OpeningTrendsServiceTest {
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
 
     List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        now.toLocalDate(),
-        now.toLocalDate(),
+        now.toLocalDate().minusMonths(1),
+        now.toLocalDate().plusMonths(1),
         List.of("AAA"),
         null
     );
 
-    String monthName = now.getMonth().getDisplayName(TextStyle.SHORT, Locale.CANADA);
-
     Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
-    Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
-    Assertions.assertEquals(1, list.get(0).amount());
+    Assertions.assertEquals(3, list.size());
+    Assertions.assertEquals(now.minusMonths(1).getMonthValue(), list.get(0).month());
+    Assertions.assertEquals(getMonthName(now.minusMonths(1).getMonth().getValue()), list.get(0).monthName());
+    Assertions.assertEquals(1, list.get(1).amount());
   }
 
   @Test
@@ -111,11 +110,10 @@ class OpeningTrendsServiceTest {
         List.of("APP")
     );
 
-    String monthName = now.getMonth().name().toLowerCase();
-    monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1, 3);
+    String monthName =  getMonthName(now.getMonth().getValue());
 
     Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
+    Assertions.assertEquals(1, list.size());
     Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
     Assertions.assertEquals(monthName, list.get(0).monthName());
     Assertions.assertEquals(1, list.get(0).amount());
@@ -134,7 +132,7 @@ class OpeningTrendsServiceTest {
         List.of("UPD")
     );
     Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
+    Assertions.assertEquals(13, list.size());
     Assertions.assertEquals(1, list.get(0).amount());
     Assertions.assertEquals(0, list.get(1).amount());
     Assertions.assertEquals(0, list.get(2).amount());
@@ -147,6 +145,7 @@ class OpeningTrendsServiceTest {
     Assertions.assertEquals(0, list.get(9).amount());
     Assertions.assertEquals(0, list.get(10).amount());
     Assertions.assertEquals(0, list.get(11).amount());
+    Assertions.assertEquals(0, list.get(12).amount());
   }
 
   @Test
@@ -168,7 +167,7 @@ class OpeningTrendsServiceTest {
 
     String monthName = oneMonthBefore.getMonth().getDisplayName(TextStyle.SHORT, Locale.CANADA);
     Assertions.assertFalse(list.isEmpty());
-    Assertions.assertEquals(12, list.size());
+    Assertions.assertEquals(3, list.size());
     Assertions.assertEquals(oneMonthBefore.getMonthValue(), list.get(0).month());
     Assertions.assertEquals(monthName, list.get(0).monthName());
     Assertions.assertEquals(1, list.get(1).amount());
@@ -204,6 +203,10 @@ class OpeningTrendsServiceTest {
     private String orgUnitName;
     private String clientNumber;
 
+  }
+
+  private String getMonthName(int month) {
+    return Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CANADA);
   }
 
 }
