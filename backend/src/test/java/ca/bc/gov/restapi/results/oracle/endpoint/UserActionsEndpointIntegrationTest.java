@@ -91,9 +91,9 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[11].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[11].amount").value(1))
-        .andExpect(jsonPath("$[11].monthName").value(
+        .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[12].amount").value(1))
+        .andExpect(jsonPath("$[12].monthName").value(
             Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
   }
 
@@ -115,13 +115,13 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
   void getOpeningsSubmissionTrends_withFilters_shouldSucceed() throws Exception {
 
     mockMvc.perform(get("/api/users/submission-trends")
-            .param("statusCode", "APP")
+            .param("statusCode", "FG")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[11].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[11].amount").value(1))
-        .andExpect(jsonPath("$[11].monthName").value(
+        .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[12].amount").value(1))
+        .andExpect(jsonPath("$[12].monthName").value(
             Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
   }
 
