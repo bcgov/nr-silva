@@ -43,6 +43,10 @@
     <hibernate.version>6.6.3.Final</hibernate.version>
     <testcontainers.version>1.20.4</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
+    <spring-oauth2.version>3.4.2</spring-oauth2.version>
+    <spring-security.version>6.3.5</spring-security.version>
+    <logback-classic.version>1.5.16</logback-classic.version>
+    <spring-logging.version>3.4.2</spring-logging.version>
   </properties>
 
   <profiles>
@@ -511,6 +515,38 @@
         <version>${testcontainers.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        <version>${spring-oauth2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        <version>${spring-oauth2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-logging</artifactId>
+        <version>${spring-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <version>${spring-logging.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
