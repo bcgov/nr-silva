@@ -554,6 +554,16 @@
         <artifactId>ojdbc11</artifactId>
         <version>${oracle-jdbc.version}</version>
       </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback-classic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback-classic.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
