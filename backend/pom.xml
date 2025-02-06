@@ -47,6 +47,7 @@
     <spring-security.version>6.4.2</spring-security.version>
     <logback-classic.version>1.5.16</logback-classic.version>
     <spring-logging.version>3.4.2</spring-logging.version>
+    <oracle-jdbc.version>21.9.0.0</oracle-jdbc.version>
   </properties>
 
   <profiles>
@@ -547,6 +548,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-tomcat</artifactId>
         <version>${spring-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc11</artifactId>
+        <version>${oracle-jdbc.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
