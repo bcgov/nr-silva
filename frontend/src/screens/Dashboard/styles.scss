@@ -2,14 +2,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@carbon/type';
 
-/* leaflet sizing */
-.leaflet-container {
-  height: 380px;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
 .tab-content {
   background-color: var(--#{vars.$bcgov-prefix}-layer-01);
 }

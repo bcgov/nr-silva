@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import TableCellContent from "../../components/TableCellContent";
-import { OpeningsSearch } from "../../types/OpeningsSearch";
+import { OpeningsSearch } from "../../types/OpeningTypes";
 import { NotificationProvider } from "../../contexts/NotificationProvider"
 
 // Mock components
@@ -31,13 +31,13 @@ describe("TableCellContent", () => {
   it("renders StatusTag when headerKey is 'statusDescription'", () => {
     render(
       <NotificationProvider>
-      <TableCellContent
-        headerKey="statusDescription"
-        row={row}
-        showSpatial={false}
-        selectedRows={selectedRows}
-        handleRowSelectionChanged={handleRowSelectionChanged}
-      />
+        <TableCellContent
+          headerKey="statusDescription"
+          row={row}
+          showSpatial={false}
+          selectedRows={selectedRows}
+          handleRowSelectionChanged={handleRowSelectionChanged}
+        />
       </NotificationProvider>
     );
 
@@ -114,5 +114,5 @@ describe("TableCellContent", () => {
     //check if the Checkbox text is present
     expect(screen.getByText(/Click to view this opening's map activity./i)).toBeInTheDocument();
   });
-  
+
 });

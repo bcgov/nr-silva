@@ -3,7 +3,7 @@ import React from "react";
 import { vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TableRowComponent from "../../components/TableRowComponent";
-import { OpeningsSearch } from "../../types/OpeningsSearch";
+import { OpeningsSearch } from "../../types/OpeningTypes";
 import { ITableHeader } from "../../types/TableHeader";
 
 describe("TableRowComponent", () => {

@@ -1,8 +1,9 @@
+/* eslint-disable indent */
 import React from "react";
 import StatusTag from "../StatusTag";
 import ActionButtons from "../ActionButtons";
 import SpatialCheckbox from "../SpatialCheckbox";
-import { OpeningsSearch } from "../../types/OpeningsSearch";
+import { OpeningsSearch } from "../../types/OpeningTypes";
 import TruncatedText from "../TruncatedText";
 
 interface TableCellContentProps {
@@ -32,10 +33,10 @@ const TableCellContent: React.FC<TableCellContentProps> = ({
               selectedRows={selectedRows}
               handleRowSelectionChanged={handleRowSelectionChanged}
             />
-            </div>)}
-          <ActionButtons 
-            favorited={row.favourite} 
-            rowId={row.openingId.toString()} 
+          </div>)}
+          <ActionButtons
+            favorited={row.favourite}
+            rowId={row.openingId.toString()}
           />
         </div>
       );

@@ -1,24 +1,45 @@
 import React, { useState } from 'react';
-import { Button, InlineNotification } from '@carbon/react';
+import { Button, InlineNotification, Table, TableBody, TableContainer, TableHead, TableHeader, TableRow } from '@carbon/react';
 import './styles.scss';
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
-import RecentOpeningsDataTable from '../Dashboard/Opening/RecentOpeningsDataTable';
-import { useUserRecentOpeningQuery } from '../../services/queries/search/openingQueries';
 import SectionTitle from '../SectionTitle';
-import TableSkeleton from '../TableSkeleton';
-import { recentOpeningsColumns as headers } from '../../constants/tableConstants';
 import useBreakpoint from '../../hooks/UseBreakpoint';
+import { useQuery } from '@tanstack/react-query';
+import { fetchUserRecentOpenings } from '../../services/OpeningService';
+import TableSkeleton from '../TableSkeleton';
+import { recentOpeningsHeaders } from './constants';
+import EmptySection from '../EmptySection';
+import OpeningRow from './OpeningRow';
+import ComingSoonModal from '../ComingSoonModal';
 
 const RecentOpenings = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
-  const { data, isFetching } = useUserRecentOpeningQuery();
+  const [openingDetails, setOpeningDetails] = useState("");
   const breakpoint = useBreakpoint();
+
+  const recentOpeningsQuery = useQuery({
+    queryKey: ["opening", "recent"],
+    queryFn: () => fetchUserRecentOpenings(),
+    refetchOnMount: "always"
+  });
 
   const toggleMap = () => {
     setShowMap(!showMap);
+  };
+
+  /**
+   * Toggles the selection of an opening ID.
+   * If the ID is already selected, it is removed; otherwise, it is added.
+   *
+   * @param {number} id - The opening ID to toggle.
+   */
+  const handleRowSelection = (id: number) => {
+    setSelectedOpeningIds((prev) =>
+      prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -47,40 +68,77 @@ const RecentOpenings = () => {
               openingId={null}
               openingIds={selectedOpeningIds}
               setOpeningPolygonNotFound={setOpeningPolygonNotFound}
+              mapHeight={280}
             />
           )
           : null
       }
-      <div className="container-fluid p-0 pb-5">
-        {
-          openingPolygonNotFound
-            ? (
-              <InlineNotification
-                title="Opening ID not found!"
-                subtitle="Unable to find selected Opening Polygon!"
-                kind="error"
-                lowContrast
-                className="inline-notification"
-              />
-            )
-            : null
-        }
-        {
-          isFetching ?
-            (
-              <TableSkeleton headers={headers} />
-            )
-            : (
-              <RecentOpeningsDataTable
-                rows={data?.data || []}
-                headers={headers}
-                setOpeningIds={setSelectedOpeningIds}
-                showSpatial={showMap}
-                totalItems={(data?.perPage ?? 0) * (data?.totalPages ?? 0)}
-              />
-            )
-        }
-      </div>
+      {
+        openingPolygonNotFound
+          ? (
+            <InlineNotification
+              title="Opening ID not found!"
+              subtitle="Unable to find selected Opening Polygon!"
+              kind="error"
+              lowContrast
+              className="inline-notification"
+            />
+          )
+          : null
+      }
+      {/* Table skeleton */}
+      {
+        recentOpeningsQuery.isFetching
+          ? <TableSkeleton headers={recentOpeningsHeaders} showToolbar={false} showHeader={false} />
+          : null
+      }
+      {/* Empty Table */}
+      {
+        !recentOpeningsQuery.data?.data.length ? (
+          <EmptySection
+            pictogram="Magnify"
+            title="There are no openings to show yet"
+            description="Your recent openings will appear here once you generate one"
+            fill="#0073E6"
+          />
+        )
+          : null
+      }
+      {/* Loaded table content */}
+      {
+        !recentOpeningsQuery.isFetching && recentOpeningsQuery.data?.data.length ?
+          (
+            <Table className="search-data-table" aria-label="Recent openings table">
+              <TableHead>
+                <TableRow>
+                  {
+                    recentOpeningsHeaders.map((header) => (
+                      <TableHeader key={header.key}>{header.header}</TableHeader>
+                    ))
+                  }
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  recentOpeningsQuery.data?.data.map((row) => (
+                    <OpeningRow
+                      key={row.openingId}
+                      rowData={row}
+                      showMap={showMap}
+                      selectedRows={selectedOpeningIds}
+                      handleRowSelection={handleRowSelection}
+                    />
+                  ))
+                }
+              </TableBody>
+            </Table>
+          )
+          : null
+      }
+      <ComingSoonModal
+        openingDetails={openingDetails}
+        setOpeningDetails={setOpeningDetails}
+      />
     </div>
   );
 };

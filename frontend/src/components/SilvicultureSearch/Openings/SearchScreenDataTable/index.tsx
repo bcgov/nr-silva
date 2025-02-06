@@ -27,7 +27,7 @@ import StatusTag from "../../../StatusTag";
 import "./styles.scss";
 import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
-import { OpeningsSearch } from "../../../../types/OpeningsSearch";
+import { OpeningsSearch } from "../../../../types/OpeningTypes";
 import { ITableHeader } from "../../../../types/TableHeader";
 import {
   convertToCSV,
@@ -76,7 +76,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
+  const [selectedRows, setSelectedRows] = useState<number[]>([]); // State to store selected rows
   const [openingDetails, setOpeningDetails] = useState("");
   const [columnsSelected, setColumnsSelected] = useState<string>("select-default");
   const { mutate: markAsViewedOpening } = usePostViewedOpening();
@@ -109,19 +109,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
 
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (openingId: string) => {
+  const handleRowSelection = (openingId: number) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
         const selectedValues = prevSelectedRows.filter(
           (id) => id !== openingId
         );
-        setOpeningIds(selectedValues.map(parseFloat));
+        setOpeningIds(selectedValues);
         return selectedValues;
       } else {
         // If the row is not selected, add it to the selected rows
         const selectedValues = [...prevSelectedRows, openingId];
-        setOpeningIds(selectedValues.map(parseFloat));
+        setOpeningIds(selectedValues);
         return selectedValues;
       }
     });
@@ -138,7 +138,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           title: "Unable to process your request",
           subTitle: "Please try again in a few minutes",
           type: "error",
-          onClose: () => {},
+          onClose: () => { },
         });
       },
     });
@@ -374,18 +374,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          
+
                           <div className={showSpatial ? 'd-flex space-left-1' : 'd-flex'}>
                             {showSpatial && (<div className="pt-3">
                               <SpatialCheckbox
-                                rowId={row.openingId.toString()}
+                                rowId={row.openingId}
                                 selectedRows={selectedRows}
-                                handleRowSelectionChanged={handleRowSelectionChanged}
-                                />
+                                handleRowSelection={handleRowSelection}
+                              />
                             </div>)}
-                            <ActionButtons 
+                            <ActionButtons
                               favorited={row.favourite}
                               rowId={row.openingId}
+                              showToast
                             />
                           </div>
                         ) : header.header === "Category" ? (

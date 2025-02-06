@@ -22,12 +22,14 @@ interface MapProps {
   openingIds: number[] | null;
   openingId: number | null;
   setOpeningPolygonNotFound: (value: boolean) => void;
+  mapHeight?: number;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
   openingId,
-  setOpeningPolygonNotFound
+  setOpeningPolygonNotFound,
+  mapHeight = 400
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
@@ -60,7 +62,7 @@ const OpeningsMap: React.FC<MapProps> = ({
             properties: data.features[i].properties,
             id: data.features[i].id,
             positionLat: (data.bbox[1] + data.bbox[3]) / 2,
-            positionLong: (data.bbox[0] + data.bbox[2]) / 2,
+            positionLong: (data.bbox[0] + data.bbox[2]) / 2
           };
           openingsList.push(openingObj);
         }
@@ -152,7 +154,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     <MapContainer
       center={position}
       zoom={zoomLevel}
-      style={{ height: "400px", width: "100%" }}
+      style={{ height: `${mapHeight}px`, width: "100%" }}
     >
       <TileLayer
         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"

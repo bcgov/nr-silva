@@ -2,15 +2,15 @@ import React from "react";
 import { Checkbox, Tooltip } from "@carbon/react";
 
 interface SpatialCheckboxProps {
-  rowId: string;
-  selectedRows: string[];
-  handleRowSelectionChanged: (rowId: string) => void;
+  rowId: number;
+  selectedRows: number[];
+  handleRowSelection: (rowId: number) => void;
 }
 
 const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
   rowId,
   selectedRows,
-  handleRowSelectionChanged
+  handleRowSelection
 }) => (
   <Tooltip
     className="align-self-stretch"
@@ -22,7 +22,8 @@ const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
       className="align-self-stretch"
       id={`checkbox-label-${rowId}`}
       checked={selectedRows.includes(rowId)}
-      onChange={() => handleRowSelectionChanged(rowId)}
+      onChange={() => handleRowSelection(rowId)}
+      labelText=""
     />
   </Tooltip>
 );

@@ -3,10 +3,11 @@ import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
 import { RecentAction } from '../types/RecentAction';
 import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
-import { 
+import {
   IOpeningPerYear,
   IFreeGrowingProps,
-  IFreeGrowingChartData
+  IFreeGrowingChartData,
+  PaginatedRecentOpeningsDto
 } from '../types/OpeningTypes';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
 
@@ -92,8 +93,8 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
     const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
+        'Access-Control-Allow-Origin': window.location.origin,
+        Authorization: `Bearer ${authToken}`
       }
     });
 
@@ -126,11 +127,11 @@ export async function fetchRecentActions(): Promise<RecentAction[]> {
     const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
       headers: {
         'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
+        'Access-Control-Allow-Origin': window.location.origin,
+        Authorization: `Bearer ${authToken}`
       }
     });
-    
+
     const { data } = response;
 
     if (Array.isArray(data)) {
@@ -145,7 +146,7 @@ export async function fetchRecentActions(): Promise<RecentAction[]> {
           lastUpdatedLabel: action.lastUpdatedLabel
         }
       });
-      
+
       // Returning the transformed data
       return rows;
     } else {
@@ -156,3 +157,15 @@ export async function fetchRecentActions(): Promise<RecentAction[]> {
     throw error;
   }
 }
+
+
+// Used to fetch the recent openings for a user
+export const fetchUserRecentOpenings = (): Promise<PaginatedRecentOpeningsDto> => {
+
+  // Retrieve the auth token
+  const authToken = getAuthIdToken();
+
+  // Make the API request with the Authorization header
+  return axios.get(API_ENDPOINTS.recentOpenings(), defaultHeaders(authToken))
+    .then((res) => res.data);
+};
