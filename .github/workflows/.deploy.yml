@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: OpenShift Init
-        uses: bcgov/action-deployer-openshift@v3.0.1
+        uses: bcgov/action-deployer-openshift@v3.1.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -115,7 +115,7 @@ jobs:
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
     steps:
-      - uses: bcgov/action-deployer-openshift@v3.0.1
+      - uses: bcgov/action-deployer-openshift@v3.1.0
         id: deploys
         with:
           file: ${{ matrix.file }}
