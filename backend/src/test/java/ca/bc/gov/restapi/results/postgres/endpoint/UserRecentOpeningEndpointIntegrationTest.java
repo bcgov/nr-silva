@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
@@ -21,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Integrated Test | Recent Openings")
 @AutoConfigureMockMvc
 @WithMockJwt("jakethedog")
-class UserRecentOpeningEndpointTest extends AbstractTestContainerIntegrationTest {
+class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -42,6 +44,7 @@ class UserRecentOpeningEndpointTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
+  @DisplayName("Should fail if we have a conflicting data")
   void shouldReturnProblemDetailsError() throws Exception {
 
     mockMvc
@@ -51,7 +54,23 @@ class UserRecentOpeningEndpointTest extends AbstractTestContainerIntegrationTest
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().is4xxClientError());
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
+  }
+
+  @Test
+  @DisplayName("Should return a failure when no opening with that ID exists")
+  void shouldReturnNotFoundWhenUserHasNoRecentOpenings() throws Exception {
+    mockMvc
+        .perform(
+            put("/api/openings/recent/123456")
+                .with(csrf().asHeader())
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Method Not Allowed\",\"status\":404,\"detail\":\"Method 'GET' is not supported.\",\"instance\":\"/api/openings/recent/123456\"}"));
   }
 
 
