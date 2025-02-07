@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
@@ -39,7 +40,12 @@ public class UserRecentOpeningService {
     log.info("Adding opening ID {} as recently viewed for user {}", openingId,
         loggedUserService.getLoggedUserId());
 
-    if (openingId == null || !openingRepository.existsById(openingId)) {
+    if (openingId == null) {
+      log.info("Opening ID is null");
+      throw new InvalidOpeningIdException();
+    }
+
+    if (!openingRepository.existsById(openingId)) {
       log.info("Opening ID not found: {}", openingId);
       throw new OpeningNotFoundException();
     }
