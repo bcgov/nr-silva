@@ -70,7 +70,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
         )
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Method Not Allowed\",\"status\":404,\"detail\":\"Method 'GET' is not supported.\",\"instance\":\"/api/openings/recent/123456\"}"));
+        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserOpening record(s) not found!\",\"instance\":\"/api/openings/recent/123456\"}"));
   }
 
 
