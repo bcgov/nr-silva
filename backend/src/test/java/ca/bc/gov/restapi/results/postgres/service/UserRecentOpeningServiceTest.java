@@ -101,7 +101,7 @@ class UserRecentOpeningServiceTest {
     void storeViewedOpening_invalidOpeningId_throwsException() {
         Long invalidOpeningId = null;
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(OpeningNotFoundException.class, () -> {
             userRecentOpeningService.storeViewedOpening(invalidOpeningId);
         });
 
