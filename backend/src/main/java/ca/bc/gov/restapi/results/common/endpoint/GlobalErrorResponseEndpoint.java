@@ -27,7 +27,7 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
     // Set the default error status to INTERNAL_SERVER_ERROR
     HttpStatusCode errorStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    if (exception instanceof IllegalStateException e) {
+    if (exception instanceof IllegalStateException) {
       log.error("Request encountered an illegal state", exception);
       errorStatus = HttpStatus.CONFLICT;
     }
