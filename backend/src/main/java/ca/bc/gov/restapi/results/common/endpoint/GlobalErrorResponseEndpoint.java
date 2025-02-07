@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler {
 
 
-  @ExceptionHandler({RuntimeException.class})
+  @ExceptionHandler({RuntimeException.class,ResponseStatusException.class})
   public ProblemDetail handleDupKey(Exception exception, WebRequest request) {
 
     // Get the error message
