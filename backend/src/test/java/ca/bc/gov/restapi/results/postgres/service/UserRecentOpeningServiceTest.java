@@ -18,6 +18,7 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
+import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
 import java.time.LocalDateTime;
@@ -64,7 +65,7 @@ class UserRecentOpeningServiceTest {
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
         when(openingRepository.existsById(openingId)).thenReturn(true);
-        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(Optional.empty());
+        when(userRecentOpeningRepository.findById(new UserOpeningEntityId(userId, openingId))).thenReturn(Optional.empty());
 
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
@@ -81,11 +82,11 @@ class UserRecentOpeningServiceTest {
         String userId = "user123";
         Long openingId = 123L;
         LocalDateTime lastViewed = LocalDateTime.now();
-        UserRecentOpeningEntity existingEntity = new UserRecentOpeningEntity(1L, userId, openingId, lastViewed.minusDays(1));
+        UserRecentOpeningEntity existingEntity = new UserRecentOpeningEntity(userId, openingId, lastViewed.minusDays(1));
 
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);
         when(openingRepository.existsById(openingId)).thenReturn(true);
-        when(userRecentOpeningRepository.findByUserIdAndOpeningId(userId, openingId)).thenReturn(Optional.of(existingEntity));
+        when(userRecentOpeningRepository.findById(new UserOpeningEntityId(userId, openingId))).thenReturn(Optional.of(existingEntity));
 
         UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(openingId);
 
@@ -149,8 +150,8 @@ class UserRecentOpeningServiceTest {
         int limit = 10;
         LocalDateTime now = LocalDateTime.now();
         
-        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(1L, userId, 123L, now.minusDays(2));
-        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(2L, userId, 456L, now.minusDays(1));
+        UserRecentOpeningEntity opening1 = new UserRecentOpeningEntity(userId, 123L, now.minusDays(2));
+        UserRecentOpeningEntity opening2 = new UserRecentOpeningEntity(userId, 456L, now.minusDays(1));
         
         List<UserRecentOpeningEntity> openings = List.of(opening1, opening2);
         when(loggedUserService.getLoggedUserId()).thenReturn(userId);

@@ -38,7 +38,6 @@ public class UserRecentOpeningEndpoint {
    * Records the opening viewed by the user based on the provided opening ID.
    *
    * @param openingId The ID of the opening viewed by the user.
-   * @return A simple confirmation message or the HTTP code 204-No Content.
    */
   @PutMapping("/{openingId}")
   @ResponseStatus(HttpStatus.ACCEPTED)
