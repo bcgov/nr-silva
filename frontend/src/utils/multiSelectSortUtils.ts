@@ -15,12 +15,12 @@ interface SortOptions {
 }
 
 const sortItems = (
-  items: SelectableTextValueData[],
+  items: SelectableTextValueData[] | TextValueData[],
   { selectedItems = [], itemToString, compareItems, locale = 'en' }: SortOptions
-): SelectableTextValueData[] => {
+): SelectableTextValueData[] | TextValueData[] => {
   return items.sort((itemA, itemB) => {
-    if (itemA.isSelectAll) return -1;
-    if (itemB.isSelectAll) return 1;
+    if ("isSelectAll" in itemA && itemA.isSelectAll) return -1;
+    if ("isSelectAll" in itemB && itemB.isSelectAll) return 1;
 
     const hasItemA = selectedItems.some((sItem) => itemA.value === sItem.value);
     const hasItemB = selectedItems.some((sItem) => itemB.value === sItem.value);

@@ -22,13 +22,11 @@ interface ChartTitleProps {
  */
 function ChartTitle({ title, subtitle }: ChartTitleProps) {
   return (
-    <Column className="chart-title">
-      <div className="title-favourite">
-        <h1>{title}</h1>
-      </div>
+    <div className="chart-title">
+      <h1 className="chart-title-header">{title}</h1>
       <Subtitle text={subtitle} />
-    </Column>
+    </div>
   );
-};
+}
 
 export default ChartTitle;

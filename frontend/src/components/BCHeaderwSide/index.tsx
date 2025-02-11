@@ -82,50 +82,52 @@ function BCHeaderwSide(): JSX.Element {
           </HeaderPanel>
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
-              {leftMenu.map(item => (
-                <div key={item.name}>
-                  <SideNavLink className="side-nav-category-name">
-                    {item.name}
-                  </SideNavLink>
-                  {item.items.map(subItem => {
-                    const IconComponent = Icons[subItem.icon as keyof typeof Icons];
-                    if (subItem.subItems) {
-                      const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
-                      return (
-                        <SideNavMenu
-                          key={subItem.name}
-                          title={subItem.name}
-                          renderIcon={IconComponent}
-                          isActive={isActive}
-                          isSideNavExpanded={isActive}
-                          defaultExpanded={isActive}
-                        >
-                          {subItem.subItems.map(subSubItem => (
-                            <SideNavMenuItem
-                              key={subSubItem.name}
-                              onClick={() => navigate(subSubItem.link)}
-                              isActive={location.pathname === subSubItem.link}
-                            >
-                              {subSubItem.name}
-                            </SideNavMenuItem>
-                          ))}
-                        </SideNavMenu>
-                      );
-                    } else {
-                      return (
-                        <SideNavLink
-                          key={subItem.name}
-                          renderIcon={IconComponent}
-                          onClick={() => navigate(subItem.link)}
-                          isActive={location.pathname === subItem.link}
-                        >
-                          {subItem.name}
-                        </SideNavLink>
-                      );
+              {
+                leftMenu.map(item => (
+                  <div key={item.name}>
+                    <label className="side-nav-category-name">
+                      {item.name}
+                    </label>
+                    {item.items.map(subItem => {
+                      const IconComponent = Icons[subItem.icon as keyof typeof Icons];
+                      if (subItem.subItems) {
+                        const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
+                        return (
+                          <SideNavMenu
+                            key={subItem.name}
+                            title={subItem.name}
+                            renderIcon={IconComponent}
+                            isActive={isActive}
+                            isSideNavExpanded={isActive}
+                            defaultExpanded={isActive}
+                          >
+                            {subItem.subItems.map(subSubItem => (
+                              <SideNavMenuItem
+                                key={subSubItem.name}
+                                onClick={() => navigate(subSubItem.link)}
+                                isActive={location.pathname === subSubItem.link}
+                              >
+                                {subSubItem.name}
+                              </SideNavMenuItem>
+                            ))}
+                          </SideNavMenu>
+                        );
+                      } else {
+                        return (
+                          <SideNavLink
+                            key={subItem.name}
+                            renderIcon={IconComponent}
+                            onClick={() => navigate(subItem.link)}
+                            isActive={location.pathname === subItem.link}
+                          >
+                            {subItem.name}
+                          </SideNavLink>
+                        );
+                      }
+                    })
                     }
-                  })}
-                </div>
-              ))}
+                  </div>
+                ))}
             </SideNavItems>
           </SideNav>
         </Header>

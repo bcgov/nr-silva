@@ -17,48 +17,19 @@ export type LeftMenu = {
 const mainActivitiesItems: LeftMenu[] = [
   {
     name: 'Main activities',
-    items: [      
-      {
-        name: 'Opening',
-        icon: 'MapBoundaryVegetation',
-        link: '/opening',
-        disabled: false,
-        breadcrumb: false,
-        subItems: [
-          {
-            name: 'Home page',
-            link: '/opening',
-            disabled: false,
-            breadcrumb: false
-          },
-          {
-            name: 'Silviculture search',
-            link: '/silviculture-search',
-            disabled: false,
-            breadcrumb: true
-          }
-        ]
-      }
-    ]
-  }
-];
-
-const managementItems: LeftMenu[] = [
-  {
-    name: 'Management',
     items: [
       {
-        name: 'Settings',
-        icon: 'Settings',
-        link: '#',
-        disabled: true,
+        name: 'Dashboard',
+        icon: 'Dashboard',
+        link: '/opening',
+        disabled: false,
         breadcrumb: false
       },
       {
-        name: 'Notifications',
-        icon: 'Notification',
-        link: '#',
-        disabled: true,
+        name: 'Silviculture search',
+        icon: 'SearchLocate',
+        link: '/silviculture-search',
+        disabled: false,
         breadcrumb: false
       }
     ]
@@ -66,6 +37,5 @@ const managementItems: LeftMenu[] = [
 ];
 
 export const leftMenu: LeftMenu[] = [
-  ...mainActivitiesItems,
-  ...managementItems
+  ...mainActivitiesItems
 ];

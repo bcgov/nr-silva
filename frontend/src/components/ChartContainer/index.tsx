@@ -22,7 +22,7 @@ type Props = {
 function ChartContainer({ children, title, description }: Props): JSX.Element {
   return (
     <Grid className='chart-container-grid'>
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={16} >
         <ChartTitle title={title} subtitle={description} />
       </Column>
       {children}

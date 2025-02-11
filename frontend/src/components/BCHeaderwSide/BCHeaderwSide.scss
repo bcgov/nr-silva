@@ -1,5 +1,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
 
 .bcgov-header {
   overflow: hidden;
@@ -40,12 +41,12 @@ button.#{vars.$bcgov-prefix}--header__action--active {
 
 .#{vars.$bcgov-prefix}--header__global .#{vars.$bcgov-prefix}--btn--icon-only.#{vars.$bcgov-prefix}--header__action svg,
 button.#{vars.$bcgov-prefix}--header__action svg {
-  fill: var(--bx-icon-on-color) ;
+  fill: var(--bx-icon-on-color);
 }
 
-button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active > svg,
-.#{vars.$bcgov-prefix}--popover-container button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active > svg {
-  fill: var(--bx-icon-primary) ;
+button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active>svg,
+.#{vars.$bcgov-prefix}--popover-container button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active>svg {
+  fill: var(--bx-icon-primary);
 }
 
 button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__menu-trigger:focus {
@@ -63,7 +64,7 @@ button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__menu
   will-change: width;
 }
 
-.#{vars.$bcgov-prefix}--header-panel{
+.#{vars.$bcgov-prefix}--header-panel {
   overflow-y: scroll;
 }
 
@@ -93,11 +94,18 @@ button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__menu
     display: none;
   }
 }
+
 /* This rule is specific for the right panel only, it should fill the whole viewport
    when the screen hits the panel size or smaller */
 @media only screen and (max-width: 400px) {
+
   .#{vars.$bcgov-prefix}--header-panel--expanded.notifications-panel,
   .#{vars.$bcgov-prefix}--header-panel--expanded.profile-panel {
     width: 100vw;
   }
+}
+
+.side-nav-category-name {
+  padding: 1rem;
+  @include type.type-style('label-01');
 }

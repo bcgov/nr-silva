@@ -5,28 +5,30 @@ import EmptySection from "../EmptySection";
 import './styles.scss';
 import { useNotification } from '../../contexts/NotificationProvider';
 import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
+import ChartContainer from "../ChartContainer";
+import { Column } from "@carbon/react";
 
 
 const OpeningHistory: React.FC = () => {
   const { displayNotification } = useNotification();
   const [histories, setHistories] = useState<History[]>([]);
 
-  const loadTrends = async () => {    
-    const history = await fetchOpeningFavourites();    
+  const loadTrends = async () => {
+    const history = await fetchOpeningFavourites();
     setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
   };
 
-  useEffect(() => { loadTrends(); },[]);
+  useEffect(() => { loadTrends(); }, []);
 
   const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
     try {
-      if(!newStatus){      
+      if (!newStatus) {
         await deleteOpeningFavorite(openingId);
         displayNotification({
-          title: `Opening Id ${openingId} unfavourited`,          
+          title: `Opening Id ${openingId} unfavourited`,
           type: 'success',
           dismissIn: 8000,
-          onClose: () => {}
+          onClose: () => { }
         });
         loadTrends();
       }
@@ -36,19 +38,18 @@ const OpeningHistory: React.FC = () => {
         subTitle: `Failed to update favorite status for ${openingId}`,
         type: 'error',
         dismissIn: 8000,
-        onClose: () => {}
+        onClose: () => { }
       });
     }
   };
 
   return (
-    <div className='px-3 pb-3'>
-      <div className="row activity-history-container gx-4">
-        {histories && histories.length > 0 ?
+    <ChartContainer title="Track Openings" description="Follow your favourite openings">
+      {histories && histories.length > 0 ?
         histories.map((history, index) => (
           <div key={index} className="col-12 col-sm-4">
             <div className='d-flex'>
-              <div className="activity-history-header">              
+              <div className="activity-history-header">
                 <div className="d-flex flex-row align-items-center" data-id={history.id}>
                   <div className="favorite-icon">
                     <FavoriteButton
@@ -67,19 +68,19 @@ const OpeningHistory: React.FC = () => {
               </div>
             </div>
           </div>
-        )):
-        <div className="col-12">
-          <EmptySection 
-          pictogram="UserInsights"
-          fill="#0073E6"
-          title={"You don't have any favourites to show yet!"}
-          description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
-          
+        )) :
+        <Column sm={4} md={8} lg={16}>
+          <EmptySection
+            pictogram="UserInsights"
+            fill="#0073E6"
+            title={"You don't have any favourites to show yet!"}
+            description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
+
           />
-        </div>
-        }
-      </div>
-    </div>
+        </Column>
+      }
+    </ChartContainer>
+
   );
 };
 

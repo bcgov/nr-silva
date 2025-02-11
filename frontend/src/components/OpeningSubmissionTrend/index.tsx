@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useRef } from "react";
 
 // Third-party library imports
+import { useQuery } from "@tanstack/react-query";
 import { GroupedBarChart } from "@carbon/charts-react";
 import {
   FilterableMultiSelect,
   DatePicker,
   DatePickerInput,
-  Column
+  Column,
+  ComboBox
 } from "@carbon/react";
 import { differenceInDays, addDays, startOfMonth, endOfMonth, format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -26,9 +28,10 @@ import { TextValueData, sortItems } from "../../utils/multiSelectSortUtils";
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
 import { ChartOptions } from "./constants";
-import { useQuery } from "@tanstack/react-query";
+
 import { formatDateObjToString } from "../../utils/DateUtils";
 import { SubmissionTrendChartObj } from "./definitions";
+import { generateYearList } from "./utils";
 
 interface MultiSelectEvent {
   selectedItems: TextValueData[];
@@ -36,7 +39,7 @@ interface MultiSelectEvent {
 
 interface BarChartGroupedEvent {
   detail: {
-    datum: OpeningPerYearChart;
+    datum: SubmissionTrendChartObj;
   }
 }
 
@@ -44,12 +47,12 @@ interface BarChartGroupedEvent {
  * Displays a chart that shows opening submission trend.
  */
 const OpeningSubmissionTrend = (): JSX.Element => {
-  const [chartData, setChartData] = useState<OpeningPerYearChart[]>([]);
+  const yearOptions = generateYearList();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  // const [startDate, setStartDate] = useState<Date | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(null);
   const [dateRange, setDateRange] = useState<Date[]>([]);
-  const [orgUnitItems, setOrgUnitItems] = useState<TextValueData[]>([]);
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
   const [searchParameters, setSearchParameters] = useState<string>("");
@@ -70,8 +73,8 @@ const OpeningSubmissionTrend = (): JSX.Element => {
     queryFn: () => fetchUserSubmissionTrends({
       orgUnitCode: selectedOrgUnits?.map((orgUnit) => orgUnit.value),
       statusCode: selectedStatusCodes?.map((statusCode) => statusCode.value),
-      entryDateStart: formatDateObjToString(startDate),
-      entryDateEnd: formatDateObjToString(endDate)
+      entryDateStart: null,
+      entryDateEnd: null
     }),
     select: (data): SubmissionTrendChartObj[] => (
       data.map((item) => ({
@@ -96,71 +99,71 @@ const OpeningSubmissionTrend = (): JSX.Element => {
 
   // }, []);
 
-  const setDates = (dates: Date[]) => {
-    setDateRange(dates);
-    // Only apply dates if we have both selected
-    if (dates.length === 2) {
-      // If the difference between the dates is greater than 365 days, set the end date to 365 days after the start date
-      if (differenceInDays(dates[1], dates[0]) > 365) {
-        dates[1] = addDays(dates[0], 365);
-      }
-      // Set the start and end date
-      setStartDate(dates[0]);
-      setEndDate(dates[1]);
-    } else {
-      setStartDate(null);
-      setEndDate(null);
-    }
-  }
+  // const setDates = (dates: Date[]) => {
+  //   setDateRange(dates);
+  //   // Only apply dates if we have both selected
+  //   if (dates.length === 2) {
+  //     // If the difference between the dates is greater than 365 days, set the end date to 365 days after the start date
+  //     if (differenceInDays(dates[1], dates[0]) > 365) {
+  //       dates[1] = addDays(dates[0], 365);
+  //     }
+  //     // Set the start and end date
+  //     setStartDate(dates[0]);
+  //     setEndDate(dates[1]);
+  //   } else {
+  //     setStartDate(null);
+  //     setEndDate(null);
+  //   }
+  // }
 
-  useEffect(() => {
-    const fetchChartData = async () => {
-      try {
+  // useEffect(() => {
+  //   const fetchChartData = async () => {
+  //     try {
 
-        const searchValues: string[] = [];
+  //       const searchValues: string[] = [];
 
-        setIsLoading(true);
-        let formattedStartDate: string | null = null;
-        let formattedEndDate: string | null = null;
+  //       setIsLoading(true);
+  //       let formattedStartDate: string | null = null;
+  //       let formattedEndDate: string | null = null;
 
-        if (startDate) {
-          formattedStartDate = formatDateToString(startDate);
-          searchValues.push(`Start Date: ${formattedStartDate}`);
-        }
-        if (endDate) {
-          formattedEndDate = formatDateToString(endDate);
-          searchValues.push(`End Date: ${formattedEndDate}`);
-        }
+  //       if (startDate) {
+  //         formattedStartDate = formatDateToString(startDate);
+  //         searchValues.push(`Start Date: ${formattedStartDate}`);
+  //       }
+  //       if (endDate) {
+  //         formattedEndDate = formatDateToString(endDate);
+  //         searchValues.push(`End Date: ${formattedEndDate}`);
+  //       }
 
-        const orgUnits = selectedOrgUnits?.map((orgUnit) => orgUnit.value);
-        const statusCodes = selectedStatusCodes?.map((statusCode) => statusCode.value);
+  //       const orgUnits = selectedOrgUnits?.map((orgUnit) => orgUnit.value);
+  //       const statusCodes = selectedStatusCodes?.map((statusCode) => statusCode.value);
 
 
-        if (orgUnits.length > 0) {
-          searchValues.push(`Districts: ${orgUnits.join(", ")}`);
-        }
-        if (statusCodes.length > 0) {
-          searchValues.push(`Status: ${statusCodes.join(", ")}`);
-        }
+  //       if (orgUnits.length > 0) {
+  //         searchValues.push(`Districts: ${orgUnits.join(", ")}`);
+  //       }
+  //       if (statusCodes.length > 0) {
+  //         searchValues.push(`Status: ${statusCodes.join(", ")}`);
+  //       }
 
-        setSearchParameters(searchValues.join(", "));
+  //       setSearchParameters(searchValues.join(", "));
 
-        // const data: OpeningPerYearChart[] = await fetchUserSubmissionTrends({
-        //   orgUnitCode: orgUnits,
-        //   statusCode: statusCodes,
-        //   entryDateStart: formattedStartDate,
-        //   entryDateEnd: formattedEndDate
-        // });
+  //       // const data: OpeningPerYearChart[] = await fetchUserSubmissionTrends({
+  //       //   orgUnitCode: orgUnits,
+  //       //   statusCode: statusCodes,
+  //       //   entryDateStart: formattedStartDate,
+  //       //   entryDateEnd: formattedEndDate
+  //       // });
 
-        // setChartData(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-        setIsLoading(false);
-      }
-    };
-    fetchChartData();
-  }, [selectedOrgUnits, selectedStatusCodes, startDate, endDate]);
+  //       // setChartData(data);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching chart data:", error);
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchChartData();
+  // }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -187,13 +190,11 @@ const OpeningSubmissionTrend = (): JSX.Element => {
             label="District"
             id="district-dropdown"
             titleText="District"
-            items={orgUnitItems}
+            items={orgUnitQuery.data ?? []}
             itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
             selectionFeedback="top-after-reopen"
             onChange={(e: MultiSelectEvent) => setSelectedOrgUnits(e.selectedItems)}
             selectedItems={selectedOrgUnits}
-            sortItems={sortItems}
-            placeholder="Filter by district"
           />
 
           <FilterableMultiSelect
@@ -205,11 +206,17 @@ const OpeningSubmissionTrend = (): JSX.Element => {
             selectionFeedback="top-after-reopen"
             onChange={(e: MultiSelectEvent) => setSelectedStatusCodes(e.selectedItems)}
             selectedItems={selectedStatusCodes}
-            sortItems={sortItems}
-            placeholder="Filter by status"
           />
 
-          <DatePicker
+          <ComboBox
+            id="trend-year-selection"
+            selectedItem={null}
+            onChange={() => { }}
+            items={yearOptions}
+            titleText="Opening submission year"
+          />
+
+          {/* <DatePicker
             datePickerType="range"
             dateFormat="Y/m/d"
             allowInput={true}
@@ -228,38 +235,39 @@ const OpeningSubmissionTrend = (): JSX.Element => {
               size="md"
               labelText="End Date"
             />
-          </DatePicker>
+          </DatePicker> */}
         </div>
       </Column>
 
       <Column sm={4} md={8} lg={16} xlg={16}>
         {
-          isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <div className="bar-chart-container" data-testid="bar-chart">
-              {
-                chartData.length === 0 ? (
-                  <EmptySection
-                    pictogram={searchParameters ? 'UserSearch' : 'Touch'}
-                    title={searchParameters ? 'No results found' : "You don't have any openings to show yet"}
-                    description={
-                      searchParameters
-                        ? `Nothing found when searching for ${searchParameters}, try adjusting your filters to find what you want.`
-                        : 'Select a filter to bring up the openings'
-                    }
-                    fill="#0073E6"
-                  />
-                )
-                  : null
+          submissionTrendQuery.isFetching
+            ? (
+              <p>Loading...</p>
+            )
+            : null
+        }
+        {
+          !submissionTrendQuery.isFetching && !submissionTrendQuery.data?.length ? (
+            <EmptySection
+              pictogram={searchParameters ? 'UserSearch' : 'Touch'}
+              title={searchParameters ? 'No results found' : "You don't have any openings to show yet"}
+              description={
+                searchParameters
+                  ? `Nothing found when searching for ${searchParameters}, try adjusting your filters to find what you want.`
+                  : 'Select a filter to bring up the openings'
               }
-              {
-                chartData.length > 0 ? (
-                  <GroupedBarChart ref={chartRef} data={chartData} options={ChartOptions} />
-                ) : null
-              }
-            </div>
-          )}
+              fill="#0073E6"
+            />
+          )
+            : null
+        }
+        {
+          !submissionTrendQuery.isFetching && submissionTrendQuery.data?.length ? (
+            <GroupedBarChart ref={chartRef} data={submissionTrendQuery.data} options={ChartOptions} />
+          ) : null
+        }
+
       </Column>
 
     </ChartContainer>

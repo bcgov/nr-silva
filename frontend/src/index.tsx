@@ -6,8 +6,6 @@ import App from './App';
 import { ThemePreference } from './utils/ThemePreference';
 import { createRoot } from 'react-dom/client';
 import PaginationProvider from './contexts/PaginationProvider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { OpeningsSearchProvider } from './contexts/search/OpeningsSearch';
 import { Amplify } from 'aws-amplify';
 import amplifyconfig from './amplifyconfiguration';
