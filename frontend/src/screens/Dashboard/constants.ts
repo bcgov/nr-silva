@@ -1,6 +1,6 @@
 import { FavouriteCardProps } from "../../components/FavouriteCard/definitions";
 
-export const FavouriteCards: FavouriteCardProps[] = [
+export const FavouriteCardsConfig: FavouriteCardProps[] = [
   {
     index: 0,
     title: 'Silviculture search',

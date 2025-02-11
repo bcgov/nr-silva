@@ -1,15 +1,14 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
-.chart-container{
+.chart-container-grid {
     border: 1px solid;
     border-color: var(--#{vars.$bcgov-prefix}-border-subtle-02);
     border-radius: 4px;
-    height: 100%;
+    min-height: 450px;
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-}
-.chart-container .content{
-    padding: 0rem;
+    row-gap: 1rem;
+    padding: 1rem;
 }
 
 .#{vars.$bcgov-prefix}--list-box__label {

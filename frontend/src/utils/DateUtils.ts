@@ -39,3 +39,14 @@ export const formatLocalDate = (localDate?: string | null): string => {
 };
 
 
+/**
+ * Converts a Date object to a formatted string (`YYYY-MM-DD`) for backend use.
+ *
+ * @param {Date} dateToFormat - The Date object to format.
+ * @returns {string | null} The formatted date string (`YYYY-MM-DD`) or `null` if the date is invalid.
+ */
+export const formatDateObjToString = (dateToFormat: Date | null): string | null => {
+  if (!dateToFormat || isNaN(dateToFormat.getTime())) return null;
+
+  return DateTime.fromJSDate(dateToFormat).toFormat("yyyy-MM-dd");
+};

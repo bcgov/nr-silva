@@ -7,8 +7,9 @@ import {
 } from "@carbon/react";
 import RecentOpenings from "../../components/RecentOpenings";
 import OpeningMetricsTab from "../../components/OpeningMetricsTab";
-import { FavouriteCards } from "./constants";
+import OpeningSubmissionTrend from "../../components/OpeningSubmissionTrend";
 
+import { FavouriteCardsConfig } from "./constants";
 import './styles.scss'
 
 const Dashboard: React.FC = () => {
@@ -43,7 +44,7 @@ const Dashboard: React.FC = () => {
         {/* Fav cards sub-grid */}
         <Grid>
           {
-            FavouriteCards.map((card) => (
+            FavouriteCardsConfig.map((card) => (
               <Column key={card.index} sm={4} md={4} lg={4}>
                 <FavouriteCard
                   index={card.index}
@@ -60,6 +61,11 @@ const Dashboard: React.FC = () => {
       <Column sm={4} md={8} lg={16}>
         <RecentOpenings />
       </Column>
+
+      <Column sm={4} md={8} lg={16} max={8}>
+        <OpeningSubmissionTrend />
+      </Column>
+
     </Grid>
   );
 

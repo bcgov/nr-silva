@@ -7,13 +7,20 @@
   padding: 2rem;
   max-inline-size: none;
   row-gap: 2.5rem;
+
+  .#{vars.$bcgov-prefix}--css-grid-column {
+    margin: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--subgrid {
+    margin-inline: 0;
+  }
 }
 
 // Small
 @media only screen and (max-width: 671px) {
   .default-grid {
     padding: 2rem 1rem;
-    // row-gap: 2rem;
   }
 }
 

@@ -1,17 +1,16 @@
 import React, { useRef, useEffect } from "react";
 import './styles.scss';
 import SectionTitle from "../SectionTitle";
-import BarChartGrouped from "../BarChartGrouped";
+import BarChartGrouped from "../OpeningSubmissionTrend";
 import ChartContainer from "../ChartContainer";
 import OpeningHistory from "../OpeningHistory";
-import MyRecentActions from "../MyRecentActions";
 
 const OpeningMetricsTab: React.FC = () => {
   const trackOpeningRef = useRef<HTMLDivElement>(null);
-  
+
   // Optional: Scroll to "Track Openings" when this component mounts
   useEffect(() => {
-    
+
     const params = new URLSearchParams(window.location.search);
     const scrollToSection = params.get('scrollTo');
 
@@ -37,7 +36,7 @@ const OpeningMetricsTab: React.FC = () => {
             </ChartContainer>
           </div>
           <div className="col-xxl-6" ref={trackOpeningRef}> {/* Add ref here to scroll */}
-            <ChartContainer title="Track Openings" description="Follow your favourite openings">              
+            <ChartContainer title="Track Openings" description="Follow your favourite openings">
               <OpeningHistory />
             </ChartContainer>
           </div>

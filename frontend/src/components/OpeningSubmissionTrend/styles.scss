@@ -1,0 +1,45 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.bar-chart-container {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  .cds--cc--axes g.axis g.tick text {
+    fill: var(--#{vars.$bcgov-prefix}-text-secondary);
+  }
+
+  .cds--cc--grid rect.chart-grid-backdrop {
+    fill: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
+
+  .bars {
+    cursor: pointer;
+  }
+}
+
+.submission-trend-input-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  column-gap: 0.125rem;
+  width: 100%;
+
+  .#{vars.$bcgov-prefix}--form-item {
+    min-height: 66px;
+    width: calc(100% / 3);
+  }
+
+  .#{vars.$bcgov-prefix}--multi-select__wrapper {
+    width: calc(100% / 3);
+  }
+}
+
+
+@media only screen and (max-width: 671px) {
+  .submission-trend-input-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+}

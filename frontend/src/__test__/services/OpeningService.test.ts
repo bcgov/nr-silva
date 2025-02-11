@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
-import { 
-  fetchOpeningsPerYear, 
-  fetchFreeGrowingMilestones, 
-  fetchRecentActions 
+import {
+  fetchUserSubmissionTrends,
+  fetchFreeGrowingMilestones,
+  fetchRecentActions
 } from '../../services/OpeningService';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
@@ -20,7 +20,7 @@ describe('OpeningService', () => {
     (getAuthIdToken as vi.Mock).mockReturnValue(authToken);
   });
 
-  describe('fetchOpeningsPerYear', () => {
+  describe('fetchUserSubmissionTrends', () => {
     it('should fetch openings per year successfully', async () => {
       const mockData = [
         { monthName: 'Jan', amount: 10, statusCounts: { APP: 5, FG: 2 }, month: 1, year: 2023 },
@@ -29,11 +29,11 @@ describe('OpeningService', () => {
       (axios.get as vi.Mock).mockResolvedValue({ data: mockData });
 
       const props = { orgUnitCode: ['001'], statusCode: ['APP'], entryDateStart: '2023-01-01', entryDateEnd: '2023-12-31' };
-      const result = await fetchOpeningsPerYear(props);
+      const result = await fetchUserSubmissionTrends(props);
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/users/submission-trends?orgUnitCode=001&statusCode=APP&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
       expect(result).toEqual([
@@ -45,7 +45,7 @@ describe('OpeningService', () => {
     it('should handle error while fetching openings per year', async () => {
       (axios.get as vi.Mock).mockRejectedValue(new Error('Network Error'));
 
-      await expect(fetchOpeningsPerYear({})).rejects.toThrow('Network Error');
+      await expect(fetchUserSubmissionTrends({})).rejects.toThrow('Network Error');
     });
   });
 
@@ -62,7 +62,7 @@ describe('OpeningService', () => {
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/dashboard-metrics/free-growing-milestones?orgUnitCode=001&clientNumber=123&entryDateStart=2023-01-01&entryDateEnd=2023-12-31`, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
       expect(result).toEqual([

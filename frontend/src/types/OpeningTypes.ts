@@ -81,3 +81,38 @@ export interface OpeningsSearch {
   updateTimestamp: string;
   favourite: boolean;
 }
+
+/**
+ * Corresponds to the OrgUnitEntity in the Oracle backend.
+ */
+export interface OrgUnitEntity {
+  orgUnitNo: number;
+  orgUnitCode: string;
+  orgUnitName: string;
+  locationCode: string;
+  areaCode: string;
+  telephoneNo: string;
+  orgLevelCode: string;
+  officeNameCode: string;
+  rollupRegionNo: number;
+  rollupRegionCode: string;
+  rollupDistNo: number;
+  rollupDistCode: string;
+  effectiveDate: string;
+  expiryDate: string;
+  updateTimestamp: string;
+}
+
+
+/**
+ * Corresponds to the OpeningsPerYearDto in the Postgres backend.
+ */
+export type OpeningsPerYearDto = {
+  month: number,
+  year: number,
+  monthName: string,
+  amount: number,
+  statusCounts: {
+    [key: string]: number
+  }
+}

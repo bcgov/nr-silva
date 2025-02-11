@@ -1,23 +1,23 @@
 // React and test imports
 import React from "react";
-import { render, screen, fireEvent, act, waitFor  } from "@testing-library/react";
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 // Third-party library imports
 import { BrowserRouter } from "react-router-dom";
 
 // Utility functions
-import {fetchOpeningsPerYear} from "../../services/OpeningService";
+import { fetchUserSubmissionTrends } from "../../services/OpeningService";
 
 // Local components
 import BarChartGrouped from "../../components/BarChartGrouped";
 
 // Mock services
-vi.mock("../../services/OpeningService",async () => {
+vi.mock("../../services/OpeningService", async () => {
   const actual = await vi.importActual("../../services/OpeningService");
   return {
     ...actual,
-    fetchOpeningsPerYear: vi.fn(),
+    fetchUserSubmissionTrends: vi.fn(),
   };
 });
 
@@ -41,90 +41,90 @@ vi.mock("react-router-dom", async () => {
 // Sample data
 const sampleResultsApi = [
   {
-      "month": 12,
-      "year": 2023,
-      "monthName": "Dec",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 12,
+    "year": 2023,
+    "monthName": "Dec",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 1,
-      "year": 2024,
-      "monthName": "Jan",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 1,
+    "year": 2024,
+    "monthName": "Jan",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 2,
-      "year": 2024,
-      "monthName": "Feb",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 2,
+    "year": 2024,
+    "monthName": "Feb",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 3,
-      "year": 2024,
-      "monthName": "Mar",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 3,
+    "year": 2024,
+    "monthName": "Mar",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 4,
-      "year": 2024,
-      "monthName": "Apr",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 4,
+    "year": 2024,
+    "monthName": "Apr",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 5,
-      "year": 2024,
-      "monthName": "May",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 5,
+    "year": 2024,
+    "monthName": "May",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 6,
-      "year": 2024,
-      "monthName": "Jun",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 6,
+    "year": 2024,
+    "monthName": "Jun",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 7,
-      "year": 2024,
-      "monthName": "Jul",
-      "amount": 3,
-      "statusCounts": {
-          "APP": 3
-      }
+    "month": 7,
+    "year": 2024,
+    "monthName": "Jul",
+    "amount": 3,
+    "statusCounts": {
+      "APP": 3
+    }
   },
   {
-      "month": 8,
-      "year": 2024,
-      "monthName": "Aug",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 8,
+    "year": 2024,
+    "monthName": "Aug",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 9,
-      "year": 2024,
-      "monthName": "Sep",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 9,
+    "year": 2024,
+    "monthName": "Sep",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 10,
-      "year": 2024,
-      "monthName": "Oct",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 10,
+    "year": 2024,
+    "monthName": "Oct",
+    "amount": 0,
+    "statusCounts": {}
   },
   {
-      "month": 11,
-      "year": 2024,
-      "monthName": "Nov",
-      "amount": 0,
-      "statusCounts": {}
+    "month": 11,
+    "year": 2024,
+    "monthName": "Nov",
+    "amount": 0,
+    "statusCounts": {}
   }
 ];
 
@@ -139,7 +139,7 @@ const sampleResults = sampleResultsApi.map(item => ({
 
 describe("BarChartGrouped Component", () => {
   it("renders without crashing", () => {
-    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
     render(
       <BrowserRouter>
         <BarChartGrouped />
@@ -149,7 +149,7 @@ describe("BarChartGrouped Component", () => {
   });
 
   it("displays filter dropdowns and date pickers", async () => {
-    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
     render(
       <BrowserRouter>
         <BarChartGrouped />
@@ -165,7 +165,7 @@ describe("BarChartGrouped Component", () => {
 
   it("calls the fetchOrgUnits function on mount", async () => {
     const { fetchOrgUnits } = await import("../../services/search/openings");
-    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
     render(
       <BrowserRouter>
         <BarChartGrouped />
@@ -176,8 +176,8 @@ describe("BarChartGrouped Component", () => {
   });
 
   it("updates selected filters when a filterable multi-select item is chosen", async () => {
-    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
-    await act(async () =>render(
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
+    await act(async () => render(
       <BrowserRouter>
         <BarChartGrouped />
       </BrowserRouter>
@@ -192,7 +192,7 @@ describe("BarChartGrouped Component", () => {
   });
 
   it("renders empty state when no data is available", async () => {
-    (fetchOpeningsPerYear as vi.Mock).mockResolvedValue([]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
     render(
       <BrowserRouter>
         <BarChartGrouped />
