@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       hmr: {
         overlay: false
-      },
+      }
     },
     preview: {
       port: 3000
@@ -63,11 +63,11 @@ export default defineConfig(({ mode }) => {
           'src/module.d.ts',
           'src/react-app-env.d.ts',
           'src/reportWebVitals.ts'
-        ],
+        ]
       },
       server: {
         deps: {
-          inline: [/^(?!.*vitest).*$/]
+          inline: ['uuid']
         }
       }
     }
