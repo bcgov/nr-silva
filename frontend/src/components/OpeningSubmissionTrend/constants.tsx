@@ -1,10 +1,15 @@
 import ReactDOMServer from "react-dom/server";
-import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+
 import BarChartTooltip from "../BarChartTooltip";
 import { ScaleTypes } from "@carbon/charts";
+import { SubmissionTrendChartObj } from "./definitions";
 
 
-const tooltip = (data: OpeningPerYearChart[], defaultHTML: string, datum: OpeningPerYearChart) => {
+const tooltip = (
+  _data: SubmissionTrendChartObj[],
+  _defaultHTML: string,
+  datum: SubmissionTrendChartObj
+) => {
   const tooltipContent = <BarChartTooltip datum={datum} />;
   return ReactDOMServer.renderToString(tooltipContent);
 }

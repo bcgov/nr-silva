@@ -13,3 +13,21 @@ export const generateYearList = (): number[] => {
 
   return years;
 };
+
+/**
+ * Generates the start or end date of a given year in `YYYY-MM-DD` format.
+ * If the provided year is `null`, the function returns `null`.
+ *
+ * @param {number | null} year - The year for which the date should be generated, or `null` to return `null`.
+ * @param {boolean} isStartDate - If `true`, returns the start date (`YYYY-01-01`);
+ *                                if `false`, returns the end date (`YYYY-12-31`).
+ * @returns {string | null} The formatted date string in `YYYY-MM-DD` format, or `null` if `year` is `null`.
+ */
+export const getYearBoundaryDate = (year: number | null, isStartDate: boolean): string | null => {
+  if(!year){
+    return null;
+  }
+  const month = isStartDate ? "01" : "12";
+  const day = isStartDate ? "01" : "31";
+  return `${year}-${month}-${day}`;
+};

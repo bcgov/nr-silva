@@ -5,8 +5,9 @@
     border: 1px solid;
     border-color: var(--#{vars.$bcgov-prefix}-border-subtle-02);
     border-radius: 4px;
-    min-height: 450px;
+    min-height: 480px;
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     row-gap: 1rem;
     padding: 1rem;
+    grid-auto-rows: max-content;
 }
