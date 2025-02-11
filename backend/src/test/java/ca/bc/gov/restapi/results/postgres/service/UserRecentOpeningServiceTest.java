@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
@@ -101,11 +102,11 @@ class UserRecentOpeningServiceTest {
     void storeViewedOpening_invalidOpeningId_throwsException() {
         Long invalidOpeningId = null;
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userRecentOpeningService.storeViewedOpening(invalidOpeningId);
-        });
+        Exception exception = assertThrows(InvalidOpeningIdException.class, () ->
+            userRecentOpeningService.storeViewedOpening(invalidOpeningId)
+        );
 
-        assertEquals("Opening ID must contain numbers only!", exception.getMessage());
+        assertEquals(new InvalidOpeningIdException().getMessage(), exception.getMessage());
     }
 
     @Test
