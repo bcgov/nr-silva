@@ -326,10 +326,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               o.OPENING_ID,
               o.ENTRY_USERID as user_id,
               o.ENTRY_TIMESTAMP,
-              o.UPDATE_TIMESTAMP,
               o.OPENING_STATUS_CODE as status,
-              ou.ORG_UNIT_CODE AS org_unit_code,
-              ou.ORG_UNIT_NAME AS org_unit_name,
               res.CLIENT_NUMBER AS client_number
           FROM THE.OPENING o
           LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)

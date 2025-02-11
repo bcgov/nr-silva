@@ -26,7 +26,7 @@ public record ForestClientDto(
 
   @Transient
   public String name() {
-    if (Objects.equals(this.clientTypeCode, "I")) {
+    if (Objects.equals(this.clientTypeCode, ForestClientTypeEnum.of('I'))) {
       return Stream.of(this.legalFirstName, this.legalMiddleName, this.clientName)
           .filter(Objects::nonNull)
           .map(String::trim)

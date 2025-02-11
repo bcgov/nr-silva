@@ -84,12 +84,6 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
-# OpenSearch settings
-nr-results-ecs-version: 8.9
-nr-results-backend-env-opensearch: ${RESULTS_ENV_OPENSEARCH:development}
-nr-results-team-email-address: Team.Silva@gov.bc.ca
-
-  
 # Actuator and ops
 management:
   enable-native-support: true
@@ -99,19 +93,12 @@ management:
     health:
       show-details: always
 
-# https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2
-quarkus:
-  native:
-    additional-build-args: -march=native
-
 # Certificate for the Database
 ca:
   bc:
     gov:
       nrs:
         self-uri: ${SELF_URI:http://localhost:8080}
-        dashboard-job-users: ${DASHBOARD_JOB_IDIR_USERS:NONE}
-        wms-whitelist: ${WMS_LAYERS_WHITELIST_USERS:NONE}
         org-units: ${OPENING_SEARCH_ORG_UNITS:DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC}
         forest-client-api:
           address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
