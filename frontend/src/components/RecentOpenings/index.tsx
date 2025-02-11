@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, InlineNotification, Table, TableBody, TableContainer, TableHead, TableHeader, TableRow } from '@carbon/react';
+import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow } from '@carbon/react';
 import './styles.scss';
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
@@ -57,6 +57,7 @@ const RecentOpenings = () => {
           type="button"
           size={breakpoint === 'sm' ? 'sm' : 'lg'}
           onClick={toggleMap}
+          disabled={!recentOpeningsQuery.data?.data.length}
         >
           {showMap ? 'Hide map' : 'Show map'}
         </Button>
@@ -94,7 +95,7 @@ const RecentOpenings = () => {
       }
       {/* Empty Table */}
       {
-        !recentOpeningsQuery.data?.data.length ? (
+        !recentOpeningsQuery.isFetching && !recentOpeningsQuery.data?.data.length ? (
           <EmptySection
             pictogram="Magnify"
             title="There are no openings to show yet"
@@ -108,7 +109,11 @@ const RecentOpenings = () => {
       {
         !recentOpeningsQuery.isFetching && recentOpeningsQuery.data?.data.length ?
           (
-            <Table className="search-data-table" aria-label="Recent openings table">
+            <Table
+              className="recent-openings-table default-zebra-table"
+              aria-label="Recent openings table"
+              useZebraStyles
+            >
               <TableHead>
                 <TableRow>
                   {

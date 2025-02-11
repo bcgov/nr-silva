@@ -145,7 +145,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   };
 
   return (
-    <>
+    <div className="search-screen-data-table-container">
       <TableContainer className="search-data-table">
         <TableToolbar aria-label="data table toolbar">
           <TableToolbarContent className="table-toolbar align-items-center justify-content-between">
@@ -447,7 +447,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         openingDetails={openingDetails}
         setOpeningDetails={setOpeningDetails}
       />
-    </>
+    </div>
   );
 };
 

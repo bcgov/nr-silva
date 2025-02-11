@@ -1,5 +1,4 @@
 import { createBrowserRouter, Navigate, type RouteObject, RouterProvider } from 'react-router-dom';
-import './custom.scss';
 import Landing from "./screens/Landing";
 import SideLayout from './layouts/SideLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -8,6 +7,9 @@ import SilvicultureSearch from './screens/SilvicultureSearch';
 import ErrorHandling from './screens/ErrorHandling';
 import { useAuth } from './contexts/AuthProvider';
 import { Loading } from '@carbon/react';
+
+import './styles/theme.scss';
+import './styles/default-components.scss'
 
 const publicRoutes: RouteObject[] = [
   {

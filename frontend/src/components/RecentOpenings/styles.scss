@@ -22,14 +22,25 @@
     }
   }
 
+  .inline-notification {
+    margin: 1rem;
+  }
+
+  .#{vars.$bcgov-prefix}--data-table-content {
+    overflow: unset; // This makes tooltip visible
+  }
+
+  .action-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
   @media only screen and (max-width: 671px) {
     .title-section {
       flex-direction: column;
       align-items: flex-start;
     }
-  }
-
-  .inline-notification {
-    margin: 1rem;
   }
 }

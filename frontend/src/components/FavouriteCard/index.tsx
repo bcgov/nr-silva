@@ -32,8 +32,10 @@ function FavouriteCard({
       tabIndex={index}
       onClick={() => navigate(link)}
     >
-      <Icon className="fav-card-icon" />
-      <p className="fav-card-title">{title}</p>
+      <div className="fav-card-content">
+        <Icon className="fav-card-icon" />
+        <p className="fav-card-title">{title}</p>
+      </div>
     </ClickableTile>
   );
 }

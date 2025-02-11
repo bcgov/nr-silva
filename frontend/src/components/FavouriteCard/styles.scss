@@ -1,17 +1,18 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
-@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@carbon/type';
 
-.fav-card {
+.#{vars.$bcgov-prefix}--tile.fav-card {
   padding: 1rem;
-  display: flex;
-  flex-direction: row;
-  gap: 0.75rem;
-  align-items: center;
   height: 4rem;
   border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
 
-  background:var(--#{vars.$bcgov-prefix}-layer-02);
+  .fav-card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
 
   .fav-card-icon {
     width: 2rem;
@@ -22,4 +23,8 @@
   .fav-card-title {
     @include type.type-style('heading-02');
   }
+}
+
+.#{vars.$bcgov-prefix}--tile.fav-card:hover {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
 }

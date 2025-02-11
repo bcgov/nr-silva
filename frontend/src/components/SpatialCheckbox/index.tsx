@@ -13,13 +13,11 @@ const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
   handleRowSelection
 }) => (
   <Tooltip
-    className="align-self-stretch"
     align="bottom-left"
     autoAlign
     label="Click to view this opening's map activity.">
     <Checkbox
       data-testid={`checkbox-${rowId}`}
-      className="align-self-stretch"
       id={`checkbox-label-${rowId}`}
       checked={selectedRows.includes(rowId)}
       onChange={() => handleRowSelection(rowId)}
