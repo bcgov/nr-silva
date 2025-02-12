@@ -29,12 +29,8 @@ parameters:
     value: /var/lib/postgresql
   - name: CPU_REQUEST
     value: 50m
-  - name: CPU_LIMIT
-    value: 115m
   - name: MEMORY_REQUEST
     value: 150Mi
-  - name: MEMORY_LIMIT
-    value: 250Mi
   - name: DB_PVC_SIZE
     description: Volume space available for data, e.g. 512Mi, 2Gi.
     displayName: Database Volume Capacity
@@ -146,9 +142,6 @@ objects:
                 requests:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
-                limits:
-                  cpu: ${CPU_LIMIT}
-                  memory: ${MEMORY_LIMIT}
               readinessProbe:
                 exec:
                   command:
