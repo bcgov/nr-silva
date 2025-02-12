@@ -38,17 +38,12 @@ class OpeningTrendsServiceTest {
   }
 
   private List<OpeningTrendsProjection> mockOpeningsEntityList() {
-    LocalDateTime entryTimestamp = LocalDateTime.now();
 
     OpeningTrendsProjection entity = new TestOpeningTrendsProjection(
-        123456L,
-        "userId",
-        entryTimestamp,
-        entryTimestamp,
+        LocalDate.now().getYear(),
+        LocalDate.now().getMonthValue(),
         "APP",
-        "DCR",
-        "District Code",
-        "00012797"
+        1
     );
     return List.of(entity);
   }
@@ -191,18 +186,11 @@ class OpeningTrendsServiceTest {
 
   @Getter
   @AllArgsConstructor
-  static
-  class TestOpeningTrendsProjection implements OpeningTrendsProjection {
-
-    private Long openingId;
-    private String userId;
-    private LocalDateTime entryTimestamp;
-    private LocalDateTime updateTimestamp;
-    private String status;
-    private String orgUnitCode;
-    private String orgUnitName;
-    private String clientNumber;
-
+  static class TestOpeningTrendsProjection implements OpeningTrendsProjection {
+    int year;
+    int month;
+    String status;
+    long count;
   }
 
   private String getMonthName(int month) {

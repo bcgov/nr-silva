@@ -323,25 +323,27 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
       nativeQuery = true,
       value = """
           SELECT
-              o.OPENING_ID,
-              o.ENTRY_USERID as user_id,
-              o.ENTRY_TIMESTAMP,
-              o.UPDATE_TIMESTAMP,
-              o.OPENING_STATUS_CODE as status,
-              ou.ORG_UNIT_CODE AS org_unit_code,
-              ou.ORG_UNIT_NAME AS org_unit_name,
-              res.CLIENT_NUMBER AS client_number
+              EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS year,
+              EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS month,
+              o.OPENING_STATUS_CODE AS status,
+              COUNT(*) AS count
           FROM THE.OPENING o
           LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
           LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
           WHERE
               (
-                  o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
-                  OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+                  o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
+                  AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+                  OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
+                  AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
               )
-              AND ( 'NOVALUE' in (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList) )
-              AND ( 'NOVALUE' in (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList) )
-          ORDER BY o.ENTRY_TIMESTAMP""")
+              AND ('NOVALUE' IN (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList))
+              AND ('NOVALUE' IN (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList))
+          GROUP BY
+              EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
+              EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
+              o.OPENING_STATUS_CODE
+          ORDER BY year, month""")
   List<OpeningTrendsProjection> getOpeningTrends(
       String startDate,
       String endDate,
