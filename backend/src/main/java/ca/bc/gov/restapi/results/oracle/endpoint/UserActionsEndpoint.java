@@ -59,17 +59,12 @@ public class UserActionsEndpoint {
       LocalDate entryDateEnd
   ) {
 
+    LocalDate endDate = getDateOrDefault(entryDateEnd,LocalDate.now());
+    LocalDate startDate = getDateOrDefault(entryDateStart,endDate.minusYears(1));
+
+
     List<OpeningsPerYearDto> resultList =
-        openingTrendsService.getOpeningSubmissionTrends(
-            getDateOrDefault(entryDateStart,LocalDate.now().minusYears(1)),
-            getDateOrDefault(entryDateEnd,
-                //If we have an end date, we get it, otherwise we use the current date,
-                // and no matter if we have the start date or not, we add a year to the end date
-                getDateOrDefault(entryDateStart,LocalDate.now().minusYears(1)).plusYears(1)
-            ),
-            orgUnits,
-            statusCodes
-        );
+        openingTrendsService.getOpeningSubmissionTrends(startDate, endDate,orgUnits,statusCodes);
 
     if (resultList.isEmpty()) {
       return ResponseEntity.noContent().build();

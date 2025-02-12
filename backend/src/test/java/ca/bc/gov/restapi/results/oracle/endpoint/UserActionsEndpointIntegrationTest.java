@@ -8,6 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +31,23 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
 
   @Autowired
   private MockMvc mockMvc;
+
+  @Autowired
+  private OpeningRepository openingRepository;
+
+
+  @BeforeEach
+  @Transactional
+  public void setTup(){
+    openingRepository
+        .findById(1009974L)
+        .map(openingEntity -> openingEntity
+            .withUpdateTimestamp(LocalDateTime.of(LocalDate.now().withDayOfMonth(1), LocalTime.MIDNIGHT))
+            .withEntryTimestamp(LocalDateTime.of(LocalDate.now().withDayOfMonth(1), LocalTime.MIDNIGHT))
+        )
+        .map(openingRepository::save);
+  }
+
 
   @Test
   @DisplayName("User recent actions requests test with data should succeed")
@@ -60,15 +86,15 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
   @Test
   @DisplayName("Openings submission trends happy path should succeed")
   void getOpeningsSubmissionTrends_happyPath_shouldSucceed() throws Exception {
-
     mockMvc.perform(get("/api/users/submission-trends")
-            .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON)
+        )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].month").value("12"))
-        .andExpect(jsonPath("$[0].amount").value(0))
-        .andExpect(jsonPath("$[1].monthName").value("Jan"))
-        .andExpect(jsonPath("$[1].amount").value(3));
+        .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[12].amount").value(1))
+        .andExpect(jsonPath("$[12].monthName").value(
+            Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
   }
 
   @Test
@@ -89,12 +115,14 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
   void getOpeningsSubmissionTrends_withFilters_shouldSucceed() throws Exception {
 
     mockMvc.perform(get("/api/users/submission-trends")
-            .param("statusCode", "APP")
+            .param("statusCode", "FG")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$[0].month").value("12"))
-        .andExpect(jsonPath("$[0].amount").value(0));
+        .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
+        .andExpect(jsonPath("$[12].amount").value(1))
+        .andExpect(jsonPath("$[12].monthName").value(
+            Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
   }
 
   @Test

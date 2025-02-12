@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.5</version>
+    <version>3.4.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -43,6 +43,11 @@
     <hibernate.version>6.6.3.Final</hibernate.version>
     <testcontainers.version>1.20.4</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
+    <spring-oauth2.version>3.4.2</spring-oauth2.version>
+    <spring-security.version>6.4.2</spring-security.version>
+    <logback-classic.version>1.5.16</logback-classic.version>
+    <spring-logging.version>3.4.2</spring-logging.version>
+    <oracle-jdbc.version>21.17.0.0</oracle-jdbc.version>
   </properties>
 
   <profiles>
@@ -216,7 +221,7 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock-standalone</artifactId>
-      <version>3.9.2</version>
+      <version>3.11.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -235,28 +240,6 @@
     <finalName>nr-results-backend</finalName>
 
     <plugins>
-      <!--
-        Hibernate: Configs for Hibernate Cloud Native compatibility
-        More: https://vladmihalcea.com/maven-gradle-hibernate-enhance-plugin/
-      -->
-      <plugin>
-        <groupId>org.hibernate.orm.tooling</groupId>
-        <artifactId>hibernate-enhance-maven-plugin</artifactId>
-        <version>${hibernate.version}</version>
-        <executions>
-          <execution>
-            <id>enhance</id>
-            <goals>
-              <goal>enhance</goal>
-            </goals>
-            <configuration>
-              <enableLazyInitialization>true</enableLazyInitialization>
-              <enableDirtyTracking>true</enableDirtyTracking>
-              <enableAssociationManagement>true</enableAssociationManagement>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
       <!--
         Spring Boot: Packaging and running
@@ -494,7 +477,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.20.1</version>
+            <version>10.21.2</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -525,7 +508,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.47</version>
+        <version>10.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
@@ -533,6 +516,53 @@
         <version>${testcontainers.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        <version>${spring-oauth2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        <version>${spring-oauth2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-logging</artifactId>
+        <version>${spring-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <version>${spring-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc11</artifactId>
+        <version>${oracle-jdbc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback-classic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback-classic.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
