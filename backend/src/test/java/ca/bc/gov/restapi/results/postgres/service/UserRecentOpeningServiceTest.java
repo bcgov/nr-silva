@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
