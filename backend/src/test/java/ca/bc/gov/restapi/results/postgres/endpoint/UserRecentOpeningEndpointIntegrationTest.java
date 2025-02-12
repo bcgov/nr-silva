@@ -36,16 +36,16 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
     userRecentOpeningRepository.deleteAll();
     userRecentOpeningRepository.saveAllAndFlush(
         List.of(
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().plusMinutes(3)),
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().minusMinutes(10))
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L,
+                LocalDateTime.now().plusMinutes(3))
         )
     );
   }
 
   @Test
-  @DisplayName("Should fail if we have a conflicting data")
-  void shouldReturnProblemDetailsError() throws Exception {
+  @DisplayName("Should succeed on listing")
+  void shouldReturnSuccessOnListing() throws Exception {
 
     mockMvc
         .perform(
@@ -54,8 +54,8 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().is4xxClientError())
-        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
   }
 
   @Test
@@ -70,9 +70,30 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
         )
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserOpening record(s) not found!\",\"instance\":\"/api/openings/recent/123456\"}"));
+        .andExpect(content().json("""
+                {
+                  "type":"about:blank",
+                  "title":"Not Found",
+                  "status":404,
+                  "detail":"UserOpening record(s) not found!",
+                  "instance":"/api/openings/recent/123456"
+                }"""
+            )
+        );
   }
 
+  @Test
+  @DisplayName("Should succeed to add to fav")
+  void shouldAddOpeningIfExists() throws Exception {
+    mockMvc
+        .perform(
+            put("/api/openings/recent/102")
+                .with(csrf().asHeader())
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isAccepted());
+  }
 
 
 }
