@@ -33,6 +33,16 @@
     .#{vars.$bcgov-prefix}--multi-select__wrapper {
       width: calc(100% / 3);
     }
+
+    @media only screen and (max-width: 1311px) {
+      .#{vars.$bcgov-prefix}--list-box__wrapper {
+        width: 100%;
+      }
+
+      .#{vars.$bcgov-prefix}--multi-select__wrapper {
+        width: 100%;
+      }
+    }
   }
 
   .trend-loading-col {

@@ -82,7 +82,7 @@ const OpeningSubmissionTrend = (): JSX.Element => {
         entryDateStart: getYearBoundaryDate(selectedYear, true),
         entryDateEnd: getYearBoundaryDate(selectedYear, false)
       });
-
+      // This is to handle the 204 no content
       return data.length ? data : undefined;
     },
     select: (data): SubmissionTrendChartObj[] | undefined => (
@@ -96,9 +96,6 @@ const OpeningSubmissionTrend = (): JSX.Element => {
         : undefined),
     refetchOnMount: true
   });
-
-  console.log(submissionTrendQuery.data);
-
 
   const handleYearSelection = (e: ComboBoxEvent) => {
     setSelectedYear(e.selectedItem)
@@ -115,7 +112,6 @@ const OpeningSubmissionTrend = (): JSX.Element => {
   useEffect(() => {
     submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
-
 
 
   useEffect(() => {
@@ -203,7 +199,7 @@ const OpeningSubmissionTrend = (): JSX.Element => {
             : null
         }
         {
-          !submissionTrendQuery.isFetching && submissionTrendQuery.data?.length ? (
+          !submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
             <GroupedBarChart ref={chartRef} data={submissionTrendQuery.data} options={ChartOptions} />
           ) : null
         }

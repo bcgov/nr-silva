@@ -115,6 +115,7 @@ function BCHeaderwSide(): JSX.Element {
                       } else {
                         return (
                           <SideNavLink
+                            className="side-nav-item"
                             key={subItem.name}
                             renderIcon={IconComponent}
                             onClick={() => navigate(subItem.link)}

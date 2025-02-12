@@ -109,3 +109,11 @@ button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__menu
   padding: 1rem;
   @include type.type-style('label-01');
 }
+
+.side-nav-item {
+  cursor: pointer;
+
+  .#{vars.$bcgov-prefix}--side-nav__icon>svg {
+    fill: var(--#{vars.$bcgov-prefix}-link-primary);
+  }
+}

@@ -11,7 +11,7 @@ import OpeningSubmissionTrend from "../../components/OpeningSubmissionTrend";
 
 import { FavouriteCardsConfig } from "./constants";
 import './styles.scss'
-import OpeningHistory from "../../components/OpeningHistory";
+import FavouriteOpenings from "../../components/FavouriteOpenings";
 
 const Dashboard: React.FC = () => {
 
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16} max={8}>
-        <OpeningHistory />
+        <FavouriteOpenings />
       </Column>
     </Grid>
   );

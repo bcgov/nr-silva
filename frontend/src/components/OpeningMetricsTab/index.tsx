@@ -3,7 +3,7 @@ import './styles.scss';
 import SectionTitle from "../SectionTitle";
 import BarChartGrouped from "../OpeningSubmissionTrend";
 import ChartContainer from "../ChartContainer";
-import OpeningHistory from "../OpeningHistory";
+import OpeningHistory from "../FavouriteOpenings";
 
 const OpeningMetricsTab: React.FC = () => {
   const trackOpeningRef = useRef<HTMLDivElement>(null);

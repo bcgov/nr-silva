@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { Column } from "@carbon/react";
 import History from '../../types/History';
 import FavoriteButton from '../FavoriteButton';
 import EmptySection from "../EmptySection";
-import './styles.scss';
 import { useNotification } from '../../contexts/NotificationProvider';
 import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import ChartContainer from "../ChartContainer";
-import { Column } from "@carbon/react";
+import './styles.scss';
 
 
-const OpeningHistory: React.FC = () => {
+const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
   const [histories, setHistories] = useState<History[]>([]);
 
@@ -44,7 +44,11 @@ const OpeningHistory: React.FC = () => {
   };
 
   return (
-    <ChartContainer title="Track Openings" description="Follow your favourite openings">
+    <ChartContainer
+      className="favourite-openings-container"
+      title="Track Openings"
+      description="Follow your favourite openings"
+    >
       {histories && histories.length > 0 ?
         histories.map((history, index) => (
           <div key={index} className="col-12 col-sm-4">
@@ -75,7 +79,6 @@ const OpeningHistory: React.FC = () => {
             fill="#0073E6"
             title={"You don't have any favourites to show yet!"}
             description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
-
           />
         </Column>
       }
@@ -84,4 +87,4 @@ const OpeningHistory: React.FC = () => {
   );
 };
 
-export default OpeningHistory;
+export default FavouriteOpenings;
