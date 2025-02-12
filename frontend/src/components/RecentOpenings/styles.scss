@@ -26,10 +26,6 @@
     margin: 1rem;
   }
 
-  .#{vars.$bcgov-prefix}--data-table-content {
-    overflow: unset; // This makes tooltip visible
-  }
-
   .action-container {
     display: flex;
     flex-direction: row;

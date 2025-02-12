@@ -44,11 +44,9 @@ interface BarChartGroupedEvent {
 /**
  * Displays a chart that shows opening submission trend.
  */
-const OpeningSubmissionTrend = (): JSX.Element => {
+const OpeningSubmissionTrend = (): React.FC => {
   const yearOptions = generateYearList();
   const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]);
-  // const [startDate, setStartDate] = useState<Date | null>(null);
-  // const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
@@ -83,7 +81,7 @@ const OpeningSubmissionTrend = (): JSX.Element => {
         entryDateEnd: getYearBoundaryDate(selectedYear, false)
       });
       // This is to handle the 204 no content
-      return data.length ? data : undefined;
+      return data.length ? data : null;
     },
     select: (data): SubmissionTrendChartObj[] | undefined => (
       data ?

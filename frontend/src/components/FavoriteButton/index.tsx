@@ -11,6 +11,7 @@ interface FavoriteButtonProps {
   fill: string;
   favorited: boolean;
   onFavoriteChange: (newStatus: boolean) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -31,7 +32,8 @@ function FavoriteButton({
   size,
   fill,
   favorited = false,
-  onFavoriteChange
+  onFavoriteChange,
+  disabled
 }: FavoriteButtonProps): JSX.Element {
   const [isFavorite, setIsFavorite] = useState(favorited);
 
@@ -66,6 +68,7 @@ function FavoriteButton({
       renderIcon={CustomIcon}
       size={size}
       aria-pressed={isFavorite}
+      disabled={disabled}
     />
   );
 };

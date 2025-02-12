@@ -4,40 +4,38 @@
 .favourite-openings-container {
   grid-template-rows: auto 1fr;
 
-  p.activity-history-header {
-    @include type.type-style('heading-01');
-    margin-bottom: 0.5rem;
+  .twelve-col-grid {
+    --cds-grid-columns: 12;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    row-gap: 1rem;
+    column-gap: 1.375rem;
   }
 
-  .activity-history-box {
-    height: '23.5rem';
+  /* Make it 3 columns on max */
+  @media (min-width: 1584px) {
+    .twelve-col-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  .activity-history-col {
-    min-width: 11rem;
-    height: 100%;
-  }
+  .fav-open-tile-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.25rem;
+    width: 100%;
+    height: 2rem;
 
-  .activity-history-box>li.#{vars.$bcgov-prefix}--progress-step,
-  .activity-history-box>li>button.#{vars.$bcgov-prefix}--progress-step-button {
-    min-height: 3.313rem;
-  }
+    .fav-open-label {
+      @include type.type-style('heading-01');
 
-  .#{vars.$bcgov-prefix}--progress-text .#{vars.$bcgov-prefix}--progress-label:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    color: #005CB8;
-  }
-
-  .favorite-icon {
-    margin-right: 4px;
-  }
-
-  .trend-title {
-    font-weight: bold;
-  }
-
-  .debug {
-    border: 1px solid red;
+      .fav-open-id {
+        margin-left: 0.25rem;
+        @include type.type-style('body-01');
+        color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      }
+    }
   }
 }

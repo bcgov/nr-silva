@@ -55,3 +55,10 @@
     color: var(--#{vars.$bcgov-prefix}-text-primary);
   }
 }
+
+.silva-toast {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 2;
+}

@@ -89,13 +89,13 @@ const RecentOpenings = () => {
       }
       {/* Table skeleton */}
       {
-        recentOpeningsQuery.isFetching
+        recentOpeningsQuery.isLoading
           ? <TableSkeleton headers={recentOpeningsHeaders} showToolbar={false} showHeader={false} />
           : null
       }
       {/* Empty Table */}
       {
-        !recentOpeningsQuery.isFetching && !recentOpeningsQuery.data?.data.length ? (
+        !recentOpeningsQuery.isLoading && !recentOpeningsQuery.data?.data.length ? (
           <EmptySection
             pictogram="Magnify"
             title="There are no openings to show yet"
@@ -107,7 +107,7 @@ const RecentOpenings = () => {
       }
       {/* Loaded table content */}
       {
-        !recentOpeningsQuery.isFetching && recentOpeningsQuery.data?.data.length ?
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.data.length ?
           (
             <Table
               className="recent-openings-table default-zebra-table"

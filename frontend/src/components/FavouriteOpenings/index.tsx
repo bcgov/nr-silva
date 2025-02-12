@@ -1,47 +1,56 @@
-import React, { useState, useEffect } from "react";
-import { Column } from "@carbon/react";
-import History from '../../types/History';
+import React, { useState } from "react";
+import { Column, Loading, Grid } from "@carbon/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FavoriteButton from '../FavoriteButton';
 import EmptySection from "../EmptySection";
 import { useNotification } from '../../contexts/NotificationProvider';
 import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import ChartContainer from "../ChartContainer";
 import './styles.scss';
+import { EIGHT_SECONDS } from "../../config/TimeUnits";
+
 
 
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
-  const [histories, setHistories] = useState<History[]>([]);
+  const queryClient = useQueryClient();
 
-  const loadTrends = async () => {
-    const history = await fetchOpeningFavourites();
-    setHistories(history?.map(item => ({ id: item, steps: [] })) || []);
-  };
+  const favouriteOpeningsQuery = useQuery({
+    queryKey: ['openings', 'favourites'],
+    queryFn: () => fetchOpeningFavourites(),
+    refetchOnMount: true
+  });
 
-  useEffect(() => { loadTrends(); }, []);
-
-  const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
-    try {
-      if (!newStatus) {
-        await deleteOpeningFavorite(openingId);
-        displayNotification({
-          title: `Opening Id ${openingId} unfavourited`,
-          type: 'success',
-          dismissIn: 8000,
-          onClose: () => { }
-        });
-        loadTrends();
-      }
-    } catch (error) {
+  const deleteFavOpenMutation = useMutation({
+    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    onSuccess: (_, openingId) => {
+      displayNotification({
+        title: `Opening Id ${openingId} unfavourited`,
+        type: 'success',
+        dismissIn: EIGHT_SECONDS,
+        onClose: () => { }
+      });
+      // Refetch data
+      favouriteOpeningsQuery.refetch();
+      // Update data on recent openings
+      queryClient.invalidateQueries({
+        queryKey: ["opening", "recent"]
+      });
+    },
+    onError: (_, openingId) => {
       displayNotification({
         title: 'Error',
         subTitle: `Failed to update favorite status for ${openingId}`,
         type: 'error',
-        dismissIn: 8000,
+        dismissIn: EIGHT_SECONDS,
         onClose: () => { }
       });
     }
-  };
+  });
+
+  const deleteFavourite = (openingId: number) => (
+    deleteFavOpenMutation.mutate(openingId)
+  )
 
   return (
     <ChartContainer
@@ -49,41 +58,54 @@ const FavouriteOpenings: React.FC = () => {
       title="Track Openings"
       description="Follow your favourite openings"
     >
-      {histories && histories.length > 0 ?
-        histories.map((history, index) => (
-          <div key={index} className="col-12 col-sm-4">
-            <div className='d-flex'>
-              <div className="activity-history-header">
-                <div className="d-flex flex-row align-items-center" data-id={history.id}>
-                  <div className="favorite-icon">
-                    <FavoriteButton
-                      tooltipPosition="bottom"
-                      kind="ghost"
-                      size="sm"
-                      fill="#0073E6"
-                      favorited={true}
-                      onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, history.id)}
-                    />
-                  </div>
-                  <span className="trend-title">Opening ID</span>
-                  &nbsp;
-                  {history.id}
-                </div>
-              </div>
-            </div>
-          </div>
-        )) :
-        <Column sm={4} md={8} lg={16}>
-          <EmptySection
-            pictogram="UserInsights"
-            fill="#0073E6"
-            title={"You don't have any favourites to show yet!"}
-            description={"You can favourite your openings by clicking on the heart icon inside opening details page"}
-          />
-        </Column>
-      }
+      <Column sm={4} md={8} lg={16}>
+        {
+          favouriteOpeningsQuery.isLoading
+            ? (
+              <Loading className="trend-loading-spinner" withOverlay={false} />
+            )
+            : null
+        }
+        {
+          !favouriteOpeningsQuery.isLoading && !favouriteOpeningsQuery.data?.length
+            ? (
+              <EmptySection
+                pictogram="UserInsights"
+                fill="#0073E6"
+                title="You don't have any favourites to show yet!"
+                description="You can favourite your openings by clicking on the heart icon inside opening details page"
+              />
+            )
+            : null
+        }
+        {
+          !favouriteOpeningsQuery.isLoading && favouriteOpeningsQuery.data?.length
+            ? (
+              <Grid className="twelve-col-grid">
+                {
+                  favouriteOpeningsQuery.data.map((openingId) => (
+                    <div key={openingId} className="fav-open-tile-container">
+                      <FavoriteButton
+                        tooltipPosition="bottom"
+                        kind="ghost"
+                        size="sm"
+                        fill="#0073E6"
+                        favorited={true}
+                        onFavoriteChange={() => deleteFavourite(openingId)}
+                      />
+                      <p className="fav-open-label">
+                        Opening ID
+                        <span className="fav-open-id">{openingId}</span>
+                      </p>
+                    </div>
+                  ))
+                }
+              </Grid>
+            )
+            : null
+        }
+      </Column>
     </ChartContainer>
-
   );
 };
 

@@ -2,11 +2,13 @@
 
 import React from "react";
 import { Button } from "@carbon/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Icons from "@carbon/icons-react";
 import { useNavigate } from "react-router-dom";
 import FavoriteButton from "../FavoriteButton";
 import { useNotification } from "../../contexts/NotificationProvider";
-import { setOpeningFavorite, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
+import { putOpeningFavourite, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
+import { EIGHT_SECONDS } from "../../config/TimeUnits";
 
 interface ActionButtonsProps {
   favorited: boolean;
@@ -23,36 +25,75 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   const { displayNotification } = useNotification();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const handleFavoriteChange = async (newStatus: boolean, openingId: number) => {
-    try {
-      if (!newStatus) {
-        await deleteOpeningFavorite(openingId);
-      } else {
-        await setOpeningFavorite(openingId);
+  const displayFavSuccessToast = (openingId: number, isFavourite: boolean) => (
+    displayNotification({
+      title: `Opening Id ${openingId} ${!isFavourite ? 'un' : ''}favourited`,
+      subTitle: isFavourite ? "You can follow this opening ID on your dashboard" : undefined,
+      type: 'success',
+      dismissIn: EIGHT_SECONDS,
+      buttonLabel: isFavourite ? "Go to track openings" : undefined,
+      onClose: () => {
+        navigate("/opening?scrollTo=trackOpenings");
       }
+    })
+  );
+
+  const displayFavErrorToast = (openingId: number) => (
+    displayNotification({
+      title: 'Error',
+      subTitle: `Failed to update favorite status for ${openingId}`,
+      type: 'error',
+      dismissIn: EIGHT_SECONDS,
+      onClose: () => { }
+    })
+  );
+
+  const deleteFavOpenMutation = useMutation({
+    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    onSuccess: (_, openingId) => {
       if (showToast) {
-        displayNotification({
-          title: `Opening Id ${openingId} ${!newStatus ? 'un' : ''}favourited`,
-          subTitle: newStatus ? "You can follow this opening ID on your dashboard" : undefined,
-          type: 'success',
-          dismissIn: 8000,
-          buttonLabel: newStatus ? "Go to track openings" : undefined,
-          onClose: () => {
-            navigate("/opening?scrollTo=trackOpenings");
-          }
-        });
+        displayFavSuccessToast(openingId, false);
       }
-    } catch (error) {
-      displayNotification({
-        title: 'Error',
-        subTitle: `Failed to update favorite status for ${openingId}`,
-        type: 'error',
-        dismissIn: 8000,
-        onClose: () => { }
+      // Invalidate tracked favourite opening data
+      queryClient.invalidateQueries({
+        queryKey: ['openings', 'favourites']
       });
+      // Invalidate data on recent openings data
+      queryClient.invalidateQueries({
+        queryKey: ["opening", "recent"]
+      });
+    },
+    onError: (_, openingId) => displayFavErrorToast(openingId)
+  });
+
+  const putFavOpenMutation = useMutation({
+    mutationFn: (openingId: number) => putOpeningFavourite(openingId),
+    onSuccess: (_, openingId) => {
+      if (showToast) {
+        displayFavSuccessToast(openingId, true);
+      }
+      // Invalidate tracked favourite opening data
+      queryClient.invalidateQueries({
+        queryKey: ['openings', 'favourites']
+      });
+      // Invalidate data on recent openings data
+      queryClient.invalidateQueries({
+        queryKey: ["opening", "recent"]
+      });
+    },
+    onError: (_, openingId) => displayFavErrorToast(openingId)
+  });
+
+  const handleFavoriteChange = (isFavourite: boolean, openingId: number) => {
+    if (isFavourite) {
+      putFavOpenMutation.mutate(openingId);
+    } else {
+      deleteFavOpenMutation.mutate(openingId);
     }
-  };
+  }
+
 
   return (
     <>
@@ -63,7 +104,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         size="sm"
         fill="#0073E6"
         favorited={favorited}
-        onFavoriteChange={(newStatus: boolean) => handleFavoriteChange(newStatus, parseFloat(rowId))}
+        onFavoriteChange={(isFavourite: boolean) => handleFavoriteChange(isFavourite, Number(rowId))}
       />
       {
         showDownload ? (

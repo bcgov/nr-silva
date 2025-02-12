@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
 import { getAuthIdToken } from '../../services/AuthService';
 import { env } from '../../env';
-import { fetchOpeningFavourites, setOpeningFavorite, deleteOpeningFavorite } from '../../services/OpeningFavouriteService';
+import { fetchOpeningFavourites, putOpeningFavourite, deleteOpeningFavorite } from '../../services/OpeningFavouriteService';
 
 vi.mock('axios');
 vi.mock('../../services/AuthService');
@@ -24,7 +24,7 @@ describe('OpeningFavouriteService', () => {
 
     expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
     });
     expect(result).toEqual(mockData);
@@ -38,7 +38,7 @@ describe('OpeningFavouriteService', () => {
 
     expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
       headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
     });
     expect(result).toEqual(mockData);
@@ -58,7 +58,7 @@ describe('OpeningFavouriteService', () => {
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
       expect(result).toEqual(mockData);
@@ -72,7 +72,7 @@ describe('OpeningFavouriteService', () => {
 
       expect(axios.get).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites`, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
       expect(result).toEqual(mockData);
@@ -88,11 +88,11 @@ describe('OpeningFavouriteService', () => {
       const openingId = 1;
       (axios.put as vi.Mock).mockResolvedValue({ status: 202 });
 
-      await setOpeningFavorite(openingId);
+      await putOpeningFavourite(openingId);
 
       expect(axios.put).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, null, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
     });
@@ -101,7 +101,7 @@ describe('OpeningFavouriteService', () => {
       const openingId = 1;
       (axios.put as vi.Mock).mockResolvedValue({ status: 500 });
 
-      await expect(setOpeningFavorite(openingId)).rejects.toThrow('Failed to set favorite opening. Status code: 500');
+      await expect(putOpeningFavourite(openingId)).rejects.toThrow('Failed to set favorite opening. Status code: 500');
     });
 
     it('should delete a favorite opening successfully', async () => {
@@ -112,7 +112,7 @@ describe('OpeningFavouriteService', () => {
 
       expect(axios.delete).toHaveBeenCalledWith(`${backendUrl}/api/openings/favourites/${openingId}`, {
         headers: { Authorization: `Bearer ${authToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
+          "Access-Control-Allow-Origin": "http://localhost:3000",
           "Content-Type": "application/json" }
       });
     });

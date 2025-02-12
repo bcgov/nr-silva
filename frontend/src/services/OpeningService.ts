@@ -48,22 +48,6 @@ export async function fetchUserSubmissionTrends(props: IOpeningPerYear): Promise
 
     return axios.get(API_ENDPOINTS.submissionTrends(urlParams), defaultHeaders(authToken))
       .then((res) => res.data);
-    // const { data } = response;
-    // if (data && Array.isArray(data)) {
-    //   // Format data for BarChartGrouped component
-    //   const formattedData: OpeningPerYearChart[] = data.map(item => ({
-    //     group: "Openings",
-    //     key: `${item.monthName} ${item.year}`,
-    //     year: item.year,
-    //     month: item.month,
-    //     value: item.amount,
-    //     statusCount: item.statusCounts
-    //   }));
-
-    //   return formattedData;
-    // } else {
-    //   return [];
-    // }
   } catch (error) {
     console.error('Error fetching openings per year:', error);
     throw error;
