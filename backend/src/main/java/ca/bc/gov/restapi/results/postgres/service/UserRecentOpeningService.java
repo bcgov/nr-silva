@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
@@ -8,6 +9,7 @@ import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
+import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
 import jakarta.transaction.Transactional;
@@ -41,7 +43,7 @@ public class UserRecentOpeningService {
 
     if (openingId == null) {
       log.info("Opening ID is null");
-      throw new IllegalArgumentException("Opening ID must contain numbers only!");
+      throw new InvalidOpeningIdException();
     }
 
     if (!openingRepository.existsById(openingId)) {
@@ -49,23 +51,25 @@ public class UserRecentOpeningService {
       throw new OpeningNotFoundException();
     }
 
-    LocalDateTime lastViewed = LocalDateTime.now();
-
-    userRecentOpeningRepository.saveAndFlush(
-        userRecentOpeningRepository
-            .findByUserIdAndOpeningId(loggedUserService.getLoggedUserId(), openingId)
-            .map(entity -> entity.withLastViewed(lastViewed))
-            .orElse(
-                new UserRecentOpeningEntity(null, loggedUserService.getLoggedUserId(), openingId,
-                    lastViewed)
-            )
-    );
+    UserRecentOpeningEntity recentOpening =
+        userRecentOpeningRepository.saveAndFlush(
+            userRecentOpeningRepository
+                .findById(new UserOpeningEntityId(loggedUserService.getLoggedUserId(), openingId))
+                .map(entity -> entity.withLastViewed(LocalDateTime.now()))
+                .orElse(
+                    new UserRecentOpeningEntity(
+                        loggedUserService.getLoggedUserId(),
+                        openingId,
+                        LocalDateTime.now()
+                    )
+                )
+        );
 
     // Return the DTO
     return new UserRecentOpeningDto(
-        loggedUserService.getLoggedUserId(),
-        openingId,
-        lastViewed
+        recentOpening.getUserId(),
+        recentOpening.getOpeningId(),
+        recentOpening.getLastViewed()
     );
   }
 
