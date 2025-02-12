@@ -44,6 +44,29 @@ parameters:
     description: Random expression to make sure deployments update
     from: "[a-zA-Z0-9]{32}"
     generate: expression
+  - name: JOB_SERVICE_ACCOUNT
+    description: "Name of the Service Account To Exeucte the Job As."
+    value: "default"
+    required: true
+  - name: BACKUP_DIR"
+    description: "The name of the root backup directory"
+    required: true
+    value: "/tmp/backup"
+  - name: NUM_BACKUPS
+    description: "The number of backup files to be retained.  Used for the `daily` backup strategy.  Ignored when using the `rolling` backup strategy."
+    required: false
+    value: "5"
+  - name: SUCCESS_JOBS_HISTORY_LIMIT
+    description: "The number of successful jobs that will be retained"
+    value: "5"
+    required: true
+  - name: FAILED_JOBS_HISTORY_LIMIT
+    description: "The number of failed jobs that will be retained"
+    value: "2"
+    required: true
+  - name: JOB_BACKOFF_LIMIT
+    description: "The number of attempts to try for a successful job outcome"
+    value: "0"
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -58,6 +81,34 @@ objects:
         requests:
           storage: ${DB_PVC_SIZE}
       storageClassName: netapp-file-standard
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-${ZONE}-${COMPONENT}-backup
+      labels:
+        app: ${NAME}-${ZONE}
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "50Mi"
+      storageClassName: netapp-file-standard
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+    data:
+      checksum.sql: |
+        SELECT 
+          concat(table_schema,'.',table_name) as full_table_name,
+          (SELECT MD5(ARRAY_AGG(t.*::text)::text) AS checksum FROM concat(table_schema,'.',table_name) AS t) as checksum
+        FROM information_schema.tables
+        WHERE table_type = 'BASE TABLE'
+        AND table_schema NOT IN ('pg_catalog', 'information_schema')
+        ORDER BY table_schema, table_name;
   - kind: Deployment
     apiVersion: apps/v1
     metadata:
@@ -150,8 +201,8 @@ objects:
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
           schedulerName: default-scheduler
-  - apiVersion: v1
-    kind: Service
+  - kind: Service
+    apiVersion: v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -167,3 +218,284 @@ objects:
         deployment: ${NAME}-${ZONE}-${COMPONENT}
       sessionAffinity: None
       type: ClusterIP
+# Cronjob responsible for backing up the database
+  - kind: CronJob
+    apiVersion: "batch/v1"
+    metadata:
+      name: ${NAME}-${ZONE}-${COMPONENT}-cron
+      labels:
+        app: ${NAME}-${ZONE}
+        cronjob: ${NAME}-${ZONE}
+    spec:
+      schedule: "30 0 * * *"
+      concurrencyPolicy: "Replace"
+      successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
+      failedJobsHistoryLimit: ${{FAILED_JOBS_HISTORY_LIMIT}}
+      jobTemplate:
+        metadata:
+          labels:
+            app: ${NAME}-${ZONE}
+            cronjob: ${NAME}-${ZONE}-backup
+        spec:
+          backoffLimit: ${{JOB_BACKOFF_LIMIT}}
+          template:
+            metadata:
+              labels:
+                app: ${NAME}-${ZONE}
+                cronjob: ${NAME}-${ZONE}-backup
+            spec:
+              containers:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-cron
+                  image: postgis/postgis:15-master
+                  command: ["/bin/sh", "-c"]
+                  args:
+                  - |
+                    pg_dump \
+                    -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d ${POSTGRES_DB} \
+                    -Fc \
+                    --file=${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump \
+                    &&
+                    PAGER= psql \
+                    -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d ${POSTGRES_DB} \
+                    -f /tmp/restore/checksum.sql \
+                    --quiet \
+                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/original.checksum &&
+                    pg_restore --list ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
+                    find "${BACKUP_DIR}" -type f -mtime +$NUM_BACKUPS -exec rm -f {} \; &&
+                    cp -r ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump ${BACKUP_DIR}/W0__restore.dump
+                  volumeMounts:
+                    - mountPath: "${BACKUP_DIR}"
+                      name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                    - mountPath: "/tmp/restore/checksum.sql"
+                      subPath: checksum.sql
+                      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  env:
+                    - name: BACKUP_DIR
+                      value: "${BACKUP_DIR}"
+                    - name: NUM_BACKUPS
+                      value: "${NUM_BACKUPS}"
+                    - name: POSTGRES_DB
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-name
+                    - name: POSTGRES_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+                    - name: POSTGRES_USER
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-user
+                    - name: RANDOM_EXPRESSION
+                      value: ${RANDOM_EXPRESSION}
+                    - name: PGPASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+              volumes:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                  persistentVolumeClaim:
+                    claimName: ${NAME}-${ZONE}-${COMPONENT}-backup
+                - name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  configMap:
+                    name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+              restartPolicy: "Never"
+              terminationGracePeriodSeconds: 30
+              activeDeadlineSeconds: 1600
+              dnsPolicy: "ClusterFirst"
+              serviceAccountName: "${JOB_SERVICE_ACCOUNT}"
+              serviceAccount: "${JOB_SERVICE_ACCOUNT}"
+# Cronjob responsible for verifying the backup, runs 1 hour after the backup
+  - kind: CronJob
+    apiVersion: "batch/v1"
+    metadata:
+      name: ${NAME}-${ZONE}-${COMPONENT}-verify
+      labels:
+        app: ${NAME}-${ZONE}
+        cronjob: ${NAME}-${ZONE}
+    spec:
+      schedule: "30 1 * * *"
+      concurrencyPolicy: "Replace"
+      successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
+      failedJobsHistoryLimit: ${{FAILED_JOBS_HISTORY_LIMIT}}
+      jobTemplate:
+        metadata:
+          labels:
+            app: ${NAME}-${ZONE}
+            cronjob: ${NAME}-${ZONE}-verify
+        spec:
+          backoffLimit: ${{JOB_BACKOFF_LIMIT}}
+          template:
+            metadata:
+              labels:
+                app: ${NAME}-${ZONE}
+                cronjob: ${NAME}-${ZONE}-verify
+            spec:
+              containers:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-verify
+                  image: postgis/postgis:15-master
+                  command: ["/bin/sh", "-c"]
+                  args:
+                  - |
+                    echo "Creating test database" &&
+                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
+                    echo "Test database created, Restoring backup" &&
+                    pg_restore -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
+                    echo "Backup restored, running checksum" &&
+                    PAGER= psql \
+                    -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d backup_test_db \
+                    -f /tmp/restore/checksum.sql \
+                    --quiet \
+                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
+                    echo "Checksums created, removing temporary database" &&
+                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'DROP DATABASE backup_test_db;' &&
+                    echo "Database removed, comparing checksums" &&
+                    diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
+                    rm -rf ${BACKUP_DIR}/restored.checksum
+                  volumeMounts:
+                    - mountPath: "${BACKUP_DIR}"
+                      name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                    - mountPath: "/tmp/restore/checksum.sql"
+                      subPath: checksum.sql
+                      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  env:
+                    - name: BACKUP_DIR
+                      value: "${BACKUP_DIR}"
+                    - name: NUM_BACKUPS
+                      value: "${NUM_BACKUPS}"
+                    - name: POSTGRES_DB
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-name
+                    - name: POSTGRES_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+                    - name: POSTGRES_USER
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-user
+                    - name: RANDOM_EXPRESSION
+                      value: ${RANDOM_EXPRESSION}
+                    - name: PGPASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+              volumes:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                  persistentVolumeClaim:
+                    claimName: ${NAME}-${ZONE}-${COMPONENT}-backup
+                - name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  configMap:
+                    name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+              restartPolicy: "Never"
+              terminationGracePeriodSeconds: 30
+              activeDeadlineSeconds: 1600
+              dnsPolicy: "ClusterFirst"
+              serviceAccountName: "${JOB_SERVICE_ACCOUNT}"
+              serviceAccount: "${JOB_SERVICE_ACCOUNT}"
+# Cronjob responsible for restoring the backup if needed
+  - kind: CronJob
+    apiVersion: "batch/v1"
+    metadata:
+      name: ${NAME}-${ZONE}-${COMPONENT}-restore
+      labels:
+        app: ${NAME}-${ZONE}
+        cronjob: ${NAME}-${ZONE}
+    spec:
+      schedule: "0 0 31 2 *"
+      concurrencyPolicy: "Replace"
+      successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
+      failedJobsHistoryLimit: ${{FAILED_JOBS_HISTORY_LIMIT}}
+      jobTemplate:
+        metadata:
+          labels:
+            app: ${NAME}-${ZONE}
+            cronjob: ${NAME}-${ZONE}-verify
+        spec:
+          backoffLimit: ${{JOB_BACKOFF_LIMIT}}
+          template:
+            metadata:
+              labels:
+                app: ${NAME}-${ZONE}
+                cronjob: ${NAME}-${ZONE}-verify
+            spec:
+              containers:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-verify
+                  image: postgis/postgis:15-master
+                  command: ["/bin/sh", "-c"]
+                  args:
+                  - |
+                    pg_restore  -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d ${POSTGRES_DB} \
+                    ${BACKUP_DIR}/W0__restore.dump &&                    
+                    PAGER= psql \
+                    -U ${POSTGRES_USER} \
+                    -h ${NAME}-${ZONE}-${COMPONENT} \
+                    -d ${POSTGRES_DB} \
+                    -f /tmp/restore/checksum.sql \
+                    --quiet \
+                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
+                    diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
+                    rm -rf ${BACKUP_DIR}/restored.checksum
+                  volumeMounts:
+                    - mountPath: "${BACKUP_DIR}"
+                      name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                    - mountPath: "/tmp/restore/checksum.sql"
+                      subPath: checksum.sql
+                      name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  env:
+                    - name: BACKUP_DIR
+                      value: "${BACKUP_DIR}"
+                    - name: NUM_BACKUPS
+                      value: "${NUM_BACKUPS}"
+                    - name: POSTGRES_DB
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-name
+                    - name: POSTGRES_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+                    - name: POSTGRES_USER
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-user
+                    - name: RANDOM_EXPRESSION
+                      value: ${RANDOM_EXPRESSION}
+                    - name: PGPASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${NAME}-${ZONE}-${COMPONENT}
+                          key: database-password
+              volumes:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-backup
+                  persistentVolumeClaim:
+                    claimName: ${NAME}-${ZONE}-${COMPONENT}-backup
+                - name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+                  configMap:
+                    name: ${NAME}-${ZONE}-${COMPONENT}-checksum
+              restartPolicy: "Never"
+              terminationGracePeriodSeconds: 30
+              activeDeadlineSeconds: 1600
+              dnsPolicy: "ClusterFirst"
+              serviceAccountName: "${JOB_SERVICE_ACCOUNT}"
+              serviceAccount: "${JOB_SERVICE_ACCOUNT}"
