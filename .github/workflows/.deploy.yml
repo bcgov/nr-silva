@@ -99,13 +99,12 @@ jobs:
             file: backend/openshift.deploy.yml
             overwrite: true
             parameters:
-              -p MAX_REPLICAS=1
-              -p MIN_REPLICAS=1
               -p DB_POOL_MAX_SIZE=1
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
               -p ALLOWED_ORIGINS=${{ needs.init.outputs.allowed_origins }}
+              ${{ github.event_name == 'pull_request' && '-p CPU_REQUEST=30m -p MAX_REPLICAS=1 -p MIN_REPLICAS=1' || '' }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
