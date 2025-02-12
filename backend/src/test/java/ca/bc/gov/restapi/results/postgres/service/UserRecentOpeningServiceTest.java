@@ -72,7 +72,7 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
   void storeViewedOpening_invalidOpeningId_throwsException() {
     Long invalidOpeningId = null;
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    Exception exception = assertThrows(InvalidOpeningIdException.class, () -> {
       userRecentOpeningService.storeViewedOpening(invalidOpeningId);
     });
 
