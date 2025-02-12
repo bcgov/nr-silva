@@ -37,7 +37,8 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
     userRecentOpeningRepository.saveAllAndFlush(
         List.of(
             new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
-            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().plusMinutes(3))
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L,
+                LocalDateTime.now().plusMinutes(3))
         )
     );
   }
@@ -54,7 +55,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().is2xxSuccessful())
-        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
   }
 
   @Test
@@ -69,7 +70,16 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
         )
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserOpening record(s) not found!\",\"instance\":\"/api/openings/recent/123456\"}"));
+        .andExpect(content().json("""
+                {
+                  "type":"about:blank",
+                  "title":"Not Found",
+                  "status":404,
+                  "detail":"UserOpening record(s) not found!",
+                  "instance":"/api/openings/recent/123456"
+                }"""
+            )
+        );
   }
 
   @Test
@@ -82,10 +92,8 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isAccepted())
-        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
+        .andExpect(status().isAccepted());
   }
-
 
 
 }

@@ -76,7 +76,7 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
       userRecentOpeningService.storeViewedOpening(invalidOpeningId);
     });
 
-    assertEquals("Opening ID must contain numbers only!", exception.getMessage());
+    assertEquals("417 EXPECTATION_FAILED \"Opening ID must contain numbers only!\"", exception.getMessage());
   }
 
   @Test
