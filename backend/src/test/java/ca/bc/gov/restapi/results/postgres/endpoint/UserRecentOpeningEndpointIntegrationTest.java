@@ -36,9 +36,9 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
     userRecentOpeningRepository.deleteAll();
     userRecentOpeningRepository.saveAllAndFlush(
         List.of(
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().plusMinutes(3)),
-            new UserRecentOpeningEntity(null, "IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().minusMinutes(10))
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().plusMinutes(3)),
+            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().minusMinutes(10))
         )
     );
   }
