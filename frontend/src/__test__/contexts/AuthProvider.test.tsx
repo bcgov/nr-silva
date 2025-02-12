@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { AuthProvider, useGetAuth } from '../../contexts/AuthProvider';
+import { AuthProvider, useAuth } from '../../contexts/AuthProvider';
 import { signInWithRedirect, signOut } from 'aws-amplify/auth';
 import { parseToken } from '../../services/AuthService';
 import { extractGroups } from '../../utils/famUtils';
@@ -36,7 +36,7 @@ describe('AuthProvider', () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
-      const { user, isLoggedIn, isLoading } = useGetAuth();
+      const { user, isLoggedIn, isLoading } = useAuth();
       return (
         <div>
           <span>{isLoading ? 'Loading' : 'Loaded'}</span>
@@ -64,7 +64,7 @@ describe('AuthProvider', () => {
     setAuthCookies(null);
 
     const TestComponent = () => {
-      const { user, isLoggedIn, isLoading } = useGetAuth();
+      const { user, isLoggedIn, isLoading } = useAuth();
       return (
         <div>
           <span>{isLoading ? 'Loading' : 'Loaded'}</span>
@@ -94,7 +94,7 @@ describe('AuthProvider', () => {
     const envProvider = `${env.VITE_ZONE ?? 'DEV'}-IDIR`;
 
     const TestComponent = () => {
-      const { login } = useGetAuth();
+      const { login } = useAuth();
       return <button onClick={() => login(provider)}>Login</button>;
     };
 
@@ -120,7 +120,7 @@ describe('AuthProvider', () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
-      const { logout } = useGetAuth();
+      const { logout } = useAuth();
       return <button onClick={logout}>Logout</button>;
     };
 
@@ -144,7 +144,7 @@ describe('AuthProvider', () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
-      const { user } = useGetAuth();
+      const { user } = useAuth();
       return <div>{user ? user.firstName : 'No User'}</div>;
     };
 
@@ -160,14 +160,14 @@ describe('AuthProvider', () => {
     await waitFor(() => expect(getByText('Jack')).toBeDefined());
   });
 
-  it('should throw error if useGetAuth is used outside AuthProvider', () => {
+  it('should throw error if useAuth is used outside AuthProvider', () => {
     const TestComponent = () => {
-      useGetAuth();
+      useAuth();
       return <div>Test</div>;
     };
 
     expect(() => render(<TestComponent />)).toThrow(
-      'useGetAuth must be used within an AuthProvider'
+      'useAuth must be used within an AuthProvider'
     );
   });
 });

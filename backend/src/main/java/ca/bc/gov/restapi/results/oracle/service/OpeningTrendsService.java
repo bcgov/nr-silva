@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -52,10 +53,11 @@ public class OpeningTrendsService {
     }
 
     // Group by month and status
-    Map<Integer, Map<String, Long>> monthToStatusCountMap = entities.stream()
+    Map<String, Map<String, Long>> dateToStatusCountMap = entities.stream()
         .filter(entity -> entity.getEntryTimestamp() != null) // Ensure timestamp is not null
+        .peek(entity -> log.debug("Entity: {}", entity))
         .collect(Collectors.groupingBy(
-            entity -> entity.getEntryTimestamp().getMonthValue(), // Extract month value
+            entity -> getDateKey(entity.getEntryTimestamp()), // Extract month value
             Collectors.groupingBy(
                 OpeningTrendsProjection::getStatus, // Group by status
                 Collectors.counting() // Count occurrences
@@ -63,15 +65,21 @@ public class OpeningTrendsService {
         ));
 
     // Map to count total entries grouped by month
-    Map<Integer, Long> monthToCountMap = monthToStatusCountMap.entrySet().stream()
+    Map<String, Long> monthToCountMap = dateToStatusCountMap.entrySet().stream()
+        .peek(entry -> log.debug("Entry: {}", entry))
         .collect(Collectors.toMap(
             Map.Entry::getKey, // Month
             entry -> entry.getValue().values().stream().mapToLong(Long::longValue).sum() // Sum counts per status
         ));
 
     // Generate a 12-month sequence starting from the start date
-    List<YearMonth> yearMonths = IntStream.range(0, 12) // Always 12 months
-        .mapToObj(offset -> YearMonth.from(startDate).plusMonths(offset))
+    List<YearMonth> yearMonths = IntStream.range(0, 13) // Always 12 months
+        .mapToObj(offset -> YearMonth.from(endDate).minusMonths(offset)) // Generate the sequence
+        // Filter out dates before the start date
+        // We use this combination as we want to include the start date in the sequence
+        .filter(yearMonth -> !yearMonth.isBefore(YearMonth.from(startDate)))
+        .sorted() // Sort in ascending order
+        .peek(yearMonth -> log.debug("YearMonth: {}", yearMonth))
         .toList();
 
     // Generate the DTOs in the custom order
@@ -80,15 +88,24 @@ public class OpeningTrendsService {
             yearMonth.getMonthValue(),
             yearMonth.getYear(),
             getMonthName(yearMonth.getMonthValue()),
-            monthToCountMap.getOrDefault(yearMonth.getMonthValue(), 0L), // Total count for the month
-            monthToStatusCountMap.getOrDefault(yearMonth.getMonthValue(), Collections.emptyMap()) // Status counts map
+            monthToCountMap.getOrDefault(getDateKey(yearMonth), 0L), // Total count for the month
+            dateToStatusCountMap.getOrDefault(getDateKey(yearMonth), Collections.emptyMap()) // Status counts map
         ))
+        .peek(dto -> log.debug("DTO: {}", dto))
         .toList();
   }
 
 
   private String getMonthName(int month) {
     return Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CANADA);
+  }
+
+  private String getDateKey(LocalDateTime entryTimestamp) {
+    return String.format("%04d-%02d", entryTimestamp.getYear(), entryTimestamp.getMonthValue());
+  }
+
+  private String getDateKey(YearMonth entryTimestamp) {
+    return String.format("%04d-%02d", entryTimestamp.getYear(), entryTimestamp.getMonthValue());
   }
 
 }

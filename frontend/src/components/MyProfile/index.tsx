@@ -5,12 +5,12 @@ import AvatarImage from '../AvatarImage';
 import { useThemePreference } from '../../utils/ThemePreference';
 import PanelSectionName from '../PanelSectionName';
 import './MyProfile.scss';
-import { useGetAuth } from '../../contexts/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
   const [goTo, setGoTo] = useState<boolean>(false);
-  const { logout, user: authUser } = useGetAuth();
+  const { logout, user: authUser } = useAuth();
 
   const changeTheme = () => {
     if (theme === 'g10') {

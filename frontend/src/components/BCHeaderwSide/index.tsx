@@ -57,7 +57,7 @@ function BCHeaderwSide(): JSX.Element {
             isActive={isSideNavExpanded}
           />
           <Link to="/" className="header-link" data-testid="header-name">
-            SILVA
+            Silva
           </Link>
           <HeaderGlobalBar className="align-items-center w-100">
             <div className="mx-2">

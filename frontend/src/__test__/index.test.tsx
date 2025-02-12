@@ -5,7 +5,6 @@ import { Amplify } from 'aws-amplify';
 import amplifyconfig from '../amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
-import { useLottie } from 'lottie-react';
 
 vi.mock('aws-amplify');
 vi.mock('aws-amplify/utils');
@@ -29,7 +28,6 @@ vi.mock('lottie-react', () => ({
 
 describe('index.tsx', () => {
   it('should initialize the app correctly', async () => {
-    (useLottie as vi.Mock).mockReturnValue({ View: <div>Lottie Animation</div> });
     const container = document.createElement('div');
     container.id = 'root';
     document.body.appendChild(container);
