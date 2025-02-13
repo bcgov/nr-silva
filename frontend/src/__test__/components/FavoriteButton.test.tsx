@@ -10,7 +10,6 @@ describe('FavoriteButton Component', () => {
     tooltipPosition: 'bottom',
     kind: 'ghost',
     size: 'md',
-    fill: 'red',
     favorited: false,
     onFavoriteChange: vi.fn(),
   };
@@ -19,7 +18,7 @@ describe('FavoriteButton Component', () => {
     render(<FavoriteButton {...props} />);
     const buttonElement = screen.getByRole('button');
     expect(buttonElement).toBeDefined();
-    expect(buttonElement.classList).toContain('favorite-button'); 
+    expect(buttonElement.classList).toContain('favorite-button');
   });
 
   it('should toggle favorite state on click', () => {
@@ -34,7 +33,7 @@ describe('FavoriteButton Component', () => {
   it('should render the correct icon based on favorite state', () => {
     render(<FavoriteButton {...props} />);
     const imgElement = screen.getByTestId('favourite-button-icon');
-    expect(imgElement).toHaveStyle('fill: red'); 
+    expect(imgElement).toHaveStyle('fill: red');
   });
 
   it('should call onFavoriteChange with the new favorite state', () => {

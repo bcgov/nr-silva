@@ -44,7 +44,7 @@ interface BarChartGroupedEvent {
 /**
  * Displays a chart that shows opening submission trend.
  */
-const OpeningSubmissionTrend = (): React.FC => {
+const OpeningSubmissionTrend = () => {
   const yearOptions = generateYearList();
   const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]);
 

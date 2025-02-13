@@ -46,8 +46,8 @@ function BCHeaderwSide(): JSX.Element {
     <HeaderContainer
       render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
         <Header
-          aria-label="React TS Carbon Quickstart"
-          className="quickstart-header"
+          aria-label="Silva header"
+          className="silva-header"
           data-testid="header"
         >
           <SkipToContent />
@@ -59,7 +59,7 @@ function BCHeaderwSide(): JSX.Element {
           <Link to="/" className="header-link" data-testid="header-name">
             Silva
           </Link>
-          <HeaderGlobalBar className="align-items-center w-100">
+          <HeaderGlobalBar className="silva-header-bar align-items-center w-100">
             <div className="mx-2">
               <ThemeToggle />
             </div>
@@ -69,8 +69,9 @@ function BCHeaderwSide(): JSX.Element {
               data-testid="header-button__user"
               onClick={handleMyProfilePanel}
               isActive={myProfile}
+              className="profile-action-button"
             >
-              <Icons.UserAvatar size={20} />
+              <Icons.UserAvatar className="profile-icon" size={20} />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
           <HeaderPanel aria-label="User Profile Tab" expanded={myProfile} className="notifications-panel">

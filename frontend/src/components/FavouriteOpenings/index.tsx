@@ -10,7 +10,6 @@ import './styles.scss';
 import { EIGHT_SECONDS } from "../../config/TimeUnits";
 
 
-
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
   const queryClient = useQueryClient();
@@ -58,11 +57,13 @@ const FavouriteOpenings: React.FC = () => {
       title="Track Openings"
       description="Follow your favourite openings"
     >
-      <Column sm={4} md={8} lg={16}>
+      <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
           favouriteOpeningsQuery.isLoading
             ? (
-              <Loading className="trend-loading-spinner" withOverlay={false} />
+              <div className="trend-loading-container">
+                <Loading withOverlay={false} />
+              </div>
             )
             : null
         }
@@ -89,9 +90,9 @@ const FavouriteOpenings: React.FC = () => {
                         tooltipPosition="bottom"
                         kind="ghost"
                         size="sm"
-                        fill="#0073E6"
                         favorited={true}
                         onFavoriteChange={() => deleteFavourite(openingId)}
+                        disabled={deleteFavOpenMutation.isPending}
                       />
                       <p className="fav-open-label">
                         Opening ID

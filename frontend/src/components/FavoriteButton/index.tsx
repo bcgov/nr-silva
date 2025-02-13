@@ -6,9 +6,8 @@ import './style.scss'; // Import the styles
 interface FavoriteButtonProps {
   id?: string
   tooltipPosition: string;
-  kind: string;
-  size: string;
-  fill: string;
+  kind: "ghost" | "tertiary" | "primary" | "secondary" | "danger" | "danger--primary" | "danger--ghost" | "danger--tertiary" | undefined;
+  size: "lg" | "md" | "sm" | "xl" | "2xl" | undefined;
   favorited: boolean;
   onFavoriteChange: (newStatus: boolean) => void;
   disabled?: boolean;
@@ -25,16 +24,15 @@ interface FavoriteButtonProps {
  * @param {boolean} props.favorited - The favourite button state.
  * @returns {JSX.Element} The FavoriteButton element to be rendered.
  */
-function FavoriteButton({
+const FavoriteButton = ({
   id,
   tooltipPosition,
   kind,
   size,
-  fill,
   favorited = false,
   onFavoriteChange,
   disabled
-}: FavoriteButtonProps): JSX.Element {
+}: FavoriteButtonProps): JSX.Element => {
   const [isFavorite, setIsFavorite] = useState(favorited);
 
   const handleClick = () => {
@@ -49,27 +47,30 @@ function FavoriteButton({
   if (!Icon) {
     return <div>Invalid icon name</div>;
   }
-  const CustomIcon = () => <Icon data-testid="favourite-button-icon" style={{ fill }} />;
+  const CustomIcon = () => (
+    <Icon data-testid="favourite-button-icon" className={favorited ? 'favourited-icon' : 'unfavourited-icon'} />
+  );
 
   useEffect(() => {
     setIsFavorite(favorited);
   }, [favorited]);
 
   return (
-    <Button
-      id={`action-fav-${id}`}
-      data-testid={`action-fav-${id}`}
-      className={isFavorite ? 'favorite-button favorite align-self-stretch' : 'favorite-button align-self-stretch'}
-      hasIconOnly
-      iconDescription={iconDescription}
-      tooltipPosition={tooltipPosition}
-      kind={kind}
-      onClick={handleClick}
-      renderIcon={CustomIcon}
-      size={size}
-      aria-pressed={isFavorite}
-      disabled={disabled}
-    />
+    <div className="favourite-button-container">
+      <Button
+        data-testid={`action-fav-${id}`}
+        className="favorite-button"
+        hasIconOnly
+        iconDescription={iconDescription}
+        tooltipPosition={tooltipPosition}
+        kind={kind}
+        onClick={handleClick}
+        renderIcon={CustomIcon}
+        size={size}
+        aria-pressed={isFavorite}
+        disabled={disabled}
+      />
+    </div>
   );
 };
 

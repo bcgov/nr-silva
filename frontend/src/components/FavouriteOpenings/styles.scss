@@ -4,6 +4,15 @@
 .favourite-openings-container {
   grid-template-rows: auto 1fr;
 
+  .favourite-content-col {
+    .trend-loading-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 18%;
+    }
+  }
+
   .twelve-col-grid {
     --cds-grid-columns: 12;
     display: grid;

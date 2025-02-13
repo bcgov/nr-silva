@@ -102,9 +102,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         tooltipPosition="right"
         kind="ghost"
         size="sm"
-        fill="#0073E6"
         favorited={favorited}
         onFavoriteChange={(isFavourite: boolean) => handleFavoriteChange(isFavourite, Number(rowId))}
+        disabled={deleteFavOpenMutation.isPending || putFavOpenMutation.isPending}
       />
       {
         showDownload ? (

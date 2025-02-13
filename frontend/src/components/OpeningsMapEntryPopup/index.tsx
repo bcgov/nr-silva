@@ -52,7 +52,6 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({ openingId
         tooltipPosition="bottom"
         kind="ghost"
         size="sm"
-        fill="#0073E6"
         favorited={isFavorited}
         onFavoriteChange={handleFavoriteChange}
       />

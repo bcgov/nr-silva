@@ -1,18 +1,9 @@
-.favorite-button {
-    &.favorite {
-      .bx--btn--ghost {
-        border-color: transparent !important;
-      }
-    }
-  
-    .bx--tooltip__trigger {
-      overflow: visible !important;
-    }
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
-    .bx--tooltip,
-    .bx--tooltip-container {
-      z-index: 9999 !important;
+.favourite-button-container {
+  .favorite-button {
+    .favourited-icon {
+      fill: var(--#{vars.$bcgov-prefix}-link-primary);
     }
-
   }
-  
+}

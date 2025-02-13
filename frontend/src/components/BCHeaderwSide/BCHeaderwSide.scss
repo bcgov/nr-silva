@@ -2,118 +2,115 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@carbon/type';
 
-.bcgov-header {
-  overflow: hidden;
-  border: 0;
-}
-
-.header-link {
-  margin-left: 0.9375rem;
-  color: colors.$white;
-}
-
-a.header-link:link {
-  text-decoration: none;
-  color: colors.$white;
-}
-
-.header-full-name {
-  font-weight: bold;
-}
-
-.#{vars.$bcgov-prefix}--__items {
-  display: flex;
-  flex-direction: column;
-}
-
-.support-section {
-  margin-top: auto;
-}
-
-button.#{vars.$bcgov-prefix}--header__action {
-  border-radius: 0;
-}
-
-button.#{vars.$bcgov-prefix}--header__action--active {
-  background: var(--bx-layer-02);
-  border: 0;
-}
-
-.#{vars.$bcgov-prefix}--header__global .#{vars.$bcgov-prefix}--btn--icon-only.#{vars.$bcgov-prefix}--header__action svg,
-button.#{vars.$bcgov-prefix}--header__action svg {
-  fill: var(--bx-icon-on-color);
-}
-
-button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active>svg,
-.#{vars.$bcgov-prefix}--popover-container button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__action--active>svg {
-  fill: var(--bx-icon-primary);
-}
-
-button.#{vars.$bcgov-prefix}--header__action.#{vars.$bcgov-prefix}--header__menu-trigger:focus {
-  border-color: var(--bx-icon-on-color);
-}
-
-.#{vars.$bcgov-prefix}--header-panel--expanded.notifications-panel,
-.#{vars.$bcgov-prefix}--header-panel--expanded.profile-panel {
-  z-index: 10000;
-  width: 25rem;
-  height: 100vh;
-  background-color: var(--bx-layer-02);
-  color: var(--bx-text-primary);
-  transition: width 0.11s cubic-bezier(0.2, 0, 1, 0.9);
-  will-change: width;
-}
-
-.#{vars.$bcgov-prefix}--header-panel {
-  overflow-y: scroll;
-}
-
-.overlay-element {
-  position: fixed;
-  top: 3rem;
-  left: 0;
-  width: 0;
-  height: 0;
-  background-color: transparent;
-  opacity: 0;
-  transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
-}
-
-.overlay-element.active {
-  z-index: 9000;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--#{vars.$bcgov-prefix}-overlay);
-  opacity: 1;
-  transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
-}
-
-/* Medium - Up to 672px */
-@media only screen and (max-width: 672px) {
-  .header-full-name {
-    display: none;
+.silva-header {
+  .header-link {
+    margin-left: 0.9375rem;
+    color: colors.$white;
   }
-}
 
-/* This rule is specific for the right panel only, it should fill the whole viewport
-   when the screen hits the panel size or smaller */
-@media only screen and (max-width: 400px) {
+  a.header-link:link {
+    text-decoration: none;
+    color: colors.$white;
+  }
+
+
+  .#{vars.$bcgov-prefix}--__items {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .support-section {
+    margin-top: auto;
+  }
+
+  button.#{vars.$bcgov-prefix}--header__action {
+    border-radius: 0;
+  }
+
+  button.#{vars.$bcgov-prefix}--header__action--active {
+    background: var(--#{vars.$bcgov-prefix}-layer-02);
+    border: 0;
+  }
+
+  // Hamburger icon
+  .#{vars.$bcgov-prefix}--header__global .#{vars.$bcgov-prefix}--btn--icon-only.#{vars.$bcgov-prefix}--header__action svg,
+  button.#{vars.$bcgov-prefix}--header__action svg {
+    fill: var(--#{vars.$bcgov-prefix}-icon-on-color);
+  }
+
+  // Hamburger icon active
+  .#{vars.$bcgov-prefix}--header__global .#{vars.$bcgov-prefix}--btn--icon-only.#{vars.$bcgov-prefix}--header__action--active svg,
+  button.#{vars.$bcgov-prefix}--header__action--active svg {
+    fill: var(--#{vars.$bcgov-prefix}-icon-primary);
+  }
 
   .#{vars.$bcgov-prefix}--header-panel--expanded.notifications-panel,
   .#{vars.$bcgov-prefix}--header-panel--expanded.profile-panel {
-    width: 100vw;
+    z-index: 10000;
+    width: 25rem;
+    height: 100vh;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+    transition: width 0.11s cubic-bezier(0.2, 0, 1, 0.9);
+    will-change: width;
   }
-}
 
-.side-nav-category-name {
-  padding: 1rem;
-  @include type.type-style('label-01');
-}
+  .#{vars.$bcgov-prefix}--header-panel {
+    overflow-y: scroll;
+  }
 
-.side-nav-item {
-  cursor: pointer;
+  .overlay-element {
+    position: fixed;
+    top: 3rem;
+    left: 0;
+    width: 0;
+    height: 0;
+    background-color: transparent;
+    opacity: 0;
+    transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
+  }
 
-  .#{vars.$bcgov-prefix}--side-nav__icon>svg {
-    fill: var(--#{vars.$bcgov-prefix}-link-primary);
+  .overlay-element.active {
+    z-index: 9000;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--#{vars.$bcgov-prefix}-overlay);
+    opacity: 1;
+    transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
+  }
+
+  /* This rule is specific for the right panel only, it should fill the whole viewport
+     when the screen hits the panel size or smaller */
+  @media only screen and (max-width: 400px) {
+
+    .#{vars.$bcgov-prefix}--header-panel--expanded.notifications-panel,
+    .#{vars.$bcgov-prefix}--header-panel--expanded.profile-panel {
+      width: 100vw;
+    }
+  }
+
+  .side-nav-category-name {
+    padding: 1rem;
+    @include type.type-style('label-01');
+  }
+
+  .side-nav-item {
+    cursor: pointer;
+
+    .#{vars.$bcgov-prefix}--side-nav__icon>svg {
+      fill: var(--#{vars.$bcgov-prefix}-link-primary);
+    }
+  }
+
+  .silva-header-bar {
+    .profile-action-button {
+      .profile-icon {
+        fill: var(--#{vars.$bcgov-prefix}-icon-on-color);
+      }
+
+      &.#{vars.$bcgov-prefix}--header__action--active .profile-icon {
+        fill: var(--#{vars.$bcgov-prefix}-icon-primary);
+      }
+    }
   }
 }
