@@ -2,9 +2,8 @@ package ca.bc.gov.restapi.results.postgres.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -20,17 +19,16 @@ import lombok.With;
 @With
 @Builder
 @Entity
-@EqualsAndHashCode(exclude = {"id", "lastViewed"})
+@EqualsAndHashCode(exclude = {"lastViewed"})
 @Table(schema = "silva", name = "user_recent_openings")
+@IdClass(UserOpeningEntityId.class)
 public class UserRecentOpeningEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
   @Column(name = "user_id", nullable = false)
   private String userId;
 
+  @Id
   @Column(name = "opening_id", nullable = false)
   private Long openingId;
 
