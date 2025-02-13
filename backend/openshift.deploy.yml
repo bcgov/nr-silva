@@ -145,7 +145,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - name: ${NAME}-${ZONE}
+            - name: ${NAME}-${ZONE}-${COMPONENT}
               image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               imagePullPolicy: Always
               volumeMounts:
@@ -304,7 +304,7 @@ objects:
       scaleTargetRef:
         apiVersion: apps.openshift.io/v1
         kind: Deployment
-        name: "${NAME}-${ZONE}-${COMPONENT}"
+        name: ${NAME}-${ZONE}-${COMPONENT}
       minReplicas: "${{MIN_REPLICAS}}"
       maxReplicas: "${{MAX_REPLICAS}}"
       metrics:
