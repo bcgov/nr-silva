@@ -35,7 +35,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
       dismissIn: EIGHT_SECONDS,
       buttonLabel: isFavourite ? "Go to track openings" : undefined,
       onClose: () => {
-        navigate("/opening?scrollTo=trackOpenings");
+        navigate("/dashboard?scrollTo=trackOpenings");
       }
     })
   );

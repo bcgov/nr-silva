@@ -21,7 +21,7 @@ const mainActivitiesItems: LeftMenu[] = [
       {
         name: 'Dashboard',
         icon: 'Dashboard',
-        link: '/opening',
+        link: '/dashboard',
         disabled: false,
         breadcrumb: false
       },

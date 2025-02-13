@@ -106,7 +106,7 @@ describe('Opening screen test cases', () => {
   });
 
   it('should render Opening Page with dashboard tab selected', async () => {
-    window.history.pushState({}, 'Opening page with metrics', '/opening?tab=metrics');
+    window.history.pushState({}, 'Opening page with metrics', '/dashboard?tab=metrics');
 
     await act(async () => render(
       <BrowserRouter>
@@ -170,7 +170,7 @@ describe('Opening screen test cases', () => {
     });
 
     it('should not render tab when not selected', async () => {
-      window.history.pushState({}, 'Opening page with metrics', '/opening?tab=openings');
+      window.history.pushState({}, 'Opening page with metrics', '/dashboard?tab=openings');
       let container: HTMLElement = document.createElement('div');
       let getByText: any;
       await act(async () => {
@@ -196,7 +196,7 @@ describe('Opening screen test cases', () => {
     });
 
     it('should render tab only when selected', async () => {
-      window.history.pushState({}, 'Opening page with metrics', '/opening');
+      window.history.pushState({}, 'Opening page with metrics', '/dashboard');
 
       let container: HTMLElement = document.createElement('div');
       let getByText: any;

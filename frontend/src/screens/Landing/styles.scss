@@ -2,68 +2,69 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@carbon/type';
 
-.landing-grid {
-  padding: 0;
-  height: 100vh;
-  overflow: hidden;
-
-  .landing-content-col {
-    margin: 0;
-    padding: 2rem;
-
-    .landing-content-wrapper {
-      display: flex;
-      flex-direction: column;
-
-      .landing-title {
-        @include type.type-style('fluid-display-01', true);
-      }
-
-      .landing-subtitle {
-        @include type.type-style('fluid-paragraph-01', true);
-        color: var(--#{vars.$bcgov-prefix}-text-secondary);
-      }
-    }
-
-    .buttons-container {
-      display: flex;
-      width: 100%;
-
-      .login-btn {
-        width: 18rem;
-        height: 3rem;
-      }
-    }
-
-    .single-row {
-      flex-direction: row;
-      gap: 1rem;
-    }
-
-    .two-rows {
-      flex-direction: column;
-      gap: 1rem;
-    }
-  }
-
-
-
-  .landing-img-col {
+.landing-grid-container {
+  .landing-grid {
     padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100vh;
     overflow: hidden;
+    padding-inline: 0;
 
-    .landing-img {
-      max-inline-size: 100%;
-      block-size: 100%;
-      object-fit: cover;
-      height: 100%;
-      width: 100%;
-      display: block;
-      object-position: center;
+    .landing-content-col {
+      margin: 0;
+      padding: 2rem;
+
+      .landing-content-wrapper {
+        display: flex;
+        flex-direction: column;
+
+        .landing-title {
+          @include type.type-style('fluid-display-01', true);
+        }
+
+        .landing-subtitle {
+          @include type.type-style('fluid-paragraph-01', true);
+          color: var(--#{vars.$bcgov-prefix}-text-secondary);
+        }
+      }
+
+      .buttons-container {
+        display: flex;
+        width: 100%;
+
+        .login-btn {
+          width: 18rem;
+          height: 3rem;
+        }
+      }
+
+      .single-row {
+        flex-direction: row;
+        gap: 1rem;
+      }
+
+      .two-rows {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    .landing-img-col {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      .landing-img {
+        max-inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        display: block;
+        object-position: center;
+      }
     }
   }
 }

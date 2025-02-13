@@ -29,14 +29,10 @@ const protectedRoutes: RouteObject[] = [
     children: [
       {
         path: "/",
-        element: <Navigate to="/opening" replace /> // Redirect `/` to `/opening` for logged-in users
+        element: <Navigate to="/dashboard" replace /> // Redirect `/` to `/dashboard` for logged-in users
       },
       {
         path: "/dashboard",
-        element: <Navigate to="/opening" replace />
-      },
-      {
-        path: "/opening",
         element: <SideLayout pageContent={<Dashboard />} />
       },
       {
