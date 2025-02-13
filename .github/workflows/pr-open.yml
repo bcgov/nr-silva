@@ -39,8 +39,8 @@ jobs:
     uses: ./.github/workflows/.deploy.yml
     with:
       backend_cpu_request: '350m'
-      backend_min_replicas: '1'
-      backend_max_replicas: '1'
+      # backend_min_replicas: '1'
+      # backend_max_replicas: '1'
       triggers: ('backend/' 'common/' 'frontend/')
 
   results:
