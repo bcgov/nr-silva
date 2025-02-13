@@ -102,11 +102,12 @@ objects:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
   - kind: Deployment
+    name: ${NAME}-${ZONE}-${COMPONENT}
     apiVersion: apps/v1
     metadata:
       labels:
         app: "${NAME}-${ZONE}"
-      name: "${NAME}-${ZONE}-${COMPONENT}"
+      name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
       replicas: 1
       selector:
