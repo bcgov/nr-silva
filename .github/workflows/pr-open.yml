@@ -9,53 +9,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # builds:
-  #   name: Builds
-  #   runs-on: ubuntu-24.04
-  #   permissions:
-  #     packages: write
-  #   strategy:
-  #     matrix:
-  #       name: [backend, frontend]
-  #       include:
-  #         - name: backend
-  #           triggers: ('backend/')
-  #         - name: frontend
-  #           triggers: ('frontend/')
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: bcgov/action-builder-ghcr@v2.3.0
-  #       with:
-  #         package: ${{ matrix.name }}
-  #         tag: ${{ github.event.number }}
-  #         tag_fallback: latest
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         triggers: ${{ matrix.triggers }}
+  builds:
+    name: Builds
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        name: [backend, frontend]
+        include:
+          - name: backend
+            triggers: ('backend/')
+          - name: frontend
+            triggers: ('frontend/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bcgov/action-builder-ghcr@v2.3.0
+        with:
+          package: ${{ matrix.name }}
+          tag: ${{ github.event.number }}
+          tag_fallback: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+          triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys (${{ github.event.number }})
-    # needs: [builds]
+    needs: [builds]
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
       backend_cpu_request: '50m'
-      # backend_min_replicas: '1'
-      # backend_max_replicas: '1'
+      backend_min_replicas: '1'
+      backend_max_replicas: '1'
       triggers: ('backend/' 'common/' 'frontend/')
 
-  # results:
-  #   name: PR Results
-  #   if: always()
-  #   # Include all needs that could have failures!
-  #   needs: [builds, deploys]
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - run: |
-  #         # View results
-  #         echo "needs.*.result: ${{ toJson(needs.*.result) }}"
+  results:
+    name: PR Results
+    if: always()
+    # Include all needs that could have failures!
+    needs: [builds, deploys]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          # View results
+          echo "needs.*.result: ${{ toJson(needs.*.result) }}"
 
-  #     - if: contains(needs.*.result, 'failure')||contains(needs.*.result, 'canceled')
-  #       run: |
-  #         # Job failure found
-  #         echo "At least one job has failed"
-  #         exit 1
+      - if: contains(needs.*.result, 'failure')||contains(needs.*.result, 'canceled')
+        run: |
+          # Job failure found
+          echo "At least one job has failed"
+          exit 1
