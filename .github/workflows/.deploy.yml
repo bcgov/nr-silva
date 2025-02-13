@@ -34,7 +34,7 @@ on:
       ### Per-environment config
       backend_cpu_request:
         description: CPU request for backend
-        default: '500m'
+        default: '50m'
         type: string
       backend_min_replicas:
         description: Minimum replicas for backend
