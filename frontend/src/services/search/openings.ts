@@ -6,6 +6,7 @@ import { createDateParams } from "../../utils/searchUtils";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
 import { TextValueData } from "../../utils/multiSelectSortUtils";
 import CodeDescriptionDto from "../../types/CodeDescriptionType";
+import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -109,7 +110,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   const response = await axios.get(API_ENDPOINTS.openingSearch(queryString), defaultHeaders(authToken));
 
   // Flatten the data part of the response
-  const flattenedData = response.data.data.map((item: OpeningItem) => ({
+  const flattenedData = response.data.data.map((item: OpeningSearchResponseDto) => ({
     ...item,
     statusCode: item.status?.code,
     statusDescription: item.status?.description,

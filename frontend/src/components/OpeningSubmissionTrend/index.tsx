@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { ComboBoxEvent } from "../../types/CarbonTypes";
 import { fetchOpeningsOrgUnits, fetchUserSubmissionTrends } from "../../services/OpeningService";
 import { status } from "../../services/search/openings";
-import { extractValsFromTextValueArr, TextValueData, textValueToDisplayText } from "../../utils/multiSelectSortUtils";
+import { extractValsFromTextValueArr, filterTextValueItems, TextValueData, textValueToDisplayText } from "../../utils/multiSelectSortUtils";
 
 // Local components
 import EmptySection from "../EmptySection";
@@ -151,6 +151,7 @@ const OpeningSubmissionTrend = () => {
                   selectionFeedback="top-after-reopen"
                   onChange={handleOrgUnitChange}
                   disabled={submissionTrendQuery.isFetching}
+                  filterItems={filterTextValueItems}
                 />
 
                 <FilterableMultiSelect
@@ -161,6 +162,7 @@ const OpeningSubmissionTrend = () => {
                   selectionFeedback="top-after-reopen"
                   onChange={handleStatusChange}
                   disabled={submissionTrendQuery.isFetching}
+                  filterItems={filterTextValueItems}
                 />
 
                 <ComboBox

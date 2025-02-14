@@ -1,4 +1,5 @@
 import React from 'react';
+import { TYPES } from '@carbon/react/lib/components/Tag/Tag';
 import { Tag } from '@carbon/react';
 import { StatusColourMap } from './definitions';
 import './styles.scss';
@@ -9,8 +10,8 @@ interface IStatusTag {
 
 const StatusTag: React.FC<IStatusTag> = (props) => {
   const colorsKeys: string[] = Object.keys(StatusColourMap);
-  const colorKey: string = colorsKeys.includes(props.code)? props.code : StatusColourMap.Unknown;
-  const typeColor: string = StatusColourMap[colorKey as keyof typeof StatusColourMap];
+  const colorKey: string = colorsKeys.includes(props.code) ? props.code : StatusColourMap.Unknown;
+  const typeColor: keyof typeof TYPES = StatusColourMap[colorKey as keyof typeof StatusColourMap];
 
   return (
     <Tag
@@ -18,7 +19,7 @@ const StatusTag: React.FC<IStatusTag> = (props) => {
       type={typeColor}
       data-testid={`tag__status_colored_tag_${colorKey}`}
     >
-      { props.code }
+      {props.code}
     </Tag>
   );
 };

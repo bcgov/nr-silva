@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
-import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
 import {
   IOpeningPerYear,
   IFreeGrowingProps,

@@ -156,7 +156,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </div>
             <TableToolbarMenu
               iconDescription="More"
-              tooltipposition="bottom"
               renderIcon={Icons.OverflowMenuVertical}
               className="d-block d-sm-none"
             >
@@ -176,7 +175,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               <Button
                 iconDescription="Show Map"
                 data-testid="toggle-spatial"
-                tooltipposition="bottom"
                 kind="ghost"
                 onClick={() => toggleSpatial()}
                 renderIcon={Icons.Location}
@@ -194,7 +192,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <Button
                   iconDescription="Edit Columns"
                   data-testid="edit-columns"
-                  tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
                     setOpenEdit(!openEdit);
@@ -298,7 +295,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               >
                 <Button
                   iconDescription="Download"
-                  tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
                     setOpenDownload(!openDownload);
@@ -311,7 +307,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <PopoverContent className="download-column-content">
                   <MenuItem
                     className="menu-item"
-                    size={"lg"}
                     label="Download table as PDF file"
                     onClick={() => {
                       downloadPDF(headers, rows);
@@ -319,7 +314,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   />
                   <MenuItem
                     className="menu-item"
-                    size="lg"
                     label="Download table as CSV file"
                     onClick={() => {
                       const csvData = convertToCSV(headers, rows);
@@ -328,7 +322,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   />
                   <MenuItem
                     className="menu-item"
-                    size={"lg"}
                     label="Download table as XLS file"
                     onClick={() => downloadXLSX(headers, rows)}
                   />
@@ -363,7 +356,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                          header.key === "actions" && showSpatial ? "p-0" : undefined
                         }
                         onClick={() => {
                           if (header.key !== "actions") {

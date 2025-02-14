@@ -59,7 +59,7 @@ const FavouriteOpenings: React.FC = () => {
     >
       <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
-          favouriteOpeningsQuery.isLoading
+          favouriteOpeningsQuery.isError
             ? (
               <div className="trend-loading-container">
                 <Loading withOverlay={false} />
