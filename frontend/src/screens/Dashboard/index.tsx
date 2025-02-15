@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import {
