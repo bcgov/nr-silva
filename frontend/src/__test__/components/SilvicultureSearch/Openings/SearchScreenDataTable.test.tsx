@@ -26,8 +26,8 @@ const setOpeningIds = vi.fn((openingIds: number[]) => { });
 
 const rows: any = [
   {
-    id: '114207',
-    openingId: '114207',
+    id: 114207,
+    openingId: 114207,
     fileId: 'TFL99',
     cuttingPermit: '12S',
     timberMark: '47/12S',

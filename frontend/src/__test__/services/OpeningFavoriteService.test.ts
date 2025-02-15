@@ -99,9 +99,12 @@ describe('OpeningFavouriteService', () => {
 
     it('should throw an error if setting an opening as favorite fails', async () => {
       const openingId = 1;
-      (axios.put as vi.Mock).mockResolvedValue({ status: 500 });
 
-      await expect(putOpeningFavourite(openingId)).rejects.toThrow('Failed to set favorite opening. Status code: 500');
+      (axios.put as vi.Mock).mockRejectedValue(new Error('Request failed with status code 500'));
+
+      await expect(putOpeningFavourite(openingId))
+        .rejects
+        .toThrow('Request failed with status code 500');
     });
 
     it('should delete a favorite opening successfully', async () => {
@@ -119,9 +122,11 @@ describe('OpeningFavouriteService', () => {
 
     it('should throw an error if deleting a favorite opening fails', async () => {
       const openingId = 1;
-      (axios.delete as vi.Mock).mockResolvedValue({ status: 500 });
 
-      await expect(deleteOpeningFavorite(openingId)).rejects.toThrow('Failed to remove favorite opening. Status code: 500');
+      (axios.delete as vi.Mock).mockRejectedValue(new Error('Request failed with status code 500'));
+
+      await expect(deleteOpeningFavorite(openingId))
+        .rejects
+        .toThrow('Request failed with status code 500');
     });
-
 });

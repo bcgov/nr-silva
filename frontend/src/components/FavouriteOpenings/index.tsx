@@ -85,7 +85,11 @@ const FavouriteOpenings: React.FC = () => {
               <Grid className="twelve-col-grid">
                 {
                   favouriteOpeningsQuery.data.map((openingId) => (
-                    <div key={openingId} className="fav-open-tile-container">
+                    <div
+                      key={openingId}
+                      className="fav-open-tile-container"
+                      id={`favourite-opening-tile-${openingId}`}
+                    >
                       <FavoriteButton
                         tooltipPosition="bottom"
                         kind="ghost"

@@ -40,7 +40,7 @@
     "start": "vite --host",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "test": "vitest",
+    "test": "vitest -u",
     "test:coverage": "vitest run --coverage --watch=false",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix"

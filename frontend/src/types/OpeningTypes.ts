@@ -41,7 +41,7 @@ export interface IFreeGrowingChartData {
 
 export interface OpeningSearchResponseDto {
   openingId: number;
-  openingNumber: string;
+  openingNumber: string | null;
   category: CodeDescriptionDto;
   status: CodeDescriptionDto;
   cuttingPermitId: number | null;
@@ -54,7 +54,6 @@ export interface OpeningSearchResponseDto {
   clientNumber: string | null;
   clientAcronym: string | null;
   regenDelayDate: string;
-  freeGrowingDate: string;
   updateTimestamp: string;
   entryUserId: string;
   submittedToFrpa: boolean;

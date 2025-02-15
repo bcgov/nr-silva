@@ -8,6 +8,7 @@ import { leftMenu } from '../../components/BCHeaderwSide/constants';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
 import { AuthProvider } from '../../contexts/AuthProvider';
+import { ThemePreference } from '../../utils/ThemePreference';
 
 vi.mock('../../services/TestService', () => ({
   getForestClientByNumberOrAcronym: vi.fn(() => [
@@ -27,13 +28,15 @@ const renderComponent = async () => {
   const qc = new QueryClient();
 
   await act(() => render(
-    <AuthProvider>
-      <QueryClientProvider client={qc}>
-        <BrowserRouter>
-          <BCHeaderwSide />
-        </BrowserRouter>
-      </QueryClientProvider>
-    </AuthProvider>
+    <ThemePreference>
+      <AuthProvider>
+        <QueryClientProvider client={qc}>
+          <BrowserRouter>
+            <BCHeaderwSide />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </AuthProvider>
+    </ThemePreference>
   ));
 };
 
@@ -61,9 +64,23 @@ const state = {
 };
 
 describe('BCHeaderwSide', async () => {
-  it('should renders the component', () => {
-    renderComponent();
-    expect(screen.getByTestId('header')).toBeDefined();
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-color-scheme: dark)',
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
+
+  it('should render the component', async () => {
+    await renderComponent();
+    expect(await screen.findByTestId('header')).toBeInTheDocument();
   });
 
   it('should renders the site name', async () => {

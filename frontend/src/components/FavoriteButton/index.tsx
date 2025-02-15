@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
-import './style.scss'; // Import the styles
 
-interface FavoriteButtonProps {
-  id?: string
-  tooltipPosition: string;
-  kind: "ghost" | "tertiary" | "primary" | "secondary" | "danger" | "danger--primary" | "danger--ghost" | "danger--tertiary" | undefined;
-  size: "lg" | "md" | "sm" | "xl" | "2xl" | undefined;
-  favorited: boolean;
-  onFavoriteChange: (newStatus: boolean) => void;
-  disabled?: boolean;
-}
+import { FavoriteButtonProps } from './definitions';
+import './style.scss';
 
 /**
  * Renders an Favourite Button component.
