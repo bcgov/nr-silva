@@ -22,7 +22,7 @@ parameters:
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
-    value: "25m"
+    value: "50m"
   - name: MEMORY_REQUEST
     value: "50Mi"
   - name: MIN_REPLICAS
@@ -67,7 +67,7 @@ objects:
             deployment: "${NAME}-${ZONE}-${COMPONENT}"
         spec:
           containers:
-            - name: ${NAME}-${ZONE}
+            - name: ${NAME}-${ZONE}-${COMPONENT}
               image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               securityContext:
                 capabilities:
@@ -158,9 +158,9 @@ objects:
       name: "${NAME}-${ZONE}-${COMPONENT}"
     spec:
       scaleTargetRef:
-        apiVersion: apps.openshift.io/v1
+        apiVersion: apps/v1
         kind: Deployment
-        name: "${NAME}-${ZONE}-${COMPONENT}"
+        name: ${NAME}-${ZONE}-${COMPONENT}
       minReplicas: "${{MIN_REPLICAS}}"
       maxReplicas: "${{MAX_REPLICAS}}"
       metrics:
