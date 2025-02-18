@@ -2,12 +2,14 @@ package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Objects;
+import lombok.Getter;
 
 /**
  * This enumeration represents all possible values for the Opening Status column from the Opening
  * table.
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@Getter
 public enum OpeningStatusEnum {
   AMD("AMD", "Amended"),
   AMG("AMG", "Amalgamate"),
@@ -23,24 +25,6 @@ public enum OpeningStatusEnum {
   private OpeningStatusEnum(String code, String description) {
     this.code = code;
     this.description = description;
-  }
-
-  /**
-   * Get the {@link OpeningStatusEnum} code.
-   *
-   * @return OpeningStatusEnum code.
-   */
-  public String getCode() {
-    return code;
-  }
-
-  /**
-   * Get the {@link OpeningStatusEnum} description.
-   *
-   * @return OpeningStatusEnum description.
-   */
-  public String getDescription() {
-    return description;
   }
 
   /**

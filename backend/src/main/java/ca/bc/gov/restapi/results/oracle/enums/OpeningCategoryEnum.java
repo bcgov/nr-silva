@@ -1,12 +1,14 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 
 /**
  * This enumeration represents all possible values for the Opening Category column from the Opening
  * table.
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@Getter
 public enum OpeningCategoryEnum {
   CONT("CONT", "SP as a part of contractual agreement"),
   EXCLU("EXCLU", "Openings excluded from Crown managed forests"),
@@ -42,25 +44,6 @@ public enum OpeningCategoryEnum {
     this.code = code;
     this.description = description;
   }
-
-  /**
-   * Get the {@link OpeningCategoryEnum} code.
-   *
-   * @return OpeningCategoryEnum code.
-   */
-  public String getCode() {
-    return code;
-  }
-
-  /**
-   * Get the {@link OpeningCategoryEnum} description.
-   *
-   * @return OpeningCategoryEnum description.
-   */
-  public String getDescription() {
-    return description;
-  }
-
   /**
    * Get a {@link OpeningCategoryEnum} given its code.
    *
