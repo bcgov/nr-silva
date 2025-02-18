@@ -214,24 +214,6 @@ const SearchTab: React.FC = () => {
   }, [filters]);
 
   useEffect(() => {
-    // This is to circunvent the lack of label property for placeholder on a multi-select
-    const categoryInput = document.querySelector(
-      "div.category-multi-select div div input"
-    );
-    categoryInput?.setAttribute("placeholder", "Category");
-
-    // This is to circunvent the lack of label property for placeholder on a multi-select
-    const orgUnitInput = document.querySelector(
-      "div.orgunit-multi-select div div input"
-    );
-    orgUnitInput?.setAttribute("placeholder", "Org unit");
-
-    // This is to circunvent the lack of label property for placeholder on a multi-select
-    const statusInput = document.querySelector(
-      "div.status-multi-select div div input"
-    );
-    statusInput?.setAttribute("placeholder", "Status");
-
     fetchCategories().then(setCategories);
     fetchOrgUnits().then(setOrgUnits);
   }, []);
@@ -277,6 +259,7 @@ const SearchTab: React.FC = () => {
           <Column sm={4} md={2} lg={4} xlg={4} max={3}>
             <FilterableMultiSelect
               label="Enter or choose a category"
+              placeholder="Category"
               id="category-multiselect"
               className="multi-select category-multi-select ms-1"
               items={categories}
@@ -300,6 +283,7 @@ const SearchTab: React.FC = () => {
           <Column sm={4} md={3} lg={4} xlg={4} max={3}>
             <FilterableMultiSelect
               label="Enter or choose an org unit"
+              placeholder="Org unit"
               id="orgunit-multiselect"
               className="multi-select orgunit-multi-select ms-1"
               items={orgUnits}
@@ -324,6 +308,7 @@ const SearchTab: React.FC = () => {
             <FilterableMultiSelect
               label="Enter or choose a status"
               id="status-multiselect"
+              placeholder="Status"
               className="multi-select status-multi-select ms-1"
               items={statusTypes}
               itemToString={(item: IdTextValueData) =>
