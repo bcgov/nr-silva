@@ -4,15 +4,12 @@ import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -70,17 +67,11 @@ public class OpeningTrendsService {
         .map(yearMonth -> new OpeningsPerYearDto(
             yearMonth.getMonthValue(),
             yearMonth.getYear(),
-            getMonthName(yearMonth.getMonthValue()),
             trendMap.getOrDefault(yearMonth, Collections.emptyMap())
                 .values().stream().mapToLong(Long::longValue).sum(),
             trendMap.getOrDefault(yearMonth, Collections.emptyMap())
         ))
         .toList();
-  }
-
-
-  private String getMonthName(int month) {
-    return Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CANADA);
   }
 
 }
