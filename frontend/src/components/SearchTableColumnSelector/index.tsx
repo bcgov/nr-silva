@@ -49,8 +49,6 @@ const SearchTableColumnSelector: React.FC<SearchTableColumnSelectorProps> = ({
   );
 
   useEffect(() => {
-    console.log("Headers:", headers, "Columns selected:", columnsSelected);
-
     if (columnsSelected === "select-all")
       onChangeSelection(
         headers.map((header) => ({ ...header, selected: true }))
