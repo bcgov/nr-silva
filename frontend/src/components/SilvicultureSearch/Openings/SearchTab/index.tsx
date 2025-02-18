@@ -186,12 +186,6 @@ const SearchTab: React.FC = () => {
     );
   };
 
-  const countFilters = () => {
-    return Object.keys(filters).filter(
-      (key) => key !== "mainSearchTerm" && filterHasValue(key)
-    ).length;
-  };
-
   useEffect(() => {
     // Only trigger pagination when there are filters
     if (hasFilters(true)) {
