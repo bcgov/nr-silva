@@ -216,7 +216,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
           id="search-1"
           className="search-input"
           onChange={onSearchTermChange}
-          value={filters.mainSearchTerm}
+          value={filters.mainSearchTerm || ""}
         />
       </Column>
 
@@ -407,7 +407,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
           id="text-input-2"
           type="text"
           labelText="Cut block"
-          value={filters.cutBlockId}
+          value={filters.cutBlockId || ""}
           onChange={(e: TextInputEvent) => {
             setValue({ cutBlockId: e.target.value });
           }}
@@ -419,7 +419,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
           id="text-input-3"
           labelText="Cutting permit"
           type="text"
-          value={filters.cuttingPermitId}
+          value={filters.cuttingPermitId || ""}
           onChange={(e: TextInputEvent) => {
             setValue({ cuttingPermitId: e.target.value });
           }}
