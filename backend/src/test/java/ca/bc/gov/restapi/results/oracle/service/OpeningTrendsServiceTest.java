@@ -38,17 +38,12 @@ class OpeningTrendsServiceTest {
   }
 
   private List<OpeningTrendsProjection> mockOpeningsEntityList() {
-    LocalDateTime entryTimestamp = LocalDateTime.now();
 
     OpeningTrendsProjection entity = new TestOpeningTrendsProjection(
-        123456L,
-        "userId",
-        entryTimestamp,
-        entryTimestamp,
+        LocalDate.now().getYear(),
+        LocalDate.now().getMonthValue(),
         "APP",
-        "DCR",
-        "District Code",
-        "00012797"
+        1
     );
     return List.of(entity);
   }
@@ -71,7 +66,6 @@ class OpeningTrendsServiceTest {
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(7, list.size());
     Assertions.assertEquals(now.minusMonths(4).getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(getMonthName(now.minusMonths(4).getMonth().getValue()), list.get(0).monthName());
     Assertions.assertEquals(1, list.get(4).amount());
   }
 
@@ -92,7 +86,6 @@ class OpeningTrendsServiceTest {
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(3, list.size());
     Assertions.assertEquals(now.minusMonths(1).getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(getMonthName(now.minusMonths(1).getMonth().getValue()), list.get(0).monthName());
     Assertions.assertEquals(1, list.get(1).amount());
   }
 
@@ -110,12 +103,9 @@ class OpeningTrendsServiceTest {
         List.of("APP")
     );
 
-    String monthName =  getMonthName(now.getMonth().getValue());
-
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(1, list.size());
     Assertions.assertEquals(now.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
     Assertions.assertEquals(1, list.get(0).amount());
   }
 
@@ -165,11 +155,9 @@ class OpeningTrendsServiceTest {
         null
     );
 
-    String monthName = oneMonthBefore.getMonth().getDisplayName(TextStyle.SHORT, Locale.CANADA);
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(3, list.size());
     Assertions.assertEquals(oneMonthBefore.getMonthValue(), list.get(0).month());
-    Assertions.assertEquals(monthName, list.get(0).monthName());
     Assertions.assertEquals(1, list.get(1).amount());
   }
 
@@ -191,18 +179,12 @@ class OpeningTrendsServiceTest {
 
   @Getter
   @AllArgsConstructor
-  static
-  class TestOpeningTrendsProjection implements OpeningTrendsProjection {
+  static class TestOpeningTrendsProjection implements OpeningTrendsProjection {
 
-    private Long openingId;
-    private String userId;
-    private LocalDateTime entryTimestamp;
-    private LocalDateTime updateTimestamp;
-    private String status;
-    private String orgUnitCode;
-    private String orgUnitName;
-    private String clientNumber;
-
+    int year;
+    int month;
+    String status;
+    long count;
   }
 
   private String getMonthName(int month) {
