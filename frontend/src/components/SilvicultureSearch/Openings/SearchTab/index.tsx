@@ -10,7 +10,10 @@ import {
   TableToolbar,
   TableToolbarContent,
   TableContainer,
-  Modal,
+  ComposedModal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 
@@ -220,27 +223,53 @@ const SearchTab: React.FC = () => {
 
   return (
     <>
-      <Modal
+      <ComposedModal
         open={isOpen}
-        onRequestClose={() => setIsOpen(false)}
-        modalHeading="Advanced search"
-        primaryButtonText="Search"
-        secondaryButtonText="Cancel"
+        onClose={() => setIsOpen(false)}
         className="advanced-search-modal"
+        isFullWidth
+        size="lg"
       >
-        <OpeningTableFilter
-          filters={filters}
-          onFilterChange={setFilters}
-          categories={categories.map(({ code, description }) => ({
-            id: code,
-            text: description,
-          }))}
-          orgUnits={orgUnits.map(({ orgUnitCode, orgUnitName }) => ({
-            id: orgUnitCode,
-            text: orgUnitName,
-          }))}
-        />
-      </Modal>
+        <ModalHeader title="Advanced search" />
+        <ModalBody>
+          <OpeningTableFilter
+            filters={filters}
+            onFilterChange={setFilters}
+            categories={categories.map(({ code, description }) => ({
+              id: code,
+              text: description,
+            }))}
+            orgUnits={orgUnits.map(({ orgUnitCode, orgUnitName }) => ({
+              id: orgUnitCode,
+              text: orgUnitName,
+            }))}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            kind="secondary"
+            onClick={() => {
+              setIsOpen(false);
+              clearFilters();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            kind="primary"
+            renderIcon={Icons.Search}
+            iconDescription="Search"
+            type="button"
+            size="md"
+            onClick={() => {
+              setIsOpen(false);
+              onSearch();
+            }}
+          >
+            Search
+          </Button>
+        </ModalFooter>
+      </ComposedModal>
       <div className="search-filters-container">
         <Grid fullWidth condensed>
           <Column sm={4} md={8} lg={16} xlg={16} max={4}>

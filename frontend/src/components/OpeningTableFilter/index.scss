@@ -3,5 +3,19 @@
 @use '@carbon/type';
 
 .advanced-search-container {
-  padding-inline: unset;
+    padding-inline: unset;
+}
+
+@media screen and (min-width: 21rem) {
+    .advanced-search-container {
+        .single-liner {
+            display: flex;
+            gap: 0.12rem;
+    
+            div {
+                flex-grow: 1;
+            }
+        }
+    }
+    
 }

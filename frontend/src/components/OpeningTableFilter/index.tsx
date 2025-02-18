@@ -22,11 +22,7 @@ import {
   TextInputEvent,
 } from "@/types/GeneralTypes";
 import { sortItems } from "@/utils/multiSelectSortUtils";
-import {
-  OpeningSearchFilters,
-  CodeDescription,
-  OrgUnit,
-} from "@/services/search/openings";
+import { OpeningSearchFilters } from "@/services/search/openings";
 import { statusTypes, dateTypes } from "@/constants/searchConstants";
 
 // Function libs
@@ -139,8 +135,9 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
     }
   };
 
-  const onSearchTermChange = (e: never) => {};
-  const onKeyDown = (e: never) => {};
+  const onSearchTermChange = (e: TextInputEvent) => {
+    onFilterChange({ ...filters, mainSearchTerm: e.target.value });
+  };
 
   // This is to reset the date fields including dateKind once the date is cleared on the parent
   useEffect(() => {
@@ -219,7 +216,6 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
           id="search-1"
           className="search-input"
           onChange={onSearchTermChange}
-          onKeyDown={onKeyDown}
           value={filters.mainSearchTerm}
         />
       </Column>
@@ -320,7 +316,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
         />
       </Column>
 
-      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8} className="single-liner">
         <ComboBox
           id="client-name"
           selectedItem={
@@ -357,7 +353,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
         />
       </Column>
 
-      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8} className="single-liner">
         <ComboBox
           id="date-type-combobox"
           items={dateTypes}
