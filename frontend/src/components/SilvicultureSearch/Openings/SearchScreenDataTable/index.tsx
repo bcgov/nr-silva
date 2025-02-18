@@ -27,7 +27,7 @@ import StatusTag from "../../../StatusTag";
 import "./styles.scss";
 import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
-import { OpeningsSearch } from "../../../../types/OpeningsSearch";
+import { OpeningsSearch } from "../../../../types/OpeningTypes";
 import { ITableHeader } from "../../../../types/TableHeader";
 import {
   convertToCSV,
@@ -76,7 +76,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const alignTwo = document?.dir === "rtl" ? "bottom-left" : "bottom-right";
   const [openEdit, setOpenEdit] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]); // State to store selected rows
+  const [selectedRows, setSelectedRows] = useState<number[]>([]); // State to store selected rows
   const [openingDetails, setOpeningDetails] = useState("");
   const [columnsSelected, setColumnsSelected] = useState<string>("select-default");
   const { mutate: markAsViewedOpening } = usePostViewedOpening();
@@ -109,19 +109,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   }, [rows, totalItems]);
 
   // Function to handle row selection changes
-  const handleRowSelectionChanged = (openingId: string) => {
+  const handleRowSelection = (openingId: number) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(openingId)) {
         // If the row is already selected, remove it from the selected rows
         const selectedValues = prevSelectedRows.filter(
           (id) => id !== openingId
         );
-        setOpeningIds(selectedValues.map(parseFloat));
+        setOpeningIds(selectedValues);
         return selectedValues;
       } else {
         // If the row is not selected, add it to the selected rows
         const selectedValues = [...prevSelectedRows, openingId];
-        setOpeningIds(selectedValues.map(parseFloat));
+        setOpeningIds(selectedValues);
         return selectedValues;
       }
     });
@@ -138,14 +138,14 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           title: "Unable to process your request",
           subTitle: "Please try again in a few minutes",
           type: "error",
-          onClose: () => {},
+          onClose: () => { },
         });
       },
     });
   };
 
   return (
-    <>
+    <div className="search-screen-data-table-container">
       <TableContainer className="search-data-table">
         <TableToolbar aria-label="data table toolbar">
           <TableToolbarContent className="table-toolbar align-items-center justify-content-between">
@@ -156,7 +156,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
             </div>
             <TableToolbarMenu
               iconDescription="More"
-              tooltipposition="bottom"
               renderIcon={Icons.OverflowMenuVertical}
               className="d-block d-sm-none"
             >
@@ -176,7 +175,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               <Button
                 iconDescription="Show Map"
                 data-testid="toggle-spatial"
-                tooltipposition="bottom"
                 kind="ghost"
                 onClick={() => toggleSpatial()}
                 renderIcon={Icons.Location}
@@ -194,7 +192,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <Button
                   iconDescription="Edit Columns"
                   data-testid="edit-columns"
-                  tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
                     setOpenEdit(!openEdit);
@@ -298,7 +295,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
               >
                 <Button
                   iconDescription="Download"
-                  tooltipposition="bottom"
                   kind="ghost"
                   onClick={() => {
                     setOpenDownload(!openDownload);
@@ -311,7 +307,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 <PopoverContent className="download-column-content">
                   <MenuItem
                     className="menu-item"
-                    size={"lg"}
                     label="Download table as PDF file"
                     onClick={() => {
                       downloadPDF(headers, rows);
@@ -319,7 +314,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   />
                   <MenuItem
                     className="menu-item"
-                    size="lg"
                     label="Download table as CSV file"
                     onClick={() => {
                       const csvData = convertToCSV(headers, rows);
@@ -328,7 +322,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                   />
                   <MenuItem
                     className="menu-item"
-                    size={"lg"}
                     label="Download table as XLS file"
                     onClick={() => downloadXLSX(headers, rows)}
                   />
@@ -363,7 +356,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : null
+                          header.key === "actions" && showSpatial ? "p-0" : undefined
                         }
                         onClick={() => {
                           if (header.key !== "actions") {
@@ -374,18 +367,19 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-                          
+
                           <div className={showSpatial ? 'd-flex space-left-1' : 'd-flex'}>
                             {showSpatial && (<div className="pt-3">
                               <SpatialCheckbox
-                                rowId={row.openingId.toString()}
+                                rowId={row.openingId}
                                 selectedRows={selectedRows}
-                                handleRowSelectionChanged={handleRowSelectionChanged}
-                                />
+                                handleRowSelection={handleRowSelection}
+                              />
                             </div>)}
-                            <ActionButtons 
+                            <ActionButtons
                               favorited={row.favourite}
                               rowId={row.openingId}
+                              showToast
                             />
                           </div>
                         ) : header.header === "Category" ? (
@@ -446,7 +440,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
         openingDetails={openingDetails}
         setOpeningDetails={setOpeningDetails}
       />
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,6 @@
-import { Column} from '@carbon/react';
+import { Column } from '@carbon/react';
 import Subtitle from '../Subtitle';
+
 import './styles.scss';
 
 interface ChartTitleProps {
@@ -19,15 +20,13 @@ interface ChartTitleProps {
  * @param {string} [props.activity] - The activity of the chart.
  * @returns {JSX.Element} A div element containing the chart title.
  */
-function ChartTitle ({ title, subtitle}: ChartTitleProps) {
+function ChartTitle({ title, subtitle }: ChartTitleProps) {
   return (
-    <Column className="chart-title">
-      <div className="title-favourite">
-        <h1>{title}</h1>
-      </div>
+    <div className="chart-title">
+      <h1 className="chart-title-header">{title}</h1>
       <Subtitle text={subtitle} />
-    </Column>
+    </div>
   );
-};
+}
 
 export default ChartTitle;

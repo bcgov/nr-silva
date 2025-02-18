@@ -15,10 +15,8 @@ const SectionTitle = ({
 }: SectionTitleProps) => {
 
   return (
-    <Column className="section-title p-0">
-      <div className="title-favourite">
-        <h1>{title}</h1>
-      </div>
+    <Column className="section-title-container">
+      <h6 className="section-title">{title}</h6>
       <Subtitle text={subtitle} />
     </Column>
   );

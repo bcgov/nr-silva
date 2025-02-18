@@ -30,7 +30,7 @@ const MyProfile = () => {
   }, [goTo]);
 
   return (
-    <>
+    <div className="my-profile-container">
       <div className="user-info-section">
         <div className="user-image">
           <AvatarImage userName={`${authUser?.firstName} ${authUser?.lastName}`} size="large" />
@@ -42,7 +42,6 @@ const MyProfile = () => {
 
         </div>
       </div>
-      <hr className="divisory" />
       <nav className="account-nav">
         <ul>
           <li>
@@ -63,11 +62,9 @@ const MyProfile = () => {
           >
             Log out
           </SideNavLink>
-
         </ul>
-        <hr className="divisory mt-5" />
       </nav>
-    </>
+    </div>
   );
 };
 

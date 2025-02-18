@@ -1,11 +1,14 @@
 import React from 'react';
-import './ChartContainer.scss'
+import { Column, Grid } from '@carbon/react';
 import ChartTitle from '../ChartTitle';
+
+import './styles.scss'
 
 type Props = {
   children?: React.ReactNode;
   title: string;
   description: string;
+  className?: string;
 };
 
 /**
@@ -17,19 +20,14 @@ type Props = {
  * @param {string} props.description - The description of the chart.
  * @returns {JSX.Element} A div element containing the chart container.
  */
-function ChartContainer({ children, title, description }: Props): JSX.Element {
+function ChartContainer({ children, title, description, className }: Props): JSX.Element {
   return (
-    <div className='chart-container'>
-        <div className="d-flex flex-row">
-          <ChartTitle title={title} subtitle={description} />
-        </div>
-        {children? (
-          <div className="content">
-            {children}
-          </div>
-        ) : null}
-        
-    </div>
+    <Grid className={className ? `chart-container-grid ${className}` : 'chart-container-grid'}>
+      <Column sm={4} md={8} lg={16} >
+        <ChartTitle title={title} subtitle={description} />
+      </Column>
+      {children}
+    </Grid>
   );
 }
 

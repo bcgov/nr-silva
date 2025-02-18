@@ -22,7 +22,7 @@ import OpeningsMap from "../../../OpeningsMap";
 import PaginationContext from "../../../../contexts/PaginationContext";
 
 const OpeningsSearchTab: React.FC = () => {
-  const [showSpatial, setShowSpatial] = useState<boolean>(false);  
+  const [showSpatial, setShowSpatial] = useState<boolean>(false);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
@@ -30,9 +30,9 @@ const OpeningsSearchTab: React.FC = () => {
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false); // Trigger state for search
   const [isNoFilterSearch, setIsNoFilterSearch] = useState<boolean>(false); // Handles the notification for no filters applied
   const { currentPage, itemsPerPage } = useContext(PaginationContext);
-  const [selectedOpeningIds,setSelectedOpeningIds] = useState<number[]>([]);
+  const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [hasExternalParams, setHasExternalParams] = useState<boolean>(false);
-  
+
   const [headers, setHeaders] = useState<ITableHeader[]>(searchScreenColumns);
 
   // Only fetch when search is triggered and with finalParams
@@ -52,11 +52,11 @@ const OpeningsSearchTab: React.FC = () => {
 
   const handleSearch = () => {
     setIsNoFilterSearch(!hasFilters);
-    
-    if(hasFilters){    
+
+    if (hasFilters) {
       toggleFiltersApplied();
       setFiltersApplied(true); // Set filters as applied to show results
-      setFinalParams({...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
+      setFinalParams({ ...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
       setIsSearchTriggered(true); // Trigger the search
     }
   };
@@ -88,11 +88,11 @@ const OpeningsSearchTab: React.FC = () => {
   };
 
   const handleCheckboxChange = (columnKey: string) => {
-    if(columnKey === "select-default"){
+    if (columnKey === "select-default") {
       //set to the deafult
       setHeaders(searchScreenColumns)
     }
-    else if(columnKey === "select-all"){
+    else if (columnKey === "select-all") {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) => ({
           ...header,
@@ -100,7 +100,7 @@ const OpeningsSearchTab: React.FC = () => {
         }))
       );
     }
-    else{
+    else {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) =>
           header.key === columnKey
@@ -109,7 +109,7 @@ const OpeningsSearchTab: React.FC = () => {
         )
       );
     }
-    
+
   };
 
   useEffect(() => {
@@ -120,15 +120,15 @@ const OpeningsSearchTab: React.FC = () => {
     handlePaginationChanged();
   }, [currentPage, itemsPerPage]);
 
-  useEffect (()=>{
+  useEffect(() => {
     handleSearchInputChange(searchTerm);
-  },[searchTerm]);
+  }, [searchTerm]);
 
   useEffect(() => {
-    if(hasExternalParams){
+    if (hasExternalParams) {
       handleSearch();
     }
-  },[hasExternalParams]);
+  }, [hasExternalParams]);
 
   // Check if we have query parms and if the params align with the filter fields
   useEffect(() => {
@@ -139,7 +139,7 @@ const OpeningsSearchTab: React.FC = () => {
     // Here we do a match between the query params and the filter fields
     Object.keys(filters).forEach((key) => {
       // This is to avoid setting the filter fields with the query params if they don't exist on the filter
-      if(urlParams.has(key)){
+      if (urlParams.has(key)) {
         hasParams = true;
         setFilters((prevFilters: OpeningFilters) => ({
           ...prevFilters,
@@ -149,13 +149,13 @@ const OpeningsSearchTab: React.FC = () => {
     });
 
     //initally when the screen loads check if there was a earch term present
-    if(searchTerm.length>0 || countActiveFilters(filters)>0){
+    if (searchTerm.length > 0 || countActiveFilters(filters) > 0) {
       handleSearch();
     }
 
     setHasExternalParams(hasParams);
-    
-  },[]);
+
+  }, []);
 
   return (
     <>
@@ -184,7 +184,7 @@ const OpeningsSearchTab: React.FC = () => {
                 <SearchScreenDataTable
                   rows={data?.data || []}
                   headers={headers}
-                  handleCheckboxChange={handleCheckboxChange}                  
+                  handleCheckboxChange={handleCheckboxChange}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
                   totalItems={data?.totalItems || 0}

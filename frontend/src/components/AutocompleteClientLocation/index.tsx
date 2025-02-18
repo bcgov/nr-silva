@@ -1,20 +1,16 @@
 import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
-import { ComboBox } from "@carbon/react";
+import { ComboBox, type OnChangeData } from "@carbon/react";
 import { useAutocomplete } from "../../contexts/AutocompleteProvider";
-import { 
+import {
   fetchClientsByNameAcronymNumber,
   fetchClientLocations,
   ForestClientAutocomplete,
-  ForestClientLocation 
+  ForestClientLocation
 } from "../../services/OpeningClientLocationService";
 
 interface AutocompleteProps {
   id: string,
   label: string,
-}
-
-interface AutocompleteComboboxProps{
-  selectedItem: AutocompleteProps
 }
 
 interface AutocompleteComponentProps {
@@ -33,7 +29,7 @@ export const skipConditions = {
     const regex = /^[a-zA-Z\s]*,\s[a-zA-Z\s]*,*/;
     return regex.exec(query) !== null;
   },
-  // Never skips for locations  
+  // Never skips for locations
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locations: (query: string) => false
 };
@@ -42,17 +38,17 @@ export const skipConditions = {
 export const fetchValues = async (query: string, key: string) => {
 
   // If there is no query, return an empty array
-  if(!key || !query) return [];
-  
+  if (!key || !query) return [];
+
   // For clients, it will do the autocomplete search based on the name, acronym, or number
   if (key === "clients") {
     const response = await fetchClientsByNameAcronymNumber(query);
     const apiresponse = response;
     return apiresponse.map((item: ForestClientAutocomplete) => ({
       id: item.id,
-      label: `${item.name}, ${item.id}, ${item.acronym? item.acronym : ''}`
+      label: `${item.name}, ${item.id}, ${item.acronym ? item.acronym : ''}`
     }));
-  } 
+  }
 
   // For locations, it will just load the value based on the selected client id
   if (key === "locations") {
@@ -68,108 +64,109 @@ export const fetchValues = async (query: string, key: string) => {
 };
 
 const AutocompleteClientLocation: React.ForwardRefExoticComponent<AutocompleteComponentProps & React.RefAttributes<AutocompleteComponentRefProps>> = forwardRef<AutocompleteComponentRefProps, AutocompleteComponentProps>(
-  ({ setLocationValue, setClientValue }, ref) => 
-    {
-  const { options, fetchOptions, updateOptions } = useAutocomplete();
-  const [isActive, setIsActive] = useState(false);
-  const [location, setLocation] = useState<AutocompleteProps | null>(null);
-  const [client, setClient] = useState<AutocompleteProps | null>(null);
-  const [valueTyped, setValueTyped] = useState<string | null>(null);
-  const [locationName, setLocationName] = useState<string | null>(null);
+  ({ setLocationValue, setClientValue }, ref) => {
+    const { options, fetchOptions, updateOptions } = useAutocomplete();
+    const [isActive, setIsActive] = useState(false);
+    const [location, setLocation] = useState<AutocompleteProps | null>(null);
+    const [client, setClient] = useState<AutocompleteProps | null>(null);
+    const [valueTyped, setValueTyped] = useState<string | null>(null);
+    const [locationName, setLocationName] = useState<string | null>(null);
 
-  const clearClient = () => {
-    updateOptions("locations", []);
-    updateOptions("clients", []);
-    setClient(null);
-    setLocationValue(null);
-    setIsActive(false);
-    setLocation(null);
-  };
+    const clearClient = () => {
+      updateOptions("locations", []);
+      updateOptions("clients", []);
+      setClient(null);
+      setLocationValue(null);
+      setIsActive(false);
+      setLocation(null);
+    };
 
-  const clearValues = () => {
-    setClient(null);
-    setClient(null);
-    setLocation(null);
-  }
-
-  const selectClient = (selectedItem: AutocompleteProps) => {
-    if (selectedItem) {
-      setIsActive(true);
-      setClient(selectedItem);
-      fetchOptions(selectedItem.id, "locations");
-      setClientValue(selectedItem.id);
-    }else{
-      clearClient();
+    const clearValues = () => {
+      setClient(null);
+      setClient(null);
+      setLocation(null);
     }
-  }
 
-  const handleClientChange = (autocompleteEvent: AutocompleteComboboxProps) => {
-    selectClient(autocompleteEvent.selectedItem)
-  };
-
-  // This is here because when deployed the ComboBox tends to fail to call the onChange
-  useEffect(() => {
-    // We use the useEffect to do a lookup on the clients options
-    // It will fill with the autocomplete triggering the fetchOptions
-    const selectedItem = options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped);
-
-    // If there's text typed and we found a client based on the label selected, we select it
-    if(valueTyped && selectedItem){
-      selectClient(selectedItem);
+    const selectClient = (selectedItem: AutocompleteProps | null) => {
+      if (selectedItem) {
+        setIsActive(true);
+        setClient(selectedItem);
+        fetchOptions(selectedItem.id, "locations");
+        setClientValue(selectedItem.id);
+      } else {
+        clearClient();
+      }
     }
-    
-    // This also triggers the autocomplete to fetch the options
-    if(valueTyped)
-      fetchOptions(valueTyped, "clients")
-  },[valueTyped]);
 
-  // This is here because when deployed the ComboBox tends to fail to call the onChange
-  useEffect(() => {
-    // We use the useEffect to do a lookup on the locations options
-    const selectedItem = options["locations"]?.find((item: AutocompleteProps) => item.label === locationName);
-    // If there's text typed and we found a location based on the label selected, we select it
-    if(locationName && selectedItem){
-      // This triggers the location useEffect to set the value
-      setLocation(selectedItem);
-    }
-  }, [locationName]);
+    const handleClientChange = (autocompleteEvent: OnChangeData<AutocompleteProps | null | undefined>) => {
+      selectClient(autocompleteEvent?.selectedItem ?? null)
+    };
 
-  useImperativeHandle(ref, () => ({
-    reset: () => clearValues()
-  }));
+    // This is here because when deployed the ComboBox tends to fail to call the onChange
+    useEffect(() => {
+      // We use the useEffect to do a lookup on the clients options
+      // It will fill with the autocomplete triggering the fetchOptions
+      const selectedItem = options["clients"]?.find((item: AutocompleteProps) => item.label === valueTyped);
 
-  // Why do we keep this then? Because of the onChange start to work, this will work as it was intended
-  useEffect(() => {
-    setLocationValue(location?.id ?? null);
-  }, [location]);
+      // If there's text typed and we found a client based on the label selected, we select it
+      if (valueTyped && selectedItem) {
+        selectClient(selectedItem);
+      }
 
-  return (
-    <div className="d-flex w-100 gap-1 mt-2">
-      <ComboBox
-        id="client-name"
-        className="flex-fill"
-        allowCustomValue={false}
-        selectedItem={client}
-        onInputChange={setValueTyped}
-        onChange={handleClientChange}
-        itemToElement={(item: AutocompleteProps) => item.label}
-        helperText="Search by client name, number or acronym"
-        items={options["clients"] || []}
-        titleText="Client" 
-      />
-      <ComboBox
-        disabled={!isActive}
-        id="client-location"
-        className="flex-fill"
-        selectedItem={location}
-        onInputChange={setLocationName}
-        onChange={(item: AutocompleteComboboxProps) => setLocation(item.selectedItem)}
-        itemToElement={(item: AutocompleteProps) => item.label}
-        items={options["locations"] || [{ id: "", label: "No results found" }]}
-        titleText="Location code" />
+      // This also triggers the autocomplete to fetch the options
+      if (valueTyped)
+        fetchOptions(valueTyped, "clients")
+    }, [valueTyped]);
+
+    // This is here because when deployed the ComboBox tends to fail to call the onChange
+    useEffect(() => {
+      // We use the useEffect to do a lookup on the locations options
+      const selectedItem = options["locations"]?.find((item: AutocompleteProps) => item.label === locationName);
+      // If there's text typed and we found a location based on the label selected, we select it
+      if (locationName && selectedItem) {
+        // This triggers the location useEffect to set the value
+        setLocation(selectedItem);
+      }
+    }, [locationName]);
+
+    useImperativeHandle(ref, () => ({
+      reset: () => clearValues()
+    }));
+
+    // Why do we keep this then? Because of the onChange start to work, this will work as it was intended
+    useEffect(() => {
+      setLocationValue(location?.id ?? null);
+    }, [location]);
+
+    return (
+      <div className="d-flex w-100 gap-1 mt-2">
+        <ComboBox
+          id="client-name"
+          className="flex-fill"
+          allowCustomValue={false}
+          selectedItem={client}
+          onInputChange={setValueTyped}
+          onChange={handleClientChange}
+          itemToElement={(item: AutocompleteProps) => item.label}
+          helperText="Search by client name, number or acronym"
+          items={options["clients"] || []}
+          titleText="Client"
+        />
+        <ComboBox
+          disabled={!isActive}
+          id="client-location"
+          className="flex-fill"
+          selectedItem={location}
+          onInputChange={setLocationName}
+          onChange={(item: OnChangeData<AutocompleteProps | null | undefined>) =>
+            setLocation(item.selectedItem ?? null)
+          }
+          itemToElement={(item: AutocompleteProps) => item.label}
+          items={options["locations"] || [{ id: "", label: "No results found" }]}
+          titleText="Location code" />
       </div>
-  );
-});
+    );
+  });
 
 AutocompleteClientLocation.displayName = "AutocompleteClientLocation";
 

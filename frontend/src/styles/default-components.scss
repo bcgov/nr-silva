@@ -1,0 +1,64 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.default-grid {
+  margin: 0;
+  width: 100%;
+  padding: 2rem;
+  max-inline-size: none;
+  row-gap: 2.5rem;
+  column-gap: 2rem;
+
+  .#{vars.$bcgov-prefix}--css-grid-column {
+    margin: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--subgrid {
+    margin-inline: 0;
+  }
+}
+
+// Small
+@media only screen and (max-width: 671px) {
+  .default-grid {
+    padding: 2rem 1rem;
+    column-gap: 1rem;
+  }
+}
+
+// md
+@media only screen and (max-width: 1311px) {
+  .default-grid {
+    row-gap: 2rem;
+  }
+}
+
+.default-zebra-table {
+  &.#{vars.$bcgov-prefix}--data-table tbody {
+    background: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
+
+  &.#{vars.$bcgov-prefix}--data-table--zebra tbody tr:not(.#{vars.$bcgov-prefix}--parent-row):not(.#{vars.$bcgov-prefix}--data-table--selected):nth-child(even) {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+  }
+
+  &.#{vars.$bcgov-prefix}--data-table--zebra tbody tr:not(.#{vars.$bcgov-prefix}--parent-row):nth-child(even) td {
+    border-block-end: 0;
+  }
+
+  &.#{vars.$bcgov-prefix}--data-table--zebra tbody tr:not(.#{vars.$bcgov-prefix}--parent-row):nth-child(even):hover {
+    background: var(--#{vars.$bcgov-prefix}-layer-hover-01);
+  }
+
+  tbody tr>td {
+    @include type.type-style('body-compact-01');
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+  }
+}
+
+.silva-toast {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 2;
+}
