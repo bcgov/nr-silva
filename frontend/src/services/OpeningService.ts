@@ -44,6 +44,10 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
 
     const urlParams = args.join('&');
 
+    const getMonthName = (year: number,monthNumber: number) => 
+      new Intl.DateTimeFormat('en-CA', { month: 'short' }).format(new Date(2021, monthNumber - 1));
+  
+
     const response = await axios.get(API_ENDPOINTS.submissionTrends(urlParams), defaultHeaders(authToken));
 
     const { data } = response;
@@ -51,7 +55,7 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
       // Format data for BarChartGrouped component
       const formattedData: OpeningPerYearChart[] = data.map(item => ({
         group: "Openings",
-        key: `${item.monthName} ${item.year}`,
+        key: `${getMonthName(item.year,item.month)} ${item.year}`,
         year: item.year,
         month: item.month,
         value: item.amount,
@@ -92,8 +96,8 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
     const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
+        'Access-Control-Allow-Origin': window.location.origin,
+        Authorization: `Bearer ${authToken}`
       }
     });
 
@@ -126,8 +130,8 @@ export async function fetchRecentActions(): Promise<RecentAction[]> {
     const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
       headers: {
         'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
+        'Access-Control-Allow-Origin': window.location.origin,
+        Authorization: `Bearer ${authToken}`
       }
     });
     
