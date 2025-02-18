@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./SearchFilterBar.scss";
-import { DismissibleTag, Button, Grid, Column } from "@carbon/react";
+import { DismissibleTag, Button } from "@carbon/react";
+
+// Custom types
 import { OpeningSearchFilters } from "@/services/search/openings";
+import { filterKeyValueMap } from "@/constants/tableConstants";
+
+// Styles
+import "./SearchFilterBar.scss";
 
 interface SearchFilterBarProps {
   filters: OpeningSearchFilters;
@@ -17,16 +22,18 @@ interface ActiveFilter {
 }
 
 // Utility functions
-const formatKey = (key: string) => {
-  return key
+const formatKey = (key: string) =>
+  filterKeyValueMap[key as keyof typeof filterKeyValueMap] ||
+  key
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^\w/, (c) => c.toUpperCase());
-};
 
 const getActiveFilters = (filters: OpeningSearchFilters): ActiveFilter[] => {
   const activeFilters: ActiveFilter[] = [];
 
   for (const key in filters) {
+    if (key === "mainSearchTerm") continue;
+
     if (filters && filters[key as keyof typeof filters]) {
       if (Array.isArray(filters[key as keyof typeof filters])) {
         const values = filters[key as keyof typeof filters] as Array<string>;
@@ -38,6 +45,16 @@ const getActiveFilters = (filters: OpeningSearchFilters): ActiveFilter[] => {
             display: `${formatKey(key)}: ${value}`,
           })
         );
+      } else if (
+        filters[key as keyof typeof filters] instanceof Boolean ||
+        typeof filters[key as keyof typeof filters] === "boolean"
+      ) {
+        activeFilters.push({
+          key: key,
+          value: filters[key as keyof typeof filters],
+          isArray: false,
+          display: formatKey(key),
+        });
       } else {
         activeFilters.push({
           key: key,
@@ -78,14 +95,13 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     return filters[key as keyof typeof filters];
   };
 
-  const hasFilters = (ignoreSearchBar: boolean) => {
+  const hasFilters = () => {
     return Object.keys(filters).some(
-      (key) =>
-        (ignoreSearchBar || key !== "mainSearchTerm") && filterHasValue(key)
+      (key) => key !== "mainSearchTerm" && filterHasValue(key)
     );
   };
 
-  if (!hasFilters(true)) {
+  if (!hasFilters()) {
     return <></>;
   }
 
