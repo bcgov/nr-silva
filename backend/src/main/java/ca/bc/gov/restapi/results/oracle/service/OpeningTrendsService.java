@@ -55,7 +55,6 @@ public class OpeningTrendsService {
     // Group by month and status
     Map<String, Map<String, Long>> dateToStatusCountMap = entities.stream()
         .filter(entity -> entity.getEntryTimestamp() != null) // Ensure timestamp is not null
-        .peek(entity -> log.debug("Entity: {}", entity))
         .collect(Collectors.groupingBy(
             entity -> getDateKey(entity.getEntryTimestamp()), // Extract month value
             Collectors.groupingBy(
@@ -66,7 +65,6 @@ public class OpeningTrendsService {
 
     // Map to count total entries grouped by month
     Map<String, Long> monthToCountMap = dateToStatusCountMap.entrySet().stream()
-        .peek(entry -> log.debug("Entry: {}", entry))
         .collect(Collectors.toMap(
             Map.Entry::getKey, // Month
             entry -> entry.getValue().values().stream().mapToLong(Long::longValue).sum() // Sum counts per status
@@ -79,7 +77,6 @@ public class OpeningTrendsService {
         // We use this combination as we want to include the start date in the sequence
         .filter(yearMonth -> !yearMonth.isBefore(YearMonth.from(startDate)))
         .sorted() // Sort in ascending order
-        .peek(yearMonth -> log.debug("YearMonth: {}", yearMonth))
         .toList();
 
     // Generate the DTOs in the custom order
@@ -91,7 +88,6 @@ public class OpeningTrendsService {
             monthToCountMap.getOrDefault(getDateKey(yearMonth), 0L), // Total count for the month
             dateToStatusCountMap.getOrDefault(getDateKey(yearMonth), Collections.emptyMap()) // Status counts map
         ))
-        .peek(dto -> log.debug("DTO: {}", dto))
         .toList();
   }
 
