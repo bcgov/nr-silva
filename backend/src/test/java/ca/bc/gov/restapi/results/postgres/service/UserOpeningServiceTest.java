@@ -10,7 +10,6 @@ import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
-import ca.bc.gov.restapi.results.postgres.repository.OpeningsActivityRepository;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +29,6 @@ class UserOpeningServiceTest {
 
   @Mock
   UserOpeningRepository userOpeningRepository;
-
-  @Mock
-  OpeningsActivityRepository openingsActivityRepository;
 
   @Mock
   OpeningRepository openingRepository;
@@ -89,7 +85,8 @@ class UserOpeningServiceTest {
   @DisplayName("List user favourite openings happy path should succeed")
   void listUserFavoriteOpenings_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
-    when(userOpeningRepository.findAllByUserId(any(), any())).thenReturn(List.of(new UserOpeningEntity()));
+    when(userOpeningRepository.findAllByUserId(any(), any())).thenReturn(
+        List.of(new UserOpeningEntity()));
     userOpeningService.listUserFavoriteOpenings();
   }
 
@@ -97,7 +94,8 @@ class UserOpeningServiceTest {
   @DisplayName("Check for favorites happy path should succeed")
   void checkForFavorites_happyPath_shouldSucceed() {
     when(loggedUserService.getLoggedUserId()).thenReturn(USER_ID);
-    when(userOpeningRepository.findAllByUserIdAndOpeningIdIn(any(), any())).thenReturn(List.of(new UserOpeningEntity(USER_ID,112233L)));
+    when(userOpeningRepository.findAllByUserIdAndOpeningIdIn(any(), any())).thenReturn(
+        List.of(new UserOpeningEntity(USER_ID, 112233L)));
     assertThat(userOpeningService.checkForFavorites(List.of(112233L)))
         .isNotNull()
         .isNotEmpty()
