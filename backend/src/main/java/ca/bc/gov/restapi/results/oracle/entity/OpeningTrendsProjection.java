@@ -1,11 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.entity;
 
-import java.time.LocalDateTime;
-
 public interface OpeningTrendsProjection {
-  Long getOpeningId();
-  String getUserId();
-  LocalDateTime getEntryTimestamp();
+  int getYear();
+  int getMonth();
   String getStatus();
-  String getClientNumber();
+  long getCount();
 }
