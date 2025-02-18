@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import {
   Search,
   Button,
-  Dropdown,
   FilterableMultiSelect,
-  FlexGrid,
-  Row,
+  Grid,
   Column,
-  DismissibleTag,
   Popover,
   PopoverContent,
   TableToolbar,
   TableToolbarContent,
   TableContainer,
+  Modal,
 } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 
@@ -22,6 +20,8 @@ import SearchTable from "@/components/SearchTable";
 import OpeningsMap from "@/components/OpeningsMap";
 import SearchFilterBar from "@/components/SilvicultureSearch/Openings/SearchFilterBar";
 import SearchTableColumnSelector from "@/components/SearchTableColumnSelector";
+import { statusTypes } from "@/constants/searchConstants";
+import useBreakpoint from "@/hooks/UseBreakpoint";
 
 // API Requests
 import {
@@ -83,6 +83,8 @@ const SearchTab: React.FC = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [showColumnEditor, setShowColumnEditor] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const breakpoints = useBreakpoint();
 
   const cleanValues = (filterValues: OpeningSearchFilters) => {
     return Object.fromEntries(
@@ -156,7 +158,7 @@ const SearchTab: React.FC = () => {
       setValue({ category: value.map((item: CodeDescription) => item.code) });
     } else if (
       field === "status" &&
-      value.every((item): item is IdTextValueData => "value" in item)
+      value.every((item): item is IdTextValueData => "id" in item)
     ) {
       setValue({ statusList: value.map((item: IdTextValueData) => item.id) });
     }
@@ -224,140 +226,153 @@ const SearchTab: React.FC = () => {
     );
     orgUnitInput?.setAttribute("placeholder", "Org unit");
 
+    // This is to circunvent the lack of label property for placeholder on a multi-select
+    const statusInput = document.querySelector(
+      "div.status-multi-select div div input"
+    );
+    statusInput?.setAttribute("placeholder", "Status");
+
     fetchCategories().then(setCategories);
     fetchOrgUnits().then(setOrgUnits);
   }, []);
 
   return (
     <>
-      <FlexGrid className="openings-searchbar-container">
-        <Row>
-          <Column sm={4} md={8} lg={16} max={14} className="p-0">
-            <FlexGrid className="opening-searchbar-inner">
-              <Row>
-                <Column sm={4} md={8} lg={16} max={7} className="p-0 mb-1">
-                  <Search
-                    size="md"
-                    placeholder="Search by opening ID, opening number or file ID"
-                    labelText="Search"
-                    closeButtonLabelText="Clear search input"
-                    id={`search-1`}
-                    onChange={onSearchTermChange}
-                    onKeyDown={onKeyDown}
-                    value={filters.mainSearchTerm}
-                  />
-                </Column>
-
-                <Column sm={4} md={8} lg={5} max={3} className="p-0 mb-1">
-                  <FilterableMultiSelect
-                    label="Enter or choose a category"
-                    id="category-multiselect"
-                    className="multi-select category-multi-select ms-1"
-                    items={categories}
-                    itemToString={(item: CodeDescription) =>
-                      item ? `${item.code} - ${item.description}` : ""
-                    }
-                    selectionFeedback="top-after-reopen"
-                    onChange={(e: SelectEvents) => {
-                      setMuliSelectValue("category", e.selectedItems);
-                    }}
-                    selectedItems={
-                      filters.category
-                        ? categories.filter((item) =>
-                            filters.category?.includes(item.code)
-                          )
-                        : []
-                    }
-                    sortItems={sortItems}
-                  />
-                </Column>
-
-                <Column sm={4} md={8} lg={5} max={3} className="p-0 mb-1">
-                  <FilterableMultiSelect
-                    label="Enter or choose an org unit"
-                    id="orgunit-multiselect"
-                    className="multi-select orgunit-multi-select ms-1"
-                    items={orgUnits}
-                    itemToString={(item: OrgUnit) =>
-                      item ? `${item.orgUnitCode} - ${item.orgUnitName}` : ""
-                    }
-                    selectionFeedback="top-after-reopen"
-                    onChange={(e: SelectEvents) => {
-                      setMuliSelectValue("orgUnit", e.selectedItems);
-                    }}
-                    selectedItems={
-                      filters.orgUnit
-                        ? orgUnits.filter((item) =>
-                            filters.orgUnit?.includes(item.orgUnitCode)
-                          )
-                        : []
-                    }
-                    sortItems={sortItems}
-                  />
-                </Column>
-
-                <Column sm={4} md={8} lg={6} max={3} className="p-0">
-                  <div
-                    className="advanced-search-field ms-1"
-                    onClick={() => setIsOpen(!isOpen)}
-                    onKeyUp={(e) => {
-                      if (e.key === "Enter") setIsOpen(!isOpen);
-                    }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    {hasFilters(false) && (
-                      <DismissibleTag
-                        className="mx-1"
-                        type="high-contrast"
-                        text={"+" + countFilters()}
-                        onClose={() => clearFilters()}
-                      ></DismissibleTag>
-                    )}
-                    <p className={hasFilters(false) ? "text-active" : ""}>
-                      Advanced Search
-                    </p>
-                    {isOpen ? (
-                      <Icons.ChevronSortUp />
-                    ) : (
-                      <Icons.ChevronSortDown />
-                    )}
-                  </div>
-                  <Popover
-                    isTabTip
-                    open={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    align={
-                      document?.dir === "rtl" ? "bottom-right" : "bottom-left"
-                    }
-                    className="filter-popover"
-                  >
-                    <PopoverContent>
-                      <OpeningTableFilter
-                        filters={filters}
-                        onFilterChange={setFilters}
-                        categories={categories.map(({ code, description }) => ({
-                          id: code,
-                          text: description,
-                        }))}
-                        orgUnits={orgUnits.map(
-                          ({ orgUnitCode, orgUnitName }) => ({
-                            id: orgUnitCode,
-                            text: orgUnitName,
-                          })
-                        )}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </Column>
-              </Row>
-            </FlexGrid>
+      <Modal
+        open={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        modalHeading="Advanced search"
+        primaryButtonText="Search"
+        secondaryButtonText="Cancel"
+        className="advanced-search-modal"
+      >
+        <OpeningTableFilter
+          filters={filters}
+          onFilterChange={setFilters}
+          categories={categories.map(({ code, description }) => ({
+            id: code,
+            text: description,
+          }))}
+          orgUnits={orgUnits.map(({ orgUnitCode, orgUnitName }) => ({
+            id: orgUnitCode,
+            text: orgUnitName,
+          }))}
+        />
+      </Modal>
+      <div className="search-filters-container">
+        <Grid fullWidth condensed>
+          <Column sm={4} md={8} lg={16} xlg={16} max={4}>
+            <Search
+              size="md"
+              placeholder="Search by opening ID, opening number or file ID"
+              labelText="Search"
+              closeButtonLabelText="Clear search input"
+              id="search-1"
+              className="search-input"
+              onChange={onSearchTermChange}
+              onKeyDown={onKeyDown}
+              value={filters.mainSearchTerm}
+            />
+          </Column>
+          <Column sm={4} md={2} lg={4} xlg={4} max={3}>
+            <FilterableMultiSelect
+              label="Enter or choose a category"
+              id="category-multiselect"
+              className="multi-select category-multi-select ms-1"
+              items={categories}
+              itemToString={(item: CodeDescription) =>
+                item ? `${item.code} - ${item.description}` : ""
+              }
+              selectionFeedback="top-after-reopen"
+              onChange={(e: SelectEvents) => {
+                setMuliSelectValue("category", e.selectedItems);
+              }}
+              selectedItems={
+                filters.category
+                  ? categories.filter((item) =>
+                      filters.category?.includes(item.code)
+                    )
+                  : []
+              }
+              sortItems={sortItems}
+            />
+          </Column>
+          <Column sm={4} md={3} lg={4} xlg={4} max={3}>
+            <FilterableMultiSelect
+              label="Enter or choose an org unit"
+              id="orgunit-multiselect"
+              className="multi-select orgunit-multi-select ms-1"
+              items={orgUnits}
+              itemToString={(item: OrgUnit) =>
+                item ? `${item.orgUnitCode} - ${item.orgUnitName}` : ""
+              }
+              selectionFeedback="top-after-reopen"
+              onChange={(e: SelectEvents) => {
+                setMuliSelectValue("orgUnit", e.selectedItems);
+              }}
+              selectedItems={
+                filters.orgUnit
+                  ? orgUnits.filter((item) =>
+                      filters.orgUnit?.includes(item.orgUnitCode)
+                    )
+                  : []
+              }
+              sortItems={sortItems}
+            />
+          </Column>
+          <Column sm={4} md={2} lg={4} xlg={4} max={3}>
+            <FilterableMultiSelect
+              label="Enter or choose a status"
+              id="status-multiselect"
+              className="multi-select status-multi-select ms-1"
+              items={statusTypes}
+              itemToString={(item: IdTextValueData) =>
+                item ? `${item.id} - ${item.text}` : ""
+              }
+              selectionFeedback="top-after-reopen"
+              onChange={(e: SelectEvents) => {
+                setMuliSelectValue("status", e.selectedItems);
+              }}
+              selectedItems={
+                filters.statusList
+                  ? statusTypes.filter((item) =>
+                      filters.statusList?.includes(item.id)
+                    )
+                  : []
+              }
+              sortItems={sortItems}
+            />
+          </Column>
+          <Column sm={4} md={1} lg={1} xlg={1} max={1}>
+            <Button
+              className="advanced-search-button"
+              renderIcon={Icons.Filter}
+              iconDescription="Advanced Search"
+              type="button"
+              size="md"
+              kind="tertiary"
+              hasIconOnly={breakpoints !== "sm"}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {breakpoints !== "sm" ? "" : "Advanced Search"}
+            </Button>
           </Column>
 
-          <Column sm={4} md={8} lg={16} max={2} className="p-0">
+          {!["max", "xlg", "lg"].includes(breakpoints) && (
+            <Column sm={4} md={8} lg={16} xlg={16} max={16}>
+              <SearchFilterBar
+                filters={filters}
+                clearFilter={clearFilter}
+                clearFilters={clearFilters}
+              />
+            </Column>
+          )}
+
+          <Column sm={4} md={8} lg={2} xlg={2} max={2}>
             <Button
-              className="search-button ms-xl-2"
+              className="search-button"
               renderIcon={Icons.Search}
+              iconDescription="Search"
               type="button"
               size="md"
               onClick={onSearch}
@@ -365,21 +380,18 @@ const SearchTab: React.FC = () => {
               Search
             </Button>
           </Column>
-        </Row>
 
-        <Row>
-          <Column lg={14} className="p-0">
-            {hasFilters(false) && (
+          {["max", "xlg", "lg"].includes(breakpoints) && (
+            <Column sm={4} md={8} lg={16} xlg={16} max={16}>
               <SearchFilterBar
                 filters={filters}
                 clearFilter={clearFilter}
                 clearFilters={clearFilters}
               />
-            )}
-          </Column>
-        </Row>
-      </FlexGrid>
-
+            </Column>
+          )}
+        </Grid>
+      </div>
       {showMap && (
         <div
           className="search-spatial-container row p-0"

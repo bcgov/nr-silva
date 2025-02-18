@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./SearchFilterBar.scss";
-import { Tag, Link } from "@carbon/react";
+import { DismissibleTag, Button, Grid, Column } from "@carbon/react";
 import { OpeningSearchFilters } from "@/services/search/openings";
 
 interface SearchFilterBarProps {
@@ -70,32 +70,44 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     );
   };
 
+  const filterHasValue = (key: string) => {
+    const filterValue = filters[key as keyof typeof filters];
+    if (filterValue && Array.isArray(filterValue)) {
+      return filterValue.length > 0;
+    }
+    return filters[key as keyof typeof filters];
+  };
+
+  const hasFilters = (ignoreSearchBar: boolean) => {
+    return Object.keys(filters).some(
+      (key) =>
+        (ignoreSearchBar || key !== "mainSearchTerm") && filterHasValue(key)
+    );
+  };
+
+  if (!hasFilters(true)) {
+    return <></>;
+  }
+
   return (
-    <div className="search-filter-bar">
-      <div className="d-flex flex-row align-items-center justify-content-between">
-        <div className="d-flex flex-row filters-container">
-          <div className="row gx-0">
-            {activeFilters.map((filter, index) => (
-              <div className="col-auto" key={index}>
-                <Tag
-                  filter
-                  className="mx-1"
-                  type="outline"
-                  title="Clear Filter"
-                  onClose={() => handleClearFilter(filter)}
-                >
-                  {filter.display}
-                </Tag>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="clear-button-container">
-          <Link className="clear-filters-button" onClick={clearFilters}>
-            Clear all filters
-          </Link>
-        </div>
-      </div>
+    <div
+      aria-label="Selected filters"
+      role="group"
+      className="filters-container"
+    >
+      {activeFilters.map((filter, index) => (
+        <DismissibleTag
+          key={`${filter.key}-${index}`}
+          type="outline"
+          text={filter.display}
+          tagTitle={filter.display}
+          title="Remove Filter"
+          onClose={() => handleClearFilter(filter)}
+        />
+      ))}
+      <Button kind="ghost" size="md" onClick={clearFilters}>
+        Clear all filters
+      </Button>
     </div>
   );
 };

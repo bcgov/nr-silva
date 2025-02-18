@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  FlexGrid,
-  Row,
+  Grid,
   Column,
   CheckboxGroup,
   Checkbox,
@@ -10,6 +9,7 @@ import {
   DatePicker,
   DatePickerInput,
   ComboBox,
+  Search,
 } from "@carbon/react";
 
 // Types
@@ -22,7 +22,11 @@ import {
   TextInputEvent,
 } from "@/types/GeneralTypes";
 import { sortItems } from "@/utils/multiSelectSortUtils";
-import { OpeningSearchFilters } from "@/services/search/openings";
+import {
+  OpeningSearchFilters,
+  CodeDescription,
+  OrgUnit,
+} from "@/services/search/openings";
 import { statusTypes, dateTypes } from "@/constants/searchConstants";
 
 // Function libs
@@ -48,6 +52,8 @@ interface FilterProps {
 const dateFormat = "yyyy-MM-dd";
 
 const OpeningTableFilter: React.FC<FilterProps> = ({
+  categories,
+  orgUnits,
   filters,
   onFilterChange,
 }) => {
@@ -133,6 +139,9 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
     }
   };
 
+  const onSearchTermChange = (e: never) => {};
+  const onKeyDown = (e: never) => {};
+
   // This is to reset the date fields including dateKind once the date is cleared on the parent
   useEffect(() => {
     const isClearedStart = !Object.keys(filters).some((key) =>
@@ -200,199 +209,238 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
   }, [isClientLocationActive]);
 
   return (
-    <div className="advanced-search-dropdown">
-      <FlexGrid className="container-fluid advanced-search-container">
-        <Row>
-          <Column sm={4} md={8} lg={16}>
-            <CheckboxGroup
-              orientation="horizontal"
-              legendText="Opening Filters"
-            >
-              <Checkbox
-                labelText={`Openings created by me`}
-                id="checkbox-label-1"
-                checked={!!filters.myOpenings}
-                onChange={() => onCheckboxChange("myOpenings")}
-              />
-              <Checkbox
-                labelText={`FRPA section 108`}
-                id="checkbox-label-2"
-                checked={!!filters.submittedToFrpa}
-                onChange={() => onCheckboxChange("submittedToFrpa")}
-              />
-            </CheckboxGroup>
-          </Column>
+    <Grid fullWidth className="advanced-search-container">
+      <Column sm={4} md={8} lg={16} xlg={16} max={16}>
+        <Search
+          size="md"
+          placeholder="Search by opening ID, opening number or file ID"
+          labelText="Search"
+          closeButtonLabelText="Clear search input"
+          id="search-1"
+          className="search-input"
+          onChange={onSearchTermChange}
+          onKeyDown={onKeyDown}
+          value={filters.mainSearchTerm}
+        />
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <FilterableMultiSelect
-              titleText="Status"
-              label="Enter or choose"
-              id="status-multiselect"
-              className="multi-select status-multi-select"
-              items={statusTypes}
-              itemToString={(item: IdTextValueData) =>
-                item ? `${item.id} - ${item.text}` : ""
-              }
-              selectionFeedback="top-after-reopen"
-              onChange={(e: SelectEvents) => {
-                setValue({
-                  statusList: e.selectedItems.map(
-                    (item: IdTextValueData) => item.id
-                  ),
-                });
-              }}
-              selectedItems={
-                filters.statusList
-                  ? statusTypes.filter((item) =>
-                      filters.statusList?.includes(item.id)
-                    )
-                  : []
-              }
-              sortItems={sortItems}
-            />
-          </Column>
+      <Column sm={4} md={8} lg={16} xlg={16} max={16}>
+        <CheckboxGroup orientation="horizontal" legendText="Opening Filters">
+          <Checkbox
+            labelText={`Openings created by me`}
+            id="checkbox-label-1"
+            checked={!!filters.myOpenings}
+            onChange={() => onCheckboxChange("myOpenings")}
+          />
+          <Checkbox
+            labelText={`FRPA section 108`}
+            id="checkbox-label-2"
+            checked={!!filters.submittedToFrpa}
+            onChange={() => onCheckboxChange("submittedToFrpa")}
+          />
+        </CheckboxGroup>
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <ComboBox
-              id="client-name"
-              selectedItem={
-                filters.clientNumber
-                  ? clients.find((item) => item.id === filters.clientNumber)
-                  : null
-              }
-              onInputChange={(value: string) =>
-                clientAutocompleteBy(locations, value, "clientNumber")
-              }
-              onChange={(item: AutocompleteComboboxProps) =>
-                selectBy(clients, item?.selectedItem?.label, "clientNumber")
-              }
-              itemToString={(item: AutocompleteProps) =>
-                item ? item.label : ""
-              }
-              helperText="Search by client name, number or acronym"
-              items={clients}
-              titleText="Client"
-            />
-          </Column>
-          <Column sm={4} md={8} lg={16}>
-            <ComboBox
-              disabled={!filters.clientNumber}
-              id="client-location"
-              selectedItem={
-                filters.clientLocationCode
-                  ? locations.find(
-                      (item) => item.id === filters.clientLocationCode
-                    )
-                  : null
-              }
-              onInputChange={(value: string) => locationAutocompleteBy(value)}
-              onChange={(item: AutocompleteComboboxProps) =>
-                selectBy(
-                  clients,
-                  item?.selectedItem?.label,
-                  "clientLocationCode"
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <FilterableMultiSelect
+          titleText="Category"
+          label="Enter or choose a category"
+          id="category-multiselect"
+          className="multi-select category-multi-select ms-1"
+          items={categories}
+          itemToString={(item: IdTextValueData) =>
+            item ? `${item.id} - ${item.text}` : ""
+          }
+          selectionFeedback="top-after-reopen"
+          onChange={(e: SelectEvents) => {
+            setValue({
+              category: e.selectedItems.map((item: IdTextValueData) => item.id),
+            });
+          }}
+          selectedItems={
+            filters.category
+              ? categories.filter((item) => filters.category?.includes(item.id))
+              : []
+          }
+          sortItems={sortItems}
+        />
+      </Column>
+
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <FilterableMultiSelect
+          titleText="Org Unit"
+          label="Enter or choose an org unit"
+          id="orgunit-multiselect"
+          className="multi-select orgunit-multi-select ms-1"
+          items={orgUnits}
+          itemToString={(item: IdTextValueData) =>
+            item ? `${item.id} - ${item.text}` : ""
+          }
+          selectionFeedback="top-after-reopen"
+          onChange={(e: SelectEvents) => {
+            setValue({
+              orgUnit: e.selectedItems.map((item: IdTextValueData) => item.id),
+            });
+          }}
+          selectedItems={
+            filters.orgUnit
+              ? orgUnits.filter((item) => filters.orgUnit?.includes(item.id))
+              : []
+          }
+          sortItems={sortItems}
+        />
+      </Column>
+
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <FilterableMultiSelect
+          titleText="Status"
+          label="Enter or choose a status"
+          id="status-multiselect"
+          className="multi-select status-multi-select ms-1"
+          items={statusTypes}
+          itemToString={(item: IdTextValueData) =>
+            item ? `${item.id} - ${item.text}` : ""
+          }
+          selectionFeedback="top-after-reopen"
+          onChange={(e: SelectEvents) => {
+            setValue({
+              statusList: e.selectedItems.map(
+                (item: IdTextValueData) => item.id
+              ),
+            });
+          }}
+          selectedItems={
+            filters.statusList
+              ? statusTypes.filter((item) =>
+                  filters.statusList?.includes(item.id)
                 )
-              }
-              itemToString={(item: AutocompleteProps) =>
-                item ? item.label : ""
-              }
-              items={locations || [{ id: "", label: "No results found" }]}
-              titleText="Location code"
-            />
-          </Column>
+              : []
+          }
+          sortItems={sortItems}
+        />
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <TextInput
-              id="text-input-2"
-              type="text"
-              labelText="Cut block"
-              value={filters.cutBlockId}
-              onChange={(e: TextInputEvent) => {
-                setValue({ cutBlockId: e.target.value });
-              }}
-            />
-          </Column>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <ComboBox
+          id="client-name"
+          selectedItem={
+            filters.clientNumber
+              ? clients.find((item) => item.id === filters.clientNumber)
+              : null
+          }
+          onInputChange={(value: string) =>
+            clientAutocompleteBy(locations, value, "clientNumber")
+          }
+          onChange={(item: AutocompleteComboboxProps) =>
+            selectBy(clients, item?.selectedItem?.label, "clientNumber")
+          }
+          itemToString={(item: AutocompleteProps) => (item ? item.label : "")}
+          helperText="Search by client name, number or acronym"
+          items={clients}
+          titleText="Client"
+        />
+        <ComboBox
+          disabled={!filters.clientNumber}
+          id="client-location"
+          selectedItem={
+            filters.clientLocationCode
+              ? locations.find((item) => item.id === filters.clientLocationCode)
+              : null
+          }
+          onInputChange={(value: string) => locationAutocompleteBy(value)}
+          onChange={(item: AutocompleteComboboxProps) =>
+            selectBy(clients, item?.selectedItem?.label, "clientLocationCode")
+          }
+          itemToString={(item: AutocompleteProps) => (item ? item.label : "")}
+          items={locations || [{ id: "", label: "No results found" }]}
+          titleText="Location code"
+        />
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <TextInput
-              id="text-input-3"
-              labelText="Cutting permit"
-              type="text"
-              value={filters.cuttingPermitId}
-              onChange={(e: TextInputEvent) => {
-                setValue({ cuttingPermitId: e.target.value });
-              }}
-            />
-          </Column>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <ComboBox
+          id="date-type-combobox"
+          items={dateTypes}
+          itemToString={(item: IdTextValueData) => (item ? item.text : "")}
+          titleText="Date type"
+          onChange={(item: SelectEvent) =>
+            setDateKind(item.selectedItem || null)
+          }
+          selectedItem={dateKind}
+        />
+        <DatePicker
+          datePickerType="range"
+          dateFormat="Y-m-d"
+          allowInput={true}
+          onChange={setDates}
+          value={dates}
+          maxDate={format(new Date(), dateFormat)}
+        >
+          <DatePickerInput
+            autoComplete="off"
+            id="start-date-picker-input-id"
+            placeholder={dateFormat}
+            size="md"
+            labelText="Start Date"
+            disabled={!dateKind?.id}
+            value={
+              dateKind?.id
+                ? filters[`${dateKind.id}DateStart` as keyof typeof filters] ||
+                  ""
+                : ""
+            }
+          />
+          <DatePickerInput
+            autoComplete="off"
+            id="end-date-picker-input-id"
+            placeholder={dateFormat}
+            size="md"
+            labelText="End Date"
+            disabled={!dateKind?.id}
+            value={
+              dateKind?.id
+                ? filters[`${dateKind.id}DateEnd` as keyof typeof filters] || ""
+                : ""
+            }
+          />
+        </DatePicker>
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <TextInput
-              id="timber-mark-input"
-              labelText="Timber mark"
-              value={filters.timberMark || ""}
-              onChange={(e: TextInputEvent) => {
-                setValue({ timberMark: e.target.value });
-              }}
-            />
-          </Column>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <TextInput
+          id="text-input-2"
+          type="text"
+          labelText="Cut block"
+          value={filters.cutBlockId}
+          onChange={(e: TextInputEvent) => {
+            setValue({ cutBlockId: e.target.value });
+          }}
+        />
+      </Column>
 
-          <Column sm={4} md={8} lg={16} className="separator-top">
-            <ComboBox
-              id="date-type-combobox"
-              items={dateTypes}
-              itemToString={(item: IdTextValueData) => (item ? item.text : "")}
-              titleText="Date type"
-              onChange={(item: SelectEvent) =>
-                setDateKind(item.selectedItem || null)
-              }
-              selectedItem={dateKind}
-            />
-          </Column>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <TextInput
+          id="text-input-3"
+          labelText="Cutting permit"
+          type="text"
+          value={filters.cuttingPermitId}
+          onChange={(e: TextInputEvent) => {
+            setValue({ cuttingPermitId: e.target.value });
+          }}
+        />
+      </Column>
 
-          <Column sm={4} md={8} lg={16}>
-            <DatePicker
-              datePickerType="range"
-              dateFormat="Y-m-d"
-              allowInput={true}
-              onChange={setDates}
-              value={dates}
-              maxDate={format(new Date(), dateFormat)}
-            >
-              <DatePickerInput
-                autoComplete="off"
-                id="start-date-picker-input-id"
-                placeholder={dateFormat}
-                size="md"
-                labelText="Start Date"
-                disabled={!dateKind?.id}
-                value={
-                  dateKind?.id
-                    ? filters[
-                        `${dateKind.id}DateStart` as keyof typeof filters
-                      ] || ""
-                    : ""
-                }
-              />
-              <DatePickerInput
-                autoComplete="off"
-                id="end-date-picker-input-id"
-                placeholder={dateFormat}
-                size="md"
-                labelText="End Date"
-                disabled={!dateKind?.id}
-                value={
-                  dateKind?.id
-                    ? filters[
-                        `${dateKind.id}DateEnd` as keyof typeof filters
-                      ] || ""
-                    : ""
-                }
-              />
-            </DatePicker>
-          </Column>
-        </Row>
-      </FlexGrid>
-    </div>
+      <Column sm={4} md={8} lg={8} xlg={8} max={8}>
+        <TextInput
+          id="timber-mark-input"
+          labelText="Timber mark"
+          value={filters.timberMark || ""}
+          onChange={(e: TextInputEvent) => {
+            setValue({ timberMark: e.target.value });
+          }}
+        />
+      </Column>
+    </Grid>
   );
 };
 

@@ -2,31 +2,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@carbon/type';
 
-.advanced-search-dropdown {
-  background-color: var(--#{vars.$bcgov-prefix}-layer-02);  
-  .advanced-search-container{
-      box-shadow: 0px 2px 6px 0px #0000004D;
-  }
-  input{
-      background-color: var(--#{vars.$bcgov-prefix}-field-01);
-      border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-strong-01);
-  }
-  .multi-select .bx--list-box__field--wrapper{
-      background-color: var(--#{vars.$bcgov-prefix}-field-01);
-      border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-strong-01);
-  }
-}
-
-span.bx--popover-content{
-    background-color: var(--#{vars.$bcgov-prefix}-layer-02);    
-}
-
-.separator-top::before {
-    content: '';
-    display: block;
-    height: 1px;
-    width: 100%;
-    background-color: var(--#{vars.$bcgov-prefix}-border-strong-01);
-    margin: 1rem 0;
-    padding: 1px;
+.advanced-search-container {
+  padding-inline: unset;
 }
