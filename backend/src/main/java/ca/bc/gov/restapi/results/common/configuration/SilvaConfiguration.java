@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("ca.bc.gov.nrs")
 public class SilvaConfiguration {
 
-  private List<String> dashboardJobUsers;
-  private List<String> wmsWhitelist;
   private List<String> orgUnits;
 
   @NestedConfigurationProperty

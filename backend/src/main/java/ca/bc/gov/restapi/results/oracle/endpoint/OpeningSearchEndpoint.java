@@ -11,7 +11,6 @@ import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import jakarta.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,7 +93,7 @@ public class OpeningSearchEndpoint {
       String cutBlockId,
       @RequestParam(value = "clientLocationCode", required = false)
       String clientLocationCode,
-      @RequestParam(value ="clientNumber", required = false)
+      @RequestParam(value = "clientNumber", required = false)
       String clientNumber,
       @RequestParam(value = "timberMark", required = false)
       String timberMark,
@@ -145,18 +144,5 @@ public class OpeningSearchEndpoint {
   @GetMapping("/org-units")
   public List<OrgUnitEntity> getOpeningOrgUnits() {
     return orgUnitService.findAllOrgUnits();
-  }
-
-  /**
-   * Get all org units by code.
-   *
-   * @param codes Org Unit codes to search for.
-   * @return List of OrgUnitEntity with found org units.
-   */
-  @GetMapping("/org-units-by-code")
-  public List<OrgUnitEntity> getOpeningOrgUnitsByCode(
-      @RequestParam(value = "orgUnitCodes")
-      String[] codes) {
-    return orgUnitService.findAllOrgUnitsByCode(Arrays.asList(codes));
   }
 }

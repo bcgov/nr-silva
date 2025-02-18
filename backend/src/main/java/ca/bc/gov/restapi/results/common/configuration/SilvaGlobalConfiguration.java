@@ -5,7 +5,6 @@ import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
 import ca.bc.gov.restapi.results.common.dto.IdNameDto;
 import ca.bc.gov.restapi.results.common.dto.OracleLogDto;
-import ca.bc.gov.restapi.results.common.dto.WmsLayersWhitelistUserDto;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
@@ -28,14 +27,9 @@ import ca.bc.gov.restapi.results.oracle.enums.AuditActionCodeEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
-import ca.bc.gov.restapi.results.postgres.dto.FreeGrowingMilestonesDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
-import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntity;
-import ca.bc.gov.restapi.results.postgres.entity.OpeningsActivityEntityId;
-import ca.bc.gov.restapi.results.postgres.entity.OpeningsLastYearEntity;
-import ca.bc.gov.restapi.results.postgres.entity.OracleExtractionLogsEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
@@ -52,7 +46,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     ForestClientLocationDto.class,
     IdNameDto.class,
     OracleLogDto.class,
-    WmsLayersWhitelistUserDto.class,
     ForestClientStatusEnum.class,
     ForestClientTypeEnum.class,
     YesNoEnum.class,
@@ -75,14 +68,9 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     OpeningCategoryEnum.class,
     OpeningStatusEnum.class,
     DashboardFiltersDto.class,
-    FreeGrowingMilestonesDto.class,
     MyRecentActionsRequestsDto.class,
     OpeningsPerYearDto.class,
     UserRecentOpeningDto.class,
-    OpeningsActivityEntity.class,
-    OpeningsActivityEntityId.class,
-    OpeningsLastYearEntity.class,
-    OracleExtractionLogsEntity.class,
     UserOpeningEntity.class,
     UserOpeningEntityId.class,
     UserRecentOpeningEntity.class,

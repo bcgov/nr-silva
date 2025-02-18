@@ -6,9 +6,6 @@ public interface OpeningTrendsProjection {
   Long getOpeningId();
   String getUserId();
   LocalDateTime getEntryTimestamp();
-  LocalDateTime getUpdateTimestamp();
   String getStatus();
-  String getOrgUnitCode();
-  String getOrgUnitName();
   String getClientNumber();
 }
