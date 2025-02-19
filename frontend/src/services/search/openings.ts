@@ -52,12 +52,6 @@ export const openingFiltersKeys = [
   "clientNumber"
 ] as const;
 
-export interface OrgUnit {
-  orgUnitNo: number;
-  orgUnitCode: string;
-  orgUnitName: string;
-}
-
 export const status: TextValueData[] = [
   {value:'AMG', text: 'Amalgamate'},
   {value:'AMD', text: 'Amended'},
@@ -138,7 +132,7 @@ export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   return response.data;
 };
 
-export const fetchOrgUnits = async (): Promise<OrgUnit[]> => {
+export const fetchOrgUnits = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
 

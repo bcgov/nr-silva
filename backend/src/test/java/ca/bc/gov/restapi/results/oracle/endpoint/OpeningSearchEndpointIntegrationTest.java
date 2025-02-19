@@ -8,13 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hamcrest.Matchers;
@@ -67,7 +64,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            get("/api/opening-search?mainSearchTerm=101")
+            get("/api/openings/search?mainSearchTerm=101")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -94,7 +91,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            get("/api/opening-search?mainSearchTerm=ABC1234J")
+            get("/api/openings/search?mainSearchTerm=ABC1234J")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -107,54 +104,4 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
         .andReturn();
   }
 
-  @Test
-  @DisplayName("Get Opening Categories happy Path should Succeed")
-  void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
-    CodeDescriptionDto category = new CodeDescriptionDto("BLCF",
-        "Backlog SP Area - Community Forest (Expired)");
-
-    mockMvc
-        .perform(
-            get("/api/opening-search/categories")
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].code").value(category.code()))
-        .andExpect(jsonPath("$[0].description").value(category.description()))
-        .andReturn();
-  }
-
-  @Test
-  @DisplayName("Get Opening Org Units happy Path should Succeed")
-  void getOpeningOrgUnits_happyPath_shouldSucceed() throws Exception {
-    OrgUnitEntity orgUnit = new OrgUnitEntity();
-    orgUnit.setOrgUnitNo(1L);
-    orgUnit.setOrgUnitCode("DAS");
-    orgUnit.setOrgUnitName("Org one");
-    orgUnit.setLocationCode("123");
-    orgUnit.setAreaCode("1");
-    orgUnit.setTelephoneNo("25436521");
-    orgUnit.setOrgLevelCode('R');
-    orgUnit.setOfficeNameCode("RR");
-    orgUnit.setRollupRegionNo(12L);
-    orgUnit.setRollupRegionCode("19");
-    orgUnit.setRollupDistNo(13L);
-    orgUnit.setRollupDistCode("25");
-    orgUnit.setEffectiveDate(LocalDate.now().minusYears(3L));
-    orgUnit.setExpiryDate(LocalDate.now().plusYears(3L));
-    orgUnit.setUpdateTimestamp(LocalDate.now());
-
-    mockMvc
-        .perform(
-            get("/api/opening-search/org-units")
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
-        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
-        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
-        .andReturn();
-  }
 }

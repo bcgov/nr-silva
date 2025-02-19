@@ -12,10 +12,10 @@ const API_BASE_URL = `${env.VITE_BACKEND_URL}/api`;
 const API_ENDPOINTS = {
   openingFavourites: () => `${API_BASE_URL}/openings/favourites`,
   openingFavouriteWithId: (openingId: number) => `${API_BASE_URL}/openings/favourites/${openingId}`,
-  openingSearch: (filters: string) => `${API_BASE_URL}/opening-search${filters}`,
+  openingSearch: (filters: string) => `${API_BASE_URL}/openings/search${filters}`,
   recentOpenings: () => `${API_BASE_URL}/openings/recent`,
-  categories: () => `${API_BASE_URL}/opening-search/categories`,
-  orgUnits: () => `${API_BASE_URL}/opening-search/org-units`,
+  categories: () => `${API_BASE_URL}/codes/categories`,
+  orgUnits: () => `${API_BASE_URL}/codes/org-units`,
   clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/forest-clients/byNameAcronymNumber?value=${query}`,
   clientLocations: (clientId: string) => `${API_BASE_URL}/forest-clients/${clientId}/locations`,
   submissionTrends: (queryString: string | null) => `${API_BASE_URL}/users/submission-trends${resolveQueryString(queryString)}`,

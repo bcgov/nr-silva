@@ -3,13 +3,9 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
-import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
-import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
  * This class contains resources for the opening search api.
  */
 @RestController
-@RequestMapping("/api/opening-search")
+@RequestMapping("/api/openings/search")
 @RequiredArgsConstructor
 public class OpeningSearchEndpoint {
 
   private final OpeningService openingService;
-
-  private final OpenCategoryCodeService openCategoryCodeService;
-
-  private final OrgUnitService orgUnitService;
 
   /**
    * Search for Openings with different filters.
@@ -122,27 +114,4 @@ public class OpeningSearchEndpoint {
     return openingService.openingSearch(filtersDto, paginationParameters);
   }
 
-  /**
-   * Get all opening categories. Optionally you can ask for the expired ones.
-   *
-   * @param includeExpired Query param to include expired categories.
-   * @return List of {@link CodeDescriptionDto} with found categories.
-   */
-  @GetMapping("/categories")
-  public List<CodeDescriptionDto> getOpeningCategories(
-      @RequestParam(value = "includeExpired", required = false, defaultValue = "true")
-      Boolean includeExpired) {
-    boolean addExpired = Boolean.TRUE.equals(includeExpired);
-    return openCategoryCodeService.findAllCategories(addExpired);
-  }
-
-  /**
-   * Get the Org units list for the openings search API.
-   *
-   * @return List of OrgUnitEntity with found org units.
-   */
-  @GetMapping("/org-units")
-  public List<OrgUnitEntity> getOpeningOrgUnits() {
-    return orgUnitService.findAllOrgUnits();
-  }
 }
