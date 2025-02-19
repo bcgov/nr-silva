@@ -15,6 +15,7 @@ import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
 // Utility functions
+import { getMonthAbbreviation } from "../../utils/DateUtils";
 import { ComboBoxEvent } from "../../types/CarbonTypes";
 import { fetchOpeningsOrgUnits, fetchUserSubmissionTrends } from "../../services/OpeningService";
 import { status } from "../../services/search/openings";
@@ -88,7 +89,7 @@ const OpeningSubmissionTrend = () => {
         data.map((item) => ({
           ...item,
           group: "Openings",
-          key: `${item.monthName} ${item.year}`,
+          key: `${getMonthAbbreviation(item.month)} ${item.year}`,
           value: item.amount
         }))
         : undefined),

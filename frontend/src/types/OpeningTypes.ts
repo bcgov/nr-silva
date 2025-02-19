@@ -109,7 +109,6 @@ export interface OrgUnitEntity {
 export type OpeningsPerYearDto = {
   month: number,
   year: number,
-  monthName: string,
   amount: number,
   statusCounts: {
     [key: string]: number
