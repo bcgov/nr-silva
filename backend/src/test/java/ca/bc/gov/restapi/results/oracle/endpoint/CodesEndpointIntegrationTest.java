@@ -71,9 +71,8 @@ class CodesEndpointIntegrationTest  extends AbstractTestContainerIntegrationTest
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].orgUnitNo").value(orgUnit.getOrgUnitNo()))
-        .andExpect(jsonPath("$[0].orgUnitCode").value(orgUnit.getOrgUnitCode()))
-        .andExpect(jsonPath("$[0].orgUnitName").value(orgUnit.getOrgUnitName()))
+        .andExpect(jsonPath("$[0].code").value(orgUnit.getOrgUnitCode()))
+        .andExpect(jsonPath("$[0].description").value(orgUnit.getOrgUnitName()))
         .andReturn();
   }
 
