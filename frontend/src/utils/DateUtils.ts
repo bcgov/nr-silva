@@ -57,7 +57,7 @@ export const formatDateObjToString = (dateToFormat: Date | null): string | null 
  * @param {number} monthNumber - The month number (1-12).
  * @returns {string} The abbreviated month name (e.g., "Jan" for 1, "Feb" for 2).
  */
-export const  getMonthAbbreviation = (monthNumber: number): string => (
+export const getMonthAbbreviation = (monthNumber: number): string => (
   DateTime.fromObject({ month: monthNumber }).toFormat("MMM")
 );
 
