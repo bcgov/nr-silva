@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import FavouriteCard from '../../components/FavouriteCard';
 import * as Icons from '@carbon/icons-react';
@@ -11,8 +11,7 @@ describe('FavouriteCard', () => {
     index: 0,
     title: 'Test Title',
     link: '/test-link',
-    icon: 'Search20',
-    description: 'Test Description',
+    icon: 'Search20'
   };
 
   beforeEach(() => {
@@ -27,7 +26,6 @@ describe('FavouriteCard', () => {
     );
 
     expect(screen.getByTestId('mock-icon')).toBeInTheDocument();
-    expect(screen.getAllByText('Test Title')).toHaveLength(2); // Title appears twice (small and large)
-    expect(screen.getAllByText('Test Description')).toHaveLength(2); // Description appears twice
+    expect(screen.getAllByText('Test Title')).toHaveLength(1);
   });
 });

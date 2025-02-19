@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from 'react';
-import {ActionableNotification} from "@carbon/react";
-import {NotificationContent} from "../types/NotificationType";
+import { ActionableNotification } from "@carbon/react";
+import { NotificationContent } from "../types/NotificationType";
 
 
 // 1. Define an interface for the context value
-interface NotificationContextType{
+interface NotificationContextType {
   displayNotification: (notification: NotificationContent) => void;
 }
 
@@ -14,7 +14,7 @@ interface NotificationProviderProps {
 }
 
 // 3. Create the context with a default value of `undefined`
-const NotificationContext = createContext<NotificationContextType|undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 // 4. Create the NotificationProvider component with explicit typing
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
@@ -22,16 +22,16 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if(notification){
+    if (notification) {
       setIsOpen(true);
-
-      if(notification.dismissIn){
-        setTimeout(() => {
+      if (notification.dismissIn) {
+        const timer = setTimeout(() => {
           hideNotification();
         }, notification.dismissIn);
+        return () => clearTimeout(timer);
       }
     }
-  });
+  }, [notification]);
 
   const displayNotification = (value: NotificationContent) => {
     setNotification(value);
@@ -45,19 +45,19 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const notificationAction = () => {
     notification?.onClose();
-    hideNotification();    
+    hideNotification();
   }
 
   const contextValue = useMemo(() => ({
     displayNotification
-  }),[displayNotification]);
+  }), [displayNotification]);
 
   return (
     <NotificationContext.Provider value={contextValue}>
       {children}
       {isOpen && notification && (
         <ActionableNotification
-          className="fav-toast"
+          className="silva-toast"
           title={notification.title}
           subtitle={notification.subTitle}
           lowContrast={true}
@@ -66,7 +66,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
           closeOnEscape
           onClose={hideNotification}
           actionButtonLabel={notification.buttonLabel}
-          onActionButtonClick = {notificationAction}
+          onActionButtonClick={notificationAction}
 
         />
       )}
@@ -80,7 +80,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 // 5. Create a custom hook to consume the context safely
 export const useNotification = () => {
   const context = useContext(NotificationContext);
-  if(!context){
+  if (!context) {
     throw new Error('useNotification must be used within a NotificationProvider');
   }
   return context;

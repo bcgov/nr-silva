@@ -5,7 +5,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import SpatialCheckbox from "../../components/SpatialCheckbox";
 
 describe("SpatialCheckbox", () => {
-  const rowId = "test-row-id";
+  const rowId = 101;
   const handleRowSelectionChanged = vi.fn();
 
   afterEach(() => {
@@ -17,7 +17,7 @@ describe("SpatialCheckbox", () => {
       <SpatialCheckbox
         rowId={rowId}
         selectedRows={[]}
-        handleRowSelectionChanged={handleRowSelectionChanged}
+        handleRowSelection={handleRowSelectionChanged}
       />
     );
 
@@ -33,7 +33,7 @@ describe("SpatialCheckbox", () => {
       <SpatialCheckbox
         rowId={rowId}
         selectedRows={[rowId]}
-        handleRowSelectionChanged={handleRowSelectionChanged}
+        handleRowSelection={handleRowSelectionChanged}
       />
     );
 
@@ -46,7 +46,7 @@ describe("SpatialCheckbox", () => {
       <SpatialCheckbox
         rowId={rowId}
         selectedRows={[]}
-        handleRowSelectionChanged={handleRowSelectionChanged}
+        handleRowSelection={handleRowSelectionChanged}
       />
     );
 

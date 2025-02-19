@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import BarChartTooltip from '../../components/BarChartTooltip';
-import { OpeningPerYearChart } from '../../types/OpeningPerYearChart';
+import { SubmissionTrendChartObj } from '../../components/OpeningSubmissionTrend/definitions';
 
 vi.mock('../../services/search/openings', () => ({
   status: [
@@ -13,11 +13,15 @@ vi.mock('../../services/search/openings', () => ({
 
 describe('BarChartTooltip', () => {
   it('renders the chart tooltip correctly', () => {
-    const mockDatum: OpeningPerYearChart = {
-      value: '2023',
+    const mockDatum: SubmissionTrendChartObj = {
+      value: 2023,
       group: 'Engineering',
       key: 'Devs',
-      statusCount: {
+      month: 11,
+      year: 2009,
+      monthName: 'Nov',
+      amount: 15,
+      statusCounts: {
         open: 10,
         closed: 5,
       },
@@ -34,13 +38,17 @@ describe('BarChartTooltip', () => {
   });
 
   it('falls back to the status code if description is unavailable', () => {
-    const mockDatum: OpeningPerYearChart = {
-      value: '2023',
+    const mockDatum: SubmissionTrendChartObj = {
+      value: 2023,
       group: 'HR',
       key: 'Recruiters',
-      statusCount: {
+      statusCounts: {
         unknown: 3,
       },
+      month: 11,
+      year: 2009,
+      monthName: 'Nov',
+      amount: 15,
     };
 
     render(<BarChartTooltip datum={mockDatum} />);

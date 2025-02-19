@@ -11,8 +11,8 @@ import { NotificationProvider } from '../../../../contexts/NotificationProvider'
 import PaginationProvider from '../../../../contexts/PaginationProvider';
 
 const data = [{
-  id: '114207',
-  openingId: '114207',
+  id: 114207,
+  openingId: 114207,
   fileId: 'TFL47',
   cuttingPermit: '12S',
   timberMark: '47/12S',
@@ -26,7 +26,7 @@ const data = [{
   lastViewed: '2022-10-27'
 }];
 
-vi.mock("../../../../services/queries/search/openingQueries",  async () => {
+vi.mock("../../../../services/queries/search/openingQueries", async () => {
   const actual = await vi.importActual<typeof import("../../../../services/queries/search/openingQueries")>("../../../../services/queries/search/openingQueries");
   return {
     ...actual,
@@ -36,20 +36,20 @@ vi.mock("../../../../services/queries/search/openingQueries",  async () => {
 
 describe('OpeningSearchTab', () => {
   const queryClient = new QueryClient(); // here's the problem
-  
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('should render without crashing', () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data: [], isLoading: false });
-    const { getByText} = render(
+    const { getByText } = render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -61,13 +61,13 @@ describe('OpeningSearchTab', () => {
 
   it('should display the empty state', () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data: [], isLoading: false });
-    const { getByText} = render(
+    const { getByText } = render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -85,7 +85,7 @@ describe('OpeningSearchTab', () => {
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -97,21 +97,21 @@ describe('OpeningSearchTab', () => {
 
   it('should display search results when search is performed', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
-    
+
     const { container } = render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
         </QueryClientProvider>
       </BrowserRouter>
     );
-    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID') as HTMLInputElement;    
+    const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID') as HTMLInputElement;
     await act(async () => userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
     await act(async () => await screen.findByText('Actions'));
@@ -119,14 +119,14 @@ describe('OpeningSearchTab', () => {
 
   it('should display a message when no results are found', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data: [], isLoading: false });
-    
+
     render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -141,14 +141,14 @@ describe('OpeningSearchTab', () => {
 
   it('should display spatial/map view when the spatial toggle is clicked', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
-    
-    await act(async() => render(
+
+    await act(async () => render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -166,15 +166,15 @@ describe('OpeningSearchTab', () => {
 
   it('should display more or less columns when checkboxes are clicked', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
-    
+
     let container;
-    await act(async() => ({ container } = render(
+    await act(async () => ({ container } = render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -185,11 +185,11 @@ describe('OpeningSearchTab', () => {
     const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
-    await act(async () => await screen.findByText('Actions'));        
+    await act(async () => await screen.findByText('Actions'));
     expect(screen.getByTestId('Opening Id')).toBeInTheDocument();
     const editColumnsBtn = screen.getByTestId('edit-columns');
     await act(async () => fireEvent.click(editColumnsBtn));
-    const checkbox = container.querySelector('#checkbox-label-openingNumber');  
+    const checkbox = container.querySelector('#checkbox-label-openingNumber');
     await act(async () => fireEvent.click(checkbox));
     expect(screen.queryByTestId('Opening Number')).not.toBeInTheDocument();
 
@@ -197,14 +197,14 @@ describe('OpeningSearchTab', () => {
 
   it('should display spatial/map view when the spatial toggle is clicked', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
-    
-    await act(async() => render(
+
+    await act(async () => render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -222,15 +222,15 @@ describe('OpeningSearchTab', () => {
 
   it('should display openingNumber once users clicks the chekbox', async () => {
     (useOpeningsQuery as vi.Mock).mockReturnValue({ data, isFetching: false });
-    
+
     let container;
-    await act(async() => ({ container } = render(
+    await act(async () => ({ container } = render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <PaginationProvider>
             <OpeningsSearchProvider>
               <NotificationProvider>
-                <OpeningSearchTab />              
+                <OpeningSearchTab />
               </NotificationProvider>
             </OpeningsSearchProvider>
           </PaginationProvider>
@@ -241,7 +241,7 @@ describe('OpeningSearchTab', () => {
     const searchInput = screen.getByPlaceholderText('Search by opening ID, opening number or file ID');
     await act(async () => await userEvent.type(searchInput, 'test'));
     await act(async () => (await screen.findByTestId('search-button')).click());
-    await act(async () => await screen.findByText('Actions'));        
+    await act(async () => await screen.findByText('Actions'));
     expect(screen.getByTestId('Opening Id')).toBeInTheDocument();
     const editColumnsBtn = screen.getByTestId('edit-columns');
     await act(async () => fireEvent.click(editColumnsBtn));

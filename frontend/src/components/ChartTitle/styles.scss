@@ -2,16 +2,9 @@
 
 .chart-title {
   margin: 0;
-  padding: 16px;
 }
 
 .chart-title h1 {
   @include type.type-style('heading-02');
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
 }
-
-.title-favourite {
-  display: flex;
-  align-items: center;
-}
-

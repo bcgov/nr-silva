@@ -1,8 +1,10 @@
 /* leaflet sizing */
-.leaflet-container{
-  height: 700px!important;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  margin-bottom:32px !important;
+.search-spatial-container {
+  .leaflet-container {
+    height: 700px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 32px;
+  }
 }

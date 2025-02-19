@@ -46,8 +46,8 @@ function BCHeaderwSide(): JSX.Element {
     <HeaderContainer
       render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
         <Header
-          aria-label="React TS Carbon Quickstart"
-          className="quickstart-header"
+          aria-label="Silva header"
+          className="silva-header"
           data-testid="header"
         >
           <SkipToContent />
@@ -59,7 +59,7 @@ function BCHeaderwSide(): JSX.Element {
           <Link to="/" className="header-link" data-testid="header-name">
             Silva
           </Link>
-          <HeaderGlobalBar className="align-items-center w-100">
+          <HeaderGlobalBar className="silva-header-bar align-items-center w-100">
             <div className="mx-2">
               <ThemeToggle />
             </div>
@@ -69,8 +69,9 @@ function BCHeaderwSide(): JSX.Element {
               data-testid="header-button__user"
               onClick={handleMyProfilePanel}
               isActive={myProfile}
+              className="profile-action-button"
             >
-              <Icons.UserAvatar size={20} />
+              <Icons.UserAvatar className="profile-icon" size={20} />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
           <HeaderPanel aria-label="User Profile Tab" expanded={myProfile} className="notifications-panel">
@@ -82,50 +83,53 @@ function BCHeaderwSide(): JSX.Element {
           </HeaderPanel>
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
-              {leftMenu.map(item => (
-                <div key={item.name}>
-                  <SideNavLink className="side-nav-category-name">
-                    {item.name}
-                  </SideNavLink>
-                  {item.items.map(subItem => {
-                    const IconComponent = Icons[subItem.icon as keyof typeof Icons];
-                    if (subItem.subItems) {
-                      const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
-                      return (
-                        <SideNavMenu
-                          key={subItem.name}
-                          title={subItem.name}
-                          renderIcon={IconComponent}
-                          isActive={isActive}
-                          isSideNavExpanded={isActive}
-                          defaultExpanded={isActive}
-                        >
-                          {subItem.subItems.map(subSubItem => (
-                            <SideNavMenuItem
-                              key={subSubItem.name}
-                              onClick={() => navigate(subSubItem.link)}
-                              isActive={location.pathname === subSubItem.link}
-                            >
-                              {subSubItem.name}
-                            </SideNavMenuItem>
-                          ))}
-                        </SideNavMenu>
-                      );
-                    } else {
-                      return (
-                        <SideNavLink
-                          key={subItem.name}
-                          renderIcon={IconComponent}
-                          onClick={() => navigate(subItem.link)}
-                          isActive={location.pathname === subItem.link}
-                        >
-                          {subItem.name}
-                        </SideNavLink>
-                      );
+              {
+                leftMenu.map(item => (
+                  <div key={item.name}>
+                    <label className="side-nav-category-name">
+                      {item.name}
+                    </label>
+                    {item.items.map(subItem => {
+                      const IconComponent = Icons[subItem.icon as keyof typeof Icons];
+                      if (subItem.subItems) {
+                        const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
+                        return (
+                          <SideNavMenu
+                            key={subItem.name}
+                            title={subItem.name}
+                            renderIcon={IconComponent}
+                            isActive={isActive}
+                            isSideNavExpanded={isActive}
+                            defaultExpanded={isActive}
+                          >
+                            {subItem.subItems.map(subSubItem => (
+                              <SideNavMenuItem
+                                key={subSubItem.name}
+                                onClick={() => navigate(subSubItem.link)}
+                                isActive={location.pathname === subSubItem.link}
+                              >
+                                {subSubItem.name}
+                              </SideNavMenuItem>
+                            ))}
+                          </SideNavMenu>
+                        );
+                      } else {
+                        return (
+                          <SideNavLink
+                            className="side-nav-item"
+                            key={subItem.name}
+                            renderIcon={IconComponent}
+                            onClick={() => navigate(subItem.link)}
+                            isActive={location.pathname === subItem.link}
+                          >
+                            {subItem.name}
+                          </SideNavLink>
+                        );
+                      }
+                    })
                     }
-                  })}
-                </div>
-              ))}
+                  </div>
+                ))}
             </SideNavItems>
           </SideNav>
         </Header>
