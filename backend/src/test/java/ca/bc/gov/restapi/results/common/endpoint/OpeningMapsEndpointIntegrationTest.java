@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser(roles = "user_read")
 @AutoConfigureMockMvc
 @DisplayName("Integrated Test | Feature Service Endpoint")
-class FeatureServiceEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
+class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -107,7 +107,7 @@ class FeatureServiceEndpointIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            get("/api/feature-service/polygon-and-props/{openingId}", openingId)
+            get("/api/openings/map/{openingId}", openingId)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

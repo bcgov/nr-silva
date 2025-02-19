@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
  * This class holds resources for calling WFS.
  */
 @RestController
-@RequestMapping("/api/feature-service")
+@RequestMapping("/api/openings/map")
 @RequiredArgsConstructor
-public class FeatureServiceEndpoint {
+public class OpeningMapsEndpoint {
 
   private final OpenMapsService openMapsService;
 
@@ -24,7 +24,7 @@ public class FeatureServiceEndpoint {
    * @param openingId The Opening identification (id)
    * @return GeoJSON object with response from WFS request
    */
-  @GetMapping("/polygon-and-props/{openingId}")
+  @GetMapping("/{openingId}")
   public FeatureCollection getOpeningPolygonAndProperties(
       @PathVariable
       String openingId) {

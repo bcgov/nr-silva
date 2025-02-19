@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { OpeningPolygon } from '../../types/OpeningPolygon';
-import { MapLayer } from '../../types/MapLayer';
-import { allLayers } from './constants';
-import axios from 'axios';
-import { getAuthIdToken } from '../../services/AuthService';
-import { env } from '../../env';
-import { convertGeoJsonToLatLng } from '../../map-services/BcGwLatLongUtils';
+import React, { useEffect, useState } from "react";
+import { OpeningPolygon } from "../../types/OpeningPolygon";
+import { MapLayer } from "../../types/MapLayer";
+import { allLayers } from "./constants";
+import axios from "axios";
+import { getAuthIdToken } from "../../services/AuthService";
+import { convertGeoJsonToLatLng } from "../../map-services/BcGwLatLongUtils";
 import {
   LayersControl,
   MapContainer,
@@ -14,9 +13,8 @@ import {
 } from 'react-leaflet';
 import { LatLngExpression } from 'leaflet';
 
-import OpeningsMapEntry from '../OpeningsMapEntry';
-
-const backendUrl = env.VITE_BACKEND_URL;
+import OpeningsMapEntry from "../OpeningsMapEntry";
+import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
 
 interface MapProps {
   openingIds: number[] | null;
@@ -33,20 +31,20 @@ const OpeningsMap: React.FC<MapProps> = ({
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
-  const [position, setPosition] = useState<LatLngExpression>([48.43737, -123.35883]);
+  const [position, setPosition] = useState<LatLngExpression>([
+    48.43737, -123.35883,
+  ]);
   const [layers, setLayers] = useState<MapLayer[]>([]);
   const authToken = getAuthIdToken();
   const [zoomLevel, setZoomLevel] = useState<number>(13);
 
-  const getOpeningPolygonAndProps = async (selectedOpeningId: number | null): Promise<OpeningPolygon | null> => {
-    const urlApi = `/api/feature-service/polygon-and-props/${selectedOpeningId}`;
-    const response = await axios.get(backendUrl.concat(urlApi), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': window.location.origin,
-        Authorization: `Bearer ${authToken}`
-      }
-    });
+  const getOpeningPolygonAndProps = async (
+    selectedOpeningId: number | null
+  ): Promise<OpeningPolygon | null> => {
+    const response = await axios.get(
+      API_ENDPOINTS.openingMap(selectedOpeningId),
+      defaultHeaders(authToken)
+    );
 
     const { data } = response;
 
@@ -54,7 +52,9 @@ const OpeningsMap: React.FC<MapProps> = ({
       const openingsList: OpeningPolygon[] = [];
       for (let i = 0, len = data.features.length; i < len; i++) {
         if (data.features[i].geometry) {
-          const openingGeometry = convertGeoJsonToLatLng(data.features[i].geometry.coordinates);
+          const openingGeometry = convertGeoJsonToLatLng(
+            data.features[i].geometry.coordinates
+          );
 
           const openingObj: OpeningPolygon = {
             key: data.features[i].id,
@@ -86,7 +86,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const options = {
         enableHighAccuracy: true,
         timeout: 5000,
-        maximumAge: 0
+        maximumAge: 0,
       };
 
       const requestCurrentLocation = () => {
@@ -103,9 +103,9 @@ const OpeningsMap: React.FC<MapProps> = ({
       if (permissionResult.state === "granted" || permissionResult.state === "prompt") {
         requestCurrentLocation();
       }
-
+      
     }
-
+    
   };
 
   const loadOpeniningPolygons = async (providedIds: number[]): Promise<void> => {
@@ -113,7 +113,6 @@ const OpeningsMap: React.FC<MapProps> = ({
     if (providedIds?.length) {
       const results = await Promise.all(providedIds.map(callBcGwApi));
       setOpenings(results.filter((opening) => opening !== null));
-
     } else {
       setOpenings([]);
     }
@@ -122,7 +121,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     if (filtered.length) {
       setLayers(filtered);
     }
-  }
+  };
 
   useEffect(() => {
     setSelectedOpeningIds(openingId ? [openingId] : []);
@@ -163,7 +162,11 @@ const OpeningsMap: React.FC<MapProps> = ({
       />
 
       {/* Display Opening polygons, if any */}
-      <OpeningsMapEntry polygons={openings} defaultLocation={position} defaultZoom={zoomLevel} />
+      <OpeningsMapEntry
+        polygons={openings}
+        defaultLocation={position}
+        defaultZoom={zoomLevel}
+      />
 
       {/* Default layers */}
       {layers.length && (
@@ -183,7 +186,6 @@ const OpeningsMap: React.FC<MapProps> = ({
           ))}
         </LayersControl>
       )}
-
     </MapContainer>
   );
 };

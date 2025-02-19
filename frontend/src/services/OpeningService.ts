@@ -9,7 +9,7 @@ import {
   OrgUnitEntity,
   OpeningsPerYearDto
 } from '../types/OpeningTypes';
-import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
+import { API_ENDPOINTS, defaultHeaders } from '@/services/apiConfig';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
