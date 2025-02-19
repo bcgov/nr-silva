@@ -27,18 +27,6 @@ export interface IOpeningPerYear {
   entryDateEnd: string | null;
 }
 
-export interface IFreeGrowingProps {
-  orgUnitCode: string;
-  clientNumber: string;
-  entryDateStart: string | null;
-  entryDateEnd: string | null;
-}
-
-export interface IFreeGrowingChartData {
-  group: string;
-  value: number;
-}
-
 export interface OpeningSearchResponseDto {
   openingId: number;
   openingNumber: string | null;
