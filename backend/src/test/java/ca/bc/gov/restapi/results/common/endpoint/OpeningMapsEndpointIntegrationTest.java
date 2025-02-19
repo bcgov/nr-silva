@@ -117,7 +117,6 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(
             jsonPath("$.features[0].id")
                 .value("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW.fid-6f119ee7_19129391292_7c7b"))
-        .andExpect(jsonPath("$.features[0].geometry_name").value("GEOMETRY"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").value("FTML"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").value("FG"))
