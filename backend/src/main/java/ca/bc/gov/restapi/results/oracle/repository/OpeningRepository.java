@@ -270,7 +270,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
               GROUP BY o.OPENING_ID
           )
-          WHERE OPENING_ID IN :openingIds""",
+          WHERE opening_id IN :openingIds""",
       countQuery = """
           SELECT count(opening_id) as total
              SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
@@ -310,8 +310,8 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
               GROUP BY o.OPENING_ID
-          )
-          WHERE opening_id IN :openingIds""",
+              WHERE opening_id IN :openingIds
+          )""",
       nativeQuery = true
   )
   Page<SilvicultureSearchProjection> searchByOpeningIds(
