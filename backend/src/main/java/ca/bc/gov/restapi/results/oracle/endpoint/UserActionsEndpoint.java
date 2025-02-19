@@ -1,8 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.oracle.service.OpeningTrendsService;
-import ca.bc.gov.restapi.results.oracle.service.UserActionsService;
-import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,22 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserActionsEndpoint {
 
-  private final UserActionsService userActionsService;
   private final OpeningTrendsService openingTrendsService;
-
-  @GetMapping("/recent-actions")
-  public ResponseEntity<List<MyRecentActionsRequestsDto>> getUserRecentOpeningsActions() {
-    List<MyRecentActionsRequestsDto> actionsDto =
-        userActionsService.getResultsAuditActivity();
-
-    log.info("Returning {} recent actions", actionsDto.size());
-
-    if (actionsDto.isEmpty()) {
-      return ResponseEntity.noContent().build();
-    }
-
-    return ResponseEntity.ok(actionsDto);
-  }
 
   /**
    * Gets data for the Opening submission trends Chart (Openings per year) on the Dashboard SILVA
@@ -59,12 +42,11 @@ public class UserActionsEndpoint {
       LocalDate entryDateEnd
   ) {
 
-    LocalDate endDate = getDateOrDefault(entryDateEnd,LocalDate.now());
-    LocalDate startDate = getDateOrDefault(entryDateStart,endDate.minusYears(1));
-
+    LocalDate endDate = getDateOrDefault(entryDateEnd, LocalDate.now());
+    LocalDate startDate = getDateOrDefault(entryDateStart, endDate.minusYears(1));
 
     List<OpeningsPerYearDto> resultList =
-        openingTrendsService.getOpeningSubmissionTrends(startDate, endDate,orgUnits,statusCodes);
+        openingTrendsService.getOpeningSubmissionTrends(startDate, endDate, orgUnits, statusCodes);
 
     if (resultList.isEmpty()) {
       return ResponseEntity.noContent().build();
