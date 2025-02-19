@@ -9,9 +9,9 @@ import {
   LayersControl,
   MapContainer,
   TileLayer,
-  WMSTileLayer
-} from 'react-leaflet';
-import { LatLngExpression } from 'leaflet';
+  WMSTileLayer,
+} from "react-leaflet";
+import { LatLngExpression } from "leaflet";
 
 import OpeningsMapEntry from "../OpeningsMapEntry";
 import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
@@ -27,7 +27,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
   openingId,
   setOpeningPolygonNotFound,
-  mapHeight = 400
+  mapHeight = 400,
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
@@ -41,6 +41,8 @@ const OpeningsMap: React.FC<MapProps> = ({
   const getOpeningPolygonAndProps = async (
     selectedOpeningId: number | null
   ): Promise<OpeningPolygon | null> => {
+    if (!selectedOpeningId) return Promise.resolve(null);
+
     const response = await axios.get(
       API_ENDPOINTS.openingMap(selectedOpeningId),
       defaultHeaders(authToken)
@@ -62,7 +64,7 @@ const OpeningsMap: React.FC<MapProps> = ({
             properties: data.features[i].properties,
             id: data.features[i].id,
             positionLat: (data.bbox[1] + data.bbox[3]) / 2,
-            positionLong: (data.bbox[0] + data.bbox[2]) / 2
+            positionLong: (data.bbox[0] + data.bbox[2]) / 2,
           };
           openingsList.push(openingObj);
         }
@@ -77,7 +79,9 @@ const OpeningsMap: React.FC<MapProps> = ({
     return null;
   };
 
-  const callBcGwApi = async (currentOpeningId: number): Promise<OpeningPolygon | null> => {
+  const callBcGwApi = async (
+    currentOpeningId: number
+  ): Promise<OpeningPolygon | null> => {
     return await getOpeningPolygonAndProps(currentOpeningId);
   };
 
@@ -90,25 +94,37 @@ const OpeningsMap: React.FC<MapProps> = ({
       };
 
       const requestCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition((currentPosition: GeolocationPosition) => {
-          setPosition({ lat: currentPosition.coords.latitude, lng: currentPosition.coords.longitude });
-          setZoomLevel(8);
-        }, () => {
-          setPosition({ lat: 51.339506220208065, lng: -121.40991210937501 });
-          setZoomLevel(6);
-        }, options);
+        navigator.geolocation.getCurrentPosition(
+          (currentPosition: GeolocationPosition) => {
+            setPosition({
+              lat: currentPosition.coords.latitude,
+              lng: currentPosition.coords.longitude,
+            });
+            setZoomLevel(8);
+          },
+          () => {
+            setPosition({ lat: 51.339506220208065, lng: -121.40991210937501 });
+            setZoomLevel(6);
+          },
+          options
+        );
       };
 
-      const permissionResult = await navigator.permissions.query({ name: 'geolocation' });
-      if (permissionResult.state === "granted" || permissionResult.state === "prompt") {
+      const permissionResult = await navigator.permissions.query({
+        name: "geolocation",
+      });
+      if (
+        permissionResult.state === "granted" ||
+        permissionResult.state === "prompt"
+      ) {
         requestCurrentLocation();
       }
-      
     }
-    
   };
 
-  const loadOpeniningPolygons = async (providedIds: number[]): Promise<void> => {
+  const loadOpeniningPolygons = async (
+    providedIds: number[]
+  ): Promise<void> => {
     setOpeningPolygonNotFound(false);
     if (providedIds?.length) {
       const results = await Promise.all(providedIds.map(callBcGwApi));
@@ -117,7 +133,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       setOpenings([]);
     }
 
-    const filtered = allLayers.filter(l => l.name.length > 0);
+    const filtered = allLayers.filter((l) => l.name.length > 0);
     if (filtered.length) {
       setLayers(filtered);
     }
@@ -141,13 +157,15 @@ const OpeningsMap: React.FC<MapProps> = ({
     }
   }, [openingIds]);
 
-  useEffect(() => { loadOpeniningPolygons(selectedOpeningIds); }, [selectedOpeningIds]);
+  useEffect(() => {
+    loadOpeniningPolygons(selectedOpeningIds);
+  }, [selectedOpeningIds]);
 
   useEffect(() => {
     (async () => {
       await getUserLocation();
     })();
-  }, [])
+  }, []);
 
   return (
     <MapContainer
@@ -179,7 +197,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                   format: layer.format,
                   layers: layer.layers,
                   transparent: layer.transparent,
-                  styles: layer.styles.map(s => s.name).join(',')
+                  styles: layer.styles.map((s) => s.name).join(","),
                 }}
               />
             </LayersControl.Overlay>
