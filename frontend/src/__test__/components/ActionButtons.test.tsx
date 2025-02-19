@@ -1,41 +1,48 @@
-// ActionButtons.test.tsx
 import React from "react";
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ActionButtons from "../../components/ActionButtons";
-import { NotificationProvider } from "../../contexts/NotificationProvider"
+import { NotificationProvider } from "../../contexts/NotificationProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 describe("ActionButtons", () => {
   const rowId = "123456";
   const favorited = false;
+  const queryClient = new QueryClient();
 
-  it("renders the 'Favorite Opening' and 'Document Download' buttons", () => {
-    render(
-      <MemoryRouter>
-        <NotificationProvider>
-          <ActionButtons favorited={favorited} rowId={rowId} />
-        </NotificationProvider>
-      </MemoryRouter>
+  const renderWithProviders = () => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <NotificationProvider>
+            <ActionButtons favorited={favorited} rowId={rowId} />
+          </NotificationProvider>
+        </MemoryRouter>
+      </QueryClientProvider>
     );
+  };
 
-    // Check that both buttons are in the document
+  it("renders the 'Favorite Opening' button", () => {
+    renderWithProviders();
     expect(screen.getByRole("button", { name: /Favorite Opening/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Document Download/i })).toBeInTheDocument();
   });
 
-  it("set the 'Favorite Opening' as favorited when button is clicked", () => {
-    render(
-      <MemoryRouter>
-        <NotificationProvider>
-          <ActionButtons favorited={favorited} rowId={rowId} />
-        </NotificationProvider>
-      </MemoryRouter>
-    );
 
-    // Find the "View" button and click it
-    const viewButton = screen.getByRole("button", { name: /Favorite Opening/i });
-    expect(viewButton.classList).toContain('favorite-button');
-    fireEvent.click(viewButton);
-    expect(screen.getByRole("button", { name: /Favorite Opening/i }).classList).toContain('favorite');
+  it("sets the 'Favorite Opening' as favorited when button is clicked", async () => {
+    renderWithProviders();
+
+    // Find the button
+    const favButton = screen.getByRole("button", { name: /Favorite Opening/i });
+
+    // Ensure initial state is "unfavorited"
+    expect(favButton).toHaveAttribute("aria-pressed", "false");
+
+    // Click the button
+    fireEvent.click(favButton);
+
+    // Wait for the button to update
+    await waitFor(() => {
+      expect(favButton).toHaveAttribute("aria-pressed", "true");
+    });
   });
 });

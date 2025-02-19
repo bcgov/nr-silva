@@ -1,11 +1,11 @@
 import React from "react";
 import ChartTitle from "../ChartTitle";
-import { OpeningPerYearChart } from "../../types/OpeningPerYearChart";
+import { SubmissionTrendChartObj } from "../OpeningSubmissionTrend/definitions";
 import { status } from "../../services/search/openings";
 import './index.scss'
 
 interface BarChartTooltipProps {
-  datum: OpeningPerYearChart
+  datum: SubmissionTrendChartObj
 }
 
 const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
@@ -18,7 +18,7 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
     <div>
       <ChartTitle title={`${datum.value} ${datum.group}`} subtitle="Click on the bar to see openings" />
       <ul className="bar--tooltip_status">
-        {Object.keys(datum.statusCount).map((key) => (<li key={key}><p><b>{datum.statusCount[key]} {statusDescription(key)}</b></p></li>))}
+        {Object.keys(datum.statusCounts).map((key) => (<li key={key}><p><b>{datum.statusCounts[key]} {statusDescription(key)}</b></p></li>))}
       </ul>
     </div>
   );

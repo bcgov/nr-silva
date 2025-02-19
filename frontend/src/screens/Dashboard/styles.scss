@@ -1,0 +1,24 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.tab-content {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+}
+
+.tab-header {
+  @include type.type-style('heading-01');
+  width: 251px;
+  padding-left: 40px;
+}
+
+.tab-list {
+  margin-left: 40px;
+}
+
+@media only screen and (max-width: 671px) {
+  .favourite-activities {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+    padding: 5px;
+  }
+}

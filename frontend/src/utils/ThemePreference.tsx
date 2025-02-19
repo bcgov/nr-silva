@@ -3,12 +3,14 @@ import React, {
 } from 'react';
 import { GlobalTheme } from '@carbon/react';
 
+type ThemeType = 'white' | 'g10' | 'g90' | 'g100';
+
 interface ThemeContextData {
-  theme: string,
-  setTheme: React.Dispatch<React.SetStateAction<string>>
+  theme: ThemeType;
+  setTheme: React.Dispatch<React.SetStateAction<ThemeType>>;
 }
 
-const ThemePreferenceContext = createContext<ThemeContextData>({} as ThemeContextData);
+const ThemePreferenceContext = createContext<ThemeContextData | undefined>(undefined);
 
 /**
  * Create useThemePreference hook.
@@ -16,11 +18,15 @@ const ThemePreferenceContext = createContext<ThemeContextData>({} as ThemeContex
  * @returns {ThemeContextData} theme context
  */
 function useThemePreference() {
-  return useContext(ThemePreferenceContext);
+  const context = useContext(ThemePreferenceContext);
+  if (!context) {
+    throw new Error("useThemePreference must be used within a ThemePreferenceProvider");
+  }
+  return context;
 }
 
 interface ThemePreferenceProps {
-  readonly children?: ReactNode
+  readonly children?: ReactNode;
 }
 
 /**
@@ -30,20 +36,18 @@ interface ThemePreferenceProps {
  * @returns {JSX.Element} The Context Provider
  */
 function ThemePreference({ children }: ThemePreferenceProps) {
-  const [theme, setTheme] = useState(() => {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme) {
+  const [theme, setTheme] = useState<ThemeType>(() => {
+    const storedTheme = localStorage.getItem('theme') as ThemeType;
+    if (storedTheme && ['white', 'g10', 'g90', 'g100'].includes(storedTheme)) {
       return storedTheme;
-    } else {
-      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return prefersDarkMode ? 'g100' : 'g10';
     }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'g100' : 'g10';
   });
 
   const value = useMemo(() => ({
     theme,
     setTheme
-  }), [theme, setTheme]);
+  }), [theme]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-carbon-theme', theme);
@@ -53,7 +57,7 @@ function ThemePreference({ children }: ThemePreferenceProps) {
 
   useEffect(() => {
     const handleColorSchemeChange = (event: MediaQueryListEvent) => {
-      const newTheme = event.matches ? 'g100' : 'g10';
+      const newTheme: ThemeType = event.matches ? 'g100' : 'g10';
       setTheme(newTheme);
     };
 
@@ -72,4 +76,4 @@ function ThemePreference({ children }: ThemePreferenceProps) {
   );
 }
 
-export { ThemePreference, useThemePreference };
+export { ThemePreference, useThemePreference, type ThemeType };

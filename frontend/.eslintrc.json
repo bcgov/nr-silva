@@ -35,10 +35,7 @@
     "**/*.svg"
   ],
   "rules": {
-    "indent": [
-      "error",
-      2
-    ],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "react/require-default-props": "off",
     "linebreak-style": 0,
     "react/jsx-filename-extension": [

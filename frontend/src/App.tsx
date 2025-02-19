@@ -1,13 +1,18 @@
 import { createBrowserRouter, Navigate, type RouteObject, RouterProvider } from 'react-router-dom';
-import './custom.scss';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Landing from "./screens/Landing";
 import SideLayout from './layouts/SideLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
-import Opening from './screens/Opening';
+import Dashboard from './screens/Dashboard';
 import SilvicultureSearch from './screens/SilvicultureSearch';
 import ErrorHandling from './screens/ErrorHandling';
 import { useAuth } from './contexts/AuthProvider';
 import { Loading } from '@carbon/react';
+
+import './styles/theme.scss';
+import './styles/default-components.scss'
+import { queryClientConfig } from './constants/tanstackConfig';
 
 const publicRoutes: RouteObject[] = [
   {
@@ -23,15 +28,11 @@ const protectedRoutes: RouteObject[] = [
     children: [
       {
         path: "/",
-        element: <Navigate to="/opening" replace /> // Redirect `/` to `/opening` for logged-in users
+        element: <Navigate to="/dashboard" replace /> // Redirect `/` to `/dashboard` for logged-in users
       },
       {
         path: "/dashboard",
-        element: <Navigate to="/opening" replace />
-      },
-      {
-        path: "/opening",
-        element: <SideLayout pageContent={<Opening />} />
+        element: <SideLayout pageContent={<Dashboard />} />
       },
       {
         path: "/silviculture-search",
@@ -46,6 +47,7 @@ const protectedRoutes: RouteObject[] = [
   }
 ];
 
+const queryClient = new QueryClient(queryClientConfig);
 
 const App: React.FC = () => {
   const auth = useAuth();
@@ -56,7 +58,12 @@ const App: React.FC = () => {
 
   const browserRouter = createBrowserRouter(auth.isLoggedIn ? protectedRoutes : publicRoutes);
 
-  return <RouterProvider router={browserRouter} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <RouterProvider router={browserRouter} />
+    </QueryClientProvider>
+  );
 };
 
 export default App;
