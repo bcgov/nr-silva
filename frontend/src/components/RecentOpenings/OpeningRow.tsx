@@ -55,7 +55,7 @@ const OpeningRow: React.FC<TableRowComponentProps> = ({
           </Tooltip>
         );
       case "disturbanceStartDate":
-        return formatLocalDate(rowData.disturbanceStartDate)
+        return formatLocalDate(rowData.disturbanceStartDate, true)
       default:
         return rowData[header];
     }
