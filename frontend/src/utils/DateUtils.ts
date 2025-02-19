@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { PLACE_HOLDER } from "../constants";
 
 export const formatDate = (date: string) => {
   if (date) {
@@ -27,17 +28,19 @@ export const formatDateForDatePicker = (date: any) => {
 
 /**
  * Formats a local date string into a "MMM dd, yyyy" format.
- * If no date is provided, returns an empty string.
+ * If no date is provided, returns an empty string or a placeholder if specified.
  *
  * @param {string} [localDate] - The local date string (e.g., "2011-10-21T00:00:00").
- * @returns {string} The formatted date (e.g., "Oct 21, 2011") or an empty string if no date is provided.
+ * @param {boolean} [usePlaceholder] - Whether to return a placeholder if no date is provided.
+ * @returns {string} The formatted date (e.g., "Oct 21, 2011"), an empty string, or a placeholder if specified.
  */
-export const formatLocalDate = (localDate?: string | null): string => {
-  if (!localDate) return "";
+export const formatLocalDate = (localDate?: string | null, usePlaceholder?: boolean): string => {
+  if (!localDate) {
+    return usePlaceholder ? PLACE_HOLDER : ""
+  }
 
   return DateTime.fromISO(localDate, { zone: "local" }).toFormat("MMM dd, yyyy");
 };
-
 
 /**
  * Converts a Date object to a formatted string (`YYYY-MM-DD`) for backend use.
