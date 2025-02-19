@@ -34,6 +34,8 @@ import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,6 +76,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     UserOpeningEntity.class,
     UserOpeningEntityId.class,
     UserRecentOpeningEntity.class,
+    FeatureCollection.class,
+    Feature.class
 })
 public class SilvaGlobalConfiguration {
 
