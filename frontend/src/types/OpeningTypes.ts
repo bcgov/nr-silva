@@ -30,8 +30,8 @@ export interface IOpeningPerYear {
 export interface OpeningSearchResponseDto {
   openingId: number;
   openingNumber: string | null;
-  category: CodeDescriptionDto;
-  status: CodeDescriptionDto;
+  category: CodeDescriptionDto | null;
+  status: CodeDescriptionDto | null;
   cuttingPermitId: number | null;
   timberMark: string | null;
   cutBlockId: number | null;
