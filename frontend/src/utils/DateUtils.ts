@@ -50,3 +50,14 @@ export const formatDateObjToString = (dateToFormat: Date | null): string | null 
 
   return DateTime.fromJSDate(dateToFormat).toFormat("yyyy-MM-dd");
 };
+
+/**
+ * Gets the abbreviated month name (e.g., "Jan", "Feb") from a given month number.
+ *
+ * @param {number} monthNumber - The month number (1-12).
+ * @returns {string} The abbreviated month name (e.g., "Jan" for 1, "Feb" for 2).
+ */
+export const  getMonthAbbreviation = (monthNumber: number): string => (
+  DateTime.fromObject({ month: monthNumber }).toFormat("MMM")
+);
+
