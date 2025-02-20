@@ -7,6 +7,7 @@ import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
 import { TextValueData } from "../../utils/multiSelectSortUtils";
 import CodeDescriptionDto from "../../types/CodeDescriptionType";
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import type { PaginatedResponseType } from "@/types/PaginationTypes";
 
 export interface OpeningFilters {
   searchInput?: string;
@@ -63,7 +64,7 @@ export const status: TextValueData[] = [
   {value:'SUB', text: 'Submitted'}
 ];
 
-export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
+export const fetchOpenings = async (filters: OpeningFilters): Promise<PaginatedResponseType<OpeningSearchResponseDto>> => {
   // Get the date params based on dateType
   // Get the date params based on dateType
   const { dateStartKey, dateEndKey } = createDateParams(filters);
@@ -83,7 +84,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
     clientNumber: filters.clientNumber,
     timberMark:filters.timberMark,
     page: filters.page && filters.page - 1, // Adjust page index (-1)
-    perPage: filters.perPage
+    size: filters.perPage
   };
 
   // Remove undefined, null, or empty string values from the params object
@@ -104,7 +105,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   const response = await axios.get(API_ENDPOINTS.openingSearch(queryString), defaultHeaders(authToken));
 
   // Flatten the data part of the response
-  const flattenedData = response.data.data.map((item: OpeningSearchResponseDto) => ({
+  const flattenedData = response.data.content.map((item: OpeningSearchResponseDto) => ({
     ...item,
     statusCode: item.status?.code,
     statusDescription: item.status?.description,
@@ -117,7 +118,7 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<any> => {
   // Returning the modified response data with the flattened structure
   return {
     ...response.data,
-    data: flattenedData
+    content: flattenedData
   };
 };
 
