@@ -1,14 +1,12 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
-import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
-import ca.bc.gov.restapi.results.common.pagination.PaginatedViaQuery;
-import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,8 +47,7 @@ public class OpeningSearchEndpoint {
    * @return PaginatedResult with found records.
    */
   @GetMapping
-  @PaginatedViaQuery
-  public PaginatedResult<OpeningSearchResponseDto> openingSearch(
+  public Page<OpeningSearchResponseDto> openingSearch(
       @RequestParam(value = "mainSearchTerm", required = false)
       String mainSearchTerm,
       @RequestParam(value = "orgUnit", required = false)
@@ -89,7 +86,8 @@ public class OpeningSearchEndpoint {
       String clientNumber,
       @RequestParam(value = "timberMark", required = false)
       String timberMark,
-      @Valid PaginationParameters paginationParameters) {
+      Pageable paginationParameters
+  ) {
     OpeningSearchFiltersDto filtersDto =
         new OpeningSearchFiltersDto(
             orgUnit,

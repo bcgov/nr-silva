@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
@@ -13,7 +12,6 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,12 +31,6 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Opening search happy path should succeed")
   void openingSearch_happyPath_shouldSucceed() throws Exception {
-    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(0);
-    paginatedResult.setPerPage(5);
-    paginatedResult.setTotalPages(1);
-    paginatedResult.setHasNextPage(false);
-
     OpeningSearchResponseDto response = new OpeningSearchResponseDto();
     response.setOpeningId(101);
     response.setOpeningNumber(null);
@@ -82,12 +74,6 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Opening search no records found should succeed")
   void openingSearch_noRecordsFound_shouldSucceed() throws Exception {
-    PaginatedResult<OpeningSearchResponseDto> paginatedResult = new PaginatedResult<>();
-    paginatedResult.setPageIndex(0);
-    paginatedResult.setPerPage(5);
-    paginatedResult.setTotalPages(1);
-    paginatedResult.setHasNextPage(false);
-    paginatedResult.setData(List.of());
 
     mockMvc
         .perform(
