@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser(roles = "user_read")
 @AutoConfigureMockMvc
 @DisplayName("Integrated Test | Feature Service Endpoint")
-class FeatureServiceEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
+class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -107,7 +107,7 @@ class FeatureServiceEndpointIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            get("/api/feature-service/polygon-and-props/{openingId}", openingId)
+            get("/api/openings/map/{openingId}", openingId)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -117,7 +117,6 @@ class FeatureServiceEndpointIntegrationTest extends AbstractTestContainerIntegra
         .andExpect(
             jsonPath("$.features[0].id")
                 .value("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW.fid-6f119ee7_19129391292_7c7b"))
-        .andExpect(jsonPath("$.features[0].geometry_name").value("GEOMETRY"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").value("FTML"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").value("FG"))

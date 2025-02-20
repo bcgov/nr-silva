@@ -147,6 +147,11 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.17.0</version>
     </dependency>
+    <dependency>
+      <groupId>de.grundid.opendatalab</groupId>
+      <artifactId>geojson-jackson</artifactId>
+      <version>1.14</version>
+    </dependency>
 
     <!-- DevOps -->
     <dependency>

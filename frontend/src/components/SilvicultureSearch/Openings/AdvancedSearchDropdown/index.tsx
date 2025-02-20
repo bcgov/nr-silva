@@ -10,15 +10,23 @@ import {
   FlexGrid,
   Row,
   Column,
-  FilterableMultiSelect
+  FilterableMultiSelect,
 } from "@carbon/react";
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import { TextValueData, filterTextValueItems, sortItems } from "../../../../utils/multiSelectSortUtils";
+import {
+  TextValueData,
+  filterTextValueItems,
+  sortItems,
+} from "../../../../utils/multiSelectSortUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
-import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps } from "../../../AutocompleteClientLocation";
-import { OpeningFilters } from '../../../../services/search/openings';
+import AutocompleteClientLocation, {
+  skipConditions,
+  fetchValues,
+  AutocompleteComponentRefProps,
+} from "../../../AutocompleteClientLocation";
+import { OpeningFilters } from "../../../../services/search/openings";
 import { format } from "date-fns";
 
 interface AdvancedSearchDropdownProps {
@@ -26,7 +34,8 @@ interface AdvancedSearchDropdownProps {
 }
 
 const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
-  const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
+  const { filters, setFilters, setIndividualClearFieldFunctions } =
+    useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
   // Initialize selected items for OrgUnit MultiSelect based on existing filters
@@ -37,14 +46,18 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   const maxDate = () => format(new Date(), "yyyy/MM/dd");
   const getDateRangeValue = (dates: Date[], index: number) => {
-    return dates && dates.length > index ? format(dates[index], "yyyy/MM/dd") : "";
-  }
+    return dates && dates.length > index
+      ? format(dates[index], "yyyy/MM/dd")
+      : "";
+  };
 
   useEffect(() => {
     // Split filters.orgUnit into array and format as needed for selectedItems
     if (filters.orgUnit) {
       const orgUnitsArray = filters.orgUnit.map((orgUnit: string) => ({
-        text: data?.orgUnits?.find((item: any) => item.orgUnitCode === orgUnit)?.orgUnitName || orgUnit,
+        text:
+          data?.orgUnits?.find((item: any) => item.code === orgUnit)
+            ?.description || orgUnit,
         value: orgUnit,
       }));
       setSelectedOrgUnits(orgUnitsArray);
@@ -54,7 +67,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     // Split filters.category into array and format as needed for selectedItems
     if (filters.category) {
       const categoriesArray = filters.category.map((category: string) => ({
-        text: data?.categories?.find((item: any) => item.code === category)?.description || category,
+        text:
+          data?.categories?.find((item: any) => item.code === category)
+            ?.description || category,
         value: category,
       }));
       setSelectedCategories(categoriesArray);
@@ -71,9 +86,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       clientLocationCode: () => autoCompleteRef.current?.reset(),
       startDate: () => setDateRange([]),
       endDate: () => setDateRange([]),
-      dateType: () => setDateRange([])
+      dateType: () => setDateRange([]),
     }));
-
   }, []);
 
   const handleFilterChange = (updatedFilters: Partial<OpeningFilters>) => {
@@ -82,19 +96,23 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   useEffect(() => {
     handleFilterChange({
-      startDate: dateRange && dateRange.length > 0 ? format(dateRange[0], "yyyy-MM-dd") : undefined,
-      endDate: dateRange && dateRange.length > 1 ? format(dateRange[1], "yyyy-MM-dd") : undefined
+      startDate:
+        dateRange && dateRange.length > 0
+          ? format(dateRange[0], "yyyy-MM-dd")
+          : undefined,
+      endDate:
+        dateRange && dateRange.length > 1
+          ? format(dateRange[1], "yyyy-MM-dd")
+          : undefined,
     });
   }, [dateRange]);
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
-    if (group === "orgUnit")
-      setSelectedOrgUnits(selectedItems);
-    if (group === "category")
-      setSelectedCategories(selectedItems);
+    if (group === "orgUnit") setSelectedOrgUnits(selectedItems);
+    if (group === "category") setSelectedCategories(selectedItems);
     handleFilterChange({ [group]: updatedGroup });
-  }
+  };
 
   const handleCheckboxChange = (value: string, group: string) => {
     const selectedGroup = filters[group as keyof typeof filters] as string[];
@@ -126,8 +144,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   const orgUnitItems =
     data.orgUnits?.map((item: any) => ({
-      text: item.orgUnitName,
-      value: item.orgUnitCode,
+      text: item.description,
+      value: item.code,
     })) || [];
 
   const dateTypeItems =
@@ -161,14 +179,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               <Checkbox
                 labelText={`FRPA section 108`}
                 id="checkbox-label-2"
-                checked={filters.openingFilters?.includes(
-                  "FRPA section 108"
-                )}
+                checked={filters.openingFilters?.includes("FRPA section 108")}
                 onChange={() =>
-                  handleCheckboxChange(
-                    "FRPA section 108",
-                    "openingFilters"
-                  )
+                  handleCheckboxChange("FRPA section 108", "openingFilters")
                 }
               />
             </CheckboxGroup>
@@ -182,9 +195,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               className="multi-select"
               titleText="Org Unit"
               items={orgUnitItems}
-              itemToString={(item: TextValueData) => (item ? `${item.value} - ${item.text}` : "")}
+              itemToString={(item: TextValueData) =>
+                item ? `${item.value} - ${item.text}` : ""
+              }
               selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
+              onChange={(e: any) =>
+                handleMultiSelectChange("orgUnit", e.selectedItems)
+              }
               selectedItems={selectedOrgUnits}
               filterItems={filterTextValueItems}
             />
@@ -195,9 +212,13 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               className="multi-select"
               titleText="Category"
               items={categoryItems}
-              itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
+              itemToString={(item: any) =>
+                item ? `${item.value} - ${item.text}` : ""
+              }
               selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
+              onChange={(e: any) =>
+                handleMultiSelectChange("category", e.selectedItems)
+              }
               selectedItems={selectedCategories}
               filterItems={filterTextValueItems}
             />
@@ -206,10 +227,17 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
         <Row className="mb-3">
           <Column lg={8}>
-            <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
+            <AutocompleteProvider
+              fetchOptions={fetchValues}
+              skipConditions={skipConditions}
+            >
               <AutocompleteClientLocation
-                setLocationValue={(value: string | null) => handleFilterChange({ clientLocationCode: value ?? undefined })}
-                setClientValue={(value: string | null) => handleFilterChange({ clientNumber: value ?? undefined })}
+                setLocationValue={(value: string | null) =>
+                  handleFilterChange({ clientLocationCode: value ?? undefined })
+                }
+                setClientValue={(value: string | null) =>
+                  handleFilterChange({ clientNumber: value ?? undefined })
+                }
                 ref={autoCompleteRef}
               />
             </AutocompleteProvider>
@@ -270,8 +298,8 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                     selectedItem={
                       filters.dateType
                         ? dateTypeItems.find(
-                          (item: any) => item.value === filters.dateType
-                        )
+                            (item: any) => item.value === filters.dateType
+                          )
                         : ""
                     }
                     label="Date type"
@@ -290,7 +318,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                     allowInput={true}
                     maxDate={maxDate()}
                     onChange={setDateRange}
-                    value={dateRange.length > 0 ? dateRange.map(date => format(date, "yyyy/MM/dd")) : []}
+                    value={
+                      dateRange.length > 0
+                        ? dateRange.map((date) => format(date, "yyyy/MM/dd"))
+                        : []
+                    }
                   >
                     <DatePickerInput
                       id="start-date-picker-input-id"
@@ -315,10 +347,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
         <Row className="">
           <Column lg={16}>
-            <CheckboxGroup
-              orientation="horizontal"
-              legendText="Status"
-            >
+            <CheckboxGroup orientation="horizontal" legendText="Status">
               <div className="d-flex flex-status-list">
                 <Checkbox
                   labelText={`AMG - Amalgamate`}

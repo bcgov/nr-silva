@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "types": ["vite/client","vitest/globals","@testing-library/jest-dom"],
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
     "target": "ESNext",
     "lib": [
       "dom",
@@ -20,7 +24,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "outDir": "./build/"
+    "outDir": "./build/",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
   },
   "include": [
     "src/**/*"

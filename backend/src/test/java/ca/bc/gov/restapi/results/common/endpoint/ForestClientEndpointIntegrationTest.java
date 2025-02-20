@@ -190,10 +190,10 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].id").value("00"))
-        .andExpect(jsonPath("$[0].name").value("Location 1"))
-        .andExpect(jsonPath("$[1].id").value("01"))
-        .andExpect(jsonPath("$[1].name").value("Location 2"))
+        .andExpect(jsonPath("$[0].code").value("00"))
+        .andExpect(jsonPath("$[0].description").value("Location 1"))
+        .andExpect(jsonPath("$[1].code").value("01"))
+        .andExpect(jsonPath("$[1].description").value("Location 2"))
         .andReturn();
 
   }

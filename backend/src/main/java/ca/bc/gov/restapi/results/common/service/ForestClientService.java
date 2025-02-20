@@ -2,8 +2,8 @@ package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
-import ca.bc.gov.restapi.results.common.dto.IdNameDto;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,7 +57,7 @@ public class ForestClientService {
         .toList();
   }
 
-  public List<IdNameDto> getClientLocations(String clientNumber) {
+  public List<CodeDescriptionDto> getClientLocations(String clientNumber) {
     String fixedNumber = checkClientNumber(clientNumber);
 
     log.info("Fetching locations for client number {}", fixedNumber);
@@ -66,7 +66,7 @@ public class ForestClientService {
         forestClientApiProvider
             .fetchLocationsByClientNumber(fixedNumber)
             .stream()
-            .map(location -> new IdNameDto(
+            .map(location -> new CodeDescriptionDto(
                 location.locationCode(),
                 Objects.toString(location.locationName(), "No name provided")
             ))
