@@ -13,7 +13,7 @@ const API_ENDPOINTS = {
   openingFavourites: () => `${API_BASE_URL}/openings/favourites`,
   openingFavouriteWithId: (openingId: number) => `${API_BASE_URL}/openings/favourites/${openingId}`,
   openingSearch: (filters: string) => `${API_BASE_URL}/openings/search${filters}`,
-  recentOpenings: () => `${API_BASE_URL}/openings/recent`,
+  recentOpenings: () => `${API_BASE_URL}/openings/recent?size=10`,
   categories: () => `${API_BASE_URL}/codes/categories`,
   orgUnits: () => `${API_BASE_URL}/codes/org-units`,
   clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/forest-clients/byNameAcronymNumber?value=${query}`,

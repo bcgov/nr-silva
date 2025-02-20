@@ -1,5 +1,5 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
-import { PaginationMetaType } from "./PaginationTypes";
+import { PaginatedResponseType } from "./PaginationTypes";
 
 export interface StatusCategory {
   code: string;
@@ -50,9 +50,7 @@ export interface OpeningSearchResponseDto {
   favourite: boolean;
 }
 
-export type PaginatedRecentOpeningsDto = PaginationMetaType & {
-  data: OpeningSearchResponseDto[]
-}
+export type PaginatedRecentOpeningsDto = PaginatedResponseType<OpeningSearchResponseDto>
 
 // TODO: too be removed
 export interface OpeningsSearch {
