@@ -28,7 +28,7 @@ const OpeningRow: React.FC<TableRowComponentProps> = ({
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
       case "status":
-        return <StatusTag code={rowData.status.description} />;
+        return <StatusTag code={rowData.status?.description ?? 'Unknown'} />;
       case "actions":
         return (
           <div className="action-container">
@@ -49,11 +49,14 @@ const OpeningRow: React.FC<TableRowComponentProps> = ({
           </div>
         );
       case "category":
-        return (
-          <Tooltip label={rowData.category.description}>
-            <span>{rowData.category.code}</span>
-          </Tooltip>
-        );
+        if (rowData.category) {
+          return (
+            <Tooltip label={rowData.category.description}>
+              <span>{rowData.category.code}</span>
+            </Tooltip>
+          );
+        }
+        return PLACE_HOLDER;
       case "disturbanceStartDate":
         return formatLocalDate(rowData.disturbanceStartDate, true)
       default:
