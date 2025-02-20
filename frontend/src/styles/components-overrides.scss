@@ -1,6 +1,6 @@
-@use './variables.scss' as variables;
-
-@use './colors.scss' as colors;
+// @bcgov-nr/nr-theme has its own components override but that library is not maintained
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as variables;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 
 @use '@carbon/styles/scss/config' with ($prefix: variables.$bcgov-prefix);
 
@@ -137,11 +137,7 @@ nav.#{variables.$bcgov-prefix}--side-nav {
 }
 
 .#{variables.$bcgov-prefix}--grid {
-  padding: 0 !important;
-}
-
-.#{variables.$bcgov-prefix}--tab-content {
-  padding: 0 !important;
+  padding: 0;
 }
 
 .#{variables.$bcgov-prefix}--tabs button.#{variables.$bcgov-prefix}--tabs__nav-item--selected {

@@ -3,10 +3,10 @@
 @use '@carbon/type';
 
 
-div.search-filters-container {
-  padding-top: 2.5rem;
+.search-filters-container {
   margin: 0 1.5rem;
 }
+
 div.search-button-container {
   margin: 0 0.5rem;
 }
@@ -16,9 +16,9 @@ div.search-button-container {
   padding-bottom: 0px !important;
 
   //these are for the nested elements
-  input{
+  input {
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
-    border-block-end : none;
+    border-block-end: none;
     border-bottom: 1px solid var(--bx-border-strong-01);
   }
 
@@ -30,30 +30,34 @@ div.search-button-container {
     color: var(--bx-text-secondary);
   }
 
-  .multi-dropdown{
+  .multi-dropdown {
     margin-top: -14px;
   }
 
-  .#{vars.$bcgov-prefix}--list-box__field--wrapper{
+  .#{vars.$bcgov-prefix}--list-box__field--wrapper {
     background-color: white;
   }
-  .#{vars.$bcgov-prefix}--list-box__label{
+
+  .#{vars.$bcgov-prefix}--list-box__label {
     font-weight: 400;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.16px;
     color: var(--bx-text-secondary);
   }
-  .#{vars.$bcgov-prefix}--search-close{
+
+  .#{vars.$bcgov-prefix}--search-close {
     width: 40px;
     bottom: 0px;
-    border-block-end : none;
+    border-block-end: none;
   }
-  .search-button{
+
+  .search-button {
     margin-top: 0px;
     min-width: 100%;
   }
-  .advanced-search-field{
+
+  .advanced-search-field {
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
     height: 40px;
     align-items: center;
@@ -65,29 +69,28 @@ div.search-button-container {
     border-radius: 4px 4px 0px 0px;
     padding: 16px 11px;
 
-    p{
+    p {
       @include type.type-style('body-compact-02');
       font-size: 14px;
     }
+
     .text-active {
       color: var(--#{vars.$bcgov-prefix}-text-primary) !important;
     }
   }
+
   #orgunit-multiselect {
-    background-color: var(--#{vars.$bcgov-prefix}-layer-02);    
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
   }
+
   #category-multiselect {
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
   }
-  
+
 }
 
 .opening-searchbar-inner {
   padding-right: 1rem;
-}
-
-.bx--css-grid-column {
-  padding-bottom: 1rem;
 }
 
 .multi-select div.#{vars.$bcgov-prefix}--multi-select,
@@ -111,7 +114,7 @@ input.#{vars.$bcgov-prefix}--search-input {
   .bx--css-grid-column {
     .search-button {
       width: 100%;
-      max-width: unset;   
+      max-width: unset;
       margin-top: 1rem;
     }
   }
@@ -134,6 +137,7 @@ input.#{vars.$bcgov-prefix}--search-input {
     }
   }
 }
+
 /*
 Breakpoint	Value (px/rem)	Columns	Size (%)	Size	Padding	Margin
 Small	      320 / 20	      4	      25%	      80 px	16 px	  0

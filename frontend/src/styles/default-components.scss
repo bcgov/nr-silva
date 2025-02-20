@@ -8,9 +8,16 @@
   max-inline-size: none;
   row-gap: 2.5rem;
   column-gap: 2rem;
+  flex-grow: 1;
+  align-content: start;
 
   .#{vars.$bcgov-prefix}--css-grid-column {
     margin: 0;
+  }
+
+  // Stretches out of the left and right padding
+  .full-width-col {
+    margin: 0 -2rem;
   }
 
   .#{vars.$bcgov-prefix}--subgrid {
