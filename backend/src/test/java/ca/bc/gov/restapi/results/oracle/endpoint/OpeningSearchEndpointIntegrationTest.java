@@ -61,13 +61,12 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.pageIndex").value("0"))
-        .andExpect(jsonPath("$.perPage").value("5"))
-        .andExpect(jsonPath("$.totalPages").value("1"))
-        .andExpect(jsonPath("$.hasNextPage").value("false"))
-        .andExpect(jsonPath("$.data[0].openingId").value(response.getOpeningId()))
-        .andExpect(jsonPath("$.data[0].openingNumber").value(response.getOpeningNumber()))
-        .andExpect(jsonPath("$.data[0].category.code").value(response.getCategory().getCode()))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("5"))
+        .andExpect(jsonPath("$.page.totalElements").value("1"))
+        .andExpect(jsonPath("$.content[0].openingId").value(response.getOpeningId()))
+        .andExpect(jsonPath("$.content[0].openingNumber").value(response.getOpeningNumber()))
+        .andExpect(jsonPath("$.content[0].category.code").value(response.getCategory().getCode()))
         .andReturn();
   }
 
@@ -82,11 +81,10 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.pageIndex").value("0"))
-        .andExpect(jsonPath("$.perPage").value("5"))
-        .andExpect(jsonPath("$.totalPages").value("0"))
-        .andExpect(jsonPath("$.hasNextPage").value("false"))
-        .andExpect(jsonPath("$.data", Matchers.empty()))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("5"))
+        .andExpect(jsonPath("$.page.totalElements").value("0"))
+        .andExpect(jsonPath("$.content", Matchers.empty()))
         .andReturn();
   }
 
