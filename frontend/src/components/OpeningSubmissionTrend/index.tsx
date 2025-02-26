@@ -17,9 +17,16 @@ import { useNavigate } from "react-router-dom";
 // Utility functions
 import { getMonthAbbreviation } from "../../utils/DateUtils";
 import { ComboBoxEvent } from "../../types/CarbonTypes";
-import { fetchOpeningsOrgUnits, fetchUserSubmissionTrends } from "../../services/OpeningService";
-import { status } from "../../services/search/openings";
-import { extractValsFromTextValueArr, filterTextValueItems, TextValueData, textValueToDisplayText } from "../../utils/multiSelectSortUtils";
+import { fetchUserSubmissionTrends } from "../../services/OpeningService";
+import { fetchOpeningsOrgUnits } from "../../services/OpeningSearchService";
+import {
+  extractCodesFromCodeDescriptionArr,
+  filterCodeDescriptionItems,
+  codeDescriptionToDisplayText,
+  MultiSelectEvent
+} from "../../utils/multiSelectUtils";
+import CodeDescriptionDto from "../../types/CodeDescriptionType";
+import { OPENING_STATUS_LIST } from "../../constants";
 
 // Local components
 import EmptySection from "../EmptySection";
@@ -31,10 +38,6 @@ import { generateYearList, getYearBoundaryDate } from "./utils";
 // Styles
 import "@carbon/charts/styles.css";
 import "./styles.scss";
-
-interface MultiSelectEvent {
-  selectedItems: TextValueData[];
-}
 
 interface BarChartGroupedEvent {
   detail: {
@@ -49,17 +52,17 @@ const OpeningSubmissionTrend = () => {
   const yearOptions = generateYearList();
   const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]);
 
-  const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
-  const [selectedStatusCodes, setSelectedStatusCodes] = useState<TextValueData[]>([]);
+  const [selectedOrgUnits, setSelectedOrgUnits] = useState<CodeDescriptionDto[]>([]);
+  const [selectedStatusCodes, setSelectedStatusCodes] = useState<CodeDescriptionDto[]>([]);
   const chartRef = useRef(null);
   const navigate = useNavigate();
 
 
   const orgUnitQuery = useQuery({
     queryKey: ["opening-search", "org-units"],
-    queryFn: () => fetchOpeningsOrgUnits(),
-    select: (data): TextValueData[] => (
-      data.map((orgUnit) => ({ value: orgUnit.orgUnitCode, text: orgUnit.orgUnitName })
+    queryFn: fetchOpeningsOrgUnits,
+    select: (data): CodeDescriptionDto[] => (
+      data.map((orgUnit) => ({ code: orgUnit.orgUnitCode, description: orgUnit.orgUnitName })
       ))
   });
 
@@ -70,14 +73,14 @@ const OpeningSubmissionTrend = () => {
       {
         entryStartDate: getYearBoundaryDate(selectedYear, true),
         entryEndDate: getYearBoundaryDate(selectedYear, false),
-        statusCode: extractValsFromTextValueArr(selectedStatusCodes),
-        orgUnitCode: extractValsFromTextValueArr(selectedOrgUnits)
+        statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
+        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits)
       }
     ],
     queryFn: async () => {
       const data = await fetchUserSubmissionTrends({
-        orgUnitCode: extractValsFromTextValueArr(selectedOrgUnits),
-        statusCode: extractValsFromTextValueArr(selectedStatusCodes),
+        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
+        statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
         entryDateStart: getYearBoundaryDate(selectedYear, true),
         entryDateEnd: getYearBoundaryDate(selectedYear, false)
       });
@@ -148,22 +151,22 @@ const OpeningSubmissionTrend = () => {
                   id="district-dropdown"
                   titleText="District"
                   items={orgUnitQuery.data ?? []}
-                  itemToString={textValueToDisplayText}
+                  itemToString={codeDescriptionToDisplayText}
                   selectionFeedback="top-after-reopen"
                   onChange={handleOrgUnitChange}
                   disabled={submissionTrendQuery.isFetching}
-                  filterItems={filterTextValueItems}
+                  filterItems={filterCodeDescriptionItems}
                 />
 
                 <FilterableMultiSelect
                   id="status-dropdown"
                   titleText="Status"
-                  items={status}
-                  itemToString={textValueToDisplayText}
+                  items={OPENING_STATUS_LIST}
+                  itemToString={codeDescriptionToDisplayText}
                   selectionFeedback="top-after-reopen"
                   onChange={handleStatusChange}
                   disabled={submissionTrendQuery.isFetching}
-                  filterItems={filterTextValueItems}
+                  filterItems={filterCodeDescriptionItems}
                 />
 
                 <ComboBox

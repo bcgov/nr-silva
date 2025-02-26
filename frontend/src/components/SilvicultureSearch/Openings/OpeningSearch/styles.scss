@@ -1,0 +1,44 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
+
+.opening-search-grid {
+  row-gap: 1rem;
+  column-gap: 0.25rem;
+
+  // This fixes weird close button's left border
+  .#{vars.$bcgov-prefix}--search-close::before {
+    background-color: var(--#{vars.$bcgov-prefix}-field-02);
+  }
+
+  // Input styles
+  .#{vars.$bcgov-prefix}--multi-select--filterable,
+  input {
+    background-color: var(--#{vars.$bcgov-prefix}-field-02);
+    border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-strong-01);
+
+    &::placeholder {
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      @include type.type-style('body-compact-01');
+    }
+  }
+
+  .search-buttons-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.75rem;
+
+    .search-button {
+      flex-grow: 1;
+    }
+  }
+
+  .search-col-sm {
+
+    .search-button,
+    .advanced-search-button {
+      width: 100%;
+      max-width: unset;
+    }
+  }
+}

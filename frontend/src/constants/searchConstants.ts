@@ -16,7 +16,7 @@ export const statusTypes: IdTextValueData[]= [
   {id:'RMD',text:'Removed'},
   {id:'RET',text:'Retired'},
   {id:'SUB',text:'Submitted'}
-  ];
+];
 
 export const blockStatuses: IdTextValueData[] = [
   { id: "AP", text: "AP  -  Appeal Pending" },

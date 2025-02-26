@@ -31,7 +31,6 @@ import {
   fetchCategories,
   fetchOrgUnits,
   fetchOpenings,
-  CodeDescription,
   OrgUnit,
   PagedResult,
   OpeningItem,
@@ -39,7 +38,7 @@ import {
 } from "@/services/search/openings";
 
 //Types
-import { sortItems } from "@/utils/multiSelectSortUtils";
+import { sortItems } from "@/utils/multiSelectUtils";
 import {
   searchScreenColumns,
   defaultsearchScreenColumnsSelection,
@@ -54,7 +53,7 @@ import { ITableHeader } from "@/types/TableHeader";
 // Styles and others
 import "./index.scss";
 
-const SearchTab: React.FC = () => {
+const OpeningSearch: React.FC = () => {
   // Search Filters itself
   const [filters, setFilters] = useState<OpeningSearchFilters>({});
   // Data for multi-selects
@@ -296,8 +295,8 @@ const SearchTab: React.FC = () => {
               selectedItems={
                 filters.category
                   ? categories.filter((item) =>
-                      filters.category?.includes(item.code)
-                    )
+                    filters.category?.includes(item.code)
+                  )
                   : []
               }
               sortItems={sortItems}
@@ -320,8 +319,8 @@ const SearchTab: React.FC = () => {
               selectedItems={
                 filters.orgUnit
                   ? orgUnits.filter((item) =>
-                      filters.orgUnit?.includes(item.orgUnitCode)
-                    )
+                    filters.orgUnit?.includes(item.orgUnitCode)
+                  )
                   : []
               }
               sortItems={sortItems}
@@ -344,8 +343,8 @@ const SearchTab: React.FC = () => {
               selectedItems={
                 filters.statusList
                   ? statusTypes.filter((item) =>
-                      filters.statusList?.includes(item.id)
-                    )
+                    filters.statusList?.includes(item.id)
+                  )
                   : []
               }
               sortItems={sortItems}
@@ -481,4 +480,4 @@ const SearchTab: React.FC = () => {
   );
 };
 
-export default SearchTab;
+export default OpeningSearch;

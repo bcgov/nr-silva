@@ -21,7 +21,7 @@ import {
   AutocompleteComboboxProps,
   TextInputEvent,
 } from "@/types/GeneralTypes";
-import { sortItems } from "@/utils/multiSelectSortUtils";
+import { sortItems } from "@/utils/multiSelectUtils";
 import { OpeningSearchFilters } from "@/services/search/openings";
 import { statusTypes, dateTypes } from "@/constants/searchConstants";
 
@@ -308,8 +308,8 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
           selectedItems={
             filters.statusList
               ? statusTypes.filter((item) =>
-                  filters.statusList?.includes(item.id)
-                )
+                filters.statusList?.includes(item.id)
+              )
               : []
           }
           sortItems={sortItems}
@@ -382,7 +382,7 @@ const OpeningTableFilter: React.FC<FilterProps> = ({
             value={
               dateKind?.id
                 ? filters[`${dateKind.id}DateStart` as keyof typeof filters] ||
-                  ""
+                ""
                 : ""
             }
           />

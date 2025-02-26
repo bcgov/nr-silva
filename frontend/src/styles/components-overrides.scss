@@ -6,8 +6,12 @@
 
 @use '@carbon/styles/scss/components/button/vars' with ($button-border-radius: 4px);
 
-.#{variables.$bcgov-prefix}--data-table-header,
+@use '@carbon/styles/scss/grid';
 
+@include grid.flex-grid();
+
+.#{variables.$bcgov-prefix}--data-table-header,
+.#{variables.$bcgov-prefix}--date-picker__input,
 .#{variables.$bcgov-prefix}--list-box__field,
 .#{variables.$bcgov-prefix}--list-box,
 .#{variables.$bcgov-prefix}--number .#{variables.$bcgov-prefix}--number__input-wrapper input[type=number],
@@ -15,13 +19,13 @@
 .#{variables.$bcgov-prefix}--select-input,
 .#{variables.$bcgov-prefix}--text-input,
 .#{variables.$bcgov-prefix}--text-area {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--pagination {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--table-expand__button,
@@ -36,11 +40,11 @@
 .#{variables.$bcgov-prefix}--pagination-nav__page,
 .#{variables.$bcgov-prefix}--tab--overflow-nav-button,
 .#{variables.$bcgov-prefix}--tile {
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--time-picker__input>.#{variables.$bcgov-prefix}--text-input {
-  border-top-left-radius: 4px;
+  border-top-left-radius: 0.25rem;
   border-top-right-radius: 0;
 }
 
@@ -50,17 +54,17 @@
 
 .#{variables.$bcgov-prefix}--time-picker :last-child>.#{variables.$bcgov-prefix}--select-input {
   border-top-left-radius: 0;
-  border-top-right-radius: 4px;
+  border-top-right-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--modal-container {
-  border-radius: 8px;
+  border-radius: 0.5rem;
 }
 
 .#{variables.$bcgov-prefix}--modal-close {
   margin-right: 1rem;
   margin-top: 1rem;
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--modal-footer {
@@ -78,9 +82,31 @@
   margin-right: 0.25rem;
 }
 
+.#{variables.$bcgov-prefix}--btn {
+  border-radius: 0.25rem;
+  width: 15.188rem;
+  padding: 0.188rem;
+}
+
+#{variables.$bcgov-prefix}-btn::part(button) {
+  border-radius: 0.25rem;
+}
+
+.#{variables.$bcgov-prefix}--btn-header {
+  position: absolute;
+  top: 50%;
+  right: 0.313rem;
+  transform: translateY(-50%);
+}
+
+.#{variables.$bcgov-prefix}--btn-header::part(button) {
+  border: solid 0.063rem colors.$white;
+  color: colors.$white;
+}
+
 .#{variables.$bcgov-prefix}--pagination .#{variables.$bcgov-prefix}--select__item-count .#{variables.$bcgov-prefix}--select-input__wrapper select.#{variables.$bcgov-prefix}--select-input,
 .#{variables.$bcgov-prefix}--pagination .#{variables.$bcgov-prefix}--select__page-number .#{variables.$bcgov-prefix}--select-input__wrapper select.#{variables.$bcgov-prefix}--select-input {
-  border-radius: 4px;
+  border-radius: 0.25rem;
   border: 0;
 }
 
@@ -90,11 +116,11 @@
 }
 
 .#{variables.$bcgov-prefix}--pagination .#{variables.$bcgov-prefix}--select__item-count .#{variables.$bcgov-prefix}--select-input--inline__wrapper {
-  border-right: 1px solid var(--#{variables.$bcgov-prefix}-border-subtle);
+  border-right: 0.063rem solid var(--#{variables.$bcgov-prefix}-border-subtle);
 }
 
 .#{variables.$bcgov-prefix}--pagination .#{variables.$bcgov-prefix}--select__page-number .#{variables.$bcgov-prefix}--select-input--inline__wrapper {
-  border-left: 1px solid var(--#{variables.$bcgov-prefix}-border-subtle);
+  border-left: 0.063rem solid var(--#{variables.$bcgov-prefix}-border-subtle);
 }
 
 .#{variables.$bcgov-prefix}--pagination--sm,
@@ -113,7 +139,7 @@
 }
 
 .#{variables.$bcgov-prefix}--pagination__control-buttons .#{variables.$bcgov-prefix}--popover-container {
-  border-left: 1px solid var(--#{variables.$bcgov-prefix}-border-subtle);
+  border-left: 0.063rem solid var(--#{variables.$bcgov-prefix}-border-subtle);
 }
 
 .#{variables.$bcgov-prefix}--pagination__control-buttons .#{variables.$bcgov-prefix}--pagination__button {
@@ -122,8 +148,8 @@
 }
 
 nav.#{variables.$bcgov-prefix}--side-nav {
-  box-shadow: inset -1px 0 0 colors.$gray-20;
-  background-color: var(--bx-background-left-panel);
+  border-right: 0.063rem solid colors.$gray-20;
+  background-color: var(--#{variables.$bcgov-prefix}-background-left-panel);
 }
 
 .#{variables.$bcgov-prefix}--side-nav__items {
@@ -136,7 +162,7 @@ nav.#{variables.$bcgov-prefix}--side-nav {
   width: 16rem;
 }
 
-.#{variables.$bcgov-prefix}--grid {
+.#{variables.$bcgov-prefix}--tab-content {
   padding: 0;
 }
 
@@ -144,34 +170,19 @@ nav.#{variables.$bcgov-prefix}--side-nav {
   font-weight: bold;
 }
 
-.#{variables.$bcgov-prefix}--data-table {
-  padding: 0 !important;
-}
-
-.#{variables.$bcgov-prefix}--data-table tr th {
-  background-color: var(--#{variables.$bcgov-prefix}-layer-01);
-}
-
-.#{variables.$bcgov-prefix}--data-table tr td {
-  background-color: var(--#{variables.$bcgov-prefix}-layer-02);
-}
-
 .#{variables.$bcgov-prefix}--table-header-label {
   font-weight: bold;
 }
 
 .#{variables.$bcgov-prefix}--content {
+  margin: 5.5rem 2rem;
   padding: 0 !important;
 }
 
-.#{variables.$bcgov-prefix}--header {
-  background-color: var(--bx-background-brand) !important;
-}
-
 ul.#{variables.$bcgov-prefix}--accordion {
-  border-left: 1px solid var(--#{variables.$bcgov-prefix}-border-subtle);
-  border-right: 1px solid var(--#{variables.$bcgov-prefix}-border-subtle);
-  border-radius: 4px;
+  border-left: 0.063rem solid var(--#{variables.$bcgov-prefix}-border-subtle);
+  border-right: 0.063rem solid var(--#{variables.$bcgov-prefix}-border-subtle);
+  border-radius: 0.25rem;
 }
 
 .#{variables.$bcgov-prefix}--side-nav__menu .#{variables.$bcgov-prefix}--side-nav__menu-item a.#{variables.$bcgov-prefix}--side-nav__link,
@@ -186,16 +197,16 @@ div.#{variables.$bcgov-prefix}--side-nav__icon>svg {
 
 .#{variables.$bcgov-prefix}--inline-notification,
 .#{variables.$bcgov-prefix}--toast-notification {
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 div.#{variables.$bcgov-prefix}--inline-notification--low-contrast::before {
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 0.25rem 0.25rem 0;
   filter: none;
 }
 
 .#{variables.$bcgov-prefix}--toast-notification--low-contrast {
-  border-width: 1px 1px 1px 0;
+  border-width: 0.063rem 0.063rem 0.063rem 0;
   border-style: solid;
 }
 
@@ -205,49 +216,90 @@ $types: 'error', 'info', 'success', 'warning';
 
 @each $notificationType in $types {
   div.#{variables.$bcgov-prefix}--inline-notification--#{$notificationType} {
-    border-left: 4px solid var(--bx-support-#{$notificationType}-inverse);
+    border-left: 0.25rem solid var(--#{variables.$bcgov-prefix}-support-#{$notificationType}-inverse);
   }
 
   div.#{variables.$bcgov-prefix}--inline-notification--low-contrast.#{variables.$bcgov-prefix}--inline-notification--#{$notificationType} {
-    border-left: 4px solid var(--bx-support-#{$notificationType});
+    border-left: 0.25rem solid var(--#{variables.$bcgov-prefix}-support-#{$notificationType});
   }
 
   div.#{variables.$bcgov-prefix}--inline-notification--low-contrast.#{variables.$bcgov-prefix}--inline-notification--#{$notificationType}::before {
-    border-color: var(--bx-notification-border-#{$notificationType});
+    border-color: var(--#{variables.$bcgov-prefix}-notification-border-#{$notificationType});
   }
 }
 
 @each $notificationType in $types {
   div.#{variables.$bcgov-prefix}--toast-notification--#{$notificationType} {
-    border-left: 4px solid var(--bx-support-#{$notificationType}-inverse);
+    border-left: 0.25rem solid var(--#{variables.$bcgov-prefix}-support-#{$notificationType}-inverse);
   }
 
   div.#{variables.$bcgov-prefix}--toast-notification--low-contrast.#{variables.$bcgov-prefix}--toast-notification--#{$notificationType} {
-    border-left: 4px solid var(--bx-support-#{$notificationType});
-    border-top-color: var(--bx-notification-border-#{$notificationType});
-    border-bottom-color: var(--bx-notification-border-#{$notificationType});
-    border-right-color: var(--bx-notification-border-#{$notificationType})
+    border-left: 0.25rem solid var(--#{variables.$bcgov-prefix}-support-#{$notificationType});
+    border-top-color: var(--#{variables.$bcgov-prefix}-notification-border-#{$notificationType});
+    border-bottom-color: var(--#{variables.$bcgov-prefix}-notification-border-#{$notificationType});
+    border-right-color: var(--#{variables.$bcgov-prefix}-notification-border-#{$notificationType})
   }
 }
 
 .#{variables.$bcgov-prefix}--overflow-menu.bcgov--overflow-menu--open {
-  border-radius: 4px 4px 0 0;
+  border-radius: 0.25rem 0.25rem 0 0;
 }
 
 .#{variables.$bcgov-prefix}--overflow-menu-options {
-  border-radius: 0 4px 4px 4px;
+  border-radius: 0 0.25rem 0.25rem 0.25rem;
 }
 
 li.#{variables.$bcgov-prefix}--overflow-menu-options__option:first-child {
-  border-radius: 0 4px 0 0;
+  border-radius: 0 0.25rem 0 0;
 }
 
 li.#{variables.$bcgov-prefix}--overflow-menu-options__option:last-child {
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 0.25rem 0.25rem;
 }
 
-table.#{variables.$bcgov-prefix}--data-table th,
-table.#{variables.$bcgov-prefix}--data-table td,
-table.#{variables.$bcgov-prefix}--data-table th button {
+.#{variables.$bcgov-prefix}--title {
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  color: colors.$gray-100;
+}
+
+.#{variables.$bcgov-prefix}--description {
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: colors.$gray-70;
+}
+
+.#{variables.$bcgov-prefix}--description-disabled {
+  color: colors.$gray-100;
+}
+
+.#{variables.$bcgov-prefix}--header {
+  background-color: colors.$blue-60 !important;
+  display: relative;
+  height: 3.5rem;
+}
+
+.#{variables.$bcgov-prefix}--header-site-name {
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #F3F3F5;
   padding-left: 2rem;
+  display: inline-block;
+}
+
+#{variables.$bcgov-prefix}-modal::part(dialog) {
+  background-color: colors.$gray-10;
+  border-radius: 0.5rem;
+}
+
+#{variables.$bcgov-prefix}-modal-footer {
+  padding: 1rem;
+}
+
+label.#{variables.$bcgov-prefix}--label,
+legend.#{variables.$bcgov-prefix}--label {
+  color: var(--#{variables.$bcgov-prefix}-text-primary);
 }

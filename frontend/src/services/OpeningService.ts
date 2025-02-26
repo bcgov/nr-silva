@@ -6,7 +6,6 @@ import {
   IFreeGrowingProps,
   IFreeGrowingChartData,
   PaginatedRecentOpeningsDto,
-  OrgUnitEntity,
   OpeningsPerYearDto
 } from '../types/OpeningTypes';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
@@ -107,14 +106,4 @@ export const fetchUserRecentOpenings = (): Promise<PaginatedRecentOpeningsDto> =
   // Make the API request with the Authorization header
   return axios.get(API_ENDPOINTS.recentOpenings(), defaultHeaders(authToken))
     .then((res) => res.data);
-};
-
-/**
- * Fetch a list of org unit used for opening search
- */
-export const fetchOpeningsOrgUnits = (): Promise<OrgUnitEntity[]> => {
-  const authToken = getAuthIdToken();
-
-  return axios.get(API_ENDPOINTS.orgUnits(),defaultHeaders(authToken))
-    .then((res)=> res.data);
 };

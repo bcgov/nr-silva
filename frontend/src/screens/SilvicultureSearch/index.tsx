@@ -11,7 +11,7 @@ import {
 } from "@carbon/react";
 import { MapBoundaryVegetation } from '@carbon/icons-react';
 
-import SearchTab from "@/components/SilvicultureSearch/Openings/SearchTab";
+import OpeningSearch from "@/components/SilvicultureSearch/Openings/OpeningSearch";
 
 import './styles.scss'
 
@@ -38,7 +38,7 @@ const SilvicultureSearch: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content">
-              <SearchTab />
+              <OpeningSearch />
             </TabPanel>
           </TabPanels>
         </Tabs>

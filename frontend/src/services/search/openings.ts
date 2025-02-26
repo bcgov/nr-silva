@@ -3,8 +3,6 @@ import qs from "qs";
 import { getAuthIdToken } from "../AuthService";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
-import { TextValueData } from "@/types/GeneralTypes";
-import CodeDescriptionDto from "../../types/CodeDescriptionType";
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
 
 export interface OpeningSearchFilters {
@@ -62,16 +60,6 @@ export interface OrgUnit {
   orgUnitName: string;
 }
 
-export const status: TextValueData[] = [
-  {value:'AMG', text: 'Amalgamate'},
-  {value:'AMD', text: 'Amended'},
-  {value:'APP', text: 'Approved'},
-  {value:'DFT', text: 'Draft'},
-  {value:'FG', text: 'Free Growing'},
-  {value:'RMD', text: 'Removed'},
-  {value:'RET', text: 'Retired'},
-  {value:'SUB', text: 'Submitted'}
-];
 
 export interface PagedResult<T> {
   data: T[];
@@ -119,17 +107,6 @@ export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResul
   };
 };
 
-export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
-  // Retrieve the auth token
-  const authToken = getAuthIdToken();
-
-  // Make the API request with the Authorization header
-  const response = await axios.get(API_ENDPOINTS.categories(), defaultHeaders(authToken));
-
-  // Returning the api response data
-  return response.data;
-};
-
 export const fetchOrgUnits = async (): Promise<OrgUnit[]> => {
   // Retrieve the auth token
   const authToken = getAuthIdToken();
@@ -149,12 +126,12 @@ export const fetchBlockStatuses = async (): Promise<any> => {
   return blockStatuses;
 };
 
-export const fetchOpeningFilters = async (): Promise<any> => {
-  const [categories, orgUnits, dateTypes, blockStatuses] = await Promise.all([
-    fetchCategories(),
-    fetchOrgUnits(),
-    fetchDateTypes(),
-    fetchBlockStatuses()
-  ]);
-  return { categories, orgUnits, dateTypes, blockStatuses };
-};
+// export const fetchOpeningFilters = async (): Promise<any> => {
+//   const [categories, orgUnits, dateTypes, blockStatuses] = await Promise.all([
+//     fetchCategories(),
+//     fetchOrgUnits(),
+//     fetchDateTypes(),
+//     fetchBlockStatuses()
+//   ]);
+//   return { categories, orgUnits, dateTypes, blockStatuses };
+// };
