@@ -27,7 +27,7 @@ import StatusTag from "../../../StatusTag";
 import "./styles.scss";
 import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
-import { OpeningsSearch } from "../../../../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "../../../../types/OpeningTypes";
 import { ITableHeader } from "../../../../types/TableHeader";
 import {
   convertToCSV,
@@ -44,7 +44,7 @@ import ActionButtons from "../../../ActionButtons";
 import SpatialCheckbox from "../../../SpatialCheckbox";
 
 interface ISearchScreenDataTable {
-  rows: OpeningsSearch[];
+  rows: OpeningSearchResponseDto[];
   headers: ITableHeader[];
   handleCheckboxChange: (columnKey: string) => void;
   toggleSpatial: () => void;
@@ -78,7 +78,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
   const [openDownload, setOpenDownload] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // State to store selected rows
   const [openingDetails, setOpeningDetails] = useState("");
-  const [columnsSelected, setColumnsSelected] = useState<string>("select-default");
+  const [columnsSelected, setColumnsSelected] =
+    useState<string>("select-default");
   const { mutate: markAsViewedOpening } = usePostViewedOpening();
 
   // This ref is used to calculate the width of the container for each cell
@@ -138,7 +139,7 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
           title: "Unable to process your request",
           subTitle: "Please try again in a few minutes",
           type: "error",
-          onClose: () => { },
+          onClose: () => {},
         });
       },
     });
@@ -356,7 +357,9 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         ref={(el: never) => (cellRefs.current[i] = el)}
                         key={header.key}
                         className={
-                          header.key === "actions" && showSpatial ? "p-0" : undefined
+                          header.key === "actions" && showSpatial
+                            ? "p-0"
+                            : undefined
                         }
                         onClick={() => {
                           if (header.key !== "actions") {
@@ -367,15 +370,20 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                         {header.key === "statusDescription" ? (
                           <StatusTag code={row[header.key]} />
                         ) : header.key === "actions" ? (
-
-                          <div className={showSpatial ? 'd-flex space-left-1' : 'd-flex'}>
-                            {showSpatial && (<div className="pt-3">
-                              <SpatialCheckbox
-                                rowId={row.openingId}
-                                selectedRows={selectedRows}
-                                handleRowSelection={handleRowSelection}
-                              />
-                            </div>)}
+                          <div
+                            className={
+                              showSpatial ? "d-flex space-left-1" : "d-flex"
+                            }
+                          >
+                            {showSpatial && (
+                              <div className="pt-3">
+                                <SpatialCheckbox
+                                  rowId={row.openingId}
+                                  selectedRows={selectedRows}
+                                  handleRowSelection={handleRowSelection}
+                                />
+                              </div>
+                            )}
                             <ActionButtons
                               favorited={row.favourite}
                               rowId={row.openingId}
@@ -391,7 +399,8 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                             }
                             parentWidth={cellWidths[i]}
                           />
-                        ) : header.key.includes("Date") || header.key.includes("Timestamp") ? (
+                        ) : header.key.includes("Date") ||
+                          header.key.includes("Timestamp") ? (
                           <FriendlyDate date={row[header.key]} />
                         ) : (
                           row[header.key]
