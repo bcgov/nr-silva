@@ -29,12 +29,6 @@ import EmptySection from "../../../EmptySection";
 import PaginationContext from "../../../../contexts/PaginationContext";
 import { OpeningSearchResponseDto } from "../../../../types/OpeningTypes";
 import { ITableHeader } from "../../../../types/TableHeader";
-import {
-  convertToCSV,
-  downloadCSV,
-  downloadPDF,
-  downloadXLSX,
-} from "../../../../utils/fileConversions";
 import { usePostViewedOpening } from "../../../../services/queries/dashboard/dashboardQueries";
 import { useNotification } from "../../../../contexts/NotificationProvider";
 import TruncatedText from "../../../TruncatedText";
@@ -288,46 +282,6 @@ const SearchScreenDataTable: React.FC<ISearchScreenDataTable> = ({
                 </PopoverContent>
               </Popover>
               <div className="divider"></div>
-              <Popover
-                open={openDownload}
-                isTabTip
-                align={alignTwo}
-                onRequestClose={() => setOpenDownload(false)}
-              >
-                <Button
-                  iconDescription="Download"
-                  kind="ghost"
-                  onClick={() => {
-                    setOpenDownload(!openDownload);
-                  }}
-                  renderIcon={Icons.Download}
-                  size="lg"
-                >
-                  Download
-                </Button>
-                <PopoverContent className="download-column-content">
-                  <MenuItem
-                    className="menu-item"
-                    label="Download table as PDF file"
-                    onClick={() => {
-                      downloadPDF(headers, rows);
-                    }}
-                  />
-                  <MenuItem
-                    className="menu-item"
-                    label="Download table as CSV file"
-                    onClick={() => {
-                      const csvData = convertToCSV(headers, rows);
-                      downloadCSV(csvData, "openings-data.csv");
-                    }}
-                  />
-                  <MenuItem
-                    className="menu-item"
-                    label="Download table as XLS file"
-                    onClick={() => downloadXLSX(headers, rows)}
-                  />
-                </PopoverContent>
-              </Popover>
             </div>
           </TableToolbarContent>
         </TableToolbar>
