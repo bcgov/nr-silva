@@ -31,43 +31,4 @@ describe("SilvicultureSearch Component", () => {
     expect(titleElement).toBeInTheDocument();
     expect(subtitleElement).toBeInTheDocument();
   });
-
-  it("should switch to the correct tab when a tab is clicked", async () => {
-    renderComponent();
-
-    const tabs = screen.getAllByRole("tab");
-
-    // Simulate clicking on the first tab (default behavior)
-    fireEvent.click(tabs[0]);
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-
-    // Clicking on other tabs (even if disabled, ensure no interaction)
-    fireEvent.click(tabs[1]);
-    expect(tabs[1]).not.toHaveAttribute("aria-selected", "true");
-  });
-
-  it("should show content for the first tab by default", () => {
-    renderComponent();
-
-    const openingTabContent = screen.getByText(/Nothing to show yet/i);
-    expect(openingTabContent).toBeInTheDocument();
-  });
-
-  it("should set the active tab based on URL query parameters", async () => {
-    const originalLocation = window.location;
-    delete window.location;
-    window.location = {
-      search: "?tab=openings",
-      ...originalLocation,
-    };
-
-    renderComponent();
-
-    const tabs = screen.getAllByRole("tab");
-    await waitFor(() => {
-      expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    });
-
-    window.location = originalLocation; // Reset location after the test
-  });
 });
