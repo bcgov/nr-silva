@@ -1,4 +1,10 @@
 // Utility to convert rows and headers to a CSV format
+export const downloadXLSX = (headers: any[], rows: any[], filename = "data.csv"): void => {
+  const csvData = convertToCSV(headers, rows);
+  return downloadCSV(csvData, filename);
+};
+
+// Utility to convert rows and headers to a CSV format
 export const convertToCSV = (headers: any[], rows: any[]): string => {
   // Map headers to a CSV-compatible format
   const headerRow = headers
