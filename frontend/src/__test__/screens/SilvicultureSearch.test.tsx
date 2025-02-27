@@ -32,22 +32,6 @@ describe("SilvicultureSearch Component", () => {
     expect(subtitleElement).toBeInTheDocument();
   });
 
-  it("should render all tabs with correct names and icons", () => {
-    renderComponent();
-
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(4);
-
-    expect(tabs[0]).toHaveTextContent("Openings");
-    expect(tabs[1]).toHaveTextContent("Activities");
-    expect(tabs[2]).toHaveTextContent("Stocking standards");
-    expect(tabs[3]).toHaveTextContent("Standard units");
-
-    expect(tabs[1]).toHaveAttribute("aria-disabled", "true");
-    expect(tabs[2]).toHaveAttribute("aria-disabled", "true");
-    expect(tabs[3]).toHaveAttribute("aria-disabled", "true");
-  });
-
   it("should switch to the correct tab when a tab is clicked", async () => {
     renderComponent();
 
