@@ -10,7 +10,7 @@ public class CustomOracleContainer extends OracleContainer {
   public CustomOracleContainer() {
     super(
         DockerImageName
-            .parse("gvenzl/oracle-free:23.5-slim-faststart")
+            .parse("gvenzl/oracle-free:23.6-full-faststart")
     );
 
     this.withDatabaseName("legacyfsa")
