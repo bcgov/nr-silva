@@ -5,7 +5,7 @@ export const THREE_SECONDS = 3 * ONE_SECOND;
 
 export const FIVE_SECONDS = 5 * ONE_SECOND;
 
-export const SEVEN_SECONDS = 7 * ONE_SECOND;
+export const EIGHT_SECONDS = 8 * ONE_SECOND;
 
 export const TEN_SECONDS = 10 * ONE_SECOND;
 

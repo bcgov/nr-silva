@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { IconButton } from '@carbon/react';
-import { Settings, Close } from '@carbon/icons-react';
+import { Close } from '@carbon/icons-react';
 
 import './RightPanelTitle.scss';
 
 interface RightPanelTitleProps {
   title: string;
-  closeFn: Function;
+  closeFn: () => void;
 }
 
 const RightPanelTitle = ({ title, closeFn }: RightPanelTitleProps) => (

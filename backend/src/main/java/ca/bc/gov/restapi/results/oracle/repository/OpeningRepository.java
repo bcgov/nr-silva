@@ -270,14 +270,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
               GROUP BY o.OPENING_ID
           )
-          WHERE OPENING_ID IN :openingIds""",
+          WHERE opening_id IN :openingIds""",
       countQuery = """
           SELECT count(opening_id) as total
-             SELECT opening_id, opening_number, category, status, cutting_permit_id, timber_mark,
-                 cut_block_id, opening_gross_area, disturbance_start_date, forest_file_id,
-                 org_unit_code, org_unit_name, client_number, client_location, regen_delay_date,
-                 early_free_growing_date, late_free_growing_date, update_timestamp, entry_user_id,
-                 submitted_to_frpa108
           FROM (
               SELECT
                 o.OPENING_ID AS opening_id,
@@ -309,9 +304,9 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
               LEFT JOIN THE.STOCKING_STANDARD_UNIT ssu ON (ssu.OPENING_ID = o.OPENING_ID)
               LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
               LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+              WHERE o.OPENING_ID IN :openingIds
               GROUP BY o.OPENING_ID
-          )
-          WHERE opening_id IN :openingIds""",
+          )""",
       nativeQuery = true
   )
   Page<SilvicultureSearchProjection> searchByOpeningIds(
@@ -323,25 +318,27 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
       nativeQuery = true,
       value = """
           SELECT
-              o.OPENING_ID,
-              o.ENTRY_USERID as user_id,
-              o.ENTRY_TIMESTAMP,
-              o.UPDATE_TIMESTAMP,
-              o.OPENING_STATUS_CODE as status,
-              ou.ORG_UNIT_CODE AS org_unit_code,
-              ou.ORG_UNIT_NAME AS org_unit_name,
-              res.CLIENT_NUMBER AS client_number
+              EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS year,
+              EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS month,
+              o.OPENING_STATUS_CODE AS status,
+              COUNT(*) AS count
           FROM THE.OPENING o
           LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
           LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
           WHERE
               (
-                  o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
-                  OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD') AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+                  o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
+                  AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
+                  OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
+                  AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
               )
-              AND ( 'NOVALUE' in (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList) )
-              AND ( 'NOVALUE' in (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList) )
-          ORDER BY o.ENTRY_TIMESTAMP""")
+              AND ('NOVALUE' IN (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList))
+              AND ('NOVALUE' IN (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList))
+          GROUP BY
+              EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
+              EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
+              o.OPENING_STATUS_CODE
+          ORDER BY year, month""")
   List<OpeningTrendsProjection> getOpeningTrends(
       String startDate,
       String endDate,

@@ -35,9 +35,4 @@ public class OpeningAttachmentEntity {
   @Column(name = "MIME_TYPE_CODE", length = 3)
   private String mimeTypeCode;
 
-  // An Opening Attachment belongs to one Opening
-  // Foreign key referencing the opening table
-  // @ManyToOne
-  // @JoinColumn(name = "OPENING_ID")
-  // private OpeningEntity openingEntity;
 }

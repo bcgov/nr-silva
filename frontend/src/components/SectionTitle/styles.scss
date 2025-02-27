@@ -1,16 +1,12 @@
 @use '@carbon/type';
 
-.section-title {
+.section-title-container {
   margin: 0;
-}
-
-.section-title h1 {
-  @include type.type-style('heading-03');
-  margin-bottom: 0.5rem;
-}
-
-.title-favourite {
   display: flex;
-  align-items: center;
-}
+  flex-direction: column;
+  row-gap: 0.5rem;
 
+  .section-title {
+    @include type.type-style('heading-02');
+  }
+}

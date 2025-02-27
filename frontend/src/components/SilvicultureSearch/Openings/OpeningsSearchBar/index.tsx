@@ -50,7 +50,7 @@ const OpeningsSearchBar: React.FC<IOpeningsSearchBar> = ({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: { target: HTMLInputElement; type: "change"; }) => {
     const value = e.target.value;
     setSearchTerm(value);
   };

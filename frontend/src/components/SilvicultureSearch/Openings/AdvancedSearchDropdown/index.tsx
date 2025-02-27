@@ -15,9 +15,9 @@ import {
 import "./AdvancedSearchDropdown.scss";
 import { useOpeningFiltersQuery } from "../../../../services/queries/search/openingQueries";
 import { useOpeningsSearch } from "../../../../contexts/search/OpeningsSearch";
-import { TextValueData, sortItems } from "../../../../utils/multiSelectSortUtils";
+import { TextValueData, filterTextValueItems, sortItems } from "../../../../utils/multiSelectSortUtils";
 import { AutocompleteProvider } from "../../../../contexts/AutocompleteProvider";
-import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps} from "../../../AutocompleteClientLocation";
+import AutocompleteClientLocation, { skipConditions, fetchValues, AutocompleteComponentRefProps } from "../../../AutocompleteClientLocation";
 import { OpeningFilters } from '../../../../services/search/openings';
 import { format } from "date-fns";
 
@@ -25,7 +25,7 @@ interface AdvancedSearchDropdownProps {
   toggleShowFilters: () => void; // Function to be passed as a prop
 }
 
-const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {  
+const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
   const { filters, setFilters, setIndividualClearFieldFunctions } = useOpeningsSearch();
   const { data, isLoading, isError } = useOpeningFiltersQuery();
 
@@ -37,7 +37,7 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
 
   const maxDate = () => format(new Date(), "yyyy/MM/dd");
   const getDateRangeValue = (dates: Date[], index: number) => {
-    return dates && dates.length > index ? format(dates[index],"yyyy/MM/dd") : "";
+    return dates && dates.length > index ? format(dates[index], "yyyy/MM/dd") : "";
   }
 
   useEffect(() => {
@@ -53,14 +53,14 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     }
     // Split filters.category into array and format as needed for selectedItems
     if (filters.category) {
-    const categoriesArray = filters.category.map((category: string) => ({
-      text: data?.categories?.find((item: any) => item.code === category)?.description || category,
-      value: category,
-    }));
-    setSelectedCategories(categoriesArray);
-  } else{
-    setSelectedCategories([]);
-  }
+      const categoriesArray = filters.category.map((category: string) => ({
+        text: data?.categories?.find((item: any) => item.code === category)?.description || category,
+        value: category,
+      }));
+      setSelectedCategories(categoriesArray);
+    } else {
+      setSelectedCategories([]);
+    }
   }, [filters.orgUnit, filters.category]);
 
   useEffect(() => {
@@ -74,18 +74,18 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
       dateType: () => setDateRange([])
     }));
 
-  },[]);
+  }, []);
 
   const handleFilterChange = (updatedFilters: Partial<OpeningFilters>) => {
     setFilters({ ...filters, ...updatedFilters });
   };
 
-  useEffect(() =>{
-    handleFilterChange({ 
+  useEffect(() => {
+    handleFilterChange({
       startDate: dateRange && dateRange.length > 0 ? format(dateRange[0], "yyyy-MM-dd") : undefined,
       endDate: dateRange && dateRange.length > 1 ? format(dateRange[1], "yyyy-MM-dd") : undefined
     });
-  },[dateRange]);
+  }, [dateRange]);
 
   const handleMultiSelectChange = (group: string, selectedItems: any) => {
     const updatedGroup = selectedItems.map((item: any) => item.value);
@@ -106,7 +106,6 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
     handleFilterChange({ [group]: updatedGroup });
   };
 
-  
   if (isLoading) {
     return <Loading withOverlay={true} />;
   }
@@ -176,10 +175,9 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
           </Column>
         </Row>
 
-        <Row className="mb-3">          
+        <Row className="mb-3">
           <Column lg={8}>
             <FilterableMultiSelect
-              label="Enter or choose an org unit"
               id="orgunit-multiselect"
               className="multi-select"
               titleText="Org Unit"
@@ -188,21 +186,20 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
               selectionFeedback="top-after-reopen"
               onChange={(e: any) => handleMultiSelectChange("orgUnit", e.selectedItems)}
               selectedItems={selectedOrgUnits}
-              sortItems={sortItems}
+              filterItems={filterTextValueItems}
             />
           </Column>
           <Column lg={8}>
             <FilterableMultiSelect
-              label="Enter or choose a category"
               id="category-multiselect"
               className="multi-select"
               titleText="Category"
               items={categoryItems}
               itemToString={(item: any) => (item ? `${item.value} - ${item.text}` : "")}
               selectionFeedback="top-after-reopen"
-              onChange={(e: any) => handleMultiSelectChange("category",e.selectedItems)}
+              onChange={(e: any) => handleMultiSelectChange("category", e.selectedItems)}
               selectedItems={selectedCategories}
-              sortItems={sortItems}
+              filterItems={filterTextValueItems}
             />
           </Column>
         </Row>
@@ -210,11 +207,11 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
         <Row className="mb-3">
           <Column lg={8}>
             <AutocompleteProvider fetchOptions={fetchValues} skipConditions={skipConditions}>
-              <AutocompleteClientLocation 
-                setLocationValue={(value: string | null) => handleFilterChange({ clientLocationCode: value ?? undefined })} 
+              <AutocompleteClientLocation
+                setLocationValue={(value: string | null) => handleFilterChange({ clientLocationCode: value ?? undefined })}
                 setClientValue={(value: string | null) => handleFilterChange({ clientNumber: value ?? undefined })}
                 ref={autoCompleteRef}
-                />
+              />
             </AutocompleteProvider>
           </Column>
           <Column lg={8}>
@@ -293,25 +290,21 @@ const AdvancedSearchDropdown: React.FC<AdvancedSearchDropdownProps> = () => {
                     allowInput={true}
                     maxDate={maxDate()}
                     onChange={setDateRange}
-                    value={dateRange}
+                    value={dateRange.length > 0 ? dateRange.map(date => format(date, "yyyy/MM/dd")) : []}
                   >
                     <DatePickerInput
-                      autoComplete="off"
                       id="start-date-picker-input-id"
                       placeholder="yyyy/MM/dd"
                       size="md"
                       labelText="Start Date"
                       disabled={!filters.dateType}
-                      value={getDateRangeValue(dateRange, 0)}
                     />
                     <DatePickerInput
-                      autoComplete="off"
                       id="end-date-picker-input-id"
                       placeholder="yyyy/MM/dd"
                       size="md"
                       labelText="End Date"
                       disabled={!filters.dateType}
-                      value={getDateRangeValue(dateRange, 1)}
                     />
                   </DatePicker>
                 </Column>

@@ -1,23 +1,24 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { env } from '../env';
-import { RecentAction } from '../types/RecentAction';
-import { OpeningPerYearChart } from '../types/OpeningPerYearChart';
-import { 
+import {
   IOpeningPerYear,
   IFreeGrowingProps,
-  IFreeGrowingChartData
+  IFreeGrowingChartData,
+  PaginatedRecentOpeningsDto,
+  OrgUnitEntity,
+  OpeningsPerYearDto
 } from '../types/OpeningTypes';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
 
 const backendUrl = env.VITE_BACKEND_URL;
 
 /**
- * Fetch openings per year data from backend.
+ * Fetch users submission trends.
  *
  * @returns {Promise<OpeningPerYearChart[]>} Array of objects found
  */
-export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<OpeningPerYearChart[]> {
+export async function fetchUserSubmissionTrends(props: IOpeningPerYear): Promise<OpeningsPerYearDto[]> {
   const authToken = getAuthIdToken();
   try {
     const args: string[] = [];
@@ -44,24 +45,8 @@ export async function fetchOpeningsPerYear(props: IOpeningPerYear): Promise<Open
 
     const urlParams = args.join('&');
 
-    const response = await axios.get(API_ENDPOINTS.submissionTrends(urlParams), defaultHeaders(authToken));
-
-    const { data } = response;
-    if (data && Array.isArray(data)) {
-      // Format data for BarChartGrouped component
-      const formattedData: OpeningPerYearChart[] = data.map(item => ({
-        group: "Openings",
-        key: `${item.monthName} ${item.year}`,
-        year: item.year,
-        month: item.month,
-        value: item.amount,
-        statusCount: item.statusCounts
-      }));
-
-      return formattedData;
-    } else {
-      return [];
-    }
+    return axios.get(API_ENDPOINTS.submissionTrends(urlParams), defaultHeaders(authToken))
+      .then((res) => res.data);
   } catch (error) {
     console.error('Error fetching openings per year:', error);
     throw error;
@@ -92,8 +77,8 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
     const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
+        'Access-Control-Allow-Origin': window.location.origin,
+        Authorization: `Bearer ${authToken}`
       }
     });
 
@@ -115,44 +100,24 @@ export async function fetchFreeGrowingMilestones(props: IFreeGrowingProps): Prom
   }
 }
 
-/**
- * Fetch recent actions data from backend.
- *
- * @returns {RecentAction[]} Array with recent action objects.
- */
-export async function fetchRecentActions(): Promise<RecentAction[]> {
-  const authToken = getAuthIdToken();
-  try {
-    const response = await axios.get(backendUrl.concat("/api/users/recent-actions"),{
-      headers: {
-        'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': window.location.origin,
-      Authorization: `Bearer ${authToken}`
-      }
-    });
-    
-    const { data } = response;
 
-    if (Array.isArray(data)) {
-      // Transforming response data into a format consumable by the component
-      const rows: RecentAction[] = data.map(action => {
-        return {
-          activityType: action.activityType,
-          openingId: action.openingId.toString(),
-          statusCode: action.statusCode,
-          statusDescription: action.statusDescription,
-          lastUpdated: action.lastUpdated,
-          lastUpdatedLabel: action.lastUpdatedLabel
-        }
-      });
-      
-      // Returning the transformed data
-      return rows;
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching recent actions:', error);
-    throw error;
-  }
-}
+// Used to fetch the recent openings for a user
+export const fetchUserRecentOpenings = (): Promise<PaginatedRecentOpeningsDto> => {
+
+  // Retrieve the auth token
+  const authToken = getAuthIdToken();
+
+  // Make the API request with the Authorization header
+  return axios.get(API_ENDPOINTS.recentOpenings(), defaultHeaders(authToken))
+    .then((res) => res.data);
+};
+
+/**
+ * Fetch a list of org unit used for opening search
+ */
+export const fetchOpeningsOrgUnits = (): Promise<OrgUnitEntity[]> => {
+  const authToken = getAuthIdToken();
+
+  return axios.get(API_ENDPOINTS.orgUnits(),defaultHeaders(authToken))
+    .then((res)=> res.data);
+};

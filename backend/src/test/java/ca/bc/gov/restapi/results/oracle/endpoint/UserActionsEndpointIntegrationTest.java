@@ -13,9 +13,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -92,9 +89,8 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[12].amount").value(1))
-        .andExpect(jsonPath("$[12].monthName").value(
-            Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
+        .andExpect(jsonPath("$[12].amount").value(1));
+
   }
 
   @Test
@@ -120,9 +116,8 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[12].amount").value(1))
-        .andExpect(jsonPath("$[12].monthName").value(
-            Month.of(LocalDate.now().getMonthValue()).getDisplayName(TextStyle.SHORT, Locale.CANADA)));
+        .andExpect(jsonPath("$[12].amount").value(1));
+
   }
 
   @Test

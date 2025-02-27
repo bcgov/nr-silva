@@ -88,7 +88,8 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().string(StringUtils.EMPTY));
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserOpening record(s) not found!\",\"instance\":\"/api/openings/favourites/987\"}"));
   }
 
   @Test
@@ -138,7 +139,8 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().string(StringUtils.EMPTY));
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserFavoriteEntity record(s) not found!\",\"instance\":\"/api/openings/favourites/101\"}"));
 
   }
 

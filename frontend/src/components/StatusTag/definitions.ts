@@ -1,4 +1,6 @@
-export const StatusColourMap = {
+import { TYPES } from "@carbon/react/lib/components/Tag/Tag";
+
+export const StatusColourMap: {[status: string]: keyof typeof TYPES} = {
   Completed: 'green',
   Cancelled: 'magenta',
   Active: 'blue',

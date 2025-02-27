@@ -2,20 +2,26 @@ import React from 'react';
 import {
   DataTableSkeleton
 } from '@carbon/react';
-import './styles.scss'
-import { ITableHeader } from '../../types/TableHeader';
 
-interface Props {
-  headers: ITableHeader[];
-}
+import './styles.scss';
 
-const TableSkeleton: React.FC<Props> = ({headers}) => (
-  <div>
-    <DataTableSkeleton 
+const TableSkeleton = <T extends { header: string }>({
+  headers,
+  showToolbar,
+  showHeader
+}: {
+  headers: T[];
+  showToolbar?: boolean;
+  showHeader?: boolean;
+}) => {
+  return (
+    <DataTableSkeleton
+      className="default-table-skeleton"
       headers={headers}
-      aria-label="loading table"
-    />
-  </div>
-);
+      aria-label="loading table data"
+      showToolbar={showToolbar}
+      showHeader={showHeader}
+    />)
+};
 
 export default TableSkeleton;
