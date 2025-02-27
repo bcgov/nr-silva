@@ -18,7 +18,7 @@
     "aws-amplify": "^6.12.2",
     "axios": "^1.6.8",
     "date-fns": "^4.1.0",
-    "jspdf": "^2.5.2",
+    "jspdf": "^3.0.0",
     "jspdf-autotable": "^3.8.3",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
