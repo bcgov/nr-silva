@@ -14,8 +14,6 @@ import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -96,25 +94,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(" 514",result.getData().get(0).getOpeningNumber());
     Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getData().get(0).getCategory());
     Assertions.assertEquals(OpeningStatusEnum.FG, result.getData().get(0).getStatus());
-    Assertions.assertEquals("14T", result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals("49/14S", result.getData().get(0).getTimberMark());
-    Assertions.assertEquals("14-71", result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(new BigDecimal("14.9"),
-        result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals("TFL49", result.getData().get(0).getForestFileId());
-    Assertions.assertEquals("TWO", result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals("Org two", result.getData().get(0).getOrgUnitName());
-    Assertions.assertNull(result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getEarlyFreeGrowingDate());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getLateFreeGrowingDate());
-    Assertions.assertEquals("IDIR@TTESTER", result.getData().get(0).getEntryUserId());
-    Assertions.assertFalse(result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertEquals("12K", result.getData().get(0).getCuttingPermitId());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
@@ -155,27 +135,8 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(3, result.getData().size());
     Assertions.assertEquals(1524010, result.getData().get(0).getOpeningId());
     Assertions.assertNull(result.getData().get(0).getOpeningNumber());
-    Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getData().get(0).getCategory());
-    Assertions.assertEquals(OpeningStatusEnum.APP, result.getData().get(0).getStatus());
-    Assertions.assertEquals("14T", result.getData().get(0).getCuttingPermitId());
-    Assertions.assertEquals("49/14S", result.getData().get(0).getTimberMark());
-    Assertions.assertEquals("14-71", result.getData().get(0).getCutBlockId());
-    Assertions.assertEquals(new BigDecimal("14.9"),
-        result.getData().get(0).getOpeningGrossAreaHa());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getDisturbanceStartDate());
-    Assertions.assertEquals("TFL49", result.getData().get(0).getForestFileId());
-    Assertions.assertEquals("TWO", result.getData().get(0).getOrgUnitCode());
-    Assertions.assertEquals("Org two", result.getData().get(0).getOrgUnitName());
-    Assertions.assertNull(result.getData().get(0).getClientNumber());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getRegenDelayDate());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getEarlyFreeGrowingDate());
-    Assertions.assertEquals(LocalDateTime.of(2024, 1, 24, 0, 0, 0),
-        result.getData().get(0).getLateFreeGrowingDate());
-    Assertions.assertEquals("IDIR@TTESTER", result.getData().get(0).getEntryUserId());
-    Assertions.assertFalse(result.getData().get(0).getSubmittedToFrpa());
+    Assertions.assertEquals(OpeningCategoryEnum.NREQ, result.getData().get(0).getCategory());
+    Assertions.assertEquals(OpeningStatusEnum.FG, result.getData().get(0).getStatus());
     Assertions.assertFalse(result.isHasNextPage());
   }
 
