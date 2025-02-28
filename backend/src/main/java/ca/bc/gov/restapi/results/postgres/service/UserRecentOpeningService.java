@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
@@ -88,9 +89,16 @@ public class UserRecentOpeningService {
         .findByUserIdOrderByLastViewedDesc(userId, pageable);
 
     // Extract opening IDs as String
-    Map<Long, LocalDateTime> openingIds = recentOpenings.getContent().stream()
-        .collect(Collectors.toMap(UserRecentOpeningEntity::getOpeningId,
-            UserRecentOpeningEntity::getLastViewed));
+    Map<Long, LocalDateTime> openingIds = recentOpenings
+        .getContent()
+        .stream()
+        .collect(
+            Collectors
+                .toMap(
+                    UserRecentOpeningEntity::getOpeningId,
+                    UserRecentOpeningEntity::getLastViewed
+                )
+        );
     log.info("User with the userId {} has the following openingIds {}", userId, openingIds);
 
     if (openingIds.isEmpty()) {
@@ -102,7 +110,9 @@ public class UserRecentOpeningService {
         openingService.parsePageResult(
             new PaginationParameters(0, 10),
             openingRepository
-                .searchByOpeningIds(new ArrayList<>(openingIds.keySet()),
+                .searchBy(
+                    new OpeningSearchFiltersDto(),
+                    new ArrayList<>(openingIds.keySet()),
                     PageRequest.of(0, 10)
                 )
         );
