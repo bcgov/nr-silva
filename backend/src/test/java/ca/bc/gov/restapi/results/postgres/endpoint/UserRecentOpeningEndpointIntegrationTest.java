@@ -87,7 +87,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
   void shouldAddOpeningIfExists() throws Exception {
     mockMvc
         .perform(
-            put("/api/openings/recent/102")
+            put("/api/openings/recent/1009974")
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)

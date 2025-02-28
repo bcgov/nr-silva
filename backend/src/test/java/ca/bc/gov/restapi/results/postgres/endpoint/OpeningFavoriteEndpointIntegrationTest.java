@@ -50,7 +50,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   @Order(2)
   @DisplayName("Should check if entry is favourite and get false")
   void shouldCheckIfEntryIsFavouriteGetFails() throws Exception {
-    checkFavourite(101,false);
+    checkFavourite(101017,false);
   }
 
   @Test
@@ -59,7 +59,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldAddToFavorite() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/api/openings/favourites/{openingId}", 101)
+            MockMvcRequestBuilders.put("/api/openings/favourites/{openingId}", 101017)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())
@@ -75,7 +75,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   @Order(4)
   @DisplayName("Should check if entry is favourite")
   void shouldCheckIfEntryIsFavourite() throws Exception {
-    checkFavourite(101,true);
+    checkFavourite(101017,true);
   }
 
   @Test
@@ -109,7 +109,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.[0]").value(101));
+        .andExpect(jsonPath("$.[0]").value(101017));
   }
 
   @Test
@@ -118,7 +118,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   void shouldRemoveFromFavorites() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/api/openings/favourites/{openingId}", 101)
+            MockMvcRequestBuilders.delete("/api/openings/favourites/{openingId}", 101017)
                 .with(csrf().asHeader())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent())

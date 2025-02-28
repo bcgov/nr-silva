@@ -1,0 +1,1 @@
+INSERT INTO silva.user_recent_openings (opening_id, user_id) VALUES (101017, 'IDIR\TEST') on conflict (opening_id, user_id) do nothing;

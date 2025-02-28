@@ -11,7 +11,6 @@ x-frontend: &frontend
     retries: 5
   restart: always
 
-
 x-backend: &backend
   healthcheck:
     test: curl -f http://localhost:8080/actuator/health | grep '"status":"UP"'
@@ -21,26 +20,26 @@ x-backend: &backend
   #restart: always
 
 x-db-vars: &db-vars
-  POSTGRES_USER: nr-silva
+  POSTGRES_USER: postgres
   POSTGRES_PASSWORD: default
-  POSTGRES_DB: nr-silva
+  POSTGRES_DB: postgres
 
 services:
   frontend:
     container_name: frontend
     entrypoint: sh -c "npm ci && npm run start"
     image: node:20-bullseye
-    ports: ["3000:3000"]
-    volumes: ["./frontend:/app", "/app/node_modules"]
+    ports: [ "3000:3000" ]
+    volumes: [ "./frontend:/app", "/app/node_modules" ]
     working_dir: "/app"
     <<: *frontend
 
   caddy:
     container_name: caddy
-    profiles: ["caddy"]
+    profiles: [ "caddy" ]
     build: ./frontend
-    ports: ["3005:3000"]
-    volumes: ["./frontend/Caddyfile:/etc/caddy/Caddyfile"]
+    ports: [ "3005:3000" ]
+    volumes: [ "./frontend/Caddyfile:/etc/caddy/Caddyfile" ]
     <<: *frontend
 
   backend:
@@ -71,8 +70,8 @@ services:
     container_name: database
     environment:
       <<: *db-vars
-    volumes: ["/pgdata"]
-    ports: ["5432:5432"]
+    volumes: [ "/pgdata" ]
+    ports: [ "5432:5432" ]
     healthcheck:
       test: pg_isready -U postgres
       interval: 5s
@@ -82,32 +81,32 @@ services:
 
   backend-native:
     container_name: backend-native
-    profiles: ["native"]
+    profiles: [ "native" ]
     build: ./backend
-    ports: ["8080:8080"]
+    ports: [ "8080:8080" ]
     <<: *backend
 
   wiremock:
     image: "wiremock/wiremock:latest"
     container_name: forest-client-api-stub
-    ports: ["9000:9000","9001:9001"]
+    ports: [ "9000:9000", "9001:9001" ]
     volumes:
       - ./stub/:/home/wiremock/
-    entrypoint: ["/docker-entrypoint.sh", "--enable-stub-cors","--global-response-templating","--port","9000","--https-port","9001","--verbose"]
+    entrypoint: [ "/docker-entrypoint.sh", "--enable-stub-cors", "--global-response-templating", "--port", "9000", "--https-port", "9001", "--verbose" ]
 
   legacydb:
     # profiles ensure the legacydb won't run on default `docker compose up`
     # To start the legacy db along with other services, use `docker compose --profile legacy up`
-    profiles: ["legacy"]
+    profiles: [ "legacy" ]
     container_name: oracle
     environment:
       APP_USER_PASSWORD: default
       APP_USER: THE
       ORACLE_RANDOM_PASSWORD: yes
     platform: "linux/amd64"
-    image: gvenzl/oracle-free:23.6-slim-faststart
-    ports: [1521:1521]
-    volumes: [/opt/oracle/oradata]
+    image: gvenzl/oracle-free:23.6-full-faststart
+    ports: [ 1521:1521 ]
+    volumes: [ /opt/oracle/oradata ]
     healthcheck:
       test: [ "CMD-SHELL", "healthcheck.sh" ]
       interval: 5s
