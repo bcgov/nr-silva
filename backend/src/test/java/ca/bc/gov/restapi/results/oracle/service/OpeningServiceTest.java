@@ -52,7 +52,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(paginatedResult);
     Assertions.assertEquals(1, paginatedResult.getPageIndex());
-    Assertions.assertEquals(6, paginatedResult.getTotalPages());
+    Assertions.assertEquals(3, paginatedResult.getTotalPages());
     Assertions.assertFalse(paginatedResult.getData().isEmpty());
     Assertions.assertEquals(1, paginatedResult.getData().size());
   }
@@ -82,7 +82,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
-                "103"
+                "101017"
             ),
             new PaginationParameters(0, 10)
         );
@@ -92,10 +92,10 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(10, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(103, result.getData().get(0).getOpeningId());
-    Assertions.assertNull(result.getData().get(0).getOpeningNumber());
+    Assertions.assertEquals(101017, result.getData().get(0).getOpeningId());
+    Assertions.assertEquals(" 514",result.getData().get(0).getOpeningNumber());
     Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getData().get(0).getCategory());
-    Assertions.assertEquals(OpeningStatusEnum.APP, result.getData().get(0).getStatus());
+    Assertions.assertEquals(OpeningStatusEnum.FG, result.getData().get(0).getStatus());
     Assertions.assertEquals("14T", result.getData().get(0).getCuttingPermitId());
     Assertions.assertEquals("49/14S", result.getData().get(0).getTimberMark());
     Assertions.assertEquals("14-71", result.getData().get(0).getCutBlockId());
@@ -125,7 +125,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     PaginatedResult<OpeningSearchResponseDto> result =
         openingService.openingSearch(
             new OpeningSearchFiltersDto(
-                List.of("TWO"),
+                List.of("DAS"),
                 null,
                 null,
                 null,
@@ -152,8 +152,8 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(0, result.getPageIndex());
     Assertions.assertEquals(10, result.getPerPage());
     Assertions.assertEquals(1, result.getTotalPages());
-    Assertions.assertEquals(1, result.getData().size());
-    Assertions.assertEquals(103, result.getData().get(0).getOpeningId());
+    Assertions.assertEquals(3, result.getData().size());
+    Assertions.assertEquals(1524010, result.getData().get(0).getOpeningId());
     Assertions.assertNull(result.getData().get(0).getOpeningNumber());
     Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getData().get(0).getCategory());
     Assertions.assertEquals(OpeningStatusEnum.APP, result.getData().get(0).getStatus());
