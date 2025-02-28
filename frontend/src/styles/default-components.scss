@@ -20,8 +20,23 @@
     margin: 0 -2rem;
   }
 
+  // Make subgrid's column to take full width of the parent grid.
+  .subgrid-full-width-col {
+    margin: 0 -2.5rem;
+  }
+
   .#{vars.$bcgov-prefix}--subgrid {
     margin-inline: 0;
+  }
+
+  @media only screen and (max-width: 671px) {
+    .full-width-col {
+      margin: 0 -1.5rem;
+    }
+
+    .subgrid-full-width-col {
+      margin: 0 -2rem;
+    }
   }
 }
 

@@ -20,4 +20,6 @@ export type OpeningSearchFilterType = {
   clientLocationCode?: string;
   clientNumber?: string;
   timberMark?: string;
+  page?: number;
+  perPage?: number;
 }

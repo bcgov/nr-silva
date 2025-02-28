@@ -21,6 +21,7 @@ const TableSkeleton = <T extends { header: string }>({
       aria-label="loading table data"
       showToolbar={showToolbar}
       showHeader={showHeader}
+      zebra
     />)
 };
 

@@ -4,6 +4,7 @@ import { getAuthIdToken } from "../AuthService";
 import { dateTypes, blockStatuses } from "../../mock-data/openingSearchFilters";
 import { API_ENDPOINTS, defaultHeaders } from "../apiConfig";
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import { PagedResult } from "../../types/PaginationTypes";
 
 export interface OpeningSearchFilters {
   mainSearchTerm?: string;
@@ -58,16 +59,6 @@ export interface OrgUnit {
   orgUnitNo: number;
   orgUnitCode: string;
   orgUnitName: string;
-}
-
-
-export interface PagedResult<T> {
-  data: T[];
-  hasNextPage: boolean;
-  pageIndex: number;
-  perPage: number;
-  totalItems: number;
-  totalPages: number;
 }
 
 export const fetchOpenings = async (filters: OpeningFilters): Promise<PagedResult<OpeningItem>> => {

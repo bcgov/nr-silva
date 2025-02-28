@@ -3,22 +3,25 @@
 import React from "react";
 import { TableRow, TableCell, Tooltip } from "@carbon/react";
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
-import { recentOpeningsHeaders as headers } from "./constants";
-import { OpendingHeaderKeyType } from "./definitions";
 import StatusTag from "../StatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "../../utils/DateUtils";
 import { PLACE_HOLDER } from "../../constants";
+import { OpendingHeaderKeyType, TableHeaderType } from "../../types/TableHeader";
+
+import './styles.scss';
 
 interface TableRowComponentProps {
+  headers: TableHeaderType<OpendingHeaderKeyType>[];
   rowData: OpeningSearchResponseDto;
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;
 }
 
-const OpeningRow: React.FC<TableRowComponentProps> = ({
+const OpeningTableRow: React.FC<TableRowComponentProps> = ({
+  headers,
   rowData,
   showMap,
   selectedRows,
@@ -65,18 +68,20 @@ const OpeningRow: React.FC<TableRowComponentProps> = ({
   }
 
   return (
-    <TableRow>
+    <TableRow className="opening-table-row">
       {
-        headers.map((header) => (
-          <TableCell key={header.key}>
-            {
-              renderCellContent(header.key) ?? PLACE_HOLDER
-            }
-          </TableCell>
-        ))
+        headers
+          .filter((header) => header.selected)
+          .map((header) => (
+            <TableCell key={header.key}>
+              {
+                renderCellContent(header.key) ?? PLACE_HOLDER
+              }
+            </TableCell>
+          ))
       }
     </TableRow>
   )
 };
 
-export default OpeningRow;
+export default OpeningTableRow;

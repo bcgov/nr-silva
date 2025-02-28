@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow } from '@carbon/react';
-import './styles.scss';
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import SectionTitle from '../SectionTitle';
@@ -10,8 +9,10 @@ import { fetchUserRecentOpenings } from '../../services/OpeningService';
 import TableSkeleton from '../TableSkeleton';
 import { recentOpeningsHeaders } from './constants';
 import EmptySection from '../EmptySection';
-import OpeningRow from './OpeningRow';
 import ComingSoonModal from '../ComingSoonModal';
+import OpeningTableRow from '../OpeningTableRow';
+
+import './styles.scss';
 
 const RecentOpenings = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -126,7 +127,8 @@ const RecentOpenings = () => {
               <TableBody>
                 {
                   recentOpeningsQuery.data?.data.map((row) => (
-                    <OpeningRow
+                    <OpeningTableRow
+                      headers={recentOpeningsHeaders}
                       key={row.openingId}
                       rowData={row}
                       showMap={showMap}

@@ -1,5 +1,5 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
-import { PaginationMetaType } from "./PaginationTypes";
+import { PagedResult } from "./PaginationTypes";
 
 export interface StatusCategory {
   code: string;
@@ -53,6 +53,7 @@ export interface OpeningSearchResponseDto {
   orgUnitName: string;
   clientNumber: string | null;
   clientAcronym: string | null;
+  clientName: string | null;
   regenDelayDate: string;
   updateTimestamp: string;
   entryUserId: string;
@@ -60,11 +61,10 @@ export interface OpeningSearchResponseDto {
   forestFileId: string | null;
   silvaReliefAppId: string | null;
   favourite: boolean;
+  earlyFreeGrowingDate: string | null;
 }
 
-export type PaginatedRecentOpeningsDto = PaginationMetaType & {
-  data: OpeningSearchResponseDto[]
-}
+export type PaginatedRecentOpeningsDto = PagedResult<OpeningSearchResponseDto>;
 
 // TODO: too be removed
 export interface OpeningsSearch {

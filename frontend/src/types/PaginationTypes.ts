@@ -1,4 +1,5 @@
-export type PaginationMetaType = {
+export type PagedResult<T> = {
+  data: T[],
   pageIndex: number,
   perPage: number,
   totalPages: number,

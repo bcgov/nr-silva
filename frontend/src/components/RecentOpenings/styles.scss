@@ -26,12 +26,6 @@
     margin: 1rem;
   }
 
-  .action-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-
   @media only screen and (max-width: 671px) {
     .title-section {
       flex-direction: column;

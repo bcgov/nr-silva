@@ -1,40 +1,45 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Grid,
   Column,
   Search,
-  Button
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody
 } from "@carbon/react";
 import { FilterEdit as FilterIcon, Search as SearchIcon } from "@carbon/icons-react";
 
 import CustomMultiSelect from "../../../CustomMultiSelect";
-import { ITableHeader } from "../../../../types/TableHeader";
+import { ITableHeader, OpendingHeaderKeyType, TableHeaderType } from "../../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
 import { OpeningSearchFilterType } from "./definitions";
 import { TextInputEvent } from "../../../../types/GeneralTypes";
 import CodeDescriptionDto from "../../../../types/CodeDescriptionType";
 
-import { codeDescriptionToDisplayText, filterCodeDescriptionItems, MultiSelectEvent } from "../../../../utils/multiSelectUtils";
-import { fetchCategories, fetchOpeningsOrgUnits } from "../../../../services/OpeningSearchService";
+import {
+  codeDescriptionToDisplayText,
+  filterCodeDescriptionItems,
+  MultiSelectEvent
+} from "../../../../utils/multiSelectUtils";
+import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../../services/OpeningSearchService";
 
 import "./styles.scss";
 import { OPENING_STATUS_LIST } from "../../../../constants";
+import TableSkeleton from "../../../TableSkeleton";
+import OpeningTableRow from "../../../OpeningTableRow";
 
 const OpeningSearch: React.FC = () => {
-  const [searchTableHeaders, setSearchTableHeaders] = useState<ITableHeader[]>(
+  const [searchTableHeaders, setSearchTableHeaders] = useState<TableHeaderType<OpendingHeaderKeyType>[]>(
     () => structuredClone(defaultSearchTableHeaders)
   );
   const [filters, setFilters] = useState<OpeningSearchFilterType>({});
 
-  const filtersRef = useRef(filters);
-
-  useEffect(() => {
-    filtersRef.current = filters;
-  }, [filters]);
-
   /*
-   * Queries
+   * Data Queries
    */
   const categoryQuery = useQuery({
     queryKey: ['opening-search', 'categories'],
@@ -48,6 +53,14 @@ const OpeningSearch: React.FC = () => {
       data.map((orgUnit) => ({ code: orgUnit.orgUnitCode, description: orgUnit.orgUnitName })
       ))
   });
+
+  /*
+   * Search Mutation
+   */
+  const searchMutation = useMutation({
+    mutationKey: ['opening-search', filters],
+    mutationFn: () => searchOpenings(filters)
+  })
 
   // Generic handler for string-based filters
   const handleStringChange = (key: keyof OpeningSearchFilterType) => (event: TextInputEvent) => {
@@ -72,6 +85,41 @@ const OpeningSearch: React.FC = () => {
       [key]: event.selectedItems
     }));
   };
+
+
+  /**
+   * Handler for when a search action is triggered.
+   */
+  const handleSearch = () => {
+    searchMutation.mutate();
+  }
+
+  const SearchButton = () => (
+    <Button
+      className="search-button"
+      renderIcon={SearchIcon}
+      iconDescription="Search"
+      type="button"
+      size="md"
+      onClick={handleSearch}
+    >
+      Search
+    </Button>
+  )
+
+  const AdvancedSearchButton = ({ hasIconOnly }: { hasIconOnly?: boolean }) => (
+    <Button
+      className="advanced-search-button"
+      renderIcon={FilterIcon}
+      iconDescription="Advanced Search"
+      type="button"
+      size="md"
+      kind="tertiary"
+      hasIconOnly={hasIconOnly}
+    >
+      Advanced Search
+    </Button>
+  )
 
   // TODO: remove, debug only
   useEffect(() => {
@@ -129,60 +177,74 @@ const OpeningSearch: React.FC = () => {
           itemToString={codeDescriptionToDisplayText}
           selectionFeedback="top-after-reopen"
           filterItems={filterCodeDescriptionItems}
+          onChange={handleMultiSelectChange('statusList')}
         />
       </Column>
 
       {/* Advanced Search and Search buttons, hidden on small */}
       <Column sm={0} md={2} lg={4} max={2}>
         <div className="search-buttons-container">
-          <Button
-            className="advanced-search-button"
-            renderIcon={FilterIcon}
-            iconDescription="Advanced Search"
-            type="button"
-            size="md"
-            kind="tertiary"
-            hasIconOnly
-          />
-          <Button
-            className="search-button"
-            renderIcon={SearchIcon}
-            iconDescription="Search"
-            type="button"
-            size="md"
-          >
-            Search
-          </Button>
+          <AdvancedSearchButton hasIconOnly />
+          <SearchButton />
         </div>
       </Column>
 
       {/* Small Screen's Advanced Search button */}
       <Column className="search-col-sm" sm={4} md={0}>
-        <Button
-          className="advanced-search-button"
-          renderIcon={FilterIcon}
-          iconDescription="Advanced Search"
-          type="button"
-          size="md"
-          kind="tertiary"
-        >
-          Advanced Search
-        </Button>
+        <AdvancedSearchButton />
       </Column>
 
       {/* Small Screen's Search button */}
       <Column className="search-col-sm" sm={4} md={0}>
-        <Button
-          className="search-button"
-          renderIcon={SearchIcon}
-          iconDescription="Search"
-          type="button"
-          size="md"
-        >
-          Search
-        </Button>
+        <SearchButton />
       </Column>
 
+      {/* Table Section */}
+      <Column className="opening-search-table-col subgrid-full-width-col" sm={4} md={8} lg={16}>
+        {/* Table skeleton */}
+        {
+          searchMutation.isPending
+            ? <TableSkeleton headers={searchTableHeaders} showToolbar={false} showHeader={false} />
+            : null
+        }
+        {
+          searchMutation.isSuccess
+            ? (
+              <Table
+                className="opening-search-table default-zebra-table"
+                aria-label="Opening search table"
+                useZebraStyles
+              >
+                <TableHead>
+                  <TableRow>
+                    {
+                      searchTableHeaders
+                        .filter((header) => header.selected)
+                        .map((header) => (
+                          <TableHeader key={header.key}>{header.header}</TableHeader>
+                        ))
+                    }
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    searchMutation.data?.data.map((row) => (
+                      <OpeningTableRow
+                        key={row.openingId}
+                        headers={searchTableHeaders}
+                        rowData={row}
+                        showMap={false}
+                        selectedRows={[]}
+                        handleRowSelection={() => { }}
+                      />
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            )
+            : null
+        }
+      </Column>
 
     </Grid>
   )

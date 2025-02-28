@@ -89,11 +89,11 @@
     "no-shadow": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-shadow": "error",
-    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^React$" }],
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^React$", "argsIgnorePattern": "^_"  }],
     "jsdoc/require-param": 0,
     "jsdoc/require-returns": 0,
     "jsdoc/tag-lines": 0,
-    "import/namespace": "off"
+    "import/namespace": "off",
   },
   "settings": {
     "import/resolver": {
