@@ -62,7 +62,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.page.number").value("0"))
-        .andExpect(jsonPath("$.page.size").value("5"))
+        .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("1"))
         .andExpect(jsonPath("$.content[0].openingId").value(response.getOpeningId()))
         .andExpect(jsonPath("$.content[0].openingNumber").value(response.getOpeningNumber()))
@@ -82,7 +82,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.page.number").value("0"))
-        .andExpect(jsonPath("$.page.size").value("5"))
+        .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("0"))
         .andExpect(jsonPath("$.content", Matchers.empty()))
         .andReturn();
