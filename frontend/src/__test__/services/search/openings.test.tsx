@@ -1,7 +1,10 @@
 // fetchOpenings.test.ts
 import axios from "axios";
 import "@testing-library/jest-dom";
-import { fetchOpenings, OpeningFilters } from "../../../services/search/openings";
+import {
+  fetchOpenings,
+  OpeningFilters,
+} from "../../../services/search/openings";
 import { getAuthIdToken } from "../../../services/AuthService";
 import { createDateParams } from "../../../utils/searchUtils";
 import { describe, it, beforeEach, afterEach, vi, expect } from "vitest";
@@ -40,11 +43,13 @@ const sampleFilters: OpeningFilters = {
 // Mock response from the backend API
 const mockApiResponse = {
   data: {
-    pageIndex: 0,
-    perPage: 5,
-    totalPages: 100,
-    hasNextPage: false,
-    data: [
+    page: {
+      size: 5,
+      number: 0,
+      totalElements: 1,
+      totalPages: 100,
+    },
+    content: [
       {
         openingId: 9100129,
         openingNumber: "98",
@@ -83,29 +88,34 @@ describe("fetchOpenings", () => {
 
   it("should fetch openings with the correct parameters and return flattened data", async () => {
     const result = await fetchOpenings(sampleFilters);
-    const expectedToken = 'mocked-token';
+    const expectedToken = "mocked-token";
     // Verify that axios was called with the correct URL and headers
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      expect.stringContaining("/api/opening-search?"),
+      expect.stringContaining("/api/openings/search?"),
       expect.objectContaining({
         headers: {
           Authorization: `Bearer ${expectedToken}`,
-          "Access-Control-Allow-Origin": "http://localhost:3000",          
-          "Content-Type": "application/json"
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "Content-Type": "application/json",
         },
       })
     );
 
     // Check if the result data matches the expected flattened structure
-    expect(result.data[0].openingId).toEqual(9100129);
+    expect(result.content[0].openingId).toEqual(9100129);
   });
 
   it("should handle an empty response data array gracefully", async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: { data: [] } });
+    mockedAxios.get.mockResolvedValueOnce({
+      data: { page: mockApiResponse.data.page, content: [] },
+    });
     const result = await fetchOpenings(sampleFilters);
 
     // Ensure the function returns an empty array when the response is empty
-    expect(result.data).toEqual([]);
+    expect(result).toEqual({
+      page: mockApiResponse.data.page,
+      content: [],
+    });
   });
 
   it("should throw an error when the API request fails", async () => {
@@ -114,26 +124,26 @@ describe("fetchOpenings", () => {
     await expect(fetchOpenings(sampleFilters)).rejects.toThrow("Network error");
   });
 
-
   it("should return flattened data structure with specific fields", async () => {
     // Arrange: setting up the mock response for axios
-    mockedAxios.get.mockResolvedValue(mockApiResponse); 
-  
+    mockedAxios.get.mockResolvedValue(mockApiResponse);
+
     // Act: call the fetchOpenings function
     const result = await fetchOpenings(sampleFilters);
-  
+
     // Assert: check that the response data is correctly flattened
-    const firstOpening = result.data[0];
+    const firstOpening = result.content[0];
     expect(firstOpening.openingId).toEqual(9100129);
     expect(firstOpening.categoryCode).toEqual("CONT");
-    expect(firstOpening.categoryDescription).toEqual("SP as a part of contractual agreement");
+    expect(firstOpening.categoryDescription).toEqual(
+      "SP as a part of contractual agreement"
+    );
     expect(firstOpening.statusCode).toEqual("APP");
     expect(firstOpening.statusDescription).toEqual("Approved");
     expect(firstOpening.timberMark).toEqual("W1729S");
     expect(firstOpening.cutBlockId).toEqual("06-03");
     expect(firstOpening.entryUserId).toEqual("Datafix107808");
 
-  
     // Confirm that original nested properties were removed
     expect(firstOpening.status).toBeUndefined();
     expect(firstOpening.category).toBeUndefined();

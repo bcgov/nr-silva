@@ -7,8 +7,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
+import ca.bc.gov.restapi.results.TestConstants;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,10 +62,10 @@ class OpenMapsServiceIntegrationTest {
                         + "OPENING_WHEN_CREATED"
                 ))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
-            .willReturn(okJson("{}"))
+            .willReturn(okJson(TestConstants.WFS_OPENING))
     );
 
-    Object response = openMapsService.getOpeningPolygonAndProperties(openingId);
+    FeatureCollection response = openMapsService.getOpeningPolygonAndProperties(openingId);
 
     Assertions.assertNotNull(response);
   }
