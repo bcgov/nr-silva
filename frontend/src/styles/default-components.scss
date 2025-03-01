@@ -25,6 +25,11 @@
     margin: 0 -2.5rem;
   }
 
+  // Make subgrid's column to take full width of the parent grid while ignoring row gap.
+  .subgrid-full-width-no-row-gap-col {
+    margin: 0 -2.5rem -1rem -2.5rem;
+  }
+
   .#{vars.$bcgov-prefix}--subgrid {
     margin-inline: 0;
   }
@@ -36,6 +41,10 @@
 
     .subgrid-full-width-col {
       margin: 0 -2rem;
+    }
+
+    .subgrid-full-width-no-row-gap-col {
+      margin: 0 -2rem -1rem -2rem;
     }
   }
 }

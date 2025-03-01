@@ -3,40 +3,31 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Grid,
   Column,
-  Search,
-  Button,
   Table,
   TableHead,
   TableRow,
   TableHeader,
   TableBody
 } from "@carbon/react";
-import { FilterEdit as FilterIcon, Search as SearchIcon } from "@carbon/icons-react";
-
-import CustomMultiSelect from "../../../CustomMultiSelect";
-import { ITableHeader, OpendingHeaderKeyType, TableHeaderType } from "../../../../types/TableHeader";
+import { OpeningHeaderType } from "../../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
 import { OpeningSearchFilterType } from "./definitions";
-import { TextInputEvent } from "../../../../types/GeneralTypes";
 import CodeDescriptionDto from "../../../../types/CodeDescriptionType";
 
-import {
-  codeDescriptionToDisplayText,
-  filterCodeDescriptionItems,
-  MultiSelectEvent
-} from "../../../../utils/multiSelectUtils";
 import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../../services/OpeningSearchService";
 
 import "./styles.scss";
-import { OPENING_STATUS_LIST } from "../../../../constants";
+
 import TableSkeleton from "../../../TableSkeleton";
 import OpeningTableRow from "../../../OpeningTableRow";
+import OpeningSearchBar from "./OpeningSearchBar";
 
 const OpeningSearch: React.FC = () => {
-  const [searchTableHeaders, setSearchTableHeaders] = useState<TableHeaderType<OpendingHeaderKeyType>[]>(
+  const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(
     () => structuredClone(defaultSearchTableHeaders)
   );
   const [filters, setFilters] = useState<OpeningSearchFilterType>({});
+  const [showMap, setShowMap] = useState<boolean>(false);
 
   /*
    * Data Queries
@@ -62,30 +53,6 @@ const OpeningSearch: React.FC = () => {
     mutationFn: () => searchOpenings(filters)
   })
 
-  // Generic handler for string-based filters
-  const handleStringChange = (key: keyof OpeningSearchFilterType) => (event: TextInputEvent) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: event.target.value
-    }));
-  };
-
-  // Generic handler for boolean-based filters
-  const handleBooleanChange = (key: keyof OpeningSearchFilterType) => (value: boolean) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value
-    }));
-  };
-
-  // Generic handler for CodeDescriptionDto array filters
-  const handleMultiSelectChange = (key: keyof OpeningSearchFilterType) => (event: MultiSelectEvent) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: event.selectedItems
-    }));
-  };
-
 
   /**
    * Handler for when a search action is triggered.
@@ -94,32 +61,6 @@ const OpeningSearch: React.FC = () => {
     searchMutation.mutate();
   }
 
-  const SearchButton = () => (
-    <Button
-      className="search-button"
-      renderIcon={SearchIcon}
-      iconDescription="Search"
-      type="button"
-      size="md"
-      onClick={handleSearch}
-    >
-      Search
-    </Button>
-  )
-
-  const AdvancedSearchButton = ({ hasIconOnly }: { hasIconOnly?: boolean }) => (
-    <Button
-      className="advanced-search-button"
-      renderIcon={FilterIcon}
-      iconDescription="Advanced Search"
-      type="button"
-      size="md"
-      kind="tertiary"
-      hasIconOnly={hasIconOnly}
-    >
-      Advanced Search
-    </Button>
-  )
 
   // TODO: remove, debug only
   useEffect(() => {
@@ -128,79 +69,22 @@ const OpeningSearch: React.FC = () => {
 
   return (
     <Grid className="opening-search-grid">
-      {/* Main Search */}
-      <Column className="main-search-term-col" sm={4} md={8} lg={16} max={5}>
-        <Search
-          size="md"
-          placeholder="Search by opening ID, opening number or file ID"
-          labelText="Search"
-          closeButtonLabelText="Clear search input"
-          id="main-search-term-input"
-          onBlur={handleStringChange('mainSearchTerm')}
-          defaultValue={filters.mainSearchTerm}
-        />
-      </Column>
-
-      {/* Category multiselect */}
-      <Column sm={4} md={2} lg={4} max={3}>
-        <CustomMultiSelect
-          placeholder="Category"
-          id="category-multiselect"
-          items={categoryQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          selectionFeedback="top-after-reopen"
-          filterItems={filterCodeDescriptionItems}
-          onChange={handleMultiSelectChange('category')}
-        />
-      </Column>
-
-      {/* Org unit multiselect */}
-      <Column sm={4} md={2} lg={4} max={3}>
-        <CustomMultiSelect
-          placeholder="Org unit"
-          id="orgunit-multiselect"
-          items={orgUnitQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          selectionFeedback="top-after-reopen"
-          filterItems={filterCodeDescriptionItems}
-          onChange={handleMultiSelectChange('orgUnit')}
-          initialSelectedItems={filters.orgUnit}
-        />
-      </Column>
-
-      {/* Status multiselect */}
-      <Column sm={4} md={2} lg={4} max={3}>
-        <CustomMultiSelect
-          id="status-multiselect"
-          placeholder="Status"
-          items={OPENING_STATUS_LIST}
-          itemToString={codeDescriptionToDisplayText}
-          selectionFeedback="top-after-reopen"
-          filterItems={filterCodeDescriptionItems}
-          onChange={handleMultiSelectChange('statusList')}
-        />
-      </Column>
-
-      {/* Advanced Search and Search buttons, hidden on small */}
-      <Column sm={0} md={2} lg={4} max={2}>
-        <div className="search-buttons-container">
-          <AdvancedSearchButton hasIconOnly />
-          <SearchButton />
-        </div>
-      </Column>
-
-      {/* Small Screen's Advanced Search button */}
-      <Column className="search-col-sm" sm={4} md={0}>
-        <AdvancedSearchButton />
-      </Column>
-
-      {/* Small Screen's Search button */}
-      <Column className="search-col-sm" sm={4} md={0}>
-        <SearchButton />
-      </Column>
+      {/* Search bar Section */}
+      <OpeningSearchBar
+        showMap={showMap}
+        setShowMap={setShowMap}
+        headers={searchTableHeaders}
+        setHeaders={setSearchTableHeaders}
+        filters={filters}
+        setFilters={setFilters}
+        categories={categoryQuery.data ?? []}
+        orgUnits={orgUnitQuery.data ?? []}
+        handleSearch={handleSearch}
+        totalResults={searchMutation.data?.data.length ?? 0}
+      />
 
       {/* Table Section */}
-      <Column className="opening-search-table-col subgrid-full-width-col" sm={4} md={8} lg={16}>
+      <Column className="opening-search-table-col subgrid-full-width-no-row-gap-col" sm={4} md={8} lg={16}>
         {/* Table skeleton */}
         {
           searchMutation.isPending
@@ -233,7 +117,7 @@ const OpeningSearch: React.FC = () => {
                         key={row.openingId}
                         headers={searchTableHeaders}
                         rowData={row}
-                        showMap={false}
+                        showMap={showMap}
                         selectedRows={[]}
                         handleRowSelection={() => { }}
                       />

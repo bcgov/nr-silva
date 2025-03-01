@@ -14,3 +14,5 @@ export type TableHeaderType<T> = {
 }
 
 export type OpendingHeaderKeyType = keyof OpeningSearchResponseDto | 'actions';
+
+export type OpeningHeaderType = TableHeaderType<OpendingHeaderKeyType>;

@@ -1,6 +1,6 @@
-import { OpendingHeaderKeyType, TableHeaderType } from "../../../../types/TableHeader";
+import { OpeningHeaderType } from "../../../../types/TableHeader";
 
-export const defaultSearchTableHeaders: TableHeaderType<OpendingHeaderKeyType>[] = [
+export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'actions', header: 'Actions', selected: true },
   { key: 'openingId', header: 'Opening Id', selected: true },
   { key: 'openingNumber', header: 'Opening number', selected: false },
