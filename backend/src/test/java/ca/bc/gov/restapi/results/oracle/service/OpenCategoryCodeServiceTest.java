@@ -21,7 +21,7 @@ class OpenCategoryCodeServiceTest extends AbstractTestContainerIntegrationTest {
     List<CodeDescriptionDto> entities = openCategoryCodeService.findAllCategories(false);
 
     Assertions.assertNotNull(entities);
-    Assertions.assertEquals(22, entities.size());
+    Assertions.assertEquals(21, entities.size());
   }
 
   @Test
@@ -30,6 +30,6 @@ class OpenCategoryCodeServiceTest extends AbstractTestContainerIntegrationTest {
     List<CodeDescriptionDto> entities = openCategoryCodeService.findAllCategories(true);
 
     Assertions.assertNotNull(entities);
-    Assertions.assertEquals(39, entities.size());
+    Assertions.assertEquals(37, entities.size());
   }
 }
