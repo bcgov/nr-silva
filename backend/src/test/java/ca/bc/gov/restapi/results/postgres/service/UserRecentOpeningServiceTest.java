@@ -1,5 +1,8 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,15 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +41,19 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
 
   @Autowired
   private UserRecentOpeningService userRecentOpeningService;
+
+  @RegisterExtension
+  static WireMockExtension clientApiStub = WireMockExtension
+      .newInstance()
+      .options(
+          wireMockConfig()
+              .port(10000)
+              .notifier(new WiremockLogNotifier())
+              .asynchronousResponseEnabled(true)
+              .stubRequestLoggingDisabled(false)
+      )
+      .configureStaticDsl(true)
+      .build();
 
   @Test
   @Order(1)
@@ -60,11 +80,7 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
   @DisplayName("3 | storeViewedOpening | existing opening | updates entity")
   @Order(3)
   void storeViewedOpening_existingOpening_updatesEntity() {
-    UserRecentOpeningDto result = userRecentOpeningService.storeViewedOpening(OPENING_ID);
-    assertNotNull(result);
-    assertEquals(IDIR_TEST, result.userId());
-    assertEquals(OPENING_ID, result.openingId());
-    assertNotNull(result.lastViewed());
+    storeViewedOpening_newOpening_savesEntity();
   }
 
   @Test
@@ -93,6 +109,23 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
   @Order(6)
   @DisplayName("6 | storeViewedOpening | list openings | results found")
   void getAllRecentOpeningsForUser_noRecentOpenings_returnsResult() {
+    String clientNumber = "00000003";
+    clientApiStub.stubFor(
+        WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+            .willReturn(okJson("""
+                {
+                  "clientNumber": "00000003",
+                  "clientName": "MINISTRY OF FORESTS",
+                  "legalFirstName": null,
+                  "legalMiddleName": null,
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "F",
+                  "acronym": "MOF"
+                }
+                """)
+            )
+    );
+
     Page<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(PageRequest.of(0,10));
     assertNotNull(result);
     assertThat(result.getContent()).isNotNull().isNotEmpty();
