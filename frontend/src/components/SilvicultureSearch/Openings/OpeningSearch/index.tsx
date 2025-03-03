@@ -7,7 +7,8 @@ import {
   TableHead,
   TableRow,
   TableHeader,
-  TableBody
+  TableBody,
+  InlineNotification
 } from "@carbon/react";
 import { OpeningHeaderType } from "../../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
@@ -21,6 +22,7 @@ import "./styles.scss";
 import TableSkeleton from "../../../TableSkeleton";
 import OpeningTableRow from "../../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
+import OpeningsMap from "../../../OpeningsMap";
 
 const OpeningSearch: React.FC = () => {
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(
@@ -28,6 +30,20 @@ const OpeningSearch: React.FC = () => {
   );
   const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [showMap, setShowMap] = useState<boolean>(false);
+  const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
+
+  /**
+ * Toggles the selection of an opening ID.
+ * If the ID is already selected, it is removed; otherwise, it is added.
+ *
+ * @param {number} id - The opening ID to toggle.
+ */
+  const handleRowSelection = (id: number) => {
+    setSelectedOpeningIds((prev) =>
+      prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
+    );
+  };
 
   /*
    * Data Queries
@@ -49,7 +65,6 @@ const OpeningSearch: React.FC = () => {
    * Search Mutation
    */
   const searchMutation = useMutation({
-    mutationKey: ['opening-search', filters],
     mutationFn: () => searchOpenings(filters)
   })
 
@@ -80,11 +95,36 @@ const OpeningSearch: React.FC = () => {
         categories={categoryQuery.data ?? []}
         orgUnits={orgUnitQuery.data ?? []}
         handleSearch={handleSearch}
-        totalResults={searchMutation.data?.data.length ?? 0}
+        totalResults={searchMutation.data?.totalItems ?? 0}
       />
 
       {/* Table Section */}
       <Column className="opening-search-table-col subgrid-full-width-no-row-gap-col" sm={4} md={8} lg={16}>
+        {
+          showMap
+            ? (
+              <OpeningsMap
+                openingId={null}
+                openingIds={selectedOpeningIds}
+                setOpeningPolygonNotFound={setOpeningPolygonNotFound}
+                mapHeight={280}
+              />
+            )
+            : null
+        }
+        {
+          openingPolygonNotFound
+            ? (
+              <InlineNotification
+                title="Opening ID not found!"
+                subtitle="Unable to find selected Opening Polygon!"
+                kind="error"
+                lowContrast
+                className="inline-notification"
+              />
+            )
+            : null
+        }
         {/* Table skeleton */}
         {
           searchMutation.isPending
@@ -118,8 +158,8 @@ const OpeningSearch: React.FC = () => {
                         headers={searchTableHeaders}
                         rowData={row}
                         showMap={showMap}
-                        selectedRows={[]}
-                        handleRowSelection={() => { }}
+                        selectedRows={selectedOpeningIds}
+                        handleRowSelection={handleRowSelection}
                       />
                     ))
                   }

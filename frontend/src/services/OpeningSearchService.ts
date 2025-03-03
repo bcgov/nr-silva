@@ -24,8 +24,8 @@ export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
 export const fetchOpeningsOrgUnits = (): Promise<OrgUnitEntity[]> => {
   const authToken = getAuthIdToken();
 
-  return axios.get(API_ENDPOINTS.orgUnits(),defaultHeaders(authToken))
-    .then((res)=> res.data);
+  return axios.get(API_ENDPOINTS.orgUnits(), defaultHeaders(authToken))
+    .then((res) => res.data);
 };
 
 
@@ -59,6 +59,14 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
           : value
       ])
   ) as Partial<Record<keyof OpeningSearchFilterType, number | string | boolean | string[]>>;
+
+  // Set default pagnation
+  if (!cleanedParams.page) {
+    cleanedParams.page = 0;
+  }
+  if (!cleanedParams.perPage) {
+    cleanedParams.perPage = 20;
+  }
 
   // Stringify the cleanedParams using qs with arrayFormat: 'repeat'
   const queryString = qs.stringify(cleanedParams, {
