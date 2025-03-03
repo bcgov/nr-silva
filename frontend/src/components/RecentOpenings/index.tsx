@@ -26,6 +26,10 @@ const RecentOpenings = () => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
+  const [faultyOpeningPolygonId, setFaultyOpeningPolygonId] = useState<
+    number | null
+  >(null);
+
   const [openingDetails, setOpeningDetails] = useState("");
   const breakpoint = useBreakpoint();
 
@@ -37,6 +41,11 @@ const RecentOpenings = () => {
 
   const toggleMap = () => {
     setShowMap(!showMap);
+  };
+
+  const handleMapError = (value: boolean, openingId: number | null) => {
+    setOpeningPolygonNotFound(value);
+    setFaultyOpeningPolygonId(openingId);
   };
 
   /**
@@ -71,23 +80,28 @@ const RecentOpenings = () => {
           {showMap ? "Hide map" : "Show map"}
         </Button>
       </div>
-      {showMap ? (
-        <OpeningsMap
-          openingId={null}
-          openingIds={selectedOpeningIds}
-          setOpeningPolygonNotFound={setOpeningPolygonNotFound}
-          mapHeight={280}
-        />
-      ) : null}
-      {openingPolygonNotFound ? (
+
+      {openingPolygonNotFound && (
         <InlineNotification
-          title="Opening ID not found!"
-          subtitle="Unable to find selected Opening Polygon!"
+          title={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
+          subtitle="No map data available for this opening ID"
+          statusIconDescription={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
           kind="error"
           lowContrast
           className="inline-notification"
+          hideCloseButton
+          role="alert"
         />
-      ) : null}
+      )}
+      {showMap && (
+        <OpeningsMap
+          openingId={null}
+          openingIds={selectedOpeningIds}
+          setOpeningPolygonNotFound={handleMapError}
+          mapHeight={280}
+        />
+      )}
+
       {/* Table skeleton */}
       {recentOpeningsQuery.isLoading ? (
         <TableSkeleton

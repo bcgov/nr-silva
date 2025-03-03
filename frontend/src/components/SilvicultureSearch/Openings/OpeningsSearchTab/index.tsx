@@ -25,6 +25,9 @@ const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
+  const [faultyOpeningPolygonId, setFaultyOpeningPolygonId] = useState<
+    number | null
+  >(null);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
@@ -42,6 +45,11 @@ const OpeningsSearchTab: React.FC = () => {
 
   const toggleSpatial = () => {
     setShowSpatial(!showSpatial);
+  };
+
+  const handleMapError = (value: boolean, openingId: number | null) => {
+    setOpeningPolygonNotFound(value);
+    setFaultyOpeningPolygonId(openingId);
   };
 
   const toggleFiltersApplied = () => {
@@ -174,7 +182,7 @@ const OpeningsSearchTab: React.FC = () => {
               <OpeningsMap
                 openingId={null}
                 openingIds={selectedOpeningIds}
-                setOpeningPolygonNotFound={setOpeningPolygonNotFound}
+                setOpeningPolygonNotFound={handleMapError}
               />
             </div>
           </div>

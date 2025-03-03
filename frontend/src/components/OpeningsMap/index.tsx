@@ -19,7 +19,7 @@ import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
 interface MapProps {
   openingIds: number[] | null;
   openingId: number | null;
-  setOpeningPolygonNotFound: (value: boolean) => void;
+  setOpeningPolygonNotFound: (value: boolean, openingId: number | null) => void;
   mapHeight?: number;
 }
 
@@ -41,6 +41,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   const getOpeningPolygonAndProps = async (
     selectedOpeningId: number | null
   ): Promise<OpeningPolygon | null> => {
+
     if (!selectedOpeningId) return Promise.resolve(null);
 
     const response = await axios.get(
@@ -67,6 +68,8 @@ const OpeningsMap: React.FC<MapProps> = ({
             positionLong: (data.bbox[0] + data.bbox[2]) / 2,
           };
           openingsList.push(openingObj);
+        } else {
+          setOpeningPolygonNotFound(true, selectedOpeningId);
         }
       }
 
@@ -74,6 +77,8 @@ const OpeningsMap: React.FC<MapProps> = ({
       if (openingsList.length) {
         return openingsList[0];
       }
+    } else {
+      setOpeningPolygonNotFound(true, selectedOpeningId);
     }
 
     return null;
@@ -125,7 +130,8 @@ const OpeningsMap: React.FC<MapProps> = ({
   const loadOpeniningPolygons = async (
     providedIds: number[]
   ): Promise<void> => {
-    setOpeningPolygonNotFound(false);
+    setOpeningPolygonNotFound(false, null);
+
     if (providedIds?.length) {
       const results = await Promise.all(providedIds.map(callBcGwApi));
       setOpenings(results.filter((opening) => opening !== null));
