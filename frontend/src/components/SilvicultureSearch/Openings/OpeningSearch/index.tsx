@@ -20,6 +20,7 @@ import TableSkeleton from "../../../TableSkeleton";
 import OpeningTableRow from "../../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
 import OpeningsMap from "../../../OpeningsMap";
+import EmptySection from "../../../EmptySection";
 
 import "./styles.scss";
 import { PageSizesConfig } from "../../../../constants/tableConstants";
@@ -118,10 +119,10 @@ const OpeningSearch: React.FC = () => {
         categories={categoryQuery.data ?? []}
         orgUnits={orgUnitQuery.data ?? []}
         handleSearch={handleSearch}
-        totalResults={searchMutation.data?.totalItems ?? 0}
+        totalResults={searchMutation.data?.totalItems}
       />
 
-      {/* Table Section */}
+      {/* Map Section */}
       <Column className="opening-search-table-col subgrid-full-width-no-row-gap-col" sm={4} md={8} lg={16}>
         {
           showMap
@@ -148,6 +149,20 @@ const OpeningSearch: React.FC = () => {
             )
             : null
         }
+        {/* Initial empty screen */}
+        {
+          searchMutation.data?.totalItems === undefined
+            ? (
+              <EmptySection
+                className="initial-empty-section"
+                pictogram="Summit"
+                title="Nothing to show yet!"
+                description="Enter at least one criteria to start the search. The list will display here."
+              />
+            )
+            : null
+        }
+
         {/* Table skeleton */}
         {
           searchMutation.isPending
@@ -159,6 +174,7 @@ const OpeningSearch: React.FC = () => {
             />
             : null
         }
+
         {/* Loaded Table section */}
         {
           searchMutation.isSuccess

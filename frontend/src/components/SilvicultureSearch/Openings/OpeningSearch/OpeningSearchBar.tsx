@@ -23,7 +23,7 @@ type OpeningSearchBarProps = {
   categories: CodeDescriptionDto[],
   orgUnits: CodeDescriptionDto[],
   handleSearch: () => void,
-  totalResults: number,
+  totalResults: number | undefined,
   showMap: boolean,
   setShowMap: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -214,7 +214,7 @@ const OpeningSearchBar = ({
 
       {/* Action button row, hidden when there's no data */}
       {
-        totalResults > 0
+        totalResults !== undefined
           ? (
             <Column className="table-toolbar-col  subgrid-full-width-no-row-gap-col" sm={4} md={8} lg={16}>
               <TableToolbar>
