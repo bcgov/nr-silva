@@ -1,11 +1,11 @@
 import { QueryClientConfig } from "@tanstack/react-query";
-import { THREE_HOURS } from "../config/TimeUnits";
+import { THREE_HOURS } from "./TimeUnits";
 import { isAxiosError } from "axios";
 
 const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404];
 const MAX_RETRIES = 3;
 
-export const queryClientConfig: QueryClientConfig= {
+export const queryClientConfig: QueryClientConfig = {
   defaultOptions: {
     queries: {
       refetchOnMount: false, // Default is caching fetched values

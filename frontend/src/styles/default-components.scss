@@ -93,3 +93,22 @@
   right: 16px;
   z-index: 2;
 }
+
+.default-pagination-white {
+  background: var(--#{vars.$bcgov-prefix}-layer-02);
+  border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+
+  .#{vars.$bcgov-prefix}--select-input--inline__wrapper {
+    border-left: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--tooltip-trigger__wrapper {
+    button {
+      border-left: 0;
+    }
+  }
+
+  .#{vars.$bcgov-prefix}--pagination__right {
+    border-left: 0;
+  }
+}

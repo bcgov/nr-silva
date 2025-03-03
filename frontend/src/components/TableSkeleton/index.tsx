@@ -8,11 +8,13 @@ import './styles.scss';
 const TableSkeleton = <T extends { header: string }>({
   headers,
   showToolbar,
-  showHeader
+  showHeader,
+  rowCount
 }: {
   headers: T[];
   showToolbar?: boolean;
   showHeader?: boolean;
+  rowCount?: number;
 }) => {
   return (
     <DataTableSkeleton
@@ -21,6 +23,7 @@ const TableSkeleton = <T extends { header: string }>({
       aria-label="loading table data"
       showToolbar={showToolbar}
       showHeader={showHeader}
+      rowCount={rowCount ?? 5}
       zebra
     />)
 };

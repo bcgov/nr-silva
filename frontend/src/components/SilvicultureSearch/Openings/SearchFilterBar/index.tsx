@@ -3,10 +3,31 @@ import { DismissibleTag, Button } from "@carbon/react";
 
 // Custom types
 import { OpeningSearchFilters } from "@/services/search/openings";
-import { filterKeyValueMap } from "@/constants/tableConstants";
-
 // Styles
 import "./SearchFilterBar.scss";
+
+const filterKeyValueMap = {
+  mainSearchTerm: 'Search Term',
+  orgUnit: 'Org Unit',
+  category: 'Category',
+  statusList: 'Status',
+  myOpenings: 'My Openings',
+  submittedToFrpa: 'FRPA Section 108',
+  disturbanceDateStart: 'Disturbance date start',
+  disturbanceDateEnd: 'Disturbance date end',
+  regenDelayDateStart: 'Regen delay date start',
+  regenDelayDateEnd: 'Regen delay date end',
+  freeGrowingDateStart: 'Free growing date start',
+  freeGrowingDateEnd: 'Free growing date end',
+  updateDateStart: 'Update date start',
+  updateDateEnd: 'Update date end',
+  cuttingPermitId: 'Cutting permit id',
+  cutBlockId: 'Cut block id',
+  clientLocationCode: 'Client location code',
+  clientNumber: 'Client number',
+  timberMark: 'Timber mark'
+};
+
 
 interface SearchFilterBarProps {
   filters: OpeningSearchFilters;

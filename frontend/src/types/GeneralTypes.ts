@@ -38,18 +38,25 @@ interface AutocompleteProps {
   label: string,
 }
 
-interface AutocompleteComboboxProps{
+interface AutocompleteComboboxProps {
   selectedItem: AutocompleteProps
 }
 
-export { 
-  type TextValueData, 
-  type SelectableTextValueData, 
+type PaginationOnChangeType = {
+  page: number;
+  pageSize: number;
+  ref?: React.RefObject<any>;
+}
+
+export {
+  type TextValueData,
+  type SelectableTextValueData,
   type SortOptions,
   type IdTextValueData,
   type TextInputEvent,
   type SelectEvents,
   type SelectEvent,
   type AutocompleteProps,
-  type AutocompleteComboboxProps
+  type AutocompleteComboboxProps,
+  type PaginationOnChangeType
 };
