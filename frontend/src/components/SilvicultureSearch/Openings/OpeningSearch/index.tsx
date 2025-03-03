@@ -149,15 +149,22 @@ const OpeningSearch: React.FC = () => {
             )
             : null
         }
-        {/* Initial empty screen */}
+
+        {/* Adaptive initial empty display and error display */}
         {
           searchMutation.data?.totalItems === undefined
             ? (
               <EmptySection
                 className="initial-empty-section"
                 pictogram="Summit"
-                title="Nothing to show yet!"
-                description="Enter at least one criteria to start the search. The list will display here."
+                title={
+                  searchMutation.isError ? "Something went wrong!" : "Nothing to show yet!"
+                }
+                description={
+                  searchMutation.isError
+                    ? "Error occured while searching for results."
+                    : "Enter at least one criteria to start the search. The list will display here."
+                }
               />
             )
             : null
@@ -211,15 +218,27 @@ const OpeningSearch: React.FC = () => {
                     }
                   </TableBody>
                 </Table>
-                <Pagination
-                  className="default-pagination-white"
-                  page={currPageNumber + 1}
-                  pageSize={currPageSize}
-                  pageSizes={PageSizesConfig}
-                  itemsPerPageText=""
-                  totalItems={searchMutation.data.totalItems}
-                  onChange={handlePagination}
-                />
+                {
+                  searchMutation.data?.totalItems > 0
+                    ? (
+                      <Pagination
+                        className="default-pagination-white"
+                        page={currPageNumber + 1}
+                        pageSize={currPageSize}
+                        pageSizes={PageSizesConfig}
+                        itemsPerPageText=""
+                        totalItems={searchMutation.data.totalItems}
+                        onChange={handlePagination}
+                      />
+                    )
+                    : (
+                      <EmptySection
+                        pictogram="UserSearch"
+                        title="No results"
+                        description="Consider adjusting your search term(s) and try again."
+                      />
+                    )
+                }
               </>
             )
             : null
