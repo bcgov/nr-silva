@@ -19,7 +19,7 @@ class CutBlockOpenAdminServiceTest extends AbstractTestContainerIntegrationTest 
   void findAllByOpeningIdIn_simpleFetch_shouldSucceed() {
 
     List<CutBlockOpenAdminEntity> entityList =
-        cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(101L));
+        cutBlockOpenAdminService.findAllByOpeningIdIn(List.of(101017L));
 
     Assertions.assertNotNull(entityList);
     Assertions.assertEquals(1, entityList.size());
