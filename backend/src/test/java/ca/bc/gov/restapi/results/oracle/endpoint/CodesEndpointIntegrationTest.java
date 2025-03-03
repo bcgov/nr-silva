@@ -50,7 +50,7 @@ class CodesEndpointIntegrationTest  extends AbstractTestContainerIntegrationTest
     OrgUnitEntity orgUnit = new OrgUnitEntity();
     orgUnit.setOrgUnitNo(1L);
     orgUnit.setOrgUnitCode("DAS");
-    orgUnit.setOrgUnitName("Org one");
+    orgUnit.setOrgUnitName("Development Unit");
     orgUnit.setLocationCode("123");
     orgUnit.setAreaCode("1");
     orgUnit.setTelephoneNo("25436521");
