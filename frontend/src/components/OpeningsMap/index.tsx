@@ -4,7 +4,6 @@ import { MapLayer } from "../../types/MapLayer";
 import { allLayers } from "./constants";
 import axios from "axios";
 import { getAuthIdToken } from "../../services/AuthService";
-import { env } from "../../env";
 import { convertGeoJsonToLatLng } from "../../map-services/BcGwLatLongUtils";
 import {
   LayersControl,
@@ -15,8 +14,7 @@ import {
 import { LatLngExpression } from "leaflet";
 
 import OpeningsMapEntry from "../OpeningsMapEntry";
-
-const backendUrl = env.VITE_BACKEND_URL;
+import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
 
 interface MapProps {
   openingIds: number[] | null;
@@ -43,14 +41,13 @@ const OpeningsMap: React.FC<MapProps> = ({
   const getOpeningPolygonAndProps = async (
     selectedOpeningId: number | null
   ): Promise<OpeningPolygon | null> => {
-    const urlApi = `/api/feature-service/polygon-and-props/${selectedOpeningId}`;
-    const response = await axios.get(backendUrl.concat(urlApi), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": window.location.origin,
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
+
+    if (!selectedOpeningId) return Promise.resolve(null);
+
+    const response = await axios.get(
+      API_ENDPOINTS.openingMap(selectedOpeningId),
+      defaultHeaders(authToken)
+    );
 
     const { data } = response;
 
@@ -134,6 +131,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     providedIds: number[]
   ): Promise<void> => {
     setOpeningPolygonNotFound(false, null);
+
     if (providedIds?.length) {
       const results = await Promise.all(providedIds.map(callBcGwApi));
       setOpenings(results.filter((opening) => opening !== null));

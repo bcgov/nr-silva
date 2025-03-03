@@ -29,6 +29,7 @@ const RecentOpenings = () => {
   const [faultyOpeningPolygonId, setFaultyOpeningPolygonId] = useState<
     number | null
   >(null);
+
   const [openingDetails, setOpeningDetails] = useState("");
   const breakpoint = useBreakpoint();
 
@@ -74,11 +75,12 @@ const RecentOpenings = () => {
           type="button"
           size={breakpoint === "sm" ? "sm" : "lg"}
           onClick={toggleMap}
-          disabled={!recentOpeningsQuery.data?.data.length}
+          disabled={!recentOpeningsQuery.data?.content.length}
         >
           {showMap ? "Hide map" : "Show map"}
         </Button>
       </div>
+
       {openingPolygonNotFound && (
         <InlineNotification
           title={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
@@ -110,7 +112,7 @@ const RecentOpenings = () => {
       ) : null}
       {/* Empty Table */}
       {!recentOpeningsQuery.isLoading &&
-      !recentOpeningsQuery.data?.data.length ? (
+      !recentOpeningsQuery.data?.content.length ? (
         <EmptySection
           pictogram="Magnify"
           title="There are no openings to show yet"
@@ -120,7 +122,7 @@ const RecentOpenings = () => {
       ) : null}
       {/* Loaded table content */}
       {!recentOpeningsQuery.isLoading &&
-      recentOpeningsQuery.data?.data.length ? (
+      recentOpeningsQuery.data?.content.length ? (
         <Table
           className="recent-openings-table default-zebra-table"
           aria-label="Recent openings table"
@@ -134,7 +136,7 @@ const RecentOpenings = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {recentOpeningsQuery.data?.data.map((row) => (
+            {recentOpeningsQuery.data?.content.map((row) => (
               <OpeningRow
                 key={row.openingId}
                 rowData={row}

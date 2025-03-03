@@ -194,12 +194,12 @@ const OpeningsSearchTab: React.FC = () => {
                 <TableSkeleton headers={headers} />
               ) : (
                 <SearchScreenDataTable
-                  rows={data?.data || []}
+                  rows={data?.content || []}
                   headers={headers}
                   handleCheckboxChange={handleCheckboxChange}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
-                  totalItems={data?.totalItems || 0}
+                  totalItems={data?.page.totalElements || 0}
                   setOpeningIds={setSelectedOpeningIds}
                 />
               )}

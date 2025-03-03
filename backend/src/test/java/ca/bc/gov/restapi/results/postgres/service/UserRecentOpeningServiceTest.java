@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
-import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
@@ -19,6 +18,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @DisplayName("Unit Test | UserRecentOpeningService")
 @WithMockJwt("JAKETHEDOG")
@@ -38,10 +39,10 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
   @Order(1)
   @DisplayName("1 | storeViewedOpening | list openings | empty list")
   void getAllRecentOpeningsForUser_noRecentOpenings_returnsEmptyResult() {
-    PaginatedResult<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(
-        10);
+    Page<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(
+        PageRequest.of(0, 10));
     assertNotNull(result);
-    assertThat(result.getData()).isNotNull().isEmpty();
+    assertThat(result.getContent()).isNotNull().isEmpty();
   }
 
   @Test
@@ -92,10 +93,9 @@ class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest 
   @Order(6)
   @DisplayName("6 | storeViewedOpening | list openings | results found")
   void getAllRecentOpeningsForUser_noRecentOpenings_returnsResult() {
-    PaginatedResult<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(
-        10);
+    Page<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(PageRequest.of(0,10));
     assertNotNull(result);
-    assertThat(result.getData()).isNotNull().isNotEmpty();
+    assertThat(result.getContent()).isNotNull().isNotEmpty();
   }
 
 }
