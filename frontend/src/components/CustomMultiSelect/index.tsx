@@ -23,8 +23,16 @@ interface CustomMultiSelectProps<ItemType> extends FilterableMultiSelectProps<It
  * @param {CustomMultiSelectProps<ItemType>} props - The component props.
  * @returns {React.ReactElement} The rendered component.
  */
-const CustomMultiSelect = <ItemType,>({ showSkeleton = false, ...props }: CustomMultiSelectProps<ItemType>) => {
-  return showSkeleton ? <TextInputSkeleton hideLabel /> : <FilterableMultiSelect {...props} />;
+const CustomMultiSelect = <ItemType,>({
+  showSkeleton = false,
+  selectionFeedback = "top-after-reopen",
+  ...props
+}: CustomMultiSelectProps<ItemType>) => {
+  return showSkeleton ? (
+    <TextInputSkeleton hideLabel />
+  ) : (
+    <FilterableMultiSelect {...props} selectionFeedback={selectionFeedback} />
+  );
 };
 
 export default CustomMultiSelect;

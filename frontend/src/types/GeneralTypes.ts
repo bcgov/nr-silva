@@ -33,6 +33,11 @@ interface SelectEvent {
   selectedItem: IdTextValueData;
 }
 
+type CheckBoxEvent = (
+  evt: React.ChangeEvent<HTMLInputElement>,
+  data: { checked: boolean; id: string }
+) => void;
+
 interface AutocompleteProps {
   id: string,
   label: string,
@@ -58,5 +63,6 @@ export {
   type SelectEvent,
   type AutocompleteProps,
   type AutocompleteComboboxProps,
-  type PaginationOnChangeType
+  type PaginationOnChangeType,
+  type CheckBoxEvent
 };

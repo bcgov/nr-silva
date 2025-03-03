@@ -152,7 +152,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Adaptive initial empty display and error display */}
         {
-          searchMutation.data?.totalItems === undefined
+          !searchMutation.isPending && searchMutation.data?.totalItems === undefined
             ? (
               <EmptySection
                 className="initial-empty-section"
@@ -218,6 +218,7 @@ const OpeningSearch: React.FC = () => {
                     }
                   </TableBody>
                 </Table>
+                {/* Display either pagination or empty message */}
                 {
                   searchMutation.data?.totalItems > 0
                     ? (
@@ -226,7 +227,6 @@ const OpeningSearch: React.FC = () => {
                         page={currPageNumber + 1}
                         pageSize={currPageSize}
                         pageSizes={PageSizesConfig}
-                        itemsPerPageText=""
                         totalItems={searchMutation.data.totalItems}
                         onChange={handlePagination}
                       />

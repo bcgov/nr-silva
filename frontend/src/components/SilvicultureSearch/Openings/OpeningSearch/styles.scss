@@ -84,6 +84,19 @@
   .initial-empty-section {
     padding-top: 5rem;
   }
+
+  .advanced-search-modal {
+    .advanced-search-body {
+      overflow-y: auto;
+      min-height: 70vh;
+      padding-bottom: 0;
+
+      .advanced-search-grid {
+        row-gap: 2rem;
+        column-gap: 2rem;
+      }
+    }
+  }
 }
 
 .opening-search-action-menu-option {

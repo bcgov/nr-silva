@@ -99,8 +99,10 @@ const OpeningSubmissionTrend = () => {
     refetchOnMount: true
   });
 
-  const handleYearSelection = (e: ComboBoxEvent) => {
-    setSelectedYear(e.selectedItem)
+  const handleYearSelection = (e: ComboBoxEvent<number>) => {
+    if (e.selectedItem) {
+      setSelectedYear(e.selectedItem)
+    }
   }
 
   const handleOrgUnitChange = (e: MultiSelectEvent) => {
