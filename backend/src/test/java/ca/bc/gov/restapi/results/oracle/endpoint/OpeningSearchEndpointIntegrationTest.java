@@ -32,8 +32,8 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Opening search happy path should succeed")
   void openingSearch_happyPath_shouldSucceed() throws Exception {
     OpeningSearchResponseDto response = new OpeningSearchResponseDto();
-    response.setOpeningId(101);
-    response.setOpeningNumber(null);
+    response.setOpeningId(101017);
+    response.setOpeningNumber(" 514");
     response.setCategory(OpeningCategoryEnum.FTML);
     response.setStatus(OpeningStatusEnum.APP);
     response.setCuttingPermitId(null);
@@ -56,7 +56,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            get("/api/openings/search?mainSearchTerm=101")
+            get("/api/openings/search?mainSearchTerm=101017")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

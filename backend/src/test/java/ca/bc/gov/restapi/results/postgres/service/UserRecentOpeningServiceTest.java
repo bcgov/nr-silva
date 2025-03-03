@@ -26,7 +26,7 @@ import org.springframework.data.domain.PageRequest;
 @TestMethodOrder(OrderAnnotation.class)
 class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest {
 
-  public static final Long OPENING_ID = 101L;
+  public static final Long OPENING_ID = 101017L;
   public static final String IDIR_TEST = "IDIR\\JAKETHEDOG";
 
   @Autowired
