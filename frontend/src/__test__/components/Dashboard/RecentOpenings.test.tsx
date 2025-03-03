@@ -17,11 +17,11 @@ const openingA: OpeningSearchResponseDto = {
   openingNumber: null,
   category: {
     code: "NREQ",
-    description: "Areas where SP/SMP's are not required by law"
+    description: "Areas where SP/SMP's are not required by law",
   },
   status: {
     code: "FG",
-    description: "Free Growing"
+    description: "Free Growing",
   },
   cuttingPermitId: null,
   timberMark: null,
@@ -37,8 +37,8 @@ const openingA: OpeningSearchResponseDto = {
   entryUserId: "IDIR\\MYDUDE",
   submittedToFrpa: false,
   forestFileId: null,
-  silvaReliefAppId: '0',
-  favourite: false
+  silvaReliefAppId: "0",
+  favourite: false,
 };
 
 const openingB = {
@@ -46,11 +46,11 @@ const openingB = {
   openingNumber: null,
   category: {
     code: "FTML",
-    description: "Forest Tenure - Major Licensee"
+    description: "Forest Tenure - Major Licensee",
   },
   status: {
     code: "APP",
-    description: "Approved"
+    description: "Approved",
   },
   cuttingPermitId: "12T",
   timberMark: "47/12S",
@@ -72,8 +72,8 @@ const openingB = {
   forestFileId: "TFL47",
   silvaReliefAppId: 101,
   lastViewDate: "2025-02-05T10:57:59.115832",
-  favourite: false
-}
+  favourite: false,
+};
 
 const renderWithProviders = () => {
   const queryClient = new QueryClient();
@@ -105,7 +105,9 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should display a loading skeleton when fetching data", () => {
-    (fetchUserRecentOpenings as vi.Mock).mockReturnValueOnce(new Promise(() => { }));
+    (fetchUserRecentOpenings as vi.Mock).mockReturnValueOnce(
+      new Promise(() => {})
+    );
 
     renderWithProviders();
 
@@ -113,27 +115,33 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should display an empty state if no recent openings are available", async () => {
-    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ data: [] });
+    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ content: [] });
 
     renderWithProviders();
 
     await waitFor(() =>
-      expect(screen.getByText("There are no openings to show yet")).toBeInTheDocument()
+      expect(
+        screen.getByText("There are no openings to show yet")
+      ).toBeInTheDocument()
     );
     expect(
-      screen.getByText("Your recent openings will appear here once you generate one")
+      screen.getByText(
+        "Your recent openings will appear here once you generate one"
+      )
     ).toBeInTheDocument();
   });
 
   it("should render the table when recent openings data is available", async () => {
-    const mockData = { data: [openingA, openingB] };
+    const mockData = { content: [openingA, openingB] };
 
     (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce(mockData);
 
     renderWithProviders();
 
     await waitFor(() => {
-      expect(screen.getByRole("table", { name: "Recent openings table" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("table", { name: "Recent openings table" })
+      ).toBeInTheDocument();
     });
 
     expect(await screen.findByText(openingA.category.code)).toBeInTheDocument();
@@ -141,7 +149,7 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should disable the map button if no openings exist", async () => {
-    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ data: [] });
+    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ content: [] });
 
     renderWithProviders();
 

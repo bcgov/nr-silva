@@ -23,7 +23,11 @@ import PaginationContext from "../../../../contexts/PaginationContext";
 
 const OpeningsSearchTab: React.FC = () => {
   const [showSpatial, setShowSpatial] = useState<boolean>(false);
-  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] =
+    useState<boolean>(false);
+  const [faultyOpeningPolygonId, setFaultyOpeningPolygonId] = useState<
+    number | null
+  >(null);
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [finalParams, setFinalParams] = useState<Record<string, any>>({}); // Store params for query after search
@@ -43,12 +47,16 @@ const OpeningsSearchTab: React.FC = () => {
     setShowSpatial(!showSpatial);
   };
 
+  const handleMapError = (value: boolean, openingId: number | null) => {
+    setOpeningPolygonNotFound(value);
+    setFaultyOpeningPolygonId(openingId);
+  };
+
   const toggleFiltersApplied = () => {
     setFiltersApplied(!filtersApplied);
   };
 
   const hasFilters = countActiveFilters(filters) > 0 || searchTerm.length > 0;
-
 
   const handleSearch = () => {
     setIsNoFilterSearch(!hasFilters);
@@ -56,7 +64,12 @@ const OpeningsSearchTab: React.FC = () => {
     if (hasFilters) {
       toggleFiltersApplied();
       setFiltersApplied(true); // Set filters as applied to show results
-      setFinalParams({ ...searchParams, ...filters, page: currentPage, perPage: itemsPerPage }); // Only update finalParams on search
+      setFinalParams({
+        ...searchParams,
+        ...filters,
+        page: currentPage,
+        perPage: itemsPerPage,
+      }); // Only update finalParams on search
       setIsSearchTriggered(true); // Trigger the search
     }
   };
@@ -66,7 +79,7 @@ const OpeningsSearchTab: React.FC = () => {
       ...prevParams,
       ...filters,
       page: currentPage,
-      perPage: itemsPerPage
+      perPage: itemsPerPage,
     }));
   };
 
@@ -74,33 +87,31 @@ const OpeningsSearchTab: React.FC = () => {
     setFinalParams((prevParams) => ({
       ...prevParams,
       page: currentPage,
-      perPage: itemsPerPage
+      perPage: itemsPerPage,
     }));
-  }
+  };
 
   const handleSearchInputChange = (searchInput: string) => {
     setSearchParams((prevParams) => ({
       ...prevParams,
       searchInput,
       page: 1, //going back to page 1 when the user clicks to make another search
-      perPage: itemsPerPage
+      perPage: itemsPerPage,
     }));
   };
 
   const handleCheckboxChange = (columnKey: string) => {
     if (columnKey === "select-default") {
       //set to the deafult
-      setHeaders(searchScreenColumns)
-    }
-    else if (columnKey === "select-all") {
+      setHeaders(searchScreenColumns);
+    } else if (columnKey === "select-all") {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) => ({
           ...header,
           selected: true, // Select all headers
         }))
       );
-    }
-    else {
+    } else {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) =>
           header.key === columnKey
@@ -109,7 +120,6 @@ const OpeningsSearchTab: React.FC = () => {
         )
       );
     }
-
   };
 
   useEffect(() => {
@@ -143,7 +153,7 @@ const OpeningsSearchTab: React.FC = () => {
         hasParams = true;
         setFilters((prevFilters: OpeningFilters) => ({
           ...prevFilters,
-          [key]: urlParams.get(key)
+          [key]: urlParams.get(key),
         }));
       }
     });
@@ -154,7 +164,6 @@ const OpeningsSearchTab: React.FC = () => {
     }
 
     setHasExternalParams(hasParams);
-
   }, []);
 
   return (
@@ -165,12 +174,15 @@ const OpeningsSearchTab: React.FC = () => {
           onSearchClick={handleSearch}
         />
         {showSpatial ? (
-          <div className="search-spatial-container row p-0" data-testid="openings-map">
+          <div
+            className="search-spatial-container row p-0"
+            data-testid="openings-map"
+          >
             <div className="leaflet-container">
               <OpeningsMap
                 openingId={null}
                 openingIds={selectedOpeningIds}
-                setOpeningPolygonNotFound={setOpeningPolygonNotFound}
+                setOpeningPolygonNotFound={handleMapError}
               />
             </div>
           </div>
@@ -182,12 +194,12 @@ const OpeningsSearchTab: React.FC = () => {
                 <TableSkeleton headers={headers} />
               ) : (
                 <SearchScreenDataTable
-                  rows={data?.data || []}
+                  rows={data?.content || []}
                   headers={headers}
                   handleCheckboxChange={handleCheckboxChange}
                   toggleSpatial={toggleSpatial}
                   showSpatial={showSpatial}
-                  totalItems={data?.totalItems || 0}
+                  totalItems={data?.page.totalElements || 0}
                   setOpeningIds={setSelectedOpeningIds}
                 />
               )}

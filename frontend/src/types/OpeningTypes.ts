@@ -1,5 +1,5 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
-import { PaginationMetaType } from "./PaginationTypes";
+import { PaginatedResponseType } from "./PaginationTypes";
 
 export interface StatusCategory {
   code: string;
@@ -27,18 +27,6 @@ export interface IOpeningPerYear {
   entryDateEnd: string | null;
 }
 
-export interface IFreeGrowingProps {
-  orgUnitCode: string;
-  clientNumber: string;
-  entryDateStart: string | null;
-  entryDateEnd: string | null;
-}
-
-export interface IFreeGrowingChartData {
-  group: string;
-  value: number;
-}
-
 export interface OpeningSearchResponseDto {
   openingId: number;
   openingNumber: string | null;
@@ -62,9 +50,7 @@ export interface OpeningSearchResponseDto {
   favourite: boolean;
 }
 
-export type PaginatedRecentOpeningsDto = PaginationMetaType & {
-  data: OpeningSearchResponseDto[]
-}
+export type PaginatedRecentOpeningsDto = PaginatedResponseType<OpeningSearchResponseDto>
 
 // TODO: too be removed
 export interface OpeningsSearch {
