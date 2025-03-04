@@ -3,7 +3,12 @@ import FavouriteCard from "../../components/FavouriteCard";
 import PageTitle from "../../components/PageTitle";
 import {
   Grid,
-  Column
+  Column,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel
 } from "@carbon/react";
 import RecentOpenings from "../../components/RecentOpenings";
 import OpeningSubmissionTrend from "../../components/OpeningSubmissionTrend";
@@ -14,6 +19,21 @@ import FavouriteOpenings from "../../components/FavouriteOpenings";
 
 const Dashboard: React.FC = () => (
   <Grid className="default-grid">
+    <Column sm={4} md={8} lg={16}>
+      <Tabs>
+        <TabList aria-label="List of tabs" activation="manual">
+          <Tab>Tab Label 1</Tab>
+          <Tab>Tab Label 2</Tab>
+          <Tab>Tab Label 3</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>Tab Panel 1</TabPanel>
+          <TabPanel>Tab Panel 2</TabPanel>
+          <TabPanel>Tab Panel 3</TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Column>
+
     <Column sm={4} md={8} lg={16}>
       <PageTitle
         title="Dashboard"
