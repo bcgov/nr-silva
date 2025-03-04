@@ -93,13 +93,19 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   return (
     <TableRow
       className={`opening-table-row${enableClick ? ' clickable-opening-row' : ''}`}
-      onClick={handleRowClick}
     >
       {
         headers
           .filter((header) => header.selected)
           .map((header) => (
-            <TableCell key={header.key}>
+            <TableCell
+              key={header.key}
+              onClick={() => {
+                if (header.key !== 'actions') {
+                  handleRowClick();
+                }
+              }}
+            >
               {
                 renderCellContent(header.key) ?? PLACE_HOLDER
               }
