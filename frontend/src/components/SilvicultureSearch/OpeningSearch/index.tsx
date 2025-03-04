@@ -12,21 +12,21 @@ import {
   Pagination,
   Modal
 } from "@carbon/react";
-import { OpeningHeaderType } from "../../../../types/TableHeader";
+import { OpeningHeaderType } from "../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../../types/CodeDescriptionType";
-import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../../services/OpeningSearchService";
-import TableSkeleton from "../../../TableSkeleton";
-import OpeningTableRow from "../../../OpeningTableRow";
+import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../services/OpeningSearchService";
+import TableSkeleton from "../../TableSkeleton";
+import OpeningTableRow from "../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
-import OpeningsMap from "../../../OpeningsMap";
-import EmptySection from "../../../EmptySection";
+import OpeningsMap from "../../OpeningsMap";
+import EmptySection from "../../EmptySection";
 
 import "./styles.scss";
-import { PageSizesConfig } from "../../../../constants/tableConstants";
-import { PaginationOnChangeType } from "../../../../types/GeneralTypes";
-import { OpeningSearchResponseDto } from "../../../../types/OpeningTypes";
+import { PageSizesConfig } from "../../../constants/tableConstants";
+import { PaginationOnChangeType } from "../../../types/GeneralTypes";
+import { OpeningSearchResponseDto } from "../../../types/OpeningTypes";
 
 const OpeningSearch: React.FC = () => {
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(

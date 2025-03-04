@@ -1,4 +1,4 @@
-import CodeDescriptionDto from "../../../../types/CodeDescriptionType";
+import CodeDescriptionDto from "../../../types/CodeDescriptionType";
 
 export type OpeningSearchFilterType = {
   mainSearchTerm?: string;
@@ -22,4 +22,8 @@ export type OpeningSearchFilterType = {
   timberMark?: string;
   page?: number;
   perPage?: number;
+}
+
+export type FilterDisplayNameMapType = {
+  [key in keyof OpeningSearchFilterType]: string
 }

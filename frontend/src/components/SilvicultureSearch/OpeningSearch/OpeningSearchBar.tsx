@@ -6,17 +6,18 @@ import {
   Column as ColumnIcon
 } from "@carbon/icons-react";
 
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../../constants";
-import CustomMultiSelect from "../../../CustomMultiSelect";
-import { codeDescriptionToDisplayText, MultiSelectEvent } from "../../../../utils/multiSelectUtils";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../constants";
+import CustomMultiSelect from "../../CustomMultiSelect";
+import { codeDescriptionToDisplayText, MultiSelectEvent } from "../../../utils/multiSelectUtils";
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../../types/CodeDescriptionType";
-import { CheckBoxEvent, TextInputEvent } from "../../../../types/GeneralTypes";
-import { OpendingHeaderKeyType, OpeningHeaderType } from "../../../../types/TableHeader";
-import useBreakpoint from "../../../../hooks/UseBreakpoint";
-import ForestClientInput from "../../../ForestClientInput";
+import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import { CheckBoxEvent, TextInputEvent } from "../../../types/GeneralTypes";
+import { OpendingHeaderKeyType, OpeningHeaderType } from "../../../types/TableHeader";
+import useBreakpoint from "../../../hooks/UseBreakpoint";
+import ForestClientInput from "../../ForestClientInput";
 import { DateTime } from "luxon";
 import { MAX_TEXT_INPUT_LEN } from "./constants";
+import OpeningFilterBar from "./OpeningFilterBar";
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],
@@ -87,6 +88,25 @@ const OpeningSearchBar = ({
     }
   }, [breakpoint, totalResults]);
 
+  const hasActiveFilters = (): boolean => {
+    return Object.entries(filters).some(([key, value]) => {
+      // Ignore mainSearchTerm
+      if (key === "mainSearchTerm") return false;
+
+      // Ignore undefined/null
+      if (value === undefined || value === null) return false;
+
+      // Check arrays
+      if (Array.isArray(value)) return value.length > 0;
+
+      // Check non-empty strings
+      if (typeof value === "string") return value.trim() !== "";
+
+      // Assume any other non-null values (numbers, booleans) are active
+      return true;
+    });
+  };
+
   // Generic handler for string-based filters
   const handleStringChange = (key: keyof OpeningSearchFilterType) => (event: TextInputEvent) => {
     setFilters((prev) => ({
@@ -97,9 +117,11 @@ const OpeningSearchBar = ({
 
   // Generic handler for boolean-based filters
   const handleBooleanChange = (key: keyof OpeningSearchFilterType): CheckBoxEvent => (_evt, data) => {
+    // When a check box is unchecked, we should not set it to false, it's rather undefined
+    const newVal = data.checked === true ? true : undefined;
     setFilters((prev) => ({
       ...prev,
-      [key]: data.checked,
+      [key]: newVal,
     }));
   };
 
@@ -212,6 +234,27 @@ const OpeningSearchBar = ({
     return undefined;
   }
 
+  const handleClearFilters = () => {
+    setSelectedDateType(null);
+    setFilters((prev) => {
+      const newFilters: OpeningSearchFilterType = {};
+
+      // Preserve mainSearchTerm
+      if (prev.mainSearchTerm) {
+        newFilters.mainSearchTerm = prev.mainSearchTerm;
+      }
+
+      newFilters.category = [];
+      newFilters.orgUnit = [];
+      newFilters.statusList = [];
+      newFilters.cuttingPermitId = "";
+      newFilters.cutBlockId = "";
+      newFilters.timberMark = "";
+
+      return newFilters;
+    });
+  };
+
   // Child components, shared between search bar and advanced modal
   const SearchButton = ({ size }: { size: 'md' | 'lg' }) => (
     <Button
@@ -220,7 +263,12 @@ const OpeningSearchBar = ({
       iconDescription="Search"
       type="button"
       size={size}
-      onClick={handleSearch}
+      onClick={() => {
+        if (isAdvancedSearchOpen) {
+          setIsAdvancedSearchOpen(false);
+        }
+        handleSearch()
+      }}
     >
       Search
     </Button>
@@ -317,6 +365,18 @@ const OpeningSearchBar = ({
       <Column className="search-col-sm" sm={4} md={0}>
         <SearchButton size="md" />
       </Column>
+
+      {/* Filter tag bar */}
+      {
+        hasActiveFilters()
+          ? (
+            <OpeningFilterBar
+              filters={filters}
+              setFilters={setFilters}
+              handleClearFilters={handleClearFilters}
+            />)
+          : null
+      }
 
       {/* Action button row, hidden until a search is completed */}
       {
@@ -471,7 +531,7 @@ const OpeningSearchBar = ({
                   titleText="Date type"
                   label=""
                   items={DATE_TYPE_LIST}
-                  initialSelectedItem={selectedDateType}
+                  selectedItem={selectedDateType}
                   itemToString={(item) => item?.description ?? "Unknown"}
                   onChange={(data) => handleDateTypeChange(data.selectedItem)}
                 />
@@ -535,7 +595,7 @@ const OpeningSearchBar = ({
                 id="cutting-permit-text-input"
                 type="text"
                 labelText="Cutting permit"
-                defaultValue={filters.cuttingPermitId}
+                value={filters.cuttingPermitId}
                 onBlur={handleStringChange('cuttingPermitId')}
                 maxLength={MAX_TEXT_INPUT_LEN}
               />

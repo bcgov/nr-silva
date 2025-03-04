@@ -11,7 +11,7 @@ import {
 } from "@carbon/react";
 import { MapBoundaryVegetation } from '@carbon/icons-react';
 
-import OpeningSearch from "@/components/SilvicultureSearch/Openings/OpeningSearch";
+import OpeningSearch from "@/components/SilvicultureSearch/OpeningSearch";
 
 import './styles.scss'
 

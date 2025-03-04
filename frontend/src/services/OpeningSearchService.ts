@@ -6,7 +6,7 @@ import { getAuthIdToken } from "./AuthService";
 import { OpeningSearchResponseDto, OrgUnitEntity } from "../types/OpeningTypes";
 import { extractCodesFromCodeDescriptionArr } from "../utils/multiSelectUtils";
 import { PagedResult } from "../types/PaginationTypes";
-import { OpeningSearchFilterType } from "../components/SilvicultureSearch/Openings/OpeningSearch/definitions";
+import { OpeningSearchFilterType } from "../components/SilvicultureSearch/OpeningSearch/definitions";
 
 export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token

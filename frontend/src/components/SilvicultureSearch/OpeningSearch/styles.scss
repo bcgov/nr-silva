@@ -131,12 +131,16 @@
     }
   }
 
-  .bx--modal-footer {
+  .#{vars.$bcgov-prefix}--modal-footer {
     block-size: 3rem;
 
     button {
       block-size: auto;
     }
+  }
+
+  .opening-filter-bar-col {
+    padding-bottom: 1.5rem;
   }
 }
 

@@ -29,4 +29,8 @@
     padding: 2.5rem;
     min-height: 34rem;
   }
+
+  .silviculture-search-dismissible-tag:not(.#{vars.$bcgov-prefix}--tag--operational):not(span):not([disabled]) {
+    background-color: transparent;
+  }
 }
