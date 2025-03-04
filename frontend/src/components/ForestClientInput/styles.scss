@@ -1,0 +1,29 @@
+.forest-client-input-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.125rem;
+  position: relative;
+  width: 100%;
+
+  .client-name-combobox {
+    flex: 1;
+
+    /* Moves the helper text below the location input */
+    .bx--form__helper-text {
+      white-space: nowrap;
+      overflow: visible;
+      position: absolute;
+      width: max-content;
+    }
+
+    .bx--list-box--expanded .bx--list-box__menu {
+      display: block;
+      max-block-size: 13.75rem;
+      width: fit-content;
+    }
+  }
+
+  .location-code-combobox {
+    flex: 1;
+  }
+}

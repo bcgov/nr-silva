@@ -1,0 +1,36 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.silviculture-search-grid {
+  grid-template-rows: auto 1fr;
+
+  .search-tablist {
+    margin-left: 2.5rem;
+
+    .#{vars.$bcgov-prefix}--tabs__nav-item-label {
+      @include type.type-style('heading-compact-01');
+      width: 160px;
+    }
+
+    .bx--tabs__nav-item--icon {
+      svg {
+        fill: var(--#{vars.$bcgov-prefix}-icon-secondary);
+      }
+    }
+
+    .#{vars.$bcgov-prefix}--tabs__nav-item {
+      width: 14.5rem;
+      height: 3rem;
+    }
+  }
+
+  .tab-content {
+    padding: 2.5rem;
+    min-height: 34rem;
+  }
+
+  .silviculture-search-dismissible-tag:not(.#{vars.$bcgov-prefix}--tag--operational):not(span):not([disabled]) {
+    background-color: transparent;
+  }
+}

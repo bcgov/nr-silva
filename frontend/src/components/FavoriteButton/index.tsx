@@ -39,8 +39,9 @@ const FavoriteButton = ({
   if (!Icon) {
     return <div>Invalid icon name</div>;
   }
+
   const CustomIcon = () => (
-    <Icon data-testid="favourite-button-icon" className={favorited ? 'favourited-icon' : 'unfavourited-icon'} />
+    <Icon data-testid="favourite-button-icon" className={isFavorite ? 'favourited-icon' : 'unfavourited-icon'} />
   );
 
   useEffect(() => {

@@ -9,7 +9,8 @@ interface EmptySectionProps {
   title: string;
   description: string | React.ReactNode;
   pictogram?: string;
-  fill?:string;
+  fill?: string;
+  className?: string;
 }
 
 /**
@@ -23,8 +24,8 @@ interface EmptySectionProps {
  * @param {string} [props.fill] - Optional. The fill color of the icon or pictogram.
  * @returns {JSX.Element} A div element containing the empty section.
  */
-function EmptySection ({
-  icon, title, description, pictogram, fill
+function EmptySection({
+  icon, title, description, pictogram, fill = "#0073E6", className
 }: EmptySectionProps): JSX.Element {
   let Img;
 
@@ -37,8 +38,8 @@ function EmptySection ({
   }
 
   return (
-    <div className="empty-section-container">
-      <Img className="empty-section-icon" data-testid="empty-section-icon" style={{fill:fill}} />
+    <div className={`${className ?? ''} empty-section-container`}>
+      <Img className="empty-section-icon" data-testid="empty-section-icon" style={{ fill: fill }} />
       <p className="empty-section-title">
         {title}
       </p>

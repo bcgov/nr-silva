@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Polygon, useMap, Popup } from 'react-leaflet';
-import L,{LatLngExpression } from 'leaflet';
+import L, { LatLngExpression } from 'leaflet';
 import { OpeningPolygon } from '../../types/OpeningPolygon';
 import OpeningsMapEntryPopup from '../OpeningsMapEntryPopup';
 
@@ -14,13 +14,12 @@ const resultsStyle = {
   color: 'black'
 };
 
-const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ 
+const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
   polygons,
   defaultLocation,
   defaultZoom
 }) => {
   const map = useMap();
-
 
   useEffect(() => {
     if (polygons.length > 0) {
@@ -28,7 +27,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
       // This is to make sure the map resizes for the correct view
       const bounds = L.latLngBounds(polygons.flatMap((polygon) => polygon.bounds.flat()).filter((point): point is LatLngExpression => point !== undefined));
       map.fitBounds(bounds, { padding: [20, 20] });
-    }else {
+    } else {
       // If no polygons are found, set the map to the default location
       map.setView(defaultLocation, defaultZoom);
     }
@@ -44,8 +43,8 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({
           pathOptions={resultsStyle}
         >
           <Popup maxWidth={700}>
-            <OpeningsMapEntryPopup 
-              openingId={parseFloat((polygon.properties?.OPENING_ID as string) || '0')} 
+            <OpeningsMapEntryPopup
+              openingId={parseFloat((polygon.properties?.OPENING_ID as string) || '0')}
             />
           </Popup>
         </Polygon>

@@ -1,7 +1,8 @@
 import React from "react";
 import ChartTitle from "../ChartTitle";
 import { SubmissionTrendChartObj } from "../OpeningSubmissionTrend/definitions";
-import { status } from "../../services/search/openings";
+import { OPENING_STATUS_LIST } from "../../constants";
+
 import './index.scss'
 
 interface BarChartTooltipProps {
@@ -10,8 +11,8 @@ interface BarChartTooltipProps {
 
 const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
 
-  const statusDescription = (statusCode: string) => (
-    status.find((statusData) => statusData.value === statusCode)?.text ?? statusCode
+  const statusDescription = (code: string) => (
+    OPENING_STATUS_LIST.find((statusData) => statusData.code.toLowerCase() === code.toLowerCase())?.description ?? code
   ).toLowerCase();
 
   return (

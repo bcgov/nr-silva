@@ -1,65 +1,48 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle";
-import './SilvicultureSearch.scss'
-import { 
+import {
   TabList,
   Tabs,
   Tab,
   TabPanels,
-  TabPanel 
+  TabPanel,
+  Grid,
+  Column
 } from "@carbon/react";
-import * as Icons from '@carbon/icons-react';
-import OpeningsSearchTab from "../../components/SilvicultureSearch/Openings/OpeningsSearchTab";
+import { MapBoundaryVegetation } from '@carbon/icons-react';
+
+import OpeningSearch from "@/components/SilvicultureSearch/OpeningSearch";
+
+import './styles.scss'
 
 const SilvicultureSearch: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
-
-  const tabChange = (tabSelection:{selectedIndex: number}) => {
-    setActiveTab(tabSelection.selectedIndex);
-  };
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-
-    if(urlParams.has('tab') && urlParams.get('tab')?.includes('openings')) {      
-        setActiveTab(0);
-    }    
-  },[]);
 
   return (
-    <>
-      <div className="container-fluid">
-        <div className="row px-0 py-4 p-sm-4" data-testid="opening-pagetitle">
-          <PageTitle
-            title="Silviculture Search"
-            subtitle="Search for opening types, activities, stocking standards or standards units"
-          />
-        </div>
-      </div>
+    <Grid className="silviculture-search-grid default-grid">
+      <Column sm={4} md={8} lg={16}>
+        <PageTitle
+          title="Silviculture Search"
+          subtitle="Search for opening types, activities, stocking standards or standards units"
+        />
+      </Column>
 
-      <Tabs onChange={tabChange} selectedIndex={activeTab}>
-        <TabList className="search-tablist tab-list" aria-label="List of Tab" contained>
-          <Tab renderIcon={Icons.MapBoundaryVegetation}><div className="tab-header">Openings</div></Tab>
-          <Tab renderIcon={Icons.Activity} disabled><div className="tab-header">Activities</div></Tab>
-          <Tab renderIcon={Icons.Tree} disabled><div className="tab-header">Stocking standards</div></Tab>
-          <Tab renderIcon={Icons.VegetationAsset} disabled><div className="tab-header">Standard units</div></Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel className="tab-content">
-            <OpeningsSearchTab />
-          </TabPanel>
-          <TabPanel className="tab-content">
-            <h4>Hi there this is from the second tab</h4>
-          </TabPanel>
-          <TabPanel className="tab-content">
-            <h4>Hi there this is from the THIRD tab</h4>
-          </TabPanel>
-          <TabPanel className="tab-content">
-            <h4>Hi  this is from the FOURTH tab</h4>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </>
+      <Column className="full-width-col" sm={4} md={8} lg={16}>
+        <div className="tab-content">
+          <OpeningSearch />
+        </div>
+
+        {/* <Tabs>
+          <TabList className="search-tablist" aria-label="List of Tab" contained>
+            <Tab renderIcon={MapBoundaryVegetation}>Openings</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel className="tab-content">
+              <OpeningSearch />
+            </TabPanel>
+          </TabPanels>
+        </Tabs> */}
+      </Column>
+    </Grid>
   );
 };
 

@@ -7,7 +7,7 @@ import { useNotification } from '../../contexts/NotificationProvider';
 import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import ChartContainer from "../ChartContainer";
 import './styles.scss';
-import { EIGHT_SECONDS } from "../../config/TimeUnits";
+import { EIGHT_SECONDS } from "../../constants/TimeUnits";
 
 
 const FavouriteOpenings: React.FC = () => {

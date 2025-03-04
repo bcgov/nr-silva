@@ -27,14 +27,38 @@
     "import",
     "jsx-a11y"
   ],
-  "ignorePatterns": ["**/__test__/*", "**/assets/*", "**/*.scss", "**/*.css", "**/*.svg"],
+  "ignorePatterns": [
+    "**/__test__/*",
+    "**/assets/*",
+    "**/*.scss",
+    "**/*.css",
+    "**/*.svg"
+  ],
   "rules": {
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "react/require-default-props": "off",
     "linebreak-style": 0,
-    "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-    "comma-dangle": ["error", "never"],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "react/jsx-filename-extension": [
+      2,
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -49,26 +73,41 @@
     "react/function-component-definition": [
       "error",
       {
-        "namedComponents": ["function-declaration", "arrow-function"],
+        "namedComponents": [
+          "function-declaration",
+          "arrow-function"
+        ],
         "unnamedComponents": "arrow-function"
       }
     ],
-    "jsx-a11y/label-has-associated-control": [ 2, {
-      "depth": 3
-    }],
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        "depth": 3
+      }
+    ],
     "no-shadow": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-shadow": ["error"],
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^React$", "argsIgnorePattern": "^_"  }],
     "jsdoc/require-param": 0,
     "jsdoc/require-returns": 0,
     "jsdoc/tag-lines": 0,
-    "import/namespace": "off"
+    "import/namespace": "off",
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      },
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
       }
     },
     "react": {
