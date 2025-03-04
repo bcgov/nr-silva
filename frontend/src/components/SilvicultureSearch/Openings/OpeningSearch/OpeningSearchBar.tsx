@@ -160,6 +160,58 @@ const OpeningSearchBar = ({
     }
   };
 
+  const getStartMaxDate = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
+
+    const maxDate = filters[endDateKey]
+      ? DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      : DateTime.now().toFormat(DATE_PICKER_FORMAT);
+
+    return maxDate;
+  }
+
+  const getEndMinDate = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
+
+    const minDate = filters[startDateKey]
+      ? DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      : undefined;
+
+    return minDate;
+  }
+
+  const getStartDateValue = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
+    if (filters[startDateKey]) {
+      return DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+    }
+    return undefined;
+  }
+
+  const getEndDateValue = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const endDateKey = `${type}EndStart` as keyof OpeningSearchFilterType;
+    if (filters[endDateKey]) {
+      return DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+    }
+    return undefined;
+  }
+
   // Child components, shared between search bar and advanced modal
   const SearchButton = ({ size }: { size: 'md' | 'lg' }) => (
     <Button
@@ -204,60 +256,6 @@ const OpeningSearchBar = ({
       Advanced Search
     </Button>
   );
-
-  const getStartMaxDate = () => {
-    if (!selectedDateType) {
-      return undefined;
-    }
-    const type = selectedDateType.code;
-    const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
-
-    const maxDate = filters[endDateKey]
-      ? DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
-      : DateTime.now().toFormat(DATE_PICKER_FORMAT);
-
-    return maxDate;
-  }
-
-  const getEndMinDate = () => {
-    if (!selectedDateType) {
-      return undefined;
-    }
-    const type = selectedDateType.code;
-    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
-
-    const minDate = filters[startDateKey]
-      ? DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
-      : undefined;
-
-    return minDate;
-  }
-
-  const getStartDateValue = () => {
-    if (!selectedDateType) {
-      return undefined;
-    }
-    const type = selectedDateType.code;
-    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
-    if (filters[startDateKey]) {
-      return DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
-    }
-    return undefined;
-  }
-
-
-  const getEndDateValue = () => {
-    if (!selectedDateType) {
-      return undefined;
-    }
-    const type = selectedDateType.code;
-    const endDateKey = `${type}EndStart` as keyof OpeningSearchFilterType;
-    if (filters[endDateKey]) {
-      return DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
-    }
-    return undefined;
-  }
-
 
   return (
     <>

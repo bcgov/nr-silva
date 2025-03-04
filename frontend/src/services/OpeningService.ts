@@ -24,23 +24,23 @@ export const fetchUserSubmissionTrends = (
   const authToken = getAuthIdToken();
   const args: string[] = [];
 
-  if(props.orgUnitCode) {
+  if (props.orgUnitCode) {
     props.orgUnitCode.forEach((orgUnit) => {
       args.push(`orgUnitCode=${orgUnit}`);
     });
   }
 
-  if(props.statusCode) {
+  if (props.statusCode) {
     props.statusCode.forEach((status) => {
       args.push(`statusCode=${status}`);
     });
   }
 
-  if(props.entryDateStart) {
+  if (props.entryDateStart) {
     args.push(`entryDateStart=${props.entryDateStart}`);
   }
 
-  if(props.entryDateEnd) {
+  if (props.entryDateEnd) {
     args.push(`entryDateEnd=${props.entryDateEnd}`);
   }
 
@@ -106,5 +106,14 @@ export const fetchUserRecentOpenings = (): Promise<PaginatedRecentOpeningsDto> =
 
   // Make the API request with the Authorization header
   return axios.get(API_ENDPOINTS.recentOpenings(), defaultHeaders(authToken))
+    .then((res) => res.data);
+};
+
+
+export const putUserRecentOpening = (openingId: number) => {
+  const authToken = getAuthIdToken();
+
+  // Make the API request with the Authorization header
+  return axios.put(API_ENDPOINTS.postRecentOpening(openingId), null, defaultHeaders(authToken))
     .then((res) => res.data);
 };

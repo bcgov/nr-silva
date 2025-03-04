@@ -11,6 +11,8 @@ import { PLACE_HOLDER } from "../../constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "../../types/TableHeader";
 
 import './styles.scss';
+import { useMutation } from "@tanstack/react-query";
+import { putUserRecentOpening } from "../../services/OpeningService";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -18,6 +20,8 @@ interface TableRowComponentProps {
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;
+  enableClick?: boolean;
+  handleComingSoon?: (rowData: OpeningSearchResponseDto) => void;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({
@@ -25,7 +29,9 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   rowData,
   showMap,
   selectedRows,
-  handleRowSelection
+  handleRowSelection,
+  enableClick,
+  handleComingSoon
 }) => {
 
   const renderCellContent = (header: OpendingHeaderKeyType) => {
@@ -71,8 +77,24 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
     }
   }
 
+  const postRecentOpeningMutation = useMutation({
+    mutationFn: (openingId: number) => putUserRecentOpening(openingId)
+  });
+
+  const handleRowClick = () => {
+    if (enableClick) {
+      postRecentOpeningMutation.mutate(rowData.openingId);
+    }
+    if (handleComingSoon) {
+      handleComingSoon(rowData);
+    }
+  }
+
   return (
-    <TableRow className="opening-table-row">
+    <TableRow
+      className={`opening-table-row${enableClick ? ' clickable-opening-row' : ''}`}
+      onClick={handleRowClick}
+    >
       {
         headers
           .filter((header) => header.selected)

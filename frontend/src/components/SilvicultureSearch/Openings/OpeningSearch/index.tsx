@@ -9,7 +9,8 @@ import {
   TableHeader,
   TableBody,
   InlineNotification,
-  Pagination
+  Pagination,
+  Modal
 } from "@carbon/react";
 import { OpeningHeaderType } from "../../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
@@ -25,6 +26,7 @@ import EmptySection from "../../../EmptySection";
 import "./styles.scss";
 import { PageSizesConfig } from "../../../../constants/tableConstants";
 import { PaginationOnChangeType } from "../../../../types/GeneralTypes";
+import { OpeningSearchResponseDto } from "../../../../types/OpeningTypes";
 
 const OpeningSearch: React.FC = () => {
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(
@@ -37,13 +39,16 @@ const OpeningSearch: React.FC = () => {
   // 0 index
   const [currPageNumber, setCurrPageNumber] = useState<number>(0);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]);
+  const [clickedOpening, setClickedOpening] = useState<OpeningSearchResponseDto>();
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState<boolean>(false);
 
   /**
- * Toggles the selection of an opening ID.
- * If the ID is already selected, it is removed; otherwise, it is added.
- *
- * @param {number} id - The opening ID to toggle.
- */
+   * Toggles the selection of an opening ID.
+   * If the ID is already selected, it is removed; otherwise, it is added.
+   * It will also open a coming soon modal.
+   *
+   * @param {number} id - The opening ID to toggle.
+   */
   const handleRowSelection = (id: number) => {
     setSelectedOpeningIds((prev) =>
       prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
@@ -104,6 +109,11 @@ const OpeningSearch: React.FC = () => {
     console.log(nextPageNum, nextPageSize)
 
     searchMutation.mutate({ page: nextPageNum, perPage: nextPageSize });
+  }
+
+  const handleComingSoon = (rowData: OpeningSearchResponseDto) => {
+    setIsComingSoonOpen(true);
+    setClickedOpening(rowData);
   }
 
   return (
@@ -177,7 +187,6 @@ const OpeningSearch: React.FC = () => {
               headers={searchTableHeaders}
               showToolbar={false}
               showHeader={false}
-              rowCount={currPageSize}
             />
             : null
         }
@@ -213,6 +222,8 @@ const OpeningSearch: React.FC = () => {
                           showMap={showMap}
                           selectedRows={selectedOpeningIds}
                           handleRowSelection={handleRowSelection}
+                          enableClick
+                          handleComingSoon={handleComingSoon}
                         />
                       ))
                     }
@@ -244,7 +255,18 @@ const OpeningSearch: React.FC = () => {
             : null
         }
       </Column>
-
+      <Modal
+        open={isComingSoonOpen}
+        onRequestClose={() => setIsComingSoonOpen(false)}
+        passiveModal
+        modalHeading="Coming Soon"
+        modalLabel={`Opening ID: ${clickedOpening?.openingId}`}
+      >
+        <p className="modal-subtext">An opening details page is in development.</p> <br />
+        <p className="modal-subtext">
+          {` Until it's available, search for ${clickedOpening?.openingId} in RESULTS to view the opening details.`}
+        </p>
+      </Modal>
     </Grid>
   )
 };

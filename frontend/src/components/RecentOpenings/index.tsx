@@ -9,7 +9,6 @@ import { fetchUserRecentOpenings } from '../../services/OpeningService';
 import TableSkeleton from '../TableSkeleton';
 import { recentOpeningsHeaders } from './constants';
 import EmptySection from '../EmptySection';
-import ComingSoonModal from '../ComingSoonModal';
 import OpeningTableRow from '../OpeningTableRow';
 
 import './styles.scss';
@@ -142,10 +141,6 @@ const RecentOpenings = () => {
           )
           : null
       }
-      <ComingSoonModal
-        openingDetails={openingDetails}
-        setOpeningDetails={setOpeningDetails}
-      />
     </div>
   );
 };
