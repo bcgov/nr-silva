@@ -16,11 +16,6 @@ import OpeningSearch from "@/components/SilvicultureSearch/OpeningSearch";
 import './styles.scss'
 
 const SilvicultureSearch: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index
-
-  const onTabChange = (tabSelection: { selectedIndex: number }) => {
-    setActiveTab(tabSelection.selectedIndex);
-  };
 
   return (
     <Grid className="silviculture-search-grid default-grid">
@@ -32,7 +27,7 @@ const SilvicultureSearch: React.FC = () => {
       </Column>
 
       <Column className="full-width-col" sm={4} md={8} lg={16}>
-        <Tabs onChange={onTabChange} selectedIndex={activeTab}>
+        <Tabs>
           <TabList className="search-tablist" aria-label="List of Tab" contained>
             <Tab renderIcon={MapBoundaryVegetation}>Openings</Tab>
           </TabList>
