@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitRepository;
 import java.time.LocalDate;
@@ -52,25 +53,14 @@ class OrgUnitServiceTest {
 
     when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS")))
         .thenReturn(List.of(orgUnit));
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
+    List<CodeDescriptionDto> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
     Assertions.assertEquals(1, entities.size());
 
-    OrgUnitEntity responseOrg = entities.get(0);
-    Assertions.assertTrue(responseOrg.getExpiryDate().isAfter(LocalDate.now()));
-    Assertions.assertEquals(22L, responseOrg.getOrgUnitNo());
-    Assertions.assertEquals("DAS", responseOrg.getOrgUnitCode());
-    Assertions.assertEquals("DAS Name", responseOrg.getOrgUnitName());
-    Assertions.assertEquals("123", responseOrg.getLocationCode());
-    Assertions.assertEquals("1", responseOrg.getAreaCode());
-    Assertions.assertEquals("25436521", responseOrg.getTelephoneNo());
-    Assertions.assertEquals('R', responseOrg.getOrgLevelCode());
-    Assertions.assertEquals("RR", responseOrg.getOfficeNameCode());
-    Assertions.assertEquals(12L, responseOrg.getRollupRegionNo());
-    Assertions.assertEquals("19", responseOrg.getRollupRegionCode());
-    Assertions.assertEquals(13L, responseOrg.getRollupDistNo());
-    Assertions.assertEquals("25", responseOrg.getRollupDistCode());
+    CodeDescriptionDto responseOrg = entities.get(0);
+    Assertions.assertEquals("DAS", responseOrg.code());
+    Assertions.assertEquals("DAS Name", responseOrg.description());
 
     verify(orgUnitRepository, times(0)).findAll();
   }
@@ -81,7 +71,7 @@ class OrgUnitServiceTest {
     orgUnitService = new OrgUnitService(orgUnitRepository, silvaConfiguration);
 
     when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
-    List<OrgUnitEntity> entities = orgUnitService.findAllOrgUnits();
+    List<CodeDescriptionDto> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);
     Assertions.assertTrue(entities.isEmpty());

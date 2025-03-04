@@ -9,7 +9,7 @@ import {
   Column,
   ComboBox,
   DropdownSkeleton,
-  Loading
+  Loading,
 } from "@carbon/react";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +42,7 @@ import "./styles.scss";
 interface BarChartGroupedEvent {
   detail: {
     datum: SubmissionTrendChartObj;
-  }
+  };
 }
 
 /**
@@ -57,13 +57,9 @@ const OpeningSubmissionTrend = () => {
   const chartRef = useRef(null);
   const navigate = useNavigate();
 
-
   const orgUnitQuery = useQuery({
-    queryKey: ["opening-search", "org-units"],
+    queryKey: ["codes", "org-units"],
     queryFn: fetchOpeningsOrgUnits,
-    select: (data): CodeDescriptionDto[] => (
-      data.map((orgUnit) => ({ code: orgUnit.orgUnitCode, description: orgUnit.orgUnitName })
-      ))
   });
 
   const submissionTrendQuery = useQuery({
@@ -82,21 +78,21 @@ const OpeningSubmissionTrend = () => {
         orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
         statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
         entryDateStart: getYearBoundaryDate(selectedYear, true),
-        entryDateEnd: getYearBoundaryDate(selectedYear, false)
+        entryDateEnd: getYearBoundaryDate(selectedYear, false),
       });
       // This is to handle the 204 no content
       return data.length ? data : null;
     },
-    select: (data): SubmissionTrendChartObj[] | undefined => (
-      data ?
-        data.map((item) => ({
+    select: (data): SubmissionTrendChartObj[] | undefined =>
+      data
+        ? data.map((item) => ({
           ...item,
           group: "Openings",
           key: `${getMonthAbbreviation(item.month)} ${item.year}`,
-          value: item.amount
+          value: item.amount,
         }))
-        : undefined),
-    refetchOnMount: true
+        : undefined,
+    refetchOnMount: true,
   });
 
   const handleYearSelection = (e: ComboBoxEvent<number>) => {
@@ -106,28 +102,38 @@ const OpeningSubmissionTrend = () => {
   }
 
   const handleOrgUnitChange = (e: MultiSelectEvent) => {
-    setSelectedOrgUnits(e.selectedItems)
+    setSelectedOrgUnits(e.selectedItems);
   };
 
   const handleStatusChange = (e: MultiSelectEvent) => {
-    setSelectedStatusCodes(e.selectedItems)
+    setSelectedStatusCodes(e.selectedItems);
   };
 
   useEffect(() => {
     submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
-
   useEffect(() => {
     if (chartRef.current) {
       const { chart }: GroupedBarChart = chartRef.current;
       if (chart) {
-        chart.services.events.addEventListener("bar-click", (event: BarChartGroupedEvent) => {
-          const { datum } = event.detail;
-          const searchDateStart = format(startOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
-          const searchDateEnd = format(endOfMonth(new Date(datum.year, datum.month - 1)), "yyyy-MM-dd");
-          navigate(`/silviculture-search?tab=openings&dateType=Update&startDate=${searchDateStart}&endDate=${searchDateEnd}`);
-        });
+        chart.services.events.addEventListener(
+          "bar-click",
+          (event: BarChartGroupedEvent) => {
+            const { datum } = event.detail;
+            const searchDateStart = format(
+              startOfMonth(new Date(datum.year, datum.month - 1)),
+              "yyyy-MM-dd"
+            );
+            const searchDateEnd = format(
+              endOfMonth(new Date(datum.year, datum.month - 1)),
+              "yyyy-MM-dd"
+            );
+            navigate(
+              `/silviculture-search?tab=openings&dateType=Update&startDate=${searchDateStart}&endDate=${searchDateEnd}`
+            );
+          }
+        );
       }
     }
   }, [chartRef, submissionTrendQuery.status]);
@@ -157,7 +163,6 @@ const OpeningSubmissionTrend = () => {
                   selectionFeedback="top-after-reopen"
                   onChange={handleOrgUnitChange}
                   disabled={submissionTrendQuery.isFetching}
-                  filterItems={filterCodeDescriptionItems}
                 />
 
                 <FilterableMultiSelect
@@ -168,7 +173,6 @@ const OpeningSubmissionTrend = () => {
                   selectionFeedback="top-after-reopen"
                   onChange={handleStatusChange}
                   disabled={submissionTrendQuery.isFetching}
-                  filterItems={filterCodeDescriptionItems}
                 />
 
                 <ComboBox
@@ -180,37 +184,30 @@ const OpeningSubmissionTrend = () => {
                   initialSelectedItem={selectedYear}
                 />
               </>
-            )
-          }
+            )}
         </div>
       </Column>
 
       <Column className="trend-loading-col" sm={4} md={8} lg={16} xlg={16}>
-        {
-          submissionTrendQuery.isFetching
-            ? (
-              <Loading className="trend-loading-spinner" withOverlay={false} />
-            )
-            : null
-        }
-        {
-          !submissionTrendQuery.isFetching && !submissionTrendQuery.data ? (
-            <EmptySection
-              pictogram="UserSearch"
-              title="No results found"
-              description="No results found with the current filters. Try adjusting them to refine your search."
-              fill="#0073E6"
-            />
-          )
-            : null
-        }
-        {
-          !submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
-            <GroupedBarChart ref={chartRef} data={submissionTrendQuery.data} options={ChartOptions} />
-          ) : null
-        }
+        {submissionTrendQuery.isFetching ? (
+          <Loading className="trend-loading-spinner" withOverlay={false} />
+        ) : null}
+        {!submissionTrendQuery.isFetching && !submissionTrendQuery.data ? (
+          <EmptySection
+            pictogram="UserSearch"
+            title="No results found"
+            description="No results found with the current filters. Try adjusting them to refine your search."
+            fill="#0073E6"
+          />
+        ) : null}
+        {!submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
+          <GroupedBarChart
+            ref={chartRef}
+            data={submissionTrendQuery.data}
+            options={ChartOptions}
+          />
+        ) : null}
       </Column>
-
     </ChartContainer>
   );
 };

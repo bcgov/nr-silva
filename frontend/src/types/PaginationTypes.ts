@@ -1,8 +1,11 @@
-export type PagedResult<T> = {
-  data: T[],
-  pageIndex: number,
-  perPage: number,
+export type PaginatedResponseType<T> = {
+  content: T[],
+  page: PageType,
+}
+
+export type PageType = {
+  size: number,
+  number: number,
+  totalElements: number,
   totalPages: number,
-  totalItems: number,
-  hasNextPage: boolean,
 }

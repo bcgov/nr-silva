@@ -6,20 +6,21 @@ const resolveQueryString = (queryString: string | null) => {
 }
 
 // Define the API base URL from the environment variables
-const API_BASE_URL = env.VITE_BACKEND_URL;
+const API_BASE_URL = `${env.VITE_BACKEND_URL}/api`;
 
 // Define the API endpoints, making it easier to refactor in the future when needed
 const API_ENDPOINTS = {
-  openingFavourites: () => `${API_BASE_URL}/api/openings/favourites`,
-  openingFavouriteWithId: (openingId: number) => `${API_BASE_URL}/api/openings/favourites/${openingId}`,
-  openingSearch: (filters: string) => `${API_BASE_URL}/api/opening-search${filters}`,
-  recentOpenings: () => `${API_BASE_URL}/api/openings/recent`,
-  postRecentOpening: (openingId: number) => `${API_BASE_URL}/api/openings/recent/${openingId}`,
-  categories: () => `${API_BASE_URL}/api/opening-search/categories`,
-  orgUnits: () => `${API_BASE_URL}/api/opening-search/org-units`,
-  clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/api/forest-clients/byNameAcronymNumber?value=${query}`,
-  clientLocations: (clientId: string) => `${API_BASE_URL}/api/forest-clients/${clientId}/locations`,
-  submissionTrends: (queryString: string | null) => `${API_BASE_URL}/api/users/submission-trends${resolveQueryString(queryString)}`
+  openingFavourites: () => `${API_BASE_URL}/openings/favourites`,
+  openingFavouriteWithId: (openingId: number) => `${API_BASE_URL}/openings/favourites/${openingId}`,
+  openingSearch: (filters: string) => `${API_BASE_URL}/openings/search${filters}`,
+  recentOpenings: () => `${API_BASE_URL}/openings/recent?size=10`,
+  postRecentOpening: (openingId: number) => `${API_BASE_URL}/openings/recent/${openingId}`,
+  categories: () => `${API_BASE_URL}/codes/categories`,
+  orgUnits: () => `${API_BASE_URL}/codes/org-units`,
+  clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/forest-clients/byNameAcronymNumber?value=${query}`,
+  clientLocations: (clientId: string) => `${API_BASE_URL}/forest-clients/${clientId}/locations`,
+  submissionTrends: (queryString: string | null) => `${API_BASE_URL}/users/submission-trends${resolveQueryString(queryString)}`,
+  openingMap: (openingId: number) => `${API_BASE_URL}/openings/map/${openingId}`
 };
 
 // Define the default headers for the API requests, including ones used by CORS

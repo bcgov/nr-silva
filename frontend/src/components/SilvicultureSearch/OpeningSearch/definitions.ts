@@ -21,7 +21,7 @@ export type OpeningSearchFilterType = {
   clientNumber?: string;
   timberMark?: string;
   page?: number;
-  perPage?: number;
+  size?: number;
 }
 
 export type FilterDisplayNameMapType = {

@@ -2,8 +2,6 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
-import ca.bc.gov.restapi.results.common.pagination.PaginatedResult;
-import ca.bc.gov.restapi.results.common.pagination.PaginationParameters;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
@@ -15,13 +13,14 @@ import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -73,15 +72,8 @@ public class UserRecentOpeningService {
     );
   }
 
-  /**
-   * Retrieves the recent openings viewed by the logged-in user, limited by the provided limit.
-   *
-   * @param limit The maximum number of recent openings to retrieve.
-   * @return A list of opening IDs the user has viewed, sorted by last viewed in descending order.
-   */
-  public PaginatedResult<OpeningSearchResponseDto> getAllRecentOpeningsForUser(int limit) {
+  public Page<OpeningSearchResponseDto> getAllRecentOpeningsForUser(Pageable pageable) {
     String userId = loggedUserService.getLoggedUserId();
-    Pageable pageable = PageRequest.of(0, limit); // PageRequest object to apply limit
 
     // Fetch recent openings for the user
     Page<UserRecentOpeningEntity> recentOpenings = userRecentOpeningRepository
@@ -95,27 +87,28 @@ public class UserRecentOpeningService {
 
     if (openingIds.isEmpty()) {
       // Ensure an empty data list instead of null
-      return new PaginatedResult<OpeningSearchResponseDto>().withData(Collections.emptyList());
+      return new PageImpl<>(List.of(), pageable, 0);
     }
 
-    PaginatedResult<OpeningSearchResponseDto> pageResult =
+    Page<OpeningSearchResponseDto> pageResult =
         openingService.parsePageResult(
-            new PaginationParameters(0, 10),
             openingRepository
                 .searchByOpeningIds(new ArrayList<>(openingIds.keySet()),
-                    PageRequest.of(0, 10)
+                    //Here it really doesn't matter, if we set the page as first, because it will be just for the current page anyway
+                    PageRequest.of(0, openingIds.size())
                 )
         );
 
-    return pageResult
-        .withData(
+    return
+        new PageImpl<>(
             pageResult
-                .getData()
-                .stream()
+                .get()
                 .map(result -> result.withLastViewDate(
                     openingIds.get(result.getOpeningId().longValue())))
                 .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
-                .toList()
+                .toList(),
+            recentOpenings.getPageable(),
+            recentOpenings.getTotalPages()
         );
   }
 

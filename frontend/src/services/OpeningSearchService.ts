@@ -3,10 +3,10 @@ import qs from "qs";
 import CodeDescriptionDto from "../types/CodeDescriptionType";
 import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
-import { OpeningSearchResponseDto, OrgUnitEntity } from "../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "../types/OpeningTypes";
 import { extractCodesFromCodeDescriptionArr } from "../utils/multiSelectUtils";
-import { PagedResult } from "../types/PaginationTypes";
 import { OpeningSearchFilterType } from "../components/SilvicultureSearch/OpeningSearch/definitions";
+import { PaginatedResponseType } from "../types/PaginationTypes";
 
 export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token
@@ -21,7 +21,7 @@ export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
 /**
  * Fetch a list of org unit used for opening search
  */
-export const fetchOpeningsOrgUnits = (): Promise<OrgUnitEntity[]> => {
+export const fetchOpeningsOrgUnits = (): Promise<CodeDescriptionDto[]> => {
   const authToken = getAuthIdToken();
 
   return axios.get(API_ENDPOINTS.orgUnits(), defaultHeaders(authToken))
@@ -64,8 +64,8 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
   if (!cleanedParams.page) {
     cleanedParams.page = 0;
   }
-  if (!cleanedParams.perPage) {
-    cleanedParams.perPage = 20;
+  if (!cleanedParams.size) {
+    cleanedParams.size = 20;
   }
 
   // Stringify the cleanedParams using qs with arrayFormat: 'repeat'
@@ -79,6 +79,6 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
 
   // Make the API request with the Authorization header
   return axios.get(API_ENDPOINTS.openingSearch(queryString), defaultHeaders(authToken))
-    .then((res) => res.data as PagedResult<OpeningSearchResponseDto>);
+    .then((res) => res.data as PaginatedResponseType<OpeningSearchResponseDto>);
 };
 

@@ -59,16 +59,13 @@ const OpeningSearch: React.FC = () => {
    * Data Queries
    */
   const categoryQuery = useQuery({
-    queryKey: ['opening-search', 'categories'],
+    queryKey: ['codes', 'categories'],
     queryFn: fetchCategories
   });
 
   const orgUnitQuery = useQuery({
-    queryKey: ["opening-search", "org-units"],
-    queryFn: fetchOpeningsOrgUnits,
-    select: (data): CodeDescriptionDto[] => (
-      data.map((orgUnit) => ({ code: orgUnit.orgUnitCode, description: orgUnit.orgUnitName })
-      ))
+    queryKey: ["codes", "org-units"],
+    queryFn: fetchOpeningsOrgUnits
   });
 
   /*
@@ -76,11 +73,11 @@ const OpeningSearch: React.FC = () => {
    */
   const searchMutation = useMutation({
     mutationFn: (
-      { page, perPage }: { page: number, perPage: number }
+      { page, size }: { page: number, size: number }
     ) => searchOpenings({
       ...filters,
       page,
-      perPage
+      size
     })
   })
 
@@ -88,14 +85,8 @@ const OpeningSearch: React.FC = () => {
    * Handler for when a search action is triggered.
    */
   const handleSearch = () => {
-    searchMutation.mutate({ page: currPageNumber, perPage: currPageSize });
+    searchMutation.mutate({ page: currPageNumber, size: currPageSize });
   }
-
-
-  // TODO: remove, debug only
-  useEffect(() => {
-    console.log('filter changed: ', filters)
-  }, [filters])
 
   const handlePagination = (paginationObj: PaginationOnChangeType) => {
     console.log('triggered')
@@ -108,7 +99,7 @@ const OpeningSearch: React.FC = () => {
 
     console.log(nextPageNum, nextPageSize)
 
-    searchMutation.mutate({ page: nextPageNum, perPage: nextPageSize });
+    searchMutation.mutate({ page: nextPageNum, size: nextPageSize });
   }
 
   const handleComingSoon = (rowData: OpeningSearchResponseDto) => {
@@ -129,7 +120,7 @@ const OpeningSearch: React.FC = () => {
         categories={categoryQuery.data ?? []}
         orgUnits={orgUnitQuery.data ?? []}
         handleSearch={handleSearch}
-        totalResults={searchMutation.data?.totalItems}
+        totalResults={searchMutation.data?.page.totalElements}
       />
 
       {/* Map Section */}
@@ -162,7 +153,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Adaptive initial empty display and error display */}
         {
-          !searchMutation.isPending && searchMutation.data?.totalItems === undefined
+          !searchMutation.isPending && searchMutation.data?.page.totalElements === undefined
             ? (
               <EmptySection
                 className="initial-empty-section"
@@ -214,7 +205,7 @@ const OpeningSearch: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {
-                      searchMutation.data?.data.map((row) => (
+                      searchMutation.data?.content.map((row) => (
                         <OpeningTableRow
                           key={row.openingId}
                           headers={searchTableHeaders}
@@ -231,14 +222,14 @@ const OpeningSearch: React.FC = () => {
                 </Table>
                 {/* Display either pagination or empty message */}
                 {
-                  searchMutation.data?.totalItems > 0
+                  searchMutation.data?.page.totalElements > 0
                     ? (
                       <Pagination
                         className="default-pagination-white"
                         page={currPageNumber + 1}
                         pageSize={currPageSize}
                         pageSizes={PageSizesConfig}
-                        totalItems={searchMutation.data.totalItems}
+                        totalItems={searchMutation.data.page.totalElements}
                         onChange={handlePagination}
                       />
                     )

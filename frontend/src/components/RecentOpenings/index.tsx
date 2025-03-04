@@ -16,18 +16,28 @@ import './styles.scss';
 const RecentOpenings = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
-  const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
+  const [openingPolygonNotFound, setOpeningPolygonNotFound] =
+    useState<boolean>(false);
+  const [faultyOpeningPolygonId, setFaultyOpeningPolygonId] = useState<
+    number | null
+  >(null);
+
   const [openingDetails, setOpeningDetails] = useState("");
   const breakpoint = useBreakpoint();
 
   const recentOpeningsQuery = useQuery({
     queryKey: ["opening", "recent"],
     queryFn: () => fetchUserRecentOpenings(),
-    refetchOnMount: "always"
+    refetchOnMount: "always",
   });
 
   const toggleMap = () => {
     setShowMap(!showMap);
+  };
+
+  const handleMapError = (value: boolean, openingId: number | null) => {
+    setOpeningPolygonNotFound(value);
+    setFaultyOpeningPolygonId(openingId);
   };
 
   /**
@@ -38,15 +48,15 @@ const RecentOpenings = () => {
    */
   const handleRowSelection = (id: number) => {
     setSelectedOpeningIds((prev) =>
-      prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((openingId) => openingId !== id)
+        : [...prev, id]
     );
   };
 
   return (
     <div className="recent-openings-container">
-      <div
-        className="title-section"
-      >
+      <div className="title-section">
         <SectionTitle
           title="Recent openings"
           subtitle="Track the history of openings you have looked at and check spatial information by selecting the openings in the table below"
@@ -55,59 +65,56 @@ const RecentOpenings = () => {
           className="map-button"
           renderIcon={Location}
           type="button"
-          size={breakpoint === 'sm' ? 'sm' : 'lg'}
+          size={breakpoint === "sm" ? "sm" : "lg"}
           onClick={toggleMap}
-          disabled={!recentOpeningsQuery.data?.data.length}
+          disabled={!recentOpeningsQuery.data?.content.length}
         >
-          {showMap ? 'Hide map' : 'Show map'}
+          {showMap ? "Hide map" : "Show map"}
         </Button>
       </div>
-      {
-        showMap
-          ? (
-            <OpeningsMap
-              openingId={null}
-              openingIds={selectedOpeningIds}
-              setOpeningPolygonNotFound={setOpeningPolygonNotFound}
-              mapHeight={280}
-            />
-          )
-          : null
-      }
-      {
-        openingPolygonNotFound
-          ? (
-            <InlineNotification
-              title="Opening ID not found!"
-              subtitle="Unable to find selected Opening Polygon!"
-              kind="error"
-              lowContrast
-              className="inline-notification"
-            />
-          )
-          : null
-      }
+
+      {openingPolygonNotFound && (
+        <InlineNotification
+          title={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
+          subtitle="No map data available for this opening ID"
+          statusIconDescription={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
+          kind="error"
+          lowContrast
+          className="inline-notification"
+          hideCloseButton
+          role="alert"
+        />
+      )}
+      {showMap && (
+        <OpeningsMap
+          openingId={null}
+          openingIds={selectedOpeningIds}
+          setOpeningPolygonNotFound={handleMapError}
+          mapHeight={280}
+        />
+      )}
+
       {/* Table skeleton */}
-      {
-        recentOpeningsQuery.isLoading
-          ? <TableSkeleton headers={recentOpeningsHeaders} showToolbar={false} showHeader={false} />
-          : null
-      }
+      {recentOpeningsQuery.isLoading ? (
+        <TableSkeleton
+          headers={recentOpeningsHeaders}
+          showToolbar={false}
+          showHeader={false}
+        />
+      ) : null}
       {/* Empty Table */}
-      {
-        !recentOpeningsQuery.isLoading && !recentOpeningsQuery.data?.data.length ? (
-          <EmptySection
-            pictogram="Magnify"
-            title="There are no openings to show yet"
-            description="Your recent openings will appear here once you generate one"
-            fill="#0073E6"
-          />
-        )
-          : null
-      }
+      {!recentOpeningsQuery.isLoading &&
+        !recentOpeningsQuery.data?.content.length ? (
+        <EmptySection
+          pictogram="Magnify"
+          title="There are no openings to show yet"
+          description="Your recent openings will appear here once you generate one"
+          fill="#0073E6"
+        />
+      ) : null}
       {/* Loaded table content */}
       {
-        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.data.length ?
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content.length ?
           (
             <Table
               className="recent-openings-table default-zebra-table"
@@ -125,7 +132,7 @@ const RecentOpenings = () => {
               </TableHead>
               <TableBody>
                 {
-                  recentOpeningsQuery.data?.data.map((row) => (
+                  recentOpeningsQuery.data?.content.map((row) => (
                     <OpeningTableRow
                       headers={recentOpeningsHeaders}
                       key={row.openingId}
