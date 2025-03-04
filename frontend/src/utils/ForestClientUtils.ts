@@ -1,4 +1,5 @@
-import { ForestClientAutocomplete, ForestClientLocation } from "../services/OpeningClientLocationService";
+import { ForestClientAutocomplete } from "../services/OpeningClientLocationService";
+import CodeDescriptionDto from "../types/CodeDescriptionType";
 
 
 /**
@@ -20,18 +21,18 @@ export const getClientLabel = (client?: ForestClientAutocomplete | null): string
 
 
 /**
- * Generates a label for a ForestClientLocation object.
+ * Generates a label for a CodeDescriptionDto object.
  * The label consists of `id` and `name`, separated by a hyphen.
  * If any of these values are empty or missing, they are omitted.
  *
- * @param {ForestClientLocation} location - The location object containing id and name.
+ * @param {CodeDescriptionDto} location - The location object containing id and name.
  * @returns {string} A formatted label with non-empty values.
  */
-export const getClientLocationLabel = (location?: ForestClientLocation | null): string => {
+export const getClientLocationLabel = (location?: CodeDescriptionDto | null): string => {
   if (!location) {
     return '';
   }
-  return [location.id, location.name]
+  return [location.code, location.description]
     .filter(value => value && value.length > 0)
     .join(' - ');
 };

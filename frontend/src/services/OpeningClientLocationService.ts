@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
+import CodeDescriptionDto from '../types/CodeDescriptionType';
 
 export interface ForestClientAutocomplete {
   id: string;
@@ -8,17 +9,12 @@ export interface ForestClientAutocomplete {
   acronym: string;
 }
 
-export interface ForestClientLocation {
-  id: string,
-  name: string,
-}
-
 export const fetchClientsByNameAcronymNumber = (query: string): Promise<ForestClientAutocomplete[]> => {
   return axios.get(API_ENDPOINTS.clientsByNameAcronymNumber(query), defaultHeaders(getAuthIdToken()))
     .then((res) => res.data);
 };
 
-export const fetchClientLocations = async (clientId: string): Promise<ForestClientLocation[]> => {
+export const fetchClientLocations = async (clientId: string): Promise<CodeDescriptionDto[]> => {
   return axios.get(API_ENDPOINTS.clientLocations(clientId), defaultHeaders(getAuthIdToken()))
     .then((res) => res.data);
 }

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { ComboBox } from "@carbon/react";
 import { useMutation } from "@tanstack/react-query";
 
-import { fetchClientLocations, fetchClientsByNameAcronymNumber, ForestClientAutocomplete, ForestClientLocation } from "../../services/OpeningClientLocationService";
+import { fetchClientLocations, fetchClientsByNameAcronymNumber, ForestClientAutocomplete } from "../../services/OpeningClientLocationService";
 import { getClientLabel, getClientLocationLabel } from "../../utils/ForestClientUtils";
 import { ComboBoxEvent } from "../../types/CarbonTypes";
 import { TextInputEvent } from "../../types/GeneralTypes";
 import { createTextInputEvent } from "../../utils/InputUtils";
 
 import './styles.scss';
+import CodeDescriptionDto from "../../types/CodeDescriptionType";
 
 const emptyTextInputEvent = createTextInputEvent('');
 
@@ -33,8 +34,8 @@ const ForestClientInput = ({
   const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
   const [selectedClient, setSelectedClient] = useState<ForestClientAutocomplete | null>(null);
   const [matchingClients, setMatchingClients] = useState<ForestClientAutocomplete[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<ForestClientLocation | null>(null);
-  const [matchingLocationCodes, setMatchingLocationCodes] = useState<ForestClientLocation[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<CodeDescriptionDto | null>(null);
+  const [matchingLocationCodes, setMatchingLocationCodes] = useState<CodeDescriptionDto[]>([]);
 
   const clientMutation = useMutation({
     mutationKey: ["forest-clients", "byNameAcronymNumber"],
@@ -80,11 +81,11 @@ const ForestClientInput = ({
     }
   };
 
-  const handleLocationSelection = (e: ComboBoxEvent<ForestClientLocation>) => {
+  const handleLocationSelection = (e: ComboBoxEvent<CodeDescriptionDto>) => {
     const { selectedItem } = e;
     if (selectedItem) {
       setSelectedLocation(selectedItem);
-      setClientLocationCode(createTextInputEvent(selectedItem.id));
+      setClientLocationCode(createTextInputEvent(selectedItem.code));
     }
   };
 
