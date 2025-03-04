@@ -18,3 +18,5 @@ export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'earlyFreeGrowingDate', header: 'Free growing due date', selected: false },
   { key: 'updateTimestamp', header: 'Update date', selected: false }
 ];
+
+export const MAX_TEXT_INPUT_LEN = 50;

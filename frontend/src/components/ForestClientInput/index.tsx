@@ -13,6 +13,8 @@ import './styles.scss';
 const emptyTextInputEvent = createTextInputEvent('');
 
 type ForestClientProps = {
+  clientInputId: string;
+  locationInputId: string;
   setClientNumber: (event: TextInputEvent) => void,
   setClientLocationCode: (event: TextInputEvent) => void
 }
@@ -22,7 +24,12 @@ type ForestClientProps = {
  * - The first input allows searching and validating a forest client by name, acronym, or number.
  * - The second input provides a list of valid location codes under the validated client.
  */
-const ForestClientInput = ({ setClientNumber, setClientLocationCode }: ForestClientProps) => {
+const ForestClientInput = ({
+  clientInputId,
+  locationInputId,
+  setClientNumber,
+  setClientLocationCode
+}: ForestClientProps) => {
   const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
   const [selectedClient, setSelectedClient] = useState<ForestClientAutocomplete | null>(null);
   const [matchingClients, setMatchingClients] = useState<ForestClientAutocomplete[]>([]);
@@ -84,7 +91,7 @@ const ForestClientInput = ({ setClientNumber, setClientLocationCode }: ForestCli
   return (
     <div className="forest-client-input-container">
       <ComboBox
-        id="client-name-combobox"
+        id={clientInputId}
         className="client-name-combobox"
         helperText="Search by client name, number, or acronym"
         items={matchingClients}
@@ -97,7 +104,7 @@ const ForestClientInput = ({ setClientNumber, setClientLocationCode }: ForestCli
       />
       <ComboBox
         className="location-code-combobox"
-        id="location-code-combobox"
+        id={locationInputId}
         items={matchingLocationCodes}
         titleText="Location code"
         onChange={handleLocationSelection}

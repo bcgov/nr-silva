@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, CheckboxGroup, Column, ComposedModal, Grid, Modal, ModalBody, ModalFooter, ModalHeader, Search, TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarMenu } from "@carbon/react";
+import { Button, Checkbox, CheckboxGroup, Column, ComposedModal, DatePicker, DatePickerInput, Dropdown, Grid, Modal, ModalBody, ModalFooter, ModalHeader, Search, TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarMenu, TextInput } from "@carbon/react";
 import {
   FilterEdit as FilterIcon,
   Search as SearchIcon,
   Column as ColumnIcon
 } from "@carbon/icons-react";
 
-import { OPENING_STATUS_LIST } from "../../../../constants";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../../constants";
 import CustomMultiSelect from "../../../CustomMultiSelect";
 import { codeDescriptionToDisplayText, MultiSelectEvent } from "../../../../utils/multiSelectUtils";
 import { OpeningSearchFilterType } from "./definitions";
@@ -15,6 +15,8 @@ import { CheckBoxEvent, TextInputEvent } from "../../../../types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "../../../../types/TableHeader";
 import useBreakpoint from "../../../../hooks/UseBreakpoint";
 import ForestClientInput from "../../../ForestClientInput";
+import { DateTime } from "luxon";
+import { MAX_TEXT_INPUT_LEN } from "./constants";
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],
@@ -50,6 +52,7 @@ const OpeningSearchBar = ({
 ) => {
   const breakpoint = useBreakpoint();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
+  const [selectedDateType, setSelectedDateType] = useState<CodeDescriptionDto | null>();
 
   /**
    * A workaround to add text to Carbon's `TableToolbarMenu` button since it does not natively support text alongside the icon.
@@ -108,6 +111,44 @@ const OpeningSearchBar = ({
     }));
   }
 
+  const handleDateTypeChange = (dateType: CodeDescriptionDto | null) => {
+    setSelectedDateType(dateType)
+    setFilters((prev) => ({
+      ...prev,
+      disturbanceDateStart: undefined,
+      disturbanceDateEnd: undefined,
+
+      regenDelayDateStart: undefined,
+      regenDelayDateEnd: undefined,
+
+      freeGrowingDateStart: undefined,
+      freeGrowingDateEnd: undefined,
+
+      updateDateStart: undefined,
+      updateDateEnd: undefined,
+    }))
+  }
+
+  const handleDateChange = (isStartDate: boolean) => (dates?: (Date)[]) => {
+    if (!selectedDateType || !dates) return;
+
+    const formattedDate = dates.length ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT) : "";
+
+    const key = `${selectedDateType.code}${isStartDate ? "DateStart" : "DateEnd"}` as keyof OpeningSearchFilterType;
+
+    setFilters((prev) => {
+      // Prevent unnecessary updates
+      if (prev[key] === formattedDate) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [key]: formattedDate,
+      };
+    });
+  };
+
 
   const toggleColumn = (key: OpendingHeaderKeyType) => {
     if (key !== 'openingId' && key !== 'actions') {
@@ -120,13 +161,13 @@ const OpeningSearchBar = ({
   };
 
   // Child components, shared between search bar and advanced modal
-  const SearchButton = () => (
+  const SearchButton = ({ size }: { size: 'md' | 'lg' }) => (
     <Button
       className="search-button"
       renderIcon={SearchIcon}
       iconDescription="Search"
       type="button"
-      size="md"
+      size={size}
       onClick={handleSearch}
     >
       Search
@@ -162,7 +203,60 @@ const OpeningSearchBar = ({
     >
       Advanced Search
     </Button>
-  )
+  );
+
+  const getStartMaxDate = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
+
+    const maxDate = filters[endDateKey]
+      ? DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      : DateTime.now().toFormat(DATE_PICKER_FORMAT);
+
+    return maxDate;
+  }
+
+  const getEndMinDate = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
+
+    const minDate = filters[startDateKey]
+      ? DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      : undefined;
+
+    return minDate;
+  }
+
+  const getStartDateValue = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
+    if (filters[startDateKey]) {
+      return DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+    }
+    return undefined;
+  }
+
+
+  const getEndDateValue = () => {
+    if (!selectedDateType) {
+      return undefined;
+    }
+    const type = selectedDateType.code;
+    const endDateKey = `${type}EndStart` as keyof OpeningSearchFilterType;
+    if (filters[endDateKey]) {
+      return DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+    }
+    return undefined;
+  }
 
 
   return (
@@ -212,7 +306,7 @@ const OpeningSearchBar = ({
       <Column sm={0} md={2} lg={4} max={2}>
         <div className="search-buttons-container">
           <AdvancedSearchButton hasIconOnly />
-          <SearchButton />
+          <SearchButton size="md" />
         </div>
       </Column>
 
@@ -223,7 +317,7 @@ const OpeningSearchBar = ({
 
       {/* Small Screen's Search button */}
       <Column className="search-col-sm" sm={4} md={0}>
-        <SearchButton />
+        <SearchButton size="md" />
       </Column>
 
       {/* Action button row, hidden until a search is completed */}
@@ -366,19 +460,109 @@ const OpeningSearchBar = ({
             {/* Client and location code */}
             <Column sm={4} md={4} lg={8}>
               <ForestClientInput
+                clientInputId="opening-advanced-search-client-input"
+                locationInputId="opening-advanced-location-code-input"
                 setClientNumber={handleStringChange('clientNumber')}
                 setClientLocationCode={handleStringChange('clientLocationCode')}
               />
             </Column>
+            <Column sm={4} md={4} lg={8}>
+              <div className="date-filter-container">
+                <Dropdown
+                  id="date-type-dropdown"
+                  titleText="Date type"
+                  label=""
+                  items={DATE_TYPE_LIST}
+                  initialSelectedItem={selectedDateType}
+                  itemToString={(item) => item?.description ?? "Unknown"}
+                  onChange={(data) => handleDateTypeChange(data.selectedItem)}
+                />
+                {/* Start date */}
+                <DatePicker
+                  className="advanced-date-picker"
+                  datePickerType="single"
+                  dateFormat="Y/m/d"
+                  allowInput
+                  maxDate={getStartMaxDate()}
+                  onChange={handleDateChange(true)}
+                  readOnly={!selectedDateType}
+                  value={getStartDateValue()}
+                >
+                  <DatePickerInput
+                    id="start-date-picker-input-id"
+                    size="md"
+                    labelText="Start Date"
+                    placeholder="yyyy/mm/dd"
+                  />
+                </DatePicker>
+                {/* End date */}
+                <DatePicker
+                  className="advanced-date-picker"
+                  datePickerType="single"
+                  dateFormat="Y/m/d"
+                  allowInput
+                  minDate={getEndMinDate()}
+                  maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
+                  onChange={handleDateChange(false)}
+                  readOnly={!selectedDateType}
+                  value={getEndDateValue()}
+                >
+                  <DatePickerInput
+                    id="end-date-picker-input-id"
+                    size="md"
+                    labelText="End Date"
+                    placeholder="yyyy/mm/dd"
+                  />
+                </DatePicker>
+              </div>
+            </Column>
 
+            {/* Cut block */}
+            <Column sm={4} md={4} lg={8}>
+              <TextInput
+                className="advanced-text-input"
+                id="cut-block-text-input"
+                type="text"
+                labelText="Cut block"
+                defaultValue={filters.cutBlockId}
+                onBlur={handleStringChange('cutBlockId')}
+                maxLength={MAX_TEXT_INPUT_LEN}
+              />
+            </Column>
+
+            {/* Cutting permit */}
+            <Column sm={4} md={4} lg={8}>
+              <TextInput
+                className="advanced-text-input"
+                id="cutting-permit-text-input"
+                type="text"
+                labelText="Cutting permit"
+                defaultValue={filters.cuttingPermitId}
+                onBlur={handleStringChange('cuttingPermitId')}
+                maxLength={MAX_TEXT_INPUT_LEN}
+              />
+            </Column>
+
+            {/* Timber mark */}
+            <Column sm={4} md={4} lg={8}>
+              <TextInput
+                className="advanced-text-input"
+                id="timber-mark-text-input"
+                type="text"
+                labelText="Timber mark"
+                defaultValue={filters.timberMark}
+                onBlur={handleStringChange('timberMark')}
+                maxLength={MAX_TEXT_INPUT_LEN}
+              />
+            </Column>
           </Grid>
         </ModalBody>
-        {/* <ModalFooter>
+        <ModalFooter>
           <Button kind="secondary" onClick={() => setIsAdvancedSearchOpen(false)}>
             Cancel
           </Button>
-          <SearchButton />
-        </ModalFooter> */}
+          <SearchButton size="lg" />
+        </ModalFooter>
       </ComposedModal>
     </>
   )
