@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import FavoriteButton from '../FavoriteButton';
 import { isOpeningFavourite, putOpeningFavourite, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import { useNotification } from '../../contexts/NotificationProvider';
+import { EIGHT_SECONDS } from '../../constants/TimeUnits';
+
+import './styles.scss';
 
 interface OpeningsMapEntryPopupProps {
   openingId: number;
@@ -9,55 +15,92 @@ interface OpeningsMapEntryPopupProps {
 
 const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({ openingId }) => {
 
-  const [isFavorited, setIsFavorited] = useState(false);
   const { displayNotification } = useNotification();
 
-  useEffect(() => {
-    const fetchFavouriteStatus = async () => {
-      const openingFavourited = await isOpeningFavourite(openingId);
-      setIsFavorited(openingFavourited);
-    }
-    fetchFavouriteStatus();
-  }, [openingId]);
+  const navigate = useNavigate()
 
-  const handleFavoriteChange = async (newStatus: boolean) => {
-
-    try {
-      if (!newStatus) {
-        await deleteOpeningFavorite(openingId);
-      } else {
-        await putOpeningFavourite(openingId);
+  const displayFavSuccessToast = (openingId: number, isFavourite: boolean) => (
+    displayNotification({
+      title: `Opening Id ${openingId} ${!isFavourite ? 'un' : ''}favourited`,
+      subTitle: isFavourite ? "You can follow this opening ID on your dashboard" : undefined,
+      type: 'success',
+      dismissIn: EIGHT_SECONDS,
+      buttonLabel: isFavourite ? "Go to track openings" : undefined,
+      onClose: () => {
+        navigate("/dashboard");
       }
-      setIsFavorited(newStatus);
-      displayNotification({
-        title: `Opening Id ${openingId} ${!newStatus ? 'un' : ''}favourited`,
-        type: 'success',
-        dismissIn: 8000,
-        onClose: () => { }
+    })
+  );
+
+  const displayFavErrorToast = (openingId: number) => (
+    displayNotification({
+      title: 'Error',
+      subTitle: `Failed to update favorite status for ${openingId}`,
+      type: 'error',
+      dismissIn: EIGHT_SECONDS,
+      onClose: () => { }
+    })
+  );
+
+  const queryClient = useQueryClient();
+
+  const isFavouriteQuery = useQuery({
+    queryKey: ['openings', 'favourites', openingId],
+    queryFn: () => isOpeningFavourite(openingId),
+    refetchOnMount: true
+  })
+
+  const deleteFavOpenMutation = useMutation({
+    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    onSuccess: (_, openingId) => {
+      displayFavSuccessToast(openingId, false);
+      // Invalidate tracked favourite opening data
+      queryClient.invalidateQueries({
+        queryKey: ['openings', 'favourites'],
       });
-    } catch (error) {
-      displayNotification({
-        title: 'Error',
-        subTitle: `Failed to update favorite status for ${openingId}`,
-        type: 'error',
-        dismissIn: 8000,
-        onClose: () => { }
+      // Invalidate data on recent openings data
+      queryClient.invalidateQueries({
+        queryKey: ["opening", "recent"]
       });
+    },
+    onError: (_, openingId) => displayFavErrorToast(openingId)
+  });
+
+  const putFavOpenMutation = useMutation({
+    mutationFn: (openingId: number) => putOpeningFavourite(openingId),
+    onSuccess: (_, openingId) => {
+      displayFavSuccessToast(openingId, true);
+      // Invalidate tracked favourite opening data
+      queryClient.invalidateQueries({
+        queryKey: ['openings', 'favourites']
+      });
+      // Invalidate data on recent openings data
+      queryClient.invalidateQueries({
+        queryKey: ["opening", "recent"]
+      });
+    },
+    onError: (_, openingId) => displayFavErrorToast(openingId)
+  });
+
+  const handleFavoriteChange = (isFavouriting: boolean) => {
+    if (isFavouriting) {
+      putFavOpenMutation.mutate(openingId)
+    } else {
+      deleteFavOpenMutation.mutate(openingId)
     }
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center ">
+    <div className="map-popup-container">
       <FavoriteButton
         tooltipPosition="bottom"
         kind="ghost"
         size="sm"
-        favorited={isFavorited}
+        favorited={isFavouriteQuery.data ?? false}
         onFavoriteChange={handleFavoriteChange}
+        disabled={deleteFavOpenMutation.isPending || putFavOpenMutation.isPending}
       />
-      <span className="trend-title">Opening ID</span>
-      &nbsp;
-      <span>{openingId}</span>
+      <span>{`Opening ID: ${openingId}`}</span>
     </div>
   );
 };
