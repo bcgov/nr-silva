@@ -16,8 +16,10 @@ const emptyTextInputEvent = createTextInputEvent('');
 type ForestClientProps = {
   clientInputId: string;
   locationInputId: string;
+  clientNumber: string | null | undefined;
   setClientNumber: (event: TextInputEvent) => void,
-  setClientLocationCode: (event: TextInputEvent) => void
+  locationCode: string | null | undefined;
+  setClientLocationCode: (event: TextInputEvent) => void,
 }
 
 /**
@@ -28,7 +30,9 @@ type ForestClientProps = {
 const ForestClientInput = ({
   clientInputId,
   locationInputId,
+  clientNumber,
   setClientNumber,
+  locationCode,
   setClientLocationCode
 }: ForestClientProps) => {
   const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
@@ -47,6 +51,21 @@ const ForestClientInput = ({
     mutationFn: (clientId: string) => fetchClientLocations(clientId),
     onSuccess: (data) => setMatchingLocationCodes(data)
   })
+
+  // Clear the input based on parent's state
+  useEffect(() => {
+    if (!clientNumber) {
+      setSelectedClient(null)
+    }
+  }, [clientNumber])
+
+
+  // Clear the input based on parent's state
+  useEffect(() => {
+    if (!locationCode) {
+      setSelectedLocation(null)
+    }
+  }, [locationCode])
 
   /* Debounce the API call by 300ms */
   useEffect(() => {
@@ -101,7 +120,7 @@ const ForestClientInput = ({
         onInputChange={handleClientInput}
         itemToString={getClientLabel}
         readOnly={locationCodeMutation.isPending}
-        initialSelectedItem={selectedClient ?? undefined}
+        selectedItem={selectedClient ?? undefined}
       />
       <ComboBox
         className="location-code-combobox"

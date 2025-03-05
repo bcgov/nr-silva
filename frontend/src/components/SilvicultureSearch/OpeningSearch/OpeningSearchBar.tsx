@@ -520,7 +520,9 @@ const OpeningSearchBar = ({
               <ForestClientInput
                 clientInputId="opening-advanced-search-client-input"
                 locationInputId="opening-advanced-location-code-input"
+                clientNumber={filters.clientNumber}
                 setClientNumber={handleStringChange('clientNumber')}
+                locationCode={filters.clientLocationCode}
                 setClientLocationCode={handleStringChange('clientLocationCode')}
               />
             </Column>
