@@ -149,7 +149,7 @@ const OpeningSubmissionTrend = () => {
       <Column sm={4} md={8} lg={16}>
         <div className="submission-trend-input-container">
           {
-            orgUnitQuery.isFetching ? (
+            orgUnitQuery.isLoading ? (
               <>
                 <DropdownSkeleton />
                 <DropdownSkeleton />

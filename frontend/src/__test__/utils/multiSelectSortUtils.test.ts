@@ -1,72 +1,84 @@
-import { describe, it, expect } from 'vitest';
-import { sortItems, type TextValueData, type SelectableTextValueData, type SortOptions } from '../../utils/multiSelectSortUtils';
+import { describe, it, expect } from "vitest";
+import {
+  codeDescriptionToDisplayText,
+  extractCodesFromCodeDescriptionArr,
+  filterCodeDescriptionItems,
+} from "../../utils/multiSelectUtils";
+import { SelectableCodeDescriptionDto } from "../../utils/multiSelectUtils";
 
-describe('multiSelectSortUtils', () => {
-  const itemToString = (item: TextValueData) => item.value;
-  const compareItems = (a: string, b: string, options: { locale: string }) => a.localeCompare(b, options.locale);
+describe("multiSelectUtils", () => {
+  describe("codeDescriptionToDisplayText", () => {
+    it("should format CodeDescriptionDto correctly", () => {
+      const input = { code: "ABC", description: "Example Description" };
+      expect(codeDescriptionToDisplayText(input)).toBe("ABC - Example Description");
+    });
 
-  it('should sort items with "Select All" option first', () => {
-    const items: SelectableTextValueData[] = [
-      { value: 'Banana' },
-      { value: 'Apple' },
-      { value: 'Select All', isSelectAll: true },
-      { value: 'Cherry' },
-    ];
+    it("should return an empty string if input is null", () => {
+      expect(codeDescriptionToDisplayText(null)).toBe("");
+    });
 
-    const sortedItems = sortItems(items, { itemToString, compareItems });
-
-    expect(sortedItems[0].value).toBe('Select All');
+    it("should return an empty string if input is undefined", () => {
+      expect(codeDescriptionToDisplayText(undefined)).toBe("");
+    });
   });
 
-  it('should sort selected items before unselected items', () => {
-    const items: SelectableTextValueData[] = [
-      { value: 'Banana' },
-      { value: 'Apple' },
-      { value: 'Cherry' },
-    ];
+  describe("extractCodesFromCodeDescriptionArr", () => {
+    it("should extract codes from CodeDescriptionDto array", () => {
+      const input = [
+        { code: "A1", description: "First" },
+        { code: "B2", description: "Second" },
+      ];
+      expect(extractCodesFromCodeDescriptionArr(input)).toEqual(["A1", "B2"]);
+    });
 
-    const selectedItems: TextValueData[] = [
-      { value: 'Cherry' },
-    ];
-
-    const sortedItems = sortItems(items, { selectedItems, itemToString, compareItems });
-
-    expect(sortedItems[0].value).toBe('Cherry');
+    it("should return an empty array for an empty input array", () => {
+      expect(extractCodesFromCodeDescriptionArr([])).toEqual([]);
+    });
   });
 
-  it('should sort items alphabetically if no "Select All" or selected items', () => {
-    const items: SelectableTextValueData[] = [
-      { value: 'Banana' },
-      { value: 'Apple' },
-      { value: 'Cherry' },
-    ];
+  describe("filterCodeDescriptionItems", () => {
+    const itemToString = (item: SelectableCodeDescriptionDto | null | undefined) =>
+      item ? `${item.code} - ${item.description}` : "";
 
-    const sortedItems = sortItems(items, { itemToString, compareItems });
+    it("should filter items based on input value", () => {
+      const items = [
+        { code: "A1", description: "Apple" },
+        { code: "B2", description: "Banana" },
+        { code: "C3", description: "Cherry" },
+      ];
 
-    expect(sortedItems[0].value).toBe('Apple');
-    expect(sortedItems[1].value).toBe('Banana');
-    expect(sortedItems[2].value).toBe('Cherry');
-  });
+      const filtered = filterCodeDescriptionItems(items, { inputValue: "Ban", itemToString });
 
-  it('should handle empty items array', () => {
-    const items: SelectableTextValueData[] = [];
+      expect(filtered).toEqual([{ code: "B2", description: "Banana" }]);
+    });
 
-    const sortedItems = sortItems(items, { itemToString, compareItems });
+    it("should return all items if input value is empty", () => {
+      const items = [
+        { code: "A1", description: "Apple" },
+        { code: "B2", description: "Banana" },
+        { code: "C3", description: "Cherry" },
+      ];
 
-    expect(sortedItems).toEqual([]);
-  });
+      const filtered = filterCodeDescriptionItems(items, { inputValue: "", itemToString });
 
-  it('should handle empty selectedItems array', () => {
-    const items: SelectableTextValueData[] = [
-      { value: 'Banana' },
-      { value: 'Apple' },
-      { value: 'Cherry' },
-    ];
+      expect(filtered).toEqual(items);
+    });
 
-    const sortedItems = sortItems(items, { selectedItems: [], itemToString, compareItems });
+    it("should return an empty array if no match is found", () => {
+      const items = [
+        { code: "A1", description: "Apple" },
+        { code: "B2", description: "Banana" },
+        { code: "C3", description: "Cherry" },
+      ];
 
-    expect(sortedItems[0].value).toBe('Apple');
-    expect(sortedItems[1].value).toBe('Banana');
-    expect(sortedItems[2].value).toBe('Cherry');
+      const filtered = filterCodeDescriptionItems(items, { inputValue: "Orange", itemToString });
+
+      expect(filtered).toEqual([]);
+    });
+
+    it("should return an empty array if input array is empty", () => {
+      const filtered = filterCodeDescriptionItems([], { inputValue: "A", itemToString });
+      expect(filtered).toEqual([]);
+    });
   });
 });

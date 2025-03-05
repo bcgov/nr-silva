@@ -4,18 +4,15 @@ import { describe, it, expect, vi } from "vitest";
 import SilvicultureSearch from "../../screens/SilvicultureSearch";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { OpeningsSearchProvider } from "../../contexts/search/OpeningsSearch";
 
 describe("SilvicultureSearch Component", () => {
   const queryClient = new QueryClient();
 
-  const renderComponent = () => 
+  const renderComponent = () =>
     render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
-        <OpeningsSearchProvider>
-            <SilvicultureSearch />
-          </OpeningsSearchProvider>
+          <SilvicultureSearch />
         </QueryClientProvider>
       </BrowserRouter>
     );
