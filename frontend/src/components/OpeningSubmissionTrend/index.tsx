@@ -98,6 +98,8 @@ const OpeningSubmissionTrend = () => {
   const handleYearSelection = (e: ComboBoxEvent<number>) => {
     if (e.selectedItem) {
       setSelectedYear(e.selectedItem)
+    } else {
+      setSelectedYear(yearOptions[0])
     }
   }
 
@@ -176,12 +178,13 @@ const OpeningSubmissionTrend = () => {
                 />
 
                 <ComboBox
+                  className="trend-year-selection-combobox"
                   id="trend-year-selection"
                   onChange={handleYearSelection}
                   items={yearOptions}
                   titleText="Opening submission year"
                   disabled={submissionTrendQuery.isFetching}
-                  initialSelectedItem={selectedYear}
+                  selectedItem={selectedYear}
                 />
               </>
             )}

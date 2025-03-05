@@ -43,6 +43,12 @@
         width: 100%;
       }
     }
+
+    .trend-year-selection-combobox {
+      .#{vars.$bcgov-prefix}--list-box__selection {
+        display: none;
+      }
+    }
   }
 
   .trend-loading-col {
