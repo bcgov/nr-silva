@@ -24,9 +24,9 @@ import './BCHeaderwSide.scss';
 /**
  * Renders an BC Headerw Side component.
  *
- * @returns {JSX.Element} The rendered BCHeaderwSide component.
+ * @returns {React.JSX.Element} The rendered BCHeaderwSide component.
  */
-function BCHeaderwSide(): JSX.Element {
+function BCHeaderwSide(): React.JSX.Element {
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
 

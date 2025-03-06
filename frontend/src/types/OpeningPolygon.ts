@@ -7,5 +7,5 @@ export type OpeningPolygon = {
   id: string;
   positionLat: number;
   positionLong: number;
-  popup?: JSX.Element;
+  popup?: React.JSX.Element;
 };
