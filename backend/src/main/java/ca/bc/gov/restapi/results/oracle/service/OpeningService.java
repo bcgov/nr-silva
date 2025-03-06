@@ -71,6 +71,7 @@ public class OpeningService {
     Page<SilvicultureSearchProjection> searchResultPage =
         openingRepository.searchBy(
             filtersDto,
+            List.of(0L),
             ((PageRequest) pagination).withSort(Sort.by("opening_id").descending())
         );
 
