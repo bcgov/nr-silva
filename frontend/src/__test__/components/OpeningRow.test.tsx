@@ -1,7 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import OpeningRow from "../../components/RecentOpenings/OpeningRow";
+import OpeningTableRow from "../../components/OpeningTableRow";
+import { recentOpeningsHeaders } from '../../components/RecentOpenings/constants';
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@testing-library/jest-dom";
@@ -56,6 +57,8 @@ const openingA: OpeningSearchResponseDto = {
   forestFileId: null,
   silvaReliefAppId: "0",
   favourite: false,
+  clientName: "",
+  earlyFreeGrowingDate: null
 };
 
 // Test setup
@@ -64,7 +67,8 @@ const renderWithProviders = (props = {}) => {
     <QueryClientProvider client={new QueryClient()}>
       <table>
         <tbody>
-          <OpeningRow
+          <OpeningTableRow
+            headers={recentOpeningsHeaders}
             rowData={openingA}
             showMap={false}
             selectedRows={[]}

@@ -3,7 +3,7 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@bcgov-nr/nr-theme/design-tokens/type-family.scss' as types;
 
-@use '@bcgov-nr/nr-theme/style-sheets/carbon-components-overrides.scss';
+@use './components-overrides.scss';
 
 @use '@carbon/type/scss/_font-family.scss' with ($font-families: types.$type-family,
   $font-weights: types.$font-weights);

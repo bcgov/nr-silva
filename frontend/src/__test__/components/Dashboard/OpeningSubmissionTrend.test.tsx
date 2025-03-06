@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OpeningSubmissionTrend from "../../../components/OpeningSubmissionTrend";
@@ -10,7 +10,9 @@ import { fetchOpeningsOrgUnits, fetchUserSubmissionTrends } from "../../../servi
 
 // Mock Carbon components
 vi.mock("@carbon/charts-react", () => ({
-  GroupedBarChart: vi.fn(() => <div data-testid="grouped-bar-chart">Chart</div>),
+  GroupedBarChart: React.forwardRef((_props, _ref) => (
+    <div data-testid="grouped-bar-chart">Chart</div>
+  )),
 }));
 
 vi.mock("../../../services/OpeningService", () => ({
@@ -27,13 +29,25 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock QueryClientProvider setup
-const renderWithProviders = () => {
-  const queryClient = new QueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <OpeningSubmissionTrend />
-    </QueryClientProvider>
-  );
+const renderWithProviders = async () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+  let rendered;
+
+  await act(async () => {
+    rendered = render(
+      <QueryClientProvider client={queryClient}>
+        <OpeningSubmissionTrend />
+      </QueryClientProvider>
+    );
+  });
+
+  return rendered;
 };
 
 describe("OpeningSubmissionTrend Component", () => {
@@ -41,16 +55,17 @@ describe("OpeningSubmissionTrend Component", () => {
     vi.clearAllMocks();
   });
 
-  it("should render the component correctly", () => {
-    renderWithProviders();
+  it("should render the component correctly", async () => {
+    await renderWithProviders();
     expect(screen.getByText("Opening submission per year")).toBeInTheDocument();
     expect(screen.getByText("Check quantity and evolution of openings")).toBeInTheDocument();
   });
 
   it("should display the dropdowns and combo box after fetching org unit data", async () => {
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
     (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
-      { value: "DAS", text: "District A" },
-      { value: "DBS", text: "District B" },
+      { code: "DAS", description: "District A" },
+      { code: "DBS", description: "District B" },
     ]);
     renderWithProviders();
 
@@ -61,7 +76,7 @@ describe("OpeningSubmissionTrend Component", () => {
 
   it("should show no results message when no data is returned", async () => {
     (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
-    renderWithProviders();
+    await renderWithProviders();
 
     await waitFor(() => {
       expect(screen.getByText("No results found")).toBeInTheDocument();
@@ -78,7 +93,7 @@ describe("OpeningSubmissionTrend Component", () => {
       { monthName: "Jan", year: 2023, amount: 10 },
       { monthName: "Feb", year: 2023, amount: 20 },
     ]);
-    renderWithProviders();
+    await renderWithProviders();
 
     await waitFor(() => expect(screen.getByTestId("grouped-bar-chart")).toBeInTheDocument());
   });
