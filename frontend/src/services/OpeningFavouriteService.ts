@@ -12,14 +12,14 @@ import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
  * @returns {Promise<number[]>} A promise that resolves to an array of numbers representing the opening ids.
  * If the response data is not an array, it returns an empty array.
  */
-export const fetchOpeningFavourites = (): Promise<number[]> =>{
+export const fetchOpeningFavourites = (): Promise<number[]> => {
   return axios.get(API_ENDPOINTS.openingFavourites(), defaultHeaders(getAuthIdToken()))
     .then((res) => res.data ?? [])
 }
 
-export const isOpeningFavourite = async (openingId: number): Promise<boolean> =>{
-  const response = await axios.get(API_ENDPOINTS.openingFavouriteWithId(openingId), defaultHeaders(getAuthIdToken()));
-  return response.data;
+export const isOpeningFavourite = (openingId: number): Promise<boolean> => {
+  return axios.get(API_ENDPOINTS.openingFavouriteWithId(openingId), defaultHeaders(getAuthIdToken()))
+    .then((res) => res.data);
 }
 
 /**

@@ -1,25 +1,17 @@
-import React, { useState } from "react";
-import {
-  Button,
-  InlineNotification,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@carbon/react";
-import "./styles.scss";
-import { Location } from "@carbon/icons-react";
-import OpeningsMap from "../OpeningsMap";
-import SectionTitle from "../SectionTitle";
-import useBreakpoint from "../../hooks/UseBreakpoint";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserRecentOpenings } from "../../services/OpeningService";
-import TableSkeleton from "../TableSkeleton";
-import { recentOpeningsHeaders } from "./constants";
-import EmptySection from "../EmptySection";
-import OpeningRow from "./OpeningRow";
-import ComingSoonModal from "../ComingSoonModal";
+import React, { useState } from 'react';
+import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow } from '@carbon/react';
+import { Location } from '@carbon/icons-react';
+import OpeningsMap from '../OpeningsMap';
+import SectionTitle from '../SectionTitle';
+import useBreakpoint from '../../hooks/UseBreakpoint';
+import { useQuery } from '@tanstack/react-query';
+import { fetchUserRecentOpenings } from '../../services/OpeningService';
+import TableSkeleton from '../TableSkeleton';
+import { recentOpeningsHeaders } from './constants';
+import EmptySection from '../EmptySection';
+import OpeningTableRow from '../OpeningTableRow';
+
+import './styles.scss';
 
 const RecentOpenings = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -112,7 +104,7 @@ const RecentOpenings = () => {
       ) : null}
       {/* Empty Table */}
       {!recentOpeningsQuery.isLoading &&
-      !recentOpeningsQuery.data?.content.length ? (
+        !recentOpeningsQuery.data?.content.length ? (
         <EmptySection
           pictogram="Magnify"
           title="There are no openings to show yet"
@@ -121,37 +113,41 @@ const RecentOpenings = () => {
         />
       ) : null}
       {/* Loaded table content */}
-      {!recentOpeningsQuery.isLoading &&
-      recentOpeningsQuery.data?.content.length ? (
-        <Table
-          className="recent-openings-table default-zebra-table"
-          aria-label="Recent openings table"
-          useZebraStyles
-        >
-          <TableHead>
-            <TableRow>
-              {recentOpeningsHeaders.map((header) => (
-                <TableHeader key={header.key}>{header.header}</TableHeader>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {recentOpeningsQuery.data?.content.map((row) => (
-              <OpeningRow
-                key={row.openingId}
-                rowData={row}
-                showMap={showMap}
-                selectedRows={selectedOpeningIds}
-                handleRowSelection={handleRowSelection}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      ) : null}
-      <ComingSoonModal
-        openingDetails={openingDetails}
-        setOpeningDetails={setOpeningDetails}
-      />
+      {
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content.length ?
+          (
+            <Table
+              className="recent-openings-table default-zebra-table"
+              aria-label="Recent openings table"
+              useZebraStyles
+            >
+              <TableHead>
+                <TableRow>
+                  {
+                    recentOpeningsHeaders.map((header) => (
+                      <TableHeader key={header.key}>{header.header}</TableHeader>
+                    ))
+                  }
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  recentOpeningsQuery.data?.content.map((row) => (
+                    <OpeningTableRow
+                      headers={recentOpeningsHeaders}
+                      key={row.openingId}
+                      rowData={row}
+                      showMap={showMap}
+                      selectedRows={selectedOpeningIds}
+                      handleRowSelection={handleRowSelection}
+                    />
+                  ))
+                }
+              </TableBody>
+            </Table>
+          )
+          : null
+      }
     </div>
   );
 };

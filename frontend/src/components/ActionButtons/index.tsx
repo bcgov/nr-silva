@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import FavoriteButton from "../FavoriteButton";
 import { useNotification } from "../../contexts/NotificationProvider";
 import { putOpeningFavourite, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
-import { EIGHT_SECONDS } from "../../config/TimeUnits";
+import { EIGHT_SECONDS } from "../../constants/TimeUnits";
 
 interface ActionButtonsProps {
   favorited: boolean;
@@ -35,7 +35,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
       dismissIn: EIGHT_SECONDS,
       buttonLabel: isFavourite ? "Go to track openings" : undefined,
       onClose: () => {
-        navigate("/dashboard?scrollTo=trackOpenings");
+        navigate("/dashboard");
       }
     })
   );

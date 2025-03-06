@@ -17,17 +17,16 @@ import { useNavigate } from "react-router-dom";
 // Utility functions
 import { getMonthAbbreviation } from "../../utils/DateUtils";
 import { ComboBoxEvent } from "../../types/CarbonTypes";
+import { fetchUserSubmissionTrends } from "../../services/OpeningService";
+import { fetchOpeningsOrgUnits } from "../../services/OpeningSearchService";
 import {
-  fetchOpeningsOrgUnits,
-  fetchUserSubmissionTrends,
-} from "../../services/OpeningService";
-import { status } from "../../services/search/openings";
-import {
-  extractValsFromTextValueArr,
-  filterTextValueItems,
-  TextValueData,
-  textValueToDisplayText,
-} from "../../utils/multiSelectSortUtils";
+  extractCodesFromCodeDescriptionArr,
+  filterCodeDescriptionItems,
+  codeDescriptionToDisplayText,
+  MultiSelectEvent
+} from "../../utils/multiSelectUtils";
+import CodeDescriptionDto from "../../types/CodeDescriptionType";
+import { OPENING_STATUS_LIST } from "../../constants";
 
 // Local components
 import EmptySection from "../EmptySection";
@@ -39,10 +38,6 @@ import { generateYearList, getYearBoundaryDate } from "./utils";
 // Styles
 import "@carbon/charts/styles.css";
 import "./styles.scss";
-
-interface MultiSelectEvent {
-  selectedItems: TextValueData[];
-}
 
 interface BarChartGroupedEvent {
   detail: {
@@ -57,21 +52,14 @@ const OpeningSubmissionTrend = () => {
   const yearOptions = generateYearList();
   const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]);
 
-  const [selectedOrgUnits, setSelectedOrgUnits] = useState<TextValueData[]>([]);
-  const [selectedStatusCodes, setSelectedStatusCodes] = useState<
-    TextValueData[]
-  >([]);
+  const [selectedOrgUnits, setSelectedOrgUnits] = useState<CodeDescriptionDto[]>([]);
+  const [selectedStatusCodes, setSelectedStatusCodes] = useState<CodeDescriptionDto[]>([]);
   const chartRef = useRef(null);
   const navigate = useNavigate();
 
   const orgUnitQuery = useQuery({
-    queryKey: ["opening-search", "org-units"],
-    queryFn: () => fetchOpeningsOrgUnits(),
-    select: (data): TextValueData[] =>
-      data.map((orgUnit) => ({
-        value: orgUnit.code,
-        text: orgUnit.description,
-      })),
+    queryKey: ["codes", "org-units"],
+    queryFn: fetchOpeningsOrgUnits,
   });
 
   const submissionTrendQuery = useQuery({
@@ -81,14 +69,14 @@ const OpeningSubmissionTrend = () => {
       {
         entryStartDate: getYearBoundaryDate(selectedYear, true),
         entryEndDate: getYearBoundaryDate(selectedYear, false),
-        statusCode: extractValsFromTextValueArr(selectedStatusCodes),
-        orgUnitCode: extractValsFromTextValueArr(selectedOrgUnits),
-      },
+        statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
+        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits)
+      }
     ],
     queryFn: async () => {
       const data = await fetchUserSubmissionTrends({
-        orgUnitCode: extractValsFromTextValueArr(selectedOrgUnits),
-        statusCode: extractValsFromTextValueArr(selectedStatusCodes),
+        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
+        statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
         entryDateStart: getYearBoundaryDate(selectedYear, true),
         entryDateEnd: getYearBoundaryDate(selectedYear, false),
       });
@@ -98,18 +86,22 @@ const OpeningSubmissionTrend = () => {
     select: (data): SubmissionTrendChartObj[] | undefined =>
       data
         ? data.map((item) => ({
-            ...item,
-            group: "Openings",
-            key: `${getMonthAbbreviation(item.month)} ${item.year}`,
-            value: item.amount,
-          }))
+          ...item,
+          group: "Openings",
+          key: `${getMonthAbbreviation(item.month)} ${item.year}`,
+          value: item.amount,
+        }))
         : undefined,
     refetchOnMount: true,
   });
 
-  const handleYearSelection = (e: ComboBoxEvent) => {
-    setSelectedYear(e.selectedItem);
-  };
+  const handleYearSelection = (e: ComboBoxEvent<number>) => {
+    if (e.selectedItem) {
+      setSelectedYear(e.selectedItem)
+    } else {
+      setSelectedYear(yearOptions[0])
+    }
+  }
 
   const handleOrgUnitChange = (e: MultiSelectEvent) => {
     setSelectedOrgUnits(e.selectedItems);
@@ -156,46 +148,46 @@ const OpeningSubmissionTrend = () => {
     >
       <Column sm={4} md={8} lg={16}>
         <div className="submission-trend-input-container">
-          {orgUnitQuery.isFetching ? (
-            <>
-              <DropdownSkeleton />
-              <DropdownSkeleton />
-              <DropdownSkeleton />
-            </>
-          ) : (
-            <>
-              <FilterableMultiSelect
-                id="district-dropdown"
-                titleText="District"
-                items={orgUnitQuery.data ?? []}
-                itemToString={textValueToDisplayText}
-                selectionFeedback="top-after-reopen"
-                onChange={handleOrgUnitChange}
-                disabled={submissionTrendQuery.isFetching}
-                filterItems={filterTextValueItems}
-              />
+          {
+            orgUnitQuery.isLoading ? (
+              <>
+                <DropdownSkeleton />
+                <DropdownSkeleton />
+                <DropdownSkeleton />
+              </>
+            ) : (
+              <>
+                <FilterableMultiSelect
+                  id="district-dropdown"
+                  titleText="District"
+                  items={orgUnitQuery.data ?? []}
+                  itemToString={codeDescriptionToDisplayText}
+                  selectionFeedback="top-after-reopen"
+                  onChange={handleOrgUnitChange}
+                  disabled={submissionTrendQuery.isFetching}
+                />
 
-              <FilterableMultiSelect
-                id="status-dropdown"
-                titleText="Status"
-                items={status}
-                itemToString={textValueToDisplayText}
-                selectionFeedback="top-after-reopen"
-                onChange={handleStatusChange}
-                disabled={submissionTrendQuery.isFetching}
-                filterItems={filterTextValueItems}
-              />
+                <FilterableMultiSelect
+                  id="status-dropdown"
+                  titleText="Status"
+                  items={OPENING_STATUS_LIST}
+                  itemToString={codeDescriptionToDisplayText}
+                  selectionFeedback="top-after-reopen"
+                  onChange={handleStatusChange}
+                  disabled={submissionTrendQuery.isFetching}
+                />
 
-              <ComboBox
-                id="trend-year-selection"
-                onChange={handleYearSelection}
-                items={yearOptions}
-                titleText="Opening submission year"
-                disabled={submissionTrendQuery.isFetching}
-                initialSelectedItem={selectedYear}
-              />
-            </>
-          )}
+                <ComboBox
+                  className="trend-year-selection-combobox"
+                  id="trend-year-selection"
+                  onChange={handleYearSelection}
+                  items={yearOptions}
+                  titleText="Opening submission year"
+                  disabled={submissionTrendQuery.isFetching}
+                  selectedItem={selectedYear}
+                />
+              </>
+            )}
         </div>
       </Column>
 

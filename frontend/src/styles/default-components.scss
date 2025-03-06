@@ -8,13 +8,44 @@
   max-inline-size: none;
   row-gap: 2.5rem;
   column-gap: 2rem;
+  flex-grow: 1;
+  align-content: start;
 
   .#{vars.$bcgov-prefix}--css-grid-column {
     margin: 0;
   }
 
+  // Stretches out of the left and right padding
+  .full-width-col {
+    margin: 0 -2rem;
+  }
+
+  // Make subgrid's column to take full width of the parent grid.
+  .subgrid-full-width-col {
+    margin: 0 -2.5rem;
+  }
+
+  // Make subgrid's column to take full width of the parent grid while ignoring row gap.
+  .subgrid-full-width-no-row-gap-col {
+    margin: 0 -2.5rem -1rem -2.5rem;
+  }
+
   .#{vars.$bcgov-prefix}--subgrid {
     margin-inline: 0;
+  }
+
+  @media only screen and (max-width: 671px) {
+    .full-width-col {
+      margin: 0 -1.5rem;
+    }
+
+    .subgrid-full-width-col {
+      margin: 0 -2rem;
+    }
+
+    .subgrid-full-width-no-row-gap-col {
+      margin: 0 -2rem -1rem -2rem;
+    }
   }
 }
 
@@ -61,4 +92,23 @@
   top: 64px;
   right: 16px;
   z-index: 2;
+}
+
+.default-pagination-white {
+  background: var(--#{vars.$bcgov-prefix}-layer-02);
+  border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+
+  .#{vars.$bcgov-prefix}--select-input--inline__wrapper {
+    border-left: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--tooltip-trigger__wrapper {
+    button {
+      border-left: 0;
+    }
+  }
+
+  .#{vars.$bcgov-prefix}--pagination__right {
+    border-left: 0;
+  }
 }
