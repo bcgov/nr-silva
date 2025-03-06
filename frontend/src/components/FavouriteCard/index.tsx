@@ -21,7 +21,7 @@ function FavouriteCard({
   title,
   link,
   icon
-}: FavouriteCardProps): JSX.Element {
+}: FavouriteCardProps): React.JSX.Element {
   const navigate = useNavigate();
   const Icon = Icons[icon];
 

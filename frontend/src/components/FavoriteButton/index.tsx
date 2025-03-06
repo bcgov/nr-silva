@@ -14,7 +14,7 @@ import './style.scss';
  * @param {string} props.size - The favourite button size.
  * @param {string} props.fill - The favourite button fill.
  * @param {boolean} props.favorited - The favourite button state.
- * @returns {JSX.Element} The FavoriteButton element to be rendered.
+ * @returns {React.JSX.Element} The FavoriteButton element to be rendered.
  */
 const FavoriteButton = ({
   id,
@@ -24,7 +24,7 @@ const FavoriteButton = ({
   favorited = false,
   onFavoriteChange,
   disabled
-}: FavoriteButtonProps): JSX.Element => {
+}: FavoriteButtonProps): React.JSX.Element => {
   const [isFavorite, setIsFavorite] = useState(favorited);
 
   const handleClick = () => {

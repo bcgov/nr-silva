@@ -18,7 +18,7 @@ interface ChartTitleProps {
  * @param {string} props.subtitle - The subtitle of the chart.
  * @param {boolean} [props.enableFavourite=false] - Whether to enable the favourite button.
  * @param {string} [props.activity] - The activity of the chart.
- * @returns {JSX.Element} A div element containing the chart title.
+ * @returns {React.JSX.Element} A div element containing the chart title.
  */
 function ChartTitle({ title, subtitle }: ChartTitleProps) {
   return (

@@ -22,11 +22,11 @@ interface EmptySectionProps {
  * @param {string | React.ReactNode} props.description - The description of the empty section.
  * @param {string} [props.pictogram] - Optional. The name of the pictogram to display.
  * @param {string} [props.fill] - Optional. The fill color of the icon or pictogram.
- * @returns {JSX.Element} A div element containing the empty section.
+ * @returns {React.JSX.Element} A div element containing the empty section.
  */
 function EmptySection({
   icon, title, description, pictogram, fill = "#0073E6", className
-}: EmptySectionProps): JSX.Element {
+}: EmptySectionProps): React.JSX.Element {
   let Img;
 
   if (icon) {

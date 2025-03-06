@@ -25,9 +25,9 @@ const getInitials = (userName: string) => {
  * @param {object} props - The component props.
  * @param {string} props.userName - The username to be used in the Avatar.
  * @param {Size} props.size - The size that should be rendered.
- * @returns {JSX.Element} The rendered AvatarImage component.
+ * @returns {React.JSX.Element} The rendered AvatarImage component.
  */
-function AvatarImage({ userName, size }: AvatarImageProps): JSX.Element {
+function AvatarImage({ userName, size }: AvatarImageProps): React.JSX.Element {
   const initials = getInitials(userName);
 
   return (
