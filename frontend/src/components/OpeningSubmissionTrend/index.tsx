@@ -21,23 +21,25 @@ import { fetchUserSubmissionTrends } from "../../services/OpeningService";
 import { fetchOpeningsOrgUnits } from "../../services/OpeningSearchService";
 import {
   extractCodesFromCodeDescriptionArr,
-  filterCodeDescriptionItems,
   codeDescriptionToDisplayText,
   MultiSelectEvent
 } from "../../utils/multiSelectUtils";
 import CodeDescriptionDto from "../../types/CodeDescriptionType";
 import { OPENING_STATUS_LIST } from "../../constants";
+import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
 
 // Local components
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
-import { ChartOptions } from "./constants";
+import { DefaultChartOptions } from "./constants";
 import { SubmissionTrendChartObj } from "./definitions";
 import { generateYearList, getYearBoundaryDate } from "./utils";
 
 // Styles
 import "@carbon/charts/styles.css";
 import "./styles.scss";
+import { buildQueryString } from "../../utils/UrlUtils";
+import { Chart } from "@carbon/charts";
 
 interface BarChartGroupedEvent {
   detail: {
@@ -54,7 +56,7 @@ const OpeningSubmissionTrend = () => {
 
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<CodeDescriptionDto[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<CodeDescriptionDto[]>([]);
-  const chartRef = useRef(null);
+  const chartInstanceRef = useRef<Chart | null>(null);
   const navigate = useNavigate();
 
   const orgUnitQuery = useQuery({
@@ -115,30 +117,62 @@ const OpeningSubmissionTrend = () => {
     submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
-  useEffect(() => {
-    if (chartRef.current) {
-      const { chart }: GroupedBarChart = chartRef.current;
-      if (chart) {
-        chart.services.events.addEventListener(
-          "bar-click",
-          (event: BarChartGroupedEvent) => {
-            const { datum } = event.detail;
-            const searchDateStart = format(
-              startOfMonth(new Date(datum.year, datum.month - 1)),
-              "yyyy-MM-dd"
-            );
-            const searchDateEnd = format(
-              endOfMonth(new Date(datum.year, datum.month - 1)),
-              "yyyy-MM-dd"
-            );
-            navigate(
-              `/silviculture-search?tab=openings&dateType=Update&startDate=${searchDateStart}&endDate=${searchDateEnd}`
-            );
-          }
-        );
-      }
-    }
-  }, [chartRef, submissionTrendQuery.status]);
+  /**
+   * Handles the reference to the GroupedBarChart component and dynamically attaches an event listener for bar clicks.
+   *
+   * ### Why use this instead of `useEffect`?
+   * - `useEffect` does not reliably capture the `chart` instance because `GroupedBarChart` initializes asynchronously.
+   * - Directly accessing the chart from the ref (`chartRef.current`) inside `useEffect` may return `null` or an outdated instance.
+   * - This function ensures the chart instance is properly assigned and event listeners are correctly managed when the component mounts.
+   *
+   * ### What does this do?
+   * - Stores the chart instance in `chartInstanceRef` for future reference.
+   * - Attaches a "bar-click" event listener to navigate based on the clicked bar's data.
+   * - Ensures old event listeners are removed before adding a new one to prevent duplicates.
+   *
+   * @param {GroupedBarChart | null} chartComponent - The GroupedBarChart component instance.
+   */
+  const handleChartRef = (chartComponent: GroupedBarChart | null) => {
+    if (!chartComponent) return;
+
+    const { chart } = chartComponent;
+    if (!chart) return;
+
+    chartInstanceRef.current = chart;
+
+    const handleBarClick = (event: BarChartGroupedEvent) => {
+
+      const { datum } = event.detail;
+
+      const updateDateStart = format(
+        startOfMonth(new Date(datum.year, datum.month - 1)),
+        "yyyy-MM-dd"
+      );
+      const updateDateEnd = format(
+        endOfMonth(new Date(datum.year, datum.month - 1)),
+        "yyyy-MM-dd"
+      );
+
+      const queryParams: SilvicultureSearchParams = {
+        tab: "openings",
+        dateType: "update",
+        updateDateStart,
+        updateDateEnd,
+        orgUnit: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
+        status: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
+      };
+
+      navigate(`/silviculture-search?${buildQueryString(queryParams)}`);
+    };
+
+    // Ensure existing listeners are removed before adding a new one
+    chart.services.events.removeEventListener("bar-click", handleBarClick);
+    chart.services.events.addEventListener("bar-click", handleBarClick);
+
+    return () => {
+      chart.services.events.removeEventListener("bar-click", handleBarClick);
+    };
+  };
 
   return (
     <ChartContainer
@@ -205,9 +239,9 @@ const OpeningSubmissionTrend = () => {
         ) : null}
         {!submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
           <GroupedBarChart
-            ref={chartRef}
+            ref={handleChartRef}
             data={submissionTrendQuery.data}
-            options={ChartOptions}
+            options={DefaultChartOptions}
           />
         ) : null}
       </Column>

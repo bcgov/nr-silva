@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Grid,
@@ -15,24 +15,35 @@ import {
 import { OpeningHeaderType } from "../../../types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
 import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../services/OpeningSearchService";
 import TableSkeleton from "../../TableSkeleton";
 import OpeningTableRow from "../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
 import OpeningsMap from "../../OpeningsMap";
 import EmptySection from "../../EmptySection";
-
-import "./styles.scss";
 import { PageSizesConfig } from "../../../constants/tableConstants";
 import { PaginationOnChangeType } from "../../../types/GeneralTypes";
 import { OpeningSearchResponseDto } from "../../../types/OpeningTypes";
 
+import "./styles.scss";
+import useSilvicultureSearchParams from "../hooks";
+import { SilvicultureSearchParams } from "../definitions";
+import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from "../../../constants";
+import { DateTime } from "luxon";
+
 const OpeningSearch: React.FC = () => {
+  const searchParams = useSilvicultureSearchParams();
+  const initialParamsRef = useRef<SilvicultureSearchParams | null>(null);
+
+  if (searchParams && !initialParamsRef.current && searchParams?.tab === 'openings') {
+    initialParamsRef.current = searchParams;
+  }
+
+  const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(
     () => structuredClone(defaultSearchTableHeaders)
   );
-  const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
@@ -65,7 +76,9 @@ const OpeningSearch: React.FC = () => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: fetchOpeningsOrgUnits
+    queryFn: fetchOpeningsOrgUnits,
+    // Unfortunately we need to do a refetch here in order to trigger the filter to apply
+    refetchOnMount: 'always'
   });
 
   /*
@@ -80,6 +93,26 @@ const OpeningSearch: React.FC = () => {
       size
     })
   })
+
+  useEffect(() => {
+    if (!initialParamsRef.current) return;
+
+    const orgUnitsFromParams = initialParamsRef.current.orgUnit?.map(
+      (code) => orgUnitQuery.data?.find((item) => item.code === code)
+    ).filter(Boolean) as CodeDescriptionDto[];
+
+    const statusFromParams = initialParamsRef.current.status?.map(
+      (code) => OPENING_STATUS_LIST.find((item) => item.code === code)
+    ).filter(Boolean) as CodeDescriptionDto[];
+
+    setFilters((prev) => ({
+      ...prev,
+      updateDateStart: initialParamsRef.current?.updateDateStart,
+      updateDateEnd: initialParamsRef.current?.updateDateEnd,
+      orgUnit: orgUnitsFromParams,
+      statusList: statusFromParams
+    }));
+  }, [orgUnitQuery.isFetched, initialParamsRef.current]);
 
   /**
    * Handler for when a search action is triggered.

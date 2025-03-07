@@ -1,5 +1,4 @@
 import CodeDescriptionDto from "../types/CodeDescriptionType";
-import { TextInputEvent } from "../types/GeneralTypes";
 
 export const PLACE_HOLDER = "—"
 
@@ -12,14 +11,14 @@ export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [
   { code: 'RMD', description: 'Removed' },
   { code: 'RET', description: 'Retired' },
   { code: 'SUB', description: 'Submitted' }
-];
+] as const;
 
 export const DATE_TYPE_LIST: CodeDescriptionDto[] = [
   { code: "disturbance", description: "Disturbance" },
   { code: "regenDelay", description: "Regen Delay" },
   { code: "freeGrowing", description: "Free Growing" },
   { code: "update", description: "Update" }
-];
+] as const;
 
 export const API_DATE_FORMAT = "yyyy-MM-dd";
 
