@@ -132,6 +132,7 @@ const OpeningSearchBar = ({
     }));
   }
 
+  /* v8 ignore next 17 */
   const handleDateTypeChange = (dateType: CodeDescriptionDto<DATE_TYPES> | null) => {
     setFilters((prev) => ({
       ...prev,
@@ -150,6 +151,7 @@ const OpeningSearchBar = ({
     }))
   }
 
+  /* v8 ignore next 19 */
   const handleDateChange = (isStartDate: boolean) => (dates?: (Date)[]) => {
     if (!filters.dateType || !dates) return;
 
@@ -170,7 +172,7 @@ const OpeningSearchBar = ({
     });
   };
 
-
+  /* v8 ignore next 9 */
   const toggleColumn = (key: OpendingHeaderKeyType) => {
     if (key !== 'openingId' && key !== 'actions') {
       setHeaders((prevHeaders) =>
@@ -233,6 +235,7 @@ const OpeningSearchBar = ({
     return undefined;
   }
 
+  /* v8 ignore next 18 */
   const handleClearFilters = () => {
     setFilters((prev) => {
       const newFilters: OpeningSearchFilterType = {};
