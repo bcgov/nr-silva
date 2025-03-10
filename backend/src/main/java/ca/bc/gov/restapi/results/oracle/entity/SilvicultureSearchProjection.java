@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface SilvicultureSearchProjection {
@@ -12,15 +13,15 @@ public interface SilvicultureSearchProjection {
   String getTimberMark();
   String getCutBlockId();
   BigDecimal getOpeningGrossArea();
-  LocalDateTime getDisturbanceStartDate();
+  LocalDate getDisturbanceStartDate();
   String getForestFileId();
   String getOrgUnitCode();
   String getOrgUnitName();
   String getClientNumber();
   String getClientLocation();
-  LocalDateTime getRegenDelayDate();
-  LocalDateTime getEarlyFreeGrowingDate();
-  LocalDateTime getLateFreeGrowingDate();
+  LocalDate getRegenDelayDate();
+  LocalDate getEarlyFreeGrowingDate();
+  LocalDate getLateFreeGrowingDate();
   LocalDateTime getUpdateTimestamp();
   String getEntryUserId();
   Long getSubmittedToFrpa108();
