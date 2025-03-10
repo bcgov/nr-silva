@@ -117,6 +117,7 @@ const OpeningSubmissionTrend = () => {
     submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
+  // NOSONAR
   /**
    * Handles the reference to the GroupedBarChart component and dynamically attaches an event listener for bar clicks.
    *
