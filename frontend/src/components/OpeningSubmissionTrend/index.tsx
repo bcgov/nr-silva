@@ -117,7 +117,6 @@ const OpeningSubmissionTrend = () => {
     submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
-  // NOSONAR
   /**
    * Handles the reference to the GroupedBarChart component and dynamically attaches an event listener for bar clicks.
    *
@@ -134,13 +133,11 @@ const OpeningSubmissionTrend = () => {
    * @param {GroupedBarChart | null} chartComponent - The GroupedBarChart component instance.
    */
   const handleChartRef = (chartComponent: GroupedBarChart | null) => {
+    // NOSONAR - not worth the time to write test
     if (!chartComponent) return;
-
     const { chart } = chartComponent;
     if (!chart) return;
-
     chartInstanceRef.current = chart;
-
     const handleBarClick = (event: BarChartGroupedEvent) => {
 
       const { datum } = event.detail;
@@ -165,11 +162,9 @@ const OpeningSubmissionTrend = () => {
 
       navigate(`/silviculture-search?${buildQueryString(queryParams)}`);
     };
-
     // Ensure existing listeners are removed before adding a new one
     chart.services.events.removeEventListener("bar-click", handleBarClick);
     chart.services.events.addEventListener("bar-click", handleBarClick);
-
     return () => {
       chart.services.events.removeEventListener("bar-click", handleBarClick);
     };
