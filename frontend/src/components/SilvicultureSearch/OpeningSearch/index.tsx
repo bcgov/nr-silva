@@ -61,7 +61,7 @@ const OpeningSearch: React.FC = () => {
    *
    * @param {number} id - The opening ID to toggle.
    */
-  /* istanbul ignore next */
+  /* v8 ignore next 5 */
   const handleRowSelection = (id: number) => {
     setSelectedOpeningIds((prev) =>
       prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
@@ -106,7 +106,7 @@ const OpeningSearch: React.FC = () => {
   /**
    * Handles url params, triggers a search if there's any param filters present.
    */
-  /* istanbul ignore next */
+  /* v8 ignore next 40 */
   useEffect(() => {
     if (!initialParamsRef.current) return;
 

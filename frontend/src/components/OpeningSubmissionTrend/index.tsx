@@ -132,7 +132,7 @@ const OpeningSubmissionTrend = () => {
    *
    * @param {GroupedBarChart | null} chartComponent - The GroupedBarChart component instance.
    */
-  /* istanbul ignore next */
+  /* v8 ignore next 38 */
   const handleChartRef = (chartComponent: GroupedBarChart | null) => {
     if (!chartComponent) return;
 
