@@ -33,7 +33,7 @@ interface ThemePreferenceProps {
  * Defines the Theme Preference Context and Provider.
  *
  * @param {ReactNode} children with nodes to be rendered
- * @returns {JSX.Element} The Context Provider
+ * @returns {React.JSX.Element} The Context Provider
  */
 function ThemePreference({ children }: ThemePreferenceProps) {
   const [theme, setTheme] = useState<ThemeType>(() => {

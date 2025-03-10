@@ -21,7 +21,7 @@ beforeAll(() => {
 });
 
 describe('Theme toggle component tests', () => {
-  const renderWithThemeProvider = (component: JSX.Element) =>
+  const renderWithThemeProvider = (component: React.JSX.Element) =>
     render(<ThemePreference>{component}</ThemePreference>);
 
   it('should render correctly', () => {
