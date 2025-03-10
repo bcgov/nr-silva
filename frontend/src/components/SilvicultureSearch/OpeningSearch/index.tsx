@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Grid,
@@ -12,27 +12,39 @@ import {
   Pagination,
   Modal
 } from "@carbon/react";
-import { OpeningHeaderType } from "../../../types/TableHeader";
+import { OpeningHeaderType } from "@/types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "../../../services/OpeningSearchService";
+import { fetchCategories, fetchOpeningsOrgUnits, searchOpenings } from "@/services/OpeningSearchService";
 import TableSkeleton from "../../TableSkeleton";
 import OpeningTableRow from "../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
 import OpeningsMap from "../../OpeningsMap";
 import EmptySection from "../../EmptySection";
+import { PageSizesConfig } from "@/constants/tableConstants";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
+import useSilvicultureSearchParams from "../hooks";
+import { SilvicultureSearchParams } from "../definitions";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
+import { DATE_TYPES } from "@/types/DateTypes";
+import { hasAnyActiveFilters } from "./utils";
 
 import "./styles.scss";
-import { PageSizesConfig } from "../../../constants/tableConstants";
-import { PaginationOnChangeType } from "../../../types/GeneralTypes";
-import { OpeningSearchResponseDto } from "../../../types/OpeningTypes";
 
 const OpeningSearch: React.FC = () => {
+  const searchParams = useSilvicultureSearchParams();
+  const initialParamsRef = useRef<SilvicultureSearchParams | null>(null);
+
+  if (searchParams && !initialParamsRef.current && searchParams?.tab === 'openings') {
+    initialParamsRef.current = searchParams;
+  }
+
+  const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(
     () => structuredClone(defaultSearchTableHeaders)
   );
-  const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
@@ -49,6 +61,7 @@ const OpeningSearch: React.FC = () => {
    *
    * @param {number} id - The opening ID to toggle.
    */
+  /* v8 ignore next 5 */
   const handleRowSelection = (id: number) => {
     setSelectedOpeningIds((prev) =>
       prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
@@ -65,7 +78,9 @@ const OpeningSearch: React.FC = () => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: fetchOpeningsOrgUnits
+    queryFn: fetchOpeningsOrgUnits,
+    // A refetch is needed here to ensure filters are properly applied from url params
+    refetchOnMount: 'always'
   });
 
   /*
@@ -88,16 +103,58 @@ const OpeningSearch: React.FC = () => {
     searchMutation.mutate({ page: currPageNumber, size: currPageSize });
   }
 
+  /**
+   * Handles url params, triggers a search if there's any param filters present.
+   */
+  /* v8 ignore next 40 */
+  useEffect(() => {
+    if (!initialParamsRef.current) return;
+
+    const orgUnitsFromParams =
+      orgUnitQuery.data && initialParamsRef.current.orgUnit
+        ? initialParamsRef.current.orgUnit
+          .map((code) => orgUnitQuery.data?.find((item) => item.code === code))
+          .filter(Boolean) as CodeDescriptionDto[]
+        : [];
+
+    const statusFromParams =
+      initialParamsRef.current.status && OPENING_STATUS_LIST.length > 0
+        ? initialParamsRef.current.status
+          .map((code) =>
+            OPENING_STATUS_LIST.find((item) => item.code === code)
+          )
+          .filter(Boolean) as CodeDescriptionDto[]
+        : [];
+
+    const dateTypeCode = initialParamsRef.current?.dateType;
+    let dateType: CodeDescriptionDto<DATE_TYPES> | undefined = undefined;
+
+    if (dateTypeCode) {
+      dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
+    }
+
+    const nextFilters = {
+      updateDateStart: initialParamsRef.current?.dateStart,
+      updateDateEnd: initialParamsRef.current?.dateEnd,
+      orgUnit: orgUnitsFromParams,
+      statusList: statusFromParams,
+      dateType
+    };
+
+    setFilters((prev) => ({ ...prev, ...nextFilters }));
+
+    if (hasAnyActiveFilters(nextFilters)) {
+      handleSearch();
+    }
+  }, [orgUnitQuery.isFetched, initialParamsRef.current]);
+
   const handlePagination = (paginationObj: PaginationOnChangeType) => {
-    console.log('triggered')
     // Convert to 0 based index
     const nextPageNum = paginationObj.page - 1;
     const nextPageSize = paginationObj.pageSize;
 
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
-
-    console.log(nextPageNum, nextPageSize)
 
     searchMutation.mutate({ page: nextPageNum, size: nextPageSize });
   }

@@ -1,7 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 
 import BarChartTooltip from "../BarChartTooltip";
-import { ScaleTypes } from "@carbon/charts";
+import { BarChartOptions, ScaleTypes } from "@carbon/charts";
 import { SubmissionTrendChartObj } from "./definitions";
 
 
@@ -16,7 +16,7 @@ const tooltip = (
 
 const colors = { Openings: "#1192E8" };
 
-export const ChartOptions = {
+export const DefaultChartOptions: BarChartOptions = {
   axes: {
     left: { mapsTo: "value" },
     bottom: {
@@ -31,13 +31,9 @@ export const ChartOptions = {
   grid: {
     x: {
       enabled: false,
-      color: "#d3d3d3",
-      strokeDashArray: "2,2"
     },
     y: {
       enabled: true,
-      color: "#d3d3d3",
-      strokeDashArray: "2,2"
     }
   },
   toolbar: {

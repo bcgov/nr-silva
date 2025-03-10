@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import PageTitle from "../../components/PageTitle";
+import React from "react";
+import PageTitle from "@/components/PageTitle";
 import {
   TabList,
   Tabs,

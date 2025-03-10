@@ -3,9 +3,9 @@ import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, T
 import { Location } from '@carbon/icons-react';
 import OpeningsMap from '../OpeningsMap';
 import SectionTitle from '../SectionTitle';
-import useBreakpoint from '../../hooks/UseBreakpoint';
+import useBreakpoint from '@/hooks/UseBreakpoint';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserRecentOpenings } from '../../services/OpeningService';
+import { fetchUserRecentOpenings } from '@/services/OpeningService';
 import TableSkeleton from '../TableSkeleton';
 import { recentOpeningsHeaders } from './constants';
 import EmptySection from '../EmptySection';

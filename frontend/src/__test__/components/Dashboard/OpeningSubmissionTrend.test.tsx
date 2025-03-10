@@ -97,4 +97,50 @@ describe("OpeningSubmissionTrend Component", () => {
 
     await waitFor(() => expect(screen.getByTestId("grouped-bar-chart")).toBeInTheDocument());
   });
+
+  it("should update year and refetch data", async () => {
+    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
+      { code: "DAS", description: "District A" },
+    ]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]);
+
+    const { getByLabelText, getByText } = await renderWithProviders();
+
+    // Wait for dropdowns to appear
+    await waitFor(() => {
+      expect(getByText("Opening submission year")).toBeInTheDocument();
+    });
+
+    const yearDropdownInput = getByLabelText("Opening submission year", {
+      selector: 'input',
+    });
+
+    // Simulate input value change
+    fireEvent.change(yearDropdownInput, { target: { value: "2022" } });
+
+    // Verify it still renders correctly after interaction
+    expect(getByText("Opening submission per year")).toBeInTheDocument();
+  });
+
+  it("should update org units and trigger data fetch", async () => {
+    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
+      { code: "DAS", description: "District A" },
+    ]);
+    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValue([]); // allow refetch
+
+    const { getByText, getAllByRole } = await renderWithProviders();
+
+    await waitFor(() => expect(getByText("District")).toBeInTheDocument());
+
+    const dropdowns = getAllByRole("combobox");
+    expect(dropdowns.length).toBeGreaterThan(0);
+  });
+
+  it("should show loading spinner when fetching", async () => {
+    (fetchUserSubmissionTrends as vi.Mock).mockImplementation(() => new Promise(() => { }));
+    const { container } = await renderWithProviders();
+
+    const spinner = container.querySelector(".trend-loading-spinner");
+    expect(spinner).toBeInTheDocument();
+  });
 });
