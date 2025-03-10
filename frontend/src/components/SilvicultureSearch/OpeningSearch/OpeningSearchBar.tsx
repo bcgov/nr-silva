@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, CheckboxGroup, Column, ComposedModal, DatePicker, DatePickerInput, Dropdown, Grid, Modal, ModalBody, ModalFooter, ModalHeader, Search, TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarMenu, TextInput } from "@carbon/react";
+import {
+  Button, Checkbox, CheckboxGroup,
+  Column, ComposedModal, DatePicker,
+  DatePickerInput, Dropdown, Grid,
+  ModalBody, ModalFooter, ModalHeader,
+  Search, TableToolbar, TableToolbarContent,
+  TableToolbarMenu, TextInput
+} from "@carbon/react";
 import {
   FilterEdit as FilterIcon,
   Search as SearchIcon,
-  Column as ColumnIcon
+  Column as ColumnIcon,
+  Location as LocationIcon,
 } from "@carbon/icons-react";
+import { DateTime } from "luxon";
 
+import { DATE_TYPES } from "@/types/DateTypes";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
-import CustomMultiSelect from "../../CustomMultiSelect";
-import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
-import { OpeningSearchFilterType } from "./definitions";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import useBreakpoint from "@/hooks/UseBreakpoint";
+import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
-import useBreakpoint from "@/hooks/UseBreakpoint";
+
+import CustomMultiSelect from "../../CustomMultiSelect";
 import ForestClientInput from "../../ForestClientInput";
-import { DateTime } from "luxon";
+
 import { MAX_TEXT_INPUT_LEN } from "./constants";
 import OpeningFilterBar from "./OpeningFilterBar";
-import { DATE_TYPES } from "@/types/DateTypes";
+import { OpeningSearchFilterType } from "./definitions";
+
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],
@@ -392,7 +403,7 @@ const OpeningSearchBar = ({
                   <div className="action-button-group">
                     <Button
                       className="map-button"
-                      renderIcon={SearchIcon}
+                      renderIcon={LocationIcon}
                       iconDescription="Toggle map"
                       type="button"
                       size="lg"
