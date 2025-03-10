@@ -4,6 +4,15 @@ import { SilvicultureSearchParams } from "./definitions";
 import { DATE_TYPE_LIST } from "../../constants";
 import { DATE_TYPES } from "../../types/DateTypes";
 
+/**
+ * Parses a comma-separated string into an array of trimmed, non-empty strings.
+ *
+ * @param {string} param - The comma-separated string to parse.
+ * @returns {string[]} An array of trimmed strings with empty entries removed.
+ *
+ * @example
+ * parseCommaSeparated("A, B, , C") // returns ["A", "B", "C"]
+ */
 const parseCommaSeparated = (param: string) => {
   return param.split(",").map((s) => s.trim()).filter(Boolean);
 };

@@ -1,5 +1,6 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OpeningSearch from "../../../components/SilvicultureSearch/OpeningSearch";
 import { vi } from "vitest";
@@ -24,14 +25,15 @@ const queryClient = new QueryClient();
 const renderComponent = () =>
   render(
     <QueryClientProvider client={queryClient}>
-      <OpeningSearch />
+      <MemoryRouter>
+        <OpeningSearch />
+      </MemoryRouter>
     </QueryClientProvider>
   );
 
 describe("OpeningSearch Component", () => {
-  it("renders the table initially empty", () => {
+  it("renders the table initially empty", async () => {
     renderComponent();
-
-    expect(screen.getByText("Nothing to show yet!")).toBeInTheDocument();
+    expect(await screen.findByText("Nothing to show yet!")).toBeInTheDocument();
   });
 });
