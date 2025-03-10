@@ -1,5 +1,5 @@
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { DATE_TYPES } from "../../../types/DateTypes";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { DATE_TYPES } from "@/types/DateTypes";
 
 export type OpeningSearchFilterType = {
   mainSearchTerm?: string;

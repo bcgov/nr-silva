@@ -2,8 +2,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SilvicultureSearchParams } from "./definitions";
-import { DATE_TYPE_LIST } from "../../constants";
-import { DATE_TYPES } from "../../types/DateTypes";
+import { DATE_TYPE_LIST } from "@/constants";
+import { DATE_TYPES } from "@/types/DateTypes";
 
 /**
  * Parses a comma-separated string into an array of trimmed, non-empty strings.

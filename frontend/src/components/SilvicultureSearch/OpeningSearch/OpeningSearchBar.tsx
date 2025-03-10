@@ -6,19 +6,19 @@ import {
   Column as ColumnIcon
 } from "@carbon/icons-react";
 
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../constants";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
 import CustomMultiSelect from "../../CustomMultiSelect";
-import { codeDescriptionToDisplayText, MultiSelectEvent } from "../../../utils/multiSelectUtils";
+import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { CheckBoxEvent, TextInputEvent } from "../../../types/GeneralTypes";
-import { OpendingHeaderKeyType, OpeningHeaderType } from "../../../types/TableHeader";
-import useBreakpoint from "../../../hooks/UseBreakpoint";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
+import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+import useBreakpoint from "@/hooks/UseBreakpoint";
 import ForestClientInput from "../../ForestClientInput";
 import { DateTime } from "luxon";
 import { MAX_TEXT_INPUT_LEN } from "./constants";
 import OpeningFilterBar from "./OpeningFilterBar";
-import { DATE_TYPES } from "../../../types/DateTypes";
+import { DATE_TYPES } from "@/types/DateTypes";
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],

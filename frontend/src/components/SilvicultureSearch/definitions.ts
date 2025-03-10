@@ -1,4 +1,4 @@
-import { DATE_TYPES } from "../../types/DateTypes";
+import { DATE_TYPES } from "@/types/DateTypes";
 
 type BaseParams = {
   tab: "openings";

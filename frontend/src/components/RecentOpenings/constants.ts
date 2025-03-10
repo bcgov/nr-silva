@@ -1,7 +1,7 @@
-import { OpendingHeaderKeyType, TableHeaderType } from "../../types/TableHeader";
+import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 
 export const recentOpeningsHeaders: TableHeaderType<OpendingHeaderKeyType>[] = [
-  { key: 'actions', header: 'Actions', selected: true},
+  { key: 'actions', header: 'Actions', selected: true },
   { key: 'openingId', header: 'Opening ID', selected: true },
   { key: 'forestFileId', header: 'File ID', selected: true },
   { key: 'category', header: 'Category', selected: true },
@@ -10,5 +10,5 @@ export const recentOpeningsHeaders: TableHeaderType<OpendingHeaderKeyType>[] = [
   { key: 'timberMark', header: 'Timber mark', selected: true },
   { key: 'cutBlockId', header: 'Cut block', selected: true },
   { key: 'openingGrossAreaHa', header: 'Gross Area (ha)', selected: true },
-  { key: 'disturbanceStartDate', header: 'Disturbance start', selected: true}
+  { key: 'disturbanceStartDate', header: 'Disturbance start', selected: true }
 ];

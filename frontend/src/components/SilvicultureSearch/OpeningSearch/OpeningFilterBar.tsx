@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Column, DismissibleTag } from "@carbon/react";
 
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { filterDisplayNameMap } from "./constants";
 
 type OpeningFilterBarProps = {
