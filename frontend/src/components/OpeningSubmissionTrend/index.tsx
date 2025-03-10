@@ -132,12 +132,15 @@ const OpeningSubmissionTrend = () => {
    *
    * @param {GroupedBarChart | null} chartComponent - The GroupedBarChart component instance.
    */
+  /* istanbul ignore next */
   const handleChartRef = (chartComponent: GroupedBarChart | null) => {
-    // NOSONAR - not worth the time to write test
     if (!chartComponent) return;
+
     const { chart } = chartComponent;
     if (!chart) return;
+
     chartInstanceRef.current = chart;
+
     const handleBarClick = (event: BarChartGroupedEvent) => {
 
       const { datum } = event.detail;

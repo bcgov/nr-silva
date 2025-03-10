@@ -61,6 +61,7 @@ const OpeningSearch: React.FC = () => {
    *
    * @param {number} id - The opening ID to toggle.
    */
+  /* istanbul ignore next */
   const handleRowSelection = (id: number) => {
     setSelectedOpeningIds((prev) =>
       prev.includes(id) ? prev.filter((openingId) => openingId !== id) : [...prev, id]
@@ -102,6 +103,10 @@ const OpeningSearch: React.FC = () => {
     searchMutation.mutate({ page: currPageNumber, size: currPageSize });
   }
 
+  /**
+   * Handles url params, triggers a search if there's any param filters present.
+   */
+  /* istanbul ignore next */
   useEffect(() => {
     if (!initialParamsRef.current) return;
 

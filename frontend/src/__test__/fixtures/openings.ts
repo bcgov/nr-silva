@@ -1,0 +1,63 @@
+import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+
+export const openingA: OpeningSearchResponseDto = {
+  openingId: 101,
+  openingNumber: null,
+  category: {
+    code: "NREQ",
+    description: "Areas where SP/SMP's are not required by law",
+  },
+  status: {
+    code: "FG",
+    description: "Free Growing",
+  },
+  cuttingPermitId: null,
+  timberMark: null,
+  cutBlockId: null,
+  openingGrossAreaHa: 27.5,
+  disturbanceStartDate: "2011-10-21T00:00:00",
+  orgUnitCode: "DAS",
+  orgUnitName: "Org one",
+  clientNumber: null,
+  clientAcronym: "",
+  regenDelayDate: "2011-10-21T00:00:00",
+  updateTimestamp: "2020-10-08T14:01:47",
+  entryUserId: "IDIR\\MYDUDE",
+  submittedToFrpa: false,
+  forestFileId: null,
+  silvaReliefAppId: "0",
+  favourite: false,
+  clientName: "",
+  earlyFreeGrowingDate: "2036-01-20T00:00:00",
+};
+
+export const openingB: OpeningSearchResponseDto = {
+  openingId: 102,
+  openingNumber: null,
+  category: {
+    code: "FTML",
+    description: "Forest Tenure - Major Licensee",
+  },
+  status: {
+    code: "APP",
+    description: "Approved",
+  },
+  cuttingPermitId: 12,
+  timberMark: "47/12S",
+  cutBlockId: 12,
+  openingGrossAreaHa: 12.9,
+  disturbanceStartDate: "2024-01-20T00:00:00",
+  orgUnitCode: "DAS",
+  orgUnitName: "Org one",
+  clientNumber: null,
+  clientAcronym: "",
+  clientName: "",
+  regenDelayDate: "2024-01-20T00:00:00",
+  earlyFreeGrowingDate: "2036-01-20T00:00:00",
+  updateTimestamp: "2024-01-01T00:00:00",
+  entryUserId: "idir-here",
+  submittedToFrpa: true,
+  forestFileId: "TFL47",
+  silvaReliefAppId: "101",
+  favourite: false,
+};
