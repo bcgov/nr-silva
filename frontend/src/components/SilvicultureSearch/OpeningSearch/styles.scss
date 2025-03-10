@@ -21,6 +21,18 @@
       color: var(--#{vars.$bcgov-prefix}-text-secondary);
       @include type.type-style('body-compact-01');
     }
+
+    &:hover {
+      background-color: var(--#{vars.$bcgov-prefix}-field-hover-02);
+    }
+  }
+
+  .#{vars.$bcgov-prefix}--list-box__menu {
+    background-color: var(--#{vars.$bcgov-prefix}-field-02);
+
+    li:hover {
+      background-color: var(--#{vars.$bcgov-prefix}-field-hover-02);
+    }
   }
 
   .search-buttons-container {
