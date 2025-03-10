@@ -100,4 +100,30 @@ describe("OpeningSearch Component", () => {
     );
     expect(bMatches.length).toBeGreaterThan(0);
   });
+
+  it("shows error notification when trying to search with no filters", async () => {
+    vi.doMock("@/components/SilvicultureSearch/OpeningSearch/utils", async (importOriginal) => {
+      const original = await importOriginal<typeof import("../../../components/SilvicultureSearch/OpeningSearch/utils")>();
+      return {
+        ...original,
+        hasAnyActiveFilters: () => false,
+      };
+    });
+
+    vi.resetModules(); // Clear previous module cache
+    const { default: OpeningSearch } = await import("../../../components/SilvicultureSearch/OpeningSearch");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <OpeningSearch />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const searchButtons = await screen.findAllByRole("button", { name: "Search" });
+    fireEvent.click(searchButtons[0]);
+
+    expect(await screen.findByText("Missing at least one criteria to search")).toBeInTheDocument();
+  });
 });
