@@ -2,6 +2,11 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SilvicultureSearchParams } from "./definitions";
 import { DATE_TYPE_LIST } from "../../constants";
+import { DATE_TYPES } from "../../types/DateTypes";
+
+const parseCommaSeparated = (param: string) => {
+  return param.split(",").map((s) => s.trim()).filter(Boolean);
+};
 
 const useSilvicultureSearchParams = () => {
   const [searchParams] = useSearchParams();
@@ -9,12 +14,16 @@ const useSilvicultureSearchParams = () => {
 
   useEffect(() => {
     const tab = searchParams.get("tab") as "openings" | null;
-    const dateType = searchParams.get("dateType") as SilvicultureSearchParams["dateType"];
-    const updateDateStart = searchParams.get("updateDateStart") || "";
-    const updateDateEnd = searchParams.get("updateDateEnd") || "";
+    const dateType = searchParams.get("dateType") as DATE_TYPES;
+    const dateStart = searchParams.get("dateStart") || "";
+    const dateEnd = searchParams.get("dateEnd") || "";
 
-    const orgUnit = searchParams.getAll("orgUnit"); // Handles array values
-    const status = searchParams.getAll("status"); // Handles array values
+    const orgUnitRaw = searchParams.get("orgUnit");
+    const statusRaw = searchParams.get("status");
+
+    const orgUnit = orgUnitRaw ? parseCommaSeparated(orgUnitRaw) : [];
+    const status = statusRaw ? parseCommaSeparated(statusRaw) : [];
+
 
     if (!tab || !dateType) {
       return;
@@ -28,8 +37,8 @@ const useSilvicultureSearchParams = () => {
     const parsedParams: SilvicultureSearchParams = {
       tab,
       dateType,
-      updateDateStart,
-      updateDateEnd,
+      dateStart,
+      dateEnd,
       orgUnit: orgUnit.length > 0 ? orgUnit : undefined,
       status: status.length > 0 ? status : undefined,
     };

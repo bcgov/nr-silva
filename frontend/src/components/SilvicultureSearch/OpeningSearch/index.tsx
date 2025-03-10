@@ -29,8 +29,9 @@ import "./styles.scss";
 import useSilvicultureSearchParams from "../hooks";
 import { SilvicultureSearchParams } from "../definitions";
 import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from "../../../constants";
-import { DateTime } from "luxon";
+import { DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../constants";
+import { DATE_TYPES } from "../../../types/DateTypes";
+import { hasAnyActiveFilters } from "./utils";
 
 const OpeningSearch: React.FC = () => {
   const searchParams = useSilvicultureSearchParams();
@@ -94,26 +95,6 @@ const OpeningSearch: React.FC = () => {
     })
   })
 
-  useEffect(() => {
-    if (!initialParamsRef.current) return;
-
-    const orgUnitsFromParams = initialParamsRef.current.orgUnit?.map(
-      (code) => orgUnitQuery.data?.find((item) => item.code === code)
-    ).filter(Boolean) as CodeDescriptionDto[];
-
-    const statusFromParams = initialParamsRef.current.status?.map(
-      (code) => OPENING_STATUS_LIST.find((item) => item.code === code)
-    ).filter(Boolean) as CodeDescriptionDto[];
-
-    setFilters((prev) => ({
-      ...prev,
-      updateDateStart: initialParamsRef.current?.updateDateStart,
-      updateDateEnd: initialParamsRef.current?.updateDateEnd,
-      orgUnit: orgUnitsFromParams,
-      statusList: statusFromParams
-    }));
-  }, [orgUnitQuery.isFetched, initialParamsRef.current]);
-
   /**
    * Handler for when a search action is triggered.
    */
@@ -121,16 +102,54 @@ const OpeningSearch: React.FC = () => {
     searchMutation.mutate({ page: currPageNumber, size: currPageSize });
   }
 
+  useEffect(() => {
+    if (!initialParamsRef.current) return;
+
+    const orgUnitsFromParams =
+      orgUnitQuery.data && initialParamsRef.current.orgUnit
+        ? initialParamsRef.current.orgUnit
+          .map((code) => orgUnitQuery.data?.find((item) => item.code === code))
+          .filter(Boolean) as CodeDescriptionDto[]
+        : [];
+
+    const statusFromParams =
+      initialParamsRef.current.status && OPENING_STATUS_LIST.length > 0
+        ? initialParamsRef.current.status
+          .map((code) =>
+            OPENING_STATUS_LIST.find((item) => item.code === code)
+          )
+          .filter(Boolean) as CodeDescriptionDto[]
+        : [];
+
+    const dateTypeCode = initialParamsRef.current?.dateType;
+    let dateType: CodeDescriptionDto<DATE_TYPES> | undefined = undefined;
+
+    if (dateTypeCode) {
+      dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
+    }
+
+    const nextFilters = {
+      updateDateStart: initialParamsRef.current?.dateStart,
+      updateDateEnd: initialParamsRef.current?.dateEnd,
+      orgUnit: orgUnitsFromParams,
+      statusList: statusFromParams,
+      dateType
+    };
+
+    setFilters((prev) => ({ ...prev, ...nextFilters }));
+
+    if (hasAnyActiveFilters(nextFilters)) {
+      handleSearch();
+    }
+  }, [orgUnitQuery.isFetched, initialParamsRef.current]);
+
   const handlePagination = (paginationObj: PaginationOnChangeType) => {
-    console.log('triggered')
     // Convert to 0 based index
     const nextPageNum = paginationObj.page - 1;
     const nextPageSize = paginationObj.pageSize;
 
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
-
-    console.log(nextPageNum, nextPageSize)
 
     searchMutation.mutate({ page: nextPageNum, size: nextPageSize });
   }

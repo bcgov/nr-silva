@@ -1,4 +1,5 @@
 import CodeDescriptionDto from "../types/CodeDescriptionType";
+import { DATE_TYPES } from "../types/DateTypes";
 
 export const PLACE_HOLDER = "—"
 
@@ -13,7 +14,7 @@ export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [
   { code: 'SUB', description: 'Submitted' }
 ] as const;
 
-export const DATE_TYPE_LIST: CodeDescriptionDto[] = [
+export const DATE_TYPE_LIST: CodeDescriptionDto<DATE_TYPES>[] = [
   { code: "disturbance", description: "Disturbance" },
   { code: "regenDelay", description: "Regen Delay" },
   { code: "freeGrowing", description: "Free Growing" },

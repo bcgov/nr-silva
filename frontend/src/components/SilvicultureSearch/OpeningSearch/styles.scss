@@ -116,11 +116,24 @@
 
           .#{vars.$bcgov-prefix}--date-picker {
             height: 100%;
+            width: 100%;
+
+            .#{vars.$bcgov-prefix}--date-picker-container {
+              width: 100%;
+
+              .#{vars.$bcgov-prefix}--date-picker-input__wrapper {
+                width: 100%;
+
+                span {
+                  width: 100%;
+                }
+              }
+            }
           }
 
           .#{vars.$bcgov-prefix}--date-picker__input {
-            flex: 1;
             inline-size: 100%;
+            width: 100%;
           }
         }
 

@@ -144,11 +144,11 @@ const OpeningSubmissionTrend = () => {
 
       const { datum } = event.detail;
 
-      const updateDateStart = format(
+      const dateStart = format(
         startOfMonth(new Date(datum.year, datum.month - 1)),
         "yyyy-MM-dd"
       );
-      const updateDateEnd = format(
+      const dateEnd = format(
         endOfMonth(new Date(datum.year, datum.month - 1)),
         "yyyy-MM-dd"
       );
@@ -156,8 +156,8 @@ const OpeningSubmissionTrend = () => {
       const queryParams: SilvicultureSearchParams = {
         tab: "openings",
         dateType: "update",
-        updateDateStart,
-        updateDateEnd,
+        dateStart,
+        dateEnd,
         orgUnit: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
         status: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
       };

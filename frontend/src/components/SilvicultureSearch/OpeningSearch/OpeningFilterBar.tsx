@@ -45,7 +45,7 @@ const OpeningFilterBar = ({ filters, setFilters, handleClearFilters }: OpeningFi
       {
         (Object.keys(filters) as (keyof OpeningSearchFilterType)[])
           .filter((filterKey) => {
-            if (filterKey === 'mainSearchTerm') {
+            if (filterKey === 'mainSearchTerm' || filterKey === 'dateType') {
               return false;
             }
 
