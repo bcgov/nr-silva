@@ -78,7 +78,7 @@ const OpeningSearch: React.FC = () => {
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
     queryFn: fetchOpeningsOrgUnits,
-    // Unfortunately we need to do a refetch here in order to trigger the filter to apply
+    // A refetch is needed here to ensure filters are properly applied from url params
     refetchOnMount: 'always'
   });
 
