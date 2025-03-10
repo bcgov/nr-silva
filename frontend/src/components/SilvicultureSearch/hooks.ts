@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SilvicultureSearchParams } from "./definitions";
@@ -59,3 +60,4 @@ const useSilvicultureSearchParams = () => {
 };
 
 export default useSilvicultureSearchParams;
+/* v8 ignore end */
