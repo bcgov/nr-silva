@@ -36,6 +36,9 @@ export const fetchOpeningsOrgUnits = (): Promise<CodeDescriptionDto[]> => {
  * @returns {Promise<PagedResult<OpeningSearchResponseDto>>} The paginated search result.
  */
 export const searchOpenings = (filters: OpeningSearchFilterType) => {
+  // Get rid of dateType, it's used for frontend only
+  delete filters.dateType;
+
   /**
    * Processes the `filters` object by:
    * - Removing any entries where the value is `undefined`, `null`, or an empty string (`""`).

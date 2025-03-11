@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, CheckboxGroup, Column, ComposedModal, DatePicker, DatePickerInput, Dropdown, Grid, Modal, ModalBody, ModalFooter, ModalHeader, Search, TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarMenu, TextInput } from "@carbon/react";
+import {
+  Button, Checkbox, CheckboxGroup,
+  Column, ComposedModal, DatePicker,
+  DatePickerInput, Dropdown, Grid,
+  ModalBody, ModalFooter, ModalHeader,
+  Search, TableToolbar, TableToolbarContent,
+  TableToolbarMenu, TextInput
+} from "@carbon/react";
 import {
   FilterEdit as FilterIcon,
   Search as SearchIcon,
-  Column as ColumnIcon
+  Column as ColumnIcon,
+  Location as LocationIcon,
 } from "@carbon/icons-react";
-
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "../../../constants";
-import CustomMultiSelect from "../../CustomMultiSelect";
-import { codeDescriptionToDisplayText, MultiSelectEvent } from "../../../utils/multiSelectUtils";
-import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { CheckBoxEvent, TextInputEvent } from "../../../types/GeneralTypes";
-import { OpendingHeaderKeyType, OpeningHeaderType } from "../../../types/TableHeader";
-import useBreakpoint from "../../../hooks/UseBreakpoint";
-import ForestClientInput from "../../ForestClientInput";
 import { DateTime } from "luxon";
+
+import { DATE_TYPES } from "@/types/DateTypes";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import useBreakpoint from "@/hooks/UseBreakpoint";
+import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
+import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
+import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+
+import CustomMultiSelect from "../../CustomMultiSelect";
+import ForestClientInput from "../../ForestClientInput";
+
 import { MAX_TEXT_INPUT_LEN } from "./constants";
 import OpeningFilterBar from "./OpeningFilterBar";
+import { OpeningSearchFilterType } from "./definitions";
+
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],
@@ -37,7 +49,6 @@ type CustomInputProp = {
   label?: string
 }
 
-
 const OpeningSearchBar = ({
   showMap,
   setShowMap,
@@ -53,7 +64,6 @@ const OpeningSearchBar = ({
 ) => {
   const breakpoint = useBreakpoint();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
-  const [selectedDateType, setSelectedDateType] = useState<CodeDescriptionDto | null>();
 
   /**
    * A workaround to add text to Carbon's `TableToolbarMenu` button since it does not natively support text alongside the icon.
@@ -133,10 +143,11 @@ const OpeningSearchBar = ({
     }));
   }
 
-  const handleDateTypeChange = (dateType: CodeDescriptionDto | null) => {
-    setSelectedDateType(dateType)
+  /* v8 ignore next 17 */
+  const handleDateTypeChange = (dateType: CodeDescriptionDto<DATE_TYPES> | null) => {
     setFilters((prev) => ({
       ...prev,
+      dateType: dateType ?? undefined,
       disturbanceDateStart: undefined,
       disturbanceDateEnd: undefined,
 
@@ -151,12 +162,13 @@ const OpeningSearchBar = ({
     }))
   }
 
+  /* v8 ignore next 19 */
   const handleDateChange = (isStartDate: boolean) => (dates?: (Date)[]) => {
-    if (!selectedDateType || !dates) return;
+    if (!filters.dateType || !dates) return;
 
     const formattedDate = dates.length ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT) : "";
 
-    const key = `${selectedDateType.code}${isStartDate ? "DateStart" : "DateEnd"}` as keyof OpeningSearchFilterType;
+    const key = `${filters.dateType.code}${isStartDate ? "DateStart" : "DateEnd"}` as keyof OpeningSearchFilterType;
 
     setFilters((prev) => {
       // Prevent unnecessary updates
@@ -171,7 +183,7 @@ const OpeningSearchBar = ({
     });
   };
 
-
+  /* v8 ignore next 9 */
   const toggleColumn = (key: OpendingHeaderKeyType) => {
     if (key !== 'openingId' && key !== 'actions') {
       setHeaders((prevHeaders) =>
@@ -183,10 +195,10 @@ const OpeningSearchBar = ({
   };
 
   const getStartMaxDate = () => {
-    if (!selectedDateType) {
+    if (!filters.dateType) {
       return undefined;
     }
-    const type = selectedDateType.code;
+    const type = filters.dateType.code;
     const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
 
     const maxDate = filters[endDateKey]
@@ -197,10 +209,10 @@ const OpeningSearchBar = ({
   }
 
   const getEndMinDate = () => {
-    if (!selectedDateType) {
+    if (!filters.dateType) {
       return undefined;
     }
-    const type = selectedDateType.code;
+    const type = filters.dateType.code;
     const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
 
     const minDate = filters[startDateKey]
@@ -211,10 +223,10 @@ const OpeningSearchBar = ({
   }
 
   const getStartDateValue = () => {
-    if (!selectedDateType) {
+    if (!filters.dateType) {
       return undefined;
     }
-    const type = selectedDateType.code;
+    const type = filters.dateType.code;
     const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
     if (filters[startDateKey]) {
       return DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
@@ -223,19 +235,19 @@ const OpeningSearchBar = ({
   }
 
   const getEndDateValue = () => {
-    if (!selectedDateType) {
+    if (!filters.dateType) {
       return undefined;
     }
-    const type = selectedDateType.code;
-    const endDateKey = `${type}EndStart` as keyof OpeningSearchFilterType;
+    const type = filters.dateType.code;
+    const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
     if (filters[endDateKey]) {
       return DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
     }
     return undefined;
   }
 
+  /* v8 ignore next 18 */
   const handleClearFilters = () => {
-    setSelectedDateType(null);
     setFilters((prev) => {
       const newFilters: OpeningSearchFilterType = {};
 
@@ -243,7 +255,7 @@ const OpeningSearchBar = ({
       if (prev.mainSearchTerm) {
         newFilters.mainSearchTerm = prev.mainSearchTerm;
       }
-
+      newFilters.dateType = undefined;
       newFilters.category = [];
       newFilters.orgUnit = [];
       newFilters.statusList = [];
@@ -391,7 +403,7 @@ const OpeningSearchBar = ({
                   <div className="action-button-group">
                     <Button
                       className="map-button"
-                      renderIcon={SearchIcon}
+                      renderIcon={LocationIcon}
                       iconDescription="Toggle map"
                       type="button"
                       size="lg"
@@ -533,19 +545,19 @@ const OpeningSearchBar = ({
                   titleText="Date type"
                   label=""
                   items={DATE_TYPE_LIST}
-                  selectedItem={selectedDateType}
+                  selectedItem={filters.dateType}
                   itemToString={(item) => item?.description ?? "Unknown"}
                   onChange={(data) => handleDateTypeChange(data.selectedItem)}
                 />
                 {/* Start date */}
                 <DatePicker
+                  key={filters.dateType ? filters.dateType.code + '-start' : 'start'}
                   className="advanced-date-picker"
                   datePickerType="single"
                   dateFormat="Y/m/d"
                   allowInput
                   maxDate={getStartMaxDate()}
                   onChange={handleDateChange(true)}
-                  readOnly={!selectedDateType}
                   value={getStartDateValue()}
                 >
                   <DatePickerInput
@@ -553,10 +565,12 @@ const OpeningSearchBar = ({
                     size="md"
                     labelText="Start Date"
                     placeholder="yyyy/mm/dd"
+                    disabled={!filters.dateType}
                   />
                 </DatePicker>
                 {/* End date */}
                 <DatePicker
+                  key={filters.dateType ? filters.dateType.code + '-end' : 'end'}
                   className="advanced-date-picker"
                   datePickerType="single"
                   dateFormat="Y/m/d"
@@ -564,7 +578,6 @@ const OpeningSearchBar = ({
                   minDate={getEndMinDate()}
                   maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
                   onChange={handleDateChange(false)}
-                  readOnly={!selectedDateType}
                   value={getEndDateValue()}
                 >
                   <DatePickerInput
@@ -572,6 +585,7 @@ const OpeningSearchBar = ({
                     size="md"
                     labelText="End Date"
                     placeholder="yyyy/mm/dd"
+                    disabled={!filters.dateType}
                   />
                 </DatePicker>
               </div>

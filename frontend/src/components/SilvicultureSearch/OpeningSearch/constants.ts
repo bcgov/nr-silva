@@ -1,4 +1,4 @@
-import { OpeningHeaderType } from "../../../types/TableHeader";
+import { OpeningHeaderType } from "@/types/TableHeader";
 import { FilterDisplayNameMapType } from "./definitions";
 
 export const defaultSearchTableHeaders: OpeningHeaderType[] = [
