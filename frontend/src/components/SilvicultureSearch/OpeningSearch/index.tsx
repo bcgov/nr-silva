@@ -140,7 +140,8 @@ const OpeningSearch: React.FC = () => {
       dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
     }
 
-    const nextFilters = {
+    const nextFilters: OpeningSearchFilterType = {
+      ...filters,
       updateDateStart: initialParamsRef.current?.dateStart,
       updateDateEnd: initialParamsRef.current?.dateEnd,
       orgUnit: orgUnitsFromParams,
@@ -151,7 +152,7 @@ const OpeningSearch: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...nextFilters }));
 
     if (hasAnyActiveFilters(nextFilters)) {
-      handleSearch();
+      searchMutation.mutate({ page: currPageNumber, size: currPageSize });
     }
   }, [orgUnitQuery.isFetched, initialParamsRef.current]);
 
