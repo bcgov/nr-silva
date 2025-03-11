@@ -53,6 +53,7 @@ const OpeningSearch: React.FC = () => {
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]);
   const [clickedOpening, setClickedOpening] = useState<OpeningSearchResponseDto>();
   const [isComingSoonOpen, setIsComingSoonOpen] = useState<boolean>(false);
+  const [isSearchFilterEmpty, setIsSearchFilterEmpty] = useState<boolean>(false);
 
   /**
    * Toggles the selection of an opening ID.
@@ -100,7 +101,13 @@ const OpeningSearch: React.FC = () => {
    * Handler for when a search action is triggered.
    */
   const handleSearch = () => {
-    searchMutation.mutate({ page: currPageNumber, size: currPageSize });
+    if (hasAnyActiveFilters(filters)) {
+      setIsSearchFilterEmpty(false);
+      searchMutation.mutate({ page: currPageNumber, size: currPageSize });
+    }
+    else {
+      setIsSearchFilterEmpty(true);
+    }
   }
 
   /**
@@ -166,6 +173,21 @@ const OpeningSearch: React.FC = () => {
 
   return (
     <Grid className="opening-search-grid">
+
+      {
+        isSearchFilterEmpty
+          ? (
+            <Column className="opening-search-table-col" sm={4} md={8} lg={16}>
+              <InlineNotification
+                title="Missing at least one criteria to search"
+                subtitle="Please, enter at least one criteria to start the search."
+                kind="error"
+                lowContrast
+              />
+            </Column>
+          )
+          : null
+      }
       {/* Search bar Section */}
       <OpeningSearchBar
         showMap={showMap}

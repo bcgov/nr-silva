@@ -28,6 +28,14 @@ vi.mock("../../../services/OpeningSearchService", () => ({
   } as PaginatedRecentOpeningsDto),
 }));
 
+vi.mock("@/components/SilvicultureSearch/OpeningSearch/utils", async (importOriginal) => {
+  const original = await importOriginal<typeof import("../../../components/SilvicultureSearch/OpeningSearch/utils")>();
+  return {
+    ...original,
+    hasAnyActiveFilters: () => true,
+  };
+});
+
 vi.mock("../../../components/OpeningsMap", () => ({
   __esModule: true,
   default: () => <div data-testid="mock-openings-map" />,
@@ -65,6 +73,14 @@ describe("OpeningSearch Component", () => {
 
     renderComponent();
 
+    const searchInputs = screen.getAllByPlaceholderText("Search by opening ID, opening number or file ID");
+    const mainSearchInput = searchInputs.find((input) => input.id === "main-search-term-input");
+    expect(mainSearchInput).toBeInTheDocument();
+
+    // Simulate user typing "Test Opening"
+    fireEvent.change(mainSearchInput!, { target: { value: "Test Opening" } });
+    mainSearchInput!.blur();
+
     const searchButtons = await screen.findAllByRole("button", { name: "Search" });
     fireEvent.click(searchButtons[0]);
 
@@ -72,7 +88,6 @@ describe("OpeningSearch Component", () => {
     await waitFor(() => {
       const table = document.querySelector(".opening-search-table");
       expect(table).toBeInstanceOf(HTMLElement);
-      expect(table).toBeInTheDocument();
     });
 
     const aMatches = screen.getAllByText((_, element) =>
@@ -84,5 +99,31 @@ describe("OpeningSearch Component", () => {
       element?.textContent?.includes(openingB.openingId.toString()) ?? false
     );
     expect(bMatches.length).toBeGreaterThan(0);
+  });
+
+  it("shows error notification when trying to search with no filters", async () => {
+    vi.doMock("@/components/SilvicultureSearch/OpeningSearch/utils", async (importOriginal) => {
+      const original = await importOriginal<typeof import("../../../components/SilvicultureSearch/OpeningSearch/utils")>();
+      return {
+        ...original,
+        hasAnyActiveFilters: () => false,
+      };
+    });
+
+    vi.resetModules(); // Clear previous module cache
+    const { default: OpeningSearch } = await import("../../../components/SilvicultureSearch/OpeningSearch");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <OpeningSearch />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const searchButtons = await screen.findAllByRole("button", { name: "Search" });
+    fireEvent.click(searchButtons[0]);
+
+    expect(await screen.findByText("Missing at least one criteria to search")).toBeInTheDocument();
   });
 });
