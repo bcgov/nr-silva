@@ -140,7 +140,8 @@ const OpeningSearch: React.FC = () => {
       dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
     }
 
-    const nextFilters = {
+    const nextFilters: OpeningSearchFilterType = {
+      ...filters,
       updateDateStart: initialParamsRef.current?.dateStart,
       updateDateEnd: initialParamsRef.current?.dateEnd,
       orgUnit: orgUnitsFromParams,
