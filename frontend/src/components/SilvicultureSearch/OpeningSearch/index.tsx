@@ -151,7 +151,7 @@ const OpeningSearch: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...nextFilters }));
 
     if (hasAnyActiveFilters(nextFilters)) {
-      handleSearch();
+      searchMutation.mutate({ page: currPageNumber, size: currPageSize });
     }
   }, [orgUnitQuery.isFetched, initialParamsRef.current]);
 
