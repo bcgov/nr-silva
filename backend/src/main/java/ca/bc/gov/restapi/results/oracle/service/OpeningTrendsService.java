@@ -30,7 +30,7 @@ public class OpeningTrendsService {
       List<String> statusCodes
   ) {
 
-    // if the difference between the start date and the end date is bigger than 12, thrown an exception
+    // if the difference between the start and end date is bigger than 12, thrown an exception
     if (ChronoUnit.MONTHS.between(startDate, endDate) > 12) {
       throw new IllegalArgumentException("The date range must be within 12 months");
     }

@@ -34,7 +34,7 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
 
   @BeforeEach
   @Transactional
-  public void setTup(){
+  void setTup(){
     openingRepository
         .findById(1009974L)
         .map(openingEntity -> openingEntity

@@ -41,7 +41,7 @@
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
     <hibernate.version>6.6.3.Final</hibernate.version>
-    <testcontainers.version>1.20.5</testcontainers.version>
+    <testcontainers.version>1.20.6</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
     <spring-oauth2.version>3.4.3</spring-oauth2.version>
     <spring-security.version>6.4.3</spring-security.version>
