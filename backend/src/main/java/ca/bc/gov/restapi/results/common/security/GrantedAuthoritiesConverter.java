@@ -8,6 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+/**
+ * The type Granted authorities converter.
+ */
 public class GrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
   @Override
@@ -16,7 +19,7 @@ public class GrantedAuthoritiesConverter implements Converter<Jwt, Collection<Gr
     Object clientRolesObj =
         jwt
         .getClaims()
-        .getOrDefault("client_roles",List.of());
+        .getOrDefault("client_roles", List.of());
 
     if (clientRolesObj instanceof List<?> list) {
       list.forEach(item -> realmAccess.add(String.valueOf(item)));

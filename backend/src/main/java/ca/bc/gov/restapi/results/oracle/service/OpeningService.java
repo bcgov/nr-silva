@@ -143,7 +143,7 @@ public class OpeningService {
     return pagedResult;
   }
 
-  private static Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
+  private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
     return projection ->
         new OpeningSearchResponseDto(
             projection.getOpeningId().intValue(),

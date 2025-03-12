@@ -16,6 +16,11 @@ public class OpenMapsService {
 
   private final RestClient restClient;
 
+  /**
+   * Instantiates a new Open maps service.
+   *
+   * @param openMapsApi the open maps api
+   */
   public OpenMapsService(
       @Qualifier("openMapsApi") RestClient openMapsApi) {
     this.restClient = openMapsApi;

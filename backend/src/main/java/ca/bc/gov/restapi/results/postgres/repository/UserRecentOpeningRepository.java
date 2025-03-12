@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRecentOpeningRepository extends
     JpaRepository<UserRecentOpeningEntity, UserOpeningEntityId> {
 
-  // Add a method to fetch recent openings for a user with a limit and sorting by last_viewed in descending order
   Page<UserRecentOpeningEntity> findByUserIdOrderByLastViewedDesc(String userId, Pageable pageable);
 }

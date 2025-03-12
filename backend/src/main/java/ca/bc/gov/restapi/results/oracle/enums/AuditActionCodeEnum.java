@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * The enum Audit action code enum.
+ */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -30,6 +33,12 @@ public enum AuditActionCodeEnum {
   private final String code;
   private final String description;
 
+  /**
+   * Parse the audit action code enum from the given {@link String} code.
+   *
+   * @param code the code
+   * @return the audit action code enum
+   */
   public static AuditActionCodeEnum of(String code) {
     for (AuditActionCodeEnum value : AuditActionCodeEnum.values()) {
       if (value.getCode().equals(code)) {
