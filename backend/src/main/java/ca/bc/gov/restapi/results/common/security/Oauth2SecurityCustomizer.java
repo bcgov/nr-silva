@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Oauth 2 security customizer.
+ */
 @Component
 public class Oauth2SecurityCustomizer implements
     Customizer<OAuth2ResourceServerConfigurer<HttpSecurity>> {

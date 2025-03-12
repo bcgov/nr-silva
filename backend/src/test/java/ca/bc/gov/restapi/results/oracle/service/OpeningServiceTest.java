@@ -163,33 +163,31 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   @Test
   @DisplayName("Opening search max page exception should fail")
   void openingSearch_maxPageException_shouldFail() {
+    OpeningSearchFiltersDto filterDto = new OpeningSearchFiltersDto(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "FTML"
+    );
+    PageRequest pagination = PageRequest.of(0, 2999);
     Assertions.assertThrows(
         MaxPageSizeException.class,
-        () ->
-            openingService.openingSearch(
-                new OpeningSearchFiltersDto(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "FTML"
-                ),
-                PageRequest.of(0, 2999)
-            )
+        () -> openingService.openingSearch(filterDto,pagination)
     );
   }
 }

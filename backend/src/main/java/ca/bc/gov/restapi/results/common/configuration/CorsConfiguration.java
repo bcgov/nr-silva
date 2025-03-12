@@ -34,7 +34,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
       allowedOrigins.add(origins);
     }
 
-    log.info("Allowed origins: {} {}", allowedOrigins,allowedOrigins.toArray(new String[0]));
+    log.info("Allowed origins: {} {}", allowedOrigins, allowedOrigins.toArray(new String[0]));
 
     registry
         .addMapping("/api/**")

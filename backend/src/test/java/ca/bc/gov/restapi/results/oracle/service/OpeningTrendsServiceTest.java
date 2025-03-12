@@ -10,10 +10,7 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
@@ -185,10 +182,6 @@ class OpeningTrendsServiceTest {
     int month;
     String status;
     long count;
-  }
-
-  private String getMonthName(int month) {
-    return Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CANADA);
   }
 
 }

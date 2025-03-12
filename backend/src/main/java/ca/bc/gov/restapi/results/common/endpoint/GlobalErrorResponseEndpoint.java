@@ -13,13 +13,25 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * This class handles global error responses.
+ * It should capture any error that is thrown in the application before it goes out to the client
+ * who requested the data and return a ProblemDetail object.
+ */
 @ControllerAdvice
 @RestControllerAdvice
 @Slf4j
 public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler {
 
 
-  @ExceptionHandler({RuntimeException.class,ResponseStatusException.class})
+  /**
+   * Handle any runtime exception that is thrown in the application.
+   *
+   * @param exception The exception that was thrown
+   * @param request The request that was made
+   * @return A ProblemDetail object with the error status and message
+   */
+  @ExceptionHandler({RuntimeException.class, ResponseStatusException.class})
   public ProblemDetail handleDupKey(Exception exception, WebRequest request) {
 
     // Get the error message

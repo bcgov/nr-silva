@@ -35,7 +35,7 @@ public class ForestClientApiProvider {
    */
   public Optional<ForestClientDto> fetchClientByNumber(String number) {
 
-    log.info("Starting {} request to /clients/findByClientNumber/{}", PROVIDER,number);
+    log.info("Starting {} request to /clients/findByClientNumber/{}", PROVIDER, number);
 
     try {
 
@@ -55,12 +55,25 @@ public class ForestClientApiProvider {
     return Optional.empty();
   }
 
+  /**
+   * Search client by name, acronym or number.
+   *
+   * @param page Pagination parameter
+   * @param size Pagination parameter
+   * @param value the value to search for
+   * @return List of ForestClientDto
+   */
   public List<ForestClientDto> searchClients(
       int page,
       int size,
       String value
   ) {
-    log.info("Starting {} request to /clients/search/by?name={}&acronym={}&number={}", PROVIDER,value,value,value);
+    log.info("Starting {} request to /clients/search/by?name={}&acronym={}&number={}",
+        PROVIDER,
+        value,
+        value,
+        value
+    );
 
     try {
       return
@@ -79,12 +92,21 @@ public class ForestClientApiProvider {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
     } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
-      log.error("{} requested on search by - Response code error: {}", PROVIDER, httpExc.getStatusCode());
+      log.error("{} requested on search by - Response code error: {}",
+          PROVIDER,
+          httpExc.getStatusCode()
+      );
     }
 
     return List.of();
   }
 
+  /**
+   * Fetch all locations for a client.
+   *
+   * @param clientNumber the client number to search for
+   * @return the list of ForestClientLocationDto for the client
+   */
   public List<ForestClientLocationDto> fetchLocationsByClientNumber(String clientNumber) {
     log.info("Starting {} request to /clients/{}/locations", PROVIDER, clientNumber);
 
@@ -95,14 +117,17 @@ public class ForestClientApiProvider {
               .uri(uriBuilder ->
                   uriBuilder
                       .path("/clients/{clientNumber}/locations")
-                      .queryParam("page",0)
-                      .queryParam("size",100)
+                      .queryParam("page", 0)
+                      .queryParam("size", 100)
                       .build(clientNumber)
                   )
               .retrieve()
               .body(new ParameterizedTypeReference<>() {});
     } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
-      log.error("Client location {} request - Response code error: {}", PROVIDER, httpExc.getStatusCode());
+      log.error("Client location {} request - Response code error: {}",
+          PROVIDER,
+          httpExc.getStatusCode()
+      );
     }
 
     return List.of();

@@ -38,6 +38,14 @@ public class ForestClientService {
     return forestClientApiProvider.fetchClientByNumber(fixedNumber);
   }
 
+  /**
+   * Search for clients by name, acronym or number.
+   *
+   * @param page  The page number to be fetched.
+   * @param size  The size of the page to be fetched.
+   * @param value The value to be searched.
+   * @return List of {@link ForestClientAutocompleteResultDto} with found clients.
+   */
   public List<ForestClientAutocompleteResultDto> searchClients(
       int page,
       int size,
@@ -57,6 +65,12 @@ public class ForestClientService {
         .toList();
   }
 
+  /**
+   * Get the locations of a client.
+   *
+   * @param clientNumber The client number to be fetched.
+   * @return List of {@link CodeDescriptionDto} with found locations.
+   */
   public List<CodeDescriptionDto> getClientLocations(String clientNumber) {
     String fixedNumber = checkClientNumber(clientNumber);
 
