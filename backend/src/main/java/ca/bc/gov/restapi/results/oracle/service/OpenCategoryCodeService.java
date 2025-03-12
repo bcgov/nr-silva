@@ -30,8 +30,8 @@ public class OpenCategoryCodeService {
     log.info("Getting all open category codes. Include expired: {}", includeExpired);
 
     List<OpenCategoryCodeEntity> openCategoryCodes =
-        includeExpired ?
-            openCategoryCodeRepository.findAll()
+        includeExpired
+            ? openCategoryCodeRepository.findAll()
             : openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
 
     log.info("Found {} open category codes ({}cluding expired)",

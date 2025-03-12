@@ -94,7 +94,8 @@ public class UserRecentOpeningService {
         openingService.parsePageResult(
             openingRepository
                 .searchByOpeningIds(new ArrayList<>(openingIds.keySet()),
-                    //Here it really doesn't matter, if we set the page as first, because it will be just for the current page anyway
+                    // Here it really doesn't matter, if we set the page as first,
+                    // because it will be just for the current page anyway
                     PageRequest.of(0, openingIds.size())
                 )
         );

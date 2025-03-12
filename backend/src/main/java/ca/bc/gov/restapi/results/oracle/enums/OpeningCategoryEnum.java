@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +10,7 @@ import lombok.Getter;
  * table.
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum OpeningCategoryEnum {
   CONT("CONT", "SP as a part of contractual agreement"),
@@ -40,10 +43,6 @@ public enum OpeningCategoryEnum {
   private final String code;
   private final String description;
 
-  private OpeningCategoryEnum(String code, String description) {
-    this.code = code;
-    this.description = description;
-  }
   /**
    * Get a {@link OpeningCategoryEnum} given its code.
    *

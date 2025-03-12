@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,14 +17,14 @@ class TimestampUtilTest {
   @ParameterizedTest
   @MethodSource("startEndOfDay")
   @DisplayName("Date begin and end of day")
-  void shouldGetStartOrEndOfDay(LocalDate date, boolean start){
+  void shouldGetStartOrEndOfDay(LocalDate date, boolean start) {
 
-    LocalDateTime dateTime = TimestampUtil.parseDateString(date, start ? LocalTime.MIN : LocalTime.MAX);
+    LocalDateTime dateTime = TimestampUtil.parseDateString(date,
+        start ? LocalTime.MIN : LocalTime.MAX);
 
     Assertions.assertEquals(date, dateTime.toLocalDate());
 
-
-    if(start){
+    if (start) {
       Assertions.assertEquals(0, dateTime.getHour());
       Assertions.assertEquals(0, dateTime.getMinute());
       Assertions.assertEquals(0, dateTime.getSecond());
@@ -95,17 +94,17 @@ class TimestampUtilTest {
     );
   }
 
-  private static Stream<Arguments> parseValuesString(){
+  private static Stream<Arguments> parseValuesString() {
     return Stream.of(
         Arguments.of("2024-04-09", 2024, 4, 9),
-        Arguments.of("1987-01-01", 1987,1,1),
-        Arguments.of("2022-12-31", 2022,12,31),
-        Arguments.of("2023-02-28", 2023,2,28),
-        Arguments.of("2024-02-29", 2024,2,29)
+        Arguments.of("1987-01-01", 1987, 1, 1),
+        Arguments.of("2022-12-31", 2022, 12, 31),
+        Arguments.of("2023-02-28", 2023, 2, 28),
+        Arguments.of("2024-02-29", 2024, 2, 29)
     );
   }
 
-  private static Stream<Arguments> startEndOfDay(){
+  private static Stream<Arguments> startEndOfDay() {
     return Stream.of(
         Arguments.of(LocalDate.of(2024, 4, 9), true),
         Arguments.of(LocalDate.of(1987, 1, 1), true),
