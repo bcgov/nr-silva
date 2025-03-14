@@ -14,6 +14,10 @@
       h1 {
         @include type.type-style('heading-05');
       }
+
+      .experimental-tag {
+        height: fit-content;
+      }
     }
   }
 }

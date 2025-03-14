@@ -202,7 +202,6 @@ const OpeningSearch: React.FC = () => {
           showMap
             ? (
               <OpeningsMap
-                openingId={null}
                 openingIds={selectedOpeningIds}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
                 mapHeight={280}

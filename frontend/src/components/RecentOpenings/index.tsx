@@ -75,46 +75,55 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
           {showMap ? "Hide map" : "Show map"}
         </Button>
       </div>
-
-      {openingPolygonNotFound && (
-        <InlineNotification
-          title={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
-          subtitle="No map data available for this opening ID"
-          statusIconDescription={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
-          kind="error"
-          lowContrast
-          className="inline-notification"
-          hideCloseButton
-          role="alert"
-        />
-      )}
-      {showMap && (
-        <OpeningsMap
-          openingId={null}
-          openingIds={selectedOpeningIds}
-          setOpeningPolygonNotFound={handleMapError}
-          mapHeight={280}
-        />
-      )}
+      {
+        openingPolygonNotFound ? (
+          <InlineNotification
+            title={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
+            subtitle="No map data available for this opening ID"
+            statusIconDescription={`Opening ID ${faultyOpeningPolygonId} map geometry not found`}
+            kind="error"
+            lowContrast
+            className="inline-notification"
+            hideCloseButton
+            role="alert"
+          />
+        )
+          : null
+      }
+      {
+        showMap
+          ? (
+            <OpeningsMap
+              openingIds={selectedOpeningIds}
+              setOpeningPolygonNotFound={handleMapError}
+              mapHeight={280}
+            />
+          )
+          : null
+      }
 
       {/* Table skeleton */}
-      {recentOpeningsQuery.isLoading ? (
-        <TableSkeleton
-          headers={recentOpeningsHeaders}
-          showToolbar={false}
-          showHeader={false}
-        />
-      ) : null}
+      {
+        recentOpeningsQuery.isLoading ? (
+          <TableSkeleton
+            headers={recentOpeningsHeaders}
+            showToolbar={false}
+            showHeader={false}
+          />
+        ) : null
+      }
       {/* Empty Table */}
-      {!recentOpeningsQuery.isLoading &&
-        !recentOpeningsQuery.data?.content.length ? (
-        <EmptySection
-          pictogram="Magnify"
-          title="There are no openings to show yet"
-          description="Your recent openings will appear here once you generate one"
-          fill="#0073E6"
-        />
-      ) : null}
+      {
+        !recentOpeningsQuery.isLoading &&
+          !recentOpeningsQuery.data?.content.length ? (
+          <EmptySection
+            pictogram="Magnify"
+            title="There are no openings to show yet"
+            description="Your recent openings will appear here once you generate one"
+            fill="#0073E6"
+          />
+        ) : null
+      }
       {/* Loaded table content */}
       {
         !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content.length ?

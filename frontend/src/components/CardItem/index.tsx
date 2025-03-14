@@ -1,6 +1,6 @@
 import React from "react";
 import './styles.scss';
-import { TagSkeleton } from "@carbon/react";
+import { TagSkeleton, Tooltip } from "@carbon/react";
 import { PLACE_HOLDER } from "../../constants";
 
 /**
@@ -23,36 +23,64 @@ interface CardItemProps {
    * @default false
    */
   showSkeleton?: boolean;
+
   /**
    * The html id of the component
    */
   id?: string;
+
+  /**
+   * Text used for tooltip
+   */
+  tooltipText?: string
 }
 
 /**
  * A UI component that displays a labeled piece of content inside a card-like container.
  * Can optionally render a skeleton placeholder instead of content.
  *
+ * Uses semantic HTML (`<dl>`, `<dt>`, `<dd>`) to ensure proper accessibility,
+ * allowing screen readers to correctly associate the label (`<dt>`) with its corresponding value (`<dd>`).
+ *
+ * If `tooltipText` is provided, the content will be wrapped with Carbon's `Tooltip`.
+ *
  * @param {CardItemProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered `CardItem` component.
  */
 const CardItem = ({
-  showSkeleton,
+  showSkeleton = false,
   label,
   children,
-  id
-}: CardItemProps) => (
-  <div className="card-item" id={id}>
-    <label className="card-item-label">
-      {label}
-    </label>
-    <div className="card-item-content">
-      {showSkeleton
-        ? <TagSkeleton />
-        : (children ?? PLACE_HOLDER)
-      }
-    </div>
-  </div>
-);
+  id,
+  tooltipText
+}: CardItemProps): React.ReactElement => {
+  const rawContent = children ?? PLACE_HOLDER;
+
+  let content: React.ReactNode = rawContent;
+
+  if (tooltipText && !showSkeleton) {
+    content = (
+      <Tooltip description={tooltipText}>
+        {
+          React.isValidElement(rawContent)
+            ? rawContent
+            : <span>{String(rawContent)}</span>
+        }
+      </Tooltip>
+    );
+  }
+
+  return (
+    <dl className="card-item" id={id}>
+      <dt className="card-item-label">{label}</dt>
+      <dd
+        className="card-item-content"
+        title={typeof children === 'string' && !showSkeleton ? children : undefined}
+      >
+        {showSkeleton ? <TagSkeleton /> : content}
+      </dd>
+    </dl>
+  );
+};
 
 export default CardItem;

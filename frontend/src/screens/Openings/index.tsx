@@ -11,6 +11,7 @@ const Openings = () => {
       <Column sm={4} md={8} lg={16}>
         <PageTitle
           title="Openings"
+          experimental
         />
       </Column>
 

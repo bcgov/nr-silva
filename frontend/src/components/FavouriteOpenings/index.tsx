@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from '@/contexts/NotificationProvider';
+import { fetchOpeningFavourites, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
+import { EIGHT_SECONDS } from "@/constants/TimeUnits";
+import { OpeningDetailsRoute } from "@/routes/config";
+
 import FavoriteButton from '../FavoriteButton';
 import EmptySection from "../EmptySection";
-import { useNotification } from '../../contexts/NotificationProvider';
-import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import ChartContainer from "../ChartContainer";
-import './styles.scss';
-import { EIGHT_SECONDS } from "../../constants/TimeUnits";
 
+import './styles.scss';
 
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
@@ -98,10 +102,14 @@ const FavouriteOpenings: React.FC = () => {
                         onFavoriteChange={() => deleteFavourite(openingId)}
                         disabled={deleteFavOpenMutation.isPending}
                       />
-                      <p className="fav-open-label">
+                      <Link
+                        className="fav-open-label"
+                        to={OpeningDetailsRoute.path!.replace(":openingId", openingId.toString())}
+                      >
                         Opening ID
                         <span className="fav-open-id">{openingId}</span>
-                      </p>
+                      </Link>
+
                     </div>
                   ))
                 }

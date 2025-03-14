@@ -31,7 +31,8 @@ const OpeningDetails = () => {
         return undefined;
       }
       return content.find((opening) => opening.openingId.toString() === openingId)
-    }
+    },
+    refetchOnMount: true
   })
 
   const postRecentOpeningMutation = useMutation({
