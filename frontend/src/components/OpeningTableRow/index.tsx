@@ -1,20 +1,18 @@
 // TableRowComponent.tsx
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { TableRow, TableCell, Tooltip } from "@carbon/react";
-import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import StatusTag from "../StatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
-import { formatLocalDate } from "../../utils/DateUtils";
-import { PLACE_HOLDER } from "../../constants";
-import { OpendingHeaderKeyType, TableHeaderType } from "../../types/TableHeader";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { PLACE_HOLDER } from "@/constants";
+import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 
+import { OpeningDetailsRoute } from "@/routes/config";
 import './styles.scss';
-import { useMutation } from "@tanstack/react-query";
-import { putUserRecentOpening } from "../../services/OpeningService";
-import { useNavigate } from "react-router-dom";
-import { OpeningDetailsRoute } from "../../routes/config";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -38,7 +36,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
       case "status":
-        return <StatusTag code={rowData.status?.description ?? 'Unknown'} />;
+        return <StatusTag description={rowData.status?.description ?? 'Unknown'} />;
       case "actions":
         return (
           <div className="action-container">

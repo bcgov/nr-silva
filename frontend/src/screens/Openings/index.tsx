@@ -15,7 +15,7 @@ const Openings = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <RecentOpenings />
+        <RecentOpenings defaultMapOpen />
       </Column>
     </Grid>
   )

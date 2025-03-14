@@ -13,7 +13,7 @@ export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'timberMark', header: 'Timber mark', selected: false },
   { key: 'cuttingPermitId', header: 'Cutting permit', selected: true },
   { key: 'cutBlockId', header: 'Cut block', selected: true },
-  { key: 'openingGrossAreaHa', header: 'Gross Area', selected: true },
+  { key: 'openingGrossAreaHa', header: 'Gross Area (ha)', selected: true },
   { key: 'disturbanceStartDate', header: 'Disturbance date', selected: true },
   { key: 'regenDelayDate', header: 'Regen delay due date', selected: false },
   { key: 'earlyFreeGrowingDate', header: 'Free growing due date', selected: false },

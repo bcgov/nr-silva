@@ -13,8 +13,12 @@ import OpeningTableRow from '../OpeningTableRow';
 
 import './styles.scss';
 
-const RecentOpenings = () => {
-  const [showMap, setShowMap] = useState<boolean>(false);
+type RecentOpeningsProps = {
+  defaultMapOpen?: boolean;
+}
+
+const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
+  const [showMap, setShowMap] = useState<boolean>(defaultMapOpen);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
     useState<boolean>(false);
@@ -22,7 +26,6 @@ const RecentOpenings = () => {
     number | null
   >(null);
 
-  const [openingDetails, setOpeningDetails] = useState("");
   const breakpoint = useBreakpoint();
 
   const recentOpeningsQuery = useQuery({

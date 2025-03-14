@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { searchOpenings } from "@/services/OpeningSearchService";
 import FavoriteButton from "../../../components/FavoriteButton";
 import { putUserRecentOpening } from "../../../services/OpeningService";
+import OpeningSummary from "../../../components/OpeningSummary";
 
 
 
@@ -52,6 +53,7 @@ const OpeningDetails = () => {
     <Grid className="default-grid opening-detail-grid">
       <PageTitle
         title={`Opening ID ${openingId}`}
+        subtitle="Check and manage this opening"
         experimental
       >
         <FavoriteButton
@@ -63,8 +65,10 @@ const OpeningDetails = () => {
       </PageTitle>
 
       <Column sm={4} md={8} lg={16}>
-
+        <OpeningSummary openingObj={openingQuery.data} isLoading={openingQuery.isLoading} />
       </Column>
+
+
     </Grid >
   )
 }

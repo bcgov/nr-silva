@@ -1,0 +1,14 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-summary-grid {
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+  border-radius: 0.5rem;
+  row-gap: 2rem;
+
+  .card-title-col {
+    h3 {
+      @include type.type-style('heading-03');
+    }
+  }
+}
