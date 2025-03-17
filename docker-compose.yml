@@ -104,7 +104,7 @@ services:
       APP_USER: THE
       ORACLE_RANDOM_PASSWORD: yes
     platform: "linux/amd64"
-    image: gvenzl/oracle-free:23.6-full-faststart
+    image: gvenzl/oracle-free:23.7-full-faststart
     ports: [ 1521:1521 ]
     volumes: [ /opt/oracle/oradata ]
     healthcheck:
