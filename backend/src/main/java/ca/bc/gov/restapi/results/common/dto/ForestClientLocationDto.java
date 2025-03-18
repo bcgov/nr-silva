@@ -4,6 +4,9 @@ import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import java.time.LocalDate;
 import lombok.With;
 
+/**
+ * This record represents a Forest Client Location object.
+ */
 @With
 public record ForestClientLocationDto(
     String clientNumber,

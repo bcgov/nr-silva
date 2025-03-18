@@ -24,6 +24,13 @@ public record ForestClientDto(
     String acronym
 ) {
 
+  /**
+   * Returns the name of the client.
+   * It resolves it based on client type code, so it can be either individual with first, middle and
+   * last name, or a company with a single name.
+   *
+   * @return the name of the client
+   */
   @Transient
   public String name() {
     if (Objects.equals(this.clientTypeCode, ForestClientTypeEnum.of('I'))) {

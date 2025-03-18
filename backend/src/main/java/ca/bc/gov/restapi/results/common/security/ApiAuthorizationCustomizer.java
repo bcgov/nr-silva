@@ -6,13 +6,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class contains the configuration for API authorization. This is where our security rules are
+ * defined.
+ */
 @Component
 public class ApiAuthorizationCustomizer implements
-    Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> {
+    Customizer<
+        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+        > {
 
   @Override
   public void customize(
-      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize) {
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>
+          .AuthorizationManagerRequestMatcherRegistry authorize
+  ) {
 
     authorize
         // Allow actuator endpoints to be accessed without authentication

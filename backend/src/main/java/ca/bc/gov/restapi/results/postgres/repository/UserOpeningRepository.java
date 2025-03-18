@@ -16,6 +16,6 @@ public interface UserOpeningRepository
 
   List<UserOpeningEntity> findAllByUserId(String userId, Pageable page);
 
-  List<UserOpeningEntity> findAllByUserIdAndOpeningIdIn(String userId,List<Long> openingIds);
+  List<UserOpeningEntity> findAllByUserIdAndOpeningIdIn(String userId, List<Long> openingIds);
 
 }

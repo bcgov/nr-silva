@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.common.security;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +15,26 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class holds the configuration for HTTP headers security.
+ */
 @RequiredArgsConstructor
 @Component
 public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<HttpSecurity>> {
 
   @Value("${ca.bc.gov.nrs.self-uri}")
   String selfUri;
+
+  private static final List<String> PERMISSIONS = List.of(
+      "geolocation",
+      "microphone",
+      "camera",
+      "speaker",
+      "usb",
+      "bluetooth",
+      "payment",
+      "interest-cohort"
+  );
 
   /**
    * The environment of the application, which is injected from the application properties. The
@@ -29,7 +45,7 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
 
   @Override
   public void customize(HeadersConfigurer<HttpSecurity> headerSpec) {
-// Define the policy directives for the Content-Security-Policy header.
+
     String policyDirectives = String.join("; ",
         "default-src 'none'",
         "connect-src 'self' " + selfUri,
@@ -52,12 +68,20 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
             hstsSpec.maxAgeInSeconds(Duration.ofDays(30).getSeconds())
                 .includeSubDomains(true)) // Set the Strict-Transport-Security header.
         .xssProtection(XXssConfig::disable) // Disable the X-XSS-Protection header.
-        .contentTypeOptions(
-            Customizer.withDefaults()) // Set the X-Content-Type-Options header to its default value.
+        // Set the X-Content-Type-Options header to its default value.
+        .contentTypeOptions(Customizer.withDefaults())
+
+        // Set the Referrer-Policy header.
         .referrerPolicy(referrerPolicySpec -> referrerPolicySpec.policy(
-            ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)) // Set the Referrer-Policy header.
-        .permissionsPolicy(permissionsPolicySpec -> permissionsPolicySpec.policy(
-            "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()")) // Set the Permissions-Policy header.
-    ;
+            ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+        // Set the Permissions-Policy header.
+        .permissionsPolicyHeader(permissionsPolicySpec ->
+            permissionsPolicySpec.policy(
+                PERMISSIONS
+                    .stream()
+                    .map(permission -> String.format("%s=()", permission))
+                    .collect(Collectors.joining(", "))
+            )
+        );
   }
 }

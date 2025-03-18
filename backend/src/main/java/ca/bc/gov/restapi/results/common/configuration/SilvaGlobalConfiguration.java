@@ -32,8 +32,20 @@ import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geojson.Crs;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
+import org.geojson.GeoJsonObject;
+import org.geojson.GeoJsonObjectVisitor.Adapter;
+import org.geojson.Geometry;
+import org.geojson.GeometryCollection;
+import org.geojson.LineString;
+import org.geojson.LngLatAlt;
+import org.geojson.MultiLineString;
+import org.geojson.MultiPoint;
+import org.geojson.MultiPolygon;
+import org.geojson.Point;
+import org.geojson.Polygon;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -72,7 +84,20 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     UserOpeningEntityId.class,
     UserRecentOpeningEntity.class,
     FeatureCollection.class,
-    Feature.class
+    Feature.class,
+    Polygon.class,
+    MultiPolygon.class,
+    Point.class,
+    MultiPoint.class,
+    LineString.class,
+    MultiLineString.class,
+    LngLatAlt.class,
+    Geometry.class,
+    GeometryCollection.class,
+    GeoJsonObject.class,
+    Crs.class,
+    Adapter.class
+
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
