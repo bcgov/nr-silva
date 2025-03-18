@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { searchOpenings } from "@/services/OpeningSearchService";
-import FavoriteButton from "@/components/FavoriteButton";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningSummary } from "@/components/OpeningDetails";
 import { OpeningOverview } from "@/components/OpeningDetails";
+import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
 import PageTitle from "@/components/PageTitle";
 
 import { OpeningDetailBreadCrumbs } from "./constants";
@@ -59,12 +59,7 @@ const OpeningDetails = () => {
         breadCrumbs={OpeningDetailBreadCrumbs}
         experimental
       >
-        <FavoriteButton
-          kind="ghost"
-          size="md"
-          onFavoriteChange={() => { }}
-          favorited={openingQuery.data?.favourite ?? false}
-        />
+        <ActionableFavouriteButton openingId={Number(openingId)} />
       </PageTitle>
 
       <Column sm={4} md={8} lg={16}>

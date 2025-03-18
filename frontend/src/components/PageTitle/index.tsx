@@ -34,6 +34,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
               {
                 breadCrumbs.map((crumb) => (
                   <BreadcrumbItem
+                    key={crumb.name}
                     onClick={() => navigate(crumb.path)}
                   >
                     {crumb.name}
