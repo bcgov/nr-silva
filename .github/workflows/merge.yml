@@ -30,6 +30,8 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
+      backend_min_replicas: '1'
+      backend_max_replicas: '1'
       allowed_origins: https://silva-test.nrs.gov.bc.ca/
       environment: test
       tag: ${{ needs.init.outputs.pr }}

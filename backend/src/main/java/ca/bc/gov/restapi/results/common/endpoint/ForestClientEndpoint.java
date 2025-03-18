@@ -37,15 +37,29 @@ public class ForestClientEndpoint {
         .orElseThrow(ForestClientNotFoundException::new);
   }
 
+  /**
+   * Search for clients by name, acronym or number.
+   *
+   * @param page  The page number to be fetched.
+   * @param size  The size of the page to be fetched.
+   * @param value The value to be searched.
+   * @return List of {@link ForestClientAutocompleteResultDto} with found clients.
+   */
   @GetMapping("/byNameAcronymNumber")
   public List<ForestClientAutocompleteResultDto> searchForestClients(
-      @RequestParam(value = "page",required = false,defaultValue = "0") Integer page,
-      @RequestParam(value = "size",required = false,defaultValue = "10") Integer size,
+      @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
       @RequestParam(value = "value") String value
   ) {
-    return forestClientService.searchClients(page,size,value);
+    return forestClientService.searchClients(page, size, value);
   }
 
+  /**
+   * Get the locations of a client.
+   *
+   * @param clientNumber The client number to be fetched.
+   * @return List of {@link CodeDescriptionDto} with found locations.
+   */
   @GetMapping("/{clientNumber}/locations")
   public List<CodeDescriptionDto> getForestClientLocations(@PathVariable String clientNumber) {
     return forestClientService.getClientLocations(clientNumber);
