@@ -17,6 +17,11 @@
       h3 {
         @include type.type-style('heading-03');
       }
+
+      .#{vars.$bcgov-prefix}--btn.#{vars.$bcgov-prefix}--skeleton {
+        height: 2rem;
+        min-height: unset;
+      }
     }
   }
 

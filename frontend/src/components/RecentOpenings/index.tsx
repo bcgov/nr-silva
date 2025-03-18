@@ -91,7 +91,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
           : null
       }
       {
-        showMap
+        showMap && recentOpeningsQuery.data?.content.length
           ? (
             <OpeningsMap
               openingIds={selectedOpeningIds}

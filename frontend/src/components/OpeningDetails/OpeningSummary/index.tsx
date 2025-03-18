@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Button, Column, Grid } from "@carbon/react";
+import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
 import { Location } from "@carbon/icons-react";
 
-import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
-import CardItem from "../CardItem";
-import { getClientLabel } from "../../utils/ForestClientUtils";
-import { formatLocalDate } from "../../utils/DateUtils";
-import StatusTag from "../StatusTag";
-import OpeningsMap from "../OpeningsMap";
+import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
+import { CardItem } from "@/components/Card";
+import { getClientLabel } from "@/utils/ForestClientUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
+import StatusTag from "@/components/StatusTag";
+import OpeningsMap from "@/components/OpeningsMap";
 
 import './styles.scss';
 
@@ -25,15 +25,23 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
       <Column className="card-title-col" sm={4} md={8} lg={16}>
         <div className="card-title-container">
           <h3>Opening summary</h3>
-          <Button
-            type="button"
-            kind="tertiary"
-            size="sm"
-            renderIcon={Location}
-            onClick={() => setShowMap((prev) => !prev)}
-          >
-            {`${showMap ? 'Hide' : 'Show'} Map`}
-          </Button>
+          {
+            isLoading ?
+              (
+                <ButtonSkeleton size="sm" />
+              )
+              : (
+                <Button
+                  type="button"
+                  kind="tertiary"
+                  size="sm"
+                  renderIcon={Location}
+                  onClick={() => setShowMap((prev) => !prev)}
+                >
+                  {`${showMap ? 'Hide' : 'Show'} Map`}
+                </Button>
+              )
+          }
         </div>
       </Column>
 
@@ -153,7 +161,7 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
           )
           : null
       }
-    </Grid>
+    </Grid >
   )
 }
 

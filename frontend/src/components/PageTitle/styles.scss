@@ -1,6 +1,15 @@
 @use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
 .page-title-col {
+  .page-title-breadcrumb {
+    .bx--link {
+      cursor: pointer;
+    }
+
+    margin-bottom: 0.5rem;
+  }
+
   .page-title-container {
     display: flex;
     flex-direction: column;

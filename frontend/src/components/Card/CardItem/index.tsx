@@ -1,7 +1,7 @@
 import React from "react";
 import './styles.scss';
-import { TagSkeleton, Tooltip } from "@carbon/react";
-import { PLACE_HOLDER } from "../../constants";
+import { TagSkeleton, TextInputSkeleton, Tooltip } from "@carbon/react";
+import { PLACE_HOLDER } from "@/constants";
 
 /**
  * Props for the `CardItem` component.
@@ -54,8 +54,23 @@ const CardItem = ({
   id,
   tooltipText
 }: CardItemProps): React.ReactElement => {
+
+  if (showSkeleton) {
+    return (
+      <TextInputSkeleton />
+    )
+  }
+
   const rawContent = children ?? PLACE_HOLDER;
 
+  /**
+   * Final content to be rendered in the card item.
+   *
+   * - If `tooltipText` is provided and the content is not in skeleton state,
+   *   wraps the content in a Carbon `Tooltip`.
+   * - If the content is not a valid React element, wraps it in a `<span>` to ensure it can be rendered inside the tooltip.
+   * - Otherwise, renders the raw content or a fallback placeholder.
+   */
   let content: React.ReactNode = rawContent;
 
   if (tooltipText && !showSkeleton) {
@@ -77,7 +92,7 @@ const CardItem = ({
         className="card-item-content"
         title={typeof children === 'string' && !showSkeleton ? children : undefined}
       >
-        {showSkeleton ? <TagSkeleton /> : content}
+        {content}
       </dd>
     </dl>
   );
