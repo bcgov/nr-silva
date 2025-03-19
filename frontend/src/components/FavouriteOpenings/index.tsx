@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from '@/contexts/NotificationProvider';
@@ -16,12 +16,11 @@ import './styles.scss';
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
     queryFn: () => fetchOpeningFavourites(),
-    refetchOnMount: true
+    refetchOnMount: 'always'
   });
 
   const deleteFavOpenMutation = useMutation({
