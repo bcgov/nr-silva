@@ -1,22 +1,30 @@
+import { PLACE_HOLDER } from "../constants";
 import { ForestClientAutocomplete } from "../services/OpeningClientLocationService";
 import CodeDescriptionDto from "../types/CodeDescriptionType";
 
 
 /**
- * Generates a label for a ForestClientAutocomplete object.
- * The label consists of `name`, `id`, and `acronym`, separated by commas.
- * If any of these values are empty or missing, they are omitted.
+ * Generates a formatted label for a ForestClientAutocomplete object.
  *
- * @param {ForestClientAutocomplete} client - The client object containing name, id, and acronym.
- * @returns {string} A formatted label with non-empty values.
+ * Combines the `name`, `id`, and `acronym` fields, separated by commas.
+ * Fields that are missing or empty strings are excluded from the result.
+ * If all fields are empty or the client is null/undefined, returns a placeholder
+ * or an empty string depending on the `returnPlaceHolder` flag.
+ *
+ * @param {ForestClientAutocomplete | null | undefined} client - The client object.
+ * @param {boolean} [returnPlaceHolder=false] - If true, returns PLACE_HOLDER when the label is empty.
+ * @returns {string} A formatted string like "Name, ID, Acronym" or a fallback value.
  */
-export const getClientLabel = (client?: ForestClientAutocomplete | null): string => {
-  if (!client) {
-    return '';
-  }
-  return [client.name, client.id, client.acronym]
-    .filter(value => value && value.length > 0)
-    .join(', ');
+export const getClientLabel = (
+  client?: ForestClientAutocomplete | null,
+  returnPlaceHolder = false
+): string => {
+  const fallback = returnPlaceHolder ? PLACE_HOLDER : '';
+
+  if (!client) return fallback;
+
+  const label = [client.name, client.id, client.acronym].filter(Boolean).join(', ');
+  return label || fallback;
 };
 
 

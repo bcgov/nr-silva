@@ -12,13 +12,13 @@ import {
   SideNavItems,
   SideNavLink,
   SideNavMenu,
-  SideNavMenuItem
+  SideNavMenuItem,
 } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
 import RightPanelTitle from '../RightPanelTitle';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
-import { leftMenu } from './constants';
+import { mainActivitiesItems } from './constants';
 import './BCHeaderwSide.scss';
 
 /**
@@ -41,7 +41,6 @@ function BCHeaderwSide(): React.JSX.Element {
 
   const navigate = useNavigate();
   const location = useLocation();
-
   return (
     <HeaderContainer
       render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
@@ -84,7 +83,7 @@ function BCHeaderwSide(): React.JSX.Element {
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
               {
-                leftMenu.map(item => (
+                mainActivitiesItems.map(item => (
                   <div key={item.name}>
                     <label className="side-nav-category-name">
                       {item.name}
@@ -92,7 +91,9 @@ function BCHeaderwSide(): React.JSX.Element {
                     {item.items.map(subItem => {
                       const IconComponent = Icons[subItem.icon as keyof typeof Icons];
                       if (subItem.subItems) {
-                        const isActive = subItem.subItems.some(subSubItem => location.pathname.includes(subSubItem.link));
+                        const isActive = subItem.subItems.some(subSubItem =>
+                          location.pathname.startsWith(subSubItem.link)
+                        );
                         return (
                           <SideNavMenu
                             key={subItem.name}
@@ -106,7 +107,7 @@ function BCHeaderwSide(): React.JSX.Element {
                               <SideNavMenuItem
                                 key={subSubItem.name}
                                 onClick={() => navigate(subSubItem.link)}
-                                isActive={location.pathname === subSubItem.link}
+                                isActive={location.pathname.startsWith(subSubItem.link)}
                               >
                                 {subSubItem.name}
                               </SideNavMenuItem>
@@ -120,16 +121,16 @@ function BCHeaderwSide(): React.JSX.Element {
                             key={subItem.name}
                             renderIcon={IconComponent}
                             onClick={() => navigate(subItem.link)}
-                            isActive={location.pathname === subItem.link}
+                            isActive={location.pathname.startsWith(subItem.link)}
                           >
                             {subItem.name}
                           </SideNavLink>
                         );
                       }
-                    })
-                    }
+                    })}
                   </div>
-                ))}
+                ))
+              }
             </SideNavItems>
           </SideNav>
         </Header>

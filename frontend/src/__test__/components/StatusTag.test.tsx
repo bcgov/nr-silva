@@ -8,7 +8,7 @@ describe('Status Tag component tests', () => {
     const colorKey = 'Completed';
 
     const { getByTestId } = render(
-      <StatusTag code={colorKey} />
+      <StatusTag description={colorKey} />
     );
 
     const element: HTMLElement | null = getByTestId(`tag__status_colored_tag_${colorKey}`);

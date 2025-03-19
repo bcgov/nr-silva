@@ -1,6 +1,18 @@
 import { TYPES } from "@carbon/react/lib/components/Tag/Tag";
 
-export const StatusColourMap: {[status: string]: keyof typeof TYPES} = {
+export type StatusKeyType =
+  | 'Completed'
+  | 'Cancelled'
+  | 'Active'
+  | 'Expired'
+  | 'Free growing'
+  | 'Pending'
+  | 'Submitted'
+  | 'Unknown'
+  | 'Approved'
+  | 'In progress';
+
+export const StatusColourMap: { [status in StatusKeyType]: keyof typeof TYPES } = {
   Completed: 'green',
   Cancelled: 'magenta',
   Active: 'blue',
@@ -9,6 +21,6 @@ export const StatusColourMap: {[status: string]: keyof typeof TYPES} = {
   Pending: 'gray',
   Submitted: 'cyan',
   Unknown: 'outline',
-  Approved:'green',
-  'In progress':'purple'
+  Approved: 'green',
+  'In progress': 'purple'
 };

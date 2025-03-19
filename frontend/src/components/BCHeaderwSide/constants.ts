@@ -14,7 +14,7 @@ export type LeftMenu = {
   items: LeftMenuItem[];
 }
 
-const mainActivitiesItems: LeftMenu[] = [
+export const mainActivitiesItems: LeftMenu[] = [
   {
     name: 'Main activities',
     items: [
@@ -31,11 +31,14 @@ const mainActivitiesItems: LeftMenu[] = [
         link: '/silviculture-search',
         disabled: false,
         breadcrumb: false
+      },
+      {
+        name: 'Openings',
+        icon: 'MapBoundaryVegetation',
+        link: '/openings',
+        disabled: false,
+        breadcrumb: false,
       }
     ]
   }
-];
-
-export const leftMenu: LeftMenu[] = [
-  ...mainActivitiesItems
 ];

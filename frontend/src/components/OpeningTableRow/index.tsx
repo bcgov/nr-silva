@@ -1,18 +1,18 @@
 // TableRowComponent.tsx
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { TableRow, TableCell, Tooltip } from "@carbon/react";
-import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import StatusTag from "../StatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
-import { formatLocalDate } from "../../utils/DateUtils";
-import { PLACE_HOLDER } from "../../constants";
-import { OpendingHeaderKeyType, TableHeaderType } from "../../types/TableHeader";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { PLACE_HOLDER } from "@/constants";
+import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 
+import { OpeningDetailsRoute } from "@/routes/config";
 import './styles.scss';
-import { useMutation } from "@tanstack/react-query";
-import { putUserRecentOpening } from "../../services/OpeningService";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -20,8 +20,7 @@ interface TableRowComponentProps {
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;
-  enableClick?: boolean;
-  handleComingSoon?: (rowData: OpeningSearchResponseDto) => void;
+  navigateOnClick?: boolean;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({
@@ -30,14 +29,14 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   showMap,
   selectedRows,
   handleRowSelection,
-  enableClick,
-  handleComingSoon
+  navigateOnClick
 }) => {
+  const navigate = useNavigate();
 
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
       case "status":
-        return <StatusTag code={rowData.status?.description ?? 'Unknown'} />;
+        return <StatusTag description={rowData.status?.description ?? 'Unknown'} />;
       case "actions":
         return (
           <div className="action-container">
@@ -77,22 +76,15 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
     }
   }
 
-  const postRecentOpeningMutation = useMutation({
-    mutationFn: (openingId: number) => putUserRecentOpening(openingId)
-  });
-
   const handleRowClick = () => {
-    if (enableClick) {
-      postRecentOpeningMutation.mutate(rowData.openingId);
-    }
-    if (handleComingSoon) {
-      handleComingSoon(rowData);
+    if (navigateOnClick) {
+      navigate(OpeningDetailsRoute.path!.replace(":openingId", rowData.openingId.toString()))
     }
   }
 
   return (
     <TableRow
-      className={`opening-table-row${enableClick ? ' clickable-opening-row' : ''}`}
+      className={`opening-table-row${navigateOnClick ? ' clickable-opening-row' : ''}`}
     >
       {
         headers

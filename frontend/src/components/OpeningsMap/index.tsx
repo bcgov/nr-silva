@@ -18,14 +18,12 @@ import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
 
 interface MapProps {
   openingIds: number[] | null;
-  openingId: number | null;
   setOpeningPolygonNotFound: (value: boolean, openingId: number | null) => void;
   mapHeight?: number;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
-  openingId,
   setOpeningPolygonNotFound,
   mapHeight = 400,
 }) => {
@@ -144,15 +142,6 @@ const OpeningsMap: React.FC<MapProps> = ({
       setLayers(filtered);
     }
   };
-
-  useEffect(() => {
-    setSelectedOpeningIds(openingId ? [openingId] : []);
-    if (!openingId) {
-      (async () => {
-        await getUserLocation();
-      })();
-    }
-  }, [openingId]);
 
   useEffect(() => {
     setSelectedOpeningIds(openingIds || []);

@@ -5,10 +5,10 @@ import Subtitle from '../Subtitle';
 import './styles.scss';
 
 interface EmptySectionProps {
-  icon?: string;
+  icon?: keyof typeof Icons;
   title: string;
   description: string | React.ReactNode;
-  pictogram?: string;
+  pictogram?: keyof typeof Pictograms;
   fill?: string;
   className?: string;
 }

@@ -29,7 +29,7 @@ const SilvicultureSearch: React.FC = () => {
       <Column className="full-width-col" sm={4} md={8} lg={16}>
         <Tabs>
           <TabList className="search-tablist" aria-label="List of Tab" contained>
-            <Tab renderIcon={MapBoundaryVegetation}>Openings</Tab>
+            <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>Openings</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content">

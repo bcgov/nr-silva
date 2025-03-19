@@ -1,4 +1,3 @@
-import { Column } from '@carbon/react';
 import Subtitle from '../Subtitle';
 
 import './styles.scss';

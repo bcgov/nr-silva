@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 
 // Mock components
 vi.mock("../../components/StatusTag", () => ({
-  default: ({ code }: { code: string }) => <span data-testid="status-tag">{code}</span>,
+  default: ({ description }: { description: string }) => <span data-testid="status-tag">{description}</span>,
 }));
 
 vi.mock("../../components/SpatialCheckbox", () => ({

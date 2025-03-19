@@ -39,6 +39,8 @@
 
     .fav-open-label {
       @include type.type-style('heading-01');
+      text-decoration: none;
+      color: var(--#{vars.$bcgov-prefix}-text-primary);
 
       .fav-open-id {
         margin-left: 0.25rem;
