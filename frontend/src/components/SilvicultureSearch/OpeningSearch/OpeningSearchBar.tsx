@@ -100,8 +100,10 @@ const OpeningSearchBar = ({
 
   const hasActiveFilters = (): boolean => {
     return Object.entries(filters).some(([key, value]) => {
+      const typedKey = key as keyof OpeningSearchFilterType;
+
       // Ignore mainSearchTerm
-      if (key === "mainSearchTerm") return false;
+      if (typedKey === "mainSearchTerm" || typedKey === 'dateType') return false;
 
       // Ignore undefined/null
       if (value === undefined || value === null) return false;
