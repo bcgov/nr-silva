@@ -94,6 +94,8 @@ objects:
               securityContext:
                 capabilities:
                   add: ["NET_BIND_SERVICE"]
+              command: ["sh", "-c", "if [ -d '/vault/secrets' ]; then for file in /vault/secrets/*; do . $file; done; fi && exec \"$@\""]
+              args: []
               imagePullPolicy: Always
               env:
                 - name: LOG_LEVEL
