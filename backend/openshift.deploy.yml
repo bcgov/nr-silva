@@ -87,6 +87,12 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
+  - name: VAULT_ROLE
+    description: The role to use for the vault
+    value: d41ea0-nonprod
+  - name: VAULT_ENV
+    description: The environment to use for the vault
+    value: nr-silva-dev
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -101,8 +107,7 @@ objects:
         requests:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
-  - kind: Deployment
-    # name: ${NAME}-${ZONE}-${COMPONENT}
+  - kind: Deployment    
     apiVersion: apps/v1
     metadata:
       labels:
@@ -120,7 +125,20 @@ objects:
           labels:
             app: ${NAME}-${ZONE}
             deployment: ${NAME}-${ZONE}-${COMPONENT}
+          annotations:
+            vault.hashicorp.com/agent-inject: 'true'
+            vault.hashicorp.com/agent-inject-token: 'false'
+            vault.hashicorp.com/agent-pre-populate-only: 'true'
+            vault.hashicorp.com/auth-path: auth/k8s-silver
+            vault.hashicorp.com/namespace: platform-services
+            vault.hashicorp.com/role: ${VAULT_ROLE}
+            vault.hashicorp.com/agent-inject-secret-test-secret: ${VAULT_ROLE}/${VAULT_ENV}
+            vault.hashicorp.com/agent-inject-template-test-secret: |
+              {{- with secret "${VAULT_ROLE}/${VAULT_ENV}" -}}
+              {{ .Data.data.test-secret }}
+              {{- end }}
         spec:
+          serviceAccountName: d41ea0-vault
           initContainers:
             - name: ${NAME}-${ZONE}-init
               image: ${REGISTRY}/bcgov/nr-forest-client-commons/certextractor:0.2.12
@@ -169,9 +187,8 @@ objects:
                   value: ${RESULTS_ENV_OPENSEARCH}
                 - name: DATABASE_HOST
                   valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-host
+                    fieldRef:
+                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test-secret']
                 - name: DATABASE_PORT
                   value: ${DATABASE_PORT}
                 - name: SERVICE_NAME
