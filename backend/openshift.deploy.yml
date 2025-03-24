@@ -132,10 +132,10 @@ objects:
             vault.hashicorp.com/auth-path: auth/k8s-silver
             vault.hashicorp.com/namespace: platform-services
             vault.hashicorp.com/role: ${VAULT_ROLE}
-            vault.hashicorp.com/agent-inject-secret-test-secret: ${VAULT_ROLE}/${VAULT_ENV}
-            vault.hashicorp.com/agent-inject-template-test-secret: |
+            vault.hashicorp.com/agent-inject-secret-test_secret: ${VAULT_ROLE}/${VAULT_ENV}
+            vault.hashicorp.com/agent-inject-template-test_secret: |
               {{- with secret "${VAULT_ROLE}/${VAULT_ENV}" -}}
-              {{ .Data.data.test-secret }}
+              {{ .Data.data.test_secret }}
               {{- end }}
         spec:
           serviceAccountName: d41ea0-vault
@@ -188,7 +188,7 @@ objects:
                 - name: DATABASE_HOST
                   valueFrom:
                     fieldRef:
-                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test-secret']
+                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test_secret']
                 - name: DATABASE_PORT
                   value: ${DATABASE_PORT}
                 - name: SERVICE_NAME
