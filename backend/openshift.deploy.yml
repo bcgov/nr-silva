@@ -129,14 +129,17 @@ objects:
             vault.hashicorp.com/agent-inject: 'true'
             vault.hashicorp.com/agent-inject-token: 'false'
             vault.hashicorp.com/agent-pre-populate-only: 'true'
+            vault.hashicorp.com/agent-init-first: 'true'
             vault.hashicorp.com/auth-path: auth/k8s-silver
             vault.hashicorp.com/namespace: platform-services
             vault.hashicorp.com/role: ${VAULT_ROLE}
             vault.hashicorp.com/agent-inject-secret-test_secret: ${VAULT_ROLE}/${VAULT_ENV}
             vault.hashicorp.com/agent-inject-template-test_secret: |
               {{- with secret "${VAULT_ROLE}/${VAULT_ENV}" -}}
-              {{ .Data.data.test_secret }}
-              {{- end }}
+              {{- range $k, $v := .Data.data }}
+              export {{ $k }}={{ $v }}{{ end -}}
+              {{- end  }}
+            vault.hashicorp.com/agent-inject-command-test_secret: "source /vault/secrets/test_secret"
         spec:
           serviceAccountName: d41ea0-vault
           initContainers:
@@ -146,8 +149,9 @@ objects:
               env:
                 - name: DATABASE_HOST
                   valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test_secret']
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-host
                 - name: ORACLEDB_SECRET
                   valueFrom:
                     secretKeyRef:
@@ -185,7 +189,8 @@ objects:
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
                 - name: DATABASE_HOST
-                  secretKeyRef:
+                  valueFrom:
+                    secretKeyRef:
                       name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-host
                 - name: DATABASE_PORT
