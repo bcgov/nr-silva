@@ -46,6 +46,12 @@ parameters:
     description: Random expression to make sure deployments update
     from: "[a-zA-Z0-9]{32}"
     generate: expression
+  - name: VAULT_ROLE
+    description: The role to use for the vault
+    value: d41ea0-nonprod
+  - name: VAULT_ENV
+    description: The environment to use for the vault
+    value: nr-silva-dev
 objects:
   - kind: Deployment
     apiVersion: apps/v1
@@ -65,6 +71,21 @@ objects:
           labels:
             app: "${NAME}-${ZONE}"
             deployment: "${NAME}-${ZONE}-${COMPONENT}"
+          annotations:
+            vault.hashicorp.com/agent-inject: 'true'
+            vault.hashicorp.com/agent-inject-token: 'false'
+            vault.hashicorp.com/agent-pre-populate-only: 'true'
+            vault.hashicorp.com/agent-init-first: 'true'
+            vault.hashicorp.com/auth-path: auth/k8s-silver
+            vault.hashicorp.com/namespace: platform-services
+            vault.hashicorp.com/role: ${VAULT_ROLE}
+            vault.hashicorp.com/agent-inject-secret-test_secret: ${VAULT_ROLE}/${VAULT_ENV}
+            vault.hashicorp.com/agent-inject-template-test_secret: |
+              {{- with secret "${VAULT_ROLE}/${VAULT_ENV}" -}}
+              {{- range $k, $v := .Data.data }}
+              export {{ $k }}={{ $v }}{{ end -}}
+              {{- end  }}
+            vault.hashicorp.com/agent-inject-command-test_secret: "source /vault/secrets/test_secret"
         spec:
           containers:
             - name: ${NAME}-${ZONE}-${COMPONENT}
