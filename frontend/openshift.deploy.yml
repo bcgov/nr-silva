@@ -87,6 +87,7 @@ objects:
               {{- end  }}
             vault.hashicorp.com/agent-inject-command-test_secret: "source /vault/secrets/test_secret"
         spec:
+          serviceAccountName: d41ea0-vault
           containers:
             - name: ${NAME}-${ZONE}-${COMPONENT}
               image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
