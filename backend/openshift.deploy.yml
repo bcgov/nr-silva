@@ -144,11 +144,10 @@ objects:
               image: ${REGISTRY}/bcgov/nr-forest-client-commons/certextractor:0.2.12
               imagePullPolicy: Always
               env:
-                - name: ORACLEDB_HOST
+                - name: DATABASE_HOST
                   valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-host
+                    fieldRef:
+                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test_secret']
                 - name: ORACLEDB_SECRET
                   valueFrom:
                     secretKeyRef:
@@ -186,9 +185,9 @@ objects:
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
                 - name: DATABASE_HOST
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['vault.hashicorp.com/agent-inject-template-test_secret']
+                  secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-host
                 - name: DATABASE_PORT
                   value: ${DATABASE_PORT}
                 - name: SERVICE_NAME
