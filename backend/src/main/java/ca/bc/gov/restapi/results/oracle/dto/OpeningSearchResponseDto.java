@@ -21,7 +21,7 @@ import lombok.With;
 @AllArgsConstructor
 public class OpeningSearchResponseDto {
 
-  private Integer openingId;
+  private Long openingId;
   private String openingNumber;
   private OpeningCategoryEnum category;
   private OpeningStatusEnum status;

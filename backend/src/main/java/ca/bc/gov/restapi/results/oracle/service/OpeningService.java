@@ -133,7 +133,6 @@ public class OpeningService {
             .getContent()
             .stream()
             .map(OpeningSearchResponseDto::getOpeningId)
-            .map(Integer::longValue)
             .toList()
     );
 
@@ -147,7 +146,7 @@ public class OpeningService {
   private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
     return projection ->
         new OpeningSearchResponseDto(
-            projection.getOpeningId().intValue(),
+            projection.getOpeningId(),
             projection.getOpeningNumber(),
             OpeningCategoryEnum.of(projection.getCategory()),
             OpeningStatusEnum.of(projection.getStatus()),
