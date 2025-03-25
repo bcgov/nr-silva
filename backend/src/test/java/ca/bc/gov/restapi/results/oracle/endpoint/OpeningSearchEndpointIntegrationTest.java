@@ -52,7 +52,7 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Opening search happy path should succeed")
   void openingSearch_happyPath_shouldSucceed() throws Exception {
     OpeningSearchResponseDto response = new OpeningSearchResponseDto();
-    response.setOpeningId(101017);
+    response.setOpeningId(101017L);
     response.setOpeningNumber(" 514");
     response.setCategory(OpeningCategoryEnum.FTML);
     response.setStatus(OpeningStatusEnum.APP);
