@@ -163,4 +163,51 @@ public class SilvaOracleQueryConstants {
           EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
           o.OPENING_STATUS_CODE
       ORDER BY year, month""";
+
+
+  public static final String GET_OPENING_TOMBSTONE = """
+      SELECT
+        op.opening_id,
+        (LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS opening_number,
+        op.OPENING_STATUS_CODE,
+        osc.DESCRIPTION AS opening_status_desc,
+        '' AS opening_type,
+        ou.ORG_UNIT_CODE,
+        ou.ORG_UNIT_NAME,
+        op.OPEN_CATEGORY_CODE,
+        occ.DESCRIPTION AS open_category_desc,
+        '' AS client,
+        cboa.FOREST_FILE_ID AS file_id,
+        cboa.CUT_BLOCK_ID,
+        cboa.CUTTING_PERMIT_ID,
+        cboa.TIMBER_MARK,
+        '' AS  max_allowed_access,
+        cboa.OPENING_GROSS_AREA,
+        op.ENTRY_USERID AS created_by,
+        to_char(op.ENTRY_TIMESTAMP,'YYYY-MM-DD') AS created_on,
+        to_char(op.UPDATE_TIMESTAMP ,'YYYY-MM-DD') AS last_updated_on,
+        to_char(cboa.DISTURBANCE_START_DATE,'YYYY-MM-DD') AS disturbance_start_date,
+        op.LICENSEE_OPENING_ID,
+        '' AS tenure_type,
+        '' AS management_unit_type,
+        '' AS management_unit_id,
+        '' AS timber_sales_office,
+        '' AS comment_type,
+        to_char(smph.DECLARED_DATE,'YYYY-MM-DD') AS milestone_post_harverst_declared_date,
+        to_char(smrg.DECLARED_DATE,'YYYY-MM-DD') AS milestone_regen_declared_date,
+        smrg.LATE_OFFSET_YEARS AS  milestone_regen_regen_offset,
+        to_char(smrg.DUE_LATE_DATE,'YYYY-MM-DD') AS milestone_regen_due_date,
+        to_char(smfg.DECLARED_DATE,'YYYY-MM-DD') AS milestone_free_growing_declared_date,
+        smfg.LATE_OFFSET_YEARS AS milestone_free_growing_offset,
+        to_char(smfg.DUE_LATE_DATE,'YYYY-MM-DD') AS milestone_free_growing_due_date
+      FROM OPENING op
+      LEFT JOIN OPENING_STATUS_CODE osc ON osc.OPENING_STATUS_CODE = op.OPENING_STATUS_CODE
+      LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
+      LEFT JOIN OPEN_CATEGORY_CODE occ ON occ.OPEN_CATEGORY_CODE = op.OPEN_CATEGORY_CODE
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+      LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
+      LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
+      LEFT JOIN THE.STOCKING_MILESTONE smph ON (smph.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smph.SILV_MILESTONE_TYPE_CODE = 'PH')
+      WHERE op.OPENING_ID = :openingId""";
 }

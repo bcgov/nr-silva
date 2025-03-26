@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.entity;
+package ca.bc.gov.restapi.results.oracle.entity.opening;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

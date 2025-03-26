@@ -1,10 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
-import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,4 +40,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
       List<String> statusList,
       List<String> orgUnitList
   );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_TOMBSTONE)
+  List<OpeningTombstoneProjection> getOpeningTombstoneByOpeningId(Long openingId);
 }

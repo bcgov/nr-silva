@@ -1,12 +1,10 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 
-import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningTombstoneDto;
-import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,12 @@ import org.springframework.stereotype.Service;
 public class OpeningService {
 
   private final OpeningRepository openingRepository;
-  private final CutBlockOpenAdminService cutBlockOpenAdminService;
-  private final LoggedUserService loggedUserService;
-  private final ForestClientApiProvider forestClientApiProvider;
-  private final UserOpeningService userOpeningService;
 
-
-  public OpeningTombstoneDto getOpeningTombstone(String openingId) {
-    return null;
+  public Optional<OpeningTombstoneProjection> getOpeningTombstone(Long openingId) {
+    return
+        openingRepository
+            .getOpeningTombstoneByOpeningId(openingId)
+            .stream()
+            .findFirst();
   }
 }
