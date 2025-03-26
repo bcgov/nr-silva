@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
@@ -80,9 +81,16 @@ public class UserRecentOpeningService {
         .findByUserIdOrderByLastViewedDesc(userId, pageable);
 
     // Extract opening IDs as String
-    Map<Long, LocalDateTime> openingIds = recentOpenings.getContent().stream()
-        .collect(Collectors.toMap(UserRecentOpeningEntity::getOpeningId,
-            UserRecentOpeningEntity::getLastViewed));
+    Map<Long, LocalDateTime> openingIds = recentOpenings
+        .getContent()
+        .stream()
+        .collect(
+            Collectors
+                .toMap(
+                    UserRecentOpeningEntity::getOpeningId,
+                    UserRecentOpeningEntity::getLastViewed
+                )
+        );
     log.info("User with the userId {} has the following openingIds {}", userId, openingIds);
 
     if (openingIds.isEmpty()) {
@@ -93,7 +101,9 @@ public class UserRecentOpeningService {
     Page<OpeningSearchResponseDto> pageResult =
         openingService.parsePageResult(
             openingRepository
-                .searchByOpeningIds(new ArrayList<>(openingIds.keySet()),
+                .searchBy(
+                    new OpeningSearchFiltersDto(),
+                    new ArrayList<>(openingIds.keySet()),
                     // Here it really doesn't matter, if we set the page as first,
                     // because it will be just for the current page anyway
                     PageRequest.of(0, openingIds.size())
@@ -105,7 +115,7 @@ public class UserRecentOpeningService {
             pageResult
                 .get()
                 .map(result -> result.withLastViewDate(
-                    openingIds.get(result.getOpeningId().longValue())))
+                    openingIds.get(result.getOpeningId())))
                 .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
                 .toList(),
             recentOpenings.getPageable(),

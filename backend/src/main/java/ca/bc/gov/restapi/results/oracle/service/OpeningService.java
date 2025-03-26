@@ -71,6 +71,7 @@ public class OpeningService {
     Page<SilvicultureSearchProjection> searchResultPage =
         openingRepository.searchBy(
             filtersDto,
+            List.of(0L),
             ((PageRequest) pagination).withSort(Sort.by("opening_id").descending())
         );
 
@@ -83,6 +84,7 @@ public class OpeningService {
     return fetchClientAcronyms(fetchFavorites(new PageImpl<>(
         searchResultPage.get()
             .map(mapToSearchResponse())
+            .filter(OpeningSearchResponseDto::isValid)
             .toList(),
         searchResultPage.getPageable(),
         searchResultPage.getTotalPages()
@@ -132,12 +134,11 @@ public class OpeningService {
             .getContent()
             .stream()
             .map(OpeningSearchResponseDto::getOpeningId)
-            .map(Integer::longValue)
             .toList()
     );
 
     for (OpeningSearchResponseDto opening : pagedResult.getContent()) {
-      opening.setFavourite(favourites.contains(opening.getOpeningId().longValue()));
+      opening.setFavourite(favourites.contains(opening.getOpeningId()));
     }
 
     return pagedResult;
@@ -146,7 +147,7 @@ public class OpeningService {
   private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
     return projection ->
         new OpeningSearchResponseDto(
-            projection.getOpeningId().intValue(),
+            projection.getOpeningId(),
             projection.getOpeningNumber(),
             OpeningCategoryEnum.of(projection.getCategory()),
             OpeningStatusEnum.of(projection.getStatus()),
