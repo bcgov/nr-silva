@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningTombstoneDto;
 import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
@@ -63,9 +64,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     OpeningCategoryConverter.class,
     OpeningStatusConverter.class,
     CodeDescriptionDto.class,
+    RecentOpeningDto.class,
     OpeningSearchFiltersDto.class,
     OpeningSearchResponseDto.class,
-    RecentOpeningDto.class,
+    OpeningTombstoneDto.class,
     ClientAcronymEntity.class,
     CutBlockOpenAdminEntity.class,
     OpenCategoryCodeEntity.class,
@@ -97,7 +99,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     GeoJsonObject.class,
     Crs.class,
     Adapter.class
-
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
