@@ -1,20 +1,27 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -28,11 +35,24 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
   @Autowired
   private MockMvc mockMvc;
 
+  @RegisterExtension
+  static WireMockExtension clientApiStub = WireMockExtension
+      .newInstance()
+      .options(
+          wireMockConfig()
+              .port(10000)
+              .notifier(new WiremockLogNotifier())
+              .asynchronousResponseEnabled(true)
+              .stubRequestLoggingDisabled(false)
+      )
+      .configureStaticDsl(true)
+      .build();
+
   @Test
   @DisplayName("Opening search happy path should succeed")
   void openingSearch_happyPath_shouldSucceed() throws Exception {
     OpeningSearchResponseDto response = new OpeningSearchResponseDto();
-    response.setOpeningId(101017);
+    response.setOpeningId(101017L);
     response.setOpeningNumber(" 514");
     response.setCategory(OpeningCategoryEnum.FTML);
     response.setStatus(OpeningStatusEnum.APP);
@@ -53,6 +73,23 @@ class OpeningSearchEndpointIntegrationTest extends AbstractTestContainerIntegrat
     response.setSubmittedToFrpa(true);
     response.setSilvaReliefAppId(333L);
     response.setForestFileId("TFL47");
+
+    String clientNumber = "00000003";
+    clientApiStub.stubFor(
+        WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+            .willReturn(okJson("""
+                {
+                  "clientNumber": "00000003",
+                  "clientName": "MINISTRY OF FORESTS",
+                  "legalFirstName": null,
+                  "legalMiddleName": null,
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "F",
+                  "acronym": "MOF"
+                }
+                """)
+            )
+    );
 
     mockMvc
         .perform(
