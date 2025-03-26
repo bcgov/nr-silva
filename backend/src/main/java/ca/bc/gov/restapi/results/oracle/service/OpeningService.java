@@ -81,13 +81,13 @@ public class OpeningService {
   public Page<OpeningSearchResponseDto> parsePageResult(
       Page<SilvicultureSearchProjection> searchResultPage
   ) {
-    return fetchClientAcronyms(fetchFavorites(new PageImpl<>(
+    return /*fetchClientAcronyms(fetchFavorites(*/new PageImpl<>(
         searchResultPage.get()
             .map(mapToSearchResponse())
             .toList(),
         searchResultPage.getPageable(),
         searchResultPage.getTotalPages()
-    )));
+    )/*))*/;
   }
 
   private Page<OpeningSearchResponseDto> fetchClientAcronyms(

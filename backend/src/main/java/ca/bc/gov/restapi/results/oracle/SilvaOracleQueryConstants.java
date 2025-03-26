@@ -28,7 +28,7 @@ public class SilvaOracleQueryConstants {
           ,MAX(op.ENTRY_USERID) as entry_user_id
           ,MAX(COALESCE(sra.silv_relief_application_id, 0)) as submitted_to_frpa108
           ,MAX(op.opening_number) AS opening_number
-      FROM opening op  -- DEFAULT
+      FROM opening op
         FULL OUTER JOIN cut_block_open_admin prime ON (prime.opening_id = op.opening_id AND prime.opening_prime_licence_ind = 'Y')-- DEFAULT
         FULL OUTER JOIN cut_block_open_admin cboa ON (cboa.opening_id = op.opening_id)-- Date is disturbance or client number, user client number, forest file, cutting permit, timber mark, cutblock, block status
         FULL OUTER JOIN stocking_standard_unit ssu ON (op.opening_id = ssu.opening_id) -- Regen OR FREE Growing date
