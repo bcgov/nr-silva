@@ -115,7 +115,7 @@ public class UserRecentOpeningService {
             pageResult
                 .get()
                 .map(result -> result.withLastViewDate(
-                    openingIds.get(result.getOpeningId().longValue())))
+                    openingIds.get(result.getOpeningId())))
                 .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
                 .toList(),
             recentOpenings.getPageable(),
