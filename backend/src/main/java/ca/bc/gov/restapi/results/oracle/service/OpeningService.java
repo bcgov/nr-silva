@@ -137,7 +137,7 @@ public class OpeningService {
     );
 
     for (OpeningSearchResponseDto opening : pagedResult.getContent()) {
-      opening.setFavourite(favourites.contains(opening.getOpeningId().longValue()));
+      opening.setFavourite(favourites.contains(opening.getOpeningId()));
     }
 
     return pagedResult;
