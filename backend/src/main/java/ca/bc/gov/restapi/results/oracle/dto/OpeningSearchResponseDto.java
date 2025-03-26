@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,4 +47,8 @@ public class OpeningSearchResponseDto {
   private Long silvaReliefAppId;
   private LocalDateTime lastViewDate;
   private boolean favourite;
+
+  public boolean isValid() {
+    return Objects.nonNull(openingId);
+  }
 }
