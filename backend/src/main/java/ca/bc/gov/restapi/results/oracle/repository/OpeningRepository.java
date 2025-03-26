@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;

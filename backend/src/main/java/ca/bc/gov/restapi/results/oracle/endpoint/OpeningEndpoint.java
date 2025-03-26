@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/openings/search")
 @RequiredArgsConstructor
-public class OpeningSearchEndpoint {
+public class OpeningEndpoint {
 
   private final OpeningService openingService;
 

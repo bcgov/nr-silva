@@ -9,7 +9,7 @@ import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
 import org.junit.jupiter.api.DisplayName;
