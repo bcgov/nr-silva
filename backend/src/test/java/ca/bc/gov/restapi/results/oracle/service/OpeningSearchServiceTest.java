@@ -22,7 +22,7 @@ import org.springframework.data.domain.PageRequest;
 
 @DisplayName("Integrated Test | Opening Service")
 @WithMockJwt(value = "ttester")
-class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
+class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
   @RegisterExtension
   static WireMockExtension clientApiStub = WireMockExtension
@@ -38,14 +38,14 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
       .build();
 
   @Autowired
-  private OpeningService openingService;
+  private OpeningSearchService openingSearchService;
 
   @Test
   @DisplayName("Opening search file id happy path should succeed")
   void openingSearch_fileId_shouldSucceed() {
 
     Page<OpeningSearchResponseDto> result =
-        openingService.openingSearch(
+        openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
                 null,
                 null,
@@ -87,7 +87,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   void openingSearch_orgUnit_shouldSucceed() {
 
     Page<OpeningSearchResponseDto> result =
-        openingService.openingSearch(
+        openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
                 List.of("DAS"),
                 null,
@@ -127,7 +127,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
   @DisplayName("Opening search no records found should succeed")
   void openingSearch_noRecordsFound_shouldSucceed() {
     Page<OpeningSearchResponseDto> result =
-        openingService.openingSearch(
+        openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
                 null,
                 null,
@@ -187,7 +187,7 @@ class OpeningServiceTest extends AbstractTestContainerIntegrationTest {
     PageRequest pagination = PageRequest.of(0, 2999);
     Assertions.assertThrows(
         MaxPageSizeException.class,
-        () -> openingService.openingSearch(filterDto,pagination)
+        () -> openingSearchService.openingSearch(filterDto,pagination)
     );
   }
 }

@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningTombstoneDto;
+import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
  * This class contains resources for the opening search api.
  */
 @RestController
-@RequestMapping("/api/openings/search")
+@RequestMapping("/api/openings")
 @RequiredArgsConstructor
 public class OpeningEndpoint {
 
+  private final OpeningSearchService openingSearchService;
   private final OpeningService openingService;
+
+  /**
+   * Get the Opening Tombstone/Summary information.
+   * @param openingId Opening ID
+   * @return OpeningTombstoneDto
+   */
+  @GetMapping("/{openingId}/tombstone")
+  public OpeningTombstoneDto getOpeningTombstone(String openingId) {
+    return openingService.getOpeningTombstone(openingId);
+  }
 
   /**
    * Search for Openings with different filters.
@@ -46,7 +59,7 @@ public class OpeningEndpoint {
    * @param paginationParameters Pagination settings
    * @return PaginatedResult with found records.
    */
-  @GetMapping
+  @GetMapping("/search")
   public Page<OpeningSearchResponseDto> openingSearch(
       @RequestParam(value = "mainSearchTerm", required = false)
       String mainSearchTerm,
@@ -109,7 +122,7 @@ public class OpeningEndpoint {
             clientLocationCode,
             clientNumber,
             mainSearchTerm);
-    return openingService.openingSearch(filtersDto, paginationParameters);
+    return openingSearchService.openingSearch(filtersDto, paginationParameters);
   }
 
 }

@@ -31,7 +31,7 @@ import org.springframework.data.domain.PageRequest;
 @DisplayName("Unit Test | UserRecentOpeningService")
 @WithMockJwt("JAKETHEDOG")
 @TestMethodOrder(OrderAnnotation.class)
-class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest {
+class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
   public static final Long OPENING_ID = 101017L;
   public static final String IDIR_TEST = "IDIR\\JAKETHEDOG";

@@ -6,7 +6,7 @@ import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
@@ -33,7 +33,7 @@ public class UserRecentOpeningService {
 
   private final LoggedUserService loggedUserService;
   private final UserRecentOpeningRepository userRecentOpeningRepository;
-  private final OpeningService openingService;
+  private final OpeningSearchService openingSearchService;
   private final OpeningRepository openingRepository;
 
   @Transactional
@@ -99,7 +99,7 @@ public class UserRecentOpeningService {
     }
 
     Page<OpeningSearchResponseDto> pageResult =
-        openingService.parsePageResult(
+        openingSearchService.parsePageResult(
             openingRepository
                 .searchBy(
                     new OpeningSearchFiltersDto(),
