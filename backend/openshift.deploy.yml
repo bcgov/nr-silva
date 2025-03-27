@@ -102,7 +102,6 @@ objects:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
   - kind: Deployment
-    # name: ${NAME}-${ZONE}-${COMPONENT}
     apiVersion: apps/v1
     metadata:
       labels:
@@ -284,6 +283,7 @@ objects:
         haproxy.router.openshift.io/rate-limit-connections: "true"
         haproxy.router.openshift.io/rate-limit-connections.rate-http: "150"
         haproxy.router.openshift.io/rate-limit-connections.rate-tcp: "75"
+        haproxy.router.openshift.io/timeout: "90s"
     spec:
       host: "${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}"
       port:

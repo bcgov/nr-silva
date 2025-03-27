@@ -102,6 +102,28 @@ public class OpeningSearchFiltersDto {
     this.clientNumber = Objects.isNull(clientNumber) ? null : clientNumber.trim();
   }
 
+  public OpeningSearchFiltersDto(){
+    this.orgUnit = List.of(SilvaOracleConstants.NOVALUE);
+    this.category = List.of(SilvaOracleConstants.NOVALUE);
+    this.statusList = List.of(SilvaOracleConstants.NOVALUE);
+    this.myOpenings = null;
+    this.submittedToFrpa = "NO";
+    this.disturbanceDateStart = null;
+    this.disturbanceDateEnd = null;
+    this.regenDelayDateStart = null;
+    this.regenDelayDateEnd = null;
+    this.freeGrowingDateStart = null;
+    this.freeGrowingDateEnd = null;
+    this.updateDateStart = null;
+    this.updateDateEnd = null;
+    this.cuttingPermitId = null;
+    this.cutBlockId = null;
+    this.timberMark = null;
+    this.mainSearchTerm = null;
+    this.clientLocationCode = null;
+    this.clientNumber = null;
+  }
+
   /**
    * Define if a property has value.
    *
