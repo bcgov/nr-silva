@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, act, fireEvent, within, waitFor, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { render, act, fireEvent, waitFor, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import FavouriteOpenings from '../../components/FavouriteOpenings';
 import { NotificationProvider } from '../../contexts/NotificationProvider';
@@ -18,7 +19,9 @@ const renderWithProviders = async () => {
     rendered = render(
       <QueryClientProvider client={queryClient}>
         <NotificationProvider>
-          <FavouriteOpenings />
+          <MemoryRouter>
+            <FavouriteOpenings />
+          </MemoryRouter>
         </NotificationProvider>
       </QueryClientProvider>
     );

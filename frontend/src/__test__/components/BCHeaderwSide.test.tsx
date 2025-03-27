@@ -4,11 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import BCHeaderwSide from '../../components/BCHeaderwSide';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { leftMenu } from '../../components/BCHeaderwSide/constants';
 import { UserClientRolesType } from '../../types/UserRoleType';
 import '@testing-library/jest-dom';
 import { AuthProvider } from '../../contexts/AuthProvider';
 import { ThemePreference } from '../../utils/ThemePreference';
+import { mainActivitiesItems } from '../../components/BCHeaderwSide/constants';
 
 vi.mock('../../services/TestService', () => ({
   getForestClientByNumberOrAcronym: vi.fn(() => [
@@ -99,14 +99,14 @@ describe('BCHeaderwSide', async () => {
 
   it('renders the correct menu item names', async () => {
     renderComponent();
-    leftMenu.forEach(item => {
+    mainActivitiesItems.forEach(item => {
       expect(screen.getByText(item.name)).toBeInTheDocument();
     });
   });
 
   it('renders sub menu items', async () => {
     renderComponent();
-    const subMenuItem = leftMenu[0].items[0]; // Assuming the first item has sub items
+    const subMenuItem = mainActivitiesItems[0].items[0]; // Assuming the first item has sub items
     const menuItem = screen.getByText(subMenuItem.name);
     fireEvent.click(menuItem);
     subMenuItem.subItems?.forEach(subSubItem => {
