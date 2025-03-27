@@ -51,8 +51,6 @@ const OpeningSearch: React.FC = () => {
   // 0 index
   const [currPageNumber, setCurrPageNumber] = useState<number>(0);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]);
-  const [clickedOpening, setClickedOpening] = useState<OpeningSearchResponseDto>();
-  const [isComingSoonOpen, setIsComingSoonOpen] = useState<boolean>(false);
   const [isSearchFilterEmpty, setIsSearchFilterEmpty] = useState<boolean>(false);
 
   /**
@@ -167,11 +165,6 @@ const OpeningSearch: React.FC = () => {
     searchMutation.mutate({ page: nextPageNum, size: nextPageSize });
   }
 
-  const handleComingSoon = (rowData: OpeningSearchResponseDto) => {
-    setIsComingSoonOpen(true);
-    setClickedOpening(rowData);
-  }
-
   return (
     <Grid className="opening-search-grid">
 
@@ -209,7 +202,6 @@ const OpeningSearch: React.FC = () => {
           showMap
             ? (
               <OpeningsMap
-                openingId={null}
                 openingIds={selectedOpeningIds}
                 setOpeningPolygonNotFound={setOpeningPolygonNotFound}
                 mapHeight={280}
@@ -293,8 +285,7 @@ const OpeningSearch: React.FC = () => {
                           showMap={showMap}
                           selectedRows={selectedOpeningIds}
                           handleRowSelection={handleRowSelection}
-                          enableClick
-                          handleComingSoon={handleComingSoon}
+                          navigateOnClick
                         />
                       ))
                     }
@@ -326,18 +317,6 @@ const OpeningSearch: React.FC = () => {
             : null
         }
       </Column>
-      <Modal
-        open={isComingSoonOpen}
-        onRequestClose={() => setIsComingSoonOpen(false)}
-        passiveModal
-        modalHeading="Coming Soon"
-        modalLabel={`Opening ID: ${clickedOpening?.openingId}`}
-      >
-        <p className="modal-subtext">An opening details page is in development.</p> <br />
-        <p className="modal-subtext">
-          {` Until it's available, search for ${clickedOpening?.openingId} in RESULTS to view the opening details.`}
-        </p>
-      </Modal>
     </Grid>
   )
 };

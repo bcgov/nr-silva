@@ -2,14 +2,15 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import OpeningTableRow from "../../components/OpeningTableRow";
-import { recentOpeningsHeaders } from '../../components/RecentOpenings/constants';
+import { recentOpeningsHeaders } from "../../components/RecentOpenings/constants";
 import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
 // Mock components
 vi.mock("../../components/StatusTag", () => ({
-  default: ({ code }: { code: string }) => <span data-testid="status-tag">{code}</span>,
+  default: ({ description }: { description: string }) => <span data-testid="status-tag">{description}</span>,
 }));
 
 vi.mock("../../components/SpatialCheckbox", () => ({
@@ -58,33 +59,34 @@ const openingA: OpeningSearchResponseDto = {
   silvaReliefAppId: "0",
   favourite: false,
   clientName: "",
-  earlyFreeGrowingDate: null
+  earlyFreeGrowingDate: null,
 };
 
 // Test setup
 const renderWithProviders = (props = {}) => {
   return render(
-    <QueryClientProvider client={new QueryClient()}>
-      <table>
-        <tbody>
-          <OpeningTableRow
-            headers={recentOpeningsHeaders}
-            rowData={openingA}
-            showMap={false}
-            selectedRows={[]}
-            handleRowSelection={vi.fn()}
-            {...props}
-          />
-        </tbody>
-      </table>
-    </QueryClientProvider>
+    <MemoryRouter>
+      <QueryClientProvider client={new QueryClient()}>
+        <table>
+          <tbody>
+            <OpeningTableRow
+              headers={recentOpeningsHeaders}
+              rowData={openingA}
+              showMap={false}
+              selectedRows={[]}
+              handleRowSelection={vi.fn()}
+              {...props}
+            />
+          </tbody>
+        </table>
+      </QueryClientProvider>
+    </MemoryRouter>
   );
 };
 
 describe("OpeningRow component", () => {
   it("should render table row with correct data", () => {
     renderWithProviders();
-
     expect(screen.getByText("Free Growing")).toBeInTheDocument();
     expect(screen.getByText("NREQ")).toBeInTheDocument();
   });
@@ -96,11 +98,8 @@ describe("OpeningRow component", () => {
 
   it("should display tooltip with category description", async () => {
     renderWithProviders();
-
     const categoryElement = screen.getByText("NREQ");
-    expect(categoryElement).toBeInTheDocument();
-
-    fireEvent.mouseOver(categoryElement); // Simulate hover to trigger tooltip
+    fireEvent.mouseOver(categoryElement);
 
     await waitFor(() => {
       expect(screen.getByRole("tooltip")).toBeInTheDocument();
@@ -111,7 +110,7 @@ describe("OpeningRow component", () => {
 
   it("should format and display the disturbance start date", () => {
     renderWithProviders();
-    expect(screen.getByText("Oct 21, 2011")).toBeInTheDocument(); // Updated format
+    expect(screen.getByText("Oct 21, 2011")).toBeInTheDocument();
   });
 
   it("should display the action buttons", () => {

@@ -1,114 +1,87 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import PageTitle from '../../components/PageTitle';
-import { describe, it, expect, vi } from 'vitest';
-import { MemoryRouter, useLocation } from 'react-router-dom';
-
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
-  return {
-    ...actual,
-    useLocation: vi.fn(),
-  };
-});
-
-vi.mock('../../components/BCHeaderwSide/constants', async () => {
-  const actual = await vi.importActual('../../components/BCHeaderwSide/constants');
-  return {
-    ...actual,
-    leftMenu: [
-      {
-        name: 'Main',
-        items: [
-          {
-            name: 'Submain',
-            link: '/submain',
-            breadcrumb: true,
-            subItems: [
-              {
-                name: 'Test Page',
-                link: '/test',
-                breadcrumb: true,
-              }
-            ]
-          },
-          {
-            name: 'Intramain',
-            link: '/intramain',
-            breadcrumb: false,
-            subItems: [
-              {
-                name: 'Internal Affairs',
-                link: '/intramain',
-                breadcrumb: false,
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
-});
+import { describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('PageTitle Component', () => {
+  const mockBreadCrumbs = [
+    { name: 'Dashboard', path: '/' },
+    { name: 'Opening', path: '/opening' },
+    { name: 'Standard Units', path: '/standard-units' },
+  ];
 
   it('renders the title correctly', () => {
-    (useLocation as vi.Mock).mockReturnValue({ pathname: '/test' });
     render(
-      <MemoryRouter initialEntries={['/test']}>
-      <PageTitle 
-        title="Test Title"
-        subtitle='Not what you expected' />
+      <MemoryRouter>
+        <PageTitle
+          title="Test Title"
+          subtitle="Not what you expected"
+        />
       </MemoryRouter>
-  );
+    );
     const titleElement = screen.getByText(/Test Title/i);
     expect(titleElement).toBeInTheDocument();
   });
 
   it('renders the breadcrumb correctly', () => {
-    (useLocation as vi.Mock).mockReturnValue({ pathname: '/test' });
     render(
-      <MemoryRouter initialEntries={['/test']}>
-      <PageTitle 
-        title="Test Title"
-        subtitle='Not what you expected' />
-      </MemoryRouter>
-    );
-    
-    const titleElement = screen.getByText(/Submain/i);
-    expect(titleElement).toBeInTheDocument();
-  });
-
-  it('renders empty breadcrumb if no path found on list', () => {
-    (useLocation as vi.Mock).mockReturnValue({ pathname: '/homer' });
-    render(
-      <MemoryRouter initialEntries={['/homer']}>
-      <PageTitle 
-        title="Test Title"
-        subtitle='Not what you expected' />
-      </MemoryRouter>
-    );
-    
-    const olElement = screen.getByRole('list');
-    const listItems = olElement.querySelectorAll('li');    
-    expect(olElement).toBeInTheDocument();
-    expect(listItems.length).toBe(0);
-  });
-
-  it('should not render breadcrumb if breadcrumb is false', () => {
-    (useLocation as vi.Mock).mockReturnValue({ pathname: '/intramain' });
-    render(
-      <MemoryRouter initialEntries={['/intramain']}>
-      <PageTitle 
-        title="Internal Affairs"
-        subtitle='Your secret, our secret' />
+      <MemoryRouter>
+        <PageTitle
+          title="Test Title"
+          subtitle="Not what you expected"
+          breadCrumbs={mockBreadCrumbs}
+        />
       </MemoryRouter>
     );
 
-    const olElement = screen.getByRole('list');
-    const listItems = olElement.querySelectorAll('li');    
-    expect(olElement).toBeInTheDocument();
-    expect(listItems.length).toBe(0);
+    const openingCrumb = screen.getByText(/Opening/i);
+    const standardUnitsCrumb = screen.getByText(/Standard Units/i);
+
+    expect(openingCrumb).toBeInTheDocument();
+    expect(standardUnitsCrumb).toBeInTheDocument();
   });
 
+  it('renders empty breadcrumb when breadCrumbs prop is an empty array', () => {
+    render(
+      <MemoryRouter>
+        <PageTitle
+          title="Test Title"
+          subtitle="Not what you expected"
+          breadCrumbs={[]}
+        />
+      </MemoryRouter>
+    );
+
+    const olElement = screen.queryByRole('list');
+    expect(olElement).not.toBeInTheDocument();
+  });
+
+  it('does not render breadcrumbs when breadCrumbs prop is not provided', () => {
+    render(
+      <MemoryRouter>
+        <PageTitle
+          title="Internal Affairs"
+          subtitle="Your secret, our secret"
+        />
+      </MemoryRouter>
+    );
+
+    const olElement = screen.queryByRole('list');
+    expect(olElement).not.toBeInTheDocument();
+  });
+
+  it('renders the experimental tag if experimental is true', () => {
+    render(
+      <MemoryRouter>
+        <PageTitle
+          title="Lab Mode"
+          experimental
+        />
+      </MemoryRouter>
+    );
+
+    const tag = screen.getByText(/Experimental/i);
+    expect(tag).toBeInTheDocument();
+  });
 });
