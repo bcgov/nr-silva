@@ -120,3 +120,14 @@
     @include type.type-style('heading-compact-01');
   }
 }
+
+.default-card-section-grid {
+  row-gap: 2rem;
+  column-gap: 2rem;
+}
+
+.default-tab-list {
+  .#{vars.$bcgov-prefix}--tabs__nav-item-label-wrapper {
+    @include type.type-style('heading-compact-01');
+  }
+}

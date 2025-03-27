@@ -6,9 +6,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Icons from "@carbon/icons-react";
 import { useNavigate } from "react-router-dom";
 import FavoriteButton from "../FavoriteButton";
-import { useNotification } from "../../contexts/NotificationProvider";
-import { putOpeningFavourite, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
-import { EIGHT_SECONDS } from "../../constants/TimeUnits";
+import { useNotification } from "@/contexts/NotificationProvider";
+import { putOpeningFavourite, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
+import { EIGHT_SECONDS } from "@/constants/TimeUnits";
+import { DashboardRoute } from "@/routes/config";
 
 interface ActionButtonsProps {
   favorited: boolean;
@@ -35,7 +36,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
       dismissIn: EIGHT_SECONDS,
       buttonLabel: isFavourite ? "Go to track openings" : undefined,
       onClose: () => {
-        navigate("/dashboard");
+        navigate(DashboardRoute.path!);
       }
     })
   );
