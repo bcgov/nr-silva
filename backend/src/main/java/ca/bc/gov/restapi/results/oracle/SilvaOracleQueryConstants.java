@@ -8,15 +8,15 @@ public class SilvaOracleQueryConstants {
 
   public static final String SILVICULTURE_SEARCH_QUERY = """
       SELECT DISTINCT op.opening_id
-        ,(prime.forest_file_id) AS forest_file_id
-        ,(prime.cutting_permit_id) AS cutting_permit_id
-        ,(prime.timber_mark) AS timber_mark
-        ,(prime.cut_block_id) AS cut_block_id
+        ,(cboa.forest_file_id) AS forest_file_id
+        ,(cboa.cutting_permit_id) AS cutting_permit_id
+        ,(cboa.timber_mark) AS timber_mark
+        ,(cboa.cut_block_id) AS cut_block_id
         ,((LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number)) AS mapsheep_opening_id
         ,(op.open_category_code) AS category
         ,(op.opening_status_code) AS status
-        ,(prime.opening_gross_area) as opening_gross_area -- cboa and prime are the same
-        ,(to_char(prime.disturbance_start_date,'YYYY-MM-DD')) as disturbance_start_date
+        ,(cboa.opening_gross_area) as opening_gross_area -- cboa and cboa are the same
+        ,(to_char(cboa.disturbance_start_date,'YYYY-MM-DD')) as disturbance_start_date
         ,(ou.org_unit_code) as org_unit_code
         ,(ou.org_unit_name) as org_unit_name
         ,(ffc.client_number) as client_number
@@ -29,7 +29,7 @@ public class SilvaOracleQueryConstants {
         ,(COALESCE(sra.silv_relief_application_id, 0)) as submitted_to_frpa108
         ,(op.opening_number) AS opening_number
       FROM opening op
-        LEFT JOIN cut_block_open_admin cboa ON (op.opening_id = cboa.opening_id AND cboa.opening_prime_licence_ind = 'Y') -- ideally, ALWAYS have a matching entry FOR opening_id, sometimes multiples, but NOT ALL op have cboa
+        LEFT JOIN cut_block_open_admin cboa ON (op.opening_id = cboa.opening_id AND cboa.opening_cboa_licence_ind = 'Y') -- ideally, ALWAYS have a matching entry FOR opening_id, sometimes multiples, but NOT ALL op have cboa
         LEFT JOIN org_unit ou ON (op.admin_district_no = ou.org_unit_no)  -- ALWAYS have a matching entry FOR org_unit_no
         LEFT JOIN activity_treatment_unit atu ON (op.opening_id = atu.opening_id)
         LEFT JOIN stocking_milestone smrg ON (smrg.stocking_standard_unit_id = (SELECT ssu.stocking_standard_unit_id FROM stocking_standard_unit ssu WHERE op.opening_id = ssu.opening_id FETCH FIRST 1 ROWS ONLY) AND smrg.SILV_MILESTONE_TYPE_CODE = 'RG')
@@ -83,9 +83,9 @@ public class SilvaOracleQueryConstants {
           )
             OR
             (
-              sm.due_late_date IS NOT NULL AND
-              sm.silv_milestone_type_code = 'RG' AND
-              sm.due_late_date between TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
+              smrg.due_late_date IS NOT NULL AND
+              smrg.silv_milestone_type_code = 'RG' AND
+              smrg.due_late_date between TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
@@ -94,13 +94,13 @@ public class SilvaOracleQueryConstants {
           )
             OR
             (
-              sm.due_early_date IS NOT NULL AND
-              sm.due_late_date IS NOT NULL AND
-              sm.silv_milestone_type_code = 'FG' AND
+              smfg.due_early_date IS NOT NULL AND
+              smfg.due_late_date IS NOT NULL AND
+              smfg.silv_milestone_type_code = 'FG' AND
               (
-                sm.due_early_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_early_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
                 OR
-                sm.due_late_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_late_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
               )
           )
           )
@@ -115,13 +115,13 @@ public class SilvaOracleQueryConstants {
           )
           )
           AND (
-              NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR prime.cutting_permit_id = :#{#filter.cuttingPermitId}
+              NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.cutting_permit_id = :#{#filter.cuttingPermitId}
           )
           AND (
-              NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR prime.cut_block_id = :#{#filter.cutBlockId}
+              NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.cut_block_id = :#{#filter.cutBlockId}
           )
           AND (
-              NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR prime.timber_mark = :#{#filter.timberMark}
+              NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.timber_mark = :#{#filter.timberMark}
           )
           AND (
               NVL(:#{#filter.clientLocationCode},'NOVALUE') = 'NOVALUE' OR COALESCE(cbcr.client_locn_code,cbco.client_locn_code,ffc.client_locn_code) = :#{#filter.clientLocationCode}
