@@ -132,8 +132,6 @@ public class SilvaOracleQueryConstants {
           AND (
              0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
           )
-          GROUP BY op.opening_id
-          ORDER BY mapsheep_opening_id
 """;
   // The new line here is just to keep the pagination params on a new line
 
