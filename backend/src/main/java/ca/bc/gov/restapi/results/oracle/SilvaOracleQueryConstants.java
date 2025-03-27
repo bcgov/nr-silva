@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SilvaOracleQueryConstants {
 
-  public static final String SILVICULTURE_SEARCH_QUERY = """
+  public static final String SILVICULTURE_SEARCH_SELECT = """
       SELECT DISTINCT op.opening_id
         ,(cboa.forest_file_id) AS forest_file_id
         ,(cboa.cutting_permit_id) AS cutting_permit_id
@@ -26,8 +26,11 @@ public class SilvaOracleQueryConstants {
         ,(to_char(smfg.due_late_date, 'YYYY-MM-DD')) AS late_free_growing_date
         ,(op.UPDATE_TIMESTAMP) as update_timestamp
         ,(op.ENTRY_USERID) as entry_user_id
-        ,(COALESCE(sra.silv_relief_application_id, 0)) as submitted_to_frpa108
+        ,MAX(COALESCE(sra.silv_relief_application_id, 0)) OVER() as submitted_to_frpa108
         ,(op.opening_number) AS opening_number
+      """;
+
+  public static final String SILVICULTURE_SEARCH_FROM_JOIN = """
       FROM opening op
         LEFT JOIN cut_block_open_admin cboa ON (op.opening_id = cboa.opening_id AND cboa.opening_prime_licence_ind = 'Y') -- ideally, ALWAYS have a matching entry FOR opening_id, sometimes multiples, but NOT ALL op have cboa
         LEFT JOIN org_unit ou ON (op.admin_district_no = ou.org_unit_no)  -- ALWAYS have a matching entry FOR org_unit_no
@@ -38,9 +41,11 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
         LEFT JOIN cut_block_client cbcr ON (cbcr.cut_block_client_type_code = 'R' AND cbcr.cb_skey = cboa.cb_skey)
         LEFT JOIN cut_block_client cbco ON (cbcr.cut_block_client_type_code = 'O' AND cbcr.cb_skey = cboa.cb_skey)
-        LEFT JOIN cut_block cb ON (cb.cb_skey = cboa.cb_skey)
+      """;
+
+  public static final String SILVICULTURE_SEARCH_WHERE_CLAUSE = """
       WHERE
-        (
+          (
             NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
               REGEXP_LIKE(:#{#filter.mainSearchTerm}, '^\\d+$')
                   AND op.OPENING_ID = TO_NUMBER(:#{#filter.mainSearchTerm})
@@ -132,10 +137,39 @@ public class SilvaOracleQueryConstants {
           AND (
              0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
           )
-""";
-  // The new line here is just to keep the pagination params on a new line
+      """;
 
-  public static final String SILVICULTURE_SEARCH_COUNT_QUERY = "SELECT count(opening_id) FROM ( " + SILVICULTURE_SEARCH_QUERY + " )";
+  public static final String SILVICULTURE_SEARCH_CTE_SELECT = """
+      SELECT
+          opening_id,
+          COUNT(*) OVER () AS total_count,
+          forest_file_id,
+          cutting_permit_id,
+          timber_mark,
+          cut_block_id,
+          mapsheep_opening_id,
+          category,
+          status,
+          opening_gross_area,
+          disturbance_start_date,
+          org_unit_code,
+          org_unit_name,
+          client_number,
+          client_location,
+          regen_delay_date,
+          early_free_growing_date,
+          late_free_growing_date,
+          update_timestamp,
+          entry_user_id,
+          submitted_to_frpa108,
+          opening_number
+      """;
+
+  public static final String PAGINATION = "OFFSET :page ROWS FETCH NEXT :size ROWS ONLY";
+
+  public static final String SILVICULTURE_SEARCH_QUERY = SILVICULTURE_SEARCH_SELECT + SILVICULTURE_SEARCH_FROM_JOIN + SILVICULTURE_SEARCH_WHERE_CLAUSE;
+
+  public static final String SILVICULTURE_SEARCH = "WITH silviculture_search AS ("+ SILVICULTURE_SEARCH_QUERY +")"+ SILVICULTURE_SEARCH_CTE_SELECT+" FROM silviculture_search ORDER BY opening_id DESC "+PAGINATION;
 
   public static final String OPENING_TRENDS_QUERY = """
       SELECT
