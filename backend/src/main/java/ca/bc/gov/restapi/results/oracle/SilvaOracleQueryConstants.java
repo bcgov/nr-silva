@@ -116,7 +116,7 @@ public class SilvaOracleQueryConstants {
             OR
             (
               op.update_timestamp IS NOT NULL AND
-              op.update_timestamp between TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD HH24:MI:SS')
+              op.update_timestamp between TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
           )
           )
           AND (
@@ -173,25 +173,19 @@ public class SilvaOracleQueryConstants {
 
   public static final String OPENING_TRENDS_QUERY = """
       SELECT
-          EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS year,
-          EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)) AS month,
+          EXTRACT(YEAR FROM o.UPDATE_TIMESTAMP) AS year,
+          EXTRACT(MONTH FROM o.UPDATE_TIMESTAMP) AS month,
           o.OPENING_STATUS_CODE AS status,
           COUNT(*) AS count
       FROM THE.OPENING o
       LEFT JOIN THE.ORG_UNIT ou ON (ou.ORG_UNIT_NO = o.ADMIN_DISTRICT_NO)
-      LEFT JOIN THE.RESULTS_ELECTRONIC_SUBMISSION res ON (res.RESULTS_SUBMISSION_ID = o.RESULTS_SUBMISSION_ID)
       WHERE
-          (
-              o.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
-              AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
-              OR o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate, 'YYYY-MM-DD')\s
-              AND TO_TIMESTAMP(:endDate, 'YYYY-MM-DD')
-          )
+          o.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:startDate || ' 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_TIMESTAMP(:endDate || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
           AND ('NOVALUE' IN (:statusList) OR o.OPENING_STATUS_CODE IN (:statusList))
           AND ('NOVALUE' IN (:orgUnitList) OR ou.ORG_UNIT_CODE IN (:orgUnitList))
       GROUP BY
-          EXTRACT(YEAR FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
-          EXTRACT(MONTH FROM GREATEST(o.ENTRY_TIMESTAMP,o.UPDATE_TIMESTAMP)),
+          EXTRACT(YEAR FROM o.UPDATE_TIMESTAMP),
+          EXTRACT(MONTH FROM o.UPDATE_TIMESTAMP),
           o.OPENING_STATUS_CODE
       ORDER BY year, month""";
 }
