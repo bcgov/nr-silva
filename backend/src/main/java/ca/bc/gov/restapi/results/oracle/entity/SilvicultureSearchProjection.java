@@ -8,6 +8,8 @@ public interface SilvicultureSearchProjection {
 
   Long getOpeningId();
 
+  Long getTotalCount();
+
   String getOpeningNumber();
 
   String getCategory();
