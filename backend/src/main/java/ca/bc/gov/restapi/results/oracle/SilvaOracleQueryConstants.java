@@ -8,26 +8,26 @@ public class SilvaOracleQueryConstants {
 
   public static final String SILVICULTURE_SEARCH_SELECT = """
       SELECT DISTINCT op.opening_id
-        ,(cboa.forest_file_id) AS forest_file_id
-        ,(cboa.cutting_permit_id) AS cutting_permit_id
-        ,(cboa.timber_mark) AS timber_mark
-        ,(cboa.cut_block_id) AS cut_block_id
-        ,((LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number)) AS mapsheep_opening_id
-        ,(op.open_category_code) AS category
-        ,(op.opening_status_code) AS status
-        ,(cboa.opening_gross_area) as opening_gross_area -- cboa and cboa are the same
-        ,(to_char(cboa.disturbance_start_date,'YYYY-MM-DD')) as disturbance_start_date
-        ,(ou.org_unit_code) as org_unit_code
-        ,(ou.org_unit_name) as org_unit_name
-        ,(ffc.client_number) as client_number
-        ,(ffc.client_locn_code) as client_location
-        ,(to_char(smrg.due_late_date, 'YYYY-MM-DD')) as regen_delay_date
-        ,(to_char(smfg.due_early_date, 'YYYY-MM-DD')) AS early_free_growing_date
-        ,(to_char(smfg.due_late_date, 'YYYY-MM-DD')) AS late_free_growing_date
-        ,(op.UPDATE_TIMESTAMP) as update_timestamp
-        ,(op.ENTRY_USERID) as entry_user_id
+        ,cboa.forest_file_id AS forest_file_id
+        ,cboa.cutting_permit_id AS cutting_permit_id
+        ,cboa.timber_mark AS timber_mark
+        ,cboa.cut_block_id AS cut_block_id
+        ,(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
+        ,op.open_category_code AS category
+        ,op.opening_status_code AS status
+        ,cboa.opening_gross_area as opening_gross_area
+        ,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
+        ,ou.org_unit_code as org_unit_code
+        ,ou.org_unit_name as org_unit_name
+        ,ffc.client_number as client_number
+        ,ffc.client_locn_code as client_location
+        ,to_char(smrg.due_late_date, 'YYYY-MM-DD') as regen_delay_date
+        ,to_char(smfg.due_early_date, 'YYYY-MM-DD') AS early_free_growing_date
+        ,to_char(smfg.due_late_date, 'YYYY-MM-DD') AS late_free_growing_date
+        ,op.UPDATE_TIMESTAMP as update_timestamp
+        ,op.ENTRY_USERID as entry_user_id
         ,MAX(COALESCE(sra.silv_relief_application_id, 0)) OVER() as submitted_to_frpa108
-        ,(op.opening_number) AS opening_number
+        ,op.opening_number AS opening_number
       """;
 
   public static final String SILVICULTURE_SEARCH_FROM_JOIN = """
@@ -116,7 +116,7 @@ public class SilvaOracleQueryConstants {
             OR
             (
               op.update_timestamp IS NOT NULL AND
-              op.update_timestamp between TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+              op.update_timestamp between TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD')
           )
           )
           AND (

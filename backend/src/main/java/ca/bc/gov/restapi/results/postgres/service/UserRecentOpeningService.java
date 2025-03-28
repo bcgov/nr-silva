@@ -113,7 +113,7 @@ public class UserRecentOpeningService {
         openingService.parsePageResult(
             new PageImpl<>(
                 projectionList,
-                PageRequest.of(0, projectionList.size()),
+                PageRequest.of(0, openingIds.size()),
                 projectionList.stream().map(SilvicultureSearchProjection::getTotalCount).findFirst().orElse(0L)
             )
         );
