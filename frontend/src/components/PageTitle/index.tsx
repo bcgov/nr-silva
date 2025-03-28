@@ -1,61 +1,78 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Column, Breadcrumb, BreadcrumbItem } from "@carbon/react";
-import { leftMenu, LeftMenuItem } from '../../components/BCHeaderwSide/constants';
+import { Breadcrumb, BreadcrumbItem, Column, Tag, Tooltip } from "@carbon/react";
+import { Chemistry } from '@carbon/icons-react';
+import { useNavigate } from 'react-router-dom';
+
+import { BreadCrumbType } from '@/types/BreadCrumbTypes';
 import Subtitle from '../Subtitle';
 
 import './styles.scss';
 
 interface PageTitleProps {
   title: string;
-  subtitle: string;
-  enableFavourite?: boolean;
-  activity?: string;
+  subtitle?: string;
+  experimental?: boolean;
+  children?: React.ReactNode;
+  breadCrumbs?: BreadCrumbType[];
 }
 
 const PageTitle: React.FC<PageTitleProps> = ({
   title,
-  subtitle
+  subtitle,
+  experimental,
+  children,
+  breadCrumbs
 }: PageTitleProps) => {
   const navigate = useNavigate();
-  const currentLocation = useLocation().pathname;
-
-  // This will return up to the second level, even if we use just the first one
-  const extractCurrentItems = (): LeftMenuItem[] => {
-    for (const item of leftMenu) {
-      if (item.items) {
-        for (const subItem of item.items) {
-          if (subItem.link === currentLocation && subItem.breadcrumb) {
-            return [subItem];
-          }
-
-          if (subItem.subItems) {
-            for (const subSubItem of subItem.subItems) {
-              if (subSubItem.link === currentLocation && subSubItem.breadcrumb) {
-                return [subItem];
-              }
-            }
-          }
-        }
-      }
-    }
-    return [];
-  }
-
 
   return (
-    <Column className="title-section">
-      <Breadcrumb>
+    <Column className="page-title-col" sm={4} md={8} lg={16}>
+      {
+        breadCrumbs && breadCrumbs.length
+          ? (
+            <Breadcrumb className='page-title-breadcrumb'>
+              {
+                breadCrumbs.map((crumb) => (
+                  <BreadcrumbItem
+                    key={crumb.name}
+                    onClick={() => navigate(crumb.path)}
+                  >
+                    {crumb.name}
+                  </BreadcrumbItem>
+                ))
+              }
+            </Breadcrumb>
+          )
+          : null
+      }
+      <div className="page-title-container">
+        <div className="title-container">
+          <h1>{title}</h1>
+          {children}
+          {
+            experimental
+              ? (
+                <Tooltip
+                  label="This page is under development. Features may be incomplete or display incorrect data."
+                  align="bottom"
+                >
+                  <Tag
+                    className="experimental-tag"
+                    type="cyan"
+                    size="md"
+                    renderIcon={Chemistry}
+                  >
+                    Experimental
+                  </Tag>
+                </Tooltip>
+              )
+              : null
+          }
+        </div>
         {
-          extractCurrentItems().map(item => (
-            <BreadcrumbItem key={item.name} onClick={() => navigate(item.link)}>{item.name}</BreadcrumbItem>
-          ))
+          subtitle ? <Subtitle text={subtitle} /> : null
         }
-      </Breadcrumb>
-      <div className="title-favourite">
-        <h1>{title}</h1>
       </div>
-      <Subtitle text={subtitle} />
     </Column>
   );
 };

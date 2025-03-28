@@ -1,0 +1,11 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.favourite-button-inline-loading {
+  inline-size: unset;
+}
+
+.#{vars.$bcgov-prefix}--btn--icon-only.actionable-favourite-button {
+  .blue-favorite-icon {
+    fill: var(--#{vars.$bcgov-prefix}-link-primary);
+  }
+}

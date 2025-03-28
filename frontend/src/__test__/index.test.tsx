@@ -6,6 +6,11 @@ import amplifyconfig from '../amplifyconfiguration';
 import { CookieStorage } from 'aws-amplify/utils';
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
 
+vi.mock('../env', () => ({
+  env: {
+    VITE_ZONE: 'DEV',
+  },
+}));
 vi.mock('aws-amplify');
 vi.mock('aws-amplify/utils');
 vi.mock('aws-amplify/auth/cognito');

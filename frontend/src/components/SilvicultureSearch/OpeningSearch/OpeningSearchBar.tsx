@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Button, Checkbox, CheckboxGroup,
-  Column, ComposedModal, DatePicker,
-  DatePickerInput, Dropdown, Grid,
+  Column, ComboBox, ComposedModal, DatePicker,
+  DatePickerInput, Grid,
   ModalBody, ModalFooter, ModalHeader,
   Search, TableToolbar, TableToolbarContent,
   TableToolbarMenu, TextInput
@@ -22,6 +22,7 @@ import useBreakpoint from "@/hooks/UseBreakpoint";
 import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+import { ComboBoxEvent } from "@/types/CarbonTypes";
 
 import CustomMultiSelect from "../../CustomMultiSelect";
 import ForestClientInput from "../../ForestClientInput";
@@ -29,7 +30,6 @@ import ForestClientInput from "../../ForestClientInput";
 import { MAX_TEXT_INPUT_LEN } from "./constants";
 import OpeningFilterBar from "./OpeningFilterBar";
 import { OpeningSearchFilterType } from "./definitions";
-
 
 type OpeningSearchBarProps = {
   headers: OpeningHeaderType[],
@@ -100,8 +100,10 @@ const OpeningSearchBar = ({
 
   const hasActiveFilters = (): boolean => {
     return Object.entries(filters).some(([key, value]) => {
+      const typedKey = key as keyof OpeningSearchFilterType;
+
       // Ignore mainSearchTerm
-      if (key === "mainSearchTerm") return false;
+      if (typedKey === "mainSearchTerm" || typedKey === 'dateType') return false;
 
       // Ignore undefined/null
       if (value === undefined || value === null) return false;
@@ -144,7 +146,9 @@ const OpeningSearchBar = ({
   }
 
   /* v8 ignore next 17 */
-  const handleDateTypeChange = (dateType: CodeDescriptionDto<DATE_TYPES> | null) => {
+  const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto<DATE_TYPES>>) => {
+    const dateType = data.selectedItem;
+
     setFilters((prev) => ({
       ...prev,
       dateType: dateType ?? undefined,
@@ -540,14 +544,13 @@ const OpeningSearchBar = ({
             </Column>
             <Column sm={4} md={4} lg={8}>
               <div className="date-filter-container">
-                <Dropdown
-                  id="date-type-dropdown"
+                <ComboBox
+                  id="date-type-combobox"
                   titleText="Date type"
-                  label=""
                   items={DATE_TYPE_LIST}
                   selectedItem={filters.dateType}
-                  itemToString={(item) => item?.description ?? "Unknown"}
-                  onChange={(data) => handleDateTypeChange(data.selectedItem)}
+                  itemToString={(item) => item?.description ?? ""}
+                  onChange={handleDateTypeChange}
                 />
                 {/* Start date */}
                 <DatePicker

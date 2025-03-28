@@ -1,3 +1,5 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
 .forest-client-input-container {
   display: flex;
   flex-direction: row;
@@ -9,14 +11,14 @@
     flex: 1;
 
     /* Moves the helper text below the location input */
-    .bx--form__helper-text {
+    .#{vars.$bcgov-prefix}--form__helper-text {
       white-space: nowrap;
       overflow: visible;
       position: absolute;
       width: max-content;
     }
 
-    .bx--list-box--expanded .bx--list-box__menu {
+    .#{vars.$bcgov-prefix}--list-box--expanded .#{vars.$bcgov-prefix}--list-box__menu {
       display: block;
       max-block-size: 13.75rem;
       width: fit-content;

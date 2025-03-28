@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from '@/contexts/NotificationProvider';
+import { fetchOpeningFavourites, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
+import { EIGHT_SECONDS } from "@/constants/TimeUnits";
+import { OpeningDetailsRoute } from "@/routes/config";
+
 import FavoriteButton from '../FavoriteButton';
 import EmptySection from "../EmptySection";
-import { useNotification } from '../../contexts/NotificationProvider';
-import { fetchOpeningFavourites, deleteOpeningFavorite } from "../../services/OpeningFavouriteService";
 import ChartContainer from "../ChartContainer";
-import './styles.scss';
-import { EIGHT_SECONDS } from "../../constants/TimeUnits";
 
+import './styles.scss';
 
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
@@ -17,7 +20,7 @@ const FavouriteOpenings: React.FC = () => {
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
     queryFn: () => fetchOpeningFavourites(),
-    refetchOnMount: true
+    refetchOnMount: 'always'
   });
 
   const deleteFavOpenMutation = useMutation({
@@ -59,7 +62,7 @@ const FavouriteOpenings: React.FC = () => {
     >
       <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
-          favouriteOpeningsQuery.isError
+          favouriteOpeningsQuery.isLoading
             ? (
               <div className="trend-loading-container">
                 <Loading withOverlay={false} />
@@ -98,10 +101,14 @@ const FavouriteOpenings: React.FC = () => {
                         onFavoriteChange={() => deleteFavourite(openingId)}
                         disabled={deleteFavOpenMutation.isPending}
                       />
-                      <p className="fav-open-label">
+                      <Link
+                        className="fav-open-label"
+                        to={OpeningDetailsRoute.path!.replace(":openingId", openingId.toString())}
+                      >
                         Opening ID
                         <span className="fav-open-id">{openingId}</span>
-                      </p>
+                      </Link>
+
                     </div>
                   ))
                 }
