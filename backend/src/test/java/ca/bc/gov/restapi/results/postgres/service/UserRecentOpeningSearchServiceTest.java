@@ -13,7 +13,7 @@ import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -31,7 +31,7 @@ import org.springframework.data.domain.PageRequest;
 @DisplayName("Unit Test | UserRecentOpeningService")
 @WithMockJwt("JAKETHEDOG")
 @TestMethodOrder(OrderAnnotation.class)
-class UserRecentOpeningServiceTest extends AbstractTestContainerIntegrationTest {
+class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
   public static final Long OPENING_ID = 101017L;
   public static final String IDIR_TEST = "IDIR\\JAKETHEDOG";

@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.dto;
+package ca.bc.gov.restapi.results.oracle.dto.opening;
 
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
