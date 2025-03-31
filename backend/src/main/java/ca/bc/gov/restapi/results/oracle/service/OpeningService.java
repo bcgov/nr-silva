@@ -25,9 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -68,12 +66,19 @@ public class OpeningService {
       }
       filtersDto.setRequestUserId(userId);
     }
-    Page<SilvicultureSearchProjection> searchResultPage =
-        openingRepository.searchBy(
-            filtersDto,
-            List.of(0L),
-            ((PageRequest) pagination).withSort(Sort.by("opening_id").descending())
-        );
+
+    List<SilvicultureSearchProjection> searchContent = openingRepository.searchBy(
+        filtersDto,
+        List.of(0L),
+        pagination.getOffset(),
+        pagination.getPageSize()
+    );
+
+    Page<SilvicultureSearchProjection> searchResultPage = new PageImpl<>(
+        searchContent,
+        pagination,
+        searchContent.stream().map(SilvicultureSearchProjection::getTotalCount).findFirst().orElse(0L)
+    );
 
     return parsePageResult(searchResultPage);
   }
@@ -87,7 +92,7 @@ public class OpeningService {
             .filter(OpeningSearchResponseDto::isValid)
             .toList(),
         searchResultPage.getPageable(),
-        searchResultPage.getTotalPages()
+        searchResultPage.getTotalElements()
     )));
   }
 
