@@ -102,10 +102,12 @@
       overflow-y: auto;
       min-height: 70vh;
       padding-bottom: 0;
+      mask-image: none;
 
       .advanced-search-grid {
         row-gap: 2rem;
         column-gap: 2rem;
+        padding-bottom: 2rem;
 
         .date-filter-container {
           width: 100%;
