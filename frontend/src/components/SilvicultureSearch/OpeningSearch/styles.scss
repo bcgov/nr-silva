@@ -99,15 +99,13 @@
 
   .advanced-search-modal {
     .advanced-search-body {
-      overflow-y: auto;
-      min-height: 70vh;
-      padding-bottom: 0;
+      padding-bottom: 2rem;
       mask-image: none;
 
       .advanced-search-grid {
+        overflow-y: auto;
         row-gap: 2rem;
         column-gap: 2rem;
-        padding-bottom: 2rem;
 
         .date-filter-container {
           width: 100%;
