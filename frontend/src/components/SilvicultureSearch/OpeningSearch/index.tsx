@@ -80,18 +80,33 @@ const OpeningSearch: React.FC = () => {
     refetchOnMount: 'always'
   });
 
-  /*
-   * Search Mutation
+  /**
+   * This state exists solely to force a search when the user clicks the search button
+   * while the main search input is still focused.
+   */
+  const [enableSearch, setEnableSearch] = useState<boolean>(false);
+
+  /**
+   * Search Query
    */
   const searchQuery = useQuery({
-    queryKey: ['openings', 'search', filters],
+    queryKey: ['openings', 'search', {
+      ...filters, page: currPageNumber,
+      size: currPageSize
+    }],
     queryFn: () => searchOpenings({
       ...filters,
       page: currPageNumber,
       size: currPageSize
     }),
-    enabled: false
+    enabled: enableSearch
   })
+
+  useEffect(() => {
+    if (searchQuery.status !== 'pending') {
+      setEnableSearch(false);
+    }
+  }, [searchQuery.status])
 
   /**
    * Handler for when a search action is triggered.
@@ -165,7 +180,6 @@ const OpeningSearch: React.FC = () => {
 
   return (
     <Grid className="opening-search-grid">
-
       {
         isSearchFilterEmpty
           ? (
@@ -192,6 +206,7 @@ const OpeningSearch: React.FC = () => {
         orgUnits={orgUnitQuery.data ?? []}
         handleSearch={handleSearch}
         totalResults={searchQuery.data?.page.totalElements}
+        setEnableSearch={setEnableSearch}
       />
 
       {/* Map Section */}
