@@ -151,8 +151,7 @@ const OpeningSearch: React.FC = () => {
       dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
     }
 
-    const nextFilters: OpeningSearchFilterType = {
-      ...filters,
+    const nextFilters = {
       updateDateStart: initialParamsRef.current?.dateStart,
       updateDateEnd: initialParamsRef.current?.dateEnd,
       orgUnit: orgUnitsFromParams,
@@ -160,12 +159,11 @@ const OpeningSearch: React.FC = () => {
       dateType
     };
 
-    setFilters((prev) => ({ ...prev, ...nextFilters }));
-
     if (hasAnyActiveFilters(nextFilters)) {
-      searchQuery.refetch();
+      setFilters(nextFilters);
+      setEnableSearch(true);
     }
-  }, [orgUnitQuery.isFetched, initialParamsRef.current]);
+  }, [orgUnitQuery.isSuccess, initialParamsRef.current]);
 
   const handlePagination = (paginationObj: PaginationOnChangeType) => {
     // Convert to 0 based index
