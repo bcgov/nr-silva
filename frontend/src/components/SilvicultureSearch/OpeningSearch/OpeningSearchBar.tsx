@@ -327,6 +327,12 @@ const OpeningSearchBar = ({
           handleStringChange('mainSearchTerm')(e);
         }
       }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.currentTarget.blur();
+          setEnableSearch(true);
+        }
+      }}
       defaultValue={filters.mainSearchTerm}
     />
   );
