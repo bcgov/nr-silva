@@ -42,7 +42,7 @@ const OpeningOverview = ({ isLoading }: OpeningOverviewProps) => {
             </CardItem>
           </Column>
           <Column sm={4} md={8} lg={16}>
-            <CardItem label="Comment type" showSkeleton={isLoading}>
+            <CardItem label="Comment" showSkeleton={isLoading}>
 
             </CardItem>
           </Column>
