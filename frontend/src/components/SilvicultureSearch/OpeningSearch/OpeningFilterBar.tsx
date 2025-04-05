@@ -13,7 +13,7 @@ type OpeningFilterBarProps = {
 
 const OpeningFilterBar = ({ filters, setFilters, handleClearFilters }: OpeningFilterBarProps) => {
   const getFilterDisplayName = (key: keyof OpeningSearchFilterType): string => {
-    return filterDisplayNameMap[key] || '';
+    return filterDisplayNameMap[key] ?? '';
   };
 
 
@@ -24,7 +24,7 @@ const OpeningFilterBar = ({ filters, setFilters, handleClearFilters }: OpeningFi
       if (Array.isArray(currentValue)) {
         // Remove the specific value from the array
         const updatedArray = currentValue.filter((item) =>
-          (item as CodeDescriptionDto).code !== val
+          item.code !== val
         );
 
         return {
@@ -70,7 +70,7 @@ const OpeningFilterBar = ({ filters, setFilters, handleClearFilters }: OpeningFi
                   className="silviculture-search-dismissible-tag"
                   size="md"
                   type="outline"
-                  text={`${getFilterDisplayName(filterKey)}: ${(subVal as CodeDescriptionDto).code}`}
+                  text={`${getFilterDisplayName(filterKey)}: ${subVal.code}`}
                   onClose={() => handleClose(filterKey, subVal.code)}
                 />
               ))

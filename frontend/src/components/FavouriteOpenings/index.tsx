@@ -105,7 +105,7 @@ const FavouriteOpenings: React.FC = () => {
                         className="fav-open-label"
                         to={OpeningDetailsRoute.path!.replace(":openingId", openingId.toString())}
                       >
-                        Opening ID
+                        Opening ID{' '}
                         <span className="fav-open-id">{openingId}</span>
                       </Link>
 

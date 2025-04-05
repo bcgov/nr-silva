@@ -25,8 +25,8 @@ const useSilvicultureSearchParams = () => {
   useEffect(() => {
     const tab = searchParams.get("tab") as "openings" | null;
     const dateType = searchParams.get("dateType") as DATE_TYPES;
-    const dateStart = searchParams.get("dateStart") || "";
-    const dateEnd = searchParams.get("dateEnd") || "";
+    const dateStart = searchParams.get("dateStart") ?? "";
+    const dateEnd = searchParams.get("dateEnd") ?? "";
 
     const orgUnitRaw = searchParams.get("orgUnit");
     const statusRaw = searchParams.get("status");

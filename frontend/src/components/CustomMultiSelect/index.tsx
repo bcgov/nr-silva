@@ -15,6 +15,30 @@ interface CustomMultiSelectProps<ItemType> extends FilterableMultiSelectProps<It
 }
 
 /**
+ * Renders the skeleton loader for the CustomMultiSelect component.
+ *
+ * @returns {React.ReactElement} The skeleton loader component.
+ */
+const renderSkeleton = (): React.ReactElement => {
+  return <TextInputSkeleton hideLabel />;
+};
+
+/**
+ * Renders the FilterableMultiSelect component.
+ *
+ * @template ItemType The type of the items in the multi-select.
+ *
+ * @param {CustomMultiSelectProps<ItemType>} props - The component props.
+ * @returns {React.ReactElement} The multi-select component.
+ */
+const renderMultiSelect = <ItemType,>({
+  selectionFeedback = "top-after-reopen",
+  ...props
+}: CustomMultiSelectProps<ItemType>): React.ReactElement => {
+  return <FilterableMultiSelect {...props} selectionFeedback={selectionFeedback} />;
+};
+
+/**
  * A custom multi-select component based on Carbon's `FilterableMultiSelect`.
  * It conditionally renders a skeleton loader (`TextInputSkeleton`) if `showSkeleton` is true.
  *
@@ -25,14 +49,9 @@ interface CustomMultiSelectProps<ItemType> extends FilterableMultiSelectProps<It
  */
 const CustomMultiSelect = <ItemType,>({
   showSkeleton = false,
-  selectionFeedback = "top-after-reopen",
   ...props
-}: CustomMultiSelectProps<ItemType>) => {
-  return showSkeleton ? (
-    <TextInputSkeleton hideLabel />
-  ) : (
-    <FilterableMultiSelect {...props} selectionFeedback={selectionFeedback} />
-  );
+}: CustomMultiSelectProps<ItemType>): React.ReactElement => {
+  return showSkeleton ? renderSkeleton() : renderMultiSelect(props);
 };
 
 export default CustomMultiSelect;
