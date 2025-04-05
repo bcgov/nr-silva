@@ -120,7 +120,7 @@ export const useAuth = (): AuthContextType => {
 const loadUserToken = async (): Promise<JWT | undefined> => {
   if (env.NODE_ENV !== "test") {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
-    setAuthIdToken(idToken?.toString() || null);
+    setAuthIdToken(idToken?.toString() ?? null);
     return idToken;
   } else {
     // This is for test only

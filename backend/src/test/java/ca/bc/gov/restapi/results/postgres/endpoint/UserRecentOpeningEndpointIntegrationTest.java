@@ -32,7 +32,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
   private UserRecentOpeningRepository userRecentOpeningRepository;
 
   @BeforeEach
-  public void dataSetUp() {
+  void dataSetUp() {
     userRecentOpeningRepository.deleteAll();
     userRecentOpeningRepository.saveAllAndFlush(
         List.of(

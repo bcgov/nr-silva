@@ -28,7 +28,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
   return (
     <Column className="page-title-col" sm={4} md={8} lg={16}>
       {
-        breadCrumbs && breadCrumbs.length
+        breadCrumbs?.length
           ? (
             <Breadcrumb className='page-title-breadcrumb'>
               {

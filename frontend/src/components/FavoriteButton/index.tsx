@@ -16,6 +16,10 @@ import './style.scss';
  * @param {boolean} props.favorited - The favourite button state.
  * @returns {React.JSX.Element} The FavoriteButton element to be rendered.
  */
+const CustomIcon = ({ Icon, isFavorite }: { Icon: React.ElementType; isFavorite: boolean }) => (
+  <Icon data-testid="favourite-button-icon" className={isFavorite ? 'favourited-icon' : 'unfavourited-icon'} />
+);
+
 const FavoriteButton = ({
   id,
   tooltipPosition,
@@ -40,10 +44,6 @@ const FavoriteButton = ({
     return <div>Invalid icon name</div>;
   }
 
-  const CustomIcon = () => (
-    <Icon data-testid="favourite-button-icon" className={isFavorite ? 'favourited-icon' : 'unfavourited-icon'} />
-  );
-
   useEffect(() => {
     setIsFavorite(favorited);
   }, [favorited]);
@@ -58,7 +58,7 @@ const FavoriteButton = ({
         tooltipPosition={tooltipPosition}
         kind={kind}
         onClick={handleClick}
-        renderIcon={CustomIcon}
+        renderIcon={() => <CustomIcon Icon={Icon} isFavorite={isFavorite} />}
         size={size}
         aria-pressed={isFavorite}
         disabled={disabled}

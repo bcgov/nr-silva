@@ -1,6 +1,6 @@
 import React from "react";
 import { Favorite, FavoriteFilled } from "@carbon/icons-react";
-import { Button, ButtonSkeleton, InlineLoading } from "@carbon/react";
+import { Button, InlineLoading } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -15,25 +15,25 @@ type ActionableFavouriteButtonProps = {
   openingId?: number;
 }
 
+const BlueFavoriteFilledIcon = () => <FavoriteFilled className="blue-favorite-icon" />;
+
 /**
  * A standalone favourite button that handles API actions itself.
  */
 const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps) => {
-  if (!openingId) {
-    return null;
-  }
-
   const { displayNotification } = useNotification();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites", openingId],
-    queryFn: () => isOpeningFavourite(openingId),
-    refetchOnMount: 'always'
+    queryFn: () => isOpeningFavourite(openingId!),
+    refetchOnMount: 'always',
+    enabled: !!openingId,
   })
 
-  const displayFavSuccessToast = (openingId: number, isFavourite: boolean) => (
+  const displayFavSuccessToast = (isFavourite: boolean) => {
+    if (!openingId) return;
     displayNotification({
       title: `Opening Id ${openingId} ${!isFavourite ? 'un' : ''}favourited`,
       subTitle: isFavourite ? "You can follow this opening ID on your dashboard" : undefined,
@@ -44,40 +44,41 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
         navigate(DashboardRoute.path!);
       }
     })
-  );
+  };
 
-  const displayFavErrorToast = (openingId: number) => (
+  const displayFavErrorToast = () => {
+    if (!openingId) return;
     displayNotification({
       title: 'Error',
       subTitle: `Failed to update favorite status for ${openingId}`,
       type: 'error',
       dismissIn: EIGHT_SECONDS,
-      onClose: () => { }
+      onClose: () => { },
     })
-  );
+  };
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    mutationFn: () => deleteOpeningFavorite(openingId!),
     onSuccess: (_, openingId) => {
-      displayFavSuccessToast(openingId, false);
+      displayFavSuccessToast(false);
       // Invalidate favourite data for this component
       queryClient.invalidateQueries({
         queryKey: ["openings", "favourites", openingId]
       });
     },
-    onError: (_, openingId) => displayFavErrorToast(openingId)
+    onError: () => displayFavErrorToast()
   });
 
   const putFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => putOpeningFavourite(openingId),
-    onSuccess: (_, openingId) => {
-      displayFavSuccessToast(openingId, true);
+    mutationFn: () => putOpeningFavourite(openingId!),
+    onSuccess: () => {
+      displayFavSuccessToast(true);
       // Invalidate favourite data for this component
       queryClient.invalidateQueries({
         queryKey: ["openings", "favourites", openingId]
       });
     },
-    onError: (_, openingId) => displayFavErrorToast(openingId)
+    onError: () => displayFavErrorToast()
   });
 
   const handleFavouriteChange = () => {
@@ -86,10 +87,14 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
     }
 
     if (openingFavouriteQuery.data) {
-      deleteFavOpenMutation.mutate(openingId);
+      deleteFavOpenMutation.mutate();
     } else {
-      putFavOpenMutation.mutate(openingId);
+      putFavOpenMutation.mutate();
     }
+  };
+
+  if (!openingId) {
+    return null;
   }
 
   if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending) {
@@ -97,8 +102,6 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
       <InlineLoading className="favourite-button-inline-loading" />
     )
   }
-
-  const BlueFavoriteFilledIcon = () => <FavoriteFilled className="blue-favorite-icon" />;
 
   return (
     <Button

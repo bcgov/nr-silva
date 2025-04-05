@@ -58,7 +58,7 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
       .map(([key, value]) => [
         key,
         Array.isArray(value) && value.every((item) => typeof item === "object" && "code" in item)
-          ? extractCodesFromCodeDescriptionArr(value as CodeDescriptionDto[])
+          ? extractCodesFromCodeDescriptionArr(value)
           : value
       ])
   ) as Partial<Record<keyof OpeningSearchFilterType, number | string | boolean | string[]>>;

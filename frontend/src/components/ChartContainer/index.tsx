@@ -4,12 +4,12 @@ import ChartTitle from '../ChartTitle';
 
 import './styles.scss'
 
-type Props = {
+type Props = Readonly<{
   children?: React.ReactNode;
   title: string;
   description: string;
   className?: string;
-};
+}>;
 
 /**
  * Renders a Chart Container component.
