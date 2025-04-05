@@ -5,12 +5,11 @@ import { StatusColourMap, StatusKeyType } from './definitions';
 import './styles.scss';
 
 interface IStatusTag {
-  description: StatusKeyType | string;
+  description: string;
 }
 
 const StatusTag: React.FC<IStatusTag> = (props) => {
-  const colorsKeys: string[] = Object.keys(StatusColourMap);
-  const colorKey: string = colorsKeys.includes(props.description) ? props.description : StatusColourMap.Unknown;
+  const colorKey: string = Object.keys(StatusColourMap).includes(props.description) ? props.description : StatusColourMap.Unknown;
   const typeColor: keyof typeof TYPES = StatusColourMap[colorKey as keyof typeof StatusColourMap];
 
   return (
