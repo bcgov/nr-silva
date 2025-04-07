@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     basePackages = {"ca.bc.gov.restapi.results.postgres"},
     entityManagerFactoryRef = "postgresEntityManagerFactory",
     transactionManagerRef = "postgresTransactionManager")
-@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class PostgresJpaConfiguration {
 
   @Primary
