@@ -61,11 +61,7 @@ public class OpeningSearchService {
     // Set the user in the filter, if required
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS) && Boolean.TRUE.equals(
         filtersDto.getMyOpenings())) {
-      String userId = loggedUserService.getLoggedUserId().replace("@", "\\");
-      if (!userId.startsWith("IDIR")) {
-        userId = "BCEID" + userId.substring(5);
-      }
-      filtersDto.setRequestUserId(userId);
+      filtersDto.setRequestUserId(loggedUserService.getLoggedUserId());
     }
     Page<SilvicultureSearchProjection> searchResultPage =
         openingRepository.searchBy(
