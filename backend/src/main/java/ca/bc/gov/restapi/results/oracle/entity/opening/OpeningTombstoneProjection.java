@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.entity.opening;
 
+import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import java.time.LocalDate;
 
 public interface OpeningTombstoneProjection {
@@ -8,19 +10,13 @@ public interface OpeningTombstoneProjection {
 
   String getOpeningNumber();
 
-  String getOpeningStatusCode();
-
-  String getOpeningStatusDesc();
-
-  String getOpeningType();
+  OpeningStatusEnum getOpeningStatus();
 
   String getOrgUnitCode();
 
   String getOrgUnitName();
 
-  String getOpenCategoryCode();
-
-  String getOpenCategoryDesc();
+  OpeningCategoryEnum getOpenCategory();
 
   String getClient();
 
@@ -43,31 +39,5 @@ public interface OpeningTombstoneProjection {
   LocalDate getLastUpdatedOn();
 
   LocalDate getDisturbanceStartDate();
-
-  String getLicenseeOpeningId();
-
-  String getTenureType();
-
-  String getManagementUnitType();
-
-  String getManagementUnitId();
-
-  String getTimberSalesOffice();
-
-  String getCommentType();
-
-  LocalDate getMilestonePostHarverstDeclaredDate();
-
-  LocalDate getMilestoneRegenDeclaredDate();
-
-  String getMilestoneRegenOffset();
-
-  LocalDate getMilestoneRegenDueDate();
-
-  LocalDate getMilestoneFreeGrowingDeclaredDate();
-
-  String getMilestoneFreeGrowingOffset();
-
-  LocalDate getMilestoneFreeGrowingDueDate();/**/
 
 }
