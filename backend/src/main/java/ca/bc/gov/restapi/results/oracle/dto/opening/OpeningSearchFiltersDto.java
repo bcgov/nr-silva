@@ -122,6 +122,7 @@ public class OpeningSearchFiltersDto {
     this.mainSearchTerm = null;
     this.clientLocationCode = null;
     this.clientNumber = null;
+    this.requestUserId = null;
   }
 
   /**

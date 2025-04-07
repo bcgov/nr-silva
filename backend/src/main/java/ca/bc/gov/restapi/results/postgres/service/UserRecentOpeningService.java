@@ -106,7 +106,7 @@ public class UserRecentOpeningService {
                     new ArrayList<>(openingIds.keySet()),
                     // Here it really doesn't matter, if we set the page as first,
                     // because it will be just for the current page anyway
-                    PageRequest.of(0, openingIds.size())
+                    0L, openingIds.size()
                 )
         );
 

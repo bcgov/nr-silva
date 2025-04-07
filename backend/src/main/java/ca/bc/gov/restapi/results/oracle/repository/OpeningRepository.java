@@ -10,8 +10,6 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewO
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,14 +21,13 @@ import org.springframework.stereotype.Repository;
 public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   @Query(
-      value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_QUERY,
-      countQuery = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_COUNT_QUERY,
+      value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH,
       nativeQuery = true
   )
-  Page<SilvicultureSearchProjection> searchBy(
+  List<SilvicultureSearchProjection> searchBy(
       OpeningSearchFiltersDto filter,
       List<Long> openingIds,
-      Pageable pageable
+      long page, long size
   );
 
   @Query(

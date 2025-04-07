@@ -10,7 +10,6 @@ import {
   TableBody,
   InlineNotification,
   Pagination,
-  Modal
 } from "@carbon/react";
 import { OpeningHeaderType } from "@/types/TableHeader";
 import { defaultSearchTableHeaders } from "./constants";
@@ -23,7 +22,6 @@ import OpeningsMap from "../../OpeningsMap";
 import EmptySection from "../../EmptySection";
 import { PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import useSilvicultureSearchParams from "../hooks";
 import { SilvicultureSearchParams } from "../definitions";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
@@ -82,18 +80,33 @@ const OpeningSearch: React.FC = () => {
     refetchOnMount: 'always'
   });
 
-  /*
-   * Search Mutation
+  /**
+   * This state exists solely to force a search when the user clicks the search button
+   * while the main search input is still focused.
    */
-  const searchMutation = useMutation({
-    mutationFn: (
-      { page, size }: { page: number, size: number }
-    ) => searchOpenings({
+  const [enableSearch, setEnableSearch] = useState<boolean>(false);
+
+  /**
+   * Search Query
+   */
+  const searchQuery = useQuery({
+    queryKey: ['openings', 'search', {
+      ...filters, page: currPageNumber,
+      size: currPageSize
+    }],
+    queryFn: () => searchOpenings({
       ...filters,
-      page,
-      size
-    })
+      page: currPageNumber,
+      size: currPageSize
+    }),
+    enabled: enableSearch
   })
+
+  useEffect(() => {
+    if (searchQuery.status !== 'pending') {
+      setEnableSearch(false);
+    }
+  }, [searchQuery.status])
 
   /**
    * Handler for when a search action is triggered.
@@ -101,7 +114,7 @@ const OpeningSearch: React.FC = () => {
   const handleSearch = () => {
     if (hasAnyActiveFilters(filters)) {
       setIsSearchFilterEmpty(false);
-      searchMutation.mutate({ page: currPageNumber, size: currPageSize });
+      searchQuery.refetch();
     }
     else {
       setIsSearchFilterEmpty(true);
@@ -150,7 +163,7 @@ const OpeningSearch: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...nextFilters }));
 
     if (hasAnyActiveFilters(nextFilters)) {
-      searchMutation.mutate({ page: currPageNumber, size: currPageSize });
+      searchQuery.refetch();
     }
   }, [orgUnitQuery.isFetched, initialParamsRef.current]);
 
@@ -162,12 +175,11 @@ const OpeningSearch: React.FC = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
 
-    searchMutation.mutate({ page: nextPageNum, size: nextPageSize });
+    searchQuery.refetch();
   }
 
   return (
     <Grid className="opening-search-grid">
-
       {
         isSearchFilterEmpty
           ? (
@@ -193,7 +205,8 @@ const OpeningSearch: React.FC = () => {
         categories={categoryQuery.data ?? []}
         orgUnits={orgUnitQuery.data ?? []}
         handleSearch={handleSearch}
-        totalResults={searchMutation.data?.page.totalElements}
+        totalResults={searchQuery.data?.page.totalElements}
+        setEnableSearch={setEnableSearch}
       />
 
       {/* Map Section */}
@@ -225,16 +238,16 @@ const OpeningSearch: React.FC = () => {
 
         {/* Adaptive initial empty display and error display */}
         {
-          !searchMutation.isPending && searchMutation.data?.page.totalElements === undefined
+          !searchQuery.isFetching && searchQuery.data?.page.totalElements === undefined
             ? (
               <EmptySection
                 className="initial-empty-section"
                 pictogram="Summit"
                 title={
-                  searchMutation.isError ? "Something went wrong!" : "Nothing to show yet!"
+                  searchQuery.isError ? "Something went wrong!" : "Nothing to show yet!"
                 }
                 description={
-                  searchMutation.isError
+                  searchQuery.isError
                     ? "Error occured while searching for results."
                     : "Enter at least one criteria to start the search. The list will display here."
                 }
@@ -245,7 +258,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Table skeleton */}
         {
-          searchMutation.isPending
+          searchQuery.isLoading
             ? <TableSkeleton
               headers={searchTableHeaders}
               showToolbar={false}
@@ -256,7 +269,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Loaded Table section */}
         {
-          searchMutation.isSuccess
+          searchQuery.isFetched
             ? (
               <>
                 <Table
@@ -277,7 +290,7 @@ const OpeningSearch: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {
-                      searchMutation.data?.content.map((row) => (
+                      searchQuery.data?.content.map((row) => (
                         <OpeningTableRow
                           key={row.openingId}
                           headers={searchTableHeaders}
@@ -293,14 +306,14 @@ const OpeningSearch: React.FC = () => {
                 </Table>
                 {/* Display either pagination or empty message */}
                 {
-                  searchMutation.data?.page.totalElements > 0
+                  searchQuery.data?.page.totalElements && searchQuery.data?.page.totalElements > 0
                     ? (
                       <Pagination
                         className="default-pagination-white"
                         page={currPageNumber + 1}
                         pageSize={currPageSize}
                         pageSizes={PageSizesConfig}
-                        totalItems={searchMutation.data.page.totalElements}
+                        totalItems={searchQuery.data?.page.totalElements}
                         onChange={handlePagination}
                       />
                     )

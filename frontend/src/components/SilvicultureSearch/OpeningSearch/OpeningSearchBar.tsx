@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button, Checkbox, CheckboxGroup,
   Column, ComboBox, ComposedModal, DatePicker,
@@ -42,6 +42,7 @@ type OpeningSearchBarProps = {
   totalResults: number | undefined,
   showMap: boolean,
   setShowMap: React.Dispatch<React.SetStateAction<boolean>>
+  setEnableSearch: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type CustomInputProp = {
@@ -59,7 +60,8 @@ const OpeningSearchBar = ({
   categories,
   orgUnits,
   handleSearch,
-  totalResults
+  totalResults,
+  setEnableSearch
 }: OpeningSearchBarProps
 ) => {
   const breakpoint = useBreakpoint();
@@ -271,25 +273,45 @@ const OpeningSearchBar = ({
     });
   };
 
-  // Child components, shared between search bar and advanced modal
-  const SearchButton = ({ size }: { size: 'md' | 'lg' }) => (
-    <Button
-      className="search-button"
-      renderIcon={SearchIcon}
-      iconDescription="Search"
-      type="button"
-      size={size}
-      onClick={() => {
-        if (isAdvancedSearchOpen) {
-          setIsAdvancedSearchOpen(false);
-        }
-        handleSearch()
-      }}
-    >
-      Search
-    </Button>
-  )
+  // Store references to all visible Search buttons on the page
+  const searchButtonRefs = useRef<HTMLButtonElement[]>([]);
 
+  // Track the current mouse position (updated on every mouse move)
+  const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Track and update the mouse position globally
+  useEffect(() => {
+    const updateMousePosition = (e: MouseEvent) => {
+      mousePosition.current = { x: e.clientX, y: e.clientY };
+    };
+
+    document.addEventListener("mousemove", updateMousePosition);
+    return () => {
+      document.removeEventListener("mousemove", updateMousePosition);
+    };
+  }, []);
+
+
+  /**
+   * Returns `true` if the current mouse position is hovering
+   * over any of the visible Search buttons in the DOM.
+   */
+  const isMouseOverSearchButton = () => {
+    const { x, y } = mousePosition.current;
+
+    return searchButtonRefs.current.some((btn) => {
+      if (!btn || !btn.offsetParent) return false; // skip hidden buttons
+      const rect = btn.getBoundingClientRect();
+      return (
+        x >= rect.left &&
+        x <= rect.right &&
+        y >= rect.top &&
+        y <= rect.bottom
+      );
+    });
+  };
+
+  // Child components, shared between search bar and advanced modal
   const SearchInput = ({ id }: CustomInputProp) => (
     <Search
       size="md"
@@ -297,10 +319,51 @@ const OpeningSearchBar = ({
       labelText="Search"
       closeButtonLabelText="Clear search input"
       id={id}
-      onBlur={handleStringChange('mainSearchTerm')}
+      onBlur={(e) => {
+        if (isMouseOverSearchButton()) {
+          handleStringChange('mainSearchTerm')(e);
+          setEnableSearch(true);
+        } else {
+          handleStringChange('mainSearchTerm')(e);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.currentTarget.blur();
+          setEnableSearch(true);
+        }
+      }}
       defaultValue={filters.mainSearchTerm}
     />
   );
+
+  const SearchButton = ({ size, id }: { size: 'md' | 'lg', id: string }) => {
+    const refCallback = (el: HTMLButtonElement | null) => {
+      if (el && !searchButtonRefs.current.includes(el)) {
+        searchButtonRefs.current.push(el);
+      }
+    };
+
+    return (
+      <Button
+        id={id}
+        ref={refCallback}
+        className="search-button"
+        renderIcon={SearchIcon}
+        iconDescription="Search"
+        type="button"
+        size={size}
+        onClick={() => {
+          if (isAdvancedSearchOpen) {
+            setIsAdvancedSearchOpen(false);
+          }
+          handleSearch();
+        }}
+      >
+        Search
+      </Button>
+    );
+  };
 
   const openAdvancedSearch = () => {
     setIsAdvancedSearchOpen(true);
@@ -368,7 +431,7 @@ const OpeningSearchBar = ({
       <Column sm={0} md={2} lg={4} max={2}>
         <div className="search-buttons-container">
           <AdvancedSearchButton hasIconOnly />
-          <SearchButton size="md" />
+          <SearchButton id="outer-search-button" size="md" />
         </div>
       </Column>
 
@@ -379,7 +442,7 @@ const OpeningSearchBar = ({
 
       {/* Small Screen's Search button */}
       <Column className="search-col-sm" sm={4} md={0}>
-        <SearchButton size="md" />
+        <SearchButton id="outer-search-button-sm" size="md" />
       </Column>
 
       {/* Filter tag bar */}
@@ -638,7 +701,7 @@ const OpeningSearchBar = ({
           <Button kind="secondary" onClick={() => setIsAdvancedSearchOpen(false)}>
             Cancel
           </Button>
-          <SearchButton size="lg" />
+          <SearchButton id="modal-search-button-sm" size="lg" />
         </ModalFooter>
       </ComposedModal>
     </>
