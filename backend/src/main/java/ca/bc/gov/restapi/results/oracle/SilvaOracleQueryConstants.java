@@ -169,45 +169,86 @@ public class SilvaOracleQueryConstants {
       SELECT
         op.opening_id,
         (LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS opening_number,
-        op.OPENING_STATUS_CODE,
-        osc.DESCRIPTION AS opening_status_desc,
-        '' AS opening_type,
+        op.OPENING_STATUS_CODE AS opening_status,
         ou.ORG_UNIT_CODE,
         ou.ORG_UNIT_NAME,
-        op.OPEN_CATEGORY_CODE,
-        occ.DESCRIPTION AS open_category_desc,
-        '' AS client,
+        op.OPEN_CATEGORY_CODE as open_category,
+        ffc.CLIENT_NUMBER AS client, -- load details FROM FCApi
         cboa.FOREST_FILE_ID AS file_id,
         cboa.CUT_BLOCK_ID,
         cboa.CUTTING_PERMIT_ID,
         cboa.TIMBER_MARK,
-        '' AS  max_allowed_access,
+        op.max_allow_permnt_access_pct AS  max_allowed_access, --max allowed permanent ACCESS FROM inquiry
         cboa.OPENING_GROSS_AREA,
         op.ENTRY_USERID AS created_by,
         to_char(op.ENTRY_TIMESTAMP,'YYYY-MM-DD') AS created_on,
-        to_char(op.UPDATE_TIMESTAMP ,'YYYY-MM-DD') AS last_updated_on,
-        to_char(cboa.DISTURBANCE_START_DATE,'YYYY-MM-DD') AS disturbance_start_date,
-        op.LICENSEE_OPENING_ID,
-        '' AS tenure_type,
-        '' AS management_unit_type,
-        '' AS management_unit_id,
-        '' AS timber_sales_office,
-        '' AS comment_type,
-        to_char(smph.DECLARED_DATE,'YYYY-MM-DD') AS milestone_post_harverst_declared_date,
-        to_char(smrg.DECLARED_DATE,'YYYY-MM-DD') AS milestone_regen_declared_date,
-        smrg.LATE_OFFSET_YEARS AS  milestone_regen_regen_offset,
-        to_char(smrg.DUE_LATE_DATE,'YYYY-MM-DD') AS milestone_regen_due_date,
-        to_char(smfg.DECLARED_DATE,'YYYY-MM-DD') AS milestone_free_growing_declared_date,
-        smfg.LATE_OFFSET_YEARS AS milestone_free_growing_offset,
-        to_char(smfg.DUE_LATE_DATE,'YYYY-MM-DD') AS milestone_free_growing_due_date
+        op.UPDATE_TIMESTAMP AS last_updated_on, -- needs TO be ON ANY OF the related date
+        to_char(cboa.DISTURBANCE_START_DATE,'YYYY-MM-DD') AS disturbance_start_date
+      FROM OPENING op
+      LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+      WHERE op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_OVERVIEW_OPENING = """
+      SELECT
+          op.LICENSEE_OPENING_ID,
+          pfu.FILE_TYPE_CODE AS tenure_type_code,
+          ftc.DESCRIPTION AS tenure_type_name,
+          pfu.MGMT_UNIT_TYPE AS management_unit_type_code,
+          mutc.DESCRIPTION AS management_unit_type_name,
+          pfu.MGMT_UNIT_ID AS management_unit_id,
+          outsb.ORG_UNIT_CODE AS timber_sale_office_code,
+          outsb.ORG_UNIT_NAME AS timber_sale_office_name
       FROM OPENING op
       LEFT JOIN OPENING_STATUS_CODE osc ON osc.OPENING_STATUS_CODE = op.OPENING_STATUS_CODE
-      LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
-      LEFT JOIN OPEN_CATEGORY_CODE occ ON occ.OPEN_CATEGORY_CODE = op.OPEN_CATEGORY_CODE
       LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+      LEFT JOIN PROV_FOREST_USE pfu ON (cboa.FOREST_FILE_ID = pfu.FOREST_FILE_ID)
+      LEFT JOIN ORG_UNIT outsb ON (outsb.ORG_UNIT_NO = (SELECT hs.BCTS_ORG_UNIT FROM THE.HARVEST_SALE hs WHERE cboa.FOREST_FILE_ID = hs.FOREST_FILE_ID FETCH FIRST 1 ROWS ONLY))
+      LEFT JOIN FILE_TYPE_CODE ftc ON (pfu.FILE_TYPE_CODE = ftc.FILE_TYPE_CODE)
+      LEFT JOIN MGMT_UNIT_TYPE_CODE mutc ON (pfu.MGMT_UNIT_TYPE = mutc.MGMT_UNIT_TYPE_CODE)
+      WHERE op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_OVERVIEW_MILESTONE = """
+      SELECT
+      	ssu.standards_unit_id,
+          to_char(smph.DECLARED_DATE,'YYYY-MM-DD') AS post_harverst_declared_date,
+          to_char(smrg.DECLARED_DATE,'YYYY-MM-DD') AS regen_declared_date,
+          smrg.LATE_OFFSET_YEARS AS  regen_offset_years,
+          to_char(smrg.DUE_LATE_DATE,'YYYY-MM-DD') AS regen_due_date,
+          to_char(smfg.DECLARED_DATE,'YYYY-MM-DD') AS free_growing_declared_date,
+          smfg.LATE_OFFSET_YEARS AS free_growing_offset_years,
+          to_char(smfg.DUE_LATE_DATE,'YYYY-MM-DD') AS free_growing_due_date
+      FROM OPENING op
       LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.OPENING_ID = op.OPENING_ID
       LEFT JOIN THE.STOCKING_MILESTONE smrg ON (smrg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND SMRG.SILV_MILESTONE_TYPE_CODE = 'RG')
       LEFT JOIN THE.STOCKING_MILESTONE smfg ON (smfg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smfg.SILV_MILESTONE_TYPE_CODE = 'FG')
       LEFT JOIN THE.STOCKING_MILESTONE smph ON (smph.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND smph.SILV_MILESTONE_TYPE_CODE = 'PH')
-      WHERE op.OPENING_ID = :openingId""";
+      WHERE op.OPENING_ID = :openingId
+      ORDER BY ssu.ENTRY_TIMESTAMP
+      FETCH FIRST ROW ONLY""";
+
+  public static final String GET_COMMENTS = """
+      SELECT
+        sc.SILV_COMMENT_SOURCE_CODE as comment_source_code,
+        scsc.DESCRIPTION AS comment_source_name,
+        sc.SILV_COMMENT_TYPE_CODE as comment_type_code,
+        sctc.DESCRIPTION AS comment_type_name,
+        sc.COMMENT_TEXT
+      FROM SILVICULTURE_COMMENT sc
+      LEFT JOIN SILV_COMMENT_SOURCE_CODE scsc ON (sc.SILV_COMMENT_SOURCE_CODE = scsc.SILV_COMMENT_SOURCE_CODE )
+      LEFT JOIN SILV_COMMENT_TYPE_CODE sctc ON (sc.SILV_COMMENT_TYPE_CODE = sctc.SILV_COMMENT_TYPE_CODE )
+      -- This joins down below are the linkage between the data and the comment
+      LEFT JOIN OPENING_COMMENT_LINK ocl ON (sc.SILVICULTURE_COMMENT_ID = ocl.SILVICULTURE_COMMENT_ID )
+      --LEFT JOIN ACTIVITY_TU_COMMENT_LINK atcl ON (sc.SILVICULTURE_COMMENT_ID = atcl.SILVICULTURE_COMMENT_ID )
+      --LEFT JOIN STOCKING_COMMENT_LINK scl ON (sc.SILVICULTURE_COMMENT_ID = scl.SILVICULTURE_COMMENT_ID )
+      --LEFT JOIN STOCKING_MILESTONE_CMT_LINK smcl ON (sc.SILVICULTURE_COMMENT_ID = smcl.SILVICULTURE_COMMENT_ID )
+      --LEFT JOIN SILV_PROJECT_COMMENT_LINK spcl ON (sc.SILVICULTURE_COMMENT_ID = spcl.SILVICULTURE_COMMENT_ID )
+      WHERE
+      ocl.OPENING_ID = :openingId
+      --OR atcl.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      --OR scl.STOCKING_STANDARD_UNIT_ID = :ssuId
+      --OR (smcl.STOCKING_STANDARD_UNIT_ID = :ssuId AND smcl.SILV_MILESTONE_TYPE_CODE = :smtc)
+      --OR spcl.SILVICULTURE_PROJECT_ID = :projectId
+      ORDER BY COMMENT_DATE DESC""";
 }

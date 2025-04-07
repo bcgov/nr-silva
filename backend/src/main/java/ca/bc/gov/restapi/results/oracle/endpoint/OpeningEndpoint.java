@@ -1,8 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.util.List;
@@ -29,11 +29,13 @@ public class OpeningEndpoint {
 
   /**
    * Get the Opening Tombstone/Summary information.
+   *
    * @param openingId Opening ID
    * @return OpeningTombstoneDto
    */
   @GetMapping("/{openingId}/tombstone")
-  public Optional<OpeningTombstoneProjection> getOpeningTombstone(@PathVariable Long openingId) {
+  public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(
+      @PathVariable Long openingId) {
     return openingService.getOpeningTombstone(openingId);
   }
 
