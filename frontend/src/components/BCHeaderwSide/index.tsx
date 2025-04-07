@@ -18,7 +18,7 @@ import * as Icons from '@carbon/icons-react';
 import RightPanelTitle from '../RightPanelTitle';
 import ThemeToggle from '../ThemeToggle';
 import MyProfile from '../MyProfile';
-import { mainActivitiesItems } from './constants';
+import { LeftMenuItem, mainActivitiesItems } from './constants';
 import './BCHeaderwSide.scss';
 
 /**
@@ -41,6 +41,58 @@ function BCHeaderwSide(): React.JSX.Element {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const renderSideNavMenu = (subItem: LeftMenuItem, IconComponent: React.ElementType) => {
+    const isActive = subItem.subItems?.some((subSubItem) =>
+      location.pathname.startsWith(subSubItem.link)
+    );
+
+    return (
+      <SideNavMenu
+        key={subItem.name}
+        title={subItem.name}
+        renderIcon={IconComponent as any}
+        isActive={isActive}
+        isSideNavExpanded={isActive}
+        defaultExpanded={isActive}
+      >
+        {subItem.subItems?.map((subSubItem) => renderSideNavMenuItem(subSubItem))}
+      </SideNavMenu>
+    );
+  };
+
+  const renderSideNavMenuItem = (subSubItem: LeftMenuItem) => (
+    <SideNavMenuItem
+      key={subSubItem.name}
+      onClick={() => navigate(subSubItem.link)}
+      isActive={location.pathname.startsWith(subSubItem.link)}
+    >
+      {subSubItem.name}
+    </SideNavMenuItem>
+  );
+
+  const renderSideNavLink = (subItem: LeftMenuItem, IconComponent: React.ElementType) => (
+    <SideNavLink
+      className="side-nav-item"
+      key={subItem.name}
+      renderIcon={IconComponent as any}
+      onClick={() => navigate(subItem.link)}
+      isActive={location.pathname.startsWith(subItem.link)}
+    >
+      {subItem.name}
+    </SideNavLink>
+  );
+
+  const renderSideNavItem = (subItem: LeftMenuItem) => {
+    const IconComponent = Icons[subItem.icon as keyof typeof Icons];
+
+    if (subItem.subItems) {
+      return renderSideNavMenu(subItem, IconComponent);
+    } else {
+      return renderSideNavLink(subItem, IconComponent);
+    }
+  };
+
   return (
     <HeaderContainer
       render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
@@ -82,61 +134,18 @@ function BCHeaderwSide(): React.JSX.Element {
           </HeaderPanel>
           <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
             <SideNavItems>
-              {
-                mainActivitiesItems.map(item => (
-                  <div key={item.name}>
-                    <label className="side-nav-category-name">
-                      {item.name}
-                    </label>
-                    {item.items.map(subItem => {
-                      const IconComponent = Icons[subItem.icon as keyof typeof Icons];
-                      if (subItem.subItems) {
-                        const isActive = subItem.subItems.some(subSubItem =>
-                          location.pathname.startsWith(subSubItem.link)
-                        );
-                        return (
-                          <SideNavMenu
-                            key={subItem.name}
-                            title={subItem.name}
-                            renderIcon={IconComponent}
-                            isActive={isActive}
-                            isSideNavExpanded={isActive}
-                            defaultExpanded={isActive}
-                          >
-                            {subItem.subItems.map(subSubItem => (
-                              <SideNavMenuItem
-                                key={subSubItem.name}
-                                onClick={() => navigate(subSubItem.link)}
-                                isActive={location.pathname.startsWith(subSubItem.link)}
-                              >
-                                {subSubItem.name}
-                              </SideNavMenuItem>
-                            ))}
-                          </SideNavMenu>
-                        );
-                      } else {
-                        return (
-                          <SideNavLink
-                            className="side-nav-item"
-                            key={subItem.name}
-                            renderIcon={IconComponent}
-                            onClick={() => navigate(subItem.link)}
-                            isActive={location.pathname.startsWith(subItem.link)}
-                          >
-                            {subItem.name}
-                          </SideNavLink>
-                        );
-                      }
-                    })}
-                  </div>
-                ))
-              }
+              {mainActivitiesItems.map((item) => (
+                <div key={item.name}>
+                  <label className="side-nav-category-name">{item.name}</label>
+                  {item.items.map((subItem) => renderSideNavItem(subItem))}
+                </div>
+              ))}
             </SideNavItems>
           </SideNav>
         </Header>
       )}
     />
   );
-};
+}
 
 export default BCHeaderwSide;
