@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
@@ -98,16 +99,23 @@ public class UserRecentOpeningService {
       return new PageImpl<>(List.of(), pageable, 0);
     }
 
+    List<SilvicultureSearchProjection> projectionList =
+        openingRepository
+            .searchBy(
+                new OpeningSearchFiltersDto(),
+                new ArrayList<>(openingIds.keySet()),
+                // Here it really doesn't matter, if we set the page as first,
+                // because it will be just for the current page anyway
+                0L, openingIds.size()
+            );
+
     Page<OpeningSearchResponseDto> pageResult =
         openingSearchService.parsePageResult(
-            openingRepository
-                .searchBy(
-                    new OpeningSearchFiltersDto(),
-                    new ArrayList<>(openingIds.keySet()),
-                    // Here it really doesn't matter, if we set the page as first,
-                    // because it will be just for the current page anyway
-                    0L, openingIds.size()
-                )
+            new PageImpl<>(
+                projectionList,
+                PageRequest.of(0, openingIds.size()),
+                projectionList.stream().map(SilvicultureSearchProjection::getTotalCount).findFirst().orElse(0L)
+            )
         );
 
     return
