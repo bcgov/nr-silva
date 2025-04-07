@@ -67,6 +67,11 @@ const OpeningSearchBar = ({
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
 
   /**
+   * Tracks whether the date is changed by system via params or user action.
+   */
+  const didUserChangeDateType = useRef(false);
+
+  /**
    * A workaround to add text to Carbon's `TableToolbarMenu` button since it does not natively support text alongside the icon.
    * This approach modifies the DOM to insert the button text before the icon while preserving the usability of `TableToolbarMenu`,
    * which simplifies handling popover content.
@@ -146,25 +151,33 @@ const OpeningSearchBar = ({
     }));
   }
 
-  /* v8 ignore next 17 */
+  /* v8 ignore next 26 */
   const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto<DATE_TYPES>>) => {
     const dateType = data.selectedItem;
 
-    setFilters((prev) => ({
-      ...prev,
-      dateType: dateType ?? undefined,
-      disturbanceDateStart: undefined,
-      disturbanceDateEnd: undefined,
+    setFilters((prev) => {
+      // If user manually changed the dateType
+      if (didUserChangeDateType.current === false) {
+        return {
+          ...prev,
+          dateType: dateType ?? undefined,
+          // Clear all date fields when dateType is changed by user
+          disturbanceDateStart: undefined,
+          disturbanceDateEnd: undefined,
+          regenDelayDateStart: undefined,
+          regenDelayDateEnd: undefined,
+          freeGrowingDateStart: undefined,
+          freeGrowingDateEnd: undefined,
+          updateDateStart: undefined,
+          updateDateEnd: undefined
+        };
+      }
 
-      regenDelayDateStart: undefined,
-      regenDelayDateEnd: undefined,
-
-      freeGrowingDateStart: undefined,
-      freeGrowingDateEnd: undefined,
-
-      updateDateStart: undefined,
-      updateDateEnd: undefined,
-    }))
+      return {
+        ...prev,
+        dateType: dateType ?? undefined
+      };
+    });
   }
 
   /* v8 ignore next 19 */
@@ -612,7 +625,10 @@ const OpeningSearchBar = ({
                   items={DATE_TYPE_LIST}
                   selectedItem={filters.dateType}
                   itemToString={(item) => item?.description ?? ""}
-                  onChange={handleDateTypeChange}
+                  onChange={(data) => {
+                    didUserChangeDateType.current = true;
+                    handleDateTypeChange(data);
+                  }}
                 />
                 {/* Start date */}
                 <DatePicker
