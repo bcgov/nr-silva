@@ -6,8 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { searchOpenings } from "@/services/OpeningSearchService";
 import { putUserRecentOpening } from "@/services/OpeningService";
-import { OpeningSummary } from "@/components/OpeningDetails";
-import { OpeningOverview } from "@/components/OpeningDetails";
+import { OpeningSummary, OpeningOverview  } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
 import PageTitle from "@/components/PageTitle";
 
