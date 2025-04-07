@@ -1,0 +1,49 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-standard-units-grid {
+  padding: 0;
+  row-gap: 1.5rem;
+
+  .standard-units-title {
+    @include type.type-style('heading-03');
+  }
+
+  .accordion-col {
+    .#{vars.$bcgov-prefix}--accordion__heading {
+      padding: 0.875rem 1.5rem 0.875rem 0.5rem;
+
+    }
+
+    .standard-unit-accordion-item {
+      border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+      background: var(--#{vars.$bcgov-prefix}-layer-02);
+    }
+
+    .accordion-title-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.25rem;
+
+      h4 {
+        @include type.type-style('heading-02');
+      }
+
+      .accordion-title-top {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.5rem;
+        align-items: center;
+      }
+
+      .accordion-title-bottom {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.5rem;
+        align-items: center;
+        margin-left: 1.625rem;
+        @include type.type-style('body-compact-02');
+      }
+    }
+  }
+}
