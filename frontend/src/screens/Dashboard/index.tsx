@@ -4,11 +4,6 @@ import PageTitle from "../../components/PageTitle";
 import {
   Grid,
   Column,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel
 } from "@carbon/react";
 import RecentOpenings from "../../components/RecentOpenings";
 import OpeningSubmissionTrend from "../../components/OpeningSubmissionTrend";

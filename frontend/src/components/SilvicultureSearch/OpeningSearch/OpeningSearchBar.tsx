@@ -47,7 +47,6 @@ type OpeningSearchBarProps = {
 
 type CustomInputProp = {
   id: string,
-  label?: string
 }
 
 const OpeningSearchBar = ({
@@ -313,7 +312,7 @@ const OpeningSearchBar = ({
     const { x, y } = mousePosition.current;
 
     return searchButtonRefs.current.some((btn) => {
-      if (!btn || !btn.offsetParent) return false; // skip hidden buttons
+      if (!btn?.offsetParent) return false; // skip hidden buttons
       const rect = btn.getBoundingClientRect();
       return (
         x >= rect.left &&
