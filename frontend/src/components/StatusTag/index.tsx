@@ -1,7 +1,7 @@
 import React from 'react';
 import { TYPES } from '@carbon/react/lib/components/Tag/Tag';
 import { Tag } from '@carbon/react';
-import { StatusColourMap, StatusKeyType } from './definitions';
+import { StatusColourMap } from './definitions';
 import './styles.scss';
 
 interface IStatusTag {
