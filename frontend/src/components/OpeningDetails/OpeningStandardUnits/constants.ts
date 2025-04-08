@@ -9,13 +9,13 @@ export const DummyStandardUnits: DummyStandardUnitType[] = [
   {
     standardUnitId: 0,
     name: 'A',
-    ssid: 50056,
-    fspId: 50056
+    ssid: -12345,
+    fspId: -789
   },
   {
     standardUnitId: 1,
     name: 'B',
-    ssid: 50056,
+    ssid: -12345,
     fspId: null
   },
   {

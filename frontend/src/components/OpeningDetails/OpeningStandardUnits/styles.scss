@@ -15,9 +15,14 @@
 
     }
 
+    .standard-unit-accordion {
+      border: none;
+    }
+
     .standard-unit-accordion-item {
       border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
       background: var(--#{vars.$bcgov-prefix}-layer-02);
+      border-radius: 0.5rem;
     }
 
     .accordion-title-container {
@@ -44,6 +49,13 @@
         margin-left: 1.625rem;
         @include type.type-style('body-compact-02');
       }
+    }
+
+    .fsp-link {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.25rem;
+      align-items: center;
     }
   }
 }

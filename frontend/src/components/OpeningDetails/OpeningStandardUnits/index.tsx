@@ -26,7 +26,7 @@ const OpeningStandardUnits = () => {
         DummyStandardUnits.map((standardUnit) => (
           <Column sm={4} md={8} lg={16} className="accordion-col" key={standardUnit.standardUnitId}>
             <Accordion
-              className="standard-units-accordion"
+              className="standard-unit-accordion"
               align="end"
               size="lg"
             >
