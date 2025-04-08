@@ -87,13 +87,13 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     onError: (_, openingId) => displayFavErrorToast(openingId)
   });
 
-  const handleFavoriteChange = (isFavourite: boolean, openingId: number) => {
-    if (isFavourite) {
-      putFavOpenMutation.mutate(openingId);
-    } else {
-      deleteFavOpenMutation.mutate(openingId);
-    }
-  }
+  const addFavorite = (openingId: number) => {
+    putFavOpenMutation.mutate(openingId);
+  };
+
+  const removeFavorite = (openingId: number) => {
+    deleteFavOpenMutation.mutate(openingId);
+  };
 
 
   return (
@@ -104,7 +104,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         kind="ghost"
         size="sm"
         favorited={favorited}
-        onFavoriteChange={(isFavourite: boolean) => handleFavoriteChange(isFavourite, Number(rowId))}
+        onFavoriteChange={(isFavourite: boolean) =>
+          isFavourite ? addFavorite(Number(rowId)) : removeFavorite(Number(rowId))
+        }
         disabled={deleteFavOpenMutation.isPending || putFavOpenMutation.isPending}
       />
       {
