@@ -23,6 +23,10 @@
       border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
       background: var(--#{vars.$bcgov-prefix}-layer-02);
       border-radius: 0.5rem;
+
+      .#{vars.$bcgov-prefix}--accordion__content {
+        padding-inline: 3.25rem 2rem;
+      }
     }
 
     .accordion-title-container {
@@ -56,6 +60,27 @@
       flex-direction: row;
       column-gap: 0.25rem;
       align-items: center;
+    }
+
+    .standard-unit-content-grid {
+      width: 100%;
+      row-gap: 2rem;
+
+      .standard-unit-content-subgrid {
+        padding: 1.375rem 0 0 0;
+        row-gap: 1.5rem;
+      }
+
+      .section-title-with-icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 0.5rem;
+
+        h4 {
+          @include type.type-style('heading-02');
+        }
+      }
     }
   }
 }
