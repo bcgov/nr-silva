@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-@DisplayName("Integrated Test | Opening Service")
+@DisplayName("Integrated Test | Opening Search Service")
 @WithMockJwt(value = "ttester")
 class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
