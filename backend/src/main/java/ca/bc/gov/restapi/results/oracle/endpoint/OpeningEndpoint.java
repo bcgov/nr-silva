@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
+import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
@@ -34,9 +35,9 @@ public class OpeningEndpoint {
    * @return OpeningTombstoneDto
    */
   @GetMapping("/{openingId}/tombstone")
-  public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(
+  public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(
       @PathVariable Long openingId) {
-    return openingService.getOpeningTombstone(openingId);
+    return openingService.getOpeningTombstone(openingId).orElseThrow(() -> new OpeningNotFoundException(openingId));
   }
 
   /**
