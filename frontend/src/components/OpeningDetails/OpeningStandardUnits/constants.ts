@@ -64,7 +64,7 @@ export const PreferredSpeciesHeaders: SpeciesHeaderType[] = [
   },
   {
     key: 'minHeight',
-    header: 'Minimum height'
+    header: 'Minimum height (m)'
   }
 ];
 
@@ -75,7 +75,7 @@ export const AcceptableSpeciesHeaders: SpeciesHeaderType[] = [
   },
   {
     key: 'minHeight',
-    header: 'Minimum height'
+    header: 'Minimum height (m)'
   }
 ];
 
