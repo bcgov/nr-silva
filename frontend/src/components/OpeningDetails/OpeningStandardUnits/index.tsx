@@ -157,7 +157,7 @@ const OpeningStandardUnits = () => {
                     </section>
                   </Column>
 
-                  <Column sm={4} md={8} lg={16}>
+                  <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
                         <CardItem label="Regen delay"></CardItem>
@@ -175,7 +175,7 @@ const OpeningStandardUnits = () => {
                     </section>
                   </Column>
 
-                  <Column sm={4} md={8} lg={16}>
+                  <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum well-spaced trees"></CardItem>
