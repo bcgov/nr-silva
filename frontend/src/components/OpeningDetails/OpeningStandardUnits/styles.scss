@@ -15,6 +15,10 @@
 
     }
 
+    .#{vars.$bcgov-prefix}--accordion__wrapper {
+      padding-top: 1.375rem;
+    }
+
     .standard-unit-accordion {
       border: none;
     }
@@ -67,7 +71,6 @@
       row-gap: 2rem;
 
       .standard-unit-content-subgrid {
-        padding: 1.375rem 0 0 0;
         row-gap: 1.5rem;
       }
 
@@ -80,6 +83,13 @@
         h4 {
           @include type.type-style('heading-02');
         }
+      }
+
+      .species-table-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.5rem;
+        margin-left: 1.75rem;
       }
     }
   }
