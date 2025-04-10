@@ -1,21 +1,22 @@
 import React from "react";
-
+import {
+  Accordion, AccordionItem, Column,
+  Grid, Table, TableBody, TableCell,
+  TableHead, TableHeader, TableRow
+} from "@carbon/react";
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
   Layers as LayersIcon
 } from "@carbon/icons-react";
 
-import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
-
-
-import { Accordion, AccordionItem, Column, Grid, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 
+import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';
-import { codeDescriptionToDisplayText } from "../../../utils/multiSelectUtils";
 
 const OpeningStandardUnits = () => {
   return (
