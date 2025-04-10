@@ -125,4 +125,93 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andReturn();
   }
 
+  @Test
+  @DisplayName("Get Opening Tombstone by existing openingId should succeed")
+  void getOpeningTombstone_existingOpeningId_shouldSucceed() throws Exception {
+    Long openingId = 101017L;
+    String clientNumber = "00010003";
+
+    clientApiStub.stubFor(
+            WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+                    .willReturn(okJson("""
+                {
+                  "clientNumber": "00010003",
+                  "clientName": "MINISTRY OF FORESTS",
+                  "legalFirstName": null,
+                  "legalMiddleName": null,
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "F",
+                  "acronym": "MOF"
+                }
+                """))
+    );
+    mockMvc
+            .perform(
+                    get("/api/openings/101017/tombstone")
+                            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            // Verify openingId
+            .andExpect(jsonPath("$.openingId").value(openingId))
+
+            // Verify tombstone section
+            .andExpect(jsonPath("$.tombstone.openingNumber").value(" 92K 014 0.0  514"))
+            .andExpect(jsonPath("$.tombstone.openingStatus.code").value("FG"))
+            .andExpect(jsonPath("$.tombstone.openingStatus.description").value("Free Growing"))
+            .andExpect(jsonPath("$.tombstone.orgUnitCode").value("DAS"))
+            .andExpect(jsonPath("$.tombstone.orgUnitName").value("Development Unit"))
+            .andExpect(jsonPath("$.tombstone.openCategory.code").value("FTML"))
+            .andExpect(jsonPath("$.tombstone.openCategory.description").value("Forest Tenure - Major Licensee"))
+            .andExpect(jsonPath("$.tombstone.client.clientNumber").value("00010003"))
+            .andExpect(jsonPath("$.tombstone.fileId").value("TFL47"))
+            .andExpect(jsonPath("$.tombstone.cuttingPermitId").value("12K"))
+            .andExpect(jsonPath("$.tombstone.timberMark").value("47/12K"))
+            .andExpect(jsonPath("$.tombstone.maxAllowedAccess").value("7.8"))
+            .andExpect(jsonPath("$.tombstone.openingGrossArea").value(16.6))
+            .andExpect(jsonPath("$.tombstone.createdBy").value("BABAYAGA"))
+            .andExpect(jsonPath("$.tombstone.createdOn").value("2001-06-07"))
+            .andExpect(jsonPath("$.tombstone.lastUpdatedOn").value("2014-04-02"))
+            .andExpect(jsonPath("$.tombstone.disturbanceStartDate").value("2001-09-18"))
+
+            // Verify overview.opening section
+            .andExpect(jsonPath("$.overview.opening.tenureType.code").value("A02"))
+            .andExpect(jsonPath("$.overview.opening.tenureType.description").value("Tree Farm Licence"))
+            .andExpect(jsonPath("$.overview.opening.managementUnitType.code").value("T"))
+            .andExpect(jsonPath("$.overview.opening.managementUnitType.description").value("TREE FARM LICENCE"))
+            .andExpect(jsonPath("$.overview.opening.managementUnitId").value("47"))
+            .andExpect(jsonPath("$.overview.opening.timberSaleOffice.code").value("LSB"))
+            .andExpect(jsonPath("$.overview.opening.timberSaleOffice.description").value("Lumber Sale Branch"))
+
+            // Verify comments
+            .andExpect(jsonPath("$.overview.opening.comments[0].commentSource.code").value("OPEN"))
+            .andExpect(jsonPath("$.overview.opening.comments[0].commentSource.description").value("Opening"))
+            .andExpect(jsonPath("$.overview.opening.comments[0].commentType.code").value("GENERAL"))
+            .andExpect(jsonPath("$.overview.opening.comments[0].commentType.description").value("General Comments"))
+            .andExpect(jsonPath("$.overview.opening.comments[0].commentText").value("All good so far"))
+
+            // Verify milestones section
+            .andExpect(jsonPath("$.overview.milestones.standardsUnitId").value("A"))
+            .andExpect(jsonPath("$.overview.milestones.regenOffsetYears").value(3))
+            .andExpect(jsonPath("$.overview.milestones.regenDueDate").value("2004-09-18"))
+            .andExpect(jsonPath("$.overview.milestones.freeGrowingDeclaredDate").value("2012-04-30"))
+            .andExpect(jsonPath("$.overview.milestones.freeGrowingOffsetYears").value(11))
+            .andExpect(jsonPath("$.overview.milestones.freeGrowingDueDate").value("2012-09-18"))
+            .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Tombstone with non-existing openingId should return 404")
+  void getOpeningTombstone_nonExistingOpeningId_shouldReturn404() throws Exception {
+    // Use a non-existent opening ID
+    Long nonExistentOpeningId = 999999999L;
+
+    mockMvc
+            .perform(
+                    get("/api/openings/" + nonExistentOpeningId + "/tombstone")
+                            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andReturn();
+  }
 }
