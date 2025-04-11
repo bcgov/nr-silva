@@ -4,19 +4,23 @@ import {
   Grid, Table, TableBody, TableCell,
   TableHead, TableHeader, TableRow
 } from "@carbon/react";
+import { Link } from "react-router-dom";
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
-  Layers as LayersIcon
+  Layers as LayersIcon,
+  Launch as LaunchIcon
 } from "@carbon/icons-react";
 
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
+import VerticalDivider from "../../VerticalDivider";
 
 import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';
+
 
 const OpeningStandardUnits = () => {
   return (
@@ -73,7 +77,55 @@ const OpeningStandardUnits = () => {
                   </Column>
 
                   <Column sm={4} md={8} lg={16}>
-                    <CardTitle title="Stocking standard" subtitle="Linked to existing stocking standard ID" />
+                    <CardTitle title="Stocking standard" />
+                    <div className="stocking-standard-links">
+                      {/* No standard unit id or FSP id */}
+                      {
+                        (!standardUnit.ssid && !standardUnit.fspId)
+                          ? 'Manual stocking requirement'
+                          : null
+                      }
+                      {/* Has standard unit id but no FSP id */}
+                      {
+                        (standardUnit.ssid && !standardUnit.fspId)
+                          ? (
+                            <>
+                              {
+                                <Link to="">
+                                  {`SSID ${standardUnit.ssid}, Stocking objective`}
+                                </Link>
+                              }
+                              <VerticalDivider />
+                              <span>Ministry default</span>
+                            </>
+                          )
+                          : null
+                      }
+                      {/* Has standard unit id AND FSP id */}
+                      {
+                        (standardUnit.ssid && standardUnit.fspId)
+                          ? (
+                            <>
+                              {
+                                <Link to="">
+                                  {`SSID ${standardUnit.ssid}, Stocking objective`}
+                                </Link>
+                              }
+                              <VerticalDivider />
+                              {
+                                <Link
+                                  className="fsp-link"
+                                  to={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.fspId}`}
+                                  target="_blank"
+                                >
+                                  {`FSP ID ${standardUnit.fspId}`} <LaunchIcon />
+                                </Link>
+                              }
+                            </>
+                          )
+                          : null
+                      }
+                    </div>
                   </Column>
 
                   <Column sm={4} md={8} lg={16}>

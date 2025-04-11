@@ -99,6 +99,13 @@
       .subsection-col {
         margin-left: 1.75rem;
       }
+
+      .stocking-standard-links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 0.5rem;
+      }
     }
   }
 }

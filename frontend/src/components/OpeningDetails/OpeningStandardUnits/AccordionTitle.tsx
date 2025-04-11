@@ -1,8 +1,7 @@
 import React from "react";
-import { Location as LocationIcon, Launch as LaunchIcon } from "@carbon/icons-react";
+import { Location as LocationIcon } from "@carbon/icons-react";
 import { DummyStandardUnitType } from "./constants";
 import VerticalDivider from "../../VerticalDivider";
-import { Link } from "react-router-dom";
 
 type AcoordionTitleProp = {
   standardUnit: DummyStandardUnitType;
@@ -33,13 +32,9 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
           (standardUnit.ssid && !standardUnit.fspId)
             ? (
               <>
-                {
-                  <Link to="">
-                    {`SSID ${standardUnit.ssid}, Stocking objective`}
-                  </Link>
-                }
+                {`SSID ${standardUnit.ssid}, Stocking objective`}
                 <VerticalDivider />
-                <span>Ministry default</span>
+                Ministry default
               </>
             )
             : null
@@ -49,21 +44,9 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
           (standardUnit.ssid && standardUnit.fspId)
             ? (
               <>
-                {
-                  <Link to="">
-                    {`SSID ${standardUnit.ssid}, Stocking objective`}
-                  </Link>
-                }
+                {`SSID ${standardUnit.ssid}, Stocking objective`}
                 <VerticalDivider />
-                {
-                  <Link
-                    className="fsp-link"
-                    to={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.fspId}`}
-                    target="_blank"
-                  >
-                    {`FSP ID ${standardUnit.fspId}`} <LaunchIcon />
-                  </Link>
-                }
+                {`FSP ID ${standardUnit.fspId}`}
               </>
             )
             : null
