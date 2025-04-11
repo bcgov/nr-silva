@@ -1,13 +1,18 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.OpeningService;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +21,24 @@ import org.springframework.web.bind.annotation.RestController;
  * This class contains resources for the opening search api.
  */
 @RestController
-@RequestMapping("/api/openings/search")
+@RequestMapping("/api/openings")
 @RequiredArgsConstructor
-public class OpeningSearchEndpoint {
+public class OpeningEndpoint {
 
+  private final OpeningSearchService openingSearchService;
   private final OpeningService openingService;
+
+  /**
+   * Get the Opening Tombstone/Summary information.
+   *
+   * @param openingId Opening ID
+   * @return OpeningTombstoneDto
+   */
+  @GetMapping("/{openingId}/tombstone")
+  public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(
+      @PathVariable Long openingId) {
+    return openingService.getOpeningTombstone(openingId).orElseThrow(() -> new OpeningNotFoundException(openingId));
+  }
 
   /**
    * Search for Openings with different filters.
@@ -46,7 +64,7 @@ public class OpeningSearchEndpoint {
    * @param paginationParameters Pagination settings
    * @return PaginatedResult with found records.
    */
-  @GetMapping
+  @GetMapping("/search")
   public Page<OpeningSearchResponseDto> openingSearch(
       @RequestParam(value = "mainSearchTerm", required = false)
       String mainSearchTerm,
@@ -109,7 +127,7 @@ public class OpeningSearchEndpoint {
             clientLocationCode,
             clientNumber,
             mainSearchTerm);
-    return openingService.openingSearch(filtersDto, paginationParameters);
+    return openingSearchService.openingSearch(filtersDto, paginationParameters);
   }
 
 }

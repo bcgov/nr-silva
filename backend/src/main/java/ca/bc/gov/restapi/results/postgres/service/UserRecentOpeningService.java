@@ -3,11 +3,11 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
@@ -34,7 +34,7 @@ public class UserRecentOpeningService {
 
   private final LoggedUserService loggedUserService;
   private final UserRecentOpeningRepository userRecentOpeningRepository;
-  private final OpeningService openingService;
+  private final OpeningSearchService openingSearchService;
   private final OpeningRepository openingRepository;
 
   @Transactional
@@ -100,17 +100,17 @@ public class UserRecentOpeningService {
     }
 
     List<SilvicultureSearchProjection> projectionList =
-    openingRepository
-        .searchBy(
-            new OpeningSearchFiltersDto(),
-            new ArrayList<>(openingIds.keySet()),
-            // Here it really doesn't matter, if we set the page as first,
-            // because it will be just for the current page anyway
-            0L, openingIds.size()
-        );
+        openingRepository
+            .searchBy(
+                new OpeningSearchFiltersDto(),
+                new ArrayList<>(openingIds.keySet()),
+                // Here it really doesn't matter, if we set the page as first,
+                // because it will be just for the current page anyway
+                0L, openingIds.size()
+            );
 
     Page<OpeningSearchResponseDto> pageResult =
-        openingService.parsePageResult(
+        openingSearchService.parsePageResult(
             new PageImpl<>(
                 projectionList,
                 PageRequest.of(0, openingIds.size()),

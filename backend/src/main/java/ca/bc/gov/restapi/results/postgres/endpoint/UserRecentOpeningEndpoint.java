@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.UserRecentOpeningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -35,6 +35,7 @@ public class UserAuthenticationHelper {
       // Provider IDIR or BCeID & username
       String provider = jwtPrincipal.getClaimAsString("custom:idp_name");
       boolean isIdirProvider = provider.equals("idir");
+      provider = isIdirProvider ? "idir" : "bceidbusiness";
       String idpUsername = jwtPrincipal.getClaimAsString("custom:idp_username");
 
       Triple<String, String, String> names = getName(jwtPrincipal);

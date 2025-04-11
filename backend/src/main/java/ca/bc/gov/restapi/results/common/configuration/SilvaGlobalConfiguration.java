@@ -11,16 +11,17 @@ import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningCategoryConverter;
 import ca.bc.gov.restapi.results.oracle.converter.OpeningStatusConverter;
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.RecentOpeningDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningTombstoneDto;
 import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningAttachmentEntity;
-import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.AuditActionCodeEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
@@ -63,9 +64,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     OpeningCategoryConverter.class,
     OpeningStatusConverter.class,
     CodeDescriptionDto.class,
+    RecentOpeningDto.class,
     OpeningSearchFiltersDto.class,
     OpeningSearchResponseDto.class,
-    RecentOpeningDto.class,
+    OpeningTombstoneDto.class,
     ClientAcronymEntity.class,
     CutBlockOpenAdminEntity.class,
     OpenCategoryCodeEntity.class,
@@ -97,7 +99,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     GeoJsonObject.class,
     Crs.class,
     Adapter.class
-
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {

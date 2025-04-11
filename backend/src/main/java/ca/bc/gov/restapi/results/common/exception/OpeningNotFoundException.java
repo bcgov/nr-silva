@@ -9,4 +9,7 @@ public class OpeningNotFoundException extends NotFoundGenericException {
   public OpeningNotFoundException() {
     super("UserOpening");
   }
+  public OpeningNotFoundException(Long openingId) {
+    super(String.format("UserOpening with ID %d", openingId));
+  }
 }

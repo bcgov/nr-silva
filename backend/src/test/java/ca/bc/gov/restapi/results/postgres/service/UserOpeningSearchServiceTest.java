@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserService;
-import ca.bc.gov.restapi.results.oracle.entity.OpeningEntity;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class UserOpeningServiceTest {
+class UserOpeningSearchServiceTest {
 
   @Mock
   LoggedUserService loggedUserService;
