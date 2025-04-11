@@ -1,18 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.anyLong;
-import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
@@ -28,6 +17,16 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | Opening Service")
@@ -207,7 +206,7 @@ class OpeningServiceTest {
             }
 
             @Override
-            public int getRegenOffsetYears() {
+            public Integer getRegenOffsetYears() {
                 return 7;
             }
 
@@ -222,7 +221,7 @@ class OpeningServiceTest {
             }
 
             @Override
-            public int getFreeGrowingOffsetYears() {
+            public Integer getFreeGrowingOffsetYears() {
                 return 15;
             }
 

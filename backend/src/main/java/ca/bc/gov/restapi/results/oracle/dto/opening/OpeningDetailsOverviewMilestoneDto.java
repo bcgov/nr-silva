@@ -8,10 +8,10 @@ public record OpeningDetailsOverviewMilestoneDto(
     String standardsUnitId,
     LocalDate postHarvestDeclaredDate,
     LocalDate regenDeclaredDate,
-    int regenOffsetYears,
+    Integer regenOffsetYears,
     LocalDate regenDueDate,
     LocalDate freeGrowingDeclaredDate,
-    int freeGrowingOffsetYears,
+    Integer freeGrowingOffsetYears,
     LocalDate freeGrowingDueDate
 ) {
 

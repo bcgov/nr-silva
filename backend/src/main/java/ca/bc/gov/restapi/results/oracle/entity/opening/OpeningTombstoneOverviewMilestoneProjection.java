@@ -10,13 +10,13 @@ public interface OpeningTombstoneOverviewMilestoneProjection {
 
   LocalDate getRegenDeclaredDate();
 
-  int getRegenOffsetYears();
+  Integer getRegenOffsetYears();
 
   LocalDate getRegenDueDate();
 
   LocalDate getFreeGrowingDeclaredDate();
 
-  int getFreeGrowingOffsetYears();
+  Integer getFreeGrowingOffsetYears();
 
   LocalDate getFreeGrowingDueDate();
 
