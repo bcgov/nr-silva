@@ -317,7 +317,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.12</version>
+        <version>0.8.13</version>
         <configuration>
           <skip>${jacoco.skip}</skip>
           <excludes>
@@ -482,7 +482,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.22.0</version>
+            <version>10.23.0</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -513,7 +513,7 @@
       <dependency>
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
-        <version>10.0.2</version>
+        <version>10.1</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
