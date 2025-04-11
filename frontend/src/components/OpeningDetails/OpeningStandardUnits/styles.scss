@@ -1,0 +1,111 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-standard-units-grid {
+  padding: 0;
+  row-gap: 1.5rem;
+
+  .standard-units-title {
+    @include type.type-style('heading-03');
+  }
+
+  .accordion-col {
+    .#{vars.$bcgov-prefix}--accordion__heading {
+      padding: 0.875rem 1.5rem 0.875rem 0.5rem;
+
+    }
+
+    .#{vars.$bcgov-prefix}--accordion__wrapper {
+      padding-top: 1.375rem;
+    }
+
+    .standard-unit-accordion {
+      border: none;
+    }
+
+    .standard-unit-accordion-item {
+      border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+      background: var(--#{vars.$bcgov-prefix}-layer-02);
+      border-radius: 0.5rem;
+
+      .#{vars.$bcgov-prefix}--accordion__content {
+        padding-inline: 3.25rem 2rem;
+      }
+    }
+
+    .accordion-title-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.25rem;
+
+      h4 {
+        @include type.type-style('heading-02');
+      }
+
+      .accordion-title-top {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.5rem;
+        align-items: center;
+      }
+
+      .accordion-title-bottom {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.5rem;
+        align-items: center;
+        margin-left: 1.625rem;
+        @include type.type-style('body-compact-02');
+      }
+    }
+
+    .fsp-link {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.25rem;
+      align-items: center;
+    }
+
+    .standard-unit-content-grid {
+      width: 100%;
+      row-gap: 2rem;
+
+      .standard-unit-content-subgrid {
+        row-gap: 1.5rem;
+
+        .#{vars.$bcgov-prefix}--css-grid-column {
+          padding: 0 0.5rem;
+        }
+      }
+
+      .section-title-with-icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 0.5rem;
+
+        h4 {
+          @include type.type-style('heading-02');
+        }
+      }
+
+      .species-table-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.5rem;
+        margin-left: 1.75rem;
+      }
+
+      .subsection-col {
+        margin-left: 1.75rem;
+      }
+
+      .stocking-standard-links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 0.5rem;
+      }
+    }
+  }
+}
