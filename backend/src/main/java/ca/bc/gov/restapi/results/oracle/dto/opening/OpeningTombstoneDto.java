@@ -13,7 +13,7 @@ public record OpeningTombstoneDto(
     String fileId,
     String cutBlock,
     String cuttingPermit,
-    String TimberMark,
+    String timberMark,
     String maxAllowedAccess,
     String openingGrossArea,
     String createdBy,
