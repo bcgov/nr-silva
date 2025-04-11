@@ -6,3 +6,8 @@ export const OpeningDetailBreadCrumbs: BreadCrumbType[] = [
     path: '/openings'
   }
 ] as const;
+
+export const OpeningDetailsTabs = [
+  'overview',
+  'standard-units'
+] as const;

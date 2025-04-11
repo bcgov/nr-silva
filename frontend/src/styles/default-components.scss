@@ -64,7 +64,8 @@
   }
 }
 
-.default-zebra-table {
+.default-zebra-table,
+.default-zebra-table-with-border {
   &.#{vars.$bcgov-prefix}--data-table tbody {
     background: var(--#{vars.$bcgov-prefix}-layer-02);
   }
@@ -85,6 +86,11 @@
     @include type.type-style('body-compact-01');
     color: var(--#{vars.$bcgov-prefix}-text-primary);
   }
+}
+
+.default-zebra-table-with-border {
+  border-radius: 0.25rem;
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
 }
 
 .silva-toast {
