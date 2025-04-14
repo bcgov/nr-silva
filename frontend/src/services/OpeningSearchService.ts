@@ -1,12 +1,12 @@
 import axios from "axios";
 import qs from "qs";
-import CodeDescriptionDto from "../types/CodeDescriptionType";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
-import { OpeningSearchResponseDto } from "../types/OpeningTypes";
-import { extractCodesFromCodeDescriptionArr } from "../utils/multiSelectUtils";
-import { OpeningSearchFilterType } from "../components/SilvicultureSearch/OpeningSearch/definitions";
-import { PaginatedResponseType } from "../types/PaginationTypes";
+import { OpeningDetailsTombstoneOverviewDto, OpeningSearchResponseDto } from "@/types/OpeningTypes";
+import { extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
+import { OpeningSearchFilterType } from "@/components/SilvicultureSearch/OpeningSearch/definitions";
+import { PaginatedResponseType } from "@/types/PaginationTypes";
 
 export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token
@@ -85,3 +85,12 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
     .then((res) => res.data as PaginatedResponseType<OpeningSearchResponseDto>);
 };
 
+/**
+ * Fetch the tombstone and overview information for the Opening details page.
+ */
+export const fetchOpeningTombstone = (openingId: number) => {
+  const authToken = getAuthIdToken();
+
+  return axios.get(API_ENDPOINTS.openingTombstone(openingId), defaultHeaders(authToken))
+    .then((res) => res.data as OpeningDetailsTombstoneOverviewDto);
+}

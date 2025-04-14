@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
 import { Location } from "@carbon/icons-react";
 
-import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
+import { OpeningDetailsTombstoneDto } from "@/types/OpeningTypes";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -12,11 +12,12 @@ import OpeningsMap from "@/components/OpeningsMap";
 import './styles.scss';
 
 type OpeningSummaryProps = {
-  openingObj?: OpeningSearchResponseDto;
+  openingId?: number
+  tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
 }
 
-const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
+const OpeningSummary = ({ openingId, tombstoneObj, isLoading }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
   return (
@@ -47,15 +48,15 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="opening-number-card-item" label="Opening number" showSkeleton={isLoading}>
-          {openingObj?.openingNumber}
+          {tombstoneObj?.openingNumber}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="opening-status-card-item" label="Opening status" showSkeleton={isLoading}>
           {
-            openingObj?.status?.description
-              ? <StatusTag description={openingObj.status.description} />
+            tombstoneObj?.openingStatus?.description
+              ? <StatusTag description={tombstoneObj.openingStatus.description} />
               : null
           }
         </CardItem>
@@ -63,18 +64,21 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="opening-type-card-item" label="Opening type" showSkeleton={isLoading}>
+          {/* {
+            tombstoneObj?.
+          } */}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
-        <CardItem id="org-unit-card-item" label="Org unit" showSkeleton={isLoading} tooltipText={openingObj?.orgUnitName}>
-          {openingObj?.orgUnitCode}
+        <CardItem id="org-unit-card-item" label="Org unit" showSkeleton={isLoading} tooltipText={tombstoneObj?.orgUnitName ?? ''}>
+          {tombstoneObj?.orgUnitCode}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
-        <CardItem id="opening-category-card-item" label="Opening category" showSkeleton={isLoading} tooltipText={openingObj?.category?.description}>
-          {openingObj?.category?.code}
+        <CardItem id="opening-category-card-item" label="Opening category" showSkeleton={isLoading} tooltipText={tombstoneObj?.openCategory.description}>
+          {tombstoneObj?.openCategory.code}
         </CardItem>
       </Column>
 
@@ -82,9 +86,9 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
         <CardItem id="client-card-item" label="Client" showSkeleton={isLoading}>
           {
             getClientLabel({
-              id: openingObj?.clientNumber ?? '',
-              name: openingObj?.clientName ?? '',
-              acronym: openingObj?.clientAcronym ?? ''
+              id: tombstoneObj?.client.clientNumber ?? '',
+              name: tombstoneObj?.client.clientName ?? '',
+              acronym: tombstoneObj?.client.acronym ?? ''
             }, true)
           }
         </CardItem>
@@ -92,68 +96,76 @@ const OpeningSummary = ({ openingObj, isLoading }: OpeningSummaryProps) => {
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="file-id-card-item" label="File ID" showSkeleton={isLoading}>
-          {openingObj?.forestFileId}
+          {tombstoneObj?.fileId}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="cut-block-card-item" label="Cut block" showSkeleton={isLoading}>
-          {openingObj?.cutBlockId}
+          {tombstoneObj?.cutBlockID}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="cutting-permit-card-item" label="Cutting permit" showSkeleton={isLoading}>
-          {openingObj?.cuttingPermitId}
+          {tombstoneObj?.cuttingPermitId}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="timber-mark-card-item" label="Timber mark" showSkeleton={isLoading}>
-          {openingObj?.timberMark}
+          {tombstoneObj?.timberMark}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="max-allowed-access-card-item" label="Max allowed access" showSkeleton={isLoading}>
+          {tombstoneObj?.maxAllowedAccess}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="gross-area-card-item" label="Opening gross area" showSkeleton={isLoading}>
-          {openingObj?.openingGrossAreaHa ? `${openingObj?.openingGrossAreaHa} ha` : undefined}
+          {tombstoneObj?.openingGrossArea ? `${tombstoneObj?.openingGrossArea} ha` : undefined}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="created-by-card-item" label="Created by" showSkeleton={isLoading}>
-          {openingObj?.entryUserId}
+          {tombstoneObj?.createdBy}
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="created-by-card-item" label="Created on" showSkeleton={isLoading}>
+          {
+            formatLocalDate(tombstoneObj?.createdOn, true)
+          }
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="last-updated-card-item" label="Last updated" showSkeleton={isLoading}>
-          {formatLocalDate(openingObj?.updateTimestamp)}
+          {
+            formatLocalDate(tombstoneObj?.lastUpdatedOn, true)
+          }
         </CardItem>
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="disturbance-start-card-item" label="Disturbance start" showSkeleton={isLoading}>
-          {formatLocalDate(openingObj?.disturbanceStartDate)}
+          {
+            formatLocalDate(tombstoneObj?.disturbanceStartDate, true)
+          }
         </CardItem>
       </Column>
 
       {
-        openingObj?.openingId && showMap
+        tombstoneObj?.openingNumber && showMap
           ? (
             <Column className="map-col" sm={4} md={8} lg={16}>
               <OpeningsMap
-                openingIds={[openingObj.openingId]}
+                openingIds={openingId ? [openingId] : null}
                 setOpeningPolygonNotFound={() => { }}
                 mapHeight={280}
               />

@@ -1,6 +1,6 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
 import { CommentDto } from "./CommentTypes";
-import { ForestClientCodeDescription } from "./ForestClientTypes/ForestClientType";
+import { ForestClientType } from "./ForestClientTypes/ForestClientType";
 import { PaginatedResponseType } from "./PaginationTypes";
 
 export interface StatusCategory {
@@ -74,7 +74,7 @@ export type OpeningDetailsTombstoneDto = {
   orgUnitCode: string | null,
   orgUnitName: string | null,
   openCategory: CodeDescriptionDto,
-  client: ForestClientCodeDescription
+  client: ForestClientType,
   fileId: string | null,
   cutBlockID: string | null,
   cuttingPermitId: string | null,

@@ -4,7 +4,7 @@ import { MapBoundaryVegetation, Development } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { searchOpenings } from "@/services/OpeningSearchService";
+import { fetchOpeningTombstone, searchOpenings } from "@/services/OpeningSearchService";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningStandardUnits, OpeningSummary, OpeningOverview } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
@@ -39,18 +39,11 @@ const OpeningDetails = () => {
    * TODO:
    * Temporarily using opening search to get data, will need to update this once API is done
    */
-  const openingQuery = useQuery({
-    queryKey: ['openings', 'search', { openingId }],
-    queryFn: () => searchOpenings({ mainSearchTerm: openingId, page: 0, size: 100 }),
+  const openingOverviewQuery = useQuery({
+    queryKey: ['openings', openingId, 'tombstone'],
+    queryFn: () => fetchOpeningTombstone(Number(openingId)),
     enabled: !!openingId,
-    select: (data) => {
-      const { content } = data;
-      if (!content.length) {
-        return undefined;
-      }
-      return content.find((opening) => opening.openingId.toString() === openingId)
-    },
-    refetchOnMount: true
+    refetchOnMount: 'always'
   })
 
   const postRecentOpeningMutation = useMutation({
@@ -79,10 +72,14 @@ const OpeningDetails = () => {
       </PageTitle>
 
       <Column sm={4} md={8} lg={16}>
-        <OpeningSummary openingObj={openingQuery.data} isLoading={openingQuery.isLoading} />
+        <OpeningSummary
+          openingId={Number(openingId)}
+          tombstoneObj={openingOverviewQuery.data?.tombstone}
+          isLoading={openingOverviewQuery.isLoading}
+        />
       </Column>
 
-      <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
+      {/* <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
         <Tabs selectedIndex={activeTab} onChange={(state) => handleTabChange(state.selectedIndex)}>
           <TabList className="default-tab-list" aria-label="List of Tab" contained>
             <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>Overview</Tab>
@@ -97,7 +94,7 @@ const OpeningDetails = () => {
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </Column>
+      </Column> */}
     </Grid >
   )
 }
