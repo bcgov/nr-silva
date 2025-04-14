@@ -35,7 +35,7 @@ const OpeningDetails = () => {
     setSearchParams(newSearchParams, { replace: true });
   };
 
-  const openingOverviewQuery = useQuery({
+  const openingDetailsTombstoneQuery = useQuery({
     queryKey: ['openings', openingId, 'tombstone'],
     queryFn: () => fetchOpeningTombstone(Number(openingId)),
     enabled: !!openingId,
@@ -70,8 +70,8 @@ const OpeningDetails = () => {
       <Column sm={4} md={8} lg={16}>
         <OpeningSummary
           openingId={Number(openingId)}
-          tombstoneObj={openingOverviewQuery.data?.tombstone}
-          isLoading={openingOverviewQuery.isLoading}
+          tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
+          isLoading={openingDetailsTombstoneQuery.isLoading}
         />
       </Column>
 
