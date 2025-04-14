@@ -83,7 +83,10 @@ const OpeningDetails = () => {
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
-              {/* TODO <OpeningOverview isLoading={openingQuery.isLoading} /> */}
+              <OpeningOverview 
+                overviewObj={openingDetailsTombstoneQuery.data?.overview} 
+                isLoading={openingDetailsTombstoneQuery.isLoading}>
+              </OpeningOverview>
             </TabPanel>
             <TabPanel className="tab-content full-width-col">
               <OpeningStandardUnits />

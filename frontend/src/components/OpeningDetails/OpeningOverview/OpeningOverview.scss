@@ -1,0 +1,13 @@
+.comments-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 4px;
+    
+    li {
+      margin-bottom: 4px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
