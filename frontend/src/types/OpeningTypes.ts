@@ -93,7 +93,7 @@ export type OpeningDetailsOverviewOpeningDto = {
   managementUnitType: CodeDescriptionDto,
   managementUnitId: string | null,
   timberSaleOffice: CodeDescriptionDto,
-  comments: CommentDto
+  comments: CommentDto[]
 };
 
 
