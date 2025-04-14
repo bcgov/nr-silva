@@ -35,10 +35,6 @@ const OpeningDetails = () => {
     setSearchParams(newSearchParams, { replace: true });
   };
 
-  /**
-   * TODO:
-   * Temporarily using opening search to get data, will need to update this once API is done
-   */
   const openingOverviewQuery = useQuery({
     queryKey: ['openings', openingId, 'tombstone'],
     queryFn: () => fetchOpeningTombstone(Number(openingId)),
@@ -79,7 +75,7 @@ const OpeningDetails = () => {
         />
       </Column>
 
-      {/* <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
+      <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
         <Tabs selectedIndex={activeTab} onChange={(state) => handleTabChange(state.selectedIndex)}>
           <TabList className="default-tab-list" aria-label="List of Tab" contained>
             <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>Overview</Tab>
@@ -87,14 +83,14 @@ const OpeningDetails = () => {
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
-              <OpeningOverview isLoading={openingQuery.isLoading} />
+              {/* TODO <OpeningOverview isLoading={openingQuery.isLoading} /> */}
             </TabPanel>
             <TabPanel className="tab-content full-width-col">
               <OpeningStandardUnits />
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </Column> */}
+      </Column>
     </Grid >
   )
 }

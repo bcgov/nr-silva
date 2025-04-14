@@ -48,7 +48,7 @@ const OpeningSummary = ({ openingId, tombstoneObj, isLoading }: OpeningSummaryPr
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="opening-number-card-item" label="Opening number" showSkeleton={isLoading}>
-          {tombstoneObj?.openingNumber}
+          {tombstoneObj?.openingNumber?.trim() === '' ? null : tombstoneObj?.openingNumber}
         </CardItem>
       </Column>
 
@@ -64,9 +64,7 @@ const OpeningSummary = ({ openingId, tombstoneObj, isLoading }: OpeningSummaryPr
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem id="opening-type-card-item" label="Opening type" showSkeleton={isLoading}>
-          {/* {
-            tombstoneObj?.
-          } */}
+          {/* Will be implemented in the future */}
         </CardItem>
       </Column>
 
