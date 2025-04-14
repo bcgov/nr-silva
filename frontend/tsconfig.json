@@ -32,7 +32,8 @@
     },
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "playwright.config.ts"
   ],
   "exclude": [
     "**/*.test.*",
