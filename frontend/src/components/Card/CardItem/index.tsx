@@ -86,10 +86,11 @@ const CardItem = ({
   }
 
   return (
-    <dl className="card-item" id={id}>
+    <dl className="card-item" id={id} data-testid={`card-item-${label.replace(/\s+/g, '-').toLowerCase()}`}>
       <dt className="card-item-label">{label}</dt>
       <dd
         className="card-item-content"
+        data-testid={`card-item-content-${label.replace(/\s+/g, '-').toLowerCase()}`}
         title={typeof children === 'string' && !showSkeleton ? children : undefined}
       >
         {content}
