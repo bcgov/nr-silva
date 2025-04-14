@@ -1,4 +1,6 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
+import { CommentDto } from "./CommentTypes";
+import { ForestClientCodeDescription } from "./ForestClientTypes/ForestClientType";
 import { PaginatedResponseType } from "./PaginationTypes";
 
 export interface StatusCategory {
@@ -65,3 +67,54 @@ export type OpeningsPerYearDto = {
     [key: string]: number
   }
 }
+
+export type OpeningDetailsTombstoneDto = {
+  openingNumber: string | null,
+  openingStatus: CodeDescriptionDto,
+  orgUnitCode: string | null,
+  orgUnitName: string | null,
+  openCategory: CodeDescriptionDto,
+  client: ForestClientCodeDescription
+  fileId: string | null,
+  cutBlockID: string | null,
+  cuttingPermitId: string | null,
+  timberMark: string | null,
+  maxAllowedAccess: string | null,
+  openingGrossArea: number | null,
+  createdBy: string | null,
+  createdOn: string | null,
+  lastUpdatedOn: string | null,
+  disturbanceStartDate: string | null
+};
+
+export type OpeningDetailsOverviewOpeningDto = {
+  licenseeId: string | null,
+  tenureType: CodeDescriptionDto,
+  managementUnitType: CodeDescriptionDto,
+  managementUnitId: string | null,
+  timberSaleOffice: CodeDescriptionDto,
+  comments: CommentDto
+};
+
+
+export type OpeningDetailsOverviewMilestoneDto = {
+  standardsUnitId: string | null,
+  postHarvestDeclaredDate: string | null,
+  regenDeclaredDate: string | null,
+  regenOffsetYears: number | null,
+  regenDueDate: string | null,
+  freeGrowingDeclaredDate: string | null,
+  freeGrowingOffsetYears: number | null,
+  freeGrowingDueDate: string | null
+};
+
+export type OpeningDetailsOverviewDto = {
+  opening: OpeningDetailsOverviewOpeningDto,
+  milestones: OpeningDetailsOverviewMilestoneDto
+};
+
+export type OpeningDetailsTombstoneOverviewDto = {
+  openingId: number,
+  tombstone: OpeningDetailsTombstoneDto,
+  overview: OpeningDetailsOverviewDto
+};
