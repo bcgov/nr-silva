@@ -2,6 +2,6 @@ import CodeDescriptionDto from "./CodeDescriptionType"
 
 export type CommentDto = {
   commentSource: CodeDescriptionDto,
-  CodeDescriptionDto: CodeDescriptionDto,
+  codeDescriptionDto: CodeDescriptionDto,
   commentText: string | null
 }
