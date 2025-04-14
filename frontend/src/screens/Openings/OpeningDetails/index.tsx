@@ -4,7 +4,7 @@ import { MapBoundaryVegetation, Development } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { fetchOpeningTombstone, searchOpenings } from "@/services/OpeningSearchService";
+import { fetchOpeningTombstone } from "@/services/OpeningSearchService";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningStandardUnits, OpeningSummary, OpeningOverview } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
