@@ -5,6 +5,7 @@ import {
   filterCodeDescriptionItems,
 } from "../../utils/multiSelectUtils";
 import { SelectableCodeDescriptionDto } from "../../utils/multiSelectUtils";
+import { PLACE_HOLDER } from "../../constants";
 
 describe("multiSelectUtils", () => {
   describe("codeDescriptionToDisplayText", () => {
@@ -14,11 +15,11 @@ describe("multiSelectUtils", () => {
     });
 
     it("should return an empty string if input is null", () => {
-      expect(codeDescriptionToDisplayText(null)).toBe("");
+      expect(codeDescriptionToDisplayText(null)).toBe(PLACE_HOLDER);
     });
 
     it("should return an empty string if input is undefined", () => {
-      expect(codeDescriptionToDisplayText(undefined)).toBe("");
+      expect(codeDescriptionToDisplayText(undefined)).toBe(PLACE_HOLDER);
     });
   });
 
