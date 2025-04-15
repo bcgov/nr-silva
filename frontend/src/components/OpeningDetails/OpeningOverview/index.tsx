@@ -4,6 +4,7 @@ import { Column, Grid } from "@carbon/react";
 import { OpeningDetailsOverviewDto } from "@/types/OpeningTypes";
 import "./OpeningOverview.scss";
 import { formatLocalDate } from "@/utils/DateUtils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
 type OpeningOverviewProps = {
   isLoading?: boolean
@@ -27,16 +28,12 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
           </Column>
           <Column sm={2} md={4} lg={3}>
             <CardItem label="Tenure type" showSkeleton={isLoading}>
-              {overviewObj?.opening.tenureType ?
-                `${overviewObj.opening.tenureType.code} - ${overviewObj.opening.tenureType.description}`
-                : null}
+                {codeDescriptionToDisplayText(overviewObj?.opening.tenureType)}
             </CardItem>
           </Column>
           <Column sm={2} md={4} lg={3}>
             <CardItem label="Management unit type" showSkeleton={isLoading}>
-              {overviewObj?.opening.managementUnitType ?
-                `${overviewObj.opening.managementUnitType.code} - ${overviewObj.opening.managementUnitType.description}`
-                : null}
+              {codeDescriptionToDisplayText(overviewObj?.opening.managementUnitType)}
             </CardItem>
           </Column>
           <Column sm={2} md={4} lg={3}>
@@ -46,9 +43,7 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
           </Column>
           <Column sm={2} md={4} lg={4}>
             <CardItem label="Timber sales office" showSkeleton={isLoading}>
-              {overviewObj?.opening.timberSaleOffice ?
-                `${overviewObj.opening.timberSaleOffice.code} - ${overviewObj.opening.timberSaleOffice.description}`
-                : null}
+              {codeDescriptionToDisplayText(overviewObj?.opening.timberSaleOffice)}
             </CardItem>
           </Column>
           <Column sm={4} md={8} lg={16}>
