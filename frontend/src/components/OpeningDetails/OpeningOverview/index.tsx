@@ -1,9 +1,9 @@
 import React from "react";
 import { CardContainer, CardItem, CardTitle } from "@/components/Card";
 import { Column, Grid } from "@carbon/react";
-import { OpeningDetailsOverviewDto } from "../../../types/OpeningTypes";
+import { OpeningDetailsOverviewDto } from "@/types/OpeningTypes";
 import "./OpeningOverview.scss";
-import { formatLocalDate } from "../../../utils/DateUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 type OpeningOverviewProps = {
   isLoading?: boolean
