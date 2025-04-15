@@ -2,19 +2,21 @@ import React from "react";
 import { CardContainer, CardItem, CardTitle } from "@/components/Card";
 import { Column, Grid } from "@carbon/react";
 import { OpeningDetailsOverviewDto } from "@/types/OpeningTypes";
-import "./OpeningOverview.scss";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { PLACE_HOLDER } from "@/constants";
+
+import "./styles.scss";
 
 type OpeningOverviewProps = {
   isLoading?: boolean
   overviewObj?: OpeningDetailsOverviewDto
 }
 
-const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
+const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
 
   return (
-    <CardContainer>
+    <CardContainer className="opening-overview-card-container">
       <Column sm={4} md={8} lg={16}>
         <CardTitle title="Opening" />
       </Column>
@@ -28,7 +30,7 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
           </Column>
           <Column sm={2} md={4} lg={3}>
             <CardItem label="Tenure type" showSkeleton={isLoading}>
-                {codeDescriptionToDisplayText(overviewObj?.opening.tenureType)}
+              {codeDescriptionToDisplayText(overviewObj?.opening.tenureType)}
             </CardItem>
           </Column>
           <Column sm={2} md={4} lg={3}>
@@ -48,17 +50,21 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
           </Column>
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Comment" showSkeleton={isLoading}>
-              {(overviewObj?.opening.comments ?? []).length > 0 ? (
-                <ul className="comments-list">
-                  {overviewObj?.opening?.comments?.map((comment, index) =>
-                    comment.commentText ? (
-                      <li key={index}>
-                        {comment.commentText}
-                      </li>
-                    ) : null
-                  )}
-                </ul>
-              ) : null}
+              {
+                (overviewObj?.opening.comments ?? []).length > 0
+                  ? (
+                    <ul className="comments-list">
+                      {overviewObj?.opening?.comments?.map((comment, index) =>
+                        comment.commentText ? (
+                          <li key={index}>
+                            {comment.commentText}
+                          </li>
+                        ) : null
+                      )}
+                    </ul>
+                  )
+                  : null
+              }
             </CardItem>
           </Column>
         </Grid>
@@ -74,6 +80,10 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
 
       <Column sm={4} md={8} lg={16}>
         <Grid className="default-card-section-grid">
+          <Column className="standard-unit-card-title-col" sm={4} md={8} lg={16}>
+            <CardTitle title={`Standard unit: ${overviewObj?.milestones.standardsUnitId ?? PLACE_HOLDER}`} />
+          </Column>
+
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Post harvested declared date" showSkeleton={isLoading}>
               {formatLocalDate(overviewObj?.milestones.postHarvestDeclaredDate, true)}
