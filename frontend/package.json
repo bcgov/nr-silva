@@ -39,8 +39,10 @@
     "test:coverage": "vitest run --coverage --watch=false",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "e2e": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright",
-    "e2e:ui": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright:ui"
+    "e2e:local": "BASE_URL=http://localhost:3000 playwright test",
+    "e2e:local:ui": "BASE_URL=http://localhost:3000 playwright test --ui",
+    "e2e:build": "BASE_URL=http://localhost:4173 npm run build && BASE_URL=http://localhost:4173 npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test serve http://localhost:4173 test:playwright",
+    "e2e:build:ui": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright:ui"
   },
   "browserslist": {
     "production": [
