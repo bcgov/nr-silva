@@ -48,9 +48,9 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
           </Column>
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Comment" showSkeleton={isLoading}>
-              {overviewObj?.opening.comments && overviewObj.opening.comments.length > 0 ? (
+              {(overviewObj?.opening.comments ?? []).length > 0 ? (
                 <ul className="comments-list">
-                  {overviewObj.opening.comments.map((comment, index) =>
+                  {overviewObj?.opening?.comments?.map((comment, index) =>
                     comment.commentText ? (
                       <li key={index}>
                         {comment.commentText}
