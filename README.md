@@ -72,6 +72,12 @@ test and deploy.
 - Authentication & Authorization
   - OAuth 2.0 with JWT Token-based requests.
 
+## TanStack Query Conventions
+- `/posts` -> `['posts']`
+- `/posts/1` -> `['posts', post.id]`
+- `/posts?author=1` -> `['posts', { author: 1 }]`
+- `/posts/2/comments` -> `['posts', post.id, 'comments']`
+
 # Getting started
 
 Once you have cloned this repository, you can get the app running by typing
@@ -88,6 +94,6 @@ our [CONTRIBUTING](CONTRIBUTING.md) guide.
 
 ## Getting help
 
-As mentioned, we're here to help. Feel free to reach out and 
+As mentioned, we're here to help. Feel free to reach out and
 start a conversation on Rocket chat, you can search for
 `@jazz.grewal` or `@paulushcgcj`.

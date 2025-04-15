@@ -2,6 +2,7 @@ import React from "react";
 import './styles.scss';
 import { TagSkeleton, TextInputSkeleton, Tooltip } from "@carbon/react";
 import { PLACE_HOLDER } from "@/constants";
+import { toKebabCase } from "@/utils/StringUtils";
 
 /**
  * Props for the `CardItem` component.
@@ -86,10 +87,11 @@ const CardItem = ({
   }
 
   return (
-    <dl className="card-item" id={id}>
+    <dl className="card-item" id={id} data-testid={`card-item-${toKebabCase(label)}`}>
       <dt className="card-item-label">{label}</dt>
       <dd
         className="card-item-content"
+        data-testid={`card-item-content-${toKebabCase(label)}`}
         title={typeof children === 'string' && !showSkeleton ? children : undefined}
       >
         {content}
