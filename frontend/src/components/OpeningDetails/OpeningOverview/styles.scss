@@ -1,0 +1,18 @@
+@use '@carbon/type';
+
+.opening-overview-card-container {
+  .comments-list {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+    margin-top: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem;
+  }
+
+  .standard-unit-card-title-col {
+    h5 {
+      @include type.type-style('heading-01');
+    }
+  }
+}

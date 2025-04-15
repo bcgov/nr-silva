@@ -1,5 +1,6 @@
 import { SortItemsOptions } from "@carbon/react/lib/components/MultiSelect/MultiSelectPropTypes";
 import CodeDescriptionDto from "../types/CodeDescriptionType";
+import { PLACE_HOLDER } from "../constants";
 
 interface MultiSelectEvent {
   selectedItems: CodeDescriptionDto[];
@@ -7,10 +8,32 @@ interface MultiSelectEvent {
 
 /**
  * Formats the CodeDescriptionDto to a string for display.
+ * - Returns "code - description" if both exist
+ * - Returns only code if description is null/undefined
+ * - Returns only description if code is null/undefined
+ * - Returns PLACE_HOLDER if both are missing or dto is null/undefined
  */
-const codeDescriptionToDisplayText = (codeDescriptionDto?: CodeDescriptionDto | null): string => (
-  codeDescriptionDto ? `${codeDescriptionDto.code} - ${codeDescriptionDto.description}` : ""
-);
+const codeDescriptionToDisplayText = (codeDescriptionDto?: CodeDescriptionDto | null): string => {
+  if (!codeDescriptionDto) {
+    return PLACE_HOLDER;
+  }
+
+  const { code, description } = codeDescriptionDto;
+
+  if (code && description) {
+    return `${code} - ${description}`;
+  }
+
+  if (code) {
+    return code;
+  }
+
+  if (description) {
+    return description;
+  }
+
+  return PLACE_HOLDER;
+};
 
 /**
  * Extracts the `code` field from an array of `CodeDescriptionDto` objects.

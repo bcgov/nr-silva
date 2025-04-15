@@ -1,12 +1,12 @@
 import axios from "axios";
 import qs from "qs";
-import CodeDescriptionDto from "../types/CodeDescriptionType";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
-import { OpeningSearchResponseDto } from "../types/OpeningTypes";
-import { extractCodesFromCodeDescriptionArr } from "../utils/multiSelectUtils";
-import { OpeningSearchFilterType } from "../components/SilvicultureSearch/OpeningSearch/definitions";
-import { PaginatedResponseType } from "../types/PaginationTypes";
+import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
+import { extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
+import { OpeningSearchFilterType } from "@/components/SilvicultureSearch/OpeningSearch/definitions";
+import { PaginatedResponseType } from "@/types/PaginationTypes";
 
 export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token
@@ -84,4 +84,3 @@ export const searchOpenings = (filters: OpeningSearchFilterType) => {
   return axios.get(API_ENDPOINTS.openingSearch(queryString), defaultHeaders(authToken))
     .then((res) => res.data as PaginatedResponseType<OpeningSearchResponseDto>);
 };
-

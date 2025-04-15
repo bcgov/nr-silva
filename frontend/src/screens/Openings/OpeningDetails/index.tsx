@@ -4,7 +4,7 @@ import { MapBoundaryVegetation, Development } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { searchOpenings } from "@/services/OpeningSearchService";
+import { fetchOpeningTombstone } from "@/services/OpeningDetailsService";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningStandardUnits, OpeningSummary, OpeningOverview } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
@@ -35,22 +35,11 @@ const OpeningDetails = () => {
     setSearchParams(newSearchParams, { replace: true });
   };
 
-  /**
-   * TODO:
-   * Temporarily using opening search to get data, will need to update this once API is done
-   */
-  const openingQuery = useQuery({
-    queryKey: ['openings', 'search', { openingId }],
-    queryFn: () => searchOpenings({ mainSearchTerm: openingId, page: 0, size: 100 }),
+  const openingDetailsTombstoneQuery = useQuery({
+    queryKey: ['openings', openingId, 'tombstone'],
+    queryFn: () => fetchOpeningTombstone(Number(openingId)),
     enabled: !!openingId,
-    select: (data) => {
-      const { content } = data;
-      if (!content.length) {
-        return undefined;
-      }
-      return content.find((opening) => opening.openingId.toString() === openingId)
-    },
-    refetchOnMount: true
+    refetchOnMount: 'always'
   })
 
   const postRecentOpeningMutation = useMutation({
@@ -79,7 +68,11 @@ const OpeningDetails = () => {
       </PageTitle>
 
       <Column sm={4} md={8} lg={16}>
-        <OpeningSummary openingObj={openingQuery.data} isLoading={openingQuery.isLoading} />
+        <OpeningSummary
+          openingId={Number(openingId)}
+          tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
+          isLoading={openingDetailsTombstoneQuery.isLoading}
+        />
       </Column>
 
       <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
@@ -90,7 +83,10 @@ const OpeningDetails = () => {
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
-              <OpeningOverview isLoading={openingQuery.isLoading} />
+              <OpeningOverview 
+                overviewObj={openingDetailsTombstoneQuery.data?.overview} 
+                isLoading={openingDetailsTombstoneQuery.isLoading}>
+              </OpeningOverview>
             </TabPanel>
             <TabPanel className="tab-content full-width-col">
               <OpeningStandardUnits />
