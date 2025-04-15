@@ -76,17 +76,13 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
         <Grid className="default-card-section-grid">
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Post harvested declared date" showSkeleton={isLoading}>
-              {
-                formatLocalDate(overviewObj?.milestones.postHarvestDeclaredDate, true)
-              }
+              {formatLocalDate(overviewObj?.milestones.postHarvestDeclaredDate, true)}
             </CardItem>
           </Column>
 
           <Column sm={4} md={4} lg={4}>
             <CardItem label="Regeneration declared date" showSkeleton={isLoading}>
-              {
-                formatLocalDate(overviewObj?.milestones.regenDeclaredDate, true)
-              }
+              {formatLocalDate(overviewObj?.milestones.regenDeclaredDate, true)}
             </CardItem>
           </Column>
 
@@ -98,17 +94,13 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
 
           <Column sm={4} md={4} lg={4}>
             <CardItem label="Regeneration due date" showSkeleton={isLoading}>
-              {
-                formatLocalDate(overviewObj?.milestones.regenDueDate, true)
-              }
+              {formatLocalDate(overviewObj?.milestones.regenDueDate, true)}
             </CardItem>
           </Column>
 
           <Column sm={4} md={4} lg={4}>
             <CardItem label="Free growing declared date" showSkeleton={isLoading}>
-              {
-                formatLocalDate(overviewObj?.milestones.freeGrowingDeclaredDate, true)
-              }
+              {formatLocalDate(overviewObj?.milestones.freeGrowingDeclaredDate, true)}
             </CardItem>
           </Column>
 
@@ -120,9 +112,7 @@ const OpeningOverview = ({overviewObj, isLoading}: OpeningOverviewProps) => {
 
           <Column sm={4} md={4} lg={4}>
             <CardItem label="Free growing due date" showSkeleton={isLoading}>
-              {
-                formatLocalDate(overviewObj?.milestones.freeGrowingDueDate, true)
-              }
+              {formatLocalDate(overviewObj?.milestones.freeGrowingDueDate, true)}
             </CardItem>
           </Column>
         </Grid>
