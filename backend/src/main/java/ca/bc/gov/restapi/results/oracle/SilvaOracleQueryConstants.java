@@ -276,4 +276,58 @@ public class SilvaOracleQueryConstants {
       --OR (smcl.STOCKING_STANDARD_UNIT_ID = :ssuId AND smcl.SILV_MILESTONE_TYPE_CODE = :smtc)
       --OR spcl.SILVICULTURE_PROJECT_ID = :projectId
       ORDER BY COMMENT_DATE DESC""";
+
+  public static final String GET_OPENING_SS = """
+      SELECT
+      	ssu.standards_unit_id AS stocking_standard_unit,
+      	ssu.STOCKING_STANDARD_UNIT_ID AS ssid,
+      	CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
+      	CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
+      	fsp.fsp_id,
+      	ssu.net_area,
+      	ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
+      	se.BGC_ZONE_CODE AS bec_zone_code,
+      	se.BGC_SUBZONE_CODE AS bec_subzone_code,
+      	se.BGC_VARIANT AS bec_variant,
+      	se.BGC_PHASE AS bec_phase,
+      	se.BEC_SITE_SERIES AS bec_site_series,
+      	se.BEC_SITE_TYPE AS bec_site_type,
+      	se.BEC_SERAL AS bec_seral,
+      	sr.REGEN_DELAY_OFFSET_YRS AS regen_delay,
+      	sr.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late
+      FROM OPENING op
+      LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN STOCKING_ECOLOGY se ON (se.OPENING_ID = op.OPENING_ID AND SE.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID)
+      LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
+      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
+      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
+      WHERE op.OPENING_ID = :openingId
+      ORDER BY ssu.standards_unit_id""";
+
+  public static final String GET_OPENING_SS_SPECIES = """
+      SELECT
+      	sls.SILV_TREE_SPECIES_CODE AS species_code,
+      	stsc.DESCRIPTION AS species_name,
+      	sls.MIN_HEIGHT AS min_height
+      FROM OPENING op
+      LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
+      LEFT JOIN STOCKING_LAYER_SPECIES sls ON (sls.STOCKING_LAYER_ID = sl.STOCKING_LAYER_ID)
+      LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON (stsc.SILV_TREE_SPECIES_CODE = sls.SILV_TREE_SPECIES_CODE)
+      WHERE op.OPENING_ID = :openingId AND sls.PREFERRED_IND = :preferred
+      ORDER BY sls.SPECIES_ORDER""";
+
+  public static final String GET_OPENING_SS_LAYER = """
+      SELECT
+      	sl.MIN_STOCKING_STANDARD AS min_wellspaced_trees,
+      	sl.MIN_PREF_STOCKING_STANDARD AS min_preferred_wellspaced_trees,
+      	sl.MIN_HORIZONTAL_DISTANCE AS min_horizontal_distance_wellspaced_trees,
+      	sl.TARGET_STOCKING AS target_wellspaced_trees,
+      	sl.RESIDUAL_BASAL_AREA AS min_residual_basal_area,
+      	sl.MIN_POST_SPACING AS min_postspacing_density,
+      	sl.MAX_POST_SPACING AS max_postspacing_density,
+      	sl.MAX_CONIFER AS max_coniferous,
+      	sl.HGHT_RELATIVE_TO_COMP AS height_relative_to_comp
+      FROM OPENING op
+      LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
+      WHERE op.OPENING_ID = :openingId""";
 }
