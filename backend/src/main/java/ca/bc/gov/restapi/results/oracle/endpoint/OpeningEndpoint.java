@@ -33,6 +33,7 @@ public class OpeningEndpoint {
    *
    * @param openingId Opening ID
    * @return OpeningTombstoneDto
+   * @throws OpeningNotFoundException if no tombstone information is found for the given Opening ID.
    */
   @GetMapping("/{openingId}/tombstone")
   public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(
