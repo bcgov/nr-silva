@@ -90,11 +90,7 @@ const OpeningStandardUnits = () => {
                         (standardUnit.ssid && !standardUnit.fspId)
                           ? (
                             <>
-                              {
-                                <Link to="">
-                                  {`SSID ${standardUnit.ssid}, Stocking objective`}
-                                </Link>
-                              }
+                              {`SSID ${standardUnit.ssid}, Stocking objective`}
                               <VerticalDivider />
                               <span>Ministry default</span>
                             </>
@@ -106,11 +102,7 @@ const OpeningStandardUnits = () => {
                         (standardUnit.ssid && standardUnit.fspId)
                           ? (
                             <>
-                              {
-                                <Link to="">
-                                  {`SSID ${standardUnit.ssid}, Stocking objective`}
-                                </Link>
-                              }
+                              {`SSID ${standardUnit.ssid}, Stocking objective`}
                               <VerticalDivider />
                               {
                                 <Link
