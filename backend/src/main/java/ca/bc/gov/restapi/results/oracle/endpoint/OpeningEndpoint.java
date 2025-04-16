@@ -41,6 +41,13 @@ public class OpeningEndpoint {
     return openingService.getOpeningTombstone(openingId).orElseThrow(() -> new OpeningNotFoundException(openingId));
   }
 
+/**
+ * Get the Opening Stocking Details (SSU) for a given Opening ID.
+ *
+ * @param openingId Opening ID
+ * @return List of {@link OpeningDetailsStockingDto} containing stocking details.
+ * @throws OpeningNotFoundException if no stocking details are found for the given Opening ID.
+ */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(
       @PathVariable Long openingId) {
