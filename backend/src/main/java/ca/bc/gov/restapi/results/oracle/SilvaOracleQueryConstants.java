@@ -313,7 +313,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
       LEFT JOIN STOCKING_LAYER_SPECIES sls ON (sls.STOCKING_LAYER_ID = sl.STOCKING_LAYER_ID)
       LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON (stsc.SILV_TREE_SPECIES_CODE = sls.SILV_TREE_SPECIES_CODE)
-      WHERE op.OPENING_ID = :openingId AND sls.PREFERRED_IND = :preferred
+      WHERE op.OPENING_ID = :openingId AND sls.PREFERRED_IND = :preferred AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId
       ORDER BY sls.SPECIES_ORDER""";
 
   public static final String GET_OPENING_SS_LAYER = """
@@ -329,5 +329,5 @@ public class SilvaOracleQueryConstants {
       	sl.HGHT_RELATIVE_TO_COMP AS height_relative_to_comp
       FROM OPENING op
       LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
-      WHERE op.OPENING_ID = :openingId""";
+      WHERE op.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId""";
 }

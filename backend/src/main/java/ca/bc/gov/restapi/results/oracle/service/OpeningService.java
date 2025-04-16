@@ -131,7 +131,11 @@ public class OpeningService {
             detailsDto
                 .withAcceptableSpecies(
                     openingRepository
-                        .getOpeningStockingSpeciesByOpeningId(openingId, "N")
+                        .getOpeningStockingSpeciesByOpeningId(
+                            openingId,
+                            "N",
+                            detailsDto.stocking().ssid()
+                        )
                         .stream()
                         .map(species ->
                             new OpeningDetailsStockingSpeciesDto(
@@ -146,7 +150,11 @@ public class OpeningService {
                 )
                 .withPreferredSpecies(
                     openingRepository
-                        .getOpeningStockingSpeciesByOpeningId(openingId, "Y")
+                        .getOpeningStockingSpeciesByOpeningId(
+                            openingId,
+                            "Y",
+                            detailsDto.stocking().ssid()
+                        )
                         .stream()
                         .map(species ->
                             new OpeningDetailsStockingSpeciesDto(
@@ -162,7 +170,7 @@ public class OpeningService {
         )
         .map(detailsDto ->
             openingRepository
-                .getOpeningStockingLayerByOpeningId(openingId)
+                .getOpeningStockingLayerByOpeningId(openingId,detailsDto.stocking().ssid())
                 .map(layer ->
                     new OpeningDetailsStockingLayerDto(
                         layer.getMinWellspacedTrees(),
