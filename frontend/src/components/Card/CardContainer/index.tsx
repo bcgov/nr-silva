@@ -1,16 +1,17 @@
 import React from "react";
-
-import './styles.scss';
 import { Grid } from "@carbon/react";
 
+import './styles.scss';
+
 type CardContainerProps = {
+  className?: string;
   children?: React.ReactNode;
 }
 
-const CardContainer = ({ children }: CardContainerProps) => {
+const CardContainer = ({ className, children }: CardContainerProps) => {
 
   return (
-    <Grid className="card-container-grid default-grid">
+    <Grid className={`card-container-grid default-grid ${className}`}>
       {children}
     </Grid>
   )
