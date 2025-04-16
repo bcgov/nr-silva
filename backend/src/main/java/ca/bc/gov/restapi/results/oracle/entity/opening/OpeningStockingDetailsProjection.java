@@ -12,9 +12,9 @@ public interface OpeningStockingDetailsProjection {
 
   Long getFspId();
 
-  Long getNetArea();
+  Float getNetArea();
 
-  Long getSoilDisturbancePercent();
+  Float getSoilDisturbancePercent();
 
   String getBecZoneCode();
 
@@ -34,4 +34,5 @@ public interface OpeningStockingDetailsProjection {
 
   Long getFreeGrowingLate();
 
+  String getAdditionalStandards();
 }

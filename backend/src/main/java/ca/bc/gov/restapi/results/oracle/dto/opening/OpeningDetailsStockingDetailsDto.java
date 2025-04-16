@@ -9,11 +9,12 @@ public record OpeningDetailsStockingDetailsDto(
     boolean defaultMof,
     boolean manualEntry,
     Long fspId,
-    Long netArea,
-    Long soilDisturbancePercent,
+    Float netArea,
+    Float soilDisturbancePercent,
     OpeningDetailsBecDto bec,
     Long regenDelay,
-    Long freeGrowingLate
+    Long freeGrowingLate,
+    String additionalStandards
 ) {
 
 }

@@ -294,7 +294,8 @@ public class SilvaOracleQueryConstants {
       	se.BEC_SITE_TYPE AS bec_site_type,
       	se.BEC_SERAL AS bec_seral,
       	sr.REGEN_DELAY_OFFSET_YRS AS regen_delay,
-      	sr.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late
+      	sr.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
+      	sr.ADDITIONAL_STANDARDS
       FROM OPENING op
       LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.OPENING_ID = op.OPENING_ID
       LEFT JOIN STOCKING_ECOLOGY se ON (se.OPENING_ID = op.OPENING_ID AND SE.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID)

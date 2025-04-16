@@ -120,11 +120,13 @@ public class OpeningService {
                         projection.getBecSeral()
                     ),
                     projection.getRegenDelay(),
-                    projection.getFreeGrowingLate()
+                    projection.getFreeGrowingLate(),
+                    projection.getAdditionalStandards()
                 ),
                 List.of(),
                 List.of(),
-                null
+                null,
+                List.of()
             )
         )
         .map(detailsDto ->
