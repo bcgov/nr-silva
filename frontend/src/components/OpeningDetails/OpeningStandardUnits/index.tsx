@@ -250,6 +250,11 @@ const OpeningStandardUnits = () => {
                       </Column>
                     </Grid>
                   </Column>
+
+
+                  <Column sm={4} md={8} lg={16} >
+                    <CardItem label="Additional standards"></CardItem>
+                  </Column>
                 </Grid>
               </AccordionItem>
             </Accordion>
