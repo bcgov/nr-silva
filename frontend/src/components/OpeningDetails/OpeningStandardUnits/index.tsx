@@ -55,11 +55,11 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16}>
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Net area to be reforested (ha)"></CardItem>
+                        <CardItem label="Net area to be reforested (ha)" isNumber></CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Max soil allowable disturbance (%)"></CardItem>
+                        <CardItem label="Max soil allowable disturbance (%)" isNumber></CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
@@ -75,7 +75,7 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16}>
                     <hr />
                   </Column>
-
+                  {/* Stocking standard */}
                   <Column sm={4} md={8} lg={16}>
                     <CardTitle title="Stocking standard" />
                     <div className="stocking-standard-links">
@@ -193,7 +193,7 @@ const OpeningStandardUnits = () => {
                       </Table>
                     </div>
                   </Column>
-
+                  {/* Regen obligation */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
                       <SecurityIcon size={20} />
@@ -204,14 +204,14 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Regen delay"></CardItem>
+                        <CardItem label="Regen delay" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Free growing late"></CardItem>
+                        <CardItem label="Free growing late" isNumber></CardItem>
                       </Column>
                     </Grid>
                   </Column>
-
+                  {/* Single layer */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
                       <LayersIcon size={20} />
@@ -222,37 +222,36 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum well-spaced trees"></CardItem>
+                        <CardItem label="Minimum well-spaced trees" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum preferred well-spaced trees"></CardItem>
+                        <CardItem label="Minimum preferred well-spaced trees" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum horizontal distance well-spaced trees (m)"></CardItem>
+                        <CardItem label="Minimum horizontal distance well-spaced trees (m)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Target well-spaced trees (ha)"></CardItem>
+                        <CardItem label="Target well-spaced trees (ha)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum residual basal area (m²/ha)"></CardItem>
+                        <CardItem label="Minimum residual basal area (m²/ha)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum post-spacing density (st/ha)"></CardItem>
+                        <CardItem label="Minimum post-spacing density (st/ha)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum post-spacing density (st/ha)"></CardItem>
+                        <CardItem label="Maximum post-spacing density (st/ha)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum Coniferous (st/ha)"></CardItem>
+                        <CardItem label="Maximum Coniferous (st/ha)" isNumber></CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Height relative to comp (cm/%)"></CardItem>
+                        <CardItem label="Height relative to comp (cm/%)" isNumber></CardItem>
                       </Column>
                     </Grid>
                   </Column>
 
-
-                  <Column sm={4} md={8} lg={16} >
+                  <Column sm={4} md={8} lg={16}>
                     <CardItem label="Additional standards"></CardItem>
                   </Column>
                 </Grid>
