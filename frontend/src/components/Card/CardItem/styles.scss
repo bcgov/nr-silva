@@ -19,4 +19,10 @@
       width: 100%;
     }
   }
+
+  .card-item-content-number {
+    @extend .card-item-content;
+    @include type.type-style('code-02');
+    font-size: 1rem;
+  }
 }
