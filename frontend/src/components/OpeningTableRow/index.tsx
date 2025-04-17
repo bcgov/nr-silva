@@ -53,6 +53,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
             <ActionButtons
               favorited={rowData.favourite}
               rowId={rowData.openingId.toString()}
+              showToast
             />
           </div>
         );
