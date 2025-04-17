@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewMilestoneProjection;
@@ -17,9 +18,11 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +30,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingSpeciesProjection;
+import ca.bc.gov.restapi.results.oracle.util.OpeningTestDataFactory;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | Opening Service")
@@ -43,234 +51,46 @@ class OpeningServiceTest {
 
     private OpeningService openingService;
 
+
+    // Tombstone projections
     private OpeningTombstoneProjection openingTombstone;
     private OpeningTombstoneOverviewOpeningProjection openingOverview;
     private OpeningTombstoneOverviewMilestoneProjection milestoneOverview;
     private ForestClientDto forestClient;
     private CommentProjection commentProjection;
+    
+    // Stocking projections
+    private OpeningStockingDetailsProjection stockingDetailsProjection;
+    private OpeningStockingSpeciesProjection stockingAcceptableSpeciesProjection;
+    private OpeningStockingSpeciesProjection stockingPreferredSpeciesProjection;
+    private OpeningStockingLayerProjection stockingLayerProjection;
 
     @BeforeEach
     void setUp() {
         openingService = new OpeningService(openingRepository, forestClientService, commentRepository);
-
-        createTestData();
     }
 
-    private void createTestData() {
-        // Create OpeningTombstoneProjection instance
-        openingTombstone = new OpeningTombstoneProjection() {
-            @Override
-            public Long getOpeningId() {
-                return 123L;
-            }
+    private void createTombstoneTestData() {
+        openingTombstone = OpeningTestDataFactory.createTombstoneProjection();
+        openingOverview = OpeningTestDataFactory.createTombstoneOverviewOpeningProjection();
+        milestoneOverview = OpeningTestDataFactory.createTombstoneOverviewMilestoneProjection();
+        forestClient = OpeningTestDataFactory.createForestClientDto();
+        commentProjection = OpeningTestDataFactory.createCommentProjection();
+        
+    }
 
-            @Override
-            public String getOpeningNumber() {
-                return "OPN12345";
-            }
-
-            @Override
-            public OpeningStatusEnum getOpeningStatus() {
-                return OpeningStatusEnum.APP;
-            }
-
-            @Override
-            public String getOrgUnitCode() {
-                return "DCC";
-            }
-
-            @Override
-            public String getOrgUnitName() {
-                return "Cariboo-Chilcotin Natural Resource District";
-            }
-
-            @Override
-            public OpeningCategoryEnum getOpenCategory() {
-                return OpeningCategoryEnum.FTML;
-            }
-
-            @Override
-            public String getClient() {
-                return "123456";
-            }
-
-            @Override
-            public String getFileId() {
-                return "FILE987";
-            }
-
-            @Override
-            public String getCutBlockID() {
-                return "CB001";
-            }
-
-            @Override
-            public String getCuttingPermitId() {
-                return "CP456";
-            }
-
-            @Override
-            public String getTimberMark() {
-                return "TM7890";
-            }
-
-            @Override
-            public String getMaxAllowedAccess() {
-                return "PUBLIC";
-            }
-
-            @Override
-            public Float getOpeningGrossArea() {
-                return 250.5F;
-            }
-
-            @Override
-            public String getCreatedBy() {
-                return "TESTUSER";
-            }
-
-            @Override
-            public LocalDate getCreatedOn() {
-                return LocalDate.of(2022, 3, 15);
-            }
-
-            @Override
-            public LocalDate getLastUpdatedOn() {
-                return LocalDate.of(2023, 5, 20);
-            }
-
-            @Override
-            public LocalDate getDisturbanceStartDate() {
-                return LocalDate.of(2022, 6, 1);
-            }
-        };
-
-        // Create OpeningTombstoneOverviewOpeningProjection instance
-        openingOverview = new OpeningTombstoneOverviewOpeningProjection() {
-            @Override
-            public String getLicenseeOpeningId() {
-                return "LIC-123";
-            }
-
-            @Override
-            public String getTenureTypeCode() {
-                return "FL";
-            }
-
-            @Override
-            public String getTenureTypeName() {
-                return "Forest License";
-            }
-
-            @Override
-            public String getManagementUnitTypeCode() {
-                return "TSA";
-            }
-
-            @Override
-            public String getManagementUnitTypeName() {
-                return "Timber Supply Area";
-            }
-
-            @Override
-            public String getManagementUnitId() {
-                return "TSA01";
-            }
-
-            @Override
-            public String getTimberSaleOfficeCode() {
-                return "TSO456";
-            }
-
-            @Override
-            public String getTimberSaleOfficeName() {
-                return "Williams Lake Timber Sales Office";
-            }
-        };
-
-        // Create OpeningTombstoneOverviewMilestoneProjection instance
-        milestoneOverview = new OpeningTombstoneOverviewMilestoneProjection() {
-            @Override
-            public String getStandardsUnitId() {
-                return "SU123";
-            }
-
-            @Override
-            public LocalDate getPostHarvestDeclaredDate() {
-                return LocalDate.of(2022, 10, 15);
-            }
-
-            @Override
-            public LocalDate getRegenDeclaredDate() {
-                return LocalDate.of(2023, 11, 30);
-            }
-
-            @Override
-            public Integer getRegenOffsetYears() {
-                return 7;
-            }
-
-            @Override
-            public LocalDate getRegenDueDate() {
-                return LocalDate.of(2029, 6, 1);
-            }
-
-            @Override
-            public LocalDate getFreeGrowingDeclaredDate() {
-                return LocalDate.of(2032, 8, 15);
-            }
-
-            @Override
-            public Integer getFreeGrowingOffsetYears() {
-                return 15;
-            }
-
-            @Override
-            public LocalDate getFreeGrowingDueDate() {
-                return LocalDate.of(2037, 6, 1);
-            }
-        };
-
-        // Create ForestClientDto instance
-        forestClient = ForestClientDto.builder()
-                .clientNumber("123456")
-                .clientName("Client Name")
-                .clientStatusCode(ForestClientStatusEnum.ACTIVE)
-                .clientTypeCode(ForestClientTypeEnum.ASSOCIATION)
-                .acronym("ABC")
-                .build();
-
-        commentProjection = new CommentProjection() {
-            @Override
-            public String getCommentSourceCode() {
-                return "SRC001";
-            }
-
-            @Override
-            public String getCommentSourceName() {
-                return "Source Name";
-            }
-
-            @Override
-            public String getCommentTypeCode() {
-                return "TYPE001";
-            }
-
-            @Override
-            public String getCommentTypeName() {
-                return "Type Name";
-            }
-
-            @Override
-            public String getCommentText() {
-                return "This is a test comment.";
-            }
-        };
+    private void createStockingTestData() {
+        stockingDetailsProjection = OpeningTestDataFactory.createOpeningStockingDetailsProjection();
+        stockingAcceptableSpeciesProjection = OpeningTestDataFactory.createAcceptableSpeciesProjection();
+        stockingPreferredSpeciesProjection = OpeningTestDataFactory.createPreferredSpeciesProjection();
+        stockingLayerProjection = OpeningTestDataFactory.createStockingLayerProjection();
     }
 
     @Test
     @DisplayName("Get Opening Tombstone with valid data and client number should succeed")
     void getOpeningTombstone_withClientNumber_shouldSucceed() {
+        createTombstoneTestData();
+
         Long openingId = 123L;
         String clientNumber = "123456";
 
@@ -357,6 +177,8 @@ class OpeningServiceTest {
     @Test
     @DisplayName("Get Opening Tombstone with no data should return empty")
     void getOpeningTombstone_noData_shouldReturnEmpty() {
+        createTombstoneTestData();
+
         Long openingId = 1L;
         when(openingRepository.getOpeningTombstoneByOpeningId(anyLong()))
                 .thenReturn(Optional.empty());
@@ -366,5 +188,139 @@ class OpeningServiceTest {
         Assertions.assertTrue(result.isEmpty());
     }
 
-    
+    @Test
+    @DisplayName("Get Opening Stocking Details with valid data should succeed")
+    void getOpeningStockingDetails_withValidData_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingPreferredSpeciesProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingAcceptableSpeciesProjection));
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.of(stockingLayerProjection));
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify stocking details
+        Assertions.assertEquals("A", dto.stocking().stockingStandardUnit());
+        Assertions.assertEquals(1013720L, dto.stocking().ssid());
+        Assertions.assertEquals(25.5F, dto.stocking().netArea());
+        Assertions.assertEquals(5.0F, dto.stocking().soilDisturbancePercent());
+
+        // Verify preferred species
+        Assertions.assertEquals(1, dto.preferredSpecies().size());
+        Assertions.assertEquals("CW", dto.preferredSpecies().get(0).species().code());
+        Assertions.assertEquals("western redcedar", dto.preferredSpecies().get(0).species().description());
+        Assertions.assertEquals(1L, dto.preferredSpecies().get(0).minHeight());
+
+        // Verify acceptable species
+        Assertions.assertEquals(1, dto.acceptableSpecies().size());
+        Assertions.assertEquals("BA", dto.acceptableSpecies().get(0).species().code());
+        Assertions.assertEquals("amabilis fir", dto.acceptableSpecies().get(0).species().description());
+        Assertions.assertEquals(1L, dto.acceptableSpecies().get(0).minHeight());
+
+        // Verify stocking layer
+        Assertions.assertNotNull(dto.layer());
+        Assertions.assertEquals(500, dto.layer().minWellspacedTrees());
+        Assertions.assertEquals(400, dto.layer().minPreferredWellspacedTrees());
+        Assertions.assertEquals(2, dto.layer().minHorizontalDistanceWellspacedTrees());
+        Assertions.assertEquals(900, dto.layer().targetWellspacedTrees());
+        Assertions.assertEquals(800, dto.layer().minPostspacingDensity());
+        Assertions.assertEquals(2000, dto.layer().maxPostspacingDensity());
+        Assertions.assertEquals(10000, dto.layer().maxConiferous());
+        Assertions.assertEquals(150, dto.layer().heightRelativeToComp());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with missing species should succeed")
+    void getOpeningStockingDetails_withMissingSpecies_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of()); // No preferred species
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of()); // No acceptable species
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.of(stockingLayerProjection));
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify species lists are empty
+        Assertions.assertTrue(dto.preferredSpecies().isEmpty());
+        Assertions.assertTrue(dto.acceptableSpecies().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with missing layer should succeed")
+    void getOpeningStockingDetails_withMissingLayer_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingPreferredSpeciesProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingAcceptableSpeciesProjection));
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.empty()); // No layer
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify layer is null
+        Assertions.assertNull(dto.layer());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with no data should return empty")
+    void getOpeningStockingDetails_withNoData_shouldReturnEmpty() {
+        Long openingId = 1013720L;
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of()); // No data
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertTrue(result.isEmpty());
+    }
 }

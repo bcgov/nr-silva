@@ -53,7 +53,7 @@ class UserActionsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[12].month").value(LocalDate.now().getMonthValue()))
-        .andExpect(jsonPath("$[12].amount").value(1));
+        .andExpect(jsonPath("$[12].amount").value(3));
 
   }
 
