@@ -1,7 +1,7 @@
 // TableRowComponent.tsx
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TableRow, TableCell, Tooltip } from "@carbon/react";
 import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import StatusTag from "../StatusTag";
@@ -20,7 +20,6 @@ interface TableRowComponentProps {
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;
-  navigateOnClick?: boolean;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({
@@ -29,9 +28,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   showMap,
   selectedRows,
   handleRowSelection,
-  navigateOnClick
 }) => {
-  const navigate = useNavigate();
 
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
@@ -77,34 +74,30 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
     }
   }
 
-  const handleRowClick = () => {
-    if (navigateOnClick) {
-      navigate(OpeningDetailsRoute.path!.replace(":openingId", rowData.openingId.toString()))
-    }
-  }
-
   return (
-    <TableRow
-      className={`opening-table-row${navigateOnClick ? ' clickable-opening-row' : ''}`}
-    >
-      {
-        headers
-          .filter((header) => header.selected)
-          .map((header) => (
-            <TableCell
-              key={header.key}
-              onClick={() => {
-                if (header.key !== 'actions') {
-                  handleRowClick();
-                }
-              }}
-            >
-              {
-                renderCellContent(header.key) ?? PLACE_HOLDER
-              }
-            </TableCell>
-          ))
-      }
+    <TableRow className="opening-table-row">
+      {headers
+        .filter((header) => header.selected)
+        .map((header) => (
+          <TableCell key={header.key}>
+            {header.key !== 'actions' ? (
+              <Link
+                to={
+                  OpeningDetailsRoute.path!.replace(
+                    ":openingId",
+                    rowData.openingId.toString()
+                  )}
+                className="table-cell-link-wrapper"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {renderCellContent(header.key) ?? PLACE_HOLDER}
+              </Link>
+            ) : (
+              renderCellContent(header.key) ?? PLACE_HOLDER
+            )}
+          </TableCell>
+        ))}
     </TableRow>
   )
 };
