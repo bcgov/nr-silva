@@ -41,8 +41,9 @@ type OpeningSearchBarProps = {
   handleSearch: () => void,
   totalResults: number | undefined,
   showMap: boolean,
-  setShowMap: React.Dispatch<React.SetStateAction<boolean>>
-  setEnableSearch: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMap: React.Dispatch<React.SetStateAction<boolean>>,
+  setEnableSearch: React.Dispatch<React.SetStateAction<boolean>>,
+  resetPagination: () => void
 }
 
 type CustomInputProp = {
@@ -60,7 +61,8 @@ const OpeningSearchBar = ({
   orgUnits,
   handleSearch,
   totalResults,
-  setEnableSearch
+  setEnableSearch,
+  resetPagination
 }: OpeningSearchBarProps
 ) => {
   const breakpoint = useBreakpoint();
@@ -283,6 +285,7 @@ const OpeningSearchBar = ({
 
       return newFilters;
     });
+    resetPagination();
   };
 
   // Store references to all visible Search buttons on the page

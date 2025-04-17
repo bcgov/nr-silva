@@ -67,7 +67,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
           onClose={hideNotification}
           actionButtonLabel={notification.buttonLabel}
           onActionButtonClick={notificationAction}
-
         />
       )}
     </NotificationContext.Provider>

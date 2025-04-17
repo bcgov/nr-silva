@@ -1,6 +1,6 @@
 import React from "react";
 import './styles.scss';
-import { TagSkeleton, TextInputSkeleton, Tooltip } from "@carbon/react";
+import { TextInputSkeleton, Tooltip } from "@carbon/react";
 import { PLACE_HOLDER } from "@/constants";
 import { toKebabCase } from "@/utils/StringUtils";
 

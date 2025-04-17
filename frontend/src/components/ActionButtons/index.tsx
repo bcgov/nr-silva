@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@carbon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Icons from "@carbon/icons-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FavoriteButton from "../FavoriteButton";
 import { useNotification } from "@/contexts/NotificationProvider";
 import { putOpeningFavourite, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
@@ -28,18 +28,23 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const displayFavSuccessToast = (openingId: number, isFavourite: boolean) => (
+  const location = useLocation();
+  const hideDetail = location.pathname === DashboardRoute.path;
+
+  const displayFavSuccessToast = (openingId: number, isFavourite: boolean) => {
     displayNotification({
       title: `Opening Id ${openingId} ${!isFavourite ? 'un' : ''}favourited`,
-      subTitle: isFavourite ? "You can follow this opening ID on your dashboard" : undefined,
+      subTitle: !hideDetail && isFavourite ? "You can follow this opening ID on your dashboard" : undefined,
       type: 'success',
       dismissIn: EIGHT_SECONDS,
-      buttonLabel: isFavourite ? "Go to track openings" : undefined,
+      buttonLabel: !hideDetail && isFavourite ? "Go to track openings" : undefined,
       onClose: () => {
-        navigate(DashboardRoute.path!);
+        if (!hideDetail) {
+          navigate(DashboardRoute.path!);
+        }
       }
-    })
-  );
+    });
+  };
 
   const displayFavErrorToast = (openingId: number) => (
     displayNotification({

@@ -2,7 +2,7 @@ import React from "react";
 import { Favorite, FavoriteFilled } from "@carbon/icons-react";
 import { Button, InlineLoading } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useNotification } from "@/contexts/NotificationProvider";
 import { EIGHT_SECONDS } from "@/constants/TimeUnits";
@@ -23,7 +23,6 @@ const BlueFavoriteFilledIcon = () => <FavoriteFilled className="blue-favorite-ic
 const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps) => {
   const { displayNotification } = useNotification();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites", openingId],
@@ -62,9 +61,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
     onSuccess: (_, openingId) => {
       displayFavSuccessToast(false);
       // Invalidate favourite data for this component
-      queryClient.invalidateQueries({
-        queryKey: ["openings", "favourites", openingId]
-      });
+      openingFavouriteQuery.refetch();
     },
     onError: () => displayFavErrorToast()
   });
@@ -74,9 +71,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
     onSuccess: () => {
       displayFavSuccessToast(true);
       // Invalidate favourite data for this component
-      queryClient.invalidateQueries({
-        queryKey: ["openings", "favourites", openingId]
-      });
+      openingFavouriteQuery.refetch();
     },
     onError: () => displayFavErrorToast()
   });
