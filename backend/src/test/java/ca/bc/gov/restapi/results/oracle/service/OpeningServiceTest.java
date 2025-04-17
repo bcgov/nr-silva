@@ -30,6 +30,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingSpeciesProjection;
 import ca.bc.gov.restapi.results.oracle.util.OpeningTestDataFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,39 +50,46 @@ class OpeningServiceTest {
 
     private OpeningService openingService;
 
+
+    // Tombstone projections
     private OpeningTombstoneProjection openingTombstone;
     private OpeningTombstoneOverviewOpeningProjection openingOverview;
     private OpeningTombstoneOverviewMilestoneProjection milestoneOverview;
     private ForestClientDto forestClient;
     private CommentProjection commentProjection;
+    
+    // Stocking projections
+    private OpeningStockingDetailsProjection stockingDetailsProjection;
+    private OpeningStockingSpeciesProjection stockingAcceptableSpeciesProjection;
+    private OpeningStockingSpeciesProjection stockingPreferredSpeciesProjection;
+    private OpeningStockingLayerProjection stockingLayerProjection;
 
     @BeforeEach
     void setUp() {
         openingService = new OpeningService(openingRepository, forestClientService, commentRepository);
-
-        createTestData();
     }
 
-    private void createTestData() {
-        // Create OpeningTombstoneProjection instance
+    private void createTombstoneTestData() {
         openingTombstone = OpeningTestDataFactory.createTombstoneProjection();
-
-        // Create OpeningTombstoneOverviewOpeningProjection instance
         openingOverview = OpeningTestDataFactory.createTombstoneOverviewOpeningProjection();
-
-        // Create OpeningTombstoneOverviewMilestoneProjection instance
         milestoneOverview = OpeningTestDataFactory.createTombstoneOverviewMilestoneProjection();
-
-        // Create ForestClientDto instance
         forestClient = OpeningTestDataFactory.createForestClientDto();
-
         commentProjection = OpeningTestDataFactory.createCommentProjection();
         
+    }
+
+    private void createStockingTestData() {
+        stockingDetailsProjection = OpeningTestDataFactory.createOpeningStockingDetailsProjection();
+        stockingAcceptableSpeciesProjection = OpeningTestDataFactory.createAcceptableSpeciesProjection();
+        stockingPreferredSpeciesProjection = OpeningTestDataFactory.createPreferredSpeciesProjection();
+        stockingLayerProjection = OpeningTestDataFactory.createStockingLayerProjection();
     }
 
     @Test
     @DisplayName("Get Opening Tombstone with valid data and client number should succeed")
     void getOpeningTombstone_withClientNumber_shouldSucceed() {
+        createTombstoneTestData();
+
         Long openingId = 123L;
         String clientNumber = "123456";
 
@@ -166,6 +176,8 @@ class OpeningServiceTest {
     @Test
     @DisplayName("Get Opening Tombstone with no data should return empty")
     void getOpeningTombstone_noData_shouldReturnEmpty() {
+        createTombstoneTestData();
+
         Long openingId = 1L;
         when(openingRepository.getOpeningTombstoneByOpeningId(anyLong()))
                 .thenReturn(Optional.empty());
