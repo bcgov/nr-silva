@@ -214,4 +214,71 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             .andExpect(status().isNotFound())
             .andReturn();
   }
+
+  @Test
+  @DisplayName("Get Opening Stocking Details by existing openingId should succeed")
+  void getOpeningStockingDetails_existingOpeningId_shouldSucceed() throws Exception {
+    Long openingId = 1009974L;
+
+    mockMvc
+            .perform(
+                    get("/api/openings/" + openingId + "/ssu")
+                            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            // Verify stocking details
+            .andExpect(jsonPath("$[0].stocking.stockingStandardUnit").value("A"))
+            .andExpect(jsonPath("$[0].stocking.ssid").value(1013720L))
+            .andExpect(jsonPath("$[0].stocking.defaultMof").value(false))
+            .andExpect(jsonPath("$[0].stocking.manualEntry").value(false))
+            .andExpect(jsonPath("$[0].stocking.netArea").value(25.5))
+            .andExpect(jsonPath("$[0].stocking.soilDisturbancePercent").value(5.0))
+            .andExpect(jsonPath("$[0].stocking.bec.becZoneCode").value("CWH"))
+            .andExpect(jsonPath("$[0].stocking.bec.becSubzoneCode").value("vm"))
+            .andExpect(jsonPath("$[0].stocking.bec.becVariant").value("1"))
+            .andExpect(jsonPath("$[0].stocking.bec.becSiteSeries").value("01"))
+            .andExpect(jsonPath("$[0].stocking.regenDelay").value(6L))
+            .andExpect(jsonPath("$[0].stocking.freeGrowingLate").value(14L))
+            .andExpect(jsonPath("$[0].stocking.additionalStandards").value(Matchers.containsString("(ALL625)")))
+
+            // Verify preferred species
+            .andExpect(jsonPath("$[0].preferredSpecies[0].species.code").value("CW"))
+            .andExpect(jsonPath("$[0].preferredSpecies[0].species.description").value("western redcedar"))
+            .andExpect(jsonPath("$[0].preferredSpecies[0].minHeight").value(1L))
+            .andExpect(jsonPath("$[0].preferredSpecies[1].species.code").value("HW"))
+            .andExpect(jsonPath("$[0].preferredSpecies[1].species.description").value("western hemlock"))
+            .andExpect(jsonPath("$[0].preferredSpecies[1].minHeight").value(3L))
+            .andExpect(jsonPath("$[0].preferredSpecies[2].species.code").value("FDC"))
+            .andExpect(jsonPath("$[0].preferredSpecies[2].species.description").value("coastal Douglas-fir"))
+            .andExpect(jsonPath("$[0].preferredSpecies[2].minHeight").value(3L))
+
+            // Verify acceptable species
+            .andExpect(jsonPath("$[0].acceptableSpecies[0].species.code").value("BA"))
+            .andExpect(jsonPath("$[0].acceptableSpecies[0].species.description").value("amabilis fir"))
+            .andExpect(jsonPath("$[0].acceptableSpecies[0].minHeight").value(1L))
+
+            // Verify stocking layer
+            .andExpect(jsonPath("$[0].layer.minWellspacedTrees").value(500L))
+            .andExpect(jsonPath("$[0].layer.minPreferredWellspacedTrees").value(400L))
+            .andExpect(jsonPath("$[0].layer.minHorizontalDistanceWellspacedTrees").value(2L))
+            .andExpect(jsonPath("$[0].layer.targetWellspacedTrees").value(900L))
+            .andExpect(jsonPath("$[0].layer.minPostspacingDensity").value(800L))
+            .andExpect(jsonPath("$[0].layer.maxPostspacingDensity").value(2000L))
+            .andExpect(jsonPath("$[0].layer.maxConiferous").value(10000L))
+            .andExpect(jsonPath("$[0].layer.heightRelativeToComp").value(150L));
+  }
+
+  @Test
+  @DisplayName("Get Opening Stocking Details by non-existing openingId should return 404")
+  void getOpeningStockingDetails_nonExistingOpeningId_shouldReturn404() throws Exception {
+    Long nonExistentOpeningId = 999999999L;
+
+    mockMvc
+            .perform(
+                    get("/api/openings/" + nonExistentOpeningId + "/ssu")
+                            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+  }
 }
