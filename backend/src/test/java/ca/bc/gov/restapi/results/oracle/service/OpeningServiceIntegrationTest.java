@@ -63,7 +63,6 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
         Assertions.assertFalse(result.isPresent(), "Result should be null");
     }
 
-    //TODO: The following test on 1524010 opening ID is raising 500 internal error and should be fixed
     @Test
     @DisplayName("Opening with existing openingId 1524010 should succeed")
     void getOpeningTombstone_existingOpeningId_1524010_shouldSucceed() {
