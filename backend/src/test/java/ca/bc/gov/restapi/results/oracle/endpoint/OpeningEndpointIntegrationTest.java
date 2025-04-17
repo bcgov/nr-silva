@@ -240,6 +240,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             .andExpect(jsonPath("$[0].stocking.bec.becSiteSeries").value("01"))
             .andExpect(jsonPath("$[0].stocking.regenDelay").value(6L))
             .andExpect(jsonPath("$[0].stocking.freeGrowingLate").value(14L))
+            .andExpect(jsonPath("$[0].stocking.freeGrowingEarly").value(11L))
             .andExpect(jsonPath("$[0].stocking.additionalStandards").value(Matchers.containsString("(ALL625)")))
 
             // Verify preferred species

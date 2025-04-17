@@ -310,6 +310,11 @@ public class OpeningTestDataFactory {
             }
 
             @Override
+            public Long getFreeGrowingEarly() {
+                return 11L;
+            }
+
+            @Override
             public String getAdditionalStandards() {
                 return "(ALL625) ; ALL SPECIES - minimum inter-tree spacing within the net area to be reforested " +
                         "may be reduced to 1.5 metres to allow the selection of the most productive microsites in " +
