@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewMilestoneProjection;
@@ -187,5 +188,139 @@ class OpeningServiceTest {
         Assertions.assertTrue(result.isEmpty());
     }
 
-    
+    @Test
+    @DisplayName("Get Opening Stocking Details with valid data should succeed")
+    void getOpeningStockingDetails_withValidData_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingPreferredSpeciesProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingAcceptableSpeciesProjection));
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.of(stockingLayerProjection));
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify stocking details
+        Assertions.assertEquals("A", dto.stocking().stockingStandardUnit());
+        Assertions.assertEquals(1013720L, dto.stocking().ssid());
+        Assertions.assertEquals(25.5F, dto.stocking().netArea());
+        Assertions.assertEquals(5.0F, dto.stocking().soilDisturbancePercent());
+
+        // Verify preferred species
+        Assertions.assertEquals(1, dto.preferredSpecies().size());
+        Assertions.assertEquals("CW", dto.preferredSpecies().get(0).species().code());
+        Assertions.assertEquals("western redcedar", dto.preferredSpecies().get(0).species().description());
+        Assertions.assertEquals(1L, dto.preferredSpecies().get(0).minHeight());
+
+        // Verify acceptable species
+        Assertions.assertEquals(1, dto.acceptableSpecies().size());
+        Assertions.assertEquals("BA", dto.acceptableSpecies().get(0).species().code());
+        Assertions.assertEquals("amabilis fir", dto.acceptableSpecies().get(0).species().description());
+        Assertions.assertEquals(1L, dto.acceptableSpecies().get(0).minHeight());
+
+        // Verify stocking layer
+        Assertions.assertNotNull(dto.layer());
+        Assertions.assertEquals(500, dto.layer().minWellspacedTrees());
+        Assertions.assertEquals(400, dto.layer().minPreferredWellspacedTrees());
+        Assertions.assertEquals(2, dto.layer().minHorizontalDistanceWellspacedTrees());
+        Assertions.assertEquals(900, dto.layer().targetWellspacedTrees());
+        Assertions.assertEquals(800, dto.layer().minPostspacingDensity());
+        Assertions.assertEquals(2000, dto.layer().maxPostspacingDensity());
+        Assertions.assertEquals(10000, dto.layer().maxConiferous());
+        Assertions.assertEquals(150, dto.layer().heightRelativeToComp());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with missing species should succeed")
+    void getOpeningStockingDetails_withMissingSpecies_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of()); // No preferred species
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of()); // No acceptable species
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.of(stockingLayerProjection));
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify species lists are empty
+        Assertions.assertTrue(dto.preferredSpecies().isEmpty());
+        Assertions.assertTrue(dto.acceptableSpecies().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with missing layer should succeed")
+    void getOpeningStockingDetails_withMissingLayer_shouldSucceed() {
+        Long openingId = 1013720L;
+
+        // Generate test data
+        createStockingTestData();
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of(stockingDetailsProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "Y", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingPreferredSpeciesProjection));
+        when(openingRepository.getOpeningStockingSpeciesByOpeningId(openingId, "N", stockingDetailsProjection.getSsid()))
+                .thenReturn(List.of(stockingAcceptableSpeciesProjection));
+        when(openingRepository.getOpeningStockingLayerByOpeningId(openingId, stockingDetailsProjection.getSsid()))
+                .thenReturn(Optional.empty()); // No layer
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(1, result.size());
+
+        OpeningDetailsStockingDto dto = result.get(0);
+
+        // Verify layer is null
+        Assertions.assertNull(dto.layer());
+    }
+
+    @Test
+    @DisplayName("Get Opening Stocking Details with no data should return empty")
+    void getOpeningStockingDetails_withNoData_shouldReturnEmpty() {
+        Long openingId = 1013720L;
+
+        // Mock repository calls
+        when(openingRepository.getOpeningStockingDetailsByOpeningId(openingId))
+                .thenReturn(List.of()); // No data
+
+        // Execute
+        List<OpeningDetailsStockingDto> result = openingService.getOpeningStockingDetails(openingId);
+
+        // Verify
+        Assertions.assertTrue(result.isEmpty());
+    }
 }
