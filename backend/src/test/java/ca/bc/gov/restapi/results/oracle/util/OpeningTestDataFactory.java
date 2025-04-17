@@ -6,9 +6,7 @@ import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewMilestoneProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewOpeningProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.*;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 
@@ -225,6 +223,189 @@ public class OpeningTestDataFactory {
             @Override
             public String getCommentText() {
                 return "This is a test comment.";
+            }
+        };
+    }
+
+    public static OpeningStockingDetailsProjection createOpeningStockingDetailsProjection() {
+        return new OpeningStockingDetailsProjection() {
+            @Override
+            public String getStockingStandardUnit() {
+                return "A";
+            }
+
+            @Override
+            public Long getSsid() {
+                return 1013720L;
+            }
+
+            @Override
+            public Boolean getDefaultMof() {
+                return Boolean.FALSE;
+            }
+
+            @Override
+            public Boolean getManualEntry() {
+                return Boolean.FALSE;
+            }
+
+            @Override
+            public Long getFspId() {
+                return null;
+            }
+
+            @Override
+            public Float getNetArea() {
+                return 25.5F;
+            }
+
+            @Override
+            public Float getSoilDisturbancePercent() {
+                return 5.0F;
+            }
+
+            @Override
+            public String getBecZoneCode() {
+                return "CWH";
+            }
+
+            @Override
+            public String getBecSubzoneCode() {
+                return "vm";
+            }
+
+            @Override
+            public String getBecVariant() {
+                return "1";
+            }
+
+            @Override
+            public String getBecPhase() {
+                return null;
+            }
+
+            @Override
+            public String getBecSiteSeries() {
+                return "01";
+            }
+
+            @Override
+            public String getBecSiteType() {
+                return null;
+            }
+
+            @Override
+            public String getBecSeral() {
+                return null;
+            }
+
+            @Override
+            public Long getRegenDelay() {
+                return 6L;
+            }
+
+            @Override
+            public Long getFreeGrowingLate() {
+                return 14L;
+            }
+
+            @Override
+            public String getAdditionalStandards() {
+                return "(ALL625) ; ALL SPECIES - minimum inter-tree spacing within the net area to be reforested " +
+                        "may be reduced to 1.5 metres to allow the selection of the most productive microsites in " +
+                        "areas of poor plantability due to hygric conditions and bedrock areas.; (ALL626) ; " +
+                        "ALL SPECIES - minimum inter-tree spacing within 20 metres of either site of road centreline " +
+                        "may be reduced to 1 metre where road construction or harvesting activities have created s" +
+                        "oil disturbance and reduced plantability.; (FDC628) ; FDC - is a preffered species on steep " +
+                        "southerly aspects (SE to SW) or on southerly, westerly and easterly slopes where pre-harvest " +
+                        "stand composition of Fd is >20% by merchantable volume.";
+            }
+        };
+    }
+
+    public static OpeningStockingSpeciesProjection createPreferredSpeciesProjection() {
+        return new OpeningStockingSpeciesProjection() {
+            @Override
+            public String getSpeciesCode() {
+                return "CW";
+            }
+
+            @Override
+            public String getSpeciesName() {
+                return "western redcedar";
+            }
+
+            @Override
+            public Long getMinHeight() {
+                return 1L;
+            }
+        };
+    }
+
+    public static OpeningStockingSpeciesProjection createAcceptableSpeciesProjection() {
+        return new OpeningStockingSpeciesProjection() {
+            @Override
+            public String getSpeciesCode() {
+                return "BA";
+            }
+
+            @Override
+            public String getSpeciesName() {
+                return "amabilis fir";
+            }
+
+            @Override
+            public Long getMinHeight() {
+                return 1L;
+            }
+        };
+    }
+
+    public static OpeningStockingLayerProjection createStockingLayerProjection() {
+        return new OpeningStockingLayerProjection() {
+            @Override
+            public Long getMinWellspacedTrees() {
+                return 500L;
+            }
+
+            @Override
+            public Long getMinPreferredWellspacedTrees() {
+                return 400L;
+            }
+
+            @Override
+            public Long getMinHorizontalDistanceWellspacedTrees() {
+                return 2L;
+            }
+
+            @Override
+            public Long getTargetWellspacedTrees() {
+                return 900L;
+            }
+
+            @Override
+            public Long getMinResidualBasalArea() {
+                return null;
+            }
+
+            @Override
+            public Long getMinPostspacingDensity() {
+                return 800L;
+            }
+
+            @Override
+            public Long getMaxPostspacingDensity() {
+                return 2000L;
+            }
+
+            @Override
+            public Long getMaxConiferous() {
+                return 10000L;
+            }
+
+            @Override
+            public Long getHeightRelativeToComp() {
+                return 150L;
             }
         };
     }
