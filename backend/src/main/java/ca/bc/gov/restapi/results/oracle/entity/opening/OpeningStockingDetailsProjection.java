@@ -34,5 +34,7 @@ public interface OpeningStockingDetailsProjection {
 
   Long getFreeGrowingLate();
 
+  Long getFreeGrowingEarly();
+
   String getAdditionalStandards();
 }

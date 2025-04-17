@@ -14,6 +14,7 @@ public record OpeningDetailsStockingDetailsDto(
     OpeningDetailsBecDto bec,
     Long regenDelay,
     Long freeGrowingLate,
+    Long freeGrowingEarly,
     String additionalStandards
 ) {
 

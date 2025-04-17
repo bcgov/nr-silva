@@ -121,6 +121,7 @@ public class OpeningService {
                     ),
                     projection.getRegenDelay(),
                     projection.getFreeGrowingLate(),
+                    projection.getFreeGrowingEarly(),
                     projection.getAdditionalStandards()
                 ),
                 List.of(),
