@@ -300,7 +300,6 @@ const OpeningSearch: React.FC = () => {
                           showMap={showMap}
                           selectedRows={selectedOpeningIds}
                           handleRowSelection={handleRowSelection}
-                          navigateOnClick
                         />
                       ))
                     }

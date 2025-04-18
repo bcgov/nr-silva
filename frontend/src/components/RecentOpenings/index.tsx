@@ -152,7 +152,6 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
                       showMap={showMap}
                       selectedRows={selectedOpeningIds}
                       handleRowSelection={handleRowSelection}
-                      navigateOnClick
                     />
                   ))
                 }
