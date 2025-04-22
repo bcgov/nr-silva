@@ -35,10 +35,10 @@ describe('OpeningOverview', () => {
 
   test('renders all opening information correctly', () => {
     render(<OpeningOverview overviewObj={mockOverview} />);
-    
+
     // Check Opening section title
     expect(screen.getByText('Opening')).toBeInTheDocument();
-    
+
     // Use data-testid attributes to find and test card items
     expect(screen.getByTestId('card-item-content-licensee-opening-id')).toHaveTextContent('12345');
     expect(screen.getByTestId('card-item-content-tenure-type')).toHaveTextContent('A02 - Tree Farm Licence');
@@ -50,34 +50,34 @@ describe('OpeningOverview', () => {
 
   test('renders all milestone information correctly', () => {
     render(<OpeningOverview overviewObj={mockOverview} />);
-    
+
     // Check Milestone section title
     expect(screen.getByText('Milestone')).toBeInTheDocument();
-    
+
     const formattedPostHarvestDate = formatLocalDate('2022-01-15', true);
     if (formattedPostHarvestDate) {
       expect(screen.getByTestId('card-item-content-post-harvested-declared-date')).toHaveTextContent(formattedPostHarvestDate);
     }
-    
+
     const formattedRegenDate = formatLocalDate('2022-03-20', true);
     if (formattedRegenDate) {
       expect(screen.getByTestId('card-item-content-regeneration-declared-date')).toHaveTextContent(formattedRegenDate);
     }
-    
-    expect(screen.getByTestId('card-item-content-regeneration-offset')).toHaveTextContent('3');
-    
+
+    expect(screen.getByTestId('card-item-content-regeneration-offset-(years)')).toHaveTextContent('3');
+
     const formattedRegenDueDate = formatLocalDate('2025-03-20', true);
     if (formattedRegenDueDate) {
       expect(screen.getByTestId('card-item-content-regeneration-due-date')).toHaveTextContent(formattedRegenDueDate);
     }
-    
+
     const formattedFGDate = formatLocalDate('2022-05-10', true);
     if (formattedFGDate) {
       expect(screen.getByTestId('card-item-content-free-growing-declared-date')).toHaveTextContent(formattedFGDate);
     }
-    
-    expect(screen.getByTestId('card-item-content-free-growing-offset')).toHaveTextContent('11');
-    
+
+    expect(screen.getByTestId('card-item-content-free-growing-offset-(years)')).toHaveTextContent('11');
+
     const formattedFGDueDate = formatLocalDate('2033-05-10', true);
     if (formattedFGDueDate) {
       expect(screen.getByTestId('card-item-content-free-growing-due-date')).toHaveTextContent(formattedFGDueDate);
@@ -86,7 +86,7 @@ describe('OpeningOverview', () => {
 
   test('renders skeleton when isLoading is true', () => {
     const { container } = render(<OpeningOverview isLoading={true} />);
-    
+
     // Check for skeleton classes in the component
     const skeletons = container.querySelectorAll('.cds--skeleton');
     expect(skeletons.length).toBeGreaterThan(0);
@@ -115,7 +115,7 @@ describe('OpeningOverview', () => {
     };
 
     render(<OpeningOverview overviewObj={emptyOverview} />);
-    
+
     // Verify that the component renders without errors when given null values
     expect(screen.getByText('Opening')).toBeInTheDocument();
     expect(screen.getByText('Milestone')).toBeInTheDocument();
