@@ -125,7 +125,7 @@ export type OpeningDetailsStockingDetailsDto = {
   defaultMof: boolean,
   manualEntry: boolean,
   fspId: number | null,
-  netAreaHa: number | null,
+  netArea: number | null,
   soilDisturbancePercent: number | null,
   bec: OpeningDetailsBecDto,
   regenDelay: number | null,
