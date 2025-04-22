@@ -9,5 +9,6 @@ export const OpeningDetailBreadCrumbs: BreadCrumbType[] = [
 
 export const OpeningDetailsTabs = [
   'overview',
-  'standard-units'
+  'standard-units',
+  'activities'
 ] as const;

@@ -33,32 +33,6 @@
       }
     }
 
-    .accordion-title-container {
-      display: flex;
-      flex-direction: column;
-      row-gap: 0.25rem;
-
-      h4 {
-        @include type.type-style('heading-02');
-      }
-
-      .accordion-title-top {
-        display: flex;
-        flex-direction: row;
-        column-gap: 0.5rem;
-        align-items: center;
-      }
-
-      .accordion-title-bottom {
-        display: flex;
-        flex-direction: row;
-        column-gap: 0.5rem;
-        align-items: center;
-        margin-left: 1.625rem;
-        @include type.type-style('body-compact-02');
-      }
-    }
-
     .fsp-link {
       display: flex;
       flex-direction: row;
