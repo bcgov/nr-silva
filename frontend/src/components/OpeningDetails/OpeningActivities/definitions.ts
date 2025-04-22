@@ -7,13 +7,14 @@ export type MockedDisturbanceDetailType = {
   licenceNumber: string | null;
   cuttingPermit: string | null;
   cutBlock: string | null;
+  comment: string | null;
 }
 
 export type MockedDisturbanceType = {
   activityId: number;
   disturbance: CodeDescriptionDto;
   silvicultureSystem: CodeDescriptionDto;
-  variant: CodeDescriptionDto;
+  variant: CodeDescriptionDto | null;
   cutPhase: CodeDescriptionDto;
   disturbanceArea: number;
   updateTimestamp: string;
@@ -102,28 +103,30 @@ export type MockedSurveyDetail = {
   }
 }
 
-export type MockedActivityType = {
-  activityId: number;
-  status: CodeDescriptionDto;
-  base: CodeDescriptionDto;
-  tech: CodeDescriptionDto;
-  method: CodeDescriptionDto;
-  objective: CodeDescriptionDto;
-  area: number | null;
-  fundingSource: CodeDescriptionDto;
-  projectId: number | null;
-  updateTimestamp: string;
-  plannedDate: string | null;
-  endDate: string | null;
-} & (
-    MockedBaseActivityDetail & (
-      MockedDirectSeedingDetail
-      | MockedJuvenileSpacingDetail
-      | MockedPlantingDetail
-      | MockedPruningDetail
-      | MockedSitePrepDetail
-      | MockedSurveyDetail
-      | undefined
-    ))
+type ComplexActivityDetail =
+  | MockedDirectSeedingDetail
+  | MockedJuvenileSpacingDetail
+  | MockedPlantingDetail
+  | MockedPruningDetail
+  | MockedSitePrepDetail
+  | MockedSurveyDetail
+  | {};
 
-export type MockedActivityResponseType = PaginatedResponseType<MockedActivityType[]>;
+export type MockedActivityType =
+  (MockedBaseActivityDetail & ComplexActivityDetail) & {
+    activityId: number;
+    status: CodeDescriptionDto;
+    base: CodeDescriptionDto;
+    tech: CodeDescriptionDto;
+    method: CodeDescriptionDto;
+    objective: CodeDescriptionDto;
+    area: number | null;
+    fundingSource: CodeDescriptionDto;
+    projectId: number | null;
+    updateTimestamp: string;
+    plannedDate: string | null;
+    endDate: string | null;
+  };
+
+
+export type MockedActivityResponseType = PaginatedResponseType<MockedActivityType>;
