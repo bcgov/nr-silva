@@ -75,33 +75,33 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                       <Column sm={4} md={8} lg={16}>
                         <Grid className="standard-unit-bec-subgrid">
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="BEC zone">
-                              {standardUnit.stocking.bec.becZoneCode}
-                            </CardItem>
+                              <CardItem label="BEC zone">
+                                {standardUnit.stocking.bec.becZoneCode}
+                              </CardItem>
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="BEC subzone">
-                              {standardUnit.stocking.bec.becSubzoneCode}
-                            </CardItem>
+                              <CardItem label="BEC subzone">
+                                {standardUnit.stocking.bec.becSubzoneCode}
+                              </CardItem>
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="Variant">
-                              {standardUnit.stocking.bec.becVariant}
-                            </CardItem>
+                              <CardItem label="Variant">
+                                {standardUnit.stocking.bec.becVariant}
+                              </CardItem>
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="Phase">
-                              {standardUnit.stocking.bec.becPhase}
-                            </CardItem>
+                              <CardItem label="Phase">
+                                {standardUnit.stocking.bec.becPhase}
+                              </CardItem>
                             </Column>
                             
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="Site series">
-                              {standardUnit.stocking.bec.becSiteSeries}
-                            </CardItem>
+                              <CardItem label="Site series">
+                                {standardUnit.stocking.bec.becSiteSeries}
+                              </CardItem>
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
