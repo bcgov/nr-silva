@@ -96,7 +96,10 @@ const OpeningDetails = () => {
               </OpeningOverview>
             </TabPanel>
             <TabPanel className="tab-content full-width-col">
-              <OpeningStandardUnits />
+              <OpeningStandardUnits
+                standardUnitObjs={openingDetailsSsuQuery.data}
+                isLoading={openingDetailsSsuQuery.isLoading}>
+              </OpeningStandardUnits>
             </TabPanel>
           </TabPanels>
         </Tabs>
