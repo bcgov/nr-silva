@@ -158,6 +158,7 @@ export type OpeningDetailsStockingLayerDto = {
   minPostspacingDensity: number | null,
   maxPostspacingDensity: number | null,
   maxConiferous: number | null,
+  heightRelativeToComp: number | null,
 };
 
 export type OpeningDetailsStockingDto = {
