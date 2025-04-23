@@ -213,7 +213,7 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                                   {codeDescriptionToDisplayText(row.species)}
                                 </TableCell>
                                 <TableCell>
-                                  {row.minHeight}
+                                  {row.minHeight ?? PLACE_HOLDER}
                                 </TableCell>
                               </TableRow>
                             ))
@@ -243,7 +243,7 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                                   {codeDescriptionToDisplayText(row.species)}
                                 </TableCell>
                                 <TableCell>
-                                  {row.minHeight}
+                                  {row.minHeight ?? PLACE_HOLDER}
                                 </TableCell>
                               </TableRow>
                             ))
