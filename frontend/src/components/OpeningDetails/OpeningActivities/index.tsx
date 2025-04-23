@@ -1,13 +1,13 @@
 import React from "react";
+import { Grid } from "@carbon/react";
 
 import './styles.scss';
 
 const OpeningActivities = () => {
 
   return (
-    <div>
-      sss
-    </div>
+    <Grid className="default-grid">
+    </Grid>
   )
 }
 
