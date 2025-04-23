@@ -12,6 +12,8 @@ import PageTitle from "@/components/PageTitle";
 
 import { OpeningDetailBreadCrumbs, OpeningDetailsTabs } from "./constants";
 import './styles.scss';
+import { AxiosError } from "axios";
+import EmptySection from "../../../components/EmptySection";
 
 const OpeningDetails = () => {
 
@@ -42,6 +44,9 @@ const OpeningDetails = () => {
     refetchOnMount: 'always'
   })
 
+  const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
+  const openingNotFound = openingDetailsTombstoneQuery.isError && openingDetailsError?.response?.status === 404;
+
   const postRecentOpeningMutation = useMutation({
     mutationFn: (openingId: number) => putUserRecentOpening(openingId)
   });
@@ -50,11 +55,26 @@ const OpeningDetails = () => {
    * Update most recent openings when this page loads
    */
   useEffect(() => {
-    if (openingId && Number.isInteger(Number(openingId))) {
+    if (openingId && Number.isInteger(Number(openingId) && openingNotFound)) {
       postRecentOpeningMutation.mutate(Number(openingId));
     }
-  }, [openingId]);
+  }, [openingId, openingNotFound]);
 
+  if (openingNotFound) {
+    return (
+      <EmptySection pictogram="Summit" title={`Opening ${openingId} not found`} description="" />
+    )
+  }
+
+  if (!openingNotFound && openingDetailsTombstoneQuery.isError) {
+    return (
+      <EmptySection
+        icon="BreakingChange"
+        title={`Error fetching data for Opening ${openingId}`}
+        description={openingDetailsTombstoneQuery.error.message}
+      />
+    )
+  }
 
   return (
     <Grid className="default-grid opening-detail-grid">

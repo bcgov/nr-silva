@@ -9,7 +9,8 @@ import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
 
 const OpeningActivities = () => {
 
-  if (MOCKED_ACTIVITY_RES.page.totalElements + MOCKED_DISTURBANCE_EVENTS.length < 100) {
+  // Empty case
+  if (MOCKED_ACTIVITY_RES.page.totalElements + MOCKED_DISTURBANCE_EVENTS.length < 1) {
     return (
       <EmptySection
         pictogram="Summit"
@@ -30,6 +31,9 @@ const OpeningActivities = () => {
             `
           }
         </h3>
+      </Column>
+      <Column sm={4} md={8} lg={16}>
+
       </Column>
     </Grid>
   )
