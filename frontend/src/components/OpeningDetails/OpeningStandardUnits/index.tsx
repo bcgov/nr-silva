@@ -42,12 +42,12 @@ const OpeningStandardUnits = () => {
         DummyStandardUnits.map((standardUnit) => (
           <Column sm={4} md={8} lg={16} className="accordion-col" key={standardUnit.standardUnitId}>
             <Accordion
-              className="standard-unit-accordion"
+              className="default-tab-accordion"
               align="end"
               size="lg"
             >
               <AccordionItem
-                className="standard-unit-accordion-item"
+                className="default-tab-accordion-item"
                 title={<AcoordionTitle standardUnit={standardUnit} />}
               >
                 <Grid className="standard-unit-content-grid">

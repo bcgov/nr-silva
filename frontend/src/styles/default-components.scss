@@ -161,9 +161,32 @@
     align-items: center;
     margin-left: 1.625rem;
     @include type.type-style('body-compact-02');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
   }
 }
 
 .default-tab-content-title {
   @include type.type-style('heading-03');
+}
+
+ul.default-tab-accordion {
+  border: none;
+
+  .#{vars.$bcgov-prefix}--accordion__heading {
+    padding: 0.875rem 1.5rem 0.875rem 0.5rem;
+  }
+
+  .#{vars.$bcgov-prefix}--accordion__wrapper {
+    padding-top: 1.375rem;
+  }
+}
+
+.default-tab-accordion-item {
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+  background: var(--#{vars.$bcgov-prefix}-layer-02);
+  border-radius: 0.5rem;
+
+  .#{vars.$bcgov-prefix}--accordion__content {
+    padding-inline: 3.25rem 2rem;
+  }
 }

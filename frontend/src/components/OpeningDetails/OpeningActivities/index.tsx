@@ -1,13 +1,27 @@
 import React from "react";
-import { Column, Grid } from "@carbon/react";
+import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 
 import EmptySection from "../../EmptySection";
 
 import './styles.scss';
 import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
+import DisturbanceAccordion from "./DisturbanceAccordion";
+
+type OpeningActivitiesProps = {
+  openingId: number;
+}
+
+const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
+
+  const isLoading = false;
 
 
-const OpeningActivities = () => {
+  // Loading case
+  if (isLoading) {
+    return (
+      <AccordionSkeleton />
+    )
+  }
 
   // Empty case
   if (MOCKED_ACTIVITY_RES.page.totalElements + MOCKED_DISTURBANCE_EVENTS.length < 1) {
@@ -32,8 +46,18 @@ const OpeningActivities = () => {
           }
         </h3>
       </Column>
-      <Column sm={4} md={8} lg={16}>
+      {
+        MOCKED_DISTURBANCE_EVENTS.length > 0
+          ? (
+            <Column sm={4} md={8} lg={16}>
+              <DisturbanceAccordion data={MOCKED_DISTURBANCE_EVENTS} />
+            </Column>
+          )
+          : null
+      }
 
+      <Column sm={4} md={8} lg={16}>
+        act
       </Column>
     </Grid>
   )

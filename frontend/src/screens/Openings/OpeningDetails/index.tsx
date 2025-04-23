@@ -115,7 +115,7 @@ const OpeningDetails = () => {
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
-              <OpeningActivities />
+              <OpeningActivities openingId={Number(openingId)} />
             </TabPanel>
           </TabPanels>
         </Tabs>
