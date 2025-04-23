@@ -21,6 +21,7 @@ import VerticalDivider from "../../VerticalDivider";
 import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';
 import { OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+import { PLACE_HOLDER } from "@/constants";
 
 type OpeningStandardUnitsProps = {
   isLoading?: boolean
@@ -72,15 +73,15 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <Grid className="standard-unit-bgc-subgrid">
+                        <Grid className="standard-unit-bec-subgrid">
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="BGC zone">
+                            <CardItem label="BEC zone">
                               {standardUnit.stocking.bec.becZoneCode}
                             </CardItem>
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="BGC subzone">
+                            <CardItem label="BEC subzone">
                               {standardUnit.stocking.bec.becSubzoneCode}
                             </CardItem>
                             </Column>
