@@ -163,3 +163,7 @@
     @include type.type-style('body-compact-02');
   }
 }
+
+.default-tab-content-title {
+  @include type.type-style('heading-03');
+}

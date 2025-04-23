@@ -26,7 +26,7 @@ const OpeningStandardUnits = () => {
   return (
     <Grid className="opening-standard-units-grid default-grid">
       <Column sm={4} md={8} lg={16}>
-        <h3 className="standard-units-title">
+        <h3 className="default-tab-content-title">
           {
             `${DummyStandardUnits.length
               ? DummyStandardUnits.length

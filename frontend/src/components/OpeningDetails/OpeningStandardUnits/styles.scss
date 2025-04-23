@@ -5,10 +5,6 @@
   padding: 0;
   row-gap: 1.5rem;
 
-  .standard-units-title {
-    @include type.type-style('heading-03');
-  }
-
   .accordion-col {
     .#{vars.$bcgov-prefix}--accordion__heading {
       padding: 0.875rem 1.5rem 0.875rem 0.5rem;
