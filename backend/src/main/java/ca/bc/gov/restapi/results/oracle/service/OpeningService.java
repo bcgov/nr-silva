@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
@@ -173,7 +175,7 @@ public class OpeningService {
         )
         .map(detailsDto ->
             openingRepository
-                .getOpeningStockingLayerByOpeningId(openingId,detailsDto.stocking().ssid())
+                .getOpeningStockingLayerByOpeningId(openingId, detailsDto.stocking().ssid())
                 .map(layer ->
                     new OpeningDetailsStockingLayerDto(
                         layer.getMinWellspacedTrees(),
@@ -193,5 +195,108 @@ public class OpeningService {
         .toList();
   }
 
+  public List<OpeningDetailsActivitiesDisturbanceDto> getOpeningActivitiesDisturbances(
+      Long openingId) {
+    return
+        openingRepository
+            .getOpeningActivitiesDisturbanceByOpeningId(openingId)
+            .stream()
+            .map(projection ->
+                new OpeningDetailsActivitiesDisturbanceDto(
+                    projection.getAtuId(),
+                    new CodeDescriptionDto(
+                        projection.getDisturbanceCode(),
+                        projection.getDisturbanceName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getSystemCode(),
+                        projection.getSystemName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getVariantCode(),
+                        projection.getVariantName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getCutPhaseCode(),
+                        projection.getCutPhaseName()
+                    ),
+                    projection.getDisturbanceArea(),
+                    projection.getStartDate(),
+                    projection.getEndDate(),
+                    projection.getLicenseeActivityId(),
+                    forestClientService
+                        .getClientByNumber(projection.getDisturbanceLocationClient())
+                        .orElse(null),
+                    forestClientService
+                        .getClientLocation(projection.getDisturbanceLocationClient(),
+                            projection.getDisturbanceLocationCode())
+                        .orElse(null),
+                    projection.getLicenceNumber(),
+                    projection.getCuttingPermitId(),
+                    projection.getCutBlock()
+                )
+            )
+            .toList();
+  }
+
+  public List<OpeningDetailsActivitiesActivitiesDto> getOpeningActivitiesActivities(
+      Long openingId) {
+    return
+        openingRepository
+            .getOpeningActivitiesActivitiesByOpeningId(openingId)
+            .stream()
+            .map(projection ->
+                new OpeningDetailsActivitiesActivitiesDto(
+                    projection.getAtuId(),
+                    new CodeDescriptionDto(
+                        projection.getStatusCode(),
+                        getStatusDescription(projection.getStatusCode())
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getBaseCode(),
+                        projection.getBaseName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getTechCode(),
+                        projection.getTechName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getMethodCode(),
+                        projection.getMethodName()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getObjective1Code(),
+                        projection.getObjective1Name()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getObjective2Code(),
+                        projection.getObjective2Name()
+                    ),
+                    new CodeDescriptionDto(
+                        projection.getObjective3Code(),
+                        projection.getObjective3Name()
+                    ),
+                    projection.getArea(),
+                    new CodeDescriptionDto(
+                        projection.getFundingCode(),
+                        projection.getFundingName()
+                    ),
+                    projection.getProjectId(),
+                    projection.getLastUpdate(),
+                    projection.getPlannedDate(),
+                    projection.getEndDate()
+                )
+            )
+            .toList();
+
+  }
+
+  private String getStatusDescription(String statusCode){
+    return switch (statusCode){
+      case "CPT" -> "Complete";
+      case "PLN" -> "Planned";
+      default -> "Invalid";
+    };
+  }
 
 }

@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
@@ -33,30 +35,45 @@ public class OpeningEndpoint {
    *
    * @param openingId Opening ID
    * @return OpeningTombstoneDto
-   * @throws OpeningNotFoundException if no tombstone information is found for the given Opening ID.
+   * @throws OpeningNotFoundException if no tombstone information is found for the given Opening
+   *                                  ID.
    */
   @GetMapping("/{openingId}/tombstone")
   public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(
       @PathVariable Long openingId) {
-    return openingService.getOpeningTombstone(openingId).orElseThrow(() -> new OpeningNotFoundException(openingId));
+    return openingService.getOpeningTombstone(openingId)
+        .orElseThrow(() -> new OpeningNotFoundException(openingId));
   }
 
-/**
- * Get the Opening Stocking Details (SSU) for a given Opening ID.
- *
- * @param openingId Opening ID
- * @return List of {@link OpeningDetailsStockingDto} containing stocking details.
- * @throws OpeningNotFoundException if no stocking details are found for the given Opening ID.
- */
+  /**
+   * Get the Opening Stocking Details (SSU) for a given Opening ID.
+   *
+   * @param openingId Opening ID
+   * @return List of {@link OpeningDetailsStockingDto} containing stocking details.
+   * @throws OpeningNotFoundException if no stocking details are found for the given Opening ID.
+   */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(
       @PathVariable Long openingId) {
     List<OpeningDetailsStockingDto> results = openingService.getOpeningStockingDetails(openingId);
 
-    if(results.isEmpty())
+    if (results.isEmpty()) {
       throw new OpeningNotFoundException(openingId);
+    }
 
     return results;
+  }
+
+  @GetMapping("/{openingId}/disturbances")
+  public List<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
+      @PathVariable Long openingId) {
+    return openingService.getOpeningActivitiesDisturbances(openingId);
+  }
+
+  @GetMapping("/{openingId}/activities")
+  public List<OpeningDetailsActivitiesActivitiesDto> getOpeningActivities(
+      @PathVariable Long openingId) {
+    return openingService.getOpeningActivitiesActivities(openingId);
   }
 
   /**

@@ -35,6 +35,7 @@ public class OpeningDetailsTombstoneConverter {
                     null,
                     null,
                     null,
+                    null,
                     null
                 ),
                 tombstone.getFileId(),

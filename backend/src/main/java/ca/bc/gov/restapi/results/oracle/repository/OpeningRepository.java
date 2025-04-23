@@ -4,6 +4,8 @@ import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningActivitiesActivitiesProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningActivitiesDisturbanceProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
@@ -61,4 +63,10 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_LAYER)
   Optional<OpeningStockingLayerProjection> getOpeningStockingLayerByOpeningId(Long openingId, Long ssuId);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_DISTURBANCE)
+  List<OpeningActivitiesDisturbanceProjection> getOpeningActivitiesDisturbanceByOpeningId(Long openingId);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_ACTIVITIES)
+  List<OpeningActivitiesActivitiesProjection> getOpeningActivitiesActivitiesByOpeningId(Long openingId);
 }

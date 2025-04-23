@@ -124,12 +124,38 @@ public class ForestClientApiProvider {
               .retrieve()
               .body(new ParameterizedTypeReference<>() {});
     } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
-      log.error("Client location {} request - Response code error: {}",
+      log.error("Client locations {} request - Response code error: {}",
           PROVIDER,
           httpExc.getStatusCode()
       );
     }
 
     return List.of();
+  }
+
+  public Optional<ForestClientLocationDto> fetchLocationByClientNumberAndLocationCode(
+      String clientNumber,
+      String locationCode
+  ) {
+    log.info("Starting {} request to /clients/{}/locations/{}", PROVIDER, clientNumber, locationCode);
+
+    try {
+      return
+          Optional
+              .ofNullable(
+                  restClient
+                      .get()
+                      .uri("/clients/{clientNumber}/locations/{locationCode}", clientNumber, locationCode)
+                      .retrieve()
+                      .body(ForestClientLocationDto.class)
+              );
+    } catch (HttpClientErrorException | HttpServerErrorException httpExc) {
+      log.error("Client location {} request - Response code error: {}",
+          PROVIDER,
+          httpExc.getStatusCode()
+      );
+    }
+
+    return Optional.empty();
   }
 }
