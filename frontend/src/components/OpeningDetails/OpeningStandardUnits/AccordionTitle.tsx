@@ -2,6 +2,7 @@ import React from "react";
 import { Location as LocationIcon } from "@carbon/icons-react";
 import VerticalDivider from "../../VerticalDivider";
 import { OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+import { PLACE_HOLDER } from "@/constants";
 
 type AcoordionTitleProp = {
   standardUnit: OpeningDetailsStockingDto;
@@ -17,7 +18,9 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
       <div className="accordion-title-top">
         <LocationIcon size={20} />
         <h4>
-          {standardUnit.stocking.stockingStandardUnit}
+          {
+            standardUnit.stocking.stockingStandardUnit ?? PLACE_HOLDER
+          }
         </h4>
       </div>
       <div className="accordion-title-bottom">
