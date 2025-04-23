@@ -165,6 +165,6 @@ export type OpeningDetailsStockingDto = {
   stocking: OpeningDetailsStockingDetailsDto,
   preferredSpecies: OpeningDetailsStockingSpeciesDto[],
   acceptableSpecies: OpeningDetailsStockingSpeciesDto[],
-  layer: OpeningDetailsStockingLayerDto,
+  layer: OpeningDetailsStockingLayerDto | null,
   comments: CommentDto[],
 };

@@ -291,47 +291,47 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum well-spaced trees" isNumber>
-                          {standardUnit.layer.minWellspacedTrees}
+                          {standardUnit.layer?.minWellspacedTrees}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum preferred well-spaced trees" isNumber>
-                          {standardUnit.layer.minPreferredWellspacedTrees}
+                          {standardUnit.layer?.minPreferredWellspacedTrees}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum horizontal distance well-spaced trees (m)" isNumber>
-                          {standardUnit.layer.minHorizontalDistanceWellspacedTrees}
+                          {standardUnit.layer?.minHorizontalDistanceWellspacedTrees}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Target well-spaced trees (ha)" isNumber>
-                          {standardUnit.layer.targetWellspacedTrees}
+                          {standardUnit.layer?.targetWellspacedTrees}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum residual basal area (m²/ha)" isNumber>
-                          {standardUnit.layer.minResidualBasalArea}
+                          {standardUnit.layer?.minResidualBasalArea}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Minimum post-spacing density (st/ha)" isNumber>
-                          {standardUnit.layer.minPostspacingDensity}
+                          {standardUnit.layer?.minPostspacingDensity}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Maximum post-spacing density (st/ha)" isNumber>
-                          {standardUnit.layer.maxPostspacingDensity}
+                          {standardUnit.layer?.maxPostspacingDensity}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Maximum Coniferous (st/ha)" isNumber>
-                          {standardUnit.layer.maxConiferous}
+                          {standardUnit.layer?.maxConiferous}
                         </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
                         <CardItem label="Height relative to comp (cm/%)" isNumber>
-                          {standardUnit.layer.heightRelativeToComp}
+                          {standardUnit.layer?.heightRelativeToComp}
                         </CardItem>
                       </Column>
                     </Grid>
