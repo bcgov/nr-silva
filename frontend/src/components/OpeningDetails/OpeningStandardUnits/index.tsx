@@ -105,7 +105,9 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                             </Column>
 
                             <Column sm={2} md={2} lg={2}>
-                            <CardItem label="Site phase"></CardItem>
+                              <CardItem label="Site phase">
+                                {standardUnit.stocking.bec.becSiteType}
+                              </CardItem>
                             </Column>
                         </Grid>
                       </Column>
