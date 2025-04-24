@@ -6,6 +6,8 @@ import EmptySection from "../../EmptySection";
 import './styles.scss';
 import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
 import DisturbanceAccordion from "./DisturbanceAccordion";
+import { useQuery } from "@tanstack/react-query";
+import { delayMock } from "../../../utils/MockUtils";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -13,18 +15,29 @@ type OpeningActivitiesProps = {
 
 const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
-  const isLoading = false;
+  const disturbanceQuery = useQuery({
+    queryKey: ['opening', openingId, 'disturbance'],
+    queryFn: () => delayMock(MOCKED_DISTURBANCE_EVENTS)
+  });
+
+  const activityQuery = useQuery({
+    queryKey: ['opening', openingId, 'activities'],
+    queryFn: () => delayMock(MOCKED_ACTIVITY_RES)
+  });
 
 
   // Loading case
-  if (isLoading) {
+  if (disturbanceQuery.isLoading || activityQuery.isLoading) {
     return (
       <AccordionSkeleton />
     )
   }
 
   // Empty case
-  if (MOCKED_ACTIVITY_RES.page.totalElements + MOCKED_DISTURBANCE_EVENTS.length < 1) {
+  if (
+    disturbanceQuery.isSuccess && activityQuery.isSuccess &&
+    (disturbanceQuery.data.length + activityQuery.data.page.totalElements < 1)
+  ) {
     return (
       <EmptySection
         pictogram="Summit"
@@ -40,17 +53,17 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         <h3 className="default-tab-content-title">
           {
             `
-            ${MOCKED_ACTIVITY_RES.page.totalElements + MOCKED_DISTURBANCE_EVENTS.length}
-            activities in the opening area
+              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.length ?? 0)}
+              activities in the opening area
             `
           }
         </h3>
       </Column>
       {
-        MOCKED_DISTURBANCE_EVENTS.length > 0
+        (disturbanceQuery.data?.length ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <DisturbanceAccordion data={MOCKED_DISTURBANCE_EVENTS} />
+              <DisturbanceAccordion data={disturbanceQuery.data!} />
             </Column>
           )
           : null

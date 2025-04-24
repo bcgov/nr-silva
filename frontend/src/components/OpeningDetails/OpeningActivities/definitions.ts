@@ -24,6 +24,8 @@ export type MockedDisturbanceType = {
 
 
 export type MockedBaseActivityDetail = {
+  activityId: number;
+  base: CodeDescriptionDto;
   licenseeActivityId: string | null;
   intraAgencyNumber: number | null;
   activityLocation: string | null;
@@ -103,30 +105,30 @@ export type MockedSurveyDetail = {
   }
 }
 
-type ComplexActivityDetail =
-  | MockedDirectSeedingDetail
-  | MockedJuvenileSpacingDetail
-  | MockedPlantingDetail
-  | MockedPruningDetail
-  | MockedSitePrepDetail
-  | MockedSurveyDetail
-  | {};
+export type MockedActivityDetailType =
+  MockedBaseActivityDetail & Partial<(
+    | MockedDirectSeedingDetail
+    | MockedJuvenileSpacingDetail
+    | MockedPlantingDetail
+    | MockedPruningDetail
+    | MockedSitePrepDetail
+    | MockedSurveyDetail
+  )>;
 
-export type MockedActivityType =
-  (MockedBaseActivityDetail & ComplexActivityDetail) & {
-    activityId: number;
-    status: CodeDescriptionDto;
-    base: CodeDescriptionDto;
-    tech: CodeDescriptionDto;
-    method: CodeDescriptionDto;
-    objective: CodeDescriptionDto;
-    area: number | null;
-    fundingSource: CodeDescriptionDto;
-    projectId: number | null;
-    updateTimestamp: string;
-    plannedDate: string | null;
-    endDate: string | null;
-  };
+export type MockedActivityType = {
+  activityId: number;
+  status: CodeDescriptionDto;
+  base: CodeDescriptionDto;
+  tech: CodeDescriptionDto;
+  method: CodeDescriptionDto;
+  objective: CodeDescriptionDto;
+  area: number | null;
+  fundingSource: CodeDescriptionDto;
+  projectId: number | null;
+  updateTimestamp: string;
+  plannedDate: string | null;
+  endDate: string | null;
+};
 
 
 export type MockedActivityResponseType = PaginatedResponseType<MockedActivityType>;
