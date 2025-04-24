@@ -73,42 +73,60 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <Grid className="standard-unit-bec-subgrid">
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="BEC zone">
-                                {standardUnit.stocking.bec.becZoneCode}
-                              </CardItem>
-                            </Column>
+                        <Grid className="standard-unit-bec-content-grid">
 
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="BEC subzone">
-                                {standardUnit.stocking.bec.becSubzoneCode}
-                              </CardItem>
-                            </Column>
+                          <Column sm={4} md={8} lg={16}>
+                            <section className="section-title-without-icon">
+                              <h4>BEC Information</h4>
+                            </section>
+                          </Column>
 
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="Variant">
-                                {standardUnit.stocking.bec.becVariant}
-                              </CardItem>
-                            </Column>
+                          <Column sm={4} md={8} lg={16}>
+                            <Grid>
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Zone">
+                                  {standardUnit.stocking.bec.becZoneCode}
+                                </CardItem>
+                              </Column>
 
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="Phase">
-                                {standardUnit.stocking.bec.becPhase}
-                              </CardItem>
-                            </Column>
-                            
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="Site series">
-                                {standardUnit.stocking.bec.becSiteSeries}
-                              </CardItem>
-                            </Column>
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Subzone">
+                                  {standardUnit.stocking.bec.becSubzoneCode}
+                                </CardItem>
+                              </Column>
 
-                            <Column sm={2} md={2} lg={2}>
-                              <CardItem label="Site phase">
-                                {standardUnit.stocking.bec.becSiteType}
-                              </CardItem>
-                            </Column>
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Variant">
+                                  {standardUnit.stocking.bec.becVariant}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Phase">
+                                  {standardUnit.stocking.bec.becPhase}
+                                </CardItem>
+                              </Column>
+                              
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site series">
+                                  {standardUnit.stocking.bec.becSiteSeries}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site phase">
+                                  {standardUnit.stocking.bec.becSiteType}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site seral">
+                                  {standardUnit.stocking.bec.becSeral}
+                                </CardItem>
+                              </Column>
+
+                            </Grid>
+                          </Column>
                         </Grid>
                       </Column>
 

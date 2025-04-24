@@ -82,8 +82,8 @@
           row-gap: 0.25rem;
         }
 
-        .standard-unit-bec-subgrid {
-          margin-left: -0.5rem;
+        .standard-unit-bec-content-grid {
+          row-gap: 1rem;
         }
       }
 
@@ -93,6 +93,12 @@
         align-items: center;
         column-gap: 0.5rem;
 
+        h4 {
+          @include type.type-style('heading-02');
+        }
+      }
+
+      .section-title-without-icon {
         h4 {
           @include type.type-style('heading-02');
         }
@@ -114,6 +120,7 @@
         flex-direction: row;
         align-items: center;
         column-gap: 0.5rem;
+        margin-top: 0.25rem;
       }
     }
   }
