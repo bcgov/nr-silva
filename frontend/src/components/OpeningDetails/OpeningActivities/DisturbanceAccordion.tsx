@@ -100,6 +100,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                         {
                           DisturbanceTableHeaders.map(header => (
                             <TableCell key={header.key}>
+                              {/* TODO: conditionally render cell content */}
                               {String(row[header.key] ?? "")}
                             </TableCell>
                           ))

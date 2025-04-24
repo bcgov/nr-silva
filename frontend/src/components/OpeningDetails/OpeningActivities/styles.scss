@@ -1,5 +1,21 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
 .opening-activities-grid {
   padding: 0;
   row-gap: 1.5rem;
 
+
+  tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
+    padding-block: 2rem;
+    padding-block-end: 2rem;
+  }
+
+  .expanded-row-content-grid {
+    row-gap: 2rem;
+
+    .expanded-row-title {
+      @include type.type-style('heading-02');
+    }
+  }
 }
