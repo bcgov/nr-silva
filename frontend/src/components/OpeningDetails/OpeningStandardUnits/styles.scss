@@ -73,10 +73,6 @@
       .standard-unit-content-subgrid {
         row-gap: 1.5rem;
 
-        .#{vars.$bcgov-prefix}--css-grid-column {
-          padding: 0 0.5rem;
-        }
-
         .comment-list {
           list-style-type: disc;
           padding-left: 1.75rem;
