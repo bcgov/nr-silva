@@ -1,6 +1,6 @@
 import React from "react";
 import './styles.scss';
-import { TextInputSkeleton, Tooltip } from "@carbon/react";
+import { TextInputSkeleton, DefinitionTooltip } from "@carbon/react";
 import { PLACE_HOLDER } from "@/constants";
 import { toKebabCase } from "@/utils/StringUtils";
 
@@ -82,13 +82,13 @@ const CardItem = ({
 
   if (tooltipText && !showSkeleton) {
     content = (
-      <Tooltip description={tooltipText}>
+      <DefinitionTooltip definition={tooltipText} openOnHover>
         {
           React.isValidElement(rawContent)
             ? rawContent
             : <span>{String(rawContent)}</span>
         }
-      </Tooltip>
+      </DefinitionTooltip>
     );
   }
 
