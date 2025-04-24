@@ -187,6 +187,18 @@ ul.default-tab-accordion {
   border-radius: 0.5rem;
 
   .#{vars.$bcgov-prefix}--accordion__content {
-    padding-inline: 3.25rem 2rem;
+    padding-inline: 2rem;
+  }
+}
+
+.default-tab-search-bar {
+  background: var(--#{vars.$bcgov-prefix}-layer-02);
+
+  input {
+    background: inherit;
+    border-top: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
+    border-right: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
+    border-left: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
+    border-block-end: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-01);
   }
 }

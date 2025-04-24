@@ -133,9 +133,9 @@ const OpeningStandardUnits = () => {
                     <div className="species-table-container">
                       {/* Preferred Species */}
                       <Table
-                        className="default-zebra-table-with-border"
-                        aria-label="Recent openings table"
-                        useZebraStyles
+                        className="default-expandable-table"
+                        aria-label="Preferred species table"
+
                       >
                         <TableHead>
                           <TableRow>

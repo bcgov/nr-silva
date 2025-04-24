@@ -6,6 +6,11 @@
   row-gap: 1.5rem;
 
   .accordion-col {
+
+    .#{vars.$bcgov-prefix}--accordion__content {
+      padding-inline: 3.25rem 2rem;
+    }
+
     .fsp-link {
       display: flex;
       flex-direction: row;

@@ -1,10 +1,34 @@
+import { TableHeaderType } from "@/types/TableHeader";
 import { MockedActivityDetailType, MockedActivityResponseType, MockedDisturbanceType } from "./definitions";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
 ] as const;
 
-export const MOCKED_EMPTY_DISTURBANCE_EVENTS: MockedDisturbanceType[] = [];
+export const DisturbanceTableHeaders: TableHeaderType<keyof MockedDisturbanceType>[] = [
+  { key: "activityId", header: "Activity treatment unit ID" },
+  { key: "disturbance", header: "Disturbance code" },
+  { key: "silvicultureSystem", header: "Silviculture system" },
+  { key: "variant", header: "Variant" },
+  { key: "cutPhase", header: "Cut phase" },
+  { key: "disturbanceArea", header: "Disturbance area (ha)" },
+  { key: "updateTimestamp", header: "Last updated" },
+  { key: "startDate", header: "Start date" },
+  { key: "endDate", header: "End date" },
+];
+
+// export const ActivityTableHeaders: SpeciesHeaderType[] = [
+//   {
+//     key: 'description',
+//     header: 'Preferred species'
+//   },
+//   {
+//     key: 'minHeight',
+//     header: 'Minimum height (m)'
+//   }
+// ];
+
+
 
 export const MOCKED_DISTURBANCE_EVENTS: MockedDisturbanceType[] = [
   {
