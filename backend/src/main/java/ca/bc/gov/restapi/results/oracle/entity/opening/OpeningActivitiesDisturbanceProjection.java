@@ -20,6 +20,7 @@ public interface OpeningActivitiesDisturbanceProjection {
 
   Float getDisturbanceArea();
 
+  LocalDate getLastUpdate();
   LocalDate getStartDate();
   LocalDate getEndDate();
 

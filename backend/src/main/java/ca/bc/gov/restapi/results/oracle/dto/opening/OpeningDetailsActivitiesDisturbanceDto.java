@@ -12,6 +12,7 @@ public record OpeningDetailsActivitiesDisturbanceDto(
     CodeDescriptionDto variant,
     CodeDescriptionDto cutPhase,
     Float disturbanceArea,
+    LocalDate lastUpdate,
     LocalDate startDate,
     LocalDate endDate,
     String licenseeActivityId,

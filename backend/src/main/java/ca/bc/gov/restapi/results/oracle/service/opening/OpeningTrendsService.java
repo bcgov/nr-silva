@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.service;
+package ca.bc.gov.restapi.results.oracle.service.opening;
 
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;

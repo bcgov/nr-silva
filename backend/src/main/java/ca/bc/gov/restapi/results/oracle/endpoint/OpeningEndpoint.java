@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
@@ -8,9 +9,11 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverv
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/openings")
 @RequiredArgsConstructor
+@Slf4j
 public class OpeningEndpoint {
 
   private final OpeningSearchService openingSearchService;
-  private final OpeningService openingService;
+  private final OpeningDetailsService openingService;
 
   /**
    * Get the Opening Tombstone/Summary information.
@@ -65,15 +69,27 @@ public class OpeningEndpoint {
   }
 
   @GetMapping("/{openingId}/disturbances")
-  public List<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
-      @PathVariable Long openingId) {
-    return openingService.getOpeningActivitiesDisturbances(openingId);
+  public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
+      @PathVariable Long openingId,
+      @RequestParam Map<String, String> allRequestParams,
+      Pageable pageable
+  ) {return openingService.getOpeningActivitiesDisturbances(openingId,pageable);
   }
 
   @GetMapping("/{openingId}/activities")
-  public List<OpeningDetailsActivitiesActivitiesDto> getOpeningActivities(
-      @PathVariable Long openingId) {
-    return openingService.getOpeningActivitiesActivities(openingId);
+  public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivities(
+      @PathVariable Long openingId,
+      @RequestParam Map<String, String> allRequestParams,
+      Pageable pageable) {
+    return openingService.getOpeningActivitiesActivities(openingId, pageable);
+  }
+
+  @GetMapping("/{openingId}/activities/{atuId}")
+  public OpeningActivityBaseDto getOpeningActivity(
+      @PathVariable Long openingId,
+      @PathVariable Long atuId
+  ) {
+    return openingService.getOpeningActivitiesActivity(openingId,atuId);
   }
 
   /**
