@@ -73,8 +73,17 @@
       .standard-unit-content-subgrid {
         row-gap: 1.5rem;
 
-        .#{vars.$bcgov-prefix}--css-grid-column {
-          padding: 0 0.5rem;
+        .comment-list {
+          list-style-type: disc;
+          padding-left: 1.75rem;
+          margin-top: 0.25rem;
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.25rem;
+        }
+
+        .standard-unit-bec-content-grid {
+          row-gap: 1rem;
         }
       }
 
@@ -84,6 +93,12 @@
         align-items: center;
         column-gap: 0.5rem;
 
+        h4 {
+          @include type.type-style('heading-02');
+        }
+      }
+
+      .section-title-without-icon {
         h4 {
           @include type.type-style('heading-02');
         }
@@ -105,6 +120,7 @@
         flex-direction: row;
         align-items: center;
         column-gap: 0.5rem;
+        margin-top: 0.25rem;
       }
     }
   }

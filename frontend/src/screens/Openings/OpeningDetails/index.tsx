@@ -4,7 +4,7 @@ import { MapBoundaryVegetation, Development } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { fetchOpeningTombstone } from "@/services/OpeningDetailsService";
+import { fetchOpeningSsu, fetchOpeningTombstone } from "@/services/OpeningDetailsService";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningStandardUnits, OpeningSummary, OpeningOverview } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
@@ -41,6 +41,13 @@ const OpeningDetails = () => {
     enabled: !!openingId,
     refetchOnMount: 'always'
   })
+
+  const openingDetailsSsuQuery = useQuery({
+    queryKey: ['openings', openingId, 'ssu'],
+    queryFn: () => fetchOpeningSsu(Number(openingId)),
+    enabled: !!openingId,
+    refetchOnMount: 'always'
+  });
 
   const postRecentOpeningMutation = useMutation({
     mutationFn: (openingId: number) => putUserRecentOpening(openingId)
@@ -89,7 +96,10 @@ const OpeningDetails = () => {
               </OpeningOverview>
             </TabPanel>
             <TabPanel className="tab-content full-width-col">
-              <OpeningStandardUnits />
+              <OpeningStandardUnits
+                standardUnitObjs={openingDetailsSsuQuery.data}
+                isLoading={openingDetailsSsuQuery.isLoading}>
+              </OpeningStandardUnits>
             </TabPanel>
           </TabPanels>
         </Tabs>

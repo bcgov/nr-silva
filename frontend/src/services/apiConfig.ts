@@ -22,6 +22,7 @@ const API_ENDPOINTS = {
   submissionTrends: (queryString: string | null) => `${API_BASE_URL}/users/submission-trends${resolveQueryString(queryString)}`,
   openingMap: (openingId: number) => `${API_BASE_URL}/openings/map/${openingId}`,
   openingTombstone: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/tombstone`,
+  openingSsu: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/ssu`,
 };
 
 // Define the default headers for the API requests, including ones used by CORS

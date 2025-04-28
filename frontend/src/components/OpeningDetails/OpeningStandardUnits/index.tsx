@@ -20,27 +20,33 @@ import VerticalDivider from "../../VerticalDivider";
 
 import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';
+import { OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+import { PLACE_HOLDER } from "@/constants";
 
+type OpeningStandardUnitsProps = {
+  isLoading?: boolean
+  standardUnitObjs?: OpeningDetailsStockingDto[]
+}
 
-const OpeningStandardUnits = () => {
+const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUnitsProps) => {
   return (
     <Grid className="opening-standard-units-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <h3 className="standard-units-title">
           {
-            `${DummyStandardUnits.length
-              ? DummyStandardUnits.length
+            `${standardUnitObjs?.length
+              ? standardUnitObjs.length
               : 'No'
             }
-            standard unit${DummyStandardUnits.length > 1 ? 's' : ''}
+            standard unit${(standardUnitObjs?.length ?? 0) > 1 ? 's' : ''}
             in the opening area`
           }
         </h3>
       </Column>
 
       {
-        DummyStandardUnits.map((standardUnit) => (
-          <Column sm={4} md={8} lg={16} className="accordion-col" key={standardUnit.standardUnitId}>
+        standardUnitObjs?.map((standardUnit, index) => (
+          <Column sm={4} md={8} lg={16} className="accordion-col" key={`standard-unit-col-${index}`}>
             <Accordion
               className="standard-unit-accordion"
               align="end"
@@ -55,19 +61,93 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16}>
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Net area to be reforested (ha)" isNumber></CardItem>
+                        <CardItem label="Net area to be reforested (ha)" isNumber showSkeleton={isLoading}>
+                          {standardUnit.stocking.netArea}
+                        </CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Max soil allowable disturbance (%)" isNumber></CardItem>
+                        <CardItem label="Max soil allowable disturbance (%)" isNumber>
+                          {standardUnit.stocking.soilDisturbancePercent}
+                        </CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="BEC information"></CardItem>
+                        <Grid className="standard-unit-bec-content-grid">
+
+                          <Column sm={4} md={8} lg={16}>
+                            <section className="section-title-without-icon">
+                              <h4>BEC Information</h4>
+                            </section>
+                          </Column>
+
+                          <Column sm={4} md={8} lg={16}>
+                            <Grid>
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Zone">
+                                  {standardUnit.stocking.bec.becZoneCode}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Subzone">
+                                  {standardUnit.stocking.bec.becSubzoneCode}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="BGC Variant">
+                                  {standardUnit.stocking.bec.becVariant}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Phase">
+                                  {standardUnit.stocking.bec.becPhase}
+                                </CardItem>
+                              </Column>
+                              
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site series">
+                                  {standardUnit.stocking.bec.becSiteSeries}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site phase">
+                                  {standardUnit.stocking.bec.becSiteType}
+                                </CardItem>
+                              </Column>
+
+                              <Column sm={2} md={2} lg={2}>
+                                <CardItem label="Site seral">
+                                  {standardUnit.stocking.bec.becSeral}
+                                </CardItem>
+                              </Column>
+
+                            </Grid>
+                          </Column>
+                        </Grid>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Comment"></CardItem>
+                        <CardItem label="Comment">
+                          {
+                            (standardUnit.comments ?? []).length > 0
+                              ? (
+                                <ul className="comment-list">
+                                  {standardUnit.comments.map((comment, index) =>
+                                    comment.commentText ? (
+                                      <li key={index}>
+                                        {comment.commentText}
+                                      </li>
+                                    ) : null
+                                  )}
+                                </ul>
+                              )
+                              : null
+                          }
+                        </CardItem>
                       </Column>
                     </Grid>
                   </Column>
@@ -81,16 +161,16 @@ const OpeningStandardUnits = () => {
                     <div className="stocking-standard-links">
                       {/* No standard unit id or FSP id */}
                       {
-                        (!standardUnit.ssid && !standardUnit.fspId)
+                        (!standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
                           ? 'Manual stocking requirement'
                           : null
                       }
                       {/* Has standard unit id but no FSP id */}
                       {
-                        (standardUnit.ssid && !standardUnit.fspId)
+                        (standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
                           ? (
                             <>
-                              {`SSID ${standardUnit.ssid}, Stocking objective`}
+                              {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
                               <VerticalDivider />
                               <span>Ministry default</span>
                             </>
@@ -99,18 +179,18 @@ const OpeningStandardUnits = () => {
                       }
                       {/* Has standard unit id AND FSP id */}
                       {
-                        (standardUnit.ssid && standardUnit.fspId)
+                        (standardUnit.stocking.ssid && standardUnit.stocking.fspId)
                           ? (
                             <>
-                              {`SSID ${standardUnit.ssid}, Stocking objective`}
+                              {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
                               <VerticalDivider />
                               {
                                 <Link
                                   className="fsp-link"
-                                  to={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.fspId}`}
+                                  to={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
                                   target="_blank"
                                 >
-                                  {`FSP ID ${standardUnit.fspId}`} <LaunchIcon />
+                                  {`FSP ID ${standardUnit.stocking.fspId}`} <LaunchIcon />
                                 </Link>
                               }
                             </>
@@ -149,12 +229,12 @@ const OpeningStandardUnits = () => {
                         <TableBody>
                           {
                             standardUnit.preferredSpecies.map((row) => (
-                              <TableRow key={row.code}>
+                              <TableRow key={row.species.code}>
                                 <TableCell>
-                                  {codeDescriptionToDisplayText(row)}
+                                  {codeDescriptionToDisplayText(row.species)}
                                 </TableCell>
                                 <TableCell>
-                                  {row.minHeight}
+                                  {row.minHeight ?? PLACE_HOLDER}
                                 </TableCell>
                               </TableRow>
                             ))
@@ -179,12 +259,12 @@ const OpeningStandardUnits = () => {
                         <TableBody>
                           {
                             standardUnit.acceptableSpecies.map((row) => (
-                              <TableRow key={row.code}>
+                              <TableRow key={row.species.code}>
                                 <TableCell>
-                                  {codeDescriptionToDisplayText(row)}
+                                  {codeDescriptionToDisplayText(row.species)}
                                 </TableCell>
                                 <TableCell>
-                                  {row.minHeight}
+                                  {row.minHeight ?? PLACE_HOLDER}
                                 </TableCell>
                               </TableRow>
                             ))
@@ -203,11 +283,20 @@ const OpeningStandardUnits = () => {
 
                   <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
-                      <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Regen delay" isNumber></CardItem>
+                      <Column sm={4} md={4} lg={4}>
+                        <CardItem label="Regen delay (Years)" isNumber>
+                          {standardUnit.stocking.regenDelay}
+                        </CardItem>
                       </Column>
-                      <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Free growing late" isNumber></CardItem>
+                      <Column sm={4} md={4} lg={4}>
+                        <CardItem label="Free growing early (Years)" isNumber>
+                          {standardUnit.stocking.freeGrowingEarly}
+                        </CardItem>
+                      </Column>
+                      <Column sm={4} md={4} lg={4}>
+                        <CardItem label="Free growing late (Years)" isNumber>
+                          {standardUnit.stocking.freeGrowingLate}
+                        </CardItem>
                       </Column>
                     </Grid>
                   </Column>
@@ -222,37 +311,57 @@ const OpeningStandardUnits = () => {
                   <Column sm={4} md={8} lg={16} className="subsection-col">
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum well-spaced trees" isNumber></CardItem>
+                        <CardItem label="Minimum well-spaced trees" isNumber>
+                          {standardUnit.layer?.minWellspacedTrees}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum preferred well-spaced trees" isNumber></CardItem>
+                        <CardItem label="Minimum preferred well-spaced trees" isNumber>
+                          {standardUnit.layer?.minPreferredWellspacedTrees}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum horizontal distance well-spaced trees (m)" isNumber></CardItem>
+                        <CardItem label="Minimum horizontal distance well-spaced trees (m)" isNumber>
+                          {standardUnit.layer?.minHorizontalDistanceWellspacedTrees}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Target well-spaced trees (ha)" isNumber></CardItem>
+                        <CardItem label="Target well-spaced trees (ha)" isNumber>
+                          {standardUnit.layer?.targetWellspacedTrees}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum residual basal area (m²/ha)" isNumber></CardItem>
+                        <CardItem label="Minimum residual basal area (m²/ha)" isNumber>
+                          {standardUnit.layer?.minResidualBasalArea}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum post-spacing density (st/ha)" isNumber></CardItem>
+                        <CardItem label="Minimum post-spacing density (st/ha)" isNumber>
+                          {standardUnit.layer?.minPostspacingDensity}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum post-spacing density (st/ha)" isNumber></CardItem>
+                        <CardItem label="Maximum post-spacing density (st/ha)" isNumber>
+                          {standardUnit.layer?.maxPostspacingDensity}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum Coniferous (st/ha)" isNumber></CardItem>
+                        <CardItem label="Maximum Coniferous (st/ha)" isNumber>
+                          {standardUnit.layer?.maxConiferous}
+                        </CardItem>
                       </Column>
                       <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Height relative to comp (cm/%)" isNumber></CardItem>
+                        <CardItem label="Height relative to comp (cm/%)" isNumber>
+                          {standardUnit.layer?.heightRelativeToComp}
+                        </CardItem>
                       </Column>
                     </Grid>
                   </Column>
 
                   <Column sm={4} md={8} lg={16}>
-                    <CardItem label="Additional standards"></CardItem>
+                    <CardItem label="Additional standards">
+                      {standardUnit.stocking.additionalStandards}
+                    </CardItem>
                   </Column>
                 </Grid>
               </AccordionItem>
