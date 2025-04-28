@@ -8,6 +8,8 @@ concurrency:
   group: ${{ github.workflow }}-edit-${{ github.event.number }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   init:
     name: Initialize
@@ -23,6 +25,8 @@ jobs:
     name: Validate PR
     needs: [init]
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@v0.9.0
+    permissions:
+      pull-requests: write
     with:
       markdown_links: |
         - [Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.apps.silver.devops.gov.bc.ca/actuator/health)
