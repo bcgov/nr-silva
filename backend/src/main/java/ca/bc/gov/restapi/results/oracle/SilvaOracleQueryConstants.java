@@ -79,7 +79,7 @@ public class SilvaOracleQueryConstants {
             OR
             (
               cboa.disturbance_start_date IS NOT NULL AND
-              to_char(cboa.disturbance_start_date, 'YYYY-MM-DD') between TO_DATE(:#{#filter.disturbanceDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
+              cboa.disturbance_start_date between TO_DATE(:#{#filter.disturbanceDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
@@ -90,7 +90,7 @@ public class SilvaOracleQueryConstants {
             (
               smrg.due_late_date IS NOT NULL AND
               smrg.silv_milestone_type_code = 'RG' AND
-              to_char(smrg.due_late_date, 'YYYY-MM-DD') between TO_DATE(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
+              smrg.due_late_date between TO_DATE(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
@@ -103,9 +103,9 @@ public class SilvaOracleQueryConstants {
               smfg.due_late_date IS NOT NULL AND
               smfg.silv_milestone_type_code = 'FG' AND
               (
-                to_char(smfg.due_early_date,'YYYY-MM-DD') between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_early_date between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
                 OR
-                to_char(smfg.due_late_date, 'YYYY-MM-DD') between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_late_date between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
               )
           )
           )
@@ -116,7 +116,7 @@ public class SilvaOracleQueryConstants {
             OR
             (
               op.update_timestamp IS NOT NULL AND
-              to_char(op.update_timestamp, 'YYYY-MM-DD') between TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD')
+              op.update_timestamp between TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
