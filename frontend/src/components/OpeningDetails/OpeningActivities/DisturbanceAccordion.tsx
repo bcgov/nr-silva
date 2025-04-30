@@ -1,9 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { MockedDisturbanceType } from "./definitions";
-import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow } from "@carbon/react";
+import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
 import { DisturbanceTableHeaders } from "./constants";
 import DisturbanceDetail from "./DisturbanceDetail";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { PLACE_HOLDER } from "@/constants";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 type DisturbanceAccordionProps = {
   data: MockedDisturbanceType[]
@@ -44,6 +48,45 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
         ? prev.filter((id) => id !== activityId)
         : [...prev, activityId]
     );
+  };
+
+  const isCodeDescription = (value: string): boolean => {
+    const codeDescriptionColumns = ["disturbance", "silvicultureSystem", "variant", "cutPhase"];
+    return codeDescriptionColumns.includes(value);
+  }
+
+  const isDate = (value: string): boolean => {
+    const dateColumns = ["startDate", "endDate", "updateTimestamp"];
+    return dateColumns.includes(value);
+  }
+
+  const renderCellContent = (
+    data: CodeDescriptionDto | string | number | null,
+    columnKey: string,
+    isLastElement: boolean
+  ) => {
+    if (isCodeDescription(columnKey)) {
+      if (columnKey === "disturbance") {
+        return codeDescriptionToDisplayText(data as CodeDescriptionDto);
+      }
+  
+      const codeDescription = data as CodeDescriptionDto;
+  
+      return codeDescription?.code ? (
+        <Tooltip
+          label={codeDescription.description}
+          align={isLastElement ? "top" : "bottom"}
+        >
+          <span>{codeDescription.code}</span>
+        </Tooltip>
+      ) : (
+        PLACE_HOLDER
+      );
+    } else if (isDate(columnKey)) {
+      return data ? formatLocalDate(String(data)) : PLACE_HOLDER;
+    } else {
+      return data ? String(data) : PLACE_HOLDER;
+    }
   };
 
   return (
@@ -88,7 +131,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
             </TableHead>
             <TableBody>
               {
-                filteredData.map(row => {
+                filteredData.map((row, index) => {
                   const isExpanded = expandedRows.includes(row.activityId);
                   return (
                     <React.Fragment key={row.activityId}>
@@ -100,8 +143,9 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                         {
                           DisturbanceTableHeaders.map(header => (
                             <TableCell key={header.key}>
-                              {/* TODO: conditionally render cell content */}
-                              {String(row[header.key] ?? "")}
+                              {
+                                renderCellContent(row[header.key], header.key, index === filteredData.length - 1)
+                              }
                             </TableCell>
                           ))
                         }
