@@ -4,7 +4,7 @@ import { MapBoundaryVegetation, Development, CropHealth } from "@carbon/icons-re
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { fetchOpeningTombstone } from "@/services/OpeningDetailsService";
+import { fetchOpeningSsu, fetchOpeningTombstone } from "@/services/OpeningDetailsService";
 import { putUserRecentOpening } from "@/services/OpeningService";
 import { OpeningStandardUnits, OpeningSummary, OpeningOverview, OpeningActivities } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
@@ -44,12 +44,19 @@ const OpeningDetails = () => {
     refetchOnMount: 'always'
   })
 
-  const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
-  const openingNotFound = openingDetailsTombstoneQuery.isError && openingDetailsError?.response?.status === 404;
+  const openingDetailsSsuQuery = useQuery({
+    queryKey: ['openings', openingId, 'ssu'],
+    queryFn: () => fetchOpeningSsu(Number(openingId)),
+    enabled: !!openingId,
+    refetchOnMount: 'always'
+  });
 
   const postRecentOpeningMutation = useMutation({
     mutationFn: (openingId: number) => putUserRecentOpening(openingId)
   });
+  
+  const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
+  const openingNotFound = openingDetailsTombstoneQuery.isError && openingDetailsError?.response?.status === 404;
 
   /**
    * Update most recent openings when this page loads
@@ -111,7 +118,10 @@ const OpeningDetails = () => {
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
-              <OpeningStandardUnits />
+              <OpeningStandardUnits
+                standardUnitObjs={openingDetailsSsuQuery.data}
+                isLoading={openingDetailsSsuQuery.isLoading}>
+              </OpeningStandardUnits>
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
