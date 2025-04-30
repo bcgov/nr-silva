@@ -8,6 +8,7 @@ import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
 import DisturbanceAccordion from "./DisturbanceAccordion";
 import { useQuery } from "@tanstack/react-query";
 import { delayMock } from "../../../utils/MockUtils";
+import ActivityAccordion from "./ActivityAccordion";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -69,9 +70,15 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
           : null
       }
 
-      <Column sm={4} md={8} lg={16}>
-        act
-      </Column>
+      {
+        (activityQuery.data?.page.totalElements ?? 0) > 0
+          ? (
+            <Column sm={4} md={8} lg={16}>
+              <ActivityAccordion data={activityQuery.data?.content!} />
+            </Column>
+          )
+          : null
+      }
     </Grid>
   )
 }

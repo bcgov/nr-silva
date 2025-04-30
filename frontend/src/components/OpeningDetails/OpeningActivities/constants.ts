@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { MockedActivityDetailType, MockedActivityResponseType, MockedDisturbanceType } from "./definitions";
+import { MockedActivityDetailType, MockedActivityResponseType, MockedActivityType, MockedDisturbanceType } from "./definitions";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
@@ -17,16 +17,20 @@ export const DisturbanceTableHeaders: TableHeaderType<keyof MockedDisturbanceTyp
   { key: "endDate", header: "End date" },
 ];
 
-// export const ActivityTableHeaders: SpeciesHeaderType[] = [
-//   {
-//     key: 'description',
-//     header: 'Preferred species'
-//   },
-//   {
-//     key: 'minHeight',
-//     header: 'Minimum height (m)'
-//   }
-// ];
+export const ActivityTableHeaders: TableHeaderType<keyof MockedActivityType>[] = [
+  { key: "activityId", header: "Activity treatment unit ID" },
+  { key: "status", header: "Status" },
+  { key: "base", header: "Base" },
+  { key: "tech", header: "Tech" },
+  { key: "method", header: "Method" },
+  { key: "objective", header: "Objective" },
+  { key: "area", header: "Area" },
+  { key: "fundingSource", header: "Funding Source" },
+  { key: "projectId", header: "Project ID" },
+  { key: "updateTimestamp", header: "Last updated" },
+  { key: "plannedDate", header: "Planned date" },
+  { key: "endDate", header: "End date" },
+];
 
 
 
