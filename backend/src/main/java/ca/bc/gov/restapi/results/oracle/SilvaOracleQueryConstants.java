@@ -12,7 +12,7 @@ public class SilvaOracleQueryConstants {
         ,cboa.cutting_permit_id AS cutting_permit_id
         ,cboa.timber_mark AS timber_mark
         ,cboa.cut_block_id AS cut_block_id
-        ,(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
+        ,TRIM(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
         ,op.open_category_code AS category
         ,op.opening_status_code AS status
         ,cboa.opening_gross_area as opening_gross_area
@@ -54,6 +54,10 @@ public class SilvaOracleQueryConstants {
                   cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
                   cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
               )
+             OR
+             (
+              TRIM((LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number)) = TRIM(:mainSearchTerm)
+             )
           )
           AND (
               'NOVALUE' in (:#{#filter.orgUnit}) OR ou.org_unit_code IN (:#{#filter.orgUnit})
