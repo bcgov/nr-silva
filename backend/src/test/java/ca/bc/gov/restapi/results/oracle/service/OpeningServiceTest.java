@@ -11,6 +11,9 @@ import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingSpeciesProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewMilestoneProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewOpeningProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
@@ -18,11 +21,10 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
-
+import ca.bc.gov.restapi.results.oracle.util.OpeningTestDataFactory;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingSpeciesProjection;
-import ca.bc.gov.restapi.results.oracle.util.OpeningTestDataFactory;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | Opening Service")
@@ -118,10 +115,10 @@ class OpeningServiceTest {
 
         // Verify OpeningDetailsTombstoneDto
         Assertions.assertEquals("OPN12345", dto.tombstone().openingNumber());
-        Assertions.assertEquals(OpeningStatusEnum.APP, dto.tombstone().openingStatus());
+        Assertions.assertEquals(OpeningStatusEnum.APP.toCodeDescriptionDto(), dto.tombstone().openingStatus());
         Assertions.assertEquals("DCC", dto.tombstone().orgUnitCode());
         Assertions.assertEquals("Cariboo-Chilcotin Natural Resource District", dto.tombstone().orgUnitName());
-        Assertions.assertEquals(OpeningCategoryEnum.FTML, dto.tombstone().openCategory());
+        Assertions.assertEquals(OpeningCategoryEnum.FTML.toCodeDescriptionDto(), dto.tombstone().openCategory());
         Assertions.assertEquals("FILE987", dto.tombstone().fileId());
         Assertions.assertEquals("CB001", dto.tombstone().cutBlockID());
         Assertions.assertEquals("CP456", dto.tombstone().cuttingPermitId());
