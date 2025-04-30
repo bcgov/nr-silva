@@ -1,18 +1,17 @@
 package ca.bc.gov.restapi.results.oracle.dto.opening;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import java.time.LocalDate;
 import lombok.With;
 
 @With
 public record OpeningDetailsTombstoneDto(
     String openingNumber,
-    OpeningStatusEnum openingStatus,
+    CodeDescriptionDto openingStatus,
     String orgUnitCode,
     String orgUnitName,
-    OpeningCategoryEnum openCategory,
+    CodeDescriptionDto openCategory,
     ForestClientDto client,
     String fileId,
     String cutBlockID,

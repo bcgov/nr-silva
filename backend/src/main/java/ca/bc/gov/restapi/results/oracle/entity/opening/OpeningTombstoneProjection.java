@@ -1,7 +1,5 @@
 package ca.bc.gov.restapi.results.oracle.entity.opening;
 
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import java.time.LocalDate;
 
 public interface OpeningTombstoneProjection {
@@ -10,13 +8,15 @@ public interface OpeningTombstoneProjection {
 
   String getOpeningNumber();
 
-  OpeningStatusEnum getOpeningStatus();
+  String getOpeningStatusCode();
+  String getOpeningStatusName();
 
   String getOrgUnitCode();
 
   String getOrgUnitName();
 
-  OpeningCategoryEnum getOpenCategory();
+  String getOpenCategoryCode();
+  String getOpenCategoryName();
 
   String getClient();
 
