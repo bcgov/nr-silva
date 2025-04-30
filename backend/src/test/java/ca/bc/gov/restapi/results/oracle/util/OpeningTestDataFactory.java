@@ -339,7 +339,7 @@ public class OpeningTestDataFactory {
             "areas of poor plantability due to hygric conditions and bedrock areas.; (ALL626) ; " +
             "ALL SPECIES - minimum inter-tree spacing within 20 metres of either site of road centreline "
             +
-            "may be reduced to 1 metre where road construction or harvesting activities have created s"
+            "may be reduced to 1 metre where road construction or harvesting activities have created s "
             +
             "oil disturbance and reduced plantability.; (FDC628) ; FDC - is a preffered species on steep "
             +
