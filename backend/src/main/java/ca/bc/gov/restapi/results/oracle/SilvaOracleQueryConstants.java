@@ -12,7 +12,7 @@ public class SilvaOracleQueryConstants {
         ,cboa.cutting_permit_id AS cutting_permit_id
         ,cboa.timber_mark AS timber_mark
         ,cboa.cut_block_id AS cut_block_id
-        ,(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
+        ,TRIM(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
         ,op.open_category_code AS category
         ,op.opening_status_code AS status
         ,cboa.opening_gross_area as opening_gross_area
@@ -54,6 +54,10 @@ public class SilvaOracleQueryConstants {
                   cboa.TIMBER_MARK = :#{#filter.mainSearchTerm} OR
                   cboa.FOREST_FILE_ID = :#{#filter.mainSearchTerm}
               )
+             OR
+             (
+              TRIM((LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number)) = TRIM(:#{#filter.mainSearchTerm})
+             )
           )
           AND (
               'NOVALUE' in (:#{#filter.orgUnit}) OR ou.org_unit_code IN (:#{#filter.orgUnit})
@@ -79,7 +83,7 @@ public class SilvaOracleQueryConstants {
             OR
             (
               cboa.disturbance_start_date IS NOT NULL AND
-              cboa.disturbance_start_date between TO_TIMESTAMP(:#{#filter.disturbanceDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
+              cboa.disturbance_start_date between TO_DATE(:#{#filter.disturbanceDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.disturbanceDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
@@ -90,7 +94,7 @@ public class SilvaOracleQueryConstants {
             (
               smrg.due_late_date IS NOT NULL AND
               smrg.silv_milestone_type_code = 'RG' AND
-              smrg.due_late_date between TO_TIMESTAMP(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
+              smrg.due_late_date between TO_DATE(:#{#filter.regenDelayDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.regenDelayDateEnd},'YYYY-MM-DD')
           )
           )
           AND (
@@ -103,9 +107,9 @@ public class SilvaOracleQueryConstants {
               smfg.due_late_date IS NOT NULL AND
               smfg.silv_milestone_type_code = 'FG' AND
               (
-                smfg.due_early_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_early_date between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
                 OR
-                smfg.due_late_date between TO_TIMESTAMP(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_TIMESTAMP(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
+                smfg.due_late_date between TO_DATE(:#{#filter.freeGrowingDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.freeGrowingDateEnd},'YYYY-MM-DD')
               )
           )
           )
