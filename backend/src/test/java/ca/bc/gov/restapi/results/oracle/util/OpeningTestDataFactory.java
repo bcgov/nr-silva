@@ -341,7 +341,7 @@ public class OpeningTestDataFactory {
             +
             "may be reduced to 1 metre where road construction or harvesting activities have created s "
             +
-            "oil disturbance and reduced plantability.; (FDC628) ; FDC - is a preffered species on steep "
+            "oil disturbance and reduced plantability.; (FDC628) ; FDC - is a preferred species on steep "
             +
             "southerly aspects (SE to SW) or on southerly, westerly and easterly slopes where pre-harvest "
             +
