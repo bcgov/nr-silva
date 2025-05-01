@@ -74,7 +74,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         (activityQuery.data?.page.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <ActivityAccordion data={activityQuery.data?.content!} />
+              <ActivityAccordion data={activityQuery.data?.content!} openingId={openingId}/>
             </Column>
           )
           : null

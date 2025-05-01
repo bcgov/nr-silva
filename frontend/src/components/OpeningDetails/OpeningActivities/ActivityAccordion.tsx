@@ -10,6 +10,7 @@ import "./styles.scss";
 
 type ActivityAccordionProps = {
   data: MockedActivityType[];
+  openingId: number;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -24,7 +25,7 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
-const ActivityAccordion = ({ data }: ActivityAccordionProps) => {
+const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
