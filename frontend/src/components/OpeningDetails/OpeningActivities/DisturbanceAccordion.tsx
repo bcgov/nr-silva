@@ -66,11 +66,11 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
     isLastElement: boolean
   ) => {
     if (isCodeDescription(columnKey)) {
-      if (columnKey === "disturbance") {
-        return codeDescriptionToDisplayText(data as CodeDescriptionDto);
-      }
-  
       const codeDescription = data as CodeDescriptionDto;
+
+      if (columnKey === "disturbance") {
+        return codeDescriptionToDisplayText(codeDescription);
+      }
   
       return codeDescription?.code ? (
         <Tooltip
