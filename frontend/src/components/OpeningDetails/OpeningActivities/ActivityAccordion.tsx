@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tooltip } from "@carbon/react";
+import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
 import { Activity } from "@carbon/icons-react";
 import { ActivityTableHeaders } from "./constants";
 import { MockedActivityType } from "./definitions";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import "./styles.scss";
 
 type ActivityAccordionProps = {
   data: MockedActivityType[];
@@ -62,7 +63,20 @@ const ActivityAccordion = ({ data }: ActivityAccordionProps) => {
     isLastElement: boolean
   ) => {
     if (isCodeDescription(columnKey)) {
-      const codeDescription = data as { code: string; description: string };
+      const codeDescription = data as CodeDescriptionDto;
+      
+      if (columnKey === "status") {
+        return (
+            <Tag
+              className="activity-status-tag"
+              type={codeDescription.code === "C" ? "green" : "purple"}
+              size="md"
+              >
+              {codeDescription.description}
+            </Tag>
+        );
+      }
+
       return codeDescription?.code ? (
         <Tooltip
           label={codeDescription.description}
@@ -97,7 +111,7 @@ const ActivityAccordion = ({ data }: ActivityAccordionProps) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Table
-            className="default-zebra-table-with-border"
+            className="default-zebra-table-with-border activity-table"
             aria-label="Activity table"
             useZebraStyles
           >
