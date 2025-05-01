@@ -128,7 +128,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1059,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "SU",
@@ -192,7 +192,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1058,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "HI",
@@ -256,7 +256,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1076,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "SX",
@@ -288,7 +288,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1087,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "HI",
@@ -320,7 +320,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1055,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "DS",
@@ -384,7 +384,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1074,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "RC",
@@ -640,7 +640,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1062,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "ST",
@@ -672,7 +672,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1065,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "JS",
@@ -704,7 +704,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1045,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "SU",
@@ -832,7 +832,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1089,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "DN",
@@ -928,7 +928,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1050,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "RD",
@@ -960,7 +960,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1051,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "PL",
@@ -992,7 +992,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1054,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "DS",
@@ -1120,7 +1120,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1067,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "SX",
@@ -1152,7 +1152,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1083,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "RC",
@@ -1248,7 +1248,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1075,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "DS",
@@ -1536,7 +1536,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1072,
       "status": {
         "code": "P",
-        "description": "Completed"
+        "description": "Planning"
       },
       "base": {
         "code": "HC",
@@ -1568,7 +1568,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
       "activityId": 1078,
       "status": {
         "code": "C",
-        "description": "Planning"
+        "description": "Completed"
       },
       "base": {
         "code": "FE",
