@@ -5,6 +5,15 @@ export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
 ] as const;
 
+export enum COMPLEX_ACTIVITY_CODE_ENUM {
+  DS = 'DS',
+  JS = 'JS',
+  PL = 'PL',
+  PR = 'PR',
+  SP = 'SP',
+  SU = 'SU'
+}
+
 export const DisturbanceTableHeaders: TableHeaderType<keyof MockedDisturbanceType>[] = [
   { key: "activityId", header: "Activity treatment unit ID" },
   { key: "disturbance", header: "Disturbance code" },
