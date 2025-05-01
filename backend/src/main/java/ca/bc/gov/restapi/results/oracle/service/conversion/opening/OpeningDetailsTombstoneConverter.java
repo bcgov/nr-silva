@@ -24,10 +24,16 @@ public class OpeningDetailsTombstoneConverter {
             tombstone.getOpeningId(),
             new OpeningDetailsTombstoneDto(
                 tombstone.getOpeningNumber(),
-                tombstone.getOpeningStatus(),
+                new CodeDescriptionDto(
+                    tombstone.getOpeningStatusCode(),
+                    tombstone.getOpeningStatusName()
+                ),
                 tombstone.getOrgUnitCode(),
                 tombstone.getOrgUnitName(),
-                tombstone.getOpenCategory(),
+                new CodeDescriptionDto(
+                    tombstone.getOpenCategoryCode(),
+                    tombstone.getOpenCategoryName()
+                ),
                 new ForestClientDto(
                     tombstone.getClient(),
                     null,

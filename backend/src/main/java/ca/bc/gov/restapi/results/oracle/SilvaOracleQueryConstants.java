@@ -198,10 +198,12 @@ public class SilvaOracleQueryConstants {
       SELECT
         op.opening_id,
         (LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS opening_number,
-        op.OPENING_STATUS_CODE AS opening_status,
+        op.OPENING_STATUS_CODE,
+        osc.DESCRIPTION AS opening_status_name,
         ou.ORG_UNIT_CODE,
         ou.ORG_UNIT_NAME,
-        op.OPEN_CATEGORY_CODE as open_category,
+        op.OPEN_CATEGORY_CODE,
+        occ.DESCRIPTION AS open_category_name,
         ffc.CLIENT_NUMBER AS client, -- load details FROM FCApi
         cboa.FOREST_FILE_ID AS file_id,
         cboa.CUT_BLOCK_ID,
@@ -217,6 +219,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
       LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = op.OPENING_ID AND cboa.opening_prime_licence_ind = 'Y')
       LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+      LEFT JOIN OPEN_CATEGORY_CODE occ ON (occ.OPEN_CATEGORY_CODE = op.OPEN_CATEGORY_CODE)
+      LEFT JOIN OPENING_STATUS_CODE osc ON osc.OPENING_STATUS_CODE = op.OPENING_STATUS_CODE
       WHERE op.OPENING_ID = :openingId""";
 
   public static final String GET_OPENING_OVERVIEW_OPENING = """
