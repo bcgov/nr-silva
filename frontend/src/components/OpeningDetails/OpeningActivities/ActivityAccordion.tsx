@@ -5,7 +5,7 @@ import { ActivityTableHeaders } from "./constants";
 import { MockedActivityType } from "./definitions";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import "./styles.scss";
 
 type ActivityAccordionProps = {
