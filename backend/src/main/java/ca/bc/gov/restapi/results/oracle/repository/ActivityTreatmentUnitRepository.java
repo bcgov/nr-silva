@@ -38,7 +38,7 @@ public interface ActivityTreatmentUnitRepository extends
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_BASE)
   OpeningActivityBaseProjection getOpeningActivitiesBase(Long openingId, Long atuId);
 
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENINIG_ACTIVITIES_SU)
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_SU)
   Optional<OpeningActivitySurveyProjection> getOpeningActivitySU(Long openingId, Long atuId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITY_SPECIES)

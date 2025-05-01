@@ -443,7 +443,7 @@ public class SilvaOracleQueryConstants {
         op.OPENING_ID = :openingId
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId""";
 
-  public static final String GET_OPENINIG_ACTIVITIES_SU = """
+  public static final String GET_OPENING_ACTIVITIES_SU = """
       SELECT
       	CASE
               WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SURVEY_ACTUAL_NUM_PLOTS
