@@ -1,6 +1,6 @@
-import { ComplexActivityDetailProps, MockedActivityDetailType } from "../definitions";
+import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
 
-const PlantingActivityDetail = ({ activityDetail, isLoading }: ComplexActivityDetailProps) => {
+const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     return (<div>Planting Activity Detail</div>);
 };
 

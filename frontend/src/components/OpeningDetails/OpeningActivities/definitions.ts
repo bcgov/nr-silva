@@ -133,7 +133,7 @@ export type MockedActivityType = {
 
 export type MockedActivityResponseType = PaginatedResponseType<MockedActivityType>;
 
-export type ComplexActivityDetailProps = {
+export type ActivityDetailProps = {
   activityDetail?: MockedActivityDetailType;
   isPlanning?: boolean;
   isComplex?: boolean;

@@ -11,13 +11,13 @@ import SitePreparationActivityDetail from "./SitePreprationActivityDetail";
 import SurveyActivityDetail from "./SurveyActivityDetail";
 import { JSX } from "react";
 
-type ActivityDetailProps = {
+type ActivityDetailOutlineProps = {
   activity: MockedActivityType;
   openingId: number;
   isExpanded: boolean;
 };
 
-const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailProps) => {
+const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
     queryKey: ["opening", openingId, "activities", activity.activityId],
     queryFn: () => {

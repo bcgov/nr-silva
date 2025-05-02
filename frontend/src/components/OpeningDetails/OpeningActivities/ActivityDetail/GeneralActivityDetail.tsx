@@ -1,6 +1,6 @@
-import { ComplexActivityDetailProps } from "../definitions";
+import { ActivityDetailProps } from "../definitions";
 
-const GeneralAcitivityDetail = ({activityDetail, isPlanning, isComplex, isLoading}: ComplexActivityDetailProps) => {
+const GeneralAcitivityDetail = ({activityDetail, isPlanning, isComplex, isLoading}: ActivityDetailProps) => {
     return (
         <div>General Acitivity</div>
     )
