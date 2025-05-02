@@ -105,15 +105,13 @@ export type MockedSurveyDetail = {
   }
 }
 
-export type MockedActivityDetailType =
-  MockedBaseActivityDetail & Partial<(
-    | MockedDirectSeedingDetail
-    | MockedJuvenileSpacingDetail
-    | MockedPlantingDetail
-    | MockedPruningDetail
-    | MockedSitePrepDetail
-    | MockedSurveyDetail
-  )>;
+export type MockedActivityDetailType = MockedBaseActivityDetail &
+  Partial<MockedDirectSeedingDetail> &
+  Partial<MockedJuvenileSpacingDetail> &
+  Partial<MockedPlantingDetail> &
+  Partial<MockedPruningDetail> &
+  Partial<MockedSitePrepDetail> &
+  Partial<MockedSurveyDetail>;
 
 export type MockedActivityType = {
   activityId: number;
