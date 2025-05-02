@@ -53,6 +53,7 @@ const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailOutli
 
   return (
     <Grid className="activity-detail-grid">
+
       <Column sm={4} md={4} lg={16}>
         <GeneralAcitivityDetail
           activityDetail={activityDetailQuery.data}
@@ -60,16 +61,19 @@ const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailOutli
           isComplex={isComplexActivity()}
           isLoading={activityDetailQuery.isLoading}/>
       </Column>
+
       {isComplexActivity() && (
         <Column sm={4} md={4} lg={16}>
           {renderAdditionalDetail()}
         </Column>
       )}
+
       <Column sm={4} md={4} lg={16}>
         <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
           {activityDetailQuery.data?.comment}
         </CardItem>
       </Column>
+      
     </Grid>
   )
 };
