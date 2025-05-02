@@ -10,6 +10,8 @@ import PruningActivityDetail from "./PruningActivityDetail";
 import SitePreparationActivityDetail from "./SitePreprationActivityDetail";
 import SurveyActivityDetail from "./SurveyActivityDetail";
 import { JSX } from "react";
+import GeneralAcitivityDetail from "./GeneralActivityDetail";
+import { CardItem } from "../../../Card";
 
 type ActivityDetailOutlineProps = {
   activity: MockedActivityType;
@@ -49,17 +51,25 @@ const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailOutli
     return detailComponents[code];
   };
 
-  const additionalDetail = renderAdditionalDetail();
-
   return (
-    <Grid>
-      <Column></Column>
+    <Grid className="activity-detail-grid">
+      <Column sm={4} md={4} lg={16}>
+        <GeneralAcitivityDetail
+          activityDetail={activityDetailQuery.data}
+          isPlanning={activity.status.code === "P" ? true : false}
+          isComplex={isComplexActivity()}
+          isLoading={activityDetailQuery.isLoading}/>
+      </Column>
       {isComplexActivity() && (
-        <Column>
+        <Column sm={4} md={4} lg={16}>
           {renderAdditionalDetail()}
         </Column>
       )}
-      <Column></Column>
+      <Column sm={4} md={4} lg={16}>
+        <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
+          {activityDetailQuery.data?.comment}
+        </CardItem>
+      </Column>
     </Grid>
   )
 };
