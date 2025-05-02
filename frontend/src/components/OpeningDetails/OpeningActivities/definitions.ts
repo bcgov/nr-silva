@@ -132,3 +132,8 @@ export type MockedActivityType = {
 
 
 export type MockedActivityResponseType = PaginatedResponseType<MockedActivityType>;
+
+export type ComplexActivityDetailProps = {
+  activityDetail?: MockedActivityDetailType;
+  isLoading?: boolean;
+};

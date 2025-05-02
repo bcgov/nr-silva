@@ -6,6 +6,8 @@ import { MockedActivityType } from "./definitions";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import ActivityDetail from "./ActivityDetail";
+
 import "./styles.scss";
 
 type ActivityAccordionProps = {
@@ -27,6 +29,7 @@ const AccordionTitle = ({ total }: { total: number }) => (
 
 const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [clickedRow, setClickedRow] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const filteredData = useMemo(() => {
@@ -46,6 +49,11 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
         ? prev.filter((id) => id !== activityId)
         : [...prev, activityId]
     );
+    setClickedRow(activityId);
+  };
+
+  const handleRowClick = (activityId: number) => {
+    setClickedRow(activityId);
   };
 
   const isCodeDescription = (value: string): boolean => {
@@ -65,7 +73,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   ) => {
     if (isCodeDescription(columnKey)) {
       const codeDescription = data as CodeDescriptionDto;
-      
+
       if (columnKey === "status") {
         return (
             <Tag
@@ -135,6 +143,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
                       aria-label={`Expand row for Activity ID ${row.activityId}`}
                       isExpanded={isExpanded}
                       onExpand={() => handleRowExpand(row.activityId)}
+                      onClick={() => handleRowClick(row.activityId)}
                     >
                       {ActivityTableHeaders.map((header) => (
                         <TableCell key={header.key}>
@@ -147,8 +156,9 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
                       ))}
                     </TableExpandRow>
                     <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
-                      {/* Add detailed view component here if needed */}
-                      <div>Details for Activity ID {row.activityId}</div>
+                      {isExpanded && clickedRow === row.activityId && (
+                        <ActivityDetail activity={row} openingId={openingId} isExpanded={isExpanded} />
+                      )}
                     </TableExpandedRow>
                   </React.Fragment>
                 );
