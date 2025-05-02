@@ -1644,7 +1644,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 511.1,
     "actualCost": 152.0,
     "comment": "Survived a deer invasion. Barely.",
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 336,
       "totalSpecies": 3,
       "species": [
@@ -1735,7 +1735,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 984.7,
     "actualCost": 216.8,
     "comment": null,
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 144,
       "totalSpecies": 1,
       "species": [
@@ -1870,7 +1870,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 645.2,
     "actualCost": 474.3,
     "comment": null,
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 381,
       "totalSpecies": 2,
       "species": [
@@ -2118,7 +2118,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 241.8,
     "actualCost": 738.6,
     "comment": null,
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 458,
       "totalSpecies": 3,
       "species": [
@@ -2224,7 +2224,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 542.1,
     "actualCost": 210.4,
     "comment": null,
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 137,
       "totalSpecies": 2,
       "species": [
@@ -2255,7 +2255,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 584.1,
     "actualCost": 316.9,
     "comment": null,
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 215,
       "totalSpecies": 2,
       "species": [
@@ -2286,7 +2286,7 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "plannedCost": 196.6,
     "actualCost": 984.7,
     "comment": "Survived a deer invasion. Barely.",
-    "plantingSpecification": {
+    "directSeedingSpecification": {
       "totalPlanting": 245,
       "totalSpecies": 2,
       "species": [

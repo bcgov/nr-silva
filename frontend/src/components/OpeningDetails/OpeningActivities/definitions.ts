@@ -51,7 +51,7 @@ export type MockedPlantingSpecies = MockedDirectSeedingSpecies & {
 
 // Base type = DS
 export type MockedDirectSeedingDetail = {
-  plantingSpecification: {
+  directSeedingSpecification: {
     totalPlanting: number;
     totalSpecies: number;
     species: MockedDirectSeedingSpecies[]
