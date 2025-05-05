@@ -61,4 +61,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_LAYER)
   Optional<OpeningStockingLayerProjection> getOpeningStockingLayerByOpeningId(Long openingId, Long ssuId);
+
+
+
 }
