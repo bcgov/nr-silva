@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.oracle.service.opening.OpeningTrendsService;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

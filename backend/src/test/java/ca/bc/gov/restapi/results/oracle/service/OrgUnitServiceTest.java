@@ -79,4 +79,18 @@ class OrgUnitServiceTest {
     verify(orgUnitRepository, times(0)).findAll();
   }
 
+  @Test
+  @DisplayName("Find all org units empty response should succeed")
+  void findNoOrgUnits_emptyResponse_shouldSucceed() {
+    orgUnitService = new OrgUnitService(orgUnitRepository, silvaConfiguration.withOrgUnits(List.of()));
+
+    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
+    List<CodeDescriptionDto> entities = orgUnitService.findAllOrgUnits();
+
+    Assertions.assertNotNull(entities);
+    Assertions.assertTrue(entities.isEmpty());
+
+    verify(orgUnitRepository, times(0)).findAll();
+  }
+
 }

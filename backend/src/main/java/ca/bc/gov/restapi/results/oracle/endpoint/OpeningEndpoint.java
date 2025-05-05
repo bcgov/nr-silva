@@ -1,14 +1,19 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
-import ca.bc.gov.restapi.results.oracle.service.OpeningService;
+import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,40 +28,68 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/openings")
 @RequiredArgsConstructor
+@Slf4j
 public class OpeningEndpoint {
 
   private final OpeningSearchService openingSearchService;
-  private final OpeningService openingService;
+  private final OpeningDetailsService openingService;
 
   /**
    * Get the Opening Tombstone/Summary information.
    *
    * @param openingId Opening ID
    * @return OpeningTombstoneDto
-   * @throws OpeningNotFoundException if no tombstone information is found for the given Opening ID.
+   * @throws OpeningNotFoundException if no tombstone information is found for the given Opening
+   *                                  ID.
    */
   @GetMapping("/{openingId}/tombstone")
   public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(
       @PathVariable Long openingId) {
-    return openingService.getOpeningTombstone(openingId).orElseThrow(() -> new OpeningNotFoundException(openingId));
+    return openingService.getOpeningTombstone(openingId)
+        .orElseThrow(() -> new OpeningNotFoundException(openingId));
   }
 
-/**
- * Get the Opening Stocking Details (SSU) for a given Opening ID.
- *
- * @param openingId Opening ID
- * @return List of {@link OpeningDetailsStockingDto} containing stocking details.
- * @throws OpeningNotFoundException if no stocking details are found for the given Opening ID.
- */
+  /**
+   * Get the Opening Stocking Details (SSU) for a given Opening ID.
+   *
+   * @param openingId Opening ID
+   * @return List of {@link OpeningDetailsStockingDto} containing stocking details.
+   * @throws OpeningNotFoundException if no stocking details are found for the given Opening ID.
+   */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(
       @PathVariable Long openingId) {
     List<OpeningDetailsStockingDto> results = openingService.getOpeningStockingDetails(openingId);
 
-    if(results.isEmpty())
+    if (results.isEmpty()) {
       throw new OpeningNotFoundException(openingId);
+    }
 
     return results;
+  }
+
+  @GetMapping("/{openingId}/disturbances")
+  public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
+      @PathVariable Long openingId,
+      @RequestParam Map<String, String> allRequestParams,
+      Pageable pageable
+  ) {return openingService.getOpeningActivitiesDisturbances(openingId,pageable);
+  }
+
+  @GetMapping("/{openingId}/activities")
+  public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivities(
+      @PathVariable Long openingId,
+      @RequestParam Map<String, String> allRequestParams,
+      Pageable pageable) {
+    return openingService.getOpeningActivitiesActivities(openingId, pageable);
+  }
+
+  @GetMapping("/{openingId}/activities/{atuId}")
+  public OpeningActivityBaseDto getOpeningActivity(
+      @PathVariable Long openingId,
+      @PathVariable Long atuId
+  ) {
+    return openingService.getOpeningActivitiesActivity(openingId,atuId);
   }
 
   /**

@@ -49,7 +49,9 @@ class ForestClientServiceTest {
             "Middle",
             ForestClientStatusEnum.ACTIVE,
             ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
-            "TBA");
+            "TBA",
+            "TIMBER SALES MANAGER BABINE"
+            );
 
     when(forestClientApiProvider.fetchClientByNumber(clientNumber))
         .thenReturn(Optional.of(clientDto));
@@ -84,7 +86,8 @@ class ForestClientServiceTest {
             "Middle",
             ForestClientStatusEnum.ACTIVE,
             ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
-            "TBA");
+            "TBA",
+            "TIMBER SALES MANAGER BABINE");
 
     when(forestClientApiProvider.fetchClientByNumber(fixedClientNumber))
         .thenReturn(Optional.of(clientDto));
@@ -150,7 +153,8 @@ class ForestClientServiceTest {
                     null,
                     ForestClientStatusEnum.ACTIVE,
                     ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
-                    "MOF"
+                    "MOF",
+                    "MINISTRY OF FORESTS"
                 )
             )
         );

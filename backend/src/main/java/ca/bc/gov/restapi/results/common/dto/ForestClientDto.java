@@ -21,7 +21,8 @@ public record ForestClientDto(
     String legalMiddleName,
     ForestClientStatusEnum clientStatusCode,
     ForestClientTypeEnum clientTypeCode,
-    String acronym
+    String acronym,
+    String name
 ) {
 
   /**

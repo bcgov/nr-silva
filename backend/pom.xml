@@ -325,11 +325,13 @@
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
+            <exclude>**/enums/**</exclude>
+            <exclude>**/repository/**</exclude>
             <exclude>**/job/**</exclude>
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
             <exclude>**/*Constants.*</exclude>
-            <exclude>**/security/*Converter.*</exclude>
+            <exclude>**/security/**</exclude>
           </excludes>
         </configuration>
         <executions>

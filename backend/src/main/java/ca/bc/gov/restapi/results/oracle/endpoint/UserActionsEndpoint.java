@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.service.OpeningTrendsService;
+import ca.bc.gov.restapi.results.oracle.service.opening.OpeningTrendsService;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;
 import java.util.List;
