@@ -16,5 +16,35 @@
         .activity-detail-content-title {
             @include type.type-style('heading-02');
         }
+
+        .direct-seeding-table-container {
+            display: flex;
+            flex-direction: column;
+
+            border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+            border-radius: 0.25rem;
+
+            .direct-seeding-table-title-section {
+                display: flex;
+                flex-direction: row;
+                justify-content: start;
+                align-items: center;
+                gap: 1rem;
+                padding: 1rem 1.5rem;
+
+                .direct-seeding-table-title-section-body {
+                    @include type.type-style('body-02');
+                    font-size: 14px;
+                    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+                }
+            }
+
+            .direct-seeding-table {
+
+                .direct-seeding-table-cell {
+                    padding-left: 1rem;
+                }
+            }
+        }
     }
 }
