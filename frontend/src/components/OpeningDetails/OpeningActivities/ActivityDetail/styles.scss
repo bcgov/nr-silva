@@ -10,10 +10,10 @@
         padding-block-end: 2rem;
     }
 
-    .expanded-row-content-grid {
+    .activity-detail-content-grid {
         row-gap: 2rem;
 
-        .expanded-row-title {
+        .activity-detail-content-title {
             @include type.type-style('heading-02');
         }
     }

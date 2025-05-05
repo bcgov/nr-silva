@@ -4,12 +4,12 @@ import { CardItem } from "../../../Card";
 
 const SurveyActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     return (
-        <Grid className="expanded-row-content-grid">
+        <Grid className="activity-detail-content-grid">
             <Column sm={4} md={4} lg={16}>
                 {isLoading ? (
-                    <SkeletonText className="expanded-row-title" />
+                    <SkeletonText className="activity-detail-content-title" />
                 ) : (
-                    <h6 className="expanded-row-title">
+                    <h6 className="activity-detail-content-title">
                         Survery Specifications
                     </h6>
                 )}
