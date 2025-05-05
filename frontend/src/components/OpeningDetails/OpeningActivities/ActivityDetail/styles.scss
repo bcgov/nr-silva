@@ -3,7 +3,7 @@
 
 .activity-detail-grid {
     padding: 0;
-    row-gap: 1.5rem;
+    row-gap: 2.5rem;
 
     tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
         padding-block: 2rem;

@@ -13,6 +13,8 @@ import { JSX } from "react";
 import GeneralAcitivityDetail from "./GeneralActivityDetail";
 import { CardItem } from "../../../Card";
 
+import "./styles.scss";
+
 type ActivityDetailOutlineProps = {
   activity: MockedActivityType;
   openingId: number;
@@ -73,7 +75,7 @@ const ActivityDetail = ({ activity, openingId, isExpanded }: ActivityDetailOutli
           {activityDetailQuery.data?.comment}
         </CardItem>
       </Column>
-      
+
     </Grid>
   )
 };
