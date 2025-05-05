@@ -302,6 +302,25 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
+  @DisplayName("Get Opening Activities Disturbances Details sorted")
+  void getOpeningActivitiesDisturbancesDetails_sorted() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/disturbances?sort=atuId,asc")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("1"))
+        .andExpect(jsonPath("$.content[0].atuId").value(4184301L))
+        .andExpect(jsonPath("$.content[0].disturbance.code").value("B"))
+        .andReturn();
+  }
+
+  @Test
   @DisplayName("Get Opening Activities Activities Details by existing openingId should succeed")
   void getOpeningActivitiesActivitiesDetails_noResults_shouldReturnEmpty() throws Exception {
     mockMvc
