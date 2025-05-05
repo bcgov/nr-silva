@@ -38,11 +38,11 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
             </Column>
 
             <Column sm={16} md={16} lg={16}>
-                <div className="direct-seeding-table-container">
-                    <div className="direct-seeding-table-title-section">
-                        <p className="direct-seeding-table-title-section-body">{`Total planting: ${activityDetail?.directSeedingSpecification?.totalPlanting}`}</p>
-                        <p className="direct-seeding-table-title-section-body">{'|'}</p>
-                        <p className="direct-seeding-table-title-section-body">{`Total species: ${activityDetail?.directSeedingSpecification?.totalSpecies}`}</p>
+                <div className="species-table-container">
+                    <div className="species-table-title-section">
+                        <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.directSeedingSpecification?.totalPlanting}`}</p>
+                        <p className="species-table-title-section-body">{'|'}</p>
+                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.directSeedingSpecification?.totalSpecies}`}</p>
                     </div>
                     {/* Table Skeleton */}
                     {
@@ -69,7 +69,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                         !isLoading && activityDetail?.directSeedingSpecification?.species.length ?
                             (
                                 <Table
-                                    className="default-zebra-table direct-seeding-table"
+                                    className="default-zebra-table species-table"
                                     aria-label="Direct seeding species table"
                                     useZebraStyles>
                                         <TableHead>
@@ -89,7 +89,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                                                             {
                                                                 DirectSeedingHeaders.map((header) => {
                                                                     return (
-                                                                        <TableCell className="direct-seeding-table-cell" key={header.key}>
+                                                                        <TableCell className="species-table-cell" key={header.key}>
                                                                             {renderCellContent(row[header.key], header.key)}
                                                                         </TableCell>
                                                                     )
