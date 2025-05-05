@@ -43,11 +43,11 @@ public class OpeningDetailsActivitiesService {
   private static final Map<String, String> ACTIVITIES_SORT_FIELDS = Map.of(
       "atuId", "atu.ACTIVITY_TREATMENT_UNIT_ID",
       "base", "atu.SILV_BASE_CODE",
-      "tech", "atu.SILV_SYSTEM_VARIANT_CODE",
-      "method", "atu.SILV_SYSTEM_CODE",
+      "tech", "atu.SILV_TECHNIQUE_CODE",
+      "method", "atu.SILV_METHOD_CODE",
       "area", "atu.TREATMENT_AMOUNT",
-      "funding", "atu.TREATMENT_AMOUNT",
-      "projectId", "atu.TREATMENT_AMOUNT",
+      "funding", "atu.SILV_FUND_SRCE_CODE",
+      "projectId", "atu.SILVICULTURE_PROJECT_ID",
       "startDate", "atu.ATU_START_DATE",
       "endDate", "atu.ATU_COMPLETION_DATE",
       "lastUpdate", "atu.UPDATE_TIMESTAMP"
