@@ -337,4 +337,101 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.content[0].atuId").value(4184319))
         .andReturn();
   }
+
+  @Test
+  @DisplayName("Get Opening Activities PL should succeed")
+  void getOpeningActivitiesActivitiesDetails_typePL_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/activities/4184319")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.species[0].numberBeyondTransferLimit").value(0))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities SU should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeSU_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/activities/4184320")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(4527))
+        .andExpect(jsonPath("$.treatedAmount").value(6.3))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities PR should succeed")
+  void getOpeningActivitiesActivitiesDetails_typePR_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1524010/activities/3306979")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.intraAgencyNumber").value("PR14LMN001"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities JS should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeJS_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1524010/activities/2930470")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.intraAgencyNumber").value("SU12LMN013"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities SP should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeSP_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1009974/activities/1683934")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(715011423))
+        .andExpect(jsonPath("$.treatedAmount").value(0.5))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities General should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeGeneral_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1009974/activities/3098703")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(715042147))
+        .andExpect(jsonPath("$.treatedAmount").value(25.5))
+        .andReturn();
+  }
 }
+//DS
