@@ -84,6 +84,8 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
               {codeDescription.description}
             </Tag>
         );
+      } else if (columnKey === "base") {
+        return String(`${codeDescription.code} - ${codeDescription.description}`);
       }
 
       return codeDescription?.code ? (
