@@ -71,10 +71,9 @@ export type MockedJuvenileSpacingDetail = {
 // Base type = PL
 export type MockedPlantingDetail = {
   plantingSpecification: {
-    targetInterTreeDistance: number | null;
-    allowableVariationInterTreeDistance: number | null;
-    allowableTreesPerPlot: number | null;
-    spacingPerHa: number | null;
+    totalPlanting: number;
+    totalSpecies: number;
+    species: MockedPlantingSpecies[];
   }
 }
 

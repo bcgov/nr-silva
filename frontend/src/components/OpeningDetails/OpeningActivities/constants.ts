@@ -2098,10 +2098,22 @@ export const MOCKED_ACTIVITY_DETAIL: MockedActivityDetailType[] = [
     "actualCost": 711.5,
     "comment": null,
     "plantingSpecification": {
-      "targetInterTreeDistance": 4.8,
-      "allowableVariationInterTreeDistance": 0.3,
-      "allowableTreesPerPlot": 14,
-      "spacingPerHa": 74.2
+      "totalPlanting": 458,
+      "totalSpecies": 3,
+      "species": [
+        {
+          "speciesType": {
+            "code": "S1",
+            "description": "Species A"
+          },
+          "numberPlanted": 300,
+          "numberBeyondTransferLimit": 50,
+          "cbst": true,
+          "lot": 60,
+          "requestId": 56655,
+          "bidPricePerTree": 1000,
+        }
+      ]
     },
     "base": {
       "code": "PL",
