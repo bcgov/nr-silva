@@ -41,7 +41,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                 <div className="species-table-container">
                     <div className="species-table-title-section">
                         <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.directSeedingSpecification?.totalPlanting}`}</p>
-                        <p className="species-table-title-section-body">{'|'}</p>
+                        <p className="species-table-title-section-body">{'\u007c'}</p>
                         <p className="species-table-title-section-body">{`Total species: ${activityDetail?.directSeedingSpecification?.totalSpecies}`}</p>
                     </div>
                     {/* Table Skeleton */}
@@ -58,8 +58,8 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                         !isLoading && !activityDetail?.directSeedingSpecification?.species.length ? (
                             <EmptySection
                                 pictogram="Magnify"
-                                title="There are no openings to show yet"
-                                description="Your recent openings will appear here once you generate one"
+                                title="There are no species to show yet"
+                                description=""
                                 fill="#0073E6"
                             />
                         ) : null
