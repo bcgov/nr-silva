@@ -273,13 +273,165 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   @Test
   @DisplayName("Get Opening Stocking Details by non-existing openingId should return 404")
   void getOpeningStockingDetails_nonExistingOpeningId_shouldReturn404() throws Exception {
-    Long nonExistentOpeningId = 999999999L;
 
     mockMvc
             .perform(
-                    get("/api/openings/" + nonExistentOpeningId + "/ssu")
+                    get("/api/openings/999999999/ssu")
                             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
   }
+
+  @Test
+  @DisplayName("Get Opening Activities Disturbances Details by existing openingId should succeed")
+  void getOpeningActivitiesDisturbancesDetails_noResults_shouldReturnEmpty() throws Exception {
+    mockMvc
+            .perform(
+                    get("/api/openings/1796497/disturbances")
+                            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$.page.number").value("0"))
+            .andExpect(jsonPath("$.page.size").value("20"))
+            .andExpect(jsonPath("$.page.totalElements").value("1"))
+            .andExpect(jsonPath("$.content[0].atuId").value(4184301L))
+            .andExpect(jsonPath("$.content[0].disturbance.code").value("B"))
+            .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities Disturbances Details sorted")
+  void getOpeningActivitiesDisturbancesDetails_sorted() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/disturbances?sort=atuId,asc")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("1"))
+        .andExpect(jsonPath("$.content[0].atuId").value(4184301L))
+        .andExpect(jsonPath("$.content[0].disturbance.code").value("B"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities Activities Details by existing openingId should succeed")
+  void getOpeningActivitiesActivitiesDetails_noResults_shouldReturnEmpty() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/activities")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("2"))
+        .andExpect(jsonPath("$.content[0].atuId").value(4184319))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities PL should succeed")
+  void getOpeningActivitiesActivitiesDetails_typePL_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/activities/4184319")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.species[0].numberBeyondTransferLimit").value(0))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities SU should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeSU_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1796497/activities/4184320")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(4527))
+        .andExpect(jsonPath("$.treatedAmount").value(6.3))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities PR should succeed")
+  void getOpeningActivitiesActivitiesDetails_typePR_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1524010/activities/3306979")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.intraAgencyNumber").value("PR14LMN001"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities JS should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeJS_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1524010/activities/2930470")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.intraAgencyNumber").value("SU12LMN013"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities SP should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeSP_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1009974/activities/1683934")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(715011423))
+        .andExpect(jsonPath("$.treatedAmount").value(0.5))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Activities General should succeed")
+  void getOpeningActivitiesActivitiesDetails_typeGeneral_shouldReturn() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1009974/activities/3098703")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.licenseeActivityId").value(715042147))
+        .andExpect(jsonPath("$.treatedAmount").value(25.5))
+        .andReturn();
+  }
 }
+//DS

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.4</version>
+    <version>3.4.5</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -41,12 +41,12 @@
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
     <hibernate.version>6.6.3.Final</hibernate.version>
-    <testcontainers.version>1.20.6</testcontainers.version>
+    <testcontainers.version>1.21.0</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
-    <spring-oauth2.version>3.4.4</spring-oauth2.version>
+    <spring-oauth2.version>3.4.5</spring-oauth2.version>
     <spring-security.version>6.4.5</spring-security.version>
     <logback-classic.version>1.5.18</logback-classic.version>
-    <spring-logging.version>3.4.4</spring-logging.version>
+    <spring-logging.version>3.4.5</spring-logging.version>
     <oracle-jdbc.version>21.17.0.0</oracle-jdbc.version>
   </properties>
 
@@ -226,7 +226,7 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock-standalone</artifactId>
-      <version>3.12.1</version>
+      <version>3.13.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -325,11 +325,13 @@
             <exclude>**/dto/**</exclude>
             <exclude>**/entity/**</exclude>
             <exclude>**/exception/**</exclude>
+            <exclude>**/enums/**</exclude>
+            <exclude>**/repository/**</exclude>
             <exclude>**/job/**</exclude>
             <exclude>**/*$*Builder*</exclude>
             <exclude>**/ResultsApplication.*</exclude>
             <exclude>**/*Constants.*</exclude>
-            <exclude>**/security/*Converter.*</exclude>
+            <exclude>**/security/**</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -482,7 +484,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.23.0</version>
+            <version>10.23.1</version>
           </dependency>
         </dependencies>
         <configuration>

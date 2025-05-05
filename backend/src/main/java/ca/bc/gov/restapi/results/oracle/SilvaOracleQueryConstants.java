@@ -340,4 +340,193 @@ public class SilvaOracleQueryConstants {
       FROM OPENING op
       LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
       WHERE op.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId""";
+
+  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE = """
+      SELECT
+      	atu.ACTIVITY_TREATMENT_UNIT_ID AS atu_id,
+      	atu.DISTURBANCE_CODE AS disturbance_code,
+      	dc.DESCRIPTION AS disturbance_name,
+      	atu.SILV_SYSTEM_CODE AS system_code,
+      	ssc.DESCRIPTION AS system_name,
+      	atu.SILV_SYSTEM_VARIANT_CODE AS variant_code,
+      	ssvc.DESCRIPTION AS variant_name,
+      	atu.SILV_CUT_PHASE_CODE AS cut_phase_code,
+      	scpc.DESCRIPTION AS cut_phase_name,
+      	atu.TREATMENT_AMOUNT AS disturbance_area,
+      	to_char(atu.UPDATE_TIMESTAMP,'YYYY-MM-DD') AS last_update,
+      	to_char(atu.ATU_START_DATE,'YYYY-MM-DD') AS start_date,
+      	to_char(atu.ATU_COMPLETION_DATE,'YYYY-MM-DD') AS end_date,
+      	atu.ACTIVITY_LICENSEE_ID AS licensee_activity_id,
+      	ffc.CLIENT_NUMBER AS disturbance_location_client,
+      	ffc.CLIENT_LOCN_CODE AS disturbance_location_code,
+      	cboa.FOREST_FILE_ID AS licence_number,
+      	cboa.CUTTING_PERMIT_ID AS cutting_permit,
+      	cboa.CUT_BLOCK_ID AS cut_block
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN DISTURBANCE_CODE dc ON atu.DISTURBANCE_CODE = dc.DISTURBANCE_CODE
+      LEFT JOIN SILV_SYSTEM_CODE ssc ON ssc.SILV_SYSTEM_CODE = atu.SILV_SYSTEM_CODE
+      LEFT JOIN SILV_SYSTEM_VARIANT_CODE ssvc ON ssvc.SILV_SYSTEM_VARIANT_CODE = atu.SILV_SYSTEM_VARIANT_CODE
+      LEFT JOIN SILV_CUT_PHASE_CODE scpc ON scpc.SILV_CUT_PHASE_CODE = atu.SILV_CUT_PHASE_CODE
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.CUT_BLOCK_OPEN_ADMIN_ID = atu.CUT_BLOCK_OPEN_ADMIN_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+      WHERE atu.SILV_BASE_CODE = 'DN' AND op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE_COUNT = """
+      SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
+        FROM OPENING op
+        LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+        WHERE atu.SILV_BASE_CODE = 'DN' AND op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES = """
+      SELECT
+      	atu.ACTIVITY_TREATMENT_UNIT_ID AS atu_id,
+      	CASE
+              WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 'CPT'
+              WHEN atu.PLANNED_DATE IS NOT NULL AND atu.ATU_COMPLETION_DATE IS NULL AND atu.PLANNED_DATE >= trunc(SYSDATE) THEN 'PLN'
+              WHEN atu.PLANNED_DATE IS NOT NULL AND atu.ATU_COMPLETION_DATE IS NULL AND atu.PLANNED_DATE < trunc(SYSDATE) THEN 'OVD'
+              ELSE 'INV'
+          END AS status_code,
+      	atu.SILV_BASE_CODE AS base_code,
+      	sbc.DESCRIPTION AS base_name,
+      	atu.SILV_TECHNIQUE_CODE AS tech_code,
+      	stc.DESCRIPTION AS tech_name,
+      	ATU.SILV_METHOD_CODE AS method_code,
+      	smc.DESCRIPTION AS method_name,
+      	atu.SILV_OBJECTIVE_CODE_1 AS objective1_code,
+      	soc1.DESCRIPTION AS objective1_name,
+      	atu.SILV_OBJECTIVE_CODE_2 AS objective2_code,
+      	soc2.DESCRIPTION AS objective2_name,
+      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,	
+      	soc3.DESCRIPTION AS objective3_name,
+      	atu.TREATMENT_AMOUNT AS area,
+      	ATU.SILV_FUND_SRCE_CODE AS funding_code,
+      	sfsc.DESCRIPTION AS funding_name,
+      	ATU.SILVICULTURE_PROJECT_ID AS project_id,
+      	to_char(atu.UPDATE_TIMESTAMP,'YYYY-MM-DD') AS last_update,
+      	to_char(atu.PLANNED_DATE,'YYYY-MM-DD') AS planned_date,
+      	to_char(atu.ATU_COMPLETION_DATE,'YYYY-MM-DD') AS end_date
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
+      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.SILV_TECHNIQUE_CODE
+      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.SILV_METHOD_CODE
+      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_1
+      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
+      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
+      LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
+      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT = """
+      SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+
+  public static final String GET_OPENING_ACTIVITIES_BASE = """
+      SELECT
+      	atu.ACTIVITY_LICENSEE_ID AS licensee_activity_id,
+      	atu.FIA_PROJECT_ID AS intra_agency_number,
+      	ffc.CLIENT_NUMBER AS activity_client,
+      	ffc.CLIENT_LOCN_CODE AS activity_location,
+      	atu.PLANNED_TREATMENT_AMOUNT AS planned_amount,
+      	atu.TREATMENT_AMOUNT AS treated_amount,
+      	atu.PLANNED_TREATMENT_COST AS planned_cost,
+      	atu.ACTUAL_TREATMENT_COST AS actual_cost,
+        atu.SILV_BASE_CODE AS kind,
+        atu.ACT_PLANTED_NO AS total_planting
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.CUT_BLOCK_OPEN_ADMIN_ID = atu.CUT_BLOCK_OPEN_ADMIN_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+      WHERE
+        op.OPENING_ID = :openingId
+        AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId""";
+
+  public static final String GET_OPENING_ACTIVITIES_SU = """
+      SELECT
+      	CASE
+              WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SURVEY_ACTUAL_NUM_PLOTS
+              WHEN atu.PLANNED_DATE IS NOT NULL THEN atu.SURVEY_PLANNED_NUM_PLOTS
+              ELSE 0
+          END AS PLOTS_COUNT,
+          atu.SURVEY_MIN_PLOTS_PER_STRATUM
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.CUT_BLOCK_OPEN_ADMIN_ID = atu.CUT_BLOCK_OPEN_ADMIN_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+      WHERE
+        atu.SILV_BASE_CODE = 'SU'
+        AND op.OPENING_ID = :openingId
+        AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
+  public static final String GET_OPENING_ACTIVITY_SPECIES = """
+      SELECT
+      	pr.SILV_TREE_SPECIES_CODE AS species_code,
+      	stsc.DESCRIPTION AS species_name,
+      	pr.NUMBER_PLANTED AS planted_number,
+      	NVL(pr.PLANTED_NO_BEYOND_XFER_LIMIT,0) AS number_beyond_transfer_limit,
+      	CASE
+      		WHEN pr.CLIMATE_BASED_SEED_XFER_IND = 'Y' THEN 'true'
+      		ELSE 'false'
+      	END AS cbst,
+      	pr.REQUEST_SKEY AS request_id,
+      	NVL(pr.SEEDLOT_NUMBER,pr.VEG_LOT_ID) AS lot,
+      	pr.BID_PRICE_PER_TREE AS bid_price_per_tree
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN PLANTING_RSLT pr ON atu.ACTIVITY_TREATMENT_UNIT_ID = pr.ACTIVITY_TREATMENT_UNIT_ID
+      LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON stsc.SILV_TREE_SPECIES_CODE = pr.SILV_TREE_SPECIES_CODE
+      WHERE
+        atu.SILV_BASE_CODE = 'PL'
+        AND op.OPENING_ID = :openingId
+        AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
+  public static final String GET_OPENING_ACTIVITY_JS = """
+      SELECT
+      	atu.INTER_TREE_TARGET_DISTANCE AS target_intertree_distance,
+      	atu.INTER_TREE_VARIATION AS allowable_variation_distance,
+      	atu.MAX_TREES_PER_PLOT AS allowable_tree_per_lot,
+      	atu.MAX_TREES_PER_HA AS spacing_per_ha
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.CUT_BLOCK_OPEN_ADMIN_ID = atu.CUT_BLOCK_OPEN_ADMIN_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+      WHERE
+        atu.SILV_BASE_CODE = 'JS'
+        AND op.OPENING_ID = :openingId
+        AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
+  public static final String GET_OPENING_ACTIVITY_PR = """
+      SELECT
+        atu.TOTAL_STEMS_PER_HA AS total_stems_per_ha,
+      	atu.STEMS_TO_PRUNE AS stems_per_ha_to_prune,
+      	atu.INTER_TREE_TARGET_DISTANCE AS target_intertree_distance,
+      	atu.INTER_TREE_MIN_DISTANCE AS minimum_intertree_distance,
+      	atu.PRUNE_HEIGHT AS height_above_ground,
+      	atu.PRUNING_MIN_CROWN_PCT AS minimum_live_crown
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.CUT_BLOCK_OPEN_ADMIN_ID = atu.CUT_BLOCK_OPEN_ADMIN_ID
+      LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+      WHERE
+        atu.SILV_BASE_CODE = 'PR'
+        AND op.OPENING_ID = :openingId
+        AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
+  public static final String GET_OPENING_ACTIVITY_SP = """
+      SELECT
+      	atu.TARGET_PREPARED_SPOTS
+      FROM OPENING op
+      LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
+      WHERE
+        atu.SILV_BASE_CODE = 'SP'
+        AND op.OPENING_ID = :openingId AND
+        atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
+      ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
 }
