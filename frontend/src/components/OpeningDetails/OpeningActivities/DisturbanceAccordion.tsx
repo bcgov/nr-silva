@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { MockedDisturbanceType } from "./definitions";
-import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
+import { Accordion, AccordionItem, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
 import { DisturbanceTableHeaders } from "./constants";
 import DisturbanceDetail from "./DisturbanceDetail";
@@ -73,12 +73,12 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
       }
   
       return codeDescription?.code ? (
-        <Tooltip
-          label={codeDescription.description}
+        <DefinitionTooltip
+          definition={codeDescription.description}
           align={isLastElement ? "top" : "bottom"}
         >
           <span>{codeDescription.code}</span>
-        </Tooltip>
+        </DefinitionTooltip>
       ) : (
         PLACE_HOLDER
       );

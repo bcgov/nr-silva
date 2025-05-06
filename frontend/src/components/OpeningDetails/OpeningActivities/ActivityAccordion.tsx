@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, Button, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
+import { Accordion, AccordionItem, Button, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag } from "@carbon/react";
 import { Activity, Search as SearchIcon } from "@carbon/icons-react";
 import { ActivityTableHeaders } from "./constants";
 import { MockedActivityType } from "./definitions";
@@ -89,12 +89,12 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
       }
 
       return codeDescription?.code ? (
-        <Tooltip
-          label={codeDescription.description}
+        <DefinitionTooltip
+          definition={codeDescription.description}
           align={isLastElement ? "top" : "bottom"}
         >
           <span>{codeDescription.code}</span>
-        </Tooltip>
+        </DefinitionTooltip>
       ) : (
         PLACE_HOLDER
       );
