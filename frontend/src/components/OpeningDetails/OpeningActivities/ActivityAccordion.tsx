@@ -164,13 +164,13 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
                       ))}
                     </TableExpandRow>
                     <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
-                      {isExpanded && (
+                      {isExpanded ? (
                         <ActivityDetail 
                           activity={row}
                           openingId={openingId}
                           isExpanded={isExpanded}
                           isClicked={clickedRow == row.activityId} />
-                      )}
+                      ): null}
                     </TableExpandedRow>
                   </React.Fragment>
                 );

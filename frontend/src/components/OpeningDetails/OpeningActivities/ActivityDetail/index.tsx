@@ -65,11 +65,11 @@ const ActivityDetail = ({ activity, openingId, isExpanded, isClicked }: Activity
           isLoading={activityDetailQuery.isLoading}/>
       </Column>
 
-      {isComplexActivity() && (
+      {isComplexActivity() ? (
         <Column sm={4} md={4} lg={16}>
           {renderAdditionalDetail()}
         </Column>
-      )}
+      ) : null}
 
       <Column sm={4} md={4} lg={16}>
         <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
