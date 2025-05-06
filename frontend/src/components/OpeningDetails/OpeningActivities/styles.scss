@@ -18,12 +18,28 @@
       @include type.type-style('heading-02');
     }
   }
-}
 
-.activity-table {
+  .activity-accordion {
+    .activity-filter-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: start;
 
-  .activity-status-tag {
-    padding: 0rem 0.5rem;
-    margin: -0.5rem;
+      .filter-search-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        padding: 0.75rem
+      }
+    }
+
+    .activity-table {
+      .activity-status-tag {
+        padding: 0rem 0.5rem;
+        margin: -0.5rem;
+      }
+    }
   }
 }

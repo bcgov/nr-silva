@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
-import { Activity } from "@carbon/icons-react";
+import { Accordion, AccordionItem, Button, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag, Tooltip } from "@carbon/react";
+import { Activity, Search as SearchIcon } from "@carbon/icons-react";
 import { ActivityTableHeaders } from "./constants";
 import { MockedActivityType } from "./definitions";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -106,21 +106,28 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   };
 
   return (
-    <Accordion className="default-tab-accordion" align="end" size="lg">
+    <Accordion className="default-tab-accordion activity-accordion" align="end" size="lg">
       <AccordionItem
         className="default-tab-accordion-item"
         title={<AccordionTitle total={data.length} />}
       >
         <div>
-          <Search
-            id="activity-filter"
-            className="default-tab-search-bar"
-            size="lg"
-            labelText="Filter activities"
-            placeholder="Filter activities by keyword"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="activity-filter-container">
+            <Search
+              id="activity-filter"
+              className="default-tab-search-bar"
+              size="lg"
+              labelText="Filter activities"
+              placeholder="Filter activities by keyword"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Button className="filter-search-button">
+              <span>Filter</span>
+              <SearchIcon/>
+            </Button>
+          </div>
+
           <Table
             className="default-zebra-table-with-border activity-table"
             aria-label="Activity table"
