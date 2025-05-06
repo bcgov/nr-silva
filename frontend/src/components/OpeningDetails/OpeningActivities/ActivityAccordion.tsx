@@ -124,7 +124,6 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
           <Table
             className="default-zebra-table-with-border activity-table"
             aria-label="Activity table"
-            useZebraStyles
           >
             <TableHead>
               <TableRow>

@@ -112,7 +112,6 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
           <Table
             className="default-zebra-table-with-border"
             aria-label="Disturbance table"
-            useZebraStyles
           >
             <TableHead>
               <TableRow>
