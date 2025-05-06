@@ -62,7 +62,7 @@ const OpeningDetails = () => {
    * Update most recent openings when this page loads
    */
   useEffect(() => {
-    if (openingId && Number.isInteger(Number(openingId) && openingNotFound)) {
+    if (openingId && Number.isInteger(Number(openingId)) && openingNotFound) {
       postRecentOpeningMutation.mutate(Number(openingId));
     }
   }, [openingId, openingNotFound]);
