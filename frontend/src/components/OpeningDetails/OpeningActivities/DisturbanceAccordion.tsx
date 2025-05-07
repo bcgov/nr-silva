@@ -95,7 +95,6 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
     <Accordion
       className="default-tab-accordion"
       align="end"
-      size="lg"
     >
       <AccordionItem
         className="default-tab-accordion-item"
