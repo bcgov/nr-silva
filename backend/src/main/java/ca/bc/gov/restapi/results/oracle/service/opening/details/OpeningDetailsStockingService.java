@@ -33,6 +33,7 @@ public class OpeningDetailsStockingService {
         .map(getDetails())
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
+        .map(getComments())
         .toList();
   }
 
