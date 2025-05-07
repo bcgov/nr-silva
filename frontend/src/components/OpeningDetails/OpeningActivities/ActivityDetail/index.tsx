@@ -18,18 +18,16 @@ import "./styles.scss";
 type ActivityDetailOutlineProps = {
   activity: MockedActivityType;
   openingId: number;
-  isExpanded: boolean;
-  isClicked?: boolean;
 };
 
-const ActivityDetail = ({ activity, openingId, isExpanded, isClicked }: ActivityDetailOutlineProps) => {
+const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
     queryKey: ["opening", openingId, "activities", activity.activityId],
     queryFn: () => {
       const matchingActivity = MOCKED_ACTIVITY_DETAIL.find((item) => item.activityId === activity.activityId);
       return delayMock(matchingActivity);
     },
-    enabled: !!activity && !!openingId && isExpanded && isClicked,
+    enabled: !!activity && !!openingId,
   });
 
   const isComplexActivity = () => {
