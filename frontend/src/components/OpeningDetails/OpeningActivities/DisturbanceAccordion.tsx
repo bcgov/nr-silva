@@ -48,7 +48,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
     return data.filter((row) =>
       DisturbanceTableHeaders.some(({ key }) => {
         const value = row[key];
-        
+
         if (isCodeDescription(key)) {
           return value && codeDescriptionToDisplayText(value as CodeDescriptionDto).toLowerCase().includes(lower);
         } else if (isDate(key)) {
@@ -66,8 +66,6 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
         : [...prev, activityId]
     );
   };
-
-
 
   const renderCellContent = (
     data: CodeDescriptionDto | string | number | null,
