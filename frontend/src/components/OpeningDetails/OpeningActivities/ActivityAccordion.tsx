@@ -92,6 +92,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
         <DefinitionTooltip
           definition={codeDescription.description}
           align={isLastElement ? "top" : "bottom"}
+          openOnHover={true}
         >
           <span>{codeDescription.code}</span>
         </DefinitionTooltip>

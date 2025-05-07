@@ -77,6 +77,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
         <DefinitionTooltip
           definition={codeDescription.description}
           align={isLastElement ? "top" : "bottom"}
+          openOnHover={true}
         >
           <span>{codeDescription.code}</span>
         </DefinitionTooltip>
