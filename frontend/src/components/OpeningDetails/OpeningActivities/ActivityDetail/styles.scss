@@ -12,6 +12,7 @@
 
     .activity-detail-content-grid {
         row-gap: 2rem;
+        column-gap: 2rem;
 
         .activity-detail-content-title {
             @include type.type-style('heading-02');
