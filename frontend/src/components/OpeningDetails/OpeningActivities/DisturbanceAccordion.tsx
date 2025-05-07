@@ -32,12 +32,28 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const isCodeDescription = (value: string): boolean => {
+    const codeDescriptionColumns = ["disturbance", "silvicultureSystem", "variant", "cutPhase"];
+    return codeDescriptionColumns.includes(value);
+  }
+
+  const isDate = (value: string): boolean => {
+    const dateColumns = ["startDate", "endDate", "updateTimestamp"];
+    return dateColumns.includes(value);
+  }
+
   const filteredData = useMemo(() => {
     const lower = searchTerm.toLowerCase();
 
     return data.filter((row) =>
       DisturbanceTableHeaders.some(({ key }) => {
         const value = row[key];
+        
+        if (isCodeDescription(key)) {
+          return value && codeDescriptionToDisplayText(value as CodeDescriptionDto).toLowerCase().includes(lower);
+        } else if (isDate(key)) {
+          return value && formatLocalDate(String(value)).toLowerCase().includes(lower);
+        }
         return value && String(value).toLowerCase().includes(lower);
       })
     );
@@ -51,15 +67,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
     );
   };
 
-  const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["disturbance", "silvicultureSystem", "variant", "cutPhase"];
-    return codeDescriptionColumns.includes(value);
-  }
 
-  const isDate = (value: string): boolean => {
-    const dateColumns = ["startDate", "endDate", "updateTimestamp"];
-    return dateColumns.includes(value);
-  }
 
   const renderCellContent = (
     data: CodeDescriptionDto | string | number | null,
