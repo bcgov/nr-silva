@@ -29,7 +29,6 @@ const AccordionTitle = ({ total }: { total: number }) => (
 
 const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [clickedRow, setClickedRow] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const filteredData = useMemo(() => {
@@ -49,11 +48,6 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
         ? prev.filter((id) => id !== activityId)
         : [...prev, activityId]
     );
-    setClickedRow(activityId);
-  };
-
-  const handleRowClick = (activityId: number) => {
-    setClickedRow(activityId);
   };
 
   const isCodeDescription = (value: string): boolean => {
@@ -152,7 +146,6 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
                       aria-label={`Expand row for Activity ID ${row.activityId}`}
                       isExpanded={isExpanded}
                       onExpand={() => handleRowExpand(row.activityId)}
-                      onClick={() => handleRowClick(row.activityId)}
                     >
                       {ActivityTableHeaders.map((header) => (
                         <TableCell key={header.key}>
