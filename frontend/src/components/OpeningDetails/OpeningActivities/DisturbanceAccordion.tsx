@@ -8,6 +8,7 @@ import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { PLACE_HOLDER } from "@/constants";
 import { formatLocalDate } from "@/utils/DateUtils";
+import EmptySection from "../../EmptySection";
 
 type DisturbanceAccordionProps = {
   data: MockedDisturbanceType[]
@@ -130,31 +131,44 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
             </TableHead>
             <TableBody>
               {
-                filteredData.map((row, index) => {
-                  const isExpanded = expandedRows.includes(row.activityId);
-                  return (
-                    <React.Fragment key={row.activityId}>
-                      <TableExpandRow
-                        aria-label={`Expand row for Activity ID ${row.activityId}`}
-                        isExpanded={isExpanded}
-                        onExpand={() => handleRowExpand(row.activityId)}
-                      >
-                        {
-                          DisturbanceTableHeaders.map(header => (
-                            <TableCell key={header.key}>
-                              {
-                                renderCellContent(row[header.key], header.key, index === filteredData.length - 1)
-                              }
-                            </TableCell>
-                          ))
-                        }
-                      </TableExpandRow>
-                      <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 1}>
-                        <DisturbanceDetail detail={row} />
-                      </TableExpandedRow>
-                    </React.Fragment>
-                  )
-                })
+                filteredData.length ? (
+                  filteredData.map((row, index) => {
+                    const isExpanded = expandedRows.includes(row.activityId);
+                    return (
+                      <React.Fragment key={row.activityId}>
+                        <TableExpandRow
+                          aria-label={`Expand row for Activity ID ${row.activityId}`}
+                          isExpanded={isExpanded}
+                          onExpand={() => handleRowExpand(row.activityId)}
+                        >
+                          {
+                            DisturbanceTableHeaders.map(header => (
+                              <TableCell key={header.key}>
+                                {
+                                  renderCellContent(row[header.key], header.key, index === filteredData.length - 1)
+                                }
+                              </TableCell>
+                            ))
+                          }
+                        </TableExpandRow>
+                        <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 1}>
+                          <DisturbanceDetail detail={row} />
+                        </TableExpandedRow>
+                      </React.Fragment>
+                    )
+                  })
+                ) : (
+                  <TableRow key="empty-row">
+                    <TableCell colSpan={DisturbanceTableHeaders.length + 1}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title={`No results for "${searchTerm}"`}
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                    </TableCell>
+                  </TableRow>
+                )
+
               }
             </TableBody>
           </Table>
