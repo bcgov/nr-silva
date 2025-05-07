@@ -8,6 +8,8 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingLayerD
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingSpeciesDto;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
+import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
 import java.util.List;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class OpeningDetailsStockingService {
 
   private final OpeningRepository openingRepository;
+  private final SilvicultureCommentRepository commentRepository;
 
   public List<OpeningDetailsStockingDto> getOpeningStockingDetails(Long openingId) {
 
@@ -128,6 +131,26 @@ public class OpeningDetailsStockingService {
             )
         )
         .toList();
+  }
+
+  private Function<OpeningDetailsStockingDto, OpeningDetailsStockingDto> getComments() {
+    return tombstone ->
+        tombstone
+            .withComments(
+                commentRepository
+                    .getCommentById(
+                        null,
+                        null,
+                        tombstone.stocking().ssid(),
+                        null,
+                        null,
+                        null
+                    )
+                    .stream()
+                    .map(OpeningDetailsCommentConverter.mapComments())
+                    .toList()
+
+            );
   }
 
 

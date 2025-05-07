@@ -12,6 +12,13 @@ import org.springframework.stereotype.Repository;
 public interface SilvicultureCommentRepository extends JpaRepository<SilvicultureCommentEntity, Long> {
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_COMMENTS)
-  List<CommentProjection> getCommentById(Long openingId);
+  List<CommentProjection> getCommentById(
+      Long openingId,
+      Long atuId,
+      Long ssuId,
+      Long ssuMId,
+      String smtc,
+      Long projectId
+  );
 
 }

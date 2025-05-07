@@ -10,9 +10,13 @@ import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivitySitePrepDto;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivitySpeciesDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivitySpeciesDto;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivitySurveyDto;
+import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.repository.ActivityTreatmentUnitRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
+import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +33,8 @@ public class OpeningDetailsActivitiesService {
 
   private final ActivityTreatmentUnitRepository activityRepository;
   private final ForestClientService forestClientService;
+  private final SilvicultureCommentRepository commentRepository;
+
   private static final Map<String, String> DISTURBANCE_SORT_FIELDS = Map.of(
       "atuId", "atu.ACTIVITY_TREATMENT_UNIT_ID",
       "disturbance", "atu.DISTURBANCE_CODE",
@@ -96,9 +102,11 @@ public class OpeningDetailsActivitiesService {
                         .orElse(null),
                     projection.getLicenceNumber(),
                     projection.getCuttingPermitId(),
-                    projection.getCutBlock()
+                    projection.getCutBlock(),
+                    List.of()
                 )
-            );
+            )
+            .map(dto -> dto.withComments(getComments(dto.atuId())));
   }
 
   public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivitiesActivities(
@@ -174,7 +182,8 @@ public class OpeningDetailsActivitiesService {
         baseProjection.getTreatedAmount(),
         baseProjection.getPlannedCost(),
         baseProjection.getActualCost(),
-        baseProjection.getTotalPlanting()
+        baseProjection.getTotalPlanting(),
+        getComments(atuId)
     );
 
     return switch (baseProjection.getKind()) {
@@ -294,4 +303,20 @@ public class OpeningDetailsActivitiesService {
             .toList()
     );
   }
+
+  private List<CommentDto> getComments(Long atuId) {
+    return commentRepository
+        .getCommentById(
+            null,
+            atuId,
+            null,
+            null,
+            null,
+            null
+        )
+        .stream()
+        .map(OpeningDetailsCommentConverter.mapComments())
+        .toList();
+  }
+
 }
