@@ -83,7 +83,7 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                                             {
                                                 activityDetail?.plantingSpecification?.species.map((row) => {
                                                     return (
-                                                        <TableRow>
+                                                        <TableRow key={`${row.speciesType.code}-${row.requestId}`}>
                                                             {
                                                                 PlantingHeaders.map((header) => {
                                                                     return (

@@ -85,7 +85,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                                             {
                                                 activityDetail?.directSeedingSpecification?.species.map((row) => {
                                                     return (
-                                                        <TableRow>
+                                                        <TableRow key={row.speciesType.code}>
                                                             {
                                                                 DirectSeedingHeaders.map((header) => {
                                                                     return (
