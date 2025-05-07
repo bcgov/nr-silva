@@ -37,7 +37,7 @@ const MyProfile = () => {
         </div>
         <div className="user-data">
           <p className="user-name">{`${authUser?.firstName} ${authUser?.lastName}`}</p>
-          <p>{`IDIR: ${authUser?.userName}`}</p>
+          <p>{`${authUser?.idpProvider ? authUser?.idpProvider + ': ' : null}${authUser?.userName}`}</p>
           <p>{`Email: ${authUser?.email}`}</p>
 
         </div>
