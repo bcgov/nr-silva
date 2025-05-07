@@ -106,7 +106,7 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                                   {standardUnit.stocking.bec.becPhase}
                                 </CardItem>
                               </Column>
-                              
+
                               <Column sm={2} md={2} lg={2}>
                                 <CardItem label="Site series">
                                   {standardUnit.stocking.bec.becSiteSeries}
@@ -185,13 +185,14 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                               {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
                               <VerticalDivider />
                               {
-                                <Link
+                                <a
                                   className="fsp-link"
-                                  to={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
+                                  href={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
                                   target="_blank"
+                                  rel="noopener noreferrer"
                                 >
                                   {`FSP ID ${standardUnit.stocking.fspId}`} <LaunchIcon />
-                                </Link>
+                                </a>
                               }
                             </>
                           )
