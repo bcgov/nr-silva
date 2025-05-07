@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import MyProfile from '../../components/MyProfile';
 import { useThemePreference } from '../../utils/ThemePreference';
 import { useAuth } from '../../contexts/AuthProvider';
+import { FamLoginUser } from '../../services/AuthService';
 
 // Mock dependencies
 vi.mock('../../utils/ThemePreference', () => ({
@@ -17,11 +18,12 @@ vi.mock('../../contexts/AuthProvider', () => ({
 describe('MyProfile Component', () => {
   const mockSetTheme = vi.fn();
   const mockLogout = vi.fn();
-  const mockAuthUser = {
+  const mockAuthUser: FamLoginUser = {
     firstName: 'John',
     lastName: 'Doe',
     userName: 'johndoe',
     email: 'john.doe@example.com',
+    idpProvider: 'IDIR'
   };
 
   beforeEach(() => {
