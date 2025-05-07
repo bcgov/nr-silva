@@ -107,7 +107,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   };
 
   return (
-    <Accordion className="default-tab-accordion activity-accordion" align="end" size="lg">
+    <Accordion className="default-tab-accordion activity-accordion" align="end">
       <AccordionItem
         className="default-tab-accordion-item"
         title={<AccordionTitle total={data.length} />}
