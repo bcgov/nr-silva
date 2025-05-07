@@ -79,16 +79,17 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         .map((header) => (
           <TableCell key={header.key}>
             {header.key !== "actions" ? (
-              <Link
-                to={OpeningDetailsRoute.path!.replace(
+              <a
+                href={OpeningDetailsRoute.path!.replace(
                   ":openingId",
                   rowData.openingId.toString()
                 )}
                 className="table-cell-link-wrapper"
                 rel="noopener noreferrer"
+                target="_blank"
               >
                 {renderCellContent(header.key) ?? PLACE_HOLDER}
-              </Link>
+              </a>
             ) : (
               renderCellContent(header.key) ?? PLACE_HOLDER
             )}

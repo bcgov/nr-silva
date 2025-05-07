@@ -15,7 +15,7 @@ export interface FamLoginUser {
   roles?: string[];
   authToken?: string;
   exp?: number;
-  clientRoles?: UserClientRolesType[];    
+  clientRoles?: UserClientRolesType[];
   firstName?: string;
   lastName?: string;
 }
