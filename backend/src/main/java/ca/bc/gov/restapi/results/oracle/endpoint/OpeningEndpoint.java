@@ -79,9 +79,9 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/activities")
   public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivities(
       @PathVariable Long openingId,
-      @RequestParam Map<String, String> allRequestParams,
+      @RequestParam(name = "filter",required = false) String filter,
       Pageable pageable) {
-    return openingService.getOpeningActivitiesActivities(openingId, pageable);
+    return openingService.getOpeningActivitiesActivities(openingId, filter, pageable);
   }
 
   @GetMapping("/{openingId}/activities/{atuId}")

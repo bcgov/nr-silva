@@ -37,8 +37,8 @@ public class OpeningDetailsService {
   }
 
   public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivitiesActivities(
-      Long openingId,  Pageable pageable) {
-    return activitiesService.getOpeningActivitiesActivities(openingId, pageable);
+      Long openingId, String mainSearchTerm, Pageable pageable) {
+    return activitiesService.getOpeningActivitiesActivities(openingId, mainSearchTerm, pageable);
   }
 
   public OpeningActivityBaseDto getOpeningActivitiesActivity(Long openingId, Long atuId) {
