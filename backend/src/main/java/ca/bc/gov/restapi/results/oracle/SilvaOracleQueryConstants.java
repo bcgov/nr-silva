@@ -415,13 +415,64 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
       LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
       LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
-      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+      WHERE
+        atu.SILV_BASE_CODE != 'DN'
+        AND op.OPENING_ID = :openingId
+        AND (
+        	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'	
+        		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999.99'))
+        	)
+        )""";
 
   public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT = """
       SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
       FROM OPENING op
       LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
-      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+      LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
+      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.SILV_TECHNIQUE_CODE
+      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.SILV_METHOD_CODE
+      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_1
+      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
+      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
+      LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
+      WHERE
+        atu.SILV_BASE_CODE != 'DN'
+        AND op.OPENING_ID = :openingId
+        AND (
+        	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999.99'))
+        	)
+        )""";
 
   public static final String GET_OPENING_ACTIVITIES_BASE = """
       SELECT
@@ -528,5 +579,6 @@ public class SilvaOracleQueryConstants {
         AND op.OPENING_ID = :openingId AND
         atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
 
 }
