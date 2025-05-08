@@ -14,7 +14,7 @@ type AcoordionTitleProp = {
 const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
 
   return (
-    <div className="accordion-title-container">
+    <div className="default-accordion-title-container">
       <div className="accordion-title-top">
         <LocationIcon size={20} />
         <h4>

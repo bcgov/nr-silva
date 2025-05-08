@@ -27,19 +27,23 @@ interface EmptySectionProps {
 function EmptySection({
   icon, title, description, pictogram, fill = "#0073E6", className
 }: EmptySectionProps): React.JSX.Element {
-  let Img;
+  let Img: React.ElementType | undefined;
 
-  if (icon) {
-    Img = Icons[icon];
+  if (icon && Icons[icon]) {
+    Img = Icons[icon] as React.ElementType;
   }
-  // If both icon and pictogram are passed in then pictogram will be used
-  if (pictogram) {
-    Img = Pictograms[pictogram];
+
+  if (pictogram && Pictograms[pictogram]) {
+    Img = Pictograms[pictogram] as React.ElementType;
   }
 
   return (
     <div className={`${className ?? ''} empty-section-container`}>
-      <Img className="empty-section-icon" data-testid="empty-section-icon" style={{ fill: fill }} />
+      {
+        Img
+          ? <Img className="empty-section-icon" data-testid="empty-section-icon" style={{ fill }} />
+          : null
+      }
       <p className="empty-section-title">
         {title}
       </p>

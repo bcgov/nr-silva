@@ -32,7 +32,7 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
   return (
     <Grid className="opening-standard-units-grid default-grid">
       <Column sm={4} md={8} lg={16}>
-        <h3 className="standard-units-title">
+        <h3 className="default-tab-content-title">
           {
             `${standardUnitObjs?.length
               ? standardUnitObjs.length
@@ -48,12 +48,12 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
         standardUnitObjs?.map((standardUnit, index) => (
           <Column sm={4} md={8} lg={16} className="accordion-col" key={`standard-unit-col-${index}`}>
             <Accordion
-              className="standard-unit-accordion"
+              className="default-tab-accordion"
               align="end"
               size="lg"
             >
               <AccordionItem
-                className="standard-unit-accordion-item"
+                className="default-tab-accordion-item"
                 title={<AcoordionTitle standardUnit={standardUnit} />}
               >
                 <Grid className="standard-unit-content-grid">
@@ -214,9 +214,9 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                     <div className="species-table-container">
                       {/* Preferred Species */}
                       <Table
-                        className="default-zebra-table-with-border"
-                        aria-label="Recent openings table"
-                        useZebraStyles
+                        className="default-expandable-table"
+                        aria-label="Preferred species table"
+
                       >
                         <TableHead>
                           <TableRow>

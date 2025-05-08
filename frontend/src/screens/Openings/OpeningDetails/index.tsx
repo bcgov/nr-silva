@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Column, Grid, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
-import { MapBoundaryVegetation, Development } from "@carbon/icons-react";
+import { MapBoundaryVegetation, Development, CropHealth } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { fetchOpeningSsu, fetchOpeningTombstone } from "@/services/OpeningDetailsService";
 import { putUserRecentOpening } from "@/services/OpeningService";
-import { OpeningStandardUnits, OpeningSummary, OpeningOverview } from "@/components/OpeningDetails";
+import { OpeningStandardUnits, OpeningSummary, OpeningOverview, OpeningActivities } from "@/components/OpeningDetails";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
 import PageTitle from "@/components/PageTitle";
 
 import { OpeningDetailBreadCrumbs, OpeningDetailsTabs } from "./constants";
 import './styles.scss';
+import { AxiosError } from "axios";
+import EmptySection from "../../../components/EmptySection";
 
 const OpeningDetails = () => {
 
@@ -52,16 +54,34 @@ const OpeningDetails = () => {
   const postRecentOpeningMutation = useMutation({
     mutationFn: (openingId: number) => putUserRecentOpening(openingId)
   });
+  
+  const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
+  const openingNotFound = openingDetailsTombstoneQuery.isError && openingDetailsError?.response?.status === 404;
 
   /**
    * Update most recent openings when this page loads
    */
   useEffect(() => {
-    if (openingId && Number.isInteger(Number(openingId))) {
+    if (openingId && Number.isInteger(Number(openingId)) && openingNotFound) {
       postRecentOpeningMutation.mutate(Number(openingId));
     }
-  }, [openingId]);
+  }, [openingId, openingNotFound]);
 
+  if (openingNotFound) {
+    return (
+      <EmptySection pictogram="Summit" title={`Opening ${openingId} not found`} description="" />
+    )
+  }
+
+  if (!openingNotFound && openingDetailsTombstoneQuery.isError) {
+    return (
+      <EmptySection
+        icon="BreakingChange"
+        title={`Error fetching data for Opening ${openingId}`}
+        description={openingDetailsTombstoneQuery.error.message}
+      />
+    )
+  }
 
   return (
     <Grid className="default-grid opening-detail-grid">
@@ -87,19 +107,25 @@ const OpeningDetails = () => {
           <TabList className="default-tab-list" aria-label="List of Tab" contained>
             <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>Overview</Tab>
             <Tab renderIcon={() => <Development size={16} />}>Standard units</Tab>
+            <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
-              <OpeningOverview 
-                overviewObj={openingDetailsTombstoneQuery.data?.overview} 
+              <OpeningOverview
+                overviewObj={openingDetailsTombstoneQuery.data?.overview}
                 isLoading={openingDetailsTombstoneQuery.isLoading}>
               </OpeningOverview>
             </TabPanel>
+
             <TabPanel className="tab-content full-width-col">
               <OpeningStandardUnits
                 standardUnitObjs={openingDetailsSsuQuery.data}
                 isLoading={openingDetailsSsuQuery.isLoading}>
               </OpeningStandardUnits>
+            </TabPanel>
+
+            <TabPanel className="tab-content full-width-col">
+              <OpeningActivities openingId={Number(openingId)} />
             </TabPanel>
           </TabPanels>
         </Tabs>
