@@ -1,45 +1,56 @@
 package ca.bc.gov.restapi.results.oracle.util;
 
+import ca.bc.gov.restapi.results.common.exception.InvalidSortingFieldException;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Sort;
 
+@DisplayName("Unit Test | Pagination Util")
 class PaginationUtilTest {
 
   @Test
-  @DisplayName("Get lastPage test")
-  void getLastPageTest() {
-    Assertions.assertEquals(10, PaginationUtil.getLastPage(98, 10));
-    Assertions.assertEquals(10, PaginationUtil.getLastPage(99, 10));
-    Assertions.assertEquals(10, PaginationUtil.getLastPage(100, 10));
-    Assertions.assertEquals(11, PaginationUtil.getLastPage(101, 10));
+  @DisplayName("should sort using received valid sort")
+  void shouldTestResolveSort() {
+    // Given
+    Sort receivedSort = Sort.by("field1").ascending();
+    String defaultSortField = "defaultField";
+    Map<String, String> sortableFields = Map.of("field1", "field1", "field2", "field2");
 
-    Assertions.assertEquals(1, PaginationUtil.getLastPage(3, 5));
-    Assertions.assertEquals(1, PaginationUtil.getLastPage(4, 5));
-    Assertions.assertEquals(1, PaginationUtil.getLastPage(5, 5));
-    Assertions.assertEquals(2, PaginationUtil.getLastPage(6, 5));
+    // When
+    Sort result = PaginationUtil.resolveSort(receivedSort, defaultSortField, sortableFields);
 
-    Assertions.assertEquals(0, PaginationUtil.getLastPage(0, 5));
-    Assertions.assertEquals(0, PaginationUtil.getLastPage(5, 0));
+    // Then
+    Assertions.assertEquals(Sort.by("field1").ascending(), result);
   }
 
   @Test
-  @DisplayName("Get startIndex test")
-  void getStartIndexTest() {
-    Assertions.assertEquals(30, PaginationUtil.getStartIndex(3, 10));
-    Assertions.assertEquals(10, PaginationUtil.getStartIndex(1, 10));
-    Assertions.assertEquals(5, PaginationUtil.getStartIndex(1, 5));
-    Assertions.assertEquals(0, PaginationUtil.getStartIndex(0, 5));
-    Assertions.assertEquals(150, PaginationUtil.getStartIndex(10, 15));
+  @DisplayName("should sort using default sort")
+  void shouldTestResolveSortWithDefault() {
+    // Given
+    Sort receivedSort = Sort.unsorted();
+    String defaultSortField = "defaultField";
+    Map<String, String> sortableFields = Map.of("field1", "field1", "field2", "field2");
+
+    // When
+    Sort result = PaginationUtil.resolveSort(receivedSort, defaultSortField, sortableFields);
+
+    // Then
+    Assertions.assertEquals(Sort.by("defaultField").ascending(), result);
   }
 
   @Test
-  @DisplayName("")
-  void getEndIndexTest() {
-    Assertions.assertEquals(40, PaginationUtil.getEndIndex(30, 10, 47));
-    Assertions.assertEquals(47, PaginationUtil.getEndIndex(40, 10, 47));
-    Assertions.assertEquals(45, PaginationUtil.getEndIndex(40, 5, 100));
-    Assertions.assertEquals(50, PaginationUtil.getEndIndex(45, 5, 100));
-    Assertions.assertEquals(40, PaginationUtil.getEndIndex(45, 5, 40));
+  @DisplayName("should throw exception when invalid field is used")
+  void shouldTestResolveSortWithInvalidField() {
+    // Given
+    Sort receivedSort = Sort.by("invalidField").ascending();
+    String defaultSortField = "defaultField";
+    Map<String, String> sortableFields = Map.of("field1", "field1", "field2", "field2");
+
+    // When
+    Assertions.assertThrows(InvalidSortingFieldException.class, () -> {
+      PaginationUtil.resolveSort(receivedSort, defaultSortField, sortableFields);
+    });
   }
 }
