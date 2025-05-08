@@ -397,7 +397,7 @@ public class SilvaOracleQueryConstants {
       	soc1.DESCRIPTION AS objective1_name,
       	atu.SILV_OBJECTIVE_CODE_2 AS objective2_code,
       	soc2.DESCRIPTION AS objective2_name,
-      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,	
+      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,
       	soc3.DESCRIPTION AS objective3_name,
       	atu.TREATMENT_AMOUNT AS area,
       	ATU.SILV_FUND_SRCE_CODE AS funding_code,
@@ -435,7 +435,7 @@ public class SilvaOracleQueryConstants {
         		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
-        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999.99'))
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999999.999999'))
         	)
         )""";
 
@@ -470,7 +470,7 @@ public class SilvaOracleQueryConstants {
         		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
-        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999.99'))
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm,'999999.999999'))
         	)
         )""";
 
@@ -606,8 +606,8 @@ public class SilvaOracleQueryConstants {
         			OR cboa.TIMBER_MARK like '%' || :mainSearchTerm || '%'
         			OR cb.BLOCK_STATUS_ST like '%' || :mainSearchTerm || '%'
         			OR UPPER(bsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999.99'))
-        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999.99'))
+        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999999.999999'))
+        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999999.999999'))
         		)
         	)""";
 
@@ -627,8 +627,8 @@ public class SilvaOracleQueryConstants {
         		OR cboa.TIMBER_MARK like '%' || :mainSearchTerm || '%'
         		OR cb.BLOCK_STATUS_ST like '%' || :mainSearchTerm || '%'
         		OR UPPER(bsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999.99'))
-        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999.99'))
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999999.999999'))
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm,'999999.999999'))
         	)
         )""";
 
