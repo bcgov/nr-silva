@@ -181,6 +181,6 @@ export type OpeningTenureDto = {
     plannedNetArea: number | null
 }
 
-export type PaginatedTenureResponseDto<OpeningTenureDto> = PaginatedResponseType<OpeningTenureDto> & {
-    primary: OpeningTenureDto | null;
+export type PaginatedPrimaryResponseDto<T> = PaginatedResponseType<T> & {
+    primary: T | null;
 };
