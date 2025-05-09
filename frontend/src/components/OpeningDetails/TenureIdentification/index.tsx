@@ -1,9 +1,10 @@
 import React from "react";
 import {
-  Accordion, AccordionItem, Column,
+  Accordion, AccordionItem, Button, Column,
   Grid, Table, TableBody, TableCell,
   TableContainer,
   TableHead, TableHeader, TableRow,
+  TableToolbar,
   TableToolbarSearch
 } from "@carbon/react";
 
@@ -20,11 +21,16 @@ const TenureIdentification = () => {
 
       <Column sm={4} md={8} lg={16}>
         <TableContainer>
-          <TableToolbarSearch
-            className="default-tab-search-bar"
-            persistent
-            placeholder="Filter by keyword"
-          />
+          <TableToolbar>
+            <TableToolbarSearch
+              className="default-tab-search-bar"
+              persistent
+              placeholder="Filter by keyword"
+            />
+            <Button kind="primary">
+              Filter
+            </Button>
+          </TableToolbar>
 
         </TableContainer>
       </Column>
