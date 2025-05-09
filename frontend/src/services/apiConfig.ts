@@ -23,6 +23,11 @@ const API_ENDPOINTS = {
   openingMap: (openingId: number) => `${API_BASE_URL}/openings/map/${openingId}`,
   openingTombstone: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/tombstone`,
   openingSsu: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/ssu`,
+  openingDisturbances: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/disturbances`,
+  openingActivity: (openingId: number) => ({
+    activities: () => `${API_BASE_URL}/openings/${openingId}/activities`,
+    activityDetail: (atuId: number) => `${API_BASE_URL}/openings/${openingId}/activities/${atuId}`,
+  }),
 };
 
 // Define the default headers for the API requests, including ones used by CORS
