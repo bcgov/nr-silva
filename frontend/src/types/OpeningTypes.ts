@@ -168,3 +168,19 @@ export type OpeningDetailsStockingDto = {
   layer: OpeningDetailsStockingLayerDto | null,
   comments: CommentDto[],
 };
+
+export type OpeningTenureDto = {
+    id: number,
+    primaryTenure: boolean,
+    fileId: string | null,
+    cutBlock: string | null,
+    cuttingPermit: string | null,
+    timberMark: string | null,
+    status: CodeDescriptionDto | null,
+    plannedGrossArea: number | null,
+    plannedNetArea: number | null
+}
+
+export type PaginatedPrimaryResponseDto<T> = PaginatedResponseType<T> & {
+    primary: T | null;
+};
