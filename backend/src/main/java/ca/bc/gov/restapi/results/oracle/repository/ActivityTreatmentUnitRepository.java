@@ -33,7 +33,7 @@ public interface ActivityTreatmentUnitRepository extends
       countQuery = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT
   )
   Page<OpeningActivitiesActivitiesProjection> getOpeningActivitiesActivitiesByOpeningId(
-      Long openingId, Pageable page);
+      Long openingId, String mainSearchTerm, Pageable page);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_BASE)
   OpeningActivityBaseProjection getOpeningActivitiesBase(Long openingId, Long atuId);

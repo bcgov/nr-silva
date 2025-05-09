@@ -397,7 +397,7 @@ public class SilvaOracleQueryConstants {
       	soc1.DESCRIPTION AS objective1_name,
       	atu.SILV_OBJECTIVE_CODE_2 AS objective2_code,
       	soc2.DESCRIPTION AS objective2_name,
-      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,	
+      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,
       	soc3.DESCRIPTION AS objective3_name,
       	atu.TREATMENT_AMOUNT AS area,
       	ATU.SILV_FUND_SRCE_CODE AS funding_code,
@@ -415,13 +415,64 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
       LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
       LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
-      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+      WHERE
+        atu.SILV_BASE_CODE != 'DN'
+        AND op.OPENING_ID = :openingId
+        AND (
+        	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'	
+        		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        	)
+        )""";
 
   public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT = """
       SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
       FROM OPENING op
       LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
-      WHERE atu.SILV_BASE_CODE != 'DN' AND op.OPENING_ID = :openingId""";
+      LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
+      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.SILV_TECHNIQUE_CODE
+      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.SILV_METHOD_CODE
+      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_1
+      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
+      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
+      LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
+      WHERE
+        atu.SILV_BASE_CODE != 'DN'
+        AND op.OPENING_ID = :openingId
+        AND (
+        	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
+        		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
+        		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        	)
+        )""";
 
   public static final String GET_OPENING_ACTIVITIES_BASE = """
       SELECT
@@ -528,5 +579,75 @@ public class SilvaOracleQueryConstants {
         AND op.OPENING_ID = :openingId AND
         atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
+
+  public static final String GET_OPENING_TENURES = """
+      SELECT
+        	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+        	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
+            cboa.FOREST_FILE_ID AS file_id,
+            cboa.CUT_BLOCK_ID AS cut_block,
+            cboa.CUTTING_PERMIT_ID AS cutting_permit,
+            cboa.TIMBER_MARK AS timber_mark,
+            cb.BLOCK_STATUS_ST AS status_code,
+            bsc.DESCRIPTION AS status_name,
+            cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
+            cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
+        FROM OPENING op
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+        LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
+        LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
+        WHERE
+        	op.OPENING_ID = :openingId
+        	AND (
+        		NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        			cboa.FOREST_FILE_ID like '%' || :mainSearchTerm || '%'
+        			OR cboa.CUT_BLOCK_ID like '%' || :mainSearchTerm || '%'
+        			OR cboa.CUTTING_PERMIT_ID like '%' || :mainSearchTerm || '%'
+        			OR cboa.TIMBER_MARK like '%' || :mainSearchTerm || '%'
+        			OR cb.BLOCK_STATUS_ST like '%' || :mainSearchTerm || '%'
+        			OR UPPER(bsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        			OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        		)
+        	)""";
+
+  public static final String GET_OPENING_TENURES_COUNT = """
+      SELECT count(1)
+        FROM OPENING op
+          LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+          LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
+          LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
+        WHERE
+          	op.OPENING_ID = :openingId
+          	AND (
+          		NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+        		cboa.FOREST_FILE_ID like '%' || :mainSearchTerm || '%'
+        		OR cboa.CUT_BLOCK_ID like '%' || :mainSearchTerm || '%'
+        		OR cboa.CUTTING_PERMIT_ID like '%' || :mainSearchTerm || '%'
+        		OR cboa.TIMBER_MARK like '%' || :mainSearchTerm || '%'
+        		OR cb.BLOCK_STATUS_ST like '%' || :mainSearchTerm || '%'
+        		OR UPPER(bsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_GROSS_BLOCK_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND cboa.PLANNED_NET_BLOCK_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+        	)
+        )""";
+
+  public static final String GET_OPENING_TENURE_PRIME = """
+      SELECT
+          	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+          	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
+              cboa.FOREST_FILE_ID AS file_id,
+              cboa.CUT_BLOCK_ID AS cut_block,
+              cboa.CUTTING_PERMIT_ID AS cutting_permit,
+              cboa.TIMBER_MARK AS timber_mark,
+              cb.BLOCK_STATUS_ST AS status_code,
+              bsc.DESCRIPTION AS status_name,
+              cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
+              cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
+          FROM OPENING op
+          LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
+          LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
+          LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
+          WHERE op.OPENING_ID = :openingId AND cboa.opening_prime_licence_ind = 'Y'""";
 
 }
