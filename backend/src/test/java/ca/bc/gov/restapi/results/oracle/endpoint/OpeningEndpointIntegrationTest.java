@@ -433,5 +433,69 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.treatedAmount").value(25.5))
         .andReturn();
   }
+
+  @Test
+  @DisplayName("Get Opening Tenures listAll should succeed")
+  void getOpeningTenures_listAll_shouldReturn() throws Exception {
+
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/tenures")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("21"))
+        .andExpect(jsonPath("$.content[0].id").value(258063))
+        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Tenures list page should succeed")
+  void getOpeningTenures_listPage_shouldReturn() throws Exception {
+
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/tenures")
+                .param("page", "3")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("3"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("21"))
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content").isEmpty())
+        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Tenures filter should succeed")
+  void getOpeningTenures_listFilter_shouldReturn() throws Exception {
+
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/tenures")
+                .param("filter", "073")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.page.number").value("0"))
+        .andExpect(jsonPath("$.page.size").value("20"))
+        .andExpect(jsonPath("$.page.totalElements").value("1"))
+        .andExpect(jsonPath("$.content[0].id").value(258114))
+        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andReturn();
+  }
+
+
 }
-//DS

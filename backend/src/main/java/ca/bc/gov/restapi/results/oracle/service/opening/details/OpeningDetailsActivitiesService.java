@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
-import ca.bc.gov.restapi.results.common.exception.InvalidSortingFieldException;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
@@ -16,14 +15,15 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDist
 import ca.bc.gov.restapi.results.oracle.repository.ActivityTreatmentUnitRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
+import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -66,7 +66,11 @@ public class OpeningDetailsActivitiesService {
             .getOpeningActivitiesDisturbanceByOpeningId(
                 openingId,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                    resolveSort(pageable.getSort(), DISTURBANCE_SORT_FIELDS)
+                    PaginationUtil.resolveSort(
+                        pageable.getSort(),
+                        "atu.ACTIVITY_TU_SEQ_NO",
+                        DISTURBANCE_SORT_FIELDS
+                    )
                 )
             )
             .map(projection ->
@@ -111,13 +115,19 @@ public class OpeningDetailsActivitiesService {
 
   public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivitiesActivities(
       Long openingId,
+      String mainSearchTerm,
       Pageable pageable) {
     return
         activityRepository
             .getOpeningActivitiesActivitiesByOpeningId(
                 openingId,
+                Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null),
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                    resolveSort(pageable.getSort(), ACTIVITIES_SORT_FIELDS)
+                    PaginationUtil.resolveSort(
+                        pageable.getSort(),
+                        "atu.ACTIVITY_TU_SEQ_NO",
+                        ACTIVITIES_SORT_FIELDS
+                    )
                 )
             )
             .map(projection ->
@@ -281,27 +291,6 @@ public class OpeningDetailsActivitiesService {
       case "PLN" -> "Planned";
       default -> "Invalid";
     };
-  }
-
-  private Sort resolveSort(
-      Sort receivedSort,
-      Map<String, String> sortableFields
-  ) {
-    if (receivedSort == null || receivedSort.isUnsorted()) {
-      return Sort.by(Sort.Order.asc("atu.ACTIVITY_TU_SEQ_NO"));
-    }
-    return Sort.by(
-        receivedSort
-            .stream()
-            .map(order -> {
-              String dbField = sortableFields.get(order.getProperty());
-              if (dbField == null) {
-                throw new InvalidSortingFieldException(order.getProperty());
-              }
-              return new Sort.Order(order.getDirection(), dbField);
-            })
-            .toList()
-    );
   }
 
   private List<CommentDto> getComments(Long atuId) {
