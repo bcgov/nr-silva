@@ -21,3 +21,4 @@ const Comments = ({comments}: CommentProps) => {
 }
 
 export default Comments;
+
