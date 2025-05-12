@@ -5,7 +5,6 @@ interface CommentProps {
 }
 
 const Comments = ({comments}: CommentProps) => {
-    console.log("Comments", comments);
     return (
         <ul className="comment-list">
             {
