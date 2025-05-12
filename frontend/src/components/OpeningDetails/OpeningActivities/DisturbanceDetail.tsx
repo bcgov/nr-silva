@@ -2,8 +2,10 @@ import React from "react";
 import { MockedDisturbanceDetailType } from "./definitions";
 import { Column, Grid } from "@carbon/react";
 import { CardItem } from "../../Card";
+import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
+import Comments from "../../Comments";
 
-const DisturbanceDetail = ({ detail }: { detail: MockedDisturbanceDetailType }) => {
+const DisturbanceDetail = ({ detail }: { detail: OpeningDetailsActivitiesDisturbanceDto }) => {
 
   return (
     <Grid className="expanded-row-content-grid">
@@ -19,7 +21,11 @@ const DisturbanceDetail = ({ detail }: { detail: MockedDisturbanceDetailType }) 
 
       <Column sm={4} md={4} lg={4} max={3}>
         <CardItem label="Disturbance location">
-          {detail.disturbanceLocation}
+          {
+            detail.forestClientLocation ? (
+              detail.forestClientLocation.locationName ?? null
+            ) : null
+          }
         </CardItem>
       </Column>
 
@@ -31,7 +37,7 @@ const DisturbanceDetail = ({ detail }: { detail: MockedDisturbanceDetailType }) 
 
       <Column sm={4} md={4} lg={4} max={3}>
         <CardItem label="Cutting permit">
-          {detail.cuttingPermit}
+          {detail.cuttingPermitId}
         </CardItem>
       </Column>
 
@@ -43,7 +49,11 @@ const DisturbanceDetail = ({ detail }: { detail: MockedDisturbanceDetailType }) 
 
       <Column sm={4} md={8} lg={16}>
         <CardItem label="Comment">
-          {detail.comment}
+          {
+            (detail.comments ?? []).length > 0
+              ? <Comments comments={detail.comments} />
+              : null
+          }
         </CardItem>
       </Column>
     </Grid>

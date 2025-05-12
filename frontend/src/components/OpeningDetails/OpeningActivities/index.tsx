@@ -9,6 +9,7 @@ import DisturbanceAccordion from "./DisturbanceAccordion";
 import { useQuery } from "@tanstack/react-query";
 import { delayMock } from "../../../utils/MockUtils";
 import ActivityAccordion from "./ActivityAccordion";
+import { fetchOpeningDisturbances } from "../../../services/OpeningDetailsService";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -18,7 +19,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
-    queryFn: () => delayMock(MOCKED_DISTURBANCE_EVENTS)
+    queryFn: () => fetchOpeningDisturbances(openingId),
   });
 
   const activityQuery = useQuery({
@@ -37,7 +38,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
   // Empty case
   if (
     disturbanceQuery.isSuccess && activityQuery.isSuccess &&
-    (disturbanceQuery.data.length + activityQuery.data.page.totalElements < 1)
+    (disturbanceQuery.data.content.length + activityQuery.data.page.totalElements < 1)
   ) {
     return (
       <EmptySection
@@ -54,17 +55,17 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         <h3 className="default-tab-content-title">
           {
             `
-              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.length ?? 0)}
+              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.content.length ?? 0)}
               activities in the opening area
             `
           }
         </h3>
       </Column>
       {
-        (disturbanceQuery.data?.length ?? 0) > 0
+        (disturbanceQuery.data?.content.length ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <DisturbanceAccordion data={disturbanceQuery.data!} />
+              <DisturbanceAccordion data={disturbanceQuery.data!.content} />
             </Column>
           )
           : null

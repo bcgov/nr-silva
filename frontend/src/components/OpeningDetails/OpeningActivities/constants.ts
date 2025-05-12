@@ -1,18 +1,19 @@
 import { TableHeaderType } from "@/types/TableHeader";
 import { MockedActivityDetailType, MockedActivityResponseType, MockedActivityType, MockedDisturbanceType } from "./definitions";
+import { OpeningDetailsActivitiesDisturbanceDto } from "../../../types/OpeningTypes";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
 ] as const;
 
-export const DisturbanceTableHeaders: TableHeaderType<keyof MockedDisturbanceType>[] = [
-  { key: "activityId", header: "Activity treatment unit ID" },
+export const DisturbanceTableHeaders: TableHeaderType<keyof OpeningDetailsActivitiesDisturbanceDto>[] = [
+  { key: "atuId", header: "Activity treatment unit ID" },
   { key: "disturbance", header: "Disturbance code" },
-  { key: "silvicultureSystem", header: "Silviculture system" },
+  { key: "system", header: "Silviculture system" },
   { key: "variant", header: "Variant" },
   { key: "cutPhase", header: "Cut phase" },
   { key: "disturbanceArea", header: "Disturbance area (ha)" },
-  { key: "updateTimestamp", header: "Last updated" },
+  { key: "lastUpdatedOn", header: "Last updated" },
   { key: "startDate", header: "Start date" },
   { key: "endDate", header: "End date" },
 ];

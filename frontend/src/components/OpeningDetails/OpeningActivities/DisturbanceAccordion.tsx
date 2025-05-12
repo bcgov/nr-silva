@@ -9,9 +9,10 @@ import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { PLACE_HOLDER } from "@/constants";
 import { formatLocalDate } from "@/utils/DateUtils";
 import EmptySection from "../../EmptySection";
+import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
 
 type DisturbanceAccordionProps = {
-  data: MockedDisturbanceType[]
+  data: OpeningDetailsActivitiesDisturbanceDto[]
 }
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -33,7 +34,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["disturbance", "silvicultureSystem", "variant", "cutPhase"];
+    const codeDescriptionColumns = ["disturbance", "system", "variant", "cutPhase"];
     return codeDescriptionColumns.includes(value);
   }
 
@@ -70,7 +71,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   const renderCellContent = (
     data: CodeDescriptionDto | string | number | null,
     columnKey: string,
-    isLastElement: boolean
+    isLastElement: boolean = false
   ) => {
     if (isCodeDescription(columnKey)) {
       const codeDescription = data as CodeDescriptionDto;
@@ -139,19 +140,23 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
               {
                 filteredData.length ? (
                   filteredData.map((row, index) => {
-                    const isExpanded = expandedRows.includes(row.activityId);
+                    const isExpanded = expandedRows.includes(row.atuId);
                     return (
-                      <React.Fragment key={row.activityId}>
+                      <React.Fragment key={row.atuId}>
                         <TableExpandRow
-                          aria-label={`Expand row for Activity ID ${row.activityId}`}
+                          aria-label={`Expand row for Activity ID ${row.atuId}`}
                           isExpanded={isExpanded}
-                          onExpand={() => handleRowExpand(row.activityId)}
+                          onExpand={() => handleRowExpand(row.atuId)}
                         >
                           {
                             DisturbanceTableHeaders.map(header => (
                               <TableCell key={header.key}>
                                 {
-                                  renderCellContent(row[header.key], header.key, index === filteredData.length - 1)
+                                  renderCellContent(
+                                    row[header.key] as string | number | CodeDescriptionDto | null,
+                                    header.key,
+                                    index === filteredData.length - 1,
+                                  )
                                 }
                               </TableCell>
                             ))
