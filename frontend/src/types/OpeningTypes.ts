@@ -256,6 +256,7 @@ export type OpeningActivitySpeciesDto = OpeningActivityBaseDto & {
 export type OpeningActivitySurveyDto = OpeningActivityBaseDto & {
   plotsCount: number | null,
   surveyMinPlotsPerStratum: number | null,
+};
 
 export type OpeningTenureDto = {
     id: number,
