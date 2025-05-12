@@ -39,7 +39,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   }
 
   const isDate = (value: string): boolean => {
-    const dateColumns = ["startDate", "endDate", "updateTimestamp"];
+    const dateColumns = ["startDate", "endDate", "lastUpdatedOn"];
     return dateColumns.includes(value);
   }
 
