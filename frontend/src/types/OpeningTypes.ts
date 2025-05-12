@@ -183,7 +183,7 @@ export type OpeningDetailsActivitiesDisturbanceDto = {
   licenseeActivityId: string | null,
   forestClient: ForestClientType,
   forestClientLocation: ForestClientLocationType,
-  licenseNumber: string | null,
+  licenceNumber: string | null,
   cuttingPermitId: string | null,
   cutBlock: string | null,
   comments: CommentDto[],
