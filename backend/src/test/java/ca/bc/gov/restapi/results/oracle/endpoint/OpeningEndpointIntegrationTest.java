@@ -492,7 +492,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.page.number").value("0"))
         .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("1"))
-        .andExpect(jsonPath("$.page.totalUnfiltered").value("21"))
+        .andExpect(jsonPath("$.totalUnfiltered").value("21"))
         .andExpect(jsonPath("$.content[0].id").value(258114))
         .andExpect(jsonPath("$.primary.id").value(258073))
         .andReturn();
