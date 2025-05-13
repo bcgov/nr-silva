@@ -1,205 +1,188 @@
 import React, { useEffect, useState } from "react";
-import { OpeningPolygon } from "../../types/OpeningPolygon";
-import { MapLayer } from "../../types/MapLayer";
-import { allLayers } from "./constants";
-import axios from "axios";
-import { getAuthIdToken } from "../../services/AuthService";
-import { convertGeoJsonToLatLng } from "../../map-services/BcGwLatLongUtils";
+import { LatLngExpression } from "leaflet";
 import {
   LayersControl,
   MapContainer,
   TileLayer,
   WMSTileLayer,
 } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
+import { FeatureCollection } from "geojson";
 
-import OpeningsMapEntry from "../OpeningsMapEntry";
-import { API_ENDPOINTS, defaultHeaders } from "@/services/apiConfig";
+import { MapLayer } from "@/types/MapLayer";
+import { allLayers } from "./constants";
+import { getMapQueries, getUserLocation } from "./fetcher";
+import "./styles.scss";
+
+import { MapKindType } from "@/types/MapLayer";
+
+import OpeningsMapResizer from "@/components/OpeningsMapResizer";
+import OpeningsMapEntry from "@/components/OpeningsMapEntry";
+import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
+import OpeningsMapFullScreen from "@/components/OpeningsMapFullScreen";
 
 interface MapProps {
   openingIds: number[] | null;
   setOpeningPolygonNotFound: (value: boolean, openingId: number | null) => void;
   mapHeight?: number;
+  layerFilter?: boolean;
+  kind?: MapKindType;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
   setOpeningPolygonNotFound,
   mapHeight = 400,
+  layerFilter = false,
+  kind = "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW",
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
-  const [openings, setOpenings] = useState<OpeningPolygon[]>([]);
+  const [openings, setOpenings] = useState<FeatureCollection[]>([]);
   const [position, setPosition] = useState<LatLngExpression>([
     48.43737, -123.35883,
   ]);
-  const [layers, setLayers] = useState<MapLayer[]>([]);
-  const authToken = getAuthIdToken();
   const [zoomLevel, setZoomLevel] = useState<number>(13);
+  const [mapSize, setMapSize] = useState<number>(mapHeight);
 
-  const getOpeningPolygonAndProps = async (
-    selectedOpeningId: number | null
-  ): Promise<OpeningPolygon | null> => {
+  /**
+   * This function is used to fetch the map queries based on the selected opening IDs
+   * and the kind of map data.
+   */
+  const mapQueries = getMapQueries(selectedOpeningIds ?? [], kind);
 
-    if (!selectedOpeningId) return Promise.resolve(null);
-
-    const response = await axios.get(
-      API_ENDPOINTS.openingMap(selectedOpeningId),
-      defaultHeaders(authToken)
-    );
-
-    const { data } = response;
-
-    if (data.features && data.features.length) {
-      const openingsList: OpeningPolygon[] = [];
-      for (let i = 0, len = data.features.length; i < len; i++) {
-        if (data.features[i].geometry) {
-          const openingGeometry = convertGeoJsonToLatLng(
-            data.features[i].geometry.coordinates
-          );
-
-          const openingObj: OpeningPolygon = {
-            key: data.features[i].id,
-            bounds: openingGeometry,
-            properties: data.features[i].properties,
-            id: data.features[i].id,
-            positionLat: (data.bbox[1] + data.bbox[3]) / 2,
-            positionLong: (data.bbox[0] + data.bbox[2]) / 2,
-          };
-          openingsList.push(openingObj);
-        } else {
-          setOpeningPolygonNotFound(true, selectedOpeningId);
-        }
-      }
-
-      // Handling arrays to allow querying more than 1 at once.
-      if (openingsList.length) {
-        return openingsList[0];
-      }
-    } else {
-      setOpeningPolygonNotFound(true, selectedOpeningId);
-    }
-
-    return null;
+  /**
+   * This effect is used to set the map position and zoom level when the component mounts
+   * or when the openingIds prop changes. If no openingIds are provided, it will
+   * attempt to get the user's location.
+   */
+  const setUserLocation = async () => {
+    const userLocation = await getUserLocation();
+    setPosition({ lat: userLocation.lat, lng: userLocation.lng });
+    setZoomLevel(userLocation.zoom);
   };
 
-  const callBcGwApi = async (
-    currentOpeningId: number
-  ): Promise<OpeningPolygon | null> => {
-    return await getOpeningPolygonAndProps(currentOpeningId);
-  };
-
-  const getUserLocation = async () => {
-    if (navigator.geolocation) {
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
-      };
-
-      const requestCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition(
-          (currentPosition: GeolocationPosition) => {
-            setPosition({
-              lat: currentPosition.coords.latitude,
-              lng: currentPosition.coords.longitude,
-            });
-            setZoomLevel(8);
-          },
-          () => {
-            setPosition({ lat: 51.339506220208065, lng: -121.40991210937501 });
-            setZoomLevel(6);
-          },
-          options
-        );
-      };
-
-      const permissionResult = await navigator.permissions.query({
-        name: "geolocation",
-      });
-      if (
-        permissionResult.state === "granted" ||
-        permissionResult.state === "prompt"
-      ) {
-        requestCurrentLocation();
-      }
-    }
-  };
-
-  const loadOpeniningPolygons = async (
-    providedIds: number[]
-  ): Promise<void> => {
-    setOpeningPolygonNotFound(false, null);
-
-    if (providedIds?.length) {
-      const results = await Promise.all(providedIds.map(callBcGwApi));
-      setOpenings(results.filter((opening) => opening !== null));
-    } else {
-      setOpenings([]);
-    }
-
-    const filtered = allLayers.filter((l) => l.name.length > 0);
-    if (filtered.length) {
-      setLayers(filtered);
-    }
-  };
-
+  /**
+   * This effect is used to set the selected opening IDs when the component mounts
+   * or when the openingIds prop changes. If no openingIds are provided, it will
+   * attempt to get the user's location.
+   */
   useEffect(() => {
     setSelectedOpeningIds(openingIds || []);
     if (!openingIds?.length) {
-      (async () => {
-        await getUserLocation();
-      })();
+      (async () => await setUserLocation())();
     }
   }, [openingIds]);
 
+  /**
+   * This effect is used to update the map with the fetched polygons.
+   * It checks if all queries are successful and updates the openings state
+   * with the fetched data. If there are any errors, it sets the error state.
+   */
   useEffect(() => {
-    loadOpeniningPolygons(selectedOpeningIds);
-  }, [selectedOpeningIds]);
+    const allSuccess = mapQueries.every((query) => query.status === "success");
+    if (allSuccess) {
+      setOpenings(mapQueries.map((query) => query.data));
+    } else {
+      // Check if there are any errors and extract their IDs
+      const errorIds = mapQueries
+        .filter((query) => query.error)
+        .map(
+          (query) =>
+            (query.error as Error & { cause?: { openingId?: string } }).cause
+              ?.openingId
+        )
+        .filter(Boolean) // Remove undefined/null values
+        .map((id) => Number(id));
 
+      if (errorIds.length > 0) {
+        setOpeningPolygonNotFound;
+      }
+    }
+  }, [mapQueries.map((query) => query.status).join(","), kind, openingIds]);
+
+  /**
+   * This effect is used to get the user's location when the component mounts.
+   */
   useEffect(() => {
-    (async () => {
-      await getUserLocation();
-    })();
+    (async () => await setUserLocation())();
   }, []);
 
+  /**
+   * This function returns extra parameters for the WMS layer, if the correct set of
+   * parameters is provided. It checks if the layerFilter is true and if there are
+   * openingIds available. If so, it constructs a CQL_FILTER string with the opening IDs
+   * and returns it as an object. Otherwise, it returns an empty object.
+   * This should be true only inside opening details page, as it can impact negatively
+   * the map layers when displaying all the openings.
+   * @returns extra parameters for the WMS layer
+   */
+  const extraParameters = () => {
+    if (layerFilter && openingIds?.length) {
+      return {
+        CQL_FILTER: openingIds
+          .map((id) => `OPENING_ID=${id}`)
+          .reduce((prev, subsequent) => `${prev};${subsequent}`),
+      };
+    }
+    return {};
+  };
+
   return (
-    <MapContainer
-      center={position}
-      zoom={zoomLevel}
-      style={{ height: `${mapHeight}px`, width: "100%" }}
-    >
-      <TileLayer
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-        attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
-        zIndex={-10000}
-      />
+    <div style={{ height: `${mapSize}px`, width: "100%" }}>
+      <MapContainer
+        center={position}
+        zoom={zoomLevel}
+        style={{ height: "100%", minHeight: "100%" }}
+      >
+        {/* Resizer to adjust the map height */}
+        <OpeningsMapResizer height={mapSize} />
 
-      {/* Display Opening polygons, if any */}
-      <OpeningsMapEntry
-        polygons={openings}
-        defaultLocation={position}
-        defaultZoom={zoomLevel}
-      />
+        {/* Default tile layer */}
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
+          zIndex={-10000}
+        />
 
-      {/* Default layers */}
-      {layers.length && (
-        <LayersControl position="topright">
-          {layers.map((layer: MapLayer) => (
-            <LayersControl.Overlay key={layer.name} name={layer.name}>
-              <WMSTileLayer
-                url="https://openmaps.gov.bc.ca/geo/ows"
-                params={{
-                  format: layer.format,
-                  layers: layer.layers,
-                  transparent: layer.transparent,
-                  styles: layer.styles.map((s) => s.name).join(","),
-                }}
-              />
-            </LayersControl.Overlay>
-          ))}
-        </LayersControl>
-      )}
-    </MapContainer>
+        {/* Display Opening polygons, if any */}
+        <OpeningsMapEntry polygons={openings} />
+        <OpeningsMapFitBound
+          polygons={openings}
+          defaultLocation={position}
+          defaultZoom={zoomLevel}
+        />
+
+        {/* Display the user's location if no openings are found */}
+
+        {/* Default layers */}
+        {allLayers.length && (
+          <LayersControl position="topright">
+            {allLayers.map((layer: MapLayer) => (
+              <LayersControl.Overlay key={layer.name} name={layer.name}>
+                <WMSTileLayer
+                  url="https://openmaps.gov.bc.ca/geo/ows"
+                  params={{
+                    format: layer.format,
+                    layers: layer.layers,
+                    transparent: layer.transparent,
+                    styles: layer.styles.map((s) => s.name).join(","),
+                    ...extraParameters(),
+                  }}
+                />
+              </LayersControl.Overlay>
+            ))}
+          </LayersControl>
+        )}
+        <OpeningsMapFullScreen
+          fullscreen={mapSize === 800}
+          onToggle={() => {
+            console.log("Toggling Full Screen");
+            setMapSize((prevSize) =>
+              prevSize === mapHeight ? 800 : mapHeight
+            );
+          }}
+        />
+      </MapContainer>
+    </div>
   );
 };
 
