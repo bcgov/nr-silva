@@ -1,8 +1,9 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
-import { ActivityDetailProps } from "../definitions";
 import { CardItem } from "../../../Card";
+import { ActivityDetailProps } from "./definitions";
+import { UNIQUE_CHARACTERS_UNICODE } from "../../../../constants";
 
-const GeneralAcitivityDetail = ({activityDetail, isPlanning, isComplex, isLoading}: ActivityDetailProps) => {
+const GeneralAcitivityDetail = ({activityDetail, base, isPlanning, isComplex, isLoading}: ActivityDetailProps) => {
     return (
         <Grid className="activity-detail-content-grid">
             <Column sm={4} md={4} lg={16}>
@@ -10,7 +11,7 @@ const GeneralAcitivityDetail = ({activityDetail, isPlanning, isComplex, isLoadin
                     <SkeletonText className="activity-detail-content-title" />
                 ) : (
                     <h6 className="activity-detail-content-title">
-                    {activityDetail?.base.description}
+                    {base?.description}
                     {isComplex ? " overview" : " details"}
                     </h6>
                 )}
@@ -23,14 +24,15 @@ const GeneralAcitivityDetail = ({activityDetail, isPlanning, isComplex, isLoadin
             </Column>
             
             <Column sm={4} md={4} lg={4} xlg={3} max={2}>
-                <CardItem label={`Intra agency n\u00BA`} showSkeleton={isLoading}>
+                <CardItem label={`Intra agency n${UNIQUE_CHARACTERS_UNICODE.ORDINAL_INDICATOR}`} 
+                    showSkeleton={isLoading}>
                     {activityDetail?.intraAgencyNumber}
                 </CardItem>
             </Column>
 
             <Column sm={4} md={4} lg={4} xlg={3} max={2}>
                 <CardItem label="Activity Location" showSkeleton={isLoading}>
-                    {activityDetail?.activityLocation}
+                    {activityDetail?.activityLocation?.locationName}
                 </CardItem>
             </Column>
 
