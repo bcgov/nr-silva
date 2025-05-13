@@ -4,12 +4,10 @@ import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 import EmptySection from "../../EmptySection";
 
 import './styles.scss';
-import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
 import DisturbanceAccordion from "./DisturbanceAccordion";
 import { useQuery } from "@tanstack/react-query";
-import { delayMock } from "../../../utils/MockUtils";
 import ActivityAccordion from "./ActivityAccordion";
-import { fetchOpeningDisturbances } from "../../../services/OpeningDetailsService";
+import { fetchOpeningActivities, fetchOpeningDisturbances } from "@/services/OpeningDetailsService";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -24,7 +22,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
   const activityQuery = useQuery({
     queryKey: ['opening', openingId, 'activities'],
-    queryFn: () => delayMock(MOCKED_ACTIVITY_RES)
+    queryFn: () => fetchOpeningActivities(openingId),
   });
 
 

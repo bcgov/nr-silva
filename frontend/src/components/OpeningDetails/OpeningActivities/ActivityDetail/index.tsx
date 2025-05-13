@@ -14,17 +14,18 @@ import GeneralAcitivityDetail from "./GeneralActivityDetail";
 import { CardItem } from "../../../Card";
 
 import "./styles.scss";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
 
 type ActivityDetailOutlineProps = {
-  activity: MockedActivityType;
+  activity: OpeningDetailsActivitiesActivitiesDto;
   openingId: number;
 };
 
 const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
-    queryKey: ["opening", openingId, "activities", activity.activityId],
+    queryKey: ["opening", openingId, "activities", activity.atuId],
     queryFn: () => {
-      const matchingActivity = MOCKED_ACTIVITY_DETAIL.find((item) => item.activityId === activity.activityId);
+      const matchingActivity = MOCKED_ACTIVITY_DETAIL.find((item) => item.activityId === activity.atuId);
       return delayMock(matchingActivity);
     },
     enabled: !!activity && !!openingId,

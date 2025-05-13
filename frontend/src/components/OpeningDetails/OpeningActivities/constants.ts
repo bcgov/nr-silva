@@ -1,6 +1,6 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { MockedActivityDetailType, MockedActivityResponseType, MockedActivityType, MockedDisturbanceType } from "./definitions";
-import { OpeningDetailsActivitiesDisturbanceDto } from "../../../types/OpeningTypes";
+import { MockedActivityDetailType, MockedActivityResponseType, MockedDisturbanceType } from "./definitions";
+import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
@@ -18,17 +18,17 @@ export const DisturbanceTableHeaders: TableHeaderType<keyof OpeningDetailsActivi
   { key: "endDate", header: "End date" },
 ];
 
-export const ActivityTableHeaders: TableHeaderType<keyof MockedActivityType>[] = [
-  { key: "activityId", header: "Activity treatment unit ID" },
+export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitiesActivitiesDto | string>[] = [
+  { key: "atuId", header: "Activity treatment unit ID" },
   { key: "status", header: "Status" },
   { key: "base", header: "Base" },
   { key: "tech", header: "Tech" },
   { key: "method", header: "Method" },
   { key: "objective", header: "Objective" },
   { key: "area", header: "Area" },
-  { key: "fundingSource", header: "Funding Source" },
+  { key: "funding", header: "Funding Source" },
   { key: "projectId", header: "Project ID" },
-  { key: "updateTimestamp", header: "Last updated" },
+  { key: "lastUpdate", header: "Last updated" },
   { key: "plannedDate", header: "Planned date" },
   { key: "endDate", header: "End date" },
 ];
