@@ -219,14 +219,14 @@ export type OpeningActivityBaseDto = {
   comments: CommentDto[],
 };
 
-export type OpeningActivityJuvelineDto = OpeningActivityBaseDto & {
+export type OpeningActivityJuvelineDto = {
   targetIntertreeDistance: number | null,
   allowableVariationDistance: number | null,
   allowableTreePerLot: number | null,
   spacingPerHa: number | null,
 };
 
-export type OpeningActivityPruningDto = OpeningActivityBaseDto & {
+export type OpeningActivityPruningDto = {
   totalStemsPerHa: number | null,
   stemsPerHaToPrune: number | null,
   targetIntertreeDistance: number | null,
@@ -235,7 +235,7 @@ export type OpeningActivityPruningDto = OpeningActivityBaseDto & {
   minimumLiveCrown: number | null,
 };
 
-export type OpeningActivitySitePrepDto = OpeningActivityBaseDto & {
+export type OpeningActivitySitePrepDto = {
   targetSpot: number | null,
 };
 
@@ -249,14 +249,21 @@ export type OpeningActivitySpeciesDetailsDto = {
   bidPricePerTree: number | null,
 };
 
-export type OpeningActivitySpeciesDto = OpeningActivityBaseDto & {
+export type OpeningActivitySpeciesDto = {
   species: OpeningActivitySpeciesDetailsDto[],
 };
 
-export type OpeningActivitySurveyDto = OpeningActivityBaseDto & {
+export type OpeningActivitySurveyDto = {
   plotsCount: number | null,
   surveyMinPlotsPerStratum: number | null,
 };
+
+export type OpeningActivityDetail = OpeningActivityBaseDto &
+  Partial<OpeningActivityJuvelineDto> &
+  Partial<OpeningActivityPruningDto> &
+  Partial<OpeningActivitySitePrepDto> &
+  Partial<OpeningActivitySpeciesDto> &
+  Partial<OpeningActivitySurveyDto>;
 
 export type OpeningTenureDto = {
     id: number,
