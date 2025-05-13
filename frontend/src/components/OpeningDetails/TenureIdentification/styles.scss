@@ -42,6 +42,10 @@
       flex-direction: row;
       column-gap: 0.5rem;
       align-items: center;
+
+      .#{vars.$bcgov-prefix}--tag {
+        margin: 0;
+      }
     }
   }
 
