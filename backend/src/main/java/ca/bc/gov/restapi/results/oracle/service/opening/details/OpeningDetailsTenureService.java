@@ -36,12 +36,15 @@ public class OpeningDetailsTenureService {
 
   public OpeningDetailsTenuresDto getOpeningTenures(
       Long openingId, String mainSearchTerm, Pageable pageable) {
-    // Filtered page
+
+    String normalizedSearch =
+        Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null);
+
     Page<OpeningDetailsTenureDto> tenuresPage =
         cutBlockOpenAdminRepository
             .findAllTenuresByOpeningId(
                 openingId,
-                Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null),
+                normalizedSearch,
                 PageRequest.of(
                     pageable.getPageNumber(),
                     pageable.getPageSize(),
@@ -55,11 +58,16 @@ public class OpeningDetailsTenureService {
             .map(mapProjectionToDto())
             .orElse(null);
 
-    // Unfiltered total
-    long totalUnfiltered =
-        cutBlockOpenAdminRepository
-            .findAllTenuresByOpeningId(openingId, null, Pageable.ofSize(1))
-            .getTotalElements();
+    long totalUnfiltered;
+    if (normalizedSearch == null) {
+      // reuse the total if no filter is applied
+      totalUnfiltered = tenuresPage.getTotalElements();
+    } else {
+      totalUnfiltered =
+          cutBlockOpenAdminRepository
+              .findAllTenuresByOpeningId(openingId, null, Pageable.ofSize(1))
+              .getTotalElements();
+    }
 
     return new OpeningDetailsTenuresDto(
         primaryTenure,
