@@ -1,9 +1,10 @@
 import { TableHeaderType } from "@/types/TableHeader";
 import { MockedDirectSeedingSpecies, MockedPlantingDetail, MockedPlantingSpecies } from "../definitions";
+import { OpeningActivitySpeciesDetailsDto } from "@/types/OpeningTypes";
 
-export const DirectSeedingHeaders: TableHeaderType<keyof MockedDirectSeedingSpecies>[] = [
-    { key: "speciesType", header: "Species", selected: true },
-    { key: "numberPlanted", header: "Number planted", selected: true },
+export const DirectSeedingHeaders: TableHeaderType<keyof OpeningActivitySpeciesDetailsDto>[] = [
+    { key: "species", header: "Species", selected: true },
+    { key: "plantedNumber", header: "Number planted", selected: true },
     { key: "numberBeyondTransferLimit", header: "Number beyond transfer limit", selected: true },
     { key: "cbst", header: "CBST", selected: true },
     { key: "lot", header: "Lot", selected: true }

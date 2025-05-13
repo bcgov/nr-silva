@@ -1,12 +1,11 @@
 import { Column, Grid, SkeletonText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
-import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
-import SectionTitle from "../../../SectionTitle";
 import TableSkeleton from "../../../TableSkeleton";
 import { DirectSeedingHeaders } from "./constants";
 import EmptySection from "../../../EmptySection";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { PLACE_HOLDER } from "@/constants";
+import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { ActivityDetailProps } from "./definitions";
 
 
 const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetailProps) => {
@@ -16,7 +15,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
     ) => {
         if (!data) {return PLACE_HOLDER;}
 
-        if (columnKey === "speciesType") {
+        if (columnKey === "species") {
             return codeDescriptionToDisplayText(data as CodeDescriptionDto);
         } else if (columnKey === "cbst") {
             return data as boolean ? "Yes" : "No"; 
@@ -40,9 +39,9 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
             <Column sm={16} md={16} lg={16}>
                 <div className="species-table-container">
                     <div className="species-table-title-section">
-                        <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.directSeedingSpecification?.totalPlanting}`}</p>
-                        <p className="species-table-title-section-body">{'\u007c'}</p>
-                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.directSeedingSpecification?.totalSpecies}`}</p>
+                        <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.totalPlanting ?? PLACE_HOLDER}`}</p>
+                        <p className="species-table-title-section-body">{`${UNIQUE_CHARACTERS_UNICODE.PIPE}`}</p>
+                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.species?.length}`}</p>
                     </div>
                     {/* Table Skeleton */}
                     {
@@ -55,7 +54,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                     }
                     {/* Empty Table */}
                     {
-                        !isLoading && !activityDetail?.directSeedingSpecification?.species.length ? (
+                        !isLoading && !activityDetail?.species?.length ? (
                             <EmptySection
                                 pictogram="Magnify"
                                 title="There are no species to show yet"
@@ -66,7 +65,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                     }
                     {/* Loaded table content */}
                     {
-                        !isLoading && activityDetail?.directSeedingSpecification?.species.length ?
+                        !isLoading && activityDetail?.species?.length ?
                             (
                                 <Table
                                     className="default-zebra-table species-table"
@@ -83,9 +82,9 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                activityDetail?.directSeedingSpecification?.species.map((row) => {
+                                                activityDetail?.species.map((row) => {
                                                     return (
-                                                        <TableRow key={row.speciesType.code}>
+                                                        <TableRow key={row.species.code}>
                                                             {
                                                                 DirectSeedingHeaders.map((header) => {
                                                                     return (
