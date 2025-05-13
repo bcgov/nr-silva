@@ -16,7 +16,7 @@ import { pluralize } from "@/utils/StringUtils";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PLACE_HOLDER } from "@/constants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { OpeningTenureDto } from "@/types/OpeningTypes";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
@@ -24,7 +24,7 @@ import CutBlockStatusTag from "../../CutBlockStatusTag";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 
-import { DefaultFilter, MAX_SEARCH_LENGTH, TenureTableHeaders } from "./constants";
+import { DefaultFilter, TenureTableHeaders } from "./constants";
 import { formatPrimaryTenureLabel } from "./utils";
 import { TenureFilterType } from "./definitions";
 import './styles.scss';

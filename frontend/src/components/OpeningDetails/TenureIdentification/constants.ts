@@ -17,5 +17,3 @@ export const DefaultFilter: TenureFilterType = {
   page: DEFAULT_PAGE_NUM,
   size: OddPageSizesConfig[0]
 } as const;
-
-export const MAX_SEARCH_LENGTH = 50 as const;
