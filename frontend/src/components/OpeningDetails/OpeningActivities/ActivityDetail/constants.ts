@@ -10,9 +10,9 @@ export const DirectSeedingHeaders: TableHeaderType<keyof OpeningActivitySpeciesD
     { key: "lot", header: "Lot", selected: true }
 ];
 
-export const PlantingHeaders: TableHeaderType<keyof MockedPlantingSpecies>[] = [
-    { key: "speciesType", header: "Species", selected: true },
-    { key: "numberPlanted", header: "Number planted", selected: true },
+export const PlantingHeaders: TableHeaderType<keyof OpeningActivitySpeciesDetailsDto>[] = [
+    { key: "species", header: "Species", selected: true },
+    { key: "plantedNumber", header: "Number planted", selected: true },
     { key: "numberBeyondTransferLimit", header: "Number beyond transfer limit", selected: true },
     { key: "cbst", header: "CBST", selected: true },
     { key: "requestId", header: "Request ID", selected: true },

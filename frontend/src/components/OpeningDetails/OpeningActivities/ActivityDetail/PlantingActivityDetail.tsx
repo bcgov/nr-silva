@@ -1,11 +1,11 @@
 import { Column, Grid, SkeletonText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
-import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { PLACE_HOLDER } from "@/constants";
+import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import TableSkeleton from "../../../TableSkeleton";
 import EmptySection from "../../../EmptySection";
 import { DirectSeedingHeaders, PlantingHeaders } from "./constants";
+import { ActivityDetailProps } from "./definitions";
 
 const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     const renderCellContent = (
@@ -14,7 +14,7 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
     ) => {
         if (!data) {return PLACE_HOLDER;}
 
-        if (columnKey === "speciesType") {
+        if (columnKey === "species") {
             return codeDescriptionToDisplayText(data as CodeDescriptionDto);
         } else if (columnKey === "cbst") {
             return data as boolean ? "Yes" : "No"; 
@@ -38,9 +38,9 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
             <Column sm={16} md={16} lg={16}>
                 <div className="species-table-container">
                     <div className="species-table-title-section">
-                        <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.plantingSpecification?.totalPlanting}`}</p>
-                        <p className="species-table-title-section-body">{'\u007c'}</p>
-                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.plantingSpecification?.totalSpecies}`}</p>
+                        <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.totalPlanting ?? PLACE_HOLDER}`}</p>
+                        <p className="species-table-title-section-body">{`${UNIQUE_CHARACTERS_UNICODE.PIPE}`}</p>
+                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.species?.length}`}</p>
                     </div>
                     {/* Table Skeleton */}
                     {
@@ -53,7 +53,7 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                     }
                     {/* Empty Table */}
                     {
-                        !isLoading && !activityDetail?.plantingSpecification?.species.length ? (
+                        !isLoading && !activityDetail?.species?.length ? (
                             <EmptySection
                                 pictogram="Magnify"
                                 title="There are no species to show yet"
@@ -64,7 +64,7 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                     }
                     {/* Loaded table content */}
                     {
-                        !isLoading && activityDetail?.plantingSpecification?.species.length ?
+                        !isLoading && activityDetail?.species?.length ?
                             (
                                 <Table
                                     className="default-zebra-table species-table"
@@ -81,9 +81,9 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                activityDetail?.plantingSpecification?.species.map((row) => {
+                                                activityDetail?.species.map((row) => {
                                                     return (
-                                                        <TableRow key={`${row.speciesType.code}-${row.requestId}`}>
+                                                        <TableRow key={`${row.species.code}-${row.requestId}`}>
                                                             {
                                                                 PlantingHeaders.map((header) => {
                                                                     return (
