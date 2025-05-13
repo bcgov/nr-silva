@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Button, Column,
   DefinitionTooltip,
-  Grid, Pagination, Table, TableBody, TableCell,
+  Grid, InlineLoading, Pagination, Table, TableBody, TableCell,
   TableContainer,
   TableHead, TableHeader, TableRow,
   TableToolbar,
@@ -146,20 +146,22 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
   };
 
   const applySearchFilter = () => {
-    const trimmed = searchInput.trim();
+    if (!tenureQuery.isFetching) {
+      const trimmed = searchInput.trim();
 
-    setTenureFilter((prev) => {
-      const next = { ...prev, page: 0 };
+      setTenureFilter((prev) => {
+        const next = { ...prev, page: 0 };
 
-      if (trimmed === '') {
-        const { filter, ...rest } = next;
-        return rest;
-      }
+        if (trimmed === '') {
+          const { filter, ...rest } = next;
+          return rest;
+        }
 
-      return { ...next, filter: trimmed };
-    });
+        return { ...next, filter: trimmed };
+      });
 
-    setCurrPageNumber(0);
+      setCurrPageNumber(0);
+    }
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -223,7 +225,8 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
             />
             <Button
               kind="primary"
-              renderIcon={Search}
+              className="default-button-with-loading"
+              renderIcon={tenureQuery.isFetching ? InlineLoading : Search}
               onClick={applySearchFilter}
             >
               Search
