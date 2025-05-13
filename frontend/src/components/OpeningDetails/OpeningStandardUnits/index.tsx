@@ -11,16 +11,16 @@ import {
   Layers as LayersIcon,
   Launch as LaunchIcon
 } from "@carbon/icons-react";
-
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import AcoordionTitle from "./AccordionTitle";
-import CardItem from "../../Card/CardItem";
-import { CardTitle } from "../../Card";
-import VerticalDivider from "../../VerticalDivider";
 import { PLACE_HOLDER } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
 import { pluralize } from "@/utils/StringUtils";
+
+import AcoordionTitle from "./AccordionTitle";
+import CardItem from "../../Card/CardItem";
+import { CardTitle } from "../../Card";
+import VerticalDivider from "../../VerticalDivider";
 
 import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';

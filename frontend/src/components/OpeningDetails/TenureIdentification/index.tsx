@@ -12,20 +12,21 @@ import {
 import { Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningTenure } from "@/services/OpeningDetailsService";
-import { DefaultFilter, TenureTableHeaders } from "./constants";
-import { formatPrimaryTenureLabel } from "./utils";
-import OpeningTenureTooltip from "./PrimaryTenureDefinition";
-import { OpeningTenureDto } from "@/types/OpeningTypes";
-import CutBlockStatusTag from "../../CutBlockStatusTag";
+import { pluralize } from "@/utils/StringUtils";
+import { SortDirectionType } from "@/types/PaginationTypes";
 import { PLACE_HOLDER } from "@/constants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
+import { OpeningTenureDto } from "@/types/OpeningTypes";
+
+import OpeningTenureTooltip from "./PrimaryTenureDefinition";
+import CutBlockStatusTag from "../../CutBlockStatusTag";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
-import { pluralize } from "@/utils/StringUtils";
-import { TenureFilterType } from "./definitions";
-import { SortDirectionType } from "@/types/PaginationTypes";
 
+import { DefaultFilter, TenureTableHeaders } from "./constants";
+import { formatPrimaryTenureLabel } from "./utils";
+import { TenureFilterType } from "./definitions";
 import './styles.scss';
 
 type OpeningTenureProps = {
