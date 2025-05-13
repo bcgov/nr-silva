@@ -1,6 +1,6 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
-import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
 import { CardItem } from "../../../Card";
+import { ActivityDetailProps } from "./definitions";
 
 const SitePreparationActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     return (
@@ -17,7 +17,7 @@ const SitePreparationActivityDetail = ({ activityDetail, isLoading }: ActivityDe
 
         <Column sm={16} md={16} lg={16}>
             <CardItem label="Target prepared spot per ha" showSkeleton={isLoading}>
-                {activityDetail?.sitePrepSpecification?.targetPreparedSpotPerHa}
+                {activityDetail?.targetSpot}
             </CardItem>
         </Column>
     </Grid>

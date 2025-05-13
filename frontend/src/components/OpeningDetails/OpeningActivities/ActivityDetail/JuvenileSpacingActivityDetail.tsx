@@ -1,6 +1,6 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
-import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
 import { CardItem } from "../../../Card";
+import { ActivityDetailProps } from "./definitions";
 
 const JuvenileSpacingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     return (
@@ -17,25 +17,25 @@ const JuvenileSpacingActivityDetail = ({ activityDetail, isLoading }: ActivityDe
 
             <Column sm={4} md={4} lg={4}>
                 <CardItem label="Target Inter-tree distance(m)" showSkeleton={isLoading}>
-                    {activityDetail?.spacingSpecification?.targetInterTreeDistance}
+                    {activityDetail?.targetIntertreeDistance}
                 </CardItem>
             </Column>
 
             <Column sm={4} md={4} lg={4}>
                 <CardItem label="Allowable variation in inter-tree distance(m)" showSkeleton={isLoading}>
-                    {activityDetail?.spacingSpecification?.allowableVariationInterTreeDistance}
+                    {activityDetail?.allowableVariationDistance}
                 </CardItem>
             </Column>
 
             <Column sm={4} md={4} lg={4}>
                 <CardItem label="Allowable trees per plot" showSkeleton={isLoading}>
-                    {activityDetail?.spacingSpecification?.allowableTreesPerPlot}
+                    {activityDetail?.allowableTreePerLot}
                 </CardItem>
             </Column>
 
             <Column sm={4} md={4} lg={4}>
                 <CardItem label="Spacing per ha" showSkeleton={isLoading}>
-                    {activityDetail?.spacingSpecification?.spacingPerHa}
+                    {activityDetail?.spacingPerHa}
                 </CardItem>
             </Column>
         </Grid>

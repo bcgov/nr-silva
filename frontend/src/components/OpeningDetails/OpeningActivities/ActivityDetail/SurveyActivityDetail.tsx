@@ -1,6 +1,6 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
-import { ActivityDetailProps, MockedActivityDetailType } from "../definitions";
 import { CardItem } from "../../../Card";
+import { ActivityDetailProps } from "./definitions";
 
 const SurveyActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     return (
