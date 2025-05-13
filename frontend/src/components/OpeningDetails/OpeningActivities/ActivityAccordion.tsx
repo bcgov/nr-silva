@@ -142,18 +142,18 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
         title={<AccordionTitle total={data.length} />}
       >
         <div>
-          <div className="activity-filter-container">
+          <div className="activity-search-container">
             <Search
               id="activity-filter"
               className="default-tab-search-bar"
               size="lg"
-              labelText="Filter activities"
-              placeholder="Filter activities by keyword"
+              labelText="Search activities"
+              placeholder="Search by keyword"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Button className="filter-search-button">
-              <span>Filter</span>
+              <span>Search</span>
               <SearchIcon/>
             </Button>
           </div>
