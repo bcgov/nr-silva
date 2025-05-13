@@ -1,11 +1,6 @@
 import axios from "axios";
 import {
-  OpeningActivityBaseDto,
-  OpeningActivityJuvelineDto,
-  OpeningActivityPruningDto,
-  OpeningActivitySitePrepDto,
-  OpeningActivitySpeciesDto,
-  OpeningActivitySurveyDto,
+  OpeningActivityDetail,
   OpeningDetailsActivitiesActivitiesDto,
   OpeningDetailsActivitiesDisturbanceDto,
   OpeningDetailsStockingDto,
@@ -49,32 +44,9 @@ export const fetchOpeningActivities = (openingId: number): Promise<PaginatedResp
     .then((res) => res.data as PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>);
 };
 
-export const fetchOpeningActivityDetail = (baseCode: string, openingId: number, atuId: number)
-  : Promise<OpeningActivityBaseDto
-    | OpeningActivityJuvelineDto
-    | OpeningActivityPruningDto
-    | OpeningActivitySitePrepDto
-    | OpeningActivitySpeciesDto
-    | OpeningActivitySurveyDto> => {
-
+export const fetchOpeningActivityDetail = (baseCode: string, openingId: number, atuId: number): Promise<OpeningActivityDetail> => {
   const authToken = getAuthIdToken();
 
   return axios.get(API_ENDPOINTS.openingActivity(openingId).activityDetail(atuId), defaultHeaders(authToken))
-    .then((res) => {
-      switch (baseCode) {
-        case "JS":
-          return res.data as OpeningActivityJuvelineDto;
-        case "PR":
-          return res.data as OpeningActivityPruningDto;
-        case "SP":
-          return res.data as OpeningActivitySitePrepDto;
-        case "SU":
-          return res.data as OpeningActivitySurveyDto;
-        case "DS":
-        case "PL":
-          return res.data as OpeningActivitySpeciesDto;
-        default:
-          return res.data as OpeningActivityBaseDto;
-      }
-    });
+    .then((res) => res.data as OpeningActivityDetail);
 };
