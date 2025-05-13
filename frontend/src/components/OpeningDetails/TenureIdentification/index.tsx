@@ -211,7 +211,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
             <TableToolbarSearch
               className="default-tab-search-bar"
               persistent
-              placeholder="Filter by keyword"
+              placeholder="Search by keyword"
               value={searchInput}
               onChange={handleSearchInputChange}
               onKeyDown={handleSearchKeyDown}
@@ -222,7 +222,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
               renderIcon={Search}
               onClick={applySearchFilter}
             >
-              Filter
+              Search
             </Button>
           </TableToolbar>
 
