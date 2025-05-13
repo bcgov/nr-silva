@@ -118,12 +118,14 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {
                 isActive(0)
-                  ? <Suspense fallback={<TextAreaSkeleton />}>
-                    <OpeningOverview
-                      overviewObj={openingDetailsTombstoneQuery.data?.overview}
-                      isLoading={openingDetailsTombstoneQuery.isLoading}
-                    />
-                  </Suspense>
+                  ? (
+                    <Suspense fallback={<TextAreaSkeleton />}>
+                      <OpeningOverview
+                        overviewObj={openingDetailsTombstoneQuery.data?.overview}
+                        isLoading={openingDetailsTombstoneQuery.isLoading}
+                      />
+                    </Suspense>
+                  )
                   : null
               }
             </TabPanel>
@@ -131,9 +133,11 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {
                 isActive(1)
-                  ? <Suspense fallback={<TextAreaSkeleton />}>
-                    <TenureIdentification openingId={Number(openingId)} />
-                  </Suspense>
+                  ? (
+                    <Suspense fallback={<TextAreaSkeleton />}>
+                      <TenureIdentification openingId={Number(openingId)} />
+                    </Suspense>
+                  )
                   : null
               }
             </TabPanel>
@@ -141,9 +145,11 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {
                 isActive(2)
-                  ? <Suspense fallback={<TextAreaSkeleton />}>
-                    <OpeningStandardUnits openingId={Number(openingId)} />
-                  </Suspense>
+                  ? (
+                    <Suspense fallback={<TextAreaSkeleton />}>
+                      <OpeningStandardUnits openingId={Number(openingId)} />
+                    </Suspense>
+                  )
                   : null
               }
             </TabPanel>
@@ -151,9 +157,11 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {
                 isActive(3)
-                  ? <Suspense fallback={<AccordionSkeleton />}>
-                    <OpeningActivities openingId={Number(openingId)} />
-                  </Suspense>
+                  ? (
+                    <Suspense fallback={<AccordionSkeleton />}>
+                      <OpeningActivities openingId={Number(openingId)} />
+                    </Suspense>
+                  )
                   : null
               }
             </TabPanel>
