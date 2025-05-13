@@ -28,6 +28,7 @@ const API_ENDPOINTS = {
     activities: () => `${API_BASE_URL}/openings/${openingId}/activities`,
     activityDetail: (atuId: number) => `${API_BASE_URL}/openings/${openingId}/activities/${atuId}`,
   }),
+  openingTenureIdentification: (openingId: number, filters: string) => `${API_BASE_URL}/openings/${openingId}/tenures${filters}`,
 };
 
 // Define the default headers for the API requests, including ones used by CORS

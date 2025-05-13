@@ -1600,7 +1600,7 @@ export const MOCKED_ACTIVITY_RES: MockedActivityResponseType = {
   ],
   "page": {
     "size": 46,
-    "number": 0,
+    "page": 0,
     "totalElements": 46,
     "totalPages": 1
   }

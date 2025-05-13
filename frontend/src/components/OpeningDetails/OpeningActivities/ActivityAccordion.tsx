@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import { Accordion, AccordionItem, Button, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag } from "@carbon/react";
 import { Activity, Search as SearchIcon } from "@carbon/icons-react";
 import { ActivityTableHeaders } from "./constants";
-import { MockedActivityType } from "./definitions";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
@@ -54,7 +53,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   };
 
   const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["status","base", "tech", "method", "objective", "funding"];
+    const codeDescriptionColumns = ["status", "base", "tech", "method", "objective", "funding"];
     return codeDescriptionColumns.includes(value);
   };
 
@@ -73,13 +72,13 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
 
       if (columnKey === "status") {
         return (
-            <Tag
-              className="activity-status-tag"
-              type={codeDescription.code === "C" ? "green" : "purple"}
-              size="md"
-              >
-              {codeDescription.description}
-            </Tag>
+          <Tag
+            className="activity-status-tag"
+            type={codeDescription.code === "C" ? "green" : "purple"}
+            size="md"
+          >
+            {codeDescription.description}
+          </Tag>
         );
       } else if (columnKey === "base") {
         return String(`${codeDescription.code} - ${codeDescription.description}`);
@@ -121,7 +120,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
         <DefinitionTooltip
           definition={codeDescription.description}
           align={isLastElement ? "top" : "bottom"}
-          openOnHover={true}
+          openOnHover
         >
           <span>{codeDescription.code}</span>
         </DefinitionTooltip>
@@ -154,7 +153,7 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
             />
             <Button className="filter-search-button">
               <span>Search</span>
-              <SearchIcon/>
+              <SearchIcon />
             </Button>
           </div>
 
@@ -194,11 +193,11 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
                     </TableExpandRow>
                     <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
                       {isExpanded ? (
-                        <ActivityDetail 
+                        <ActivityDetail
                           activity={row}
                           openingId={openingId}
-                         />
-                      ): null}
+                        />
+                      ) : null}
                     </TableExpandedRow>
                   </React.Fragment>
                 );

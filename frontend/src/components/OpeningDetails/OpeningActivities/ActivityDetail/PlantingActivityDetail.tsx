@@ -12,14 +12,14 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
         data: CodeDescriptionDto | number | boolean | null,
         columnKey: string,
     ) => {
-        if (!data) {return PLACE_HOLDER;}
+        if (!data) { return PLACE_HOLDER; }
 
         if (columnKey === "species") {
             return codeDescriptionToDisplayText(data as CodeDescriptionDto);
         } else if (columnKey === "cbst") {
-            return data as boolean ? "Yes" : "No"; 
+            return data as boolean ? "Yes" : "No";
         }
-        
+
         return String(data);
     }
 
@@ -48,7 +48,7 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                             <TableSkeleton
                                 headers={PlantingHeaders}
                                 showToolbar={false}
-                                showHeader={false}/>
+                                showHeader={false} />
                         ) : null
                     }
                     {/* Empty Table */}
@@ -58,7 +58,6 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                                 pictogram="Magnify"
                                 title="There are no species to show yet"
                                 description=""
-                                fill="#0073E6"
                             />
                         ) : null
                     }
@@ -70,41 +69,41 @@ const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailPro
                                     className="default-zebra-table species-table"
                                     aria-label="Planting species table"
                                     useZebraStyles>
-                                        <TableHead>
-                                            <TableRow>
-                                                {
-                                                    PlantingHeaders.map((header) => (
-                                                        <TableHeader key={header.key}>{header.header}</TableHeader>
-                                                    ))
-                                                }
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
+                                    <TableHead>
+                                        <TableRow>
                                             {
-                                                activityDetail?.species.map((row) => {
-                                                    return (
-                                                        <TableRow key={`${row.species.code}-${row.requestId}`}>
-                                                            {
-                                                                PlantingHeaders.map((header) => {
-                                                                    return (
-                                                                        <TableCell className="species-table-cell" key={header.key}>
-                                                                            {renderCellContent(row[header.key], header.key)}
-                                                                        </TableCell>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </TableRow>
-                                                    )
-                                                })
+                                                PlantingHeaders.map((header) => (
+                                                    <TableHeader key={header.key}>{header.header}</TableHeader>
+                                                ))
                                             }
-                                        </TableBody>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            activityDetail?.species.map((row) => {
+                                                return (
+                                                    <TableRow key={`${row.species.code}-${row.requestId}`}>
+                                                        {
+                                                            PlantingHeaders.map((header) => {
+                                                                return (
+                                                                    <TableCell className="species-table-cell" key={header.key}>
+                                                                        {renderCellContent(row[header.key], header.key)}
+                                                                    </TableCell>
+                                                                )
+                                                            })
+                                                        }
+                                                    </TableRow>
+                                                )
+                                            })
+                                        }
+                                    </TableBody>
                                 </Table>
                             )
                             : null
                     }
                 </div>
             </Column>
-    </Grid>
+        </Grid>
     );
 };
 

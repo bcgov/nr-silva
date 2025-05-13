@@ -266,17 +266,18 @@ export type OpeningActivityDetail = OpeningActivityBaseDto &
   Partial<OpeningActivitySurveyDto>;
 
 export type OpeningTenureDto = {
-    id: number,
-    primaryTenure: boolean,
-    fileId: string | null,
-    cutBlock: string | null,
-    cuttingPermit: string | null,
-    timberMark: string | null,
-    status: CodeDescriptionDto | null,
-    plannedGrossArea: number | null,
-    plannedNetArea: number | null
+  id: number,
+  primaryTenure: boolean,
+  fileId: string | null,
+  cutBlock: string | null,
+  cuttingPermit: string | null,
+  timberMark: string | null,
+  status: CodeDescriptionDto | null,
+  plannedGrossArea: number | null,
+  plannedNetArea: number | null
 }
 
 export type PaginatedPrimaryResponseDto<T> = PaginatedResponseType<T> & {
-    primary: T | null;
+  primary: T | null;
+  totalUnfiltered: number;
 };
