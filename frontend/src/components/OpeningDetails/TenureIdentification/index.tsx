@@ -77,7 +77,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
     }
   }
 
-  if (tenureQuery.data?.page.totalElements === 0 && Object.keys(tenureFilter).length === 0) {
+  if (tenureQuery.data?.totalUnfiltered === 0) {
     return (
       <Grid className="opening-tenure-id-grid default-grid">
         <Column sm={4} md={8} lg={16}>
@@ -181,19 +181,13 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       <Column sm={4} md={8} lg={16}>
         <div className="tab-title-container">
           <h3 className="default-tab-content-title">
-            {
-              tenureQuery.isLoading
-                ? 'Fetching'
-                : tenureQuery.data?.page.totalElements
-            }
+            {tenureQuery.data?.totalUnfiltered}
             {' '}
             {
-              pluralize('tenure', tenureQuery.data?.page.totalElements)
+              pluralize('tenure', tenureQuery.data?.totalUnfiltered)
             }
             {' '}
-            {
-              `${tenureFilter.filter ? 'using the filter keyword' : 'in this opening'}`
-            }
+            in this opening
           </h3>
           {
             tenureQuery.data?.primary
