@@ -29,4 +29,5 @@ export enum UNIQUE_CHARACTERS_UNICODE {
   NEW_LINE = "\u000A",
   BULLET = "\u2022",
   ORDINAL_INDICATOR = "\u00BA",
+  PIPE = "\u007C",
 };
