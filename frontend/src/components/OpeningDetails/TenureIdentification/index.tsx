@@ -24,7 +24,7 @@ import CutBlockStatusTag from "../../CutBlockStatusTag";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 
-import { DefaultFilter, TenureTableHeaders } from "./constants";
+import { DefaultFilter, MAX_SEARCH_LENGTH, TenureTableHeaders } from "./constants";
 import { formatPrimaryTenureLabel } from "./utils";
 import { TenureFilterType } from "./definitions";
 import './styles.scss';
@@ -130,7 +130,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
 
   const handleSearchInputChange = (
     event: "" | React.ChangeEvent<HTMLInputElement>,
-    value?: string
+    _value?: string
   ) => {
     // Handle string clearing
     if (event === "") {
@@ -138,7 +138,11 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       return;
     }
 
-    setSearchInput(event.target.value);
+    const inputValue = event.target.value;
+
+    if (inputValue.length <= MAX_SEARCH_LENGTH) {
+      setSearchInput(inputValue);
+    }
   };
 
   const applySearchFilter = () => {
