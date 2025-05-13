@@ -281,14 +281,27 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
               }
             </TableBody>
           </Table>
-          <Pagination
-            className="default-pagination-white"
-            page={currPageNumber + 1}
-            pageSize={currPageSize}
-            pageSizes={OddPageSizesConfig}
-            totalItems={tenureQuery.data?.page.totalElements}
-            onChange={handlePagination}
-          />
+          {
+            tenureQuery.data?.page.totalElements === 0
+              ? (
+                <EmptySection
+                  pictogram="UserSearch"
+                  title={`No results for "${tenureFilter.filter}"`}
+                  description="Consider adjusting your search term and try again."
+                  whiteLayer
+                />
+              )
+              : (
+                <Pagination
+                  className="default-pagination-white"
+                  page={currPageNumber + 1}
+                  pageSize={currPageSize}
+                  pageSizes={OddPageSizesConfig}
+                  totalItems={tenureQuery.data?.page.totalElements}
+                  onChange={handlePagination}
+                />
+              )
+          }
         </TableContainer>
       </Column>
     </Grid >

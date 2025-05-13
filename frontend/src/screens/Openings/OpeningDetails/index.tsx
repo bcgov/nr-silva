@@ -59,25 +59,23 @@ const OpeningDetails = () => {
     mutationFn: (openingId: number) => putUserRecentOpening(openingId)
   });
 
-  const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
-  const openingNotFound = openingDetailsTombstoneQuery.isError && openingDetailsError?.response?.status === 404;
-
   useEffect(() => {
-    if (openingId && Number.isInteger(Number(openingId)) && openingNotFound) {
+    if (openingId && openingDetailsTombstoneQuery.isSuccess) {
       postRecentOpeningMutation.mutate(Number(openingId));
     }
-  }, [openingId, openingNotFound]);
+  }, [openingId, openingDetailsTombstoneQuery.status]);
 
-  if (openingNotFound) {
-    return <EmptySection pictogram="Summit" title={`Opening ${openingId} not found`} description="" />;
-  }
+  if (openingDetailsTombstoneQuery.isError) {
+    const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
+    const errorCode = openingDetailsError?.response?.status;
+    const isNotFound = errorCode === 404;
 
-  if (!openingNotFound && openingDetailsTombstoneQuery.isError) {
     return (
       <EmptySection
-        icon="BreakingChange"
-        title={`Error fetching data for Opening ${openingId}`}
-        description={openingDetailsTombstoneQuery.error.message}
+        icon={isNotFound ? undefined : "BreakingChange"}
+        pictogram={isNotFound ? "Summit" : undefined}
+        title={isNotFound ? `Opening ${openingId} not found` : `Error fetching data for Opening ${openingId}`}
+        description={isNotFound ? '' : openingDetailsTombstoneQuery.error.message}
       />
     );
   }
