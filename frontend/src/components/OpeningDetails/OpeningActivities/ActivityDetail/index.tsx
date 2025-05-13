@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { MockedActivityType } from "../definitions";
-import { delayMock } from "@/utils/MockUtils";
-import { COMPLEX_ACTIVITY_CODE, MOCKED_ACTIVITY_DETAIL } from "../constants";
+import { COMPLEX_ACTIVITY_CODE } from "../constants";
 import { Column, Grid } from "@carbon/react";
 import DirectSeedingActivityDetail from "./DirectSeedingActivityDetail";
 import JuvenileSpacingActivityDetail from "./JuvenileSpacingActivityDetail";
@@ -15,6 +13,8 @@ import { CardItem } from "../../../Card";
 
 import "./styles.scss";
 import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
+import { fetchOpeningActivityDetail } from "@/services/OpeningDetailsService";
+import Comments from "../../../Comments";
 
 type ActivityDetailOutlineProps = {
   activity: OpeningDetailsActivitiesActivitiesDto;
@@ -24,20 +24,17 @@ type ActivityDetailOutlineProps = {
 const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
     queryKey: ["opening", openingId, "activities", activity.atuId],
-    queryFn: () => {
-      const matchingActivity = MOCKED_ACTIVITY_DETAIL.find((item) => item.activityId === activity.atuId);
-      return delayMock(matchingActivity);
-    },
+    queryFn: () => fetchOpeningActivityDetail(openingId, activity.atuId),
     enabled: !!activity && !!openingId,
   });
 
   const isComplexActivity = () => {
-    const code = activityDetailQuery.data?.base.code;
+    const code = activity.base?.code;
     return code ? COMPLEX_ACTIVITY_CODE.includes(code as typeof COMPLEX_ACTIVITY_CODE[number]) : false;
   };
 
   const renderAdditionalDetail = () => {
-    const code = activityDetailQuery.data?.base.code;
+    const code = activity.base?.code;
     
     if (!code) return null;
 
@@ -59,6 +56,7 @@ const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) =>
       <Column sm={4} md={4} lg={16}>
         <GeneralAcitivityDetail
           activityDetail={activityDetailQuery.data}
+          base={activity.base}
           isPlanning={activity.status.code === "P" ? true : false}
           isComplex={isComplexActivity()}
           isLoading={activityDetailQuery.isLoading}/>
@@ -72,7 +70,13 @@ const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) =>
 
       <Column sm={4} md={4} lg={16}>
         <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
-          {activityDetailQuery.data?.comment}
+          {
+            activityDetailQuery.data?.comments?.length ?  (
+              <Comments 
+                comments={activityDetailQuery.data.comments}
+              />
+            ) : null
+          }
         </CardItem>
       </Column>
 
