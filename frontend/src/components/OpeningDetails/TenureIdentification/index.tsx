@@ -19,7 +19,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
 import { OpeningTenureDto } from "@/types/OpeningTypes";
 
-import OpeningTenureTooltip from "./PrimaryTenureDefinition";
+import OpeningTenureTooltip from "./OpeningTenureTooltip";
 import CutBlockStatusTag from "../../CutBlockStatusTag";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
