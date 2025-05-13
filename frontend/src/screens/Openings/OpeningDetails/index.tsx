@@ -32,6 +32,13 @@ const OpeningDetails = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const openingId = param.openingId;
 
+  useEffect(() => {
+    document.title = `Opening ${openingId} - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, [openingId]);
+
   const [activeTab, setActiveTab] = useState<number>(() => {
     const tabName = searchParams.get('tab');
     const index = tabName ? OpeningDetailsTabs.indexOf(tabName as any) : 0;
