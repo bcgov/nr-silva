@@ -8,7 +8,5 @@ import lombok.With;
 public record OpeningDetailsTenuresDto(
     OpeningDetailsTenureDto primary,
     List<OpeningDetailsTenureDto> content,
-    SimplePageDto page
-) {
-
-}
+    SimplePageDto page,
+    long totalUnfiltered) {}
