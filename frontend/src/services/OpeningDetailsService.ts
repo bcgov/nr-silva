@@ -44,7 +44,7 @@ export const fetchOpeningActivities = (openingId: number): Promise<PaginatedResp
     .then((res) => res.data as PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>);
 };
 
-export const fetchOpeningActivityDetail = (baseCode: string, openingId: number, atuId: number): Promise<OpeningActivityDetail> => {
+export const fetchOpeningActivityDetail = (openingId: number, atuId: number): Promise<OpeningActivityDetail> => {
   const authToken = getAuthIdToken();
 
   return axios.get(API_ENDPOINTS.openingActivity(openingId).activityDetail(atuId), defaultHeaders(authToken))
