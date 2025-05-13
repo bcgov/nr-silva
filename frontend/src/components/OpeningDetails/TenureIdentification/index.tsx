@@ -211,7 +211,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <TableContainer>
+        <TableContainer className="default-table-container">
           <TableToolbar>
             <TableToolbarSearch
               className="default-tab-search-bar"
@@ -245,7 +245,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
 
           {/* Loaded Table section */}
           <Table
-            className="default-zebra-table-with-border"
+            className="default-zebra-table"
             aria-label="Tenure identification table"
             useZebraStyles
           >

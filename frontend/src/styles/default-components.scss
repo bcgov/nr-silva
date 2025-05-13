@@ -206,3 +206,9 @@ ul.default-tab-accordion {
     background: var(--#{vars.$bcgov-prefix}-layer-02);
   }
 }
+
+.default-table-container {
+  padding-block-start: unset;
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
+  border-radius: 0.25rem;
+}
