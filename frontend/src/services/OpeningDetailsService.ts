@@ -30,6 +30,12 @@ export const fetchOpeningSsu = (openingId: number): Promise<OpeningDetailsStocki
     .then((res) => res.data);
 }
 
+/**
+ * Fetches the disturbances associated with a specific opening.
+ * 
+ * @param openingId - The ID of the opening.
+ * @returns A promise that resolves to a paginated response containing disturbance data.
+ */
 export const fetchOpeningDisturbances = (openingId: number): Promise<PaginatedResponseType<OpeningDetailsActivitiesDisturbanceDto>> => {
   const authToken = getAuthIdToken();
 
@@ -37,6 +43,12 @@ export const fetchOpeningDisturbances = (openingId: number): Promise<PaginatedRe
     .then((res) => res.data as PaginatedResponseType<OpeningDetailsActivitiesDisturbanceDto>);
 };
 
+/**
+ * Fetches the activities associated with a specific opening.
+ * 
+ * @param openingId - The ID of the opening.
+ * @returns A promise that resolves to a paginated response containing activity data.
+ */
 export const fetchOpeningActivities = (openingId: number): Promise<PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>> => {
   const authToken = getAuthIdToken();
 
@@ -44,6 +56,13 @@ export const fetchOpeningActivities = (openingId: number): Promise<PaginatedResp
     .then((res) => res.data as PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>);
 };
 
+/**
+ * Fetches the details of a specific activity within an opening.
+ * 
+ * @param openingId - The ID of the opening.
+ * @param atuId - The ID of the activity unit.
+ * @returns A promise that resolves to the details of the specified activity.
+ */
 export const fetchOpeningActivityDetail = (openingId: number, atuId: number): Promise<OpeningActivityDetail> => {
   const authToken = getAuthIdToken();
 
