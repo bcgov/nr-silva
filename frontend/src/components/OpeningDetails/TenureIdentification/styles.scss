@@ -35,4 +35,14 @@
     }
   }
 
+  .tenure-table-cell {
+    .cell-content {
+      @include type.type-style('code-02');
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.5rem;
+      align-items: center;
+    }
+  }
+
 }

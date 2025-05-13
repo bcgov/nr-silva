@@ -5,7 +5,6 @@ import {
   TableHead, TableHeader, TableRow,
   TextAreaSkeleton
 } from "@carbon/react";
-import { Link } from "react-router-dom";
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
@@ -18,12 +17,13 @@ import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
-
-import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
-import './styles.scss';
 import { PLACE_HOLDER } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
+import { pluralize } from "@/utils/StringUtils";
+
+import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
+import './styles.scss';
 
 
 type OpeningStandardUnitsProps = {
@@ -54,7 +54,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
               ? openingDetailSsuQuery.data.length
               : 'No'
             }
-            standard unit${(openingDetailSsuQuery.data?.length ?? 0) > 1 ? 's' : ''}
+            ${pluralize('standard unit', openingDetailSsuQuery.data?.length)}
             in the opening area`
           }
         </h3>

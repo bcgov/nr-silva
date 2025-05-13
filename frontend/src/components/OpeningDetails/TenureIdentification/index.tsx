@@ -1,43 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  Accordion, AccordionItem, Button, Column,
+  Button, Column,
   DefinitionTooltip,
-  Grid, Table, TableBody, TableCell,
+  Grid, Pagination, Table, TableBody, TableCell,
   TableContainer,
   TableHead, TableHeader, TableRow,
   TableToolbar,
   TableToolbarSearch,
   Tag,
-  TextAreaSkeleton
 } from "@carbon/react";
 import { Search } from "@carbon/icons-react";
-
-import './styles.scss';
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningTenure } from "@/services/OpeningDetailsService";
-import { TenureTableHeaders } from "./constants";
+import { DefaultFilter, TenureTableHeaders } from "./constants";
 import { formatPrimaryTenureLabel } from "./utils";
 import OpeningTenureTooltip from "./PrimaryTenureDefinition";
-import { OpeningTenureDto } from "../../../types/OpeningTypes";
+import { OpeningTenureDto } from "@/types/OpeningTypes";
 import CutBlockStatusTag from "../../CutBlockStatusTag";
-import { PLACE_HOLDER } from "../../../constants";
+import { PLACE_HOLDER } from "@/constants";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
+import EmptySection from "../../EmptySection";
+import TableSkeleton from "../../TableSkeleton";
+import { pluralize } from "@/utils/StringUtils";
+import { TenureFilterType } from "./definitions";
+import { SortDirectionType } from "@/types/PaginationTypes";
+
+import './styles.scss';
 
 type OpeningTenureProps = {
   openingId: number;
 }
 
 const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
+  const [searchInput, setSearchInput] = useState('');
+  const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
+  const [currPageSize, setCurrPageSize] = useState<number>(() => OddPageSizesConfig[0]);
+  const [tenureFilter, setTenureFilter] = useState<TenureFilterType>(() => DefaultFilter);
 
   const tenureQuery = useQuery({
-    queryKey: ['opening', openingId, 'tenure'],
-    queryFn: () => fetchOpeningTenure(openingId)
+    queryKey: ['opening', openingId, 'tenure', { tenureFilter }],
+    queryFn: () => fetchOpeningTenure(openingId, tenureFilter),
   });
-
-  if (tenureQuery.isLoading) {
-    return (
-      <TextAreaSkeleton />
-    )
-  }
 
   const renderCellContent = (headerKey: keyof OpeningTenureDto, row: OpeningTenureDto) => {
     const content = tenureQuery.data?.content
@@ -49,34 +53,146 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       case 'fileId':
         if (row.primaryTenure) {
           return (
-            <span>
+            <>
               <span>{row.fileId}</span>
               <Tag size="md" title="Primary tenure" type="purple">
                 Primary tenure
               </Tag>
-            </span>
+            </>
           );
         }
         return row.fileId;
 
       case 'status':
         if (row.status) {
-          return <CutBlockStatusTag status={row.status} />
+          return (
+            <CutBlockStatusTag status={row.status} />
+          );
         }
         return PLACE_HOLDER;
 
       default:
-        return String(row[headerKey])
+        return String(row[headerKey]);
+    }
+  }
+
+  if (tenureQuery.data?.page.totalElements === 0 && Object.keys(tenureFilter).length === 0) {
+    return (
+      <Grid className="opening-tenure-id-grid default-grid">
+        <Column sm={4} md={8} lg={16}>
+          <EmptySection
+            pictogram="UserSearch"
+            title="Nothing to show yet!"
+            description="No tenures have been added to this opening yet."
+          />
+        </Column>
+      </Grid>
+    )
+  }
+
+  const handleSort = (field: keyof OpeningTenureDto) => {
+    let newDirection: SortDirectionType = 'NONE';
+
+    if (tenureFilter.sortField !== field || tenureFilter.sortDirection === 'NONE') {
+      newDirection = 'ASC';
+    } else if (tenureFilter.sortDirection === 'ASC') {
+      newDirection = 'DESC';
     }
 
-  }
+    setTenureFilter((prev) => {
+      if (newDirection === 'NONE') {
+        const { sortField, sortDirection, ...rest } = prev;
+        return { ...rest };
+      }
+
+      return {
+        ...prev,
+        sortField: field,
+        sortDirection: newDirection
+      };
+    });
+  };
+
+  const handlePagination = (paginationObj: PaginationOnChangeType) => {
+    // Convert to 0 based index
+    const nextPageNum = paginationObj.page - 1;
+    const nextPageSize = paginationObj.pageSize;
+
+    setCurrPageNumber(nextPageNum);
+    setCurrPageSize(nextPageSize);
+    setTenureFilter((prev) => ({
+      ...prev,
+      page: nextPageNum,
+      size: nextPageSize
+    }))
+  };
+
+  const handleSearchInputChange = (
+    event: "" | React.ChangeEvent<HTMLInputElement>,
+    value?: string
+  ) => {
+    // Handle string clearing
+    if (event === "") {
+      setSearchInput("");
+      return;
+    }
+
+    setSearchInput(event.target.value);
+  };
+
+  const applySearchFilter = () => {
+    const trimmed = searchInput.trim();
+
+    setTenureFilter((prev) => {
+      const next = { ...prev, page: 0 };
+
+      if (trimmed === '') {
+        const { filter, ...rest } = next;
+        return rest;
+      }
+
+      return { ...next, filter: trimmed };
+    });
+
+    setCurrPageNumber(0);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      applySearchFilter();
+    }
+  };
+
+  const handleSearchClear = () => {
+    setSearchInput('');
+    setTenureFilter((prev) => {
+      const { filter, ...rest } = prev;
+      return {
+        ...rest,
+        page: 0
+      };
+    });
+    setCurrPageNumber(0);
+  };
 
   return (
     <Grid className="opening-tenure-id-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <div className="tab-title-container">
           <h3 className="default-tab-content-title">
-            {tenureQuery.data?.page.totalElements} tenures in this opening
+            {
+              tenureQuery.isLoading
+                ? 'Fetching'
+                : tenureQuery.data?.page.totalElements
+            }
+            {' '}
+            {
+              pluralize('tenure', tenureQuery.data?.page.totalElements)
+            }
+            {' '}
+            {
+              `${tenureFilter.filter ? 'using the filter keyword' : 'in this opening'}`
+            }
           </h3>
           {
             tenureQuery.data?.primary
@@ -101,11 +217,33 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
               className="default-tab-search-bar"
               persistent
               placeholder="Filter by keyword"
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              onKeyDown={handleSearchKeyDown}
+              onClear={handleSearchClear}
             />
-            <Button kind="primary" renderIcon={Search}>
+            <Button
+              kind="primary"
+              renderIcon={Search}
+              onClick={applySearchFilter}
+            >
               Filter
             </Button>
           </TableToolbar>
+
+          {/* Table skeleton */}
+          {
+            tenureQuery.isLoading
+              ? <TableSkeleton
+                headers={TenureTableHeaders}
+                showToolbar={false}
+                showHeader={false}
+                rowCount={10}
+              />
+              : null
+          }
+
+          {/* Loaded Table section */}
           <Table
             className="default-zebra-table-with-border"
             aria-label="Tenure identification table"
@@ -116,7 +254,15 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
                 {
                   TenureTableHeaders
                     .map((header) => (
-                      <TableHeader key={header.key}>{header.header}</TableHeader>
+                      <TableHeader
+                        key={header.key}
+                        isSortable={header.sortable}
+                        isSortHeader={tenureFilter.sortField === header.key}
+                        sortDirection={tenureFilter.sortDirection}
+                        onClick={() => handleSort(header.key)}
+                      >
+                        {header.header}
+                      </TableHeader>
                     ))
                 }
               </TableRow>
@@ -124,12 +270,14 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
             <TableBody>
               {
                 tenureQuery.data?.content.map((row) => (
-                  <TableRow className="opening-table-row">
+                  <TableRow key={row.id}>
                     {
                       TenureTableHeaders
                         .map((header) => (
-                          <TableCell key={header.key}>
-                            {renderCellContent(header.key, row)}
+                          <TableCell key={header.key} className="tenure-table-cell">
+                            <span className="cell-content">
+                              {renderCellContent(header.key, row)}
+                            </span>
                           </TableCell>
                         ))
                     }
@@ -138,7 +286,14 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
               }
             </TableBody>
           </Table>
-
+          <Pagination
+            className="default-pagination-white"
+            page={currPageNumber + 1}
+            pageSize={currPageSize}
+            pageSizes={OddPageSizesConfig}
+            totalItems={tenureQuery.data?.page.totalElements}
+            onChange={handlePagination}
+          />
         </TableContainer>
       </Column>
     </Grid >

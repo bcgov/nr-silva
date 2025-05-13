@@ -201,4 +201,8 @@ ul.default-tab-accordion {
     border-left: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
     border-block-end: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-01);
   }
+
+  .#{vars.$bcgov-prefix}--search-input:not(:placeholder-shown) {
+    background: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
 }
