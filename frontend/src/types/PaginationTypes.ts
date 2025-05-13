@@ -3,9 +3,14 @@ export type PaginatedResponseType<T> = {
   page: PageType,
 }
 
-export type PageType = {
-  size: number,
-  number: number,
+export type PaginationConfigType = {
+  page: number,
+  size: number
+}
+
+export type PageType = PaginationConfigType & {
   totalElements: number,
   totalPages: number,
 }
+
+export type SortDirectionType = 'ASC' | 'DESC' | 'NONE';

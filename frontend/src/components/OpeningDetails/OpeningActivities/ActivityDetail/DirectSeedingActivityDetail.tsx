@@ -9,19 +9,19 @@ import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
 
 
-const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetailProps) => {
+const DirectSeedingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
     const renderCellContent = (
         data: CodeDescriptionDto | number | boolean | null,
         columnKey: string,
     ) => {
-        if (!data) {return PLACE_HOLDER;}
+        if (!data) { return PLACE_HOLDER; }
 
         if (columnKey === "speciesType") {
             return codeDescriptionToDisplayText(data as CodeDescriptionDto);
         } else if (columnKey === "cbst") {
-            return data as boolean ? "Yes" : "No"; 
+            return data as boolean ? "Yes" : "No";
         }
-        
+
         return String(data);
     }
 
@@ -50,7 +50,7 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                             <TableSkeleton
                                 headers={DirectSeedingHeaders}
                                 showToolbar={false}
-                                showHeader={false}/>
+                                showHeader={false} />
                         ) : null
                     }
                     {/* Empty Table */}
@@ -60,7 +60,6 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                                 pictogram="Magnify"
                                 title="There are no species to show yet"
                                 description=""
-                                fill="#0073E6"
                             />
                         ) : null
                     }
@@ -72,41 +71,41 @@ const DirectSeedingActivityDetail = ({activityDetail, isLoading} : ActivityDetai
                                     className="default-zebra-table species-table"
                                     aria-label="Direct seeding species table"
                                     useZebraStyles>
-                                        <TableHead>
-                                            <TableRow>
-                                                {
-                                                    DirectSeedingHeaders.map((header) => (
-                                                        <TableHeader key={header.key}>{header.header}</TableHeader>
-                                                    ))
-                                                }
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
+                                    <TableHead>
+                                        <TableRow>
                                             {
-                                                activityDetail?.directSeedingSpecification?.species.map((row) => {
-                                                    return (
-                                                        <TableRow key={row.speciesType.code}>
-                                                            {
-                                                                DirectSeedingHeaders.map((header) => {
-                                                                    return (
-                                                                        <TableCell className="species-table-cell" key={header.key}>
-                                                                            {renderCellContent(row[header.key], header.key)}
-                                                                        </TableCell>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </TableRow>
-                                                    )
-                                                })
+                                                DirectSeedingHeaders.map((header) => (
+                                                    <TableHeader key={header.key}>{header.header}</TableHeader>
+                                                ))
                                             }
-                                        </TableBody>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            activityDetail?.directSeedingSpecification?.species.map((row) => {
+                                                return (
+                                                    <TableRow key={row.speciesType.code}>
+                                                        {
+                                                            DirectSeedingHeaders.map((header) => {
+                                                                return (
+                                                                    <TableCell className="species-table-cell" key={header.key}>
+                                                                        {renderCellContent(row[header.key], header.key)}
+                                                                    </TableCell>
+                                                                )
+                                                            })
+                                                        }
+                                                    </TableRow>
+                                                )
+                                            })
+                                        }
+                                    </TableBody>
                                 </Table>
                             )
                             : null
                     }
                 </div>
             </Column>
-    </Grid>
+        </Grid>
     );
 };
 

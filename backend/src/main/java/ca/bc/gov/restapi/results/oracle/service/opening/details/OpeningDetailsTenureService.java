@@ -58,16 +58,12 @@ public class OpeningDetailsTenureService {
             .map(mapProjectionToDto())
             .orElse(null);
 
-    long totalUnfiltered;
-    if (normalizedSearch == null) {
-      // reuse the total if no filter is applied
-      totalUnfiltered = tenuresPage.getTotalElements();
-    } else {
-      totalUnfiltered =
-          cutBlockOpenAdminRepository
-              .findAllTenuresByOpeningId(openingId, null, Pageable.ofSize(1))
-              .getTotalElements();
-    }
+    long totalUnfiltered =
+        mainSearchTerm == null
+            ? tenuresPage.getTotalElements()
+            : cutBlockOpenAdminRepository
+                .findAllTenuresByOpeningId(openingId, null, Pageable.ofSize(1))
+                .getTotalElements();
 
     return new OpeningDetailsTenuresDto(
         primaryTenure,
