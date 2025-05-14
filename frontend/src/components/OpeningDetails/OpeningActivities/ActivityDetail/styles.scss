@@ -2,49 +2,49 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
 .activity-detail-grid {
-    padding: 0;
-    row-gap: 2.5rem;
+  padding: 0;
+  row-gap: 2.5rem;
 
-    tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
-        padding-block: 2rem;
-        padding-block-end: 2rem;
+  tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
+    padding-block: 2rem;
+    padding-block-end: 2rem;
+  }
+
+  .activity-detail-content-grid {
+    row-gap: 2rem;
+    column-gap: 2rem;
+
+    .activity-detail-content-title {
+      @include type.type-style('heading-02');
     }
 
-    .activity-detail-content-grid {
-        row-gap: 2rem;
-        column-gap: 2rem;
+    .species-table-container {
+      display: flex;
+      flex-direction: column;
 
-        .activity-detail-content-title {
-            @include type.type-style('heading-02');
+      border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
+      border-radius: 0.25rem;
+
+      .species-table-title-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+
+        .species-table-title-section-body {
+          @include type.type-style('body-02');
+          font-size: 14px;
+          color: var(--#{vars.$bcgov-prefix}-text-secondary);
         }
+      }
 
-        .species-table-container {
-            display: flex;
-            flex-direction: column;
-
-            border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
-            border-radius: 0.25rem;
-
-            .species-table-title-section {
-                display: flex;
-                flex-direction: row;
-                justify-content: start;
-                align-items: center;
-                gap: 1rem;
-                padding: 1rem 1.5rem;
-
-                .species-table-title-section-body {
-                    @include type.type-style('body-02');
-                    font-size: 14px;
-                    color: var(--#{vars.$bcgov-prefix}-text-secondary);
-                }
-            }
-
-            .species-table {
-                .species-table-cell {
-                    padding-left: 1rem;
-                }
-            }
+      .species-table {
+        .species-table-cell {
+          padding-left: 1rem;
         }
+      }
     }
+  }
 }

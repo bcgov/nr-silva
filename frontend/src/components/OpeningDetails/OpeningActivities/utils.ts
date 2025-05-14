@@ -14,33 +14,33 @@ import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
  *  - `displayText`: A string with formatted display text for all objectives, separated by bullet points.
  */
 export const formatActivityObjective = (
-    data: OpeningDetailsActivitiesActivitiesDto | null,
+  data: OpeningDetailsActivitiesActivitiesDto | null,
 ): { tooltipDefinition: string | null; displayText: string } => {
-    const objective1 = data?.objective1 as CodeDescriptionDto;
-    const objective2 = data?.objective2 as CodeDescriptionDto;
-    const objective3 = data?.objective3 as CodeDescriptionDto;
+  const objective1 = data?.objective1 as CodeDescriptionDto;
+  const objective2 = data?.objective2 as CodeDescriptionDto;
+  const objective3 = data?.objective3 as CodeDescriptionDto;
 
-    const tooltipDefinition = [
-        (objective1?.code && objective1?.description) ? `${objective1.code} - ${objective1.description}` : false,
-        (objective2?.code && objective2?.description) ? `${objective2.code} - ${objective2.description}` : false,
-        (objective3?.code && objective3?.description) ? `${objective3.code} - ${objective3.description}` : false
-    ].filter(Boolean).join(`${UNIQUE_CHARACTERS_UNICODE.NEW_LINE}`);
+  const tooltipDefinition = [
+    (objective1?.code && objective1?.description) ? `${objective1.code} - ${objective1.description}` : false,
+    (objective2?.code && objective2?.description) ? `${objective2.code} - ${objective2.description}` : false,
+    (objective3?.code && objective3?.description) ? `${objective3.code} - ${objective3.description}` : false
+  ].filter(Boolean).join(`${UNIQUE_CHARACTERS_UNICODE.NEW_LINE}`);
 
-    const displayText = [
-        objective1?.code ?? false,
-        objective2?.code ?? false,
-        objective3?.code ?? false
-    ].filter(Boolean).join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
+  const displayText = [
+    objective1?.code ?? false,
+    objective2?.code ?? false,
+    objective3?.code ?? false
+  ].filter(Boolean).join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
 
-    if (displayText.length === 0) {
-        return {
-            tooltipDefinition: null,
-            displayText: PLACE_HOLDER,
-        };
-    }
-
+  if (displayText.length === 0) {
     return {
-        tooltipDefinition,
-        displayText,
+      tooltipDefinition: null,
+      displayText: PLACE_HOLDER,
     };
+  }
+
+  return {
+    tooltipDefinition,
+    displayText,
+  };
 };
