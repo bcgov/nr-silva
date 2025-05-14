@@ -187,7 +187,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       <Column sm={4} md={8} lg={16}>
         <div className="tab-title-container">
           <h3 className="default-tab-content-title">
-            {tenureQuery.data?.totalUnfiltered}
+            {tenureQuery.data?.totalUnfiltered ?? '...'}
             {' '}
             {
               pluralize('tenure', tenureQuery.data?.totalUnfiltered)
@@ -242,52 +242,53 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
                 showHeader={false}
                 rowCount={10}
               />
-              : null
+              : (
+                <Table
+                  className="default-zebra-table"
+                  aria-label="Tenure identification table"
+                  useZebraStyles
+                >
+                  {/* Loaded Table section */}
+                  <TableHead>
+                    <TableRow>
+                      {
+                        TenureTableHeaders
+                          .map((header) => (
+                            <TableHeader
+                              key={header.key}
+                              isSortable={header.sortable}
+                              isSortHeader={tenureFilter.sortField === header.key}
+                              sortDirection={tenureFilter.sortDirection}
+                              onClick={() => handleSort(header.key)}
+                            >
+                              {header.header}
+                            </TableHeader>
+                          ))
+                      }
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      tenureQuery.data?.content.map((row) => (
+                        <TableRow key={row.id}>
+                          {
+                            TenureTableHeaders
+                              .map((header) => (
+                                <TableCell key={header.key} className="tenure-table-cell">
+                                  <span className="cell-content">
+                                    {renderCellContent(header.key, row)}
+                                  </span>
+                                </TableCell>
+                              ))
+                          }
+                        </TableRow>
+                      ))
+                    }
+                  </TableBody>
+                </Table>
+              )
           }
 
-          {/* Loaded Table section */}
-          <Table
-            className="default-zebra-table"
-            aria-label="Tenure identification table"
-            useZebraStyles
-          >
-            <TableHead>
-              <TableRow>
-                {
-                  TenureTableHeaders
-                    .map((header) => (
-                      <TableHeader
-                        key={header.key}
-                        isSortable={header.sortable}
-                        isSortHeader={tenureFilter.sortField === header.key}
-                        sortDirection={tenureFilter.sortDirection}
-                        onClick={() => handleSort(header.key)}
-                      >
-                        {header.header}
-                      </TableHeader>
-                    ))
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                tenureQuery.data?.content.map((row) => (
-                  <TableRow key={row.id}>
-                    {
-                      TenureTableHeaders
-                        .map((header) => (
-                          <TableCell key={header.key} className="tenure-table-cell">
-                            <span className="cell-content">
-                              {renderCellContent(header.key, row)}
-                            </span>
-                          </TableCell>
-                        ))
-                    }
-                  </TableRow>
-                ))
-              }
-            </TableBody>
-          </Table>
           {
             tenureQuery.data?.page.totalElements === 0
               ? (
