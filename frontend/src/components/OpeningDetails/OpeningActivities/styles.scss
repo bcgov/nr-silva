@@ -42,7 +42,29 @@
       }
 
       .activity-objective-tooltip-definition {
-        white-space: pre-wrap;
+        .#{vars.$bcgov-prefix}--definition-term {
+          margin-top: 0.25rem;
+        }
+
+        .#{vars.$bcgov-prefix}--definition-tooltip {
+          max-inline-size: unset;
+          min-width: 12rem;
+          padding: 1rem;
+          border-radius: 0.25rem;
+          @include type.type-style('body-compact-02');
+        }
+
+        .primary-tenure-dl {
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.75rem;
+
+          .label-val-container {
+            display: flex;
+            flex-direction: row;
+            gap: 0.25rem;
+          }
+        }
       }
     }
   }

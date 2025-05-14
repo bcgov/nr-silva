@@ -183,10 +183,11 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
 
         return (
           <DefinitionTooltip
+            className="activity-objective-tooltip-definition"
             definition={
-              <div className="activity-objective-tooltip-definition">
-                {tooltipDefinition}
-              </div>
+              tooltipDefinition!.split("\n").map((line, index) => (
+                <div key={index}>{line}</div>
+              ))
             }
             align={isLastElement ? "top" : "bottom"}
             openOnHover={true}
