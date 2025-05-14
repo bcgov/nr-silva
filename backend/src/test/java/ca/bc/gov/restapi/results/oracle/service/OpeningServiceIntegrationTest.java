@@ -112,7 +112,7 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
     Assertions.assertEquals("western redcedar",
         dto.preferredSpecies().get(0).species().description(),
         "Preferred species description should match");
-    Assertions.assertEquals(1L, dto.preferredSpecies().get(0).minHeight(),
+    Assertions.assertEquals(1.5f, dto.preferredSpecies().get(0).minHeight(),
         "Preferred species min height should match");
 
     // Verify acceptable species
@@ -122,7 +122,7 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
         "Acceptable species code should match");
     Assertions.assertEquals("amabilis fir", dto.acceptableSpecies().get(0).species().description(),
         "Acceptable species description should match");
-    Assertions.assertEquals(1L, dto.acceptableSpecies().get(0).minHeight(),
+    Assertions.assertEquals(1.8f, dto.acceptableSpecies().get(0).minHeight(),
         "Acceptable species min height should match");
 
     // Verify stocking layers

@@ -272,14 +272,14 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$[0].acceptableSpecies[0].minHeight").value(1L))
 
         // Verify stocking layers
-        .andExpect(jsonPath("$[0].layers.minWellspacedTrees").value(500L))
-        .andExpect(jsonPath("$[0].layers.minPreferredWellspacedTrees").value(400L))
-        .andExpect(jsonPath("$[0].layers.minHorizontalDistanceWellspacedTrees").value(2L))
-        .andExpect(jsonPath("$[0].layers.targetWellspacedTrees").value(900L))
-        .andExpect(jsonPath("$[0].layers.minPostspacingDensity").value(800L))
-        .andExpect(jsonPath("$[0].layers.maxPostspacingDensity").value(2000L))
-        .andExpect(jsonPath("$[0].layers.maxConiferous").value(10000L))
-        .andExpect(jsonPath("$[0].layers.heightRelativeToComp").value(150L));
+        .andExpect(jsonPath("$[0].layers[0].minWellspacedTrees").value(500))
+        .andExpect(jsonPath("$[0].layers[0].minPreferredWellspacedTrees").value(400L))
+        .andExpect(jsonPath("$[0].layers[0].minHorizontalDistanceWellspacedTrees").value(2L))
+        .andExpect(jsonPath("$[0].layers[0].targetWellspacedTrees").value(900L))
+        .andExpect(jsonPath("$[0].layers[0].minPostspacingDensity").value(800L))
+        .andExpect(jsonPath("$[0].layers[0].maxPostspacingDensity").value(2000L))
+        .andExpect(jsonPath("$[0].layers[0].maxConiferous").value(10000L))
+        .andExpect(jsonPath("$[0].layers[0].heightRelativeToComp").value(150L));
   }
 
   @Test
