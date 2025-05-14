@@ -25,7 +25,7 @@ export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitie
   { key: "base", header: "Base", sortable: true },
   { key: "tech", header: "Tech", sortable: true },
   { key: "method", header: "Method", sortable: true },
-  { key: "objective", header: "Objective", sortable: true },
+  { key: "objective1", header: "Objective", sortable: true },
   { key: "area", header: "Area", sortable: true },
   { key: "funding", header: "Funding Source", sortable: true },
   { key: "projectId", header: "Project ID", sortable: true },

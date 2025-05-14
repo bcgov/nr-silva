@@ -41,7 +41,7 @@ const DirectSeedingActivityDetail = ({ activityDetail, isLoading }: ActivityDeta
                     <div className="species-table-title-section">
                         <p className="species-table-title-section-body">{`Total planting: ${activityDetail?.totalPlanting ?? PLACE_HOLDER}`}</p>
                         <p className="species-table-title-section-body">{`${UNIQUE_CHARACTERS_UNICODE.PIPE}`}</p>
-                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.species?.length}`}</p>
+                        <p className="species-table-title-section-body">{`Total species: ${activityDetail?.species?.length ?? PLACE_HOLDER}`}</p>
                     </div>
                     {/* Table Skeleton */}
                     {

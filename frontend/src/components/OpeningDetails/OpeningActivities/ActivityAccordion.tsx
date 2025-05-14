@@ -16,13 +16,11 @@ import { PaginatedResponseType, SortDirectionType } from "../../../types/Paginat
 import { PaginationOnChangeType } from "../../../types/GeneralTypes";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import EmptySection from "../../EmptySection";
+import { fetchOpeningActivities } from "../../../services/OpeningDetailsService";
 
 type ActivityAccordionProps = {
-  data: OpeningDetailsActivitiesActivitiesDto[];
   openingId: number;
-  activityQuery: UseQueryResult<PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>, Error>;
-  activityFilter: ActivityFilterType;
-  setActivityFilter: React.Dispatch<React.SetStateAction<ActivityFilterType>>;
+  totalUnfiltered: number;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -37,11 +35,17 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
-const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, setActivityFilter }: ActivityAccordionProps) => {
+const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]);
+  const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
+
+  const activityQuery = useQuery({
+    queryKey: ['opening', openingId, 'activities', { filter: activityFilter }],
+    queryFn: () => fetchOpeningActivities(openingId, activityFilter),
+  });
 
   const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
     let newDirection: SortDirectionType = 'NONE';
@@ -98,22 +102,20 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
   };
 
   const applySearchFilter = () => {
-    if (!activityQuery.isFetching) {
-      const trimmed = searchInput.trim();
+    const trimmed = searchInput.trim();
 
-      setActivityFilter((prev) => {
-        const next = { ...prev, page: 0 };
+    setActivityFilter((prev) => {
+      const next = { ...prev, page: 0 };
 
-        if (trimmed === '') {
-          const { filter, ...rest } = next;
-          return rest;
-        }
+      if (trimmed === '') {
+        const { filter, ...rest } = next;
+        return rest;
+      }
 
-        return { ...next, filter: trimmed };
-      });
+      return { ...next, filter: trimmed };
+    });
 
-      setCurrPageNumber(0);
-    }
+    setCurrPageNumber(0);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -143,7 +145,7 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
   };
 
   const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["status", "base", "tech", "method", "objective", "funding"];
+    const codeDescriptionColumns = ["status", "base", "tech", "method", "objective1", "funding"];
     return codeDescriptionColumns.includes(value);
   };
 
@@ -172,7 +174,8 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
         );
       } else if (columnKey === "base") {
         return String(`${codeDescription.code} - ${codeDescription.description}`);
-      } else if (columnKey === "objective") {
+      } else if (columnKey === "objective1") {
+        // TODO put these formatting into a util
         const objective1 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective1 as CodeDescriptionDto;
         const objective2 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective2 as CodeDescriptionDto;
         const objective3 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective3 as CodeDescriptionDto;
@@ -223,12 +226,12 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
       return data ? String(data) : PLACE_HOLDER;
     }
   };
-
+  // TODO add loading table skeleton
   return (
     <Accordion className="default-tab-accordion activity-accordion" align="end">
       <AccordionItem
         className="default-tab-accordion-item"
-        title={<AccordionTitle total={activityQuery.data?.page.totalElements!} />}
+        title={<AccordionTitle total={totalUnfiltered} />}
       >
         <div>
           <TableContainer className="default-table-container">
@@ -245,14 +248,14 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
               <Button
                 kind="primary"
                 className="default-button-with-loading"
-                renderIcon={activityQuery?.isFetching ? InlineLoading : Search}
+                renderIcon={Search}
                 onClick={applySearchFilter}
               >
                 Search
               </Button>
             </TableToolbar>
             <Table
-              className="default-zebra-table-with-border activity-table"
+              className="default-zebra-table activity-table"
               aria-label="Activity table"
             >
               <TableHead>
@@ -275,7 +278,7 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
               </TableHead>
 
               <TableBody>
-                {activityQuery?.data?.content.map((row, index) => {
+                {activityQuery.data?.content.map((row, index) => {
                   const isExpanded = expandedRows.includes(row.atuId);
                   return (
                     <React.Fragment key={row.atuId}>
@@ -287,9 +290,9 @@ const ActivityAccordion = ({ data, openingId, activityQuery, activityFilter, set
                         {ActivityTableHeaders.map((header) => (
                           <TableCell key={header.key}>
                             {renderCellContent(
-                              header.key === "objective" ? row : row[header.key as keyof OpeningDetailsActivitiesActivitiesDto],
+                              header.key === "objective1" ? row : row[header.key as keyof OpeningDetailsActivitiesActivitiesDto],
                               header.key,
-                              index === activityQuery?.data?.content.length - 1
+                              index === activityQuery.data?.content.length - 1
                             )}
                           </TableCell>
                         ))}

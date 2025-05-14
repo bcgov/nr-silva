@@ -17,16 +17,14 @@ type OpeningActivitiesProps = {
 
 const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
-  const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
-
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
     queryFn: () => fetchOpeningDisturbances(openingId),
   });
 
   const activityQuery = useQuery({
-    queryKey: ['opening', openingId, 'activities', { activityFilter }],
-    queryFn: () => fetchOpeningActivities(openingId, activityFilter),
+    queryKey: ['opening', openingId, 'activities', { filter: DefaultFilter }],
+    queryFn: () => fetchOpeningActivities(openingId, DefaultFilter),
   });
 
 
@@ -78,11 +76,8 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
           ? (
             <Column sm={4} md={8} lg={16}>
               <ActivityAccordion
-                data={activityQuery.data?.content!}
-                activityQuery={activityQuery}
                 openingId={openingId}
-                activityFilter={activityFilter}
-                setActivityFilter={setActivityFilter}
+                totalUnfiltered={activityQuery.data?.page.totalElements ?? 0}
               />
             </Column>
           )
