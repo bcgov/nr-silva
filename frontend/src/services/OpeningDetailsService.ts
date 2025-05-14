@@ -13,6 +13,7 @@ import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
 import { PaginatedResponseType } from "@/types/PaginationTypes";
 import { TenureFilterType } from "@/components/OpeningDetails/TenureIdentification/definitions";
+import { ActivityFilterType } from "../components/OpeningDetails/OpeningActivities/definitions";
 
 /**
  * Fetch the tombstone and overview information for the Opening details page.
@@ -53,10 +54,25 @@ export const fetchOpeningDisturbances = (openingId: number): Promise<PaginatedRe
  * @param openingId - The ID of the opening.
  * @returns A promise that resolves to a paginated response containing activity data.
  */
-export const fetchOpeningActivities = (openingId: number): Promise<PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>> => {
+export const fetchOpeningActivities = (openingId: number, filters?: ActivityFilterType): Promise<PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>> => {
   const authToken = getAuthIdToken();
 
-  return axios.get(API_ENDPOINTS.openingActivity(openingId).activities(), defaultHeaders(authToken))
+  const query: Record<string, string> = { ...(filters ?? {}) } as any;
+
+  if (filters?.sortField && filters?.sortDirection) {
+    query.sort = `${filters.sortField},${filters.sortDirection}`;
+  }
+
+  // Remove original sortField and sortDirection
+  delete query.sortField;
+  delete query.sortDirection;
+
+  const queryString = qs.stringify(query, {
+    skipNulls: true,
+    addQueryPrefix: true,
+  });
+
+  return axios.get(API_ENDPOINTS.openingActivity(openingId).activities(queryString), defaultHeaders(authToken))
     .then((res) => res.data as PaginatedResponseType<OpeningDetailsActivitiesActivitiesDto>);
 };
 

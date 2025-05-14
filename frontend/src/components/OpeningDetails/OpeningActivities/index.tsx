@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 
 import EmptySection from "../../EmptySection";
@@ -8,6 +8,8 @@ import DisturbanceAccordion from "./DisturbanceAccordion";
 import { useQuery } from "@tanstack/react-query";
 import ActivityAccordion from "./ActivityAccordion";
 import { fetchOpeningActivities, fetchOpeningDisturbances } from "@/services/OpeningDetailsService";
+import { ActivityFilterType } from "./definitions";
+import { DefaultFilter } from "./constants";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -15,14 +17,16 @@ type OpeningActivitiesProps = {
 
 const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
+  const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
+
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
     queryFn: () => fetchOpeningDisturbances(openingId),
   });
 
   const activityQuery = useQuery({
-    queryKey: ['opening', openingId, 'activities'],
-    queryFn: () => fetchOpeningActivities(openingId),
+    queryKey: ['opening', openingId, 'activities', { activityFilter }],
+    queryFn: () => fetchOpeningActivities(openingId, activityFilter),
   });
 
 
@@ -73,7 +77,13 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         (activityQuery.data?.page.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <ActivityAccordion data={activityQuery.data?.content!} openingId={openingId}/>
+              <ActivityAccordion
+                data={activityQuery.data?.content!}
+                activityQuery={activityQuery}
+                openingId={openingId}
+                activityFilter={activityFilter}
+                setActivityFilter={setActivityFilter}
+              />
             </Column>
           )
           : null

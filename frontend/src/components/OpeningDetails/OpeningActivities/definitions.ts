@@ -1,5 +1,6 @@
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { PaginatedResponseType } from "@/types/PaginationTypes";
+import { PaginatedResponseType, SortDirectionType } from "@/types/PaginationTypes";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
 
 export type MockedDisturbanceDetailType = {
   licenseeActivityId: string | null;
@@ -135,4 +136,12 @@ export type ActivityDetailProps = {
   isPlanning?: boolean;
   isComplex?: boolean;
   isLoading?: boolean;
+};
+
+export type ActivityFilterType = {
+  page: number;
+  size: number;
+  filter?: string;
+  sortField?: keyof OpeningDetailsActivitiesActivitiesDto;
+  sortDirection?: SortDirectionType;
 };

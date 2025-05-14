@@ -25,7 +25,7 @@ const API_ENDPOINTS = {
   openingSsu: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/ssu`,
   openingDisturbances: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/disturbances`,
   openingActivity: (openingId: number) => ({
-    activities: () => `${API_BASE_URL}/openings/${openingId}/activities`,
+    activities: (filters: string) => `${API_BASE_URL}/openings/${openingId}/activities${filters}`,
     activityDetail: (atuId: number) => `${API_BASE_URL}/openings/${openingId}/activities/${atuId}`,
   }),
   openingTenureIdentification: (openingId: number, filters: string) => `${API_BASE_URL}/openings/${openingId}/tenures${filters}`,

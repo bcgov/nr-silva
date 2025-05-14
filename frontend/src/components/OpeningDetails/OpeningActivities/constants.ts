@@ -1,6 +1,7 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { MockedActivityDetailType, MockedActivityResponseType, MockedDisturbanceType } from "./definitions";
+import { ActivityFilterType, MockedActivityDetailType, MockedActivityResponseType, MockedDisturbanceType } from "./definitions";
 import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
+import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "../../../constants/tableConstants";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'
@@ -19,21 +20,24 @@ export const DisturbanceTableHeaders: TableHeaderType<keyof OpeningDetailsActivi
 ];
 
 export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitiesActivitiesDto | string>[] = [
-  { key: "atuId", header: "Activity treatment unit ID" },
-  { key: "status", header: "Status" },
-  { key: "base", header: "Base" },
-  { key: "tech", header: "Tech" },
-  { key: "method", header: "Method" },
-  { key: "objective", header: "Objective" },
-  { key: "area", header: "Area" },
-  { key: "funding", header: "Funding Source" },
-  { key: "projectId", header: "Project ID" },
-  { key: "lastUpdate", header: "Last updated" },
-  { key: "plannedDate", header: "Planned date" },
-  { key: "endDate", header: "End date" },
+  { key: "atuId", header: "Activity treatment unit ID", sortable: true },
+  { key: "status", header: "Status", sortable: true },
+  { key: "base", header: "Base", sortable: true },
+  { key: "tech", header: "Tech", sortable: true },
+  { key: "method", header: "Method", sortable: true },
+  { key: "objective", header: "Objective", sortable: true },
+  { key: "area", header: "Area", sortable: true },
+  { key: "funding", header: "Funding Source", sortable: true },
+  { key: "projectId", header: "Project ID", sortable: true },
+  { key: "lastUpdate", header: "Last updated", sortable: true },
+  { key: "plannedDate", header: "Planned date", sortable: true },
+  { key: "endDate", header: "End date", sortable: true },
 ];
 
-
+export const DefaultFilter: ActivityFilterType = {
+  page: DEFAULT_PAGE_NUM,
+  size: OddPageSizesConfig[0],
+} as const;
 
 export const MOCKED_DISTURBANCE_EVENTS: MockedDisturbanceType[] = [
   {
