@@ -17,13 +17,13 @@ const SurveyActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps
 
             <Column sm={4} md={4} lg={4} xlg={3} max={2}>
                 <CardItem label="No. of plots" showSkeleton={isLoading}>
-                    {activityDetail?.surveySpecification?.numberOfPlots}
+                    {activityDetail?.plotsCount}
                 </CardItem>
             </Column>
 
             <Column sm={4} md={4} lg={4} xlg={3} max={2}>
                 <CardItem label="Minimum plots per stratum" showSkeleton={isLoading}>
-                    {activityDetail?.surveySpecification?.minPlotsPerStratum}
+                    {activityDetail?.surveyMinPlotsPerStratum}
                 </CardItem>
             </Column>
         </Grid>
