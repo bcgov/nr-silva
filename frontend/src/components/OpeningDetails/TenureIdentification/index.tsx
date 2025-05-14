@@ -62,10 +62,10 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
             </>
           );
         }
-        return row.fileId;
+        return row.fileId ?? PLACE_HOLDER;
 
       case 'status':
-        if (row.status) {
+        if (row.status?.code) {
           return (
             <CutBlockStatusTag status={row.status} />
           );
@@ -73,7 +73,10 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
         return PLACE_HOLDER;
 
       default:
-        return String(row[headerKey]);
+        if (row[headerKey]) {
+          return String(row[headerKey]);
+        }
+        return PLACE_HOLDER;
     }
   }
 
