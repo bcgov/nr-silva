@@ -18,6 +18,7 @@ import EmptySection from "../../EmptySection";
 import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
 import TableSkeleton from "../../TableSkeleton";
 import { formatActivityObjective } from "./utils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
 type ActivityAccordionProps = {
   openingId: number;
@@ -174,7 +175,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
           </Tag>
         );
       } else if (columnKey === "base") {
-        return String(`${codeDescription.code} - ${codeDescription.description}`);
+        return codeDescriptionToDisplayText(codeDescription);
       } else if (columnKey === "objective1") {
         const { tooltipDefinition, displayText } = formatActivityObjective(data as OpeningDetailsActivitiesActivitiesDto);
 
