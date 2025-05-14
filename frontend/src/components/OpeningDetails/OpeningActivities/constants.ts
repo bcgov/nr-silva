@@ -19,7 +19,7 @@ export const DisturbanceTableHeaders: TableHeaderType<keyof OpeningDetailsActivi
   { key: "endDate", header: "End date" },
 ];
 
-export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitiesActivitiesDto | string>[] = [
+export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitiesActivitiesDto>[] = [
   { key: "atuId", header: "Activity treatment unit ID", sortable: true },
   { key: "status", header: "Status", sortable: true },
   { key: "base", header: "Base", sortable: true },

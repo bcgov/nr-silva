@@ -287,7 +287,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                               {ActivityTableHeaders.map((header) => (
                                 <TableCell key={header.key}>
                                   {renderCellContent(
-                                    header.key === "objective1" ? row : row[header.key as keyof OpeningDetailsActivitiesActivitiesDto],
+                                    header.key === "objective1" ? row : row[header.key],
                                     header.key,
                                     index === activityQuery.data?.content.length - 1
                                   )}
