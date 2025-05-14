@@ -1,5 +1,5 @@
-@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
-
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
 .empty-section-container {
   width: 100%;
@@ -15,24 +15,19 @@
     width: 3rem;
     height: 3rem;
     padding: 0;
-    color: colors.$gray-70;
     margin-bottom: 1rem;
+    color: var(--#{vars.$bcgov-prefix}-border-interactive);
   }
 }
 
-.empty-section-container>p {
-  font-family: 'BC Sans', 'IBM Plex Sans', sans-serif;
-  font-style: normal;
-  padding-bottom: 0.5rem;
-  max-width: 368px;
+.empty-section-white-layer {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
 }
 
 .empty-section-title {
-  font-weight: 700;
-  font-size: 1rem;
+  @include type.type-style('heading-02');
 }
 
 .empty-section-subtitle {
-  font-size: 0.875rem;
-  font-weight: 400;
+  @include type.type-style('body-compact-02');
 }

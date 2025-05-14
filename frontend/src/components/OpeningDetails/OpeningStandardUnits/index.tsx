@@ -2,50 +2,66 @@ import React from "react";
 import {
   Accordion, AccordionItem, Column,
   Grid, Table, TableBody, TableCell,
-  TableHead, TableHeader, TableRow
+  TableHead, TableHeader, TableRow,
+  TextAreaSkeleton
 } from "@carbon/react";
-import { Link } from "react-router-dom";
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
   Layers as LayersIcon,
   Launch as LaunchIcon
 } from "@carbon/icons-react";
-
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { PLACE_HOLDER } from "@/constants";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
+import { pluralize } from "@/utils/StringUtils";
+
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 
-import { AcceptableSpeciesHeaders, DummyStandardUnits, PreferredSpeciesHeaders } from "./constants";
+import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
 import './styles.scss';
-import { OpeningDetailsStockingDto } from "@/types/OpeningTypes";
-import { PLACE_HOLDER } from "@/constants";
+
 
 type OpeningStandardUnitsProps = {
-  isLoading?: boolean
-  standardUnitObjs?: OpeningDetailsStockingDto[]
+  openingId: number
 }
 
-const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUnitsProps) => {
+const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
+
+  const openingDetailSsuQuery = useQuery({
+    queryKey: ['openings', openingId, 'ssu'],
+    queryFn: () => fetchOpeningSsu(Number(openingId)),
+    enabled: !!openingId,
+    refetchOnMount: 'always'
+  });
+
+  if (openingDetailSsuQuery.isLoading) {
+    return (
+      <TextAreaSkeleton />
+    )
+  }
+
   return (
     <Grid className="opening-standard-units-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <h3 className="default-tab-content-title">
           {
-            `${standardUnitObjs?.length
-              ? standardUnitObjs.length
+            `${openingDetailSsuQuery.data?.length
+              ? openingDetailSsuQuery.data.length
               : 'No'
             }
-            standard unit${(standardUnitObjs?.length ?? 0) > 1 ? 's' : ''}
+            ${pluralize('standard unit', openingDetailSsuQuery.data?.length)}
             in the opening area`
           }
         </h3>
       </Column>
 
       {
-        standardUnitObjs?.map((standardUnit, index) => (
+        openingDetailSsuQuery.data?.map((standardUnit, index) => (
           <Column sm={4} md={8} lg={16} className="accordion-col" key={`standard-unit-col-${index}`}>
             <Accordion
               className="default-tab-accordion"
@@ -61,7 +77,7 @@ const OpeningStandardUnits = ({ isLoading, standardUnitObjs }: OpeningStandardUn
                   <Column sm={4} md={8} lg={16}>
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Net area to be reforested (ha)" isNumber showSkeleton={isLoading}>
+                        <CardItem label="Net area to be reforested (ha)" isNumber showSkeleton={openingDetailSsuQuery.isLoading}>
                           {standardUnit.stocking.netArea}
                         </CardItem>
                       </Column>

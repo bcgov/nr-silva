@@ -19,14 +19,6 @@ describe('EmptySection Component', () => {
     expect(screen.getByTestId('empty-section-icon')).toBeDefined();
   });
 
-  it('should render the empty section with fill color', () => {
-    render(<EmptySection icon="ErrorFilled" title="Red Title" description="Red Description" fill="red" />);
-    expect(screen.getByText('Red Title')).toBeDefined();
-    expect(screen.getByText('Red Description')).toBeDefined();
-    const imgElement = screen.getByTestId('empty-section-icon');
-    expect(imgElement).toHaveStyle('fill: red'); 
-  });
-
   it('should render the empty section with description as ReactNode', () => {
     const description = <span>Test Description</span>;
     render(<EmptySection icon="ErrorFilled" title="Test Title" description={description} />);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageTitle from "@/components/PageTitle";
 import {
   TabList,
@@ -16,6 +16,12 @@ import OpeningSearch from "@/components/SilvicultureSearch/OpeningSearch";
 import './styles.scss'
 
 const SilvicultureSearch: React.FC = () => {
+  useEffect(() => {
+    document.title = `Silviculture Search - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, []);
 
   return (
     <Grid className="silviculture-search-grid default-grid">
