@@ -4,7 +4,7 @@ import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import TableSkeleton from "../../../TableSkeleton";
 import EmptySection from "../../../EmptySection";
-import { DirectSeedingHeaders, PlantingHeaders } from "./constants";
+import { PlantingHeaders } from "./constants";
 import { ActivityDetailProps } from "./definitions";
 
 const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {

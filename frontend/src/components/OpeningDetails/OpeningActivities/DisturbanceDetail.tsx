@@ -1,5 +1,4 @@
 import React from "react";
-import { MockedDisturbanceDetailType } from "./definitions";
 import { Column, Grid } from "@carbon/react";
 import { CardItem } from "../../Card";
 import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";

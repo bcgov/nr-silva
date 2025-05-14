@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { MockedDisturbanceType } from "./definitions";
 import { Accordion, AccordionItem, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
 import { DisturbanceTableHeaders } from "./constants";
@@ -79,7 +78,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
       if (columnKey === "disturbance") {
         return codeDescriptionToDisplayText(codeDescription);
       }
-  
+
       return codeDescription?.code ? (
         <DefinitionTooltip
           definition={codeDescription.description}
@@ -171,11 +170,11 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                 ) : (
                   <TableRow key="empty-row">
                     <TableCell colSpan={DisturbanceTableHeaders.length + 1}>
-                        <EmptySection
-                          pictogram="UserSearch"
-                          title={`No results for "${searchTerm}"`}
-                          description="Consider adjusting your search term(s) and try again."
-                        />
+                      <EmptySection
+                        pictogram="UserSearch"
+                        title={`No results for "${searchTerm}"`}
+                        description="Consider adjusting your search term(s) and try again."
+                      />
                     </TableCell>
                   </TableRow>
                 )

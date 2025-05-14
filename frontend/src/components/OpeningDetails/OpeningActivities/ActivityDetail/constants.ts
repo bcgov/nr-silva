@@ -1,5 +1,4 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { MockedDirectSeedingSpecies, MockedPlantingDetail, MockedPlantingSpecies } from "../definitions";
 import { OpeningActivitySpeciesDetailsDto } from "@/types/OpeningTypes";
 
 export const DirectSeedingHeaders: TableHeaderType<keyof OpeningActivitySpeciesDetailsDto>[] = [

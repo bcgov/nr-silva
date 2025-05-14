@@ -1,22 +1,21 @@
-import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, Button, DefinitionTooltip, InlineLoading, Pagination, Table, TableBody, TableCell, TableContainer, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, TableToolbar, TableToolbarSearch, Tag } from "@carbon/react";
+import React, { useState } from "react";
+import { Accordion, AccordionItem, Button, DefinitionTooltip, Pagination, Table, TableBody, TableCell, TableContainer, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, TableToolbar, TableToolbarSearch, Tag } from "@carbon/react";
 import { Activity, Search } from "@carbon/icons-react";
 import { ActivityTableHeaders, DefaultFilter } from "./constants";
 import { formatLocalDate } from "@/utils/DateUtils";
-import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { PLACE_HOLDER } from "@/constants";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import ActivityDetail from "./ActivityDetail";
 
 import "./styles.scss";
 import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "../../../constants/tableConstants";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { ActivityFilterType } from "./definitions";
-import { PaginatedResponseType, SortDirectionType } from "../../../types/PaginationTypes";
-import { PaginationOnChangeType } from "../../../types/GeneralTypes";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { SortDirectionType } from "@/types/PaginationTypes";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { useQuery } from "@tanstack/react-query";
 import EmptySection from "../../EmptySection";
-import { fetchOpeningActivities } from "../../../services/OpeningDetailsService";
+import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
 import TableSkeleton from "../../TableSkeleton";
 import { formatActivityObjective } from "./utils";
 

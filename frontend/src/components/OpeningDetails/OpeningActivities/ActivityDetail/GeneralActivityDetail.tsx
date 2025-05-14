@@ -1,9 +1,9 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
 import { CardItem } from "../../../Card";
 import { ActivityDetailProps } from "./definitions";
-import { UNIQUE_CHARACTERS_UNICODE } from "../../../../constants";
+import { UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 
-const GeneralAcitivityDetail = ({activityDetail, base, isPlanning, isComplex, isLoading}: ActivityDetailProps) => {
+const GeneralAcitivityDetail = ({ activityDetail, base, isPlanning, isComplex, isLoading }: ActivityDetailProps) => {
     return (
         <Grid className="activity-detail-content-grid">
             <Column sm={4} md={4} lg={16}>
@@ -11,8 +11,8 @@ const GeneralAcitivityDetail = ({activityDetail, base, isPlanning, isComplex, is
                     <SkeletonText className="activity-detail-content-title" />
                 ) : (
                     <h6 className="activity-detail-content-title">
-                    {base?.description}
-                    {isComplex ? " overview" : " details"}
+                        {base?.description}
+                        {isComplex ? " overview" : " details"}
                     </h6>
                 )}
             </Column>
@@ -22,9 +22,9 @@ const GeneralAcitivityDetail = ({activityDetail, base, isPlanning, isComplex, is
                     {activityDetail?.licenseeActivityId}
                 </CardItem>
             </Column>
-            
+
             <Column sm={4} md={4} lg={4} xlg={3} max={2}>
-                <CardItem label={`Intra agency n${UNIQUE_CHARACTERS_UNICODE.ORDINAL_INDICATOR}`} 
+                <CardItem label={`Intra agency n${UNIQUE_CHARACTERS_UNICODE.ORDINAL_INDICATOR}`}
                     showSkeleton={isLoading}>
                     {activityDetail?.intraAgencyNumber}
                 </CardItem>
