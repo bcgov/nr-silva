@@ -28,8 +28,6 @@ import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
-import SingleLayer from "./SingleLayer";
-import MultiLayer from "./MultiLayer";
 
 import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
 import "./styles.scss";
@@ -326,12 +324,65 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                   </section>
                 </Column>
 
-                {standardUnit.layers.length === 1 && (
-                  <SingleLayer layer={standardUnit.layers[0]} key={"layer-0"} />
-                )}
-                {standardUnit.layers.length > 1 && (
-                  <MultiLayer layers={standardUnit.layers} />
-                )}
+                <Column sm={4} md={8} lg={16} className="subsection-col">
+                  <Table
+                    className="default-expandable-table"
+                    aria-label="Preferred species table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        {standardUnit.layers.length > 1 && (
+                          <TableHeader>Layer</TableHeader>
+                        )}
+                        <TableHeader>Minimum well-spaced trees</TableHeader>
+                        <TableHeader>
+                          Minimum preferred well-spaced trees
+                        </TableHeader>
+                        <TableHeader>
+                          Minimum horizontal distance well-spaced trees (m)
+                        </TableHeader>
+                        <TableHeader>Target well-spaced trees (ha)</TableHeader>
+                        <TableHeader>
+                          Minimum residual basal area (m²/ha)
+                        </TableHeader>
+                        <TableHeader>
+                          Minimum post-spacing density (st/ha)
+                        </TableHeader>
+                        <TableHeader>
+                          Maximum post-spacing density (st/ha)
+                        </TableHeader>
+                        <TableHeader>Maximum Coniferous (st/ha)</TableHeader>
+                        <TableHeader>Height relative to comp (m)</TableHeader>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {standardUnit.layers.map((layer) => (
+                        <TableRow key={layer.layer.code}>
+                          {standardUnit.layers.length > 1 && (
+                            <TableCell>
+                              {layer.layer.code}. {layer.layer.description}
+                            </TableCell>
+                          )}
+
+                          <TableCell>{layer.minWellspacedTrees}</TableCell>
+                          <TableCell>
+                            {layer.minPreferredWellspacedTrees}
+                          </TableCell>
+                          <TableCell>
+                            {layer.minHorizontalDistanceWellspacedTrees}
+                          </TableCell>
+                          <TableCell>{layer.targetWellspacedTrees}</TableCell>
+                          <TableCell>{layer.minResidualBasalArea}</TableCell>
+                          <TableCell>{layer.minPostspacingDensity}</TableCell>
+                          <TableCell>{layer.maxPostspacingDensity}</TableCell>
+                          <TableCell>{layer.maxConiferous}</TableCell>
+                          <TableCell>{layer.heightRelativeToComp}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Column>
+
                 <Column sm={4} md={8} lg={16}>
                   <CardItem label="Additional standards">
                     {standardUnit.stocking.additionalStandards}
