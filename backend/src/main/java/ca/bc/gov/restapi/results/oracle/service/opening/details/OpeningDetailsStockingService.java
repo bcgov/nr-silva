@@ -78,10 +78,16 @@ public class OpeningDetailsStockingService {
       Long openingId
   ) {
     return detailsDto ->
+        detailsDto.withLayers(
         openingRepository
             .getOpeningStockingLayerByOpeningId(openingId, detailsDto.stocking().ssid())
+            .stream()
             .map(layer ->
                 new OpeningDetailsStockingLayerDto(
+                    new CodeDescriptionDto(
+                        layer.getLayerCode(),
+                        layer.getLayerName()
+                    ),
                     layer.getMinWellspacedTrees(),
                     layer.getMinPreferredWellspacedTrees(),
                     layer.getMinHorizontalDistanceWellspacedTrees(),
@@ -93,8 +99,8 @@ public class OpeningDetailsStockingService {
                     layer.getHeightRelativeToComp()
                 )
             )
-            .map(detailsDto::withLayer)
-            .orElse(detailsDto);
+            .toList()
+        );
   }
 
   private Function<OpeningDetailsStockingDto, OpeningDetailsStockingDto> getSpecies(
@@ -124,6 +130,7 @@ public class OpeningDetailsStockingService {
         .stream()
         .map(species ->
             new OpeningDetailsStockingSpeciesDto(
+                species.getLayerCode(),
                 new CodeDescriptionDto(
                     species.getSpeciesCode(),
                     species.getSpeciesName()

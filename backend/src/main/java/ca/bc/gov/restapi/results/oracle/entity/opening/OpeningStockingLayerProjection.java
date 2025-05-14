@@ -2,6 +2,10 @@ package ca.bc.gov.restapi.results.oracle.entity.opening;
 
 public interface OpeningStockingLayerProjection {
 
+  String getLayerCode();
+
+  String getLayerName();
+
   Long getMinWellspacedTrees();
 
   Long getMinPreferredWellspacedTrees();
