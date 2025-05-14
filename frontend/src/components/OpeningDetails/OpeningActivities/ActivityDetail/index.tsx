@@ -1,6 +1,11 @@
 import { JSX } from "react";
+
 import { Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
+
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
+import { fetchOpeningActivityDetail } from "@/services/OpeningDetailsService";
+
 import DirectSeedingActivityDetail from "./DirectSeedingActivityDetail";
 import JuvenileSpacingActivityDetail from "./JuvenileSpacingActivityDetail";
 import PlantingActivityDetail from "./PlantingActivityDetail";
@@ -9,10 +14,8 @@ import SitePreparationActivityDetail from "./SitePreprationActivityDetail";
 import SurveyActivityDetail from "./SurveyActivityDetail";
 import GeneralAcitivityDetail from "./GeneralActivityDetail";
 import { CardItem } from "../../../Card";
-
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
-import { fetchOpeningActivityDetail } from "@/services/OpeningDetailsService";
 import Comments from "../../../Comments";
+
 import { COMPLEX_ACTIVITY_CODE } from "../constants";
 
 import "./styles.scss";

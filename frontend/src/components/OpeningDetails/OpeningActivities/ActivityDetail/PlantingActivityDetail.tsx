@@ -1,11 +1,14 @@
 import { Column, Grid, SkeletonText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
+
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { ActivityDetailProps } from "./definitions";
+
 import TableSkeleton from "../../../TableSkeleton";
 import EmptySection from "../../../EmptySection";
+
+import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PlantingHeaders } from "./constants";
-import { ActivityDetailProps } from "./definitions";
 
 const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
   const renderCellContent = (

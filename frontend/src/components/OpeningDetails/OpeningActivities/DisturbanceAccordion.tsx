@@ -1,14 +1,34 @@
 import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow } from "@carbon/react";
+
+import {
+  Accordion,
+  AccordionItem,
+  DefinitionTooltip,
+  Search,
+  Table,
+  TableBody,
+  TableCell,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
-import { DisturbanceTableHeaders } from "./constants";
-import DisturbanceDetail from "./DisturbanceDetail";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { PLACE_HOLDER } from "@/constants";
-import { formatLocalDate } from "@/utils/DateUtils";
-import EmptySection from "../../EmptySection";
+
 import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+
+import DisturbanceDetail from "./DisturbanceDetail";
+import EmptySection from "../../EmptySection";
+
+import { DisturbanceTableHeaders } from "./constants";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { PLACE_HOLDER } from "@/constants";
+
+import "./styles.scss";
 
 type DisturbanceAccordionProps = {
   data: OpeningDetailsActivitiesDisturbanceDto[]

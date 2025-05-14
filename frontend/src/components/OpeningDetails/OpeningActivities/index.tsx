@@ -1,15 +1,16 @@
 import React, { useState } from "react";
+
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
+import { useQuery } from "@tanstack/react-query";
 
 import EmptySection from "../../EmptySection";
-
-import './styles.scss';
 import DisturbanceAccordion from "./DisturbanceAccordion";
-import { useQuery } from "@tanstack/react-query";
 import ActivityAccordion from "./ActivityAccordion";
+
 import { fetchOpeningActivities, fetchOpeningDisturbances } from "@/services/OpeningDetailsService";
-import { ActivityFilterType } from "./definitions";
 import { DefaultFilter } from "./constants";
+
+import "./styles.scss";
 
 type OpeningActivitiesProps = {
   openingId: number;

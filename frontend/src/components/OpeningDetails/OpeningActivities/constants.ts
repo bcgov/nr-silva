@@ -1,7 +1,8 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { ActivityFilterType } from "./definitions";
 import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
+
+import { ActivityFilterType } from "./definitions";
 
 export const COMPLEX_ACTIVITY_CODE = [
   'DS', 'JS', 'PL', 'PR', 'SP', 'SU'

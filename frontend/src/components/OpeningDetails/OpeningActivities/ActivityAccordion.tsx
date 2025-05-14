@@ -1,24 +1,47 @@
 import React, { useState } from "react";
-import { Accordion, AccordionItem, Button, DefinitionTooltip, Pagination, Table, TableBody, TableCell, TableContainer, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, TableToolbar, TableToolbarSearch, Tag } from "@carbon/react";
-import { Activity, Search } from "@carbon/icons-react";
-import { ActivityTableHeaders, DefaultFilter } from "./constants";
-import { formatLocalDate } from "@/utils/DateUtils";
-import { PLACE_HOLDER } from "@/constants";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import ActivityDetail from "./ActivityDetail";
 
-import "./styles.scss";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  DefinitionTooltip,
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableToolbar,
+  TableToolbarSearch,
+  Tag,
+} from "@carbon/react";
+import { Activity, Search } from "@carbon/icons-react";
+import { useQuery } from "@tanstack/react-query";
+
 import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
-import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
-import { ActivityFilterType } from "./definitions";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { useQuery } from "@tanstack/react-query";
+import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { PLACE_HOLDER } from "@/constants";
+
+import ActivityDetail from "./ActivityDetail";
 import EmptySection from "../../EmptySection";
-import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
 import TableSkeleton from "../../TableSkeleton";
+
+import { ActivityTableHeaders, DefaultFilter } from "./constants";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
+import { ActivityFilterType } from "./definitions";
+import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
 import { formatActivityObjective } from "./utils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+
+import "./styles.scss";
 
 type ActivityAccordionProps = {
   openingId: number;

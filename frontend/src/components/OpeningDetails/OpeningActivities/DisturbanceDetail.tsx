@@ -1,7 +1,10 @@
 import React from "react";
+
 import { Column, Grid } from "@carbon/react";
-import { CardItem } from "../../Card";
+
 import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
+
+import { CardItem } from "../../Card";
 import Comments from "../../Comments";
 
 const DisturbanceDetail = ({ detail }: { detail: OpeningDetailsActivitiesDisturbanceDto }) => {
