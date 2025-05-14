@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -30,6 +31,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class OracleJpaConfiguration {
 
+  @Value("${ca.bc.gov.nrs.oracle.host}")
+  private String oracleHost;
+
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
@@ -43,7 +47,9 @@ public class OracleJpaConfiguration {
             "hibernate.boot.allow_jdbc_metadata_access", "false",
             "hibernate.hikari.connection.provider_class",
             "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
-            "hibernate.connection.datasource", dataSource
+            "hibernate.connection.datasource", dataSource,
+            "hibernate.connection.oracle.net.ssl_server_dn_match","false",
+            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost
         ))
         .packages("ca.bc.gov.restapi.results.oracle")
         .managedTypes(persistenceManagedTypes)

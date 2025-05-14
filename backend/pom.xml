@@ -47,7 +47,7 @@
     <spring-security.version>6.4.5</spring-security.version>
     <logback-classic.version>1.5.18</logback-classic.version>
     <spring-logging.version>3.4.5</spring-logging.version>
-    <oracle-jdbc.version>21.17.0.0</oracle-jdbc.version>
+    <oracle-jdbc.version>23.8.0.25.04</oracle-jdbc.version>
   </properties>
 
   <profiles>
