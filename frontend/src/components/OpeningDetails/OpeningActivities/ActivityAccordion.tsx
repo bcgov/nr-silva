@@ -18,6 +18,7 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import EmptySection from "../../EmptySection";
 import { fetchOpeningActivities } from "../../../services/OpeningDetailsService";
 import TableSkeleton from "../../TableSkeleton";
+import { formatActivityObjective } from "./utils";
 
 type ActivityAccordionProps = {
   openingId: number;
@@ -176,24 +177,9 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
       } else if (columnKey === "base") {
         return String(`${codeDescription.code} - ${codeDescription.description}`);
       } else if (columnKey === "objective1") {
-        // TODO put these formatting into a util
-        const objective1 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective1 as CodeDescriptionDto;
-        const objective2 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective2 as CodeDescriptionDto;
-        const objective3 = (data as OpeningDetailsActivitiesActivitiesDto)?.objective3 as CodeDescriptionDto;
+        const { tooltipDefinition, displayText } = formatActivityObjective(data as OpeningDetailsActivitiesActivitiesDto);
 
-        const tooltipDefinition = [
-          (objective1?.code && objective1?.description) ? `${objective1.code} - ${objective1.description}` : false,
-          (objective2?.code && objective2?.description) ? `${objective2.code} - ${objective2.description}` : false,
-          (objective3?.code && objective3?.description) ? `${objective3.code} - ${objective3.description}` : false
-        ].filter(Boolean).join(`${UNIQUE_CHARACTERS_UNICODE.NEW_LINE}`);
-
-        const displayText = [
-          objective1?.code ?? false,
-          objective2?.code ?? false,
-          objective3?.code ?? false
-        ].filter(Boolean).join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
-
-        if (displayText.length === 0) return PLACE_HOLDER;
+        if (displayText === PLACE_HOLDER) return PLACE_HOLDER;
 
         return (
           <DefinitionTooltip
