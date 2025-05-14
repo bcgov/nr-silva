@@ -227,7 +227,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
       return data ? String(data) : PLACE_HOLDER;
     }
   };
-  // TODO add loading table skeleton
+
   return (
     <Accordion className="default-tab-accordion activity-accordion" align="end">
       <AccordionItem
