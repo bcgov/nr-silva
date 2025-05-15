@@ -23,7 +23,7 @@ export const formatActivityObjective = (
     }
   }
 
-  const objectives = [data.objective1, data.objective2, data.objective3].filter(Boolean);
+  const objectives = [data.objective1, data.objective2, data.objective3];
 
   const tooltipDefinition: string[] = objectives
     .filter((obj) => codeDescriptionToDisplayText(obj) !== PLACE_HOLDER)
