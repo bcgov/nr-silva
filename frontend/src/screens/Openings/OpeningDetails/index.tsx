@@ -1,12 +1,21 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import {
-  Column, Grid, Tab,
-  TabList, TabPanel, TabPanels,
-  Tabs, TextAreaSkeleton, AccordionSkeleton
+  Column,
+  Grid,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  TextAreaSkeleton,
+  AccordionSkeleton,
 } from "@carbon/react";
 import { AxiosError } from "axios";
 import {
-  MapBoundaryVegetation, Development, CropHealth, Certificate
+  MapBoundaryVegetation,
+  Development,
+  CropHealth,
+  Certificate,
 } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,12 +29,20 @@ import { OpeningSummary } from "@/components/OpeningDetails";
 import { OpeningDetailBreadCrumbs, OpeningDetailsTabs } from "./constants";
 
 // Lazy load each tab content so data is only fetched when the tab is selected.
-const OpeningOverview = lazy(() => import("@/components/OpeningDetails/OpeningOverview"));
-const TenureIdentification = lazy(() => import("@/components/OpeningDetails/TenureIdentification"));
-const OpeningStandardUnits = lazy(() => import("@/components/OpeningDetails/OpeningStandardUnits"));
-const OpeningActivities = lazy(() => import("@/components/OpeningDetails/OpeningActivities"));
+const OpeningOverview = lazy(
+  () => import("@/components/OpeningDetails/OpeningOverview")
+);
+const TenureIdentification = lazy(
+  () => import("@/components/OpeningDetails/TenureIdentification")
+);
+const OpeningStandardUnits = lazy(
+  () => import("@/components/OpeningDetails/OpeningStandardUnits")
+);
+const OpeningActivities = lazy(
+  () => import("@/components/OpeningDetails/OpeningActivities")
+);
 
-import './styles.scss';
+import "./styles.scss";
 
 const OpeningDetails = () => {
   const param = useParams();
@@ -40,7 +57,7 @@ const OpeningDetails = () => {
   }, [openingId]);
 
   const [activeTab, setActiveTab] = useState<number>(() => {
-    const tabName = searchParams.get('tab');
+    const tabName = searchParams.get("tab");
     const index = tabName ? OpeningDetailsTabs.indexOf(tabName as any) : 0;
     return index >= 0 ? index : 0;
   });
@@ -51,19 +68,19 @@ const OpeningDetails = () => {
     setActiveTab(selectedTabIndex);
     const tabName = OpeningDetailsTabs[selectedTabIndex];
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set('tab', tabName);
+    newSearchParams.set("tab", tabName);
     setSearchParams(newSearchParams, { replace: true });
   };
 
   const openingDetailsTombstoneQuery = useQuery({
-    queryKey: ['openings', openingId, 'tombstone'],
+    queryKey: ["openings", openingId, "tombstone"],
     queryFn: () => fetchOpeningTombstone(Number(openingId)),
     enabled: !!openingId,
-    refetchOnMount: 'always'
+    refetchOnMount: "always",
   });
 
   const postRecentOpeningMutation = useMutation({
-    mutationFn: (openingId: number) => putUserRecentOpening(openingId)
+    mutationFn: (openingId: number) => putUserRecentOpening(openingId),
   });
 
   useEffect(() => {
@@ -73,7 +90,8 @@ const OpeningDetails = () => {
   }, [openingId, openingDetailsTombstoneQuery.status]);
 
   if (openingDetailsTombstoneQuery.isError) {
-    const openingDetailsError = openingDetailsTombstoneQuery.error as AxiosError;
+    const openingDetailsError =
+      openingDetailsTombstoneQuery.error as AxiosError;
     const errorCode = openingDetailsError?.response?.status;
     const isNotFound = errorCode === 404;
 
@@ -81,8 +99,14 @@ const OpeningDetails = () => {
       <EmptySection
         icon={isNotFound ? undefined : "BreakingChange"}
         pictogram={isNotFound ? "Summit" : undefined}
-        title={isNotFound ? `Opening ${openingId} not found` : `Error fetching data for Opening ${openingId}`}
-        description={isNotFound ? '' : openingDetailsTombstoneQuery.error.message}
+        title={
+          isNotFound
+            ? `Opening ${openingId} not found`
+            : `Error fetching data for Opening ${openingId}`
+        }
+        description={
+          isNotFound ? "" : openingDetailsTombstoneQuery.error.message
+        }
       />
     );
   }
@@ -103,67 +127,65 @@ const OpeningDetails = () => {
           openingId={Number(openingId)}
           tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
           isLoading={openingDetailsTombstoneQuery.isLoading}
+          currentTab={activeTab}
         />
       </Column>
 
       <Column className="opening-detail-tabs-col" sm={4} md={8} lg={16}>
-        <Tabs selectedIndex={activeTab} onChange={(state) => handleTabChange(state.selectedIndex)}>
-          <TabList className="default-tab-list" aria-label="List of Tabs" contained>
-            <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>Overview</Tab>
-            <Tab renderIcon={() => <Certificate size={16} />}>Tenure identification</Tab>
-            <Tab renderIcon={() => <Development size={16} />}>Standard units</Tab>
+        <Tabs
+          selectedIndex={activeTab}
+          onChange={(state) => handleTabChange(state.selectedIndex)}
+        >
+          <TabList
+            className="default-tab-list"
+            aria-label="List of Tabs"
+            contained
+          >
+            <Tab renderIcon={() => <MapBoundaryVegetation size={16} />}>
+              Overview
+            </Tab>
+            <Tab renderIcon={() => <Certificate size={16} />}>
+              Tenure identification
+            </Tab>
+            <Tab renderIcon={() => <Development size={16} />}>
+              Standard units
+            </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
-              {
-                isActive(0)
-                  ? (
-                    <Suspense fallback={<TextAreaSkeleton />}>
-                      <OpeningOverview
-                        overviewObj={openingDetailsTombstoneQuery.data?.overview}
-                        isLoading={openingDetailsTombstoneQuery.isLoading}
-                      />
-                    </Suspense>
-                  )
-                  : null
-              }
+              {isActive(0) ? (
+                <Suspense fallback={<TextAreaSkeleton />}>
+                  <OpeningOverview
+                    overviewObj={openingDetailsTombstoneQuery.data?.overview}
+                    isLoading={openingDetailsTombstoneQuery.isLoading}
+                  />
+                </Suspense>
+              ) : null}
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
-              {
-                isActive(1)
-                  ? (
-                    <Suspense fallback={<TextAreaSkeleton />}>
-                      <TenureIdentification openingId={Number(openingId)} />
-                    </Suspense>
-                  )
-                  : null
-              }
+              {isActive(1) ? (
+                <Suspense fallback={<TextAreaSkeleton />}>
+                  <TenureIdentification openingId={Number(openingId)} />
+                </Suspense>
+              ) : null}
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
-              {
-                isActive(2)
-                  ? (
-                    <Suspense fallback={<TextAreaSkeleton />}>
-                      <OpeningStandardUnits openingId={Number(openingId)} />
-                    </Suspense>
-                  )
-                  : null
-              }
+              {isActive(2) ? (
+                <Suspense fallback={<TextAreaSkeleton />}>
+                  <OpeningStandardUnits openingId={Number(openingId)} />
+                </Suspense>
+              ) : null}
             </TabPanel>
 
             <TabPanel className="tab-content full-width-col">
-              {
-                isActive(3)
-                  ? (
-                    <Suspense fallback={<AccordionSkeleton />}>
-                      <OpeningActivities openingId={Number(openingId)} />
-                    </Suspense>
-                  )
-                  : null
-              }
+              {isActive(3) ? (
+                <Suspense fallback={<AccordionSkeleton />}>
+                  <OpeningActivities openingId={Number(openingId)} />
+                </Suspense>
+              ) : null}
             </TabPanel>
           </TabPanels>
         </Tabs>
