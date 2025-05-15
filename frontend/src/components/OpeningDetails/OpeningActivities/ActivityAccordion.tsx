@@ -208,7 +208,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
           <DefinitionTooltip
             className="activity-objective-tooltip-definition"
             definition={
-              tooltipDefinition!.split("\n").map((line, index) => (
+              tooltipDefinition!.map((line, index) => (
                 <div key={index}>{line}</div>
               ))
             }

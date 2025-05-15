@@ -42,6 +42,8 @@
       }
 
       .activity-objective-tooltip-definition {
+        white-space: nowrap;
+
         .#{vars.$bcgov-prefix}--definition-term {
           margin-top: 0.25rem;
         }
