@@ -1,3 +1,5 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
 .opening-table-row {
   .action-container {
     display: flex;
@@ -5,11 +7,7 @@
     align-items: center;
   }
 
-  .table-cell-link-wrapper {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    margin: 0 -1rem; // to remove gaps between cells
-    padding: 0 1rem;
+  .table-cell-wrapper {
+    cursor: pointer;
   }
 }
