@@ -53,18 +53,6 @@
           border-radius: 0.25rem;
           @include type.type-style('body-compact-02');
         }
-
-        .primary-tenure-dl {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.75rem;
-
-          .label-val-container {
-            display: flex;
-            flex-direction: row;
-            gap: 0.25rem;
-          }
-        }
       }
     }
   }
