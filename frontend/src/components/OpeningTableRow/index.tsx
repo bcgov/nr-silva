@@ -1,8 +1,9 @@
 // TableRowComponent.tsx
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { TableRow, TableCell, Tooltip } from "@carbon/react";
+import { useNavigate } from "react-router-dom";
+import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
+import { Launch } from "@carbon/icons-react";
 import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import StatusTag from "../StatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
@@ -29,6 +30,25 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   selectedRows,
   handleRowSelection,
 }) => {
+  const navigate = useNavigate();
+
+  const navToOpening = () => {
+    navigate(
+      OpeningDetailsRoute.path!.replace(
+        ":openingId",
+        rowData.openingId.toString()
+      )
+    )
+  }
+
+  const openInNewTab = () => {
+    const url = OpeningDetailsRoute.path!.replace(
+      ":openingId",
+      rowData.openingId.toString()
+    );
+    window.open(url, "_blank");
+  };
+
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
       case "status":
@@ -50,14 +70,28 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
               rowId={rowData.openingId.toString()}
               showToast
             />
+            <Button
+              hasIconOnly
+              className="new-tab-button"
+              renderIcon={Launch}
+              iconDescription={`Open ${rowData.openingId} in a new tab`}
+              tooltipPosition="right"
+              size="sm"
+              kind="ghost"
+              onClick={openInNewTab}
+            />
           </div>
         );
       case "category":
         if (rowData.category) {
           return (
-            <Tooltip label={rowData.category.description}>
+            <DefinitionTooltip
+              openOnHover
+              definition={rowData.category.description}
+              align="right"
+            >
               <span>{rowData.category.code}</span>
-            </Tooltip>
+            </DefinitionTooltip>
           );
         }
         return PLACE_HOLDER;
@@ -79,17 +113,9 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         .map((header) => (
           <TableCell key={header.key}>
             {header.key !== "actions" ? (
-              <a
-                href={OpeningDetailsRoute.path!.replace(
-                  ":openingId",
-                  rowData.openingId.toString()
-                )}
-                className="table-cell-link-wrapper"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <div className="table-cell-wrapper" onClick={navToOpening}>
                 {renderCellContent(header.key) ?? PLACE_HOLDER}
-              </a>
+              </div>
             ) : (
               renderCellContent(header.key) ?? PLACE_HOLDER
             )}
