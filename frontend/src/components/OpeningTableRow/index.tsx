@@ -1,7 +1,7 @@
 // TableRowComponent.tsx
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
@@ -53,13 +53,15 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
       case "actions":
         return (
           <div className="action-container">
-            {showMap ? (
-              <SpatialCheckbox
-                rowId={rowData.openingId}
-                selectedRows={selectedRows}
-                handleRowSelection={handleRowSelection}
-              />
-            ) : null}
+            {
+              showMap ? (
+                <SpatialCheckbox
+                  rowId={rowData.openingId}
+                  selectedRows={selectedRows}
+                  handleRowSelection={handleRowSelection}
+                />
+              ) : null
+            }
             <ActionButtons
               favorited={rowData.favourite}
               rowId={rowData.openingId.toString()}
@@ -108,9 +110,9 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         .map((header) => (
           <TableCell key={header.key}>
             {header.key !== "actions" ? (
-              <div className="table-cell-wrapper" onClick={navToOpening}>
+              <Link className="table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>
                 {renderCellContent(header.key) ?? PLACE_HOLDER}
-              </div>
+              </Link>
             ) : (
               renderCellContent(header.key) ?? PLACE_HOLDER
             )}
