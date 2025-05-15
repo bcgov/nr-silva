@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userRoles, setUserRoles] = useState<string[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  const appEnv = env.VITE_ZONE ?? "DEV";
+  const appEnv = env.VITE_ZONE ?? "TEST";
 
   const refreshUserState = async () => {
     setIsLoading(true);

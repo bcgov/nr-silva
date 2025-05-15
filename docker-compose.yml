@@ -1,8 +1,8 @@
 x-frontend: &frontend
   environment:
-    VITE_ZONE: DEV
+    VITE_ZONE: TEST
     VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
-    VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
+    VITE_USER_POOLS_WEB_CLIENT_ID: 1uhcp67qtfl3jra6b595e9f6jn
     VITE_BACKEND_URL: http://localhost:8080
   healthcheck:
     test: curl http://localhost:3000"
