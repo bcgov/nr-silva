@@ -41,7 +41,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   }
 
   const openInNewTab = () => {
-    window.open(openingUrl, "_blank");
+    window.open(openingUrl, '_blank', 'noopener,noreferrer');
   };
 
   const renderCellContent = (header: OpendingHeaderKeyType) => {
