@@ -31,22 +31,17 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   handleRowSelection,
 }) => {
   const navigate = useNavigate();
+  const openingUrl = OpeningDetailsRoute.path!.replace(
+    ":openingId",
+    rowData.openingId.toString()
+  );
 
   const navToOpening = () => {
-    navigate(
-      OpeningDetailsRoute.path!.replace(
-        ":openingId",
-        rowData.openingId.toString()
-      )
-    )
+    navigate(openingUrl)
   }
 
   const openInNewTab = () => {
-    const url = OpeningDetailsRoute.path!.replace(
-      ":openingId",
-      rowData.openingId.toString()
-    );
-    window.open(url, "_blank");
+    window.open(openingUrl, "_blank");
   };
 
   const renderCellContent = (header: OpendingHeaderKeyType) => {
