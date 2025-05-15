@@ -71,13 +71,6 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
             data={featureCollection}
             key={geoKey(featureCollection, index)}
             style={getStyleForFeature}
-            onEachFeature={(feature, layer) => {
-              // This is needed for side effects but NOT popup content
-              layer.on({
-                mouseover: () => layer.setStyle({ weight: 3 }),
-                mouseout: () => layer.setStyle({ weight: 1 }),
-              });
-            }}
           >
             {featureCollection?.features
               ?.filter((feature) => feature.geometry)
