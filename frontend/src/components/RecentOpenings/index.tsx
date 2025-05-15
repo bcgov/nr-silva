@@ -120,7 +120,6 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
             pictogram="Magnify"
             title="There are no openings to show yet"
             description="Your recent openings will appear here once you generate one"
-            fill="#0073E6"
           />
         ) : null
       }
@@ -152,7 +151,6 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
                       showMap={showMap}
                       selectedRows={selectedOpeningIds}
                       handleRowSelection={handleRowSelection}
-                      navigateOnClick
                     />
                   ))
                 }

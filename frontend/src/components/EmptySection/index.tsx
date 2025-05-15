@@ -9,8 +9,8 @@ interface EmptySectionProps {
   title: string;
   description: string | React.ReactNode;
   pictogram?: keyof typeof Pictograms;
-  fill?: string;
   className?: string;
+  whiteLayer?: boolean;
 }
 
 /**
@@ -21,28 +21,32 @@ interface EmptySectionProps {
  * @param {string} props.title - The title of the empty section.
  * @param {string | React.ReactNode} props.description - The description of the empty section.
  * @param {string} [props.pictogram] - Optional. The name of the pictogram to display.
- * @param {string} [props.fill] - Optional. The fill color of the icon or pictogram.
+ * @param {string} [props.whiteLayer] - Optional. Whether the background is white.
  * @returns {React.JSX.Element} A div element containing the empty section.
  */
 function EmptySection({
-  icon, title, description, pictogram, fill = "#0073E6", className
+  icon, title, description, pictogram, whiteLayer, className
 }: EmptySectionProps): React.JSX.Element {
-  let Img;
+  let Img: React.ElementType | undefined;
 
-  if (icon) {
-    Img = Icons[icon];
+  if (icon && Icons[icon]) {
+    Img = Icons[icon] as React.ElementType;
   }
-  // If both icon and pictogram are passed in then pictogram will be used
-  if (pictogram) {
-    Img = Pictograms[pictogram];
+
+  if (pictogram && Pictograms[pictogram]) {
+    Img = Pictograms[pictogram] as React.ElementType;
   }
 
   return (
-    <div className={`${className ?? ''} empty-section-container`}>
-      <Img className="empty-section-icon" data-testid="empty-section-icon" style={{ fill: fill }} />
-      <p className="empty-section-title">
+    <div className={`${className ?? ''} empty-section-container ${whiteLayer ? 'empty-section-white-layer' : undefined}`}>
+      {
+        Img
+          ? <Img className="empty-section-icon" data-testid="empty-section-icon" />
+          : null
+      }
+      <div className="empty-section-title">
         {title}
-      </p>
+      </div>
       <Subtitle className="empty-section-subtitle" text={description} />
     </div>
   );

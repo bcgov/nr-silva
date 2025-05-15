@@ -17,8 +17,13 @@ afterEach(() => {
 window.matchMedia = window.matchMedia || function() {
   return {
       matches: false,
-      addListener: function() {},
-      removeListener: function() {}
+      media: "",
+      onchange: null,
+      addListener: vi.fn(), // Legacy method
+      removeListener: vi.fn(), // Legacy method
+      addEventListener: vi.fn(), // Modern method
+      removeEventListener: vi.fn(), // Modern method
+      dispatchEvent: vi.fn(),
   };
 };
 

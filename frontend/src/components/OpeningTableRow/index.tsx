@@ -1,7 +1,7 @@
 // TableRowComponent.tsx
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TableRow, TableCell, Tooltip } from "@carbon/react";
 import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import StatusTag from "../StatusTag";
@@ -12,7 +12,7 @@ import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 
 import { OpeningDetailsRoute } from "@/routes/config";
-import './styles.scss';
+import "./styles.scss";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -20,7 +20,6 @@ interface TableRowComponentProps {
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;
-  navigateOnClick?: boolean;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({
@@ -29,30 +28,27 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   showMap,
   selectedRows,
   handleRowSelection,
-  navigateOnClick
 }) => {
-  const navigate = useNavigate();
-
   const renderCellContent = (header: OpendingHeaderKeyType) => {
     switch (header) {
       case "status":
-        return <StatusTag description={rowData.status?.description ?? 'Unknown'} />;
+        return (
+          <StatusTag description={rowData.status?.description ?? "Unknown"} />
+        );
       case "actions":
         return (
           <div className="action-container">
-            {
-              showMap ? (
-                <SpatialCheckbox
-                  rowId={rowData.openingId}
-                  selectedRows={selectedRows}
-                  handleRowSelection={handleRowSelection}
-                />
-              )
-                : null
-            }
+            {showMap ? (
+              <SpatialCheckbox
+                rowId={rowData.openingId}
+                selectedRows={selectedRows}
+                handleRowSelection={handleRowSelection}
+              />
+            ) : null}
             <ActionButtons
               favorited={rowData.favourite}
               rowId={rowData.openingId.toString()}
+              showToast
             />
           </div>
         );
@@ -70,42 +66,37 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
       case "updateTimestamp":
       case "earlyFreeGrowingDate":
       case "disturbanceStartDate":
-        return formatLocalDate(rowData.disturbanceStartDate, true)
+        return formatLocalDate(rowData.disturbanceStartDate, true);
       default:
         return rowData[header];
     }
-  }
-
-  const handleRowClick = () => {
-    if (navigateOnClick) {
-      navigate(OpeningDetailsRoute.path!.replace(":openingId", rowData.openingId.toString()))
-    }
-  }
+  };
 
   return (
-    <TableRow
-      className={`opening-table-row${navigateOnClick ? ' clickable-opening-row' : ''}`}
-    >
-      {
-        headers
-          .filter((header) => header.selected)
-          .map((header) => (
-            <TableCell
-              key={header.key}
-              onClick={() => {
-                if (header.key !== 'actions') {
-                  handleRowClick();
-                }
-              }}
-            >
-              {
-                renderCellContent(header.key) ?? PLACE_HOLDER
-              }
-            </TableCell>
-          ))
-      }
+    <TableRow className="opening-table-row">
+      {headers
+        .filter((header) => header.selected)
+        .map((header) => (
+          <TableCell key={header.key}>
+            {header.key !== "actions" ? (
+              <a
+                href={OpeningDetailsRoute.path!.replace(
+                  ":openingId",
+                  rowData.openingId.toString()
+                )}
+                className="table-cell-link-wrapper"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {renderCellContent(header.key) ?? PLACE_HOLDER}
+              </a>
+            ) : (
+              renderCellContent(header.key) ?? PLACE_HOLDER
+            )}
+          </TableCell>
+        ))}
     </TableRow>
-  )
+  );
 };
 
 export default OpeningTableRow;

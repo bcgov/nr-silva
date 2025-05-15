@@ -20,7 +20,7 @@ import OpeningTableRow from "../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
 import OpeningsMap from "../../OpeningsMap";
 import EmptySection from "../../EmptySection";
-import { PageSizesConfig } from "@/constants/tableConstants";
+import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import useSilvicultureSearchParams from "../hooks";
 import { SilvicultureSearchParams } from "../definitions";
@@ -47,9 +47,14 @@ const OpeningSearch: React.FC = () => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] = useState<boolean>(false);
   // 0 index
-  const [currPageNumber, setCurrPageNumber] = useState<number>(0);
+  const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]);
   const [isSearchFilterEmpty, setIsSearchFilterEmpty] = useState<boolean>(false);
+
+  const resetPagination = () => {
+    setCurrPageNumber(DEFAULT_PAGE_NUM);
+    setCurrPageSize(PageSizesConfig[0]);
+  }
 
   /**
    * Toggles the selection of an opening ID.
@@ -80,10 +85,6 @@ const OpeningSearch: React.FC = () => {
     refetchOnMount: 'always'
   });
 
-  /**
-   * This state exists solely to force a search when the user clicks the search button
-   * while the main search input is still focused.
-   */
   const [enableSearch, setEnableSearch] = useState<boolean>(false);
 
   /**
@@ -99,7 +100,9 @@ const OpeningSearch: React.FC = () => {
       page: currPageNumber,
       size: currPageSize
     }),
-    enabled: enableSearch
+    enabled: enableSearch,
+    gcTime: 0,
+    staleTime: 0
   })
 
   useEffect(() => {
@@ -172,7 +175,7 @@ const OpeningSearch: React.FC = () => {
 
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
-
+    setEnableSearch(true);
     searchQuery.refetch();
   }
 
@@ -205,6 +208,7 @@ const OpeningSearch: React.FC = () => {
         handleSearch={handleSearch}
         totalResults={searchQuery.data?.page.totalElements}
         setEnableSearch={setEnableSearch}
+        resetPagination={resetPagination}
       />
 
       {/* Map Section */}
@@ -296,7 +300,6 @@ const OpeningSearch: React.FC = () => {
                           showMap={showMap}
                           selectedRows={selectedOpeningIds}
                           handleRowSelection={handleRowSelection}
-                          navigateOnClick
                         />
                       ))
                     }

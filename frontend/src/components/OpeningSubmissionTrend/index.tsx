@@ -233,7 +233,6 @@ const OpeningSubmissionTrend = () => {
             pictogram="UserSearch"
             title="No results found"
             description="No results found with the current filters. Try adjusting them to refine your search."
-            fill="#0073E6"
           />
         ) : null}
         {!submissionTrendQuery.isFetching && submissionTrendQuery.data ? (

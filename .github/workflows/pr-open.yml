@@ -8,6 +8,8 @@ concurrency:
   group: pr-${{ github.workflow }}-${{ github.event.number }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   builds:
     name: Builds
@@ -23,8 +25,8 @@ jobs:
           - name: frontend
             triggers: ('frontend/')
     steps:
-      - uses: actions/checkout@v4
-      - uses: bcgov/action-builder-ghcr@v2.3.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: bcgov/action-builder-ghcr@ace71f7a527ca6fc43c15c7806314be5a4579d2c # v2.3.0
         with:
           package: ${{ matrix.name }}
           tag: ${{ github.event.number }}

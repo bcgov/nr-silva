@@ -68,14 +68,14 @@ public class OpeningSearchService {
         pagination.getPageSize()
     );
 
+    long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
+    log.info("Search resulted in {}/{} results",
+        searchContent.size(),
+        total
+    );
+
     Page<SilvicultureSearchProjection> searchResultPage = new PageImpl<>(
-        searchContent,
-        pagination,
-        searchContent
-            .stream()
-            .map(SilvicultureSearchProjection::getTotalCount)
-            .findFirst()
-            .orElse(0L)
+        searchContent, pagination, total
     );
 
     return parsePageResult(searchResultPage);
@@ -90,7 +90,7 @@ public class OpeningSearchService {
             .filter(OpeningSearchResponseDto::isValid)
             .toList(),
         searchResultPage.getPageable(),
-        searchResultPage.getTotalPages()
+        searchResultPage.getTotalElements()
     )));
   }
 

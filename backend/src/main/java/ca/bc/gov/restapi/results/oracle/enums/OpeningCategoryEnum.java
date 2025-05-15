@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,10 @@ public enum OpeningCategoryEnum {
 
   private final String code;
   private final String description;
+
+  public CodeDescriptionDto toCodeDescriptionDto(){
+    return new CodeDescriptionDto(code,description);
+  }
 
   /**
    * Get a {@link OpeningCategoryEnum} given its code.

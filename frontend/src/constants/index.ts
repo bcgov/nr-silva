@@ -1,7 +1,7 @@
 import CodeDescriptionDto from "../types/CodeDescriptionType";
 import { DATE_TYPES } from "../types/DateTypes";
 
-export const PLACE_HOLDER = "—"
+export const PLACE_HOLDER = "--"
 
 export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [
   { code: 'AMG', description: 'Amalgamate' },

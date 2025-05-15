@@ -1,6 +1,6 @@
 import React from "react";
 import './styles.scss';
-import { TagSkeleton, TextInputSkeleton, Tooltip } from "@carbon/react";
+import { TextInputSkeleton, DefinitionTooltip } from "@carbon/react";
 import { PLACE_HOLDER } from "@/constants";
 import { toKebabCase } from "@/utils/StringUtils";
 
@@ -33,7 +33,12 @@ interface CardItemProps {
   /**
    * Text used for tooltip
    */
-  tooltipText?: string
+  tooltipText?: string;
+
+  /**
+   * If true, indicates the value consists only of numbers and should be displayed using a code-style font.
+   */
+  isNumber?: boolean;
 }
 
 /**
@@ -53,7 +58,8 @@ const CardItem = ({
   label,
   children,
   id,
-  tooltipText
+  tooltipText,
+  isNumber
 }: CardItemProps): React.ReactElement => {
 
   if (showSkeleton) {
@@ -76,13 +82,13 @@ const CardItem = ({
 
   if (tooltipText && !showSkeleton) {
     content = (
-      <Tooltip description={tooltipText}>
+      <DefinitionTooltip definition={tooltipText} openOnHover>
         {
           React.isValidElement(rawContent)
             ? rawContent
             : <span>{String(rawContent)}</span>
         }
-      </Tooltip>
+      </DefinitionTooltip>
     );
   }
 
@@ -90,7 +96,7 @@ const CardItem = ({
     <dl className="card-item" id={id} data-testid={`card-item-${toKebabCase(label)}`}>
       <dt className="card-item-label">{label}</dt>
       <dd
-        className="card-item-content"
+        className={`${isNumber ? 'card-item-content-number' : 'card-item-content'}`}
         data-testid={`card-item-content-${toKebabCase(label)}`}
         title={typeof children === 'string' && !showSkeleton ? children : undefined}
       >

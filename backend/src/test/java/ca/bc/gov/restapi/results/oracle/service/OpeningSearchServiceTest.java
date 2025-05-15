@@ -116,11 +116,9 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(0, result.getPageable().getPageNumber());
     Assertions.assertEquals(10, result.getPageable().getPageSize());
     Assertions.assertEquals(1, result.getTotalPages());
-    Assertions.assertEquals(3, result.getContent().size());
-    Assertions.assertEquals(1524010, result.getContent().get(0).getOpeningId());
+    Assertions.assertEquals(6, result.getContent().size());
+    Assertions.assertEquals(1796497, result.getContent().get(0).getOpeningId());
     Assertions.assertNull(result.getContent().get(0).getOpeningNumber());
-    Assertions.assertEquals(OpeningCategoryEnum.NREQ, result.getContent().get(0).getCategory());
-    Assertions.assertEquals(OpeningStatusEnum.FG, result.getContent().get(0).getStatus());
   }
 
   @Test

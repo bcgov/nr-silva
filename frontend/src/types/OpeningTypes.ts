@@ -118,3 +118,70 @@ export type OpeningDetailsTombstoneOverviewDto = {
   tombstone: OpeningDetailsTombstoneDto,
   overview: OpeningDetailsOverviewDto
 };
+
+export type OpeningDetailsStockingDetailsDto = {
+  stockingStandardUnit: string | null,
+  ssid: number | null,
+  defaultMof: boolean,
+  manualEntry: boolean,
+  fspId: number | null,
+  netArea: number | null,
+  soilDisturbancePercent: number | null,
+  bec: OpeningDetailsBecDto,
+  regenDelay: number | null,
+  freeGrowingLate: number | null,
+  freeGrowingEarly: number | null,
+  additionalStandards: string | null,
+};
+
+export type OpeningDetailsBecDto = {
+  becZoneCode: string | null,
+  becSubzoneCode: string | null,
+  becVariant: string | null,
+  becPhase: string | null,
+  becSiteSeries: string | null,
+  becSiteType: string | null,
+  becSeral: string | null,
+};
+
+export type OpeningDetailsStockingSpeciesDto = {
+  species: CodeDescriptionDto,
+  minHeight: number | null,
+}
+
+export type OpeningDetailsStockingLayerDto = {
+  minWellspacedTrees: number | null,
+  minPreferredWellspacedTrees: number | null,
+  minHorizontalDistanceWellspacedTrees: number | null,
+  targetWellspacedTrees: number | null,
+  minResidualBasalArea: number | null,
+  minPostspacingDensity: number | null,
+  maxPostspacingDensity: number | null,
+  maxConiferous: number | null,
+  heightRelativeToComp: number | null,
+};
+
+export type OpeningDetailsStockingDto = {
+  stocking: OpeningDetailsStockingDetailsDto,
+  preferredSpecies: OpeningDetailsStockingSpeciesDto[],
+  acceptableSpecies: OpeningDetailsStockingSpeciesDto[],
+  layer: OpeningDetailsStockingLayerDto | null,
+  comments: CommentDto[],
+};
+
+export type OpeningTenureDto = {
+  id: number,
+  primaryTenure: boolean,
+  fileId: string | null,
+  cutBlock: string | null,
+  cuttingPermit: string | null,
+  timberMark: string | null,
+  status: CodeDescriptionDto | null,
+  plannedGrossArea: number | null,
+  plannedNetArea: number | null
+}
+
+export type PaginatedPrimaryResponseDto<T> = PaginatedResponseType<T> & {
+  primary: T | null;
+  totalUnfiltered: number;
+};
