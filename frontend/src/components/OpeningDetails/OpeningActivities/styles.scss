@@ -20,7 +20,7 @@
   }
 
   .activity-accordion {
-    .activity-filter-container {
+    .activity-search-container {
       display: flex;
       flex-direction: row;
       justify-content: start;
@@ -39,6 +39,22 @@
       .activity-status-tag {
         padding: 0rem 0.5rem;
         margin: -0.5rem;
+      }
+
+      .activity-objective-tooltip-definition {
+        white-space: nowrap;
+
+        .#{vars.$bcgov-prefix}--definition-term {
+          margin-top: 0.25rem;
+        }
+
+        .#{vars.$bcgov-prefix}--definition-tooltip {
+          max-inline-size: unset;
+          min-width: 12rem;
+          padding: 1rem;
+          border-radius: 0.25rem;
+          @include type.type-style('body-compact-02');
+        }
       }
     }
   }

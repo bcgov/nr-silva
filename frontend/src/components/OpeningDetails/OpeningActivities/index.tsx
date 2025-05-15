@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
+import { useQuery } from "@tanstack/react-query";
 
 import EmptySection from "../../EmptySection";
-
-import './styles.scss';
-import { MOCKED_ACTIVITY_RES, MOCKED_DISTURBANCE_EVENTS } from "./constants";
 import DisturbanceAccordion from "./DisturbanceAccordion";
-import { useQuery } from "@tanstack/react-query";
-import { delayMock } from "../../../utils/MockUtils";
 import ActivityAccordion from "./ActivityAccordion";
+
+import { fetchOpeningActivities, fetchOpeningDisturbances } from "@/services/OpeningDetailsService";
+import { DefaultFilter } from "./constants";
+
+import "./styles.scss";
 
 type OpeningActivitiesProps = {
   openingId: number;
@@ -18,12 +20,12 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
-    queryFn: () => delayMock(MOCKED_DISTURBANCE_EVENTS)
+    queryFn: () => fetchOpeningDisturbances(openingId),
   });
 
   const activityQuery = useQuery({
-    queryKey: ['opening', openingId, 'activities'],
-    queryFn: () => delayMock(MOCKED_ACTIVITY_RES)
+    queryKey: ['opening', openingId, 'activities', { filter: DefaultFilter }],
+    queryFn: () => fetchOpeningActivities(openingId, DefaultFilter),
   });
 
 
@@ -37,7 +39,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
   // Empty case
   if (
     disturbanceQuery.isSuccess && activityQuery.isSuccess &&
-    (disturbanceQuery.data.length + activityQuery.data.page.totalElements < 1)
+    (disturbanceQuery.data.content.length + activityQuery.data.page.totalElements < 1)
   ) {
     return (
       <EmptySection
@@ -54,17 +56,17 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         <h3 className="default-tab-content-title">
           {
             `
-              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.length ?? 0)}
+              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.content.length ?? 0)}
               activities in the opening area
             `
           }
         </h3>
       </Column>
       {
-        (disturbanceQuery.data?.length ?? 0) > 0
+        (disturbanceQuery.data?.content.length ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <DisturbanceAccordion data={disturbanceQuery.data!} />
+              <DisturbanceAccordion data={disturbanceQuery.data!.content} />
             </Column>
           )
           : null
@@ -74,7 +76,10 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         (activityQuery.data?.page.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <ActivityAccordion data={activityQuery.data?.content!} openingId={openingId}/>
+              <ActivityAccordion
+                openingId={openingId}
+                totalUnfiltered={activityQuery.data?.page.totalElements ?? 0}
+              />
             </Column>
           )
           : null
