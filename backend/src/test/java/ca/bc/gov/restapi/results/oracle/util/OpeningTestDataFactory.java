@@ -353,6 +353,11 @@ public class OpeningTestDataFactory {
   public static OpeningStockingSpeciesProjection createPreferredSpeciesProjection() {
     return new OpeningStockingSpeciesProjection() {
       @Override
+      public String getLayerCode() {
+        return "I";
+      }
+
+      @Override
       public String getSpeciesCode() {
         return "CW";
       }
@@ -363,14 +368,19 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getMinHeight() {
-        return 1L;
+      public Float getMinHeight() {
+        return 1f;
       }
     };
   }
 
   public static OpeningStockingSpeciesProjection createAcceptableSpeciesProjection() {
     return new OpeningStockingSpeciesProjection() {
+      @Override
+      public String getLayerCode() {
+        return "I";
+      }
+
       @Override
       public String getSpeciesCode() {
         return "BA";
@@ -382,14 +392,24 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getMinHeight() {
-        return 1L;
+      public Float getMinHeight() {
+        return 1f;
       }
     };
   }
 
   public static OpeningStockingLayerProjection createStockingLayerProjection() {
     return new OpeningStockingLayerProjection() {
+      @Override
+      public String getLayerCode() {
+        return "4";
+      }
+
+      @Override
+      public String getLayerName() {
+        return "Regen";
+      }
+
       @Override
       public Long getMinWellspacedTrees() {
         return 500L;

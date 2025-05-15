@@ -333,6 +333,7 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_SS_SPECIES =
       """
       SELECT
+        sl.STOCKING_LAYER_CODE as layer_code,
       	sls.SILV_TREE_SPECIES_CODE AS species_code,
       	stsc.DESCRIPTION AS species_name,
       	sls.MIN_HEIGHT AS min_height
@@ -346,18 +347,22 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_SS_LAYER =
       """
       SELECT
-      	sl.MIN_STOCKING_STANDARD AS min_wellspaced_trees,
-      	sl.MIN_PREF_STOCKING_STANDARD AS min_preferred_wellspaced_trees,
-      	sl.MIN_HORIZONTAL_DISTANCE AS min_horizontal_distance_wellspaced_trees,
-      	sl.TARGET_STOCKING AS target_wellspaced_trees,
-      	sl.RESIDUAL_BASAL_AREA AS min_residual_basal_area,
-      	sl.MIN_POST_SPACING AS min_postspacing_density,
-      	sl.MAX_POST_SPACING AS max_postspacing_density,
-      	sl.MAX_CONIFER AS max_coniferous,
-      	sl.HGHT_RELATIVE_TO_COMP AS height_relative_to_comp
+        sl.STOCKING_LAYER_CODE AS layer_code,
+        slc.DESCRIPTION AS layer_name,
+        sl.MIN_STOCKING_STANDARD AS min_wellspaced_trees,
+        sl.MIN_PREF_STOCKING_STANDARD AS min_preferred_wellspaced_trees,
+        sl.MIN_HORIZONTAL_DISTANCE AS min_horizontal_distance_wellspaced_trees,
+        sl.TARGET_STOCKING AS target_wellspaced_trees,
+        sl.RESIDUAL_BASAL_AREA AS min_residual_basal_area,
+        sl.MIN_POST_SPACING AS min_postspacing_density,
+        sl.MAX_POST_SPACING AS max_postspacing_density,
+        sl.MAX_CONIFER AS max_coniferous,
+        sl.HGHT_RELATIVE_TO_COMP AS height_relative_to_comp
       FROM OPENING op
       LEFT JOIN STOCKING_LAYER sl ON (sl.OPENING_ID = op.OPENING_ID)
-      WHERE op.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId""";
+      LEFT JOIN STOCKING_LAYER_CODE slc ON sl.STOCKING_LAYER_CODE = slc.STOCKING_LAYER_CODE
+      WHERE op.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId
+      ORDER BY sl.STOCKING_LAYER_CODE DESC""";
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
       """

@@ -146,11 +146,13 @@ export type OpeningDetailsBecDto = {
 };
 
 export type OpeningDetailsStockingSpeciesDto = {
+  layer: string | null,
   species: CodeDescriptionDto,
   minHeight: number | null,
 }
 
 export type OpeningDetailsStockingLayerDto = {
+  layer: CodeDescriptionDto,
   minWellspacedTrees: number | null,
   minPreferredWellspacedTrees: number | null,
   minHorizontalDistanceWellspacedTrees: number | null,
@@ -166,7 +168,7 @@ export type OpeningDetailsStockingDto = {
   stocking: OpeningDetailsStockingDetailsDto,
   preferredSpecies: OpeningDetailsStockingSpeciesDto[],
   acceptableSpecies: OpeningDetailsStockingSpeciesDto[],
-  layer: OpeningDetailsStockingLayerDto | null,
+  layers: OpeningDetailsStockingLayerDto[],
   comments: CommentDto[],
 };
 
