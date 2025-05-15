@@ -6,6 +6,7 @@ import org.geojson.FeatureCollection;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,8 +27,9 @@ public class OpeningMapsEndpoint {
    */
   @GetMapping("/{openingId}")
   public FeatureCollection getOpeningPolygonAndProperties(
-      @PathVariable
-      String openingId) {
-    return openMapsService.getOpeningPolygonAndProperties(openingId);
+      @PathVariable String openingId,
+      @RequestParam(required = false, defaultValue = "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW") String kind
+  ) {
+    return openMapsService.getOpeningPolygonAndProperties(openingId, kind);
   }
 }
