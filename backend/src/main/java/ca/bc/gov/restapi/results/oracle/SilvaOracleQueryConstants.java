@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SilvaOracleQueryConstants {
 
-  public static final String SILVICULTURE_SEARCH_SELECT = """
+  public static final String SILVICULTURE_SEARCH_SELECT =
+      """
       SELECT DISTINCT op.opening_id
         ,cboa.forest_file_id AS forest_file_id
         ,cboa.cutting_permit_id AS cutting_permit_id
@@ -30,7 +31,8 @@ public class SilvaOracleQueryConstants {
         ,op.opening_number AS opening_number
       """;
 
-  public static final String SILVICULTURE_SEARCH_FROM_JOIN = """
+  public static final String SILVICULTURE_SEARCH_FROM_JOIN =
+      """
       FROM opening op
         LEFT JOIN cut_block_open_admin cboa ON (op.opening_id = cboa.opening_id AND cboa.opening_prime_licence_ind = 'Y') -- ideally, ALWAYS have a matching entry FOR opening_id, sometimes multiples, but NOT ALL op have cboa
         LEFT JOIN org_unit ou ON (op.admin_district_no = ou.org_unit_no)  -- ALWAYS have a matching entry FOR org_unit_no
@@ -43,7 +45,8 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN cut_block_client cbco ON (cbcr.cut_block_client_type_code = 'O' AND cbcr.cb_skey = cboa.cb_skey)
       """;
 
-  public static final String SILVICULTURE_SEARCH_WHERE_CLAUSE = """
+  public static final String SILVICULTURE_SEARCH_WHERE_CLAUSE =
+      """
       WHERE
           (
             NVL(:#{#filter.mainSearchTerm},'NOVALUE') = 'NOVALUE' OR (
@@ -143,7 +146,8 @@ public class SilvaOracleQueryConstants {
           )
       """;
 
-  public static final String SILVICULTURE_SEARCH_CTE_SELECT = """
+  public static final String SILVICULTURE_SEARCH_CTE_SELECT =
+      """
       SELECT
           opening_id,
           COUNT(*) OVER () AS total_count,
@@ -171,11 +175,19 @@ public class SilvaOracleQueryConstants {
 
   public static final String PAGINATION = "OFFSET :page ROWS FETCH NEXT :size ROWS ONLY";
 
-  public static final String SILVICULTURE_SEARCH_QUERY = SILVICULTURE_SEARCH_SELECT + SILVICULTURE_SEARCH_FROM_JOIN + SILVICULTURE_SEARCH_WHERE_CLAUSE;
+  public static final String SILVICULTURE_SEARCH_QUERY =
+      SILVICULTURE_SEARCH_SELECT + SILVICULTURE_SEARCH_FROM_JOIN + SILVICULTURE_SEARCH_WHERE_CLAUSE;
 
-  public static final String SILVICULTURE_SEARCH = "WITH silviculture_search AS ("+ SILVICULTURE_SEARCH_QUERY +")"+ SILVICULTURE_SEARCH_CTE_SELECT+" FROM silviculture_search ORDER BY opening_id DESC "+PAGINATION;
+  public static final String SILVICULTURE_SEARCH =
+      "WITH silviculture_search AS ("
+          + SILVICULTURE_SEARCH_QUERY
+          + ")"
+          + SILVICULTURE_SEARCH_CTE_SELECT
+          + " FROM silviculture_search ORDER BY opening_id DESC "
+          + PAGINATION;
 
-  public static final String OPENING_TRENDS_QUERY = """
+  public static final String OPENING_TRENDS_QUERY =
+      """
       SELECT
           EXTRACT(YEAR FROM o.UPDATE_TIMESTAMP) AS year,
           EXTRACT(MONTH FROM o.UPDATE_TIMESTAMP) AS month,
@@ -193,8 +205,8 @@ public class SilvaOracleQueryConstants {
           o.OPENING_STATUS_CODE
       ORDER BY year, month""";
 
-
-  public static final String GET_OPENING_TOMBSTONE = """
+  public static final String GET_OPENING_TOMBSTONE =
+      """
       SELECT
         op.opening_id,
         (LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS opening_number,
@@ -223,7 +235,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN OPENING_STATUS_CODE osc ON osc.OPENING_STATUS_CODE = op.OPENING_STATUS_CODE
       WHERE op.OPENING_ID = :openingId""";
 
-  public static final String GET_OPENING_OVERVIEW_OPENING = """
+  public static final String GET_OPENING_OVERVIEW_OPENING =
+      """
       SELECT
           op.LICENSEE_OPENING_ID,
           pfu.FILE_TYPE_CODE AS tenure_type_code,
@@ -242,7 +255,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN MGMT_UNIT_TYPE_CODE mutc ON (pfu.MGMT_UNIT_TYPE = mutc.MGMT_UNIT_TYPE_CODE)
       WHERE op.OPENING_ID = :openingId""";
 
-  public static final String GET_OPENING_OVERVIEW_MILESTONE = """
+  public static final String GET_OPENING_OVERVIEW_MILESTONE =
+      """
       SELECT
       	ssu.standards_unit_id,
           to_char(smph.DECLARED_DATE,'YYYY-MM-DD') AS post_harverst_declared_date,
@@ -261,7 +275,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY ssu.ENTRY_TIMESTAMP
       FETCH FIRST ROW ONLY""";
 
-  public static final String GET_COMMENTS = """
+  public static final String GET_COMMENTS =
+      """
       SELECT
         sc.SILV_COMMENT_SOURCE_CODE as comment_source_code,
         scsc.DESCRIPTION AS comment_source_name,
@@ -285,7 +300,8 @@ public class SilvaOracleQueryConstants {
       OR spcl.SILVICULTURE_PROJECT_ID = :projectId
       ORDER BY COMMENT_DATE DESC""";
 
-  public static final String GET_OPENING_SS = """
+  public static final String GET_OPENING_SS =
+      """
       SELECT
       	ssu.standards_unit_id AS stocking_standard_unit,
       	ssu.STOCKING_STANDARD_UNIT_ID AS ssid,
@@ -314,7 +330,8 @@ public class SilvaOracleQueryConstants {
       WHERE op.OPENING_ID = :openingId
       ORDER BY ssu.standards_unit_id""";
 
-  public static final String GET_OPENING_SS_SPECIES = """
+  public static final String GET_OPENING_SS_SPECIES =
+      """
       SELECT
         sl.STOCKING_LAYER_CODE as layer_code,
       	sls.SILV_TREE_SPECIES_CODE AS species_code,
@@ -327,7 +344,8 @@ public class SilvaOracleQueryConstants {
       WHERE op.OPENING_ID = :openingId AND sls.PREFERRED_IND = :preferred AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId
       ORDER BY sls.SPECIES_ORDER""";
 
-  public static final String GET_OPENING_SS_LAYER = """
+  public static final String GET_OPENING_SS_LAYER =
+      """
       SELECT
         sl.STOCKING_LAYER_CODE AS layer_code,
         slc.DESCRIPTION AS layer_name,
@@ -346,7 +364,8 @@ public class SilvaOracleQueryConstants {
       WHERE op.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId
       ORDER BY sl.STOCKING_LAYER_CODE DESC""";
 
-  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE = """
+  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
+      """
       SELECT
       	atu.ACTIVITY_TREATMENT_UNIT_ID AS atu_id,
       	atu.DISTURBANCE_CODE AS disturbance_code,
@@ -377,13 +396,15 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_FILE_CLIENT ffc ON (ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
       WHERE atu.SILV_BASE_CODE = 'DN' AND op.OPENING_ID = :openingId""";
 
-  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE_COUNT = """
+  public static final String GET_OPENING_ACTIVITIES_DISTURBANCE_COUNT =
+      """
       SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
         FROM OPENING op
         LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
         WHERE atu.SILV_BASE_CODE = 'DN' AND op.OPENING_ID = :openingId""";
 
-  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES = """
+  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES =
+      """
       SELECT
       	atu.ACTIVITY_TREATMENT_UNIT_ID AS atu_id,
       	CASE
@@ -426,6 +447,7 @@ public class SilvaOracleQueryConstants {
         AND (
         	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
         		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
+                OR TO_CHAR(atu.ACTIVITY_TREATMENT_UNIT_ID) LIKE '%' || :mainSearchTerm || '%'
         		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
@@ -435,7 +457,7 @@ public class SilvaOracleQueryConstants {
         		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'	
+        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
@@ -444,7 +466,8 @@ public class SilvaOracleQueryConstants {
         	)
         )""";
 
-  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT = """
+  public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT =
+      """
       SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
       FROM OPENING op
       LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atu.OPENING_ID = op.OPENING_ID
@@ -479,7 +502,8 @@ public class SilvaOracleQueryConstants {
         	)
         )""";
 
-  public static final String GET_OPENING_ACTIVITIES_BASE = """
+  public static final String GET_OPENING_ACTIVITIES_BASE =
+      """
       SELECT
       	atu.ACTIVITY_LICENSEE_ID AS licensee_activity_id,
       	atu.FIA_PROJECT_ID AS intra_agency_number,
@@ -499,7 +523,8 @@ public class SilvaOracleQueryConstants {
         op.OPENING_ID = :openingId
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId""";
 
-  public static final String GET_OPENING_ACTIVITIES_SU = """
+  public static final String GET_OPENING_ACTIVITIES_SU =
+      """
       SELECT
       	CASE
               WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SURVEY_ACTUAL_NUM_PLOTS
@@ -517,7 +542,8 @@ public class SilvaOracleQueryConstants {
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
 
-  public static final String GET_OPENING_ACTIVITY_SPECIES = """
+  public static final String GET_OPENING_ACTIVITY_SPECIES =
+      """
       SELECT
       	pr.SILV_TREE_SPECIES_CODE AS species_code,
       	stsc.DESCRIPTION AS species_name,
@@ -540,7 +566,8 @@ public class SilvaOracleQueryConstants {
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
 
-  public static final String GET_OPENING_ACTIVITY_JS = """
+  public static final String GET_OPENING_ACTIVITY_JS =
+      """
       SELECT
       	atu.INTER_TREE_TARGET_DISTANCE AS target_intertree_distance,
       	atu.INTER_TREE_VARIATION AS allowable_variation_distance,
@@ -556,7 +583,8 @@ public class SilvaOracleQueryConstants {
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
 
-  public static final String GET_OPENING_ACTIVITY_PR = """
+  public static final String GET_OPENING_ACTIVITY_PR =
+      """
       SELECT
         atu.TOTAL_STEMS_PER_HA AS total_stems_per_ha,
       	atu.STEMS_TO_PRUNE AS stems_per_ha_to_prune,
@@ -574,7 +602,8 @@ public class SilvaOracleQueryConstants {
         AND atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
 
-  public static final String GET_OPENING_ACTIVITY_SP = """
+  public static final String GET_OPENING_ACTIVITY_SP =
+      """
       SELECT
       	atu.TARGET_PREPARED_SPOTS
       FROM OPENING op
@@ -585,7 +614,8 @@ public class SilvaOracleQueryConstants {
         atu.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       ORDER BY atu.ACTIVITY_TU_SEQ_NO""";
 
-  public static final String GET_OPENING_TENURES = """
+  public static final String GET_OPENING_TENURES =
+      """
       SELECT
         	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
         	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
@@ -616,7 +646,8 @@ public class SilvaOracleQueryConstants {
         		)
         	)""";
 
-  public static final String GET_OPENING_TENURES_COUNT = """
+  public static final String GET_OPENING_TENURES_COUNT =
+      """
       SELECT count(1)
         FROM OPENING op
           LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON cboa.OPENING_ID = op.OPENING_ID
@@ -637,7 +668,8 @@ public class SilvaOracleQueryConstants {
         	)
         )""";
 
-  public static final String GET_OPENING_TENURE_PRIME = """
+  public static final String GET_OPENING_TENURE_PRIME =
+      """
       SELECT
           	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
           	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
@@ -654,5 +686,4 @@ public class SilvaOracleQueryConstants {
           LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
           LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
           WHERE op.OPENING_ID = :openingId AND cboa.opening_prime_licence_ind = 'Y'""";
-
 }
