@@ -91,6 +91,6 @@
     "ws@8.17.0": "8.17.1",
     "@babel/runtime": "7.27.1",
     "@babel/helpers": "7.27.1",
-    "react-router": "7.5.3"
+    "react-router": "7.6.0"
   }
 }

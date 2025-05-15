@@ -101,11 +101,9 @@ describe("OpeningRow component", () => {
     const categoryElement = screen.getByText("NREQ");
     fireEvent.mouseOver(categoryElement);
 
-    await waitFor(() => {
-      expect(screen.getByRole("tooltip")).toBeInTheDocument();
-    });
-
-    expect(screen.getByRole("tooltip")).toHaveTextContent("Areas where SP/SMP's are not required by law");
+    expect(
+      await screen.findByText("Areas where SP/SMP's are not required by law")
+    ).toBeInTheDocument();
   });
 
   it("should format and display the disturbance start date", () => {

@@ -24,6 +24,11 @@ const API_ENDPOINTS = {
   openingMap: (openingId: number, kind: string) => `${API_BASE_URL}/openings/map/${openingId}${resolveQueryString(kind)}`,
   openingTombstone: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/tombstone`,
   openingSsu: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/ssu`,
+  openingDisturbances: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/disturbances`,
+  openingActivity: (openingId: number) => ({
+    activities: (filters: string) => `${API_BASE_URL}/openings/${openingId}/activities${filters}`,
+    activityDetail: (atuId: number) => `${API_BASE_URL}/openings/${openingId}/activities/${atuId}`,
+  }),
   openingTenureIdentification: (openingId: number, filters: string) => `${API_BASE_URL}/openings/${openingId}/tenures${filters}`,
 };
 
