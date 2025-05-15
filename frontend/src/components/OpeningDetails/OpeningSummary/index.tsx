@@ -3,6 +3,7 @@ import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
 import { Location } from "@carbon/icons-react";
 
 import { OpeningDetailsTombstoneDto } from "@/types/OpeningTypes";
+import { mapKinds } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -15,14 +16,31 @@ type OpeningSummaryProps = {
   openingId?: number;
   tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
+  currentTab: number;
 };
 
 const OpeningSummary = ({
   openingId,
   tombstoneObj,
   isLoading,
+  currentTab,
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
+
+  const mapKind = (tabIndex: number) => {
+    switch (tabIndex) {
+      case 0:
+        return mapKinds[0].code;
+      case 1:
+        return mapKinds[1].code;
+      case 2:
+        return mapKinds[2].code;
+      case 3:
+        return mapKinds[3].code;
+      default:
+        return mapKinds[0].code;
+    }
+  };
 
   return (
     <Grid className="default-grid opening-summary-grid">
@@ -223,8 +241,8 @@ const OpeningSummary = ({
             setOpeningPolygonNotFound={() => {}}
             mapHeight={280}
             layerFilter={true}
+            kind={mapKind(currentTab)}
           />
-          {/* kind={checkboxValues} */}
         </Column>
       ) : null}
     </Grid>

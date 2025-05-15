@@ -8,12 +8,11 @@ import {
 } from "react-leaflet";
 import { FeatureCollection } from "geojson";
 
+import { MapKindType } from "@/types/MapLayer";
 import { MapLayer } from "@/types/MapLayer";
 import { allLayers } from "./constants";
 import { getMapQueries, getUserLocation } from "./fetcher";
 import "./styles.scss";
-
-import { MapKindType } from "@/types/MapLayer";
 
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
@@ -128,6 +127,7 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   return (
     <div style={{ height: `${mapSize}px`, width: "100%" }}>
+      {/* Display the user's location if no openings are found */}
       <MapContainer
         center={position}
         zoom={zoomLevel}
@@ -151,8 +151,6 @@ const OpeningsMap: React.FC<MapProps> = ({
           defaultZoom={zoomLevel}
         />
 
-        {/* Display the user's location if no openings are found */}
-
         {/* Default layers */}
         {allLayers.length && (
           <LayersControl position="topright">
@@ -164,7 +162,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                     format: layer.format,
                     layers: layer.layers,
                     transparent: layer.transparent,
-                    styles: layer.styles.map((s) => s.name).join(","),
+                    styles: layer.styles[0].name,
                     ...extraParameters(),
                   }}
                 />
@@ -172,10 +170,11 @@ const OpeningsMap: React.FC<MapProps> = ({
             ))}
           </LayersControl>
         )}
+
+        {/* Fullscreen button */}
         <OpeningsMapFullScreen
           fullscreen={mapSize === 800}
           onToggle={() => {
-            console.log("Toggling Full Screen");
             setMapSize((prevSize) =>
               prevSize === mapHeight ? 800 : mapHeight
             );

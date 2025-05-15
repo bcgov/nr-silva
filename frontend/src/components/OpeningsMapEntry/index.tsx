@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useMap, Popup, GeoJSON } from "react-leaflet";
+import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
 import { FeatureCollection } from "geojson";
+import {
+  getStyleForFeature,
+  getPropertyForFeature,
+  getPopupCenter,
+  getCenterOfFeatureCollection,
+} from "@/types/MapLayer";
 import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
-import { resultsStyle } from "./constants";
+import L from "leaflet";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
@@ -12,9 +18,12 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
   // State to hold the polygons
   // This is used to set the map view when the component mounts
   const [features, setFeatures] = useState<FeatureCollection[]>([]);
+  const [zoom, setZoom] = useState<number>(13);
 
   // Get the map instance from react-leaflet
-  const map = useMap();
+  const map = useMapEvents({
+    zoomend: () => setZoom(map.getZoom()),
+  });
 
   /**
    * Function to generate a unique key for each polygon
@@ -45,28 +54,71 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       .filter(Boolean)
       .map((id) => String(id))
       .map((id) => parseFloat(id))
-      .reduce((acc, id) => id, 0) ?? 0;
+      .find((id) => id && id !== 0) ?? 0;
 
   /**
    * Effect to set the map view when the component mounts or when the polygons change
    */
   useEffect(() => {
     setFeatures([...polygons]);
-  }, [polygons, map]);
+  }, [polygons]);
 
   return (
     <>
-      {features.filter(Boolean).map((polygon, index) => (
-        <GeoJSON
-          data={polygon}
-          key={geoKey(polygon, index)}
-          style={resultsStyle}
-        >
-          <Popup maxWidth={700}>
-            <OpeningsMapEntryPopup openingId={getOpeningId(polygon)} />
-          </Popup>
-        </GeoJSON>
-      ))}
+      {zoom > 10 &&
+        features.filter(Boolean).map((featureCollection, index) => (
+          <GeoJSON
+            data={featureCollection}
+            key={geoKey(featureCollection, index)}
+            style={getStyleForFeature}
+            onEachFeature={(feature, layer) => {
+              // This is needed for side effects but NOT popup content
+              layer.on({
+                mouseover: () => layer.setStyle({ weight: 3 }),
+                mouseout: () => layer.setStyle({ weight: 1 }),
+              });
+            }}
+          >
+            {featureCollection?.features
+              ?.filter((feature) => feature.geometry)
+              .map((feature, index) => (
+                <Popup
+                  key={`popup-${index}`}
+                  maxWidth={700}
+                  autoPan={false}
+                  position={getPopupCenter(feature.geometry)}
+                >
+                  <OpeningsMapEntryPopup
+                    openingId={getOpeningId(featureCollection)}
+                    data={getPropertyForFeature(feature)}
+                  />
+                </Popup>
+              ))}
+          </GeoJSON>
+        ))}
+      {zoom <= 10 &&
+        features.filter(Boolean).map((featureCollection, index) => (
+          <Marker
+            key={geoKey(featureCollection, index)}
+            position={getCenterOfFeatureCollection(featureCollection)}
+          >
+            {featureCollection?.features
+              ?.filter((feature) => feature.geometry)
+              .map((feature, index) => (
+                <Popup
+                  key={`popup-${index}`}
+                  maxWidth={700}
+                  autoPan={false}
+                  position={getPopupCenter(feature.geometry)}
+                >
+                  <OpeningsMapEntryPopup
+                    openingId={getOpeningId(featureCollection)}
+                    data={getPropertyForFeature(feature)}
+                  />
+                </Popup>
+              ))}
+          </Marker>
+        ))}
     </>
   );
 };
