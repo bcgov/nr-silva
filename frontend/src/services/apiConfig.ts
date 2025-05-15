@@ -1,5 +1,6 @@
 // Centralized API configuration file
 import { env } from '../env';
+import { MapKindType } from "@/types/MapLayer";
 
 const resolveQueryString = (queryString: string | null) => {
   return queryString ? `?${queryString}` : '';
@@ -20,7 +21,7 @@ const API_ENDPOINTS = {
   clientsByNameAcronymNumber: (query: string) => `${API_BASE_URL}/forest-clients/byNameAcronymNumber?value=${query}`,
   clientLocations: (clientId: string) => `${API_BASE_URL}/forest-clients/${clientId}/locations`,
   submissionTrends: (queryString: string | null) => `${API_BASE_URL}/users/submission-trends${resolveQueryString(queryString)}`,
-  openingMap: (openingId: number) => `${API_BASE_URL}/openings/map/${openingId}`,
+  openingMap: (openingId: number, kind: string) => `${API_BASE_URL}/openings/map/${openingId}${resolveQueryString(kind)}`,
   openingTombstone: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/tombstone`,
   openingSsu: (openingId: number) => `${API_BASE_URL}/openings/${openingId}/ssu`,
   openingTenureIdentification: (openingId: number, filters: string) => `${API_BASE_URL}/openings/${openingId}/tenures${filters}`,
