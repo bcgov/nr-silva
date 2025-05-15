@@ -1,32 +1,38 @@
-import { SpeciesHeaderType } from "./definitions";
 
-export const PreferredSpeciesHeaders: SpeciesHeaderType[] = [
+import { TableHeaderType } from "@/types/TableHeader";
+import { OpeningDetailsStockingLayerDto, OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+
+export const LayerHeaderConfig: TableHeaderType<keyof OpeningDetailsStockingLayerDto | keyof OpeningDetailsStockingDto>[] = [
   {
-    key: 'layer',
-    header: 'Layer'
+    key: 'layers',
+    header: 'Layers'
   },
   {
-    key: 'description',
-    header: 'Preferred species'
+    key: 'preferredSpecies',
+    header: 'Preferred species • Minimum height'
   },
   {
-    key: 'minHeight',
-    header: 'Minimum height (m)'
-  }
+    key: 'acceptableSpecies',
+    header: 'Acceptable species • Minimum height'
+  },
+  {
+    key: 'targetWellspacedTrees',
+    header: 'Well spaced tress'
+  },
+  {
+    key: 'minResidualBasalArea',
+    header: 'Residual basal area'
+  },
+  {
+    key: 'minPostspacingDensity',
+    header: 'Post spacing'
+  },
+  {
+    key: 'maxConiferous',
+    header: 'Max coniferous'
+  },
+  {
+    key: 'heightRelativeToComp',
+    header: 'Height relative to competition'
+  },
 ];
-
-export const AcceptableSpeciesHeaders: SpeciesHeaderType[] = [
-  {
-    key: 'layer',
-    header: 'Layer'
-  },
-  {
-    key: 'description',
-    header: 'Acceptable species'
-  },
-  {
-    key: 'minHeight',
-    header: 'Minimum height (m)'
-  }
-];
-
