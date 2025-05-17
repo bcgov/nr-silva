@@ -66,8 +66,7 @@
     @media only screen and (max-width: 1700px) {
       .activity-table-container {
         max-height: 80vh;
-        overflow-y: auto;
-        overflow-x: auto;
+        overflow: auto;
 
         .#{vars.$bcgov-prefix}--data-table-content {
           overflow-x: unset;
