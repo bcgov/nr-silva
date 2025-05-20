@@ -11,13 +11,13 @@ const SpeciesTooltipList: React.FC<{
     <>
       {speciesList
         .filter((species) => species.layer === layerCode)
-        .map((species, index, arr) =>
+        .map((species, index) =>
           species.species.code ? (
             <DefinitionTooltip
               key={`${species.species.code}-${index}`}
               openOnHover
               className="default-cell-definition-tooltip"
-              align="bottom-left"
+              align="right-end"
               definition={
                 `${species.species.description}` +
                 (species.minHeight
