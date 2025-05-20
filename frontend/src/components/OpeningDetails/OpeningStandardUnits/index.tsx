@@ -81,7 +81,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
         const wellSpacedValues = [
           { label: 'Target', value: layer.targetWellspacedTrees },
           { label: 'Min', value: layer.minWellspacedTrees },
-          { label: 'Min preference', value: layer.minPreferredWellspacedTrees },
+          { label: 'Min preferred', value: layer.minPreferredWellspacedTrees },
           { label: 'Min horizontal', value: layer.minHorizontalDistanceWellspacedTrees },
         ];
 
