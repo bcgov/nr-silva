@@ -341,6 +341,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                       <Table
                         className="species-table-container default-zebra-table"
                         aria-label="Species and layer table"
+                        useZebraStyles
                       >
                         <TableHead>
                           <TableRow>
