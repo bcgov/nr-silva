@@ -1,7 +1,7 @@
 import CodeDescriptionDto from "../types/CodeDescriptionType";
 import { DATE_TYPES } from "../types/DateTypes";
 
-export const PLACE_HOLDER = "--"
+export const PLACE_HOLDER = "--" as const;
 
 export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [
   { code: 'AMG', description: 'Amalgamate' },
@@ -31,3 +31,5 @@ export enum UNIQUE_CHARACTERS_UNICODE {
   ORDINAL_INDICATOR = "\u00BA",
   PIPE = "\u007C",
 };
+
+export const NOT_APPLICABLE = "N/A" as const;

@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,21 +16,23 @@ import {
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
-  Layers as LayersIcon,
   Launch as LaunchIcon,
 } from "@carbon/icons-react";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { PLACE_HOLDER } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
-import { pluralize } from "@/utils/StringUtils";
+import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { PLACE_HOLDER } from "@/constants";
+import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpeningTypes";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 
+import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
+import { countUniqueSpeciesByCode, isSingleLayer } from "./utils";
 import "./styles.scss";
 
 type OpeningStandardUnitsProps = {
@@ -43,6 +46,85 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
     enabled: !!openingId,
     refetchOnMount: "always",
   });
+
+
+  const renderCellContent = (
+    rowKey: keyof OpeningDetailsStockingLayerDto | keyof OpeningDetailsStockingDto,
+    stockingStandard: OpeningDetailsStockingDto,
+    layer: OpeningDetailsStockingLayerDto
+  ) => {
+    switch (rowKey) {
+      case 'layers':
+        return `Layer ${codeDescriptionToDisplayText(layer.layer)}`;
+      case 'preferredSpecies':
+        return (
+          stockingStandard.preferredSpecies.filter((species) => species.layer === layer.layer.code).length
+            ? (
+              <div className="verticle-cell-items">
+                <SpeciesTooltipList speciesList={stockingStandard.preferredSpecies} layerCode={layer.layer.code} />
+              </div>
+            )
+            : PLACE_HOLDER
+        );
+
+      case 'acceptableSpecies':
+        return (
+          stockingStandard.acceptableSpecies.filter((species) => species.layer === layer.layer.code).length
+            ? (
+              <div className="verticle-cell-items">
+                <SpeciesTooltipList speciesList={stockingStandard.acceptableSpecies} layerCode={layer.layer.code} />
+              </div>
+            )
+            : PLACE_HOLDER
+        );
+      case 'targetWellspacedTrees':
+        const wellSpacedValues = [
+          { label: 'Target', value: layer.targetWellspacedTrees },
+          { label: 'Min', value: layer.minWellspacedTrees },
+          { label: 'Min preference', value: layer.minPreferredWellspacedTrees },
+          { label: 'Min horizontal', value: layer.minHorizontalDistanceWellspacedTrees },
+        ];
+
+        return (
+          <div className="verticle-cell-items">
+            {
+              wellSpacedValues.map(({ label, value }) => (
+                <span key={label}>{renderLabelValueWithUnit(label, value, '(st/ha)')}</span>
+              ))
+            }
+          </div>
+        );
+      case 'minResidualBasalArea':
+        return (
+          layer.minResidualBasalArea ? `${layer.minResidualBasalArea} (m²/ha)` : PLACE_HOLDER
+        );
+      case 'minPostspacingDensity':
+        const postSpacingValues = [
+          { label: 'Min', value: layer.minPostspacingDensity },
+          { label: 'Max', value: layer.maxPostspacingDensity }
+        ];
+
+        return (
+          <div className="verticle-cell-items">
+            {
+              postSpacingValues.map(({ label, value }) => (
+                <span key={label}>{renderLabelValueWithUnit(label, value, '(st/ha)')}</span>
+              ))
+            }
+          </div>
+        );
+      case 'maxConiferous':
+        return (
+          layer.maxConiferous ? `${layer.maxConiferous} (st/ha)` : PLACE_HOLDER
+        )
+      case 'heightRelativeToComp':
+        return (
+          layer.heightRelativeToComp ? `${layer.heightRelativeToComp} (cm/%)` : PLACE_HOLDER
+        )
+      default:
+        return PLACE_HOLDER;
+    }
+  }
 
   if (openingDetailSsuQuery.isLoading) {
     return <TextAreaSkeleton />;
@@ -239,31 +321,67 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                     </Grid>
                   </Column>
 
-                  {/* Single layer */}
-
+                  {/* Species and Layers */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
                       <CropGrowthIcon size={20} />
                       <h4>
-                        {`${standardUnit.preferredSpecies.length +
-                          standardUnit.acceptableSpecies.length
-                          } species`}
+                        {
+                          `
+                          ${countUniqueSpeciesByCode(standardUnit.preferredSpecies, standardUnit.acceptableSpecies)} species
+                          in a ${isSingleLayer(standardUnit.layers) ? 'single' : 'multi'} layer
+                          `
+                        }
                       </h4>
                     </section>
                   </Column>
 
                   <Column sm={4} md={8} lg={16} className="subsection-col">
-                    <Table
-                      className="default-expandable-table"
-                      aria-label="Preferred species table"
-                    >
-                      <TableHead>
-
-                      </TableHead>
-                      <TableBody>
-
-                      </TableBody>
-                    </Table>
+                    <TableContainer className="default-table-container">
+                      <Table
+                        className="species-table-container default-zebra-table"
+                        aria-label="Species and layer table"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            {
+                              LayerHeaderConfig
+                                .filter((header) => {
+                                  // Omit the layer column if it's single layer
+                                  if (isSingleLayer(standardUnit.layers)) {
+                                    return header.key !== 'layers'
+                                  }
+                                  return true;
+                                }).map((header) => (
+                                  <TableHeader key={header.key}>
+                                    {header.header}
+                                  </TableHeader>
+                                ))
+                            }
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {standardUnit.layers.map((row) => (
+                            <TableRow key={row.layer.code}>
+                              {
+                                LayerHeaderConfig
+                                  .filter((header) => {
+                                    // Omit the layer column if it's single layer
+                                    if (isSingleLayer(standardUnit.layers)) {
+                                      return header.key !== 'layers'
+                                    }
+                                    return true;
+                                  }).map((header) => (
+                                    <TableCell key={header.key} className="species-table-cell">
+                                      {renderCellContent(header.key, standardUnit, row)}
+                                    </TableCell>
+                                  ))
+                              }
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Column>
 
                   <Column sm={4} md={8} lg={16}>
