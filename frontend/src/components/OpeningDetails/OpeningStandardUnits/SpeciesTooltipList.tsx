@@ -17,7 +17,7 @@ const SpeciesTooltipList: React.FC<{
               key={`${species.species.code}-${index}`}
               openOnHover
               className="default-cell-definition-tooltip"
-              align="right-end"
+              align="right-bottom"
               definition={
                 `${species.species.description}` +
                 (species.minHeight
