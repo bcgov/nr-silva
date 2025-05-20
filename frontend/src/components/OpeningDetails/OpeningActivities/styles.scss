@@ -5,7 +5,6 @@
   padding: 0;
   row-gap: 1.5rem;
 
-
   tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
     padding-block: 2rem;
     padding-block-end: 2rem;
@@ -20,40 +19,65 @@
   }
 
   .activity-accordion {
-    .activity-search-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: start;
 
-      .filter-search-button {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-        padding: 0.75rem
+    .activity-table-container {
+      .#{vars.$bcgov-prefix}--table-toolbar {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+      }
+
+      .#{vars.$bcgov-prefix}--data-table-content {
+        overflow-x: unset;
+      }
+
+      .activity-table {
+
+        thead {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          width: calc(100% - 1rem);
+        }
+
+        .#{vars.$bcgov-prefix}--tag {
+          margin: 0;
+        }
+
+        .activity-objective-tooltip-definition {
+          white-space: nowrap;
+
+          .#{vars.$bcgov-prefix}--definition-term {
+            margin-top: 0.25rem;
+          }
+
+          .#{vars.$bcgov-prefix}--definition-tooltip {
+            max-inline-size: unset;
+            min-width: 12rem;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            @include type.type-style('body-compact-02');
+          }
+        }
       }
     }
 
-    .activity-table {
-      .activity-status-tag {
-        padding: 0rem 0.5rem;
-        margin: -0.5rem;
-      }
+    @media only screen and (max-width: 1700px) {
+      .activity-table-container {
+        max-height: 80vh;
+        overflow: auto;
 
-      .activity-objective-tooltip-definition {
-        white-space: nowrap;
-
-        .#{vars.$bcgov-prefix}--definition-term {
-          margin-top: 0.25rem;
+        .#{vars.$bcgov-prefix}--data-table-content {
+          overflow-x: unset;
         }
 
-        .#{vars.$bcgov-prefix}--definition-tooltip {
-          max-inline-size: unset;
-          min-width: 12rem;
-          padding: 1rem;
-          border-radius: 0.25rem;
-          @include type.type-style('body-compact-02');
+        .activity-table {
+          thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+          }
         }
       }
     }

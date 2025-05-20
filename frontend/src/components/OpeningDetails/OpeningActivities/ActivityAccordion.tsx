@@ -244,121 +244,119 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
         className="default-tab-accordion-item"
         title={<AccordionTitle total={totalUnfiltered} />}
       >
-        <div>
-          <TableContainer className="default-table-container">
-            <TableToolbar>
-              <TableToolbarSearch
-                className="default-tab-search-bar"
-                persistent
-                placeholder="Search by keyword"
-                value={searchInput}
-                onChange={handleSearchInputChange}
-                onKeyDown={handleSearchKeyDown}
-                onClear={handleSearchClear}
+
+        <TableContainer className="default-table-container activity-table-container">
+          <TableToolbar className="activity-search-toolbar-container">
+            <TableToolbarSearch
+              className="default-tab-search-bar"
+              persistent
+              placeholder="Search by keyword"
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              onKeyDown={handleSearchKeyDown}
+              onClear={handleSearchClear}
+            />
+            <Button
+              kind="primary"
+              className="default-button-with-loading"
+              renderIcon={Search}
+              onClick={applySearchFilter}
+            >
+              Search
+            </Button>
+          </TableToolbar>
+
+          {/* Table skeleton */}
+          {
+            activityQuery.isLoading
+              ? <TableSkeleton
+                headers={ActivityTableHeaders}
+                showToolbar={false}
+                showHeader={false}
+                rowCount={10}
               />
-              <Button
-                kind="primary"
-                className="default-button-with-loading"
-                renderIcon={Search}
-                onClick={applySearchFilter}
-              >
-                Search
-              </Button>
-            </TableToolbar>
+              : (
+                <Table
+                  className="default-zebra-table activity-table"
+                  aria-label="Activity table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <>
+                        <TableExpandHeader />
+                        {ActivityTableHeaders.map((header) => (
+                          <TableHeader
+                            key={header.key}
+                            isSortable={header.sortable}
+                            isSortHeader={activityFilter.sortField === header.key}
+                            sortDirection={activityFilter.sortDirection}
+                            onClick={() => handleSort(header.key as keyof OpeningDetailsActivitiesActivitiesDto)}
+                          >
+                            {header.header}
+                          </TableHeader>
+                        ))}
+                      </>
+                    </TableRow>
+                  </TableHead>
 
-            {/* Table skeleton */}
-            {
-              activityQuery.isLoading
-                ? <TableSkeleton
-                  headers={ActivityTableHeaders}
-                  showToolbar={false}
-                  showHeader={false}
-                  rowCount={10}
+                  <TableBody>
+                    {activityQuery.data?.content.map((row, index) => {
+                      const isExpanded = expandedRows.includes(row.atuId);
+                      return (
+                        <React.Fragment key={row.atuId}>
+                          <TableExpandRow
+                            aria-label={`Expand row for Activity ID ${row.atuId}`}
+                            isExpanded={isExpanded}
+                            onExpand={() => handleRowExpand(row.atuId)}
+                          >
+                            {ActivityTableHeaders.map((header) => (
+                              <TableCell key={header.key}>
+                                {renderCellContent(
+                                  header.key === "objective1" ? row : row[header.key],
+                                  header.key,
+                                  index === activityQuery.data?.content.length - 1
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableExpandRow>
+                          <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
+                            {isExpanded ? (
+                              <ActivityDetail
+                                activity={row}
+                                openingId={openingId}
+                              />
+                            ) : null}
+                          </TableExpandedRow>
+                        </React.Fragment>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )
+          }
+
+          {
+            activityQuery.data?.page.totalElements === 0
+              ? (
+                <EmptySection
+                  pictogram="UserSearch"
+                  title={`No results for "${activityFilter.filter}"`}
+                  description="Consider adjusting your search term and try again."
+                  whiteLayer
                 />
-                : (
-                  <Table
-                    className="default-zebra-table activity-table"
-                    aria-label="Activity table"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <>
-                          <TableExpandHeader />
-                          {ActivityTableHeaders.map((header) => (
-                            <TableHeader
-                              key={header.key}
-                              isSortable={header.sortable}
-                              isSortHeader={activityFilter.sortField === header.key}
-                              sortDirection={activityFilter.sortDirection}
-                              onClick={() => handleSort(header.key as keyof OpeningDetailsActivitiesActivitiesDto)}
-                            >
-                              {header.header}
-                            </TableHeader>
-                          ))}
-                        </>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {activityQuery.data?.content.map((row, index) => {
-                        const isExpanded = expandedRows.includes(row.atuId);
-                        return (
-                          <React.Fragment key={row.atuId}>
-                            <TableExpandRow
-                              aria-label={`Expand row for Activity ID ${row.atuId}`}
-                              isExpanded={isExpanded}
-                              onExpand={() => handleRowExpand(row.atuId)}
-                            >
-                              {ActivityTableHeaders.map((header) => (
-                                <TableCell key={header.key}>
-                                  {renderCellContent(
-                                    header.key === "objective1" ? row : row[header.key],
-                                    header.key,
-                                    index === activityQuery.data?.content.length - 1
-                                  )}
-                                </TableCell>
-                              ))}
-                            </TableExpandRow>
-                            <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
-                              {isExpanded ? (
-                                <ActivityDetail
-                                  activity={row}
-                                  openingId={openingId}
-                                />
-                              ) : null}
-                            </TableExpandedRow>
-                          </React.Fragment>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                )
-            }
-
-            {
-              activityQuery.data?.page.totalElements === 0
-                ? (
-                  <EmptySection
-                    pictogram="UserSearch"
-                    title={`No results for "${activityFilter.filter}"`}
-                    description="Consider adjusting your search term and try again."
-                    whiteLayer
-                  />
-                )
-                : (
-                  <Pagination
-                    className="default-pagination-white"
-                    page={currPageNumber + 1}
-                    pageSize={currPageSize}
-                    pageSizes={OddPageSizesConfig}
-                    totalItems={activityQuery.data?.page.totalElements}
-                    onChange={handlePagination}
-                  />
-                )
-            }
-          </TableContainer>
-
-        </div>
+              )
+              : (
+                <Pagination
+                  className="default-pagination-white"
+                  page={currPageNumber + 1}
+                  pageSize={currPageSize}
+                  pageSizes={OddPageSizesConfig}
+                  totalItems={activityQuery.data?.page.totalElements}
+                  onChange={handlePagination}
+                />
+              )
+          }
+        </TableContainer>
       </AccordionItem>
     </Accordion>
   );
