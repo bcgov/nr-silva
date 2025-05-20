@@ -1,6 +1,5 @@
 // Centralized API configuration file
-import { env } from '../env';
-import { MapKindType } from "@/types/MapLayer";
+import { env } from '@/env';
 
 const resolveQueryString = (queryString: string | null) => {
   return queryString ? `?${queryString}` : '';
