@@ -4,8 +4,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +13,8 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.XXssConfig;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * This class holds the configuration for HTTP headers security.
@@ -45,18 +46,33 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
 
   @Override
   public void customize(HeadersConfigurer<HttpSecurity> headerSpec) {
+    String policyDirectives;
 
-    String policyDirectives = String.join("; ",
-        "default-src 'none'",
+    if ("local".equalsIgnoreCase(environment)) {
+      policyDirectives = String.join("; ",
+        "default-src 'self'",
         "connect-src 'self' " + selfUri,
-        "script-src 'strict-dynamic' 'nonce-" + UUID.randomUUID()
-        + "' " + ("local".equalsIgnoreCase(environment) ? "http: " : StringUtils.EMPTY) + "https:",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data:",
         "object-src 'none'",
         "base-uri 'none'",
         "frame-ancestors 'none'",
         "require-trusted-types-for 'script'",
         "report-uri " + selfUri
-    );
+      );
+    } else {
+      policyDirectives = String.join("; ",
+        "default-src 'none'",
+        "connect-src 'self' " + selfUri,
+        "script-src 'strict-dynamic' 'nonce-" + UUID.randomUUID() + "' https:",
+        "object-src 'none'",
+        "base-uri 'none'",
+        "frame-ancestors 'none'",
+        "require-trusted-types-for 'script'",
+        "report-uri " + selfUri
+      );
+    }
 
     // Customize the HTTP headers.
     headerSpec
