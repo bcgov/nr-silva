@@ -8,8 +8,7 @@ import {
 } from "react-leaflet";
 import { FeatureCollection } from "geojson";
 
-import { MapKindType } from "@/types/MapLayer";
-import { MapLayer } from "@/types/MapLayer";
+import { MapKindType, MapLayer } from "@/types/MapLayer";
 import { allLayers } from "./constants";
 import { getMapQueries, getUserLocation } from "./fetcher";
 import "./styles.scss";
@@ -93,7 +92,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         .map((id) => Number(id));
 
       if (errorIds.length > 0) {
-        setOpeningPolygonNotFound;
+        setOpeningPolygonNotFound(true, errorIds[0]);
       }
     }
   }, [mapQueries.map((query) => query.status).join(","), kind, openingIds]);
@@ -152,7 +151,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         />
 
         {/* Default layers */}
-        {allLayers.length && (
+        {allLayers.length > 0 && (
           <LayersControl position="topright">
             {allLayers.map((layer: MapLayer) => (
               <LayersControl.Overlay key={layer.name} name={layer.name}>
