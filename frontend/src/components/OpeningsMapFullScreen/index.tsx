@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import { useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -66,15 +66,6 @@ const OpeningsMapFullScreen: React.FC<OpeningsMapFullScreenProps> = ({
         createInnerSpanWithIcon(
           createAnchorButton(container, fullscreen, onToggle)
         );
-
-        /*
-        L.DomEvent.on(button, "click", L.DomEvent.stop).on(
-          button,
-          "click",
-          () => {
-            onToggle();
-          }
-        );*/
 
         return container;
       },
