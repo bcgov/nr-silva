@@ -40,9 +40,8 @@
           width: calc(100% - 1rem);
         }
 
-        .activity-status-tag {
-          padding: 0rem 0.5rem;
-          margin: -0.5rem;
+        .#{vars.$bcgov-prefix}--tag {
+          margin: 0;
         }
 
         .activity-objective-tooltip-definition {
