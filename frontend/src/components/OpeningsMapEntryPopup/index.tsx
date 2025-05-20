@@ -15,7 +15,9 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
     <div className="map-popup-container">
       <p>{`Opening ID: ${openingId}`}</p>
       {data &&
-        Object.entries(data).map(([key, value]) => <p>{`${key}: ${value}`}</p>)}
+        Object.entries(data).map(([key, value]) => (
+          <p key={key}>{`${key}: ${value}`}</p>
+        ))}
     </div>
   );
 };
