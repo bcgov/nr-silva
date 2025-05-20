@@ -8,7 +8,6 @@ import {
   getCenterOfFeatureCollection,
 } from "@/types/MapLayer";
 import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
-import L from "leaflet";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
@@ -68,6 +67,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       {zoom > 10 &&
         features.filter(Boolean).map((featureCollection, index) => (
           <GeoJSON
+            data-testid="geojson"
             data={featureCollection}
             key={geoKey(featureCollection, index)}
             style={getStyleForFeature}
@@ -76,6 +76,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
               ?.filter((feature) => feature.geometry)
               .map((feature, index) => (
                 <Popup
+                  data-testid="popup"
                   key={`popup-${index}`}
                   maxWidth={700}
                   autoPan={false}
@@ -92,6 +93,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       {zoom <= 10 &&
         features.filter(Boolean).map((featureCollection, index) => (
           <Marker
+            data-testid="marker"
             key={geoKey(featureCollection, index)}
             position={getCenterOfFeatureCollection(featureCollection)}
           >
@@ -99,6 +101,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
               ?.filter((feature) => feature.geometry)
               .map((feature, index) => (
                 <Popup
+                  data-testid="popup"
                   key={`popup-${index}`}
                   maxWidth={700}
                   autoPan={false}
