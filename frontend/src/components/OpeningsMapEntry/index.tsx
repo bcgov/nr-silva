@@ -77,7 +77,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
               .map((feature, index) => (
                 <Popup
                   data-testid="popup"
-                  key={`popup-${index}`}
+                  key={`popup-${geoKey(featureCollection, index)}`}
                   maxWidth={700}
                   autoPan={false}
                   position={getPopupCenter(feature.geometry)}
@@ -102,7 +102,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
               .map((feature, index) => (
                 <Popup
                   data-testid="popup"
-                  key={`popup-${index}`}
+                  key={`popup-${geoKey(featureCollection, index)}`}
                   maxWidth={700}
                   autoPan={false}
                   position={getPopupCenter(feature.geometry)}
