@@ -48,7 +48,7 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
   public void customize(HeadersConfigurer<HttpSecurity> headerSpec) {
     String policyDirectives;
 
-    if ("local".equalsIgnoreCase(environment)) {
+    if (SecurityEnvironmentUtils.isLocalEnvironment(environment)) {
       policyDirectives = String.join("; ",
         "default-src 'self'",
         "connect-src 'self' " + selfUri,

@@ -36,7 +36,7 @@ public class ApiAuthorizationCustomizer implements
         .permitAll();
 
     // Only allow OpenAPI and Swagger UI in the local environment
-    if ("local".equalsIgnoreCase(environment)) {
+    if (SecurityEnvironmentUtils.isLocalEnvironment(environment)) {
       authorize
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
         .permitAll();
