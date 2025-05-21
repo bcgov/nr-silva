@@ -1,4 +1,4 @@
-import { BaseMapLayer, MapLayer } from "../../types/MapLayer";
+import { BaseMapLayer, MapLayer, MapPositionType } from "@/types/MapLayer";
 
 // Default layers
 export const allLayers: MapLayer[] = [
@@ -232,6 +232,30 @@ export const allLayers: MapLayer[] = [
     styles: [{name: '7624', title: 'Protected_Lands_Access_Restrictions_Centre_Points_Provincial_Parks_Eco_Reserves_etc'}],
     catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/protected-lands-access-restrictions-points',
     getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_PARKS.PA_PRTCTD_LND_FACILITIES_SP/ows?service=WMS&request=GetCapabilities'
+  },
+  {
+    position: 22,
+    name: 'Forest Tenure Cutblock Polygons (FTA 4.0)',
+    format: 'image/png',
+    layers: 'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW',
+    transparent: true,
+    styles: [
+      {name: '2840_2841', title: 'All_Forest_Cut_Blocks_FTEN'},
+      {name: '2845', title: 'Pending_Forest_Cut_Blocks_FTEN_Colour_Themed'},
+      {name: '2842_2843', title: 'Active_Forest_Cut_Blocks_FTEN'},
+      {name: '2847', title: 'Retired_Forest_Cut_Blocks_FTEN_Colour_Themed'},
+      {name: '2841', title: 'All_Forest_Cut_Blocks_FTEN_Colour_Themed'},
+      {name: '2843', title: 'Active_Forest_Cut_Blocks_FTEN_Colour_Themed'},
+      {name: '5217', title: 'Cut_Blocks_SP_Exempt_FTEN'},
+      {name: '2844_2845', title: 'Pending_Forest_Cut_Blocks_FTEN'},
+      {name: '2844', title: 'Pending_Forest_Cut_Blocks_FTEN_Outlined'},
+      {name: '2846_2847', title: 'Retired_Forest_Cut_Blocks_FTEN'},
+      {name: '2840', title: 'All_Forest_Cut_Blocks_FTEN_Outlined'},
+      {name: '2842', title: 'Active_Forest_Cut_Blocks_FTEN_Outlined'},
+      {name: '2846', title: 'Retired_Forest_Cut_Blocks_FTEN_Outlined'}
+    ],
+    catalogueUrl: 'https://catalogue.data.gov.bc.ca/dataset/protected-lands-access-restrictions-points',
+    getCapabilitiesUrl: 'https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW/ows?service=WMS&request=GetCapabilities'
   }
 ];
 
@@ -268,3 +292,9 @@ export const allBaseMaps: BaseMapLayer[] = [
     default: false
   }
 ];
+
+export const defaultLocation: MapPositionType = {
+  lat: 51.339506220208065,
+  lng: -121.40991210937501,
+  zoom: 6,
+};

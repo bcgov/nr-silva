@@ -1,0 +1,8 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.leaflet-marker-pane {
+  color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
+  background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
+  fill: var(--#{vars.$bcgov-prefix}-button-primary) !important;
+}
