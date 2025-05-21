@@ -33,9 +33,7 @@ After generating types, you can import and use them in your code.
 For example, to use the `CodeDescriptionDto` type:
 
 ```typescript
-import { components } from "@/types/OpenApiTypes";
-
-type CodeDescriptionDto = components["schemas"]["CodeDescriptionDto"];
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 ```
 
 You can now use `CodeDescriptionDto` for type-safe API responses or variables in your code.

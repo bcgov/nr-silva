@@ -39,7 +39,7 @@
     "test:build": "vitest watch",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "generate:openapi": "npx openapi-typescript -t true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts"
+    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts"
   },
   "browserslist": {
     "production": [

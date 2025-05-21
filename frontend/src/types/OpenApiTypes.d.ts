@@ -457,10 +457,11 @@ export type components = {
             stocking?: components["schemas"]["OpeningDetailsStockingDetailsDto"];
             preferredSpecies?: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
             acceptableSpecies?: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
-            layer?: components["schemas"]["OpeningDetailsStockingLayerDto"];
+            layers?: components["schemas"]["OpeningDetailsStockingLayerDto"][];
             comments?: components["schemas"]["CommentDto"][];
         };
         OpeningDetailsStockingLayerDto: {
+            layer?: components["schemas"]["CodeDescriptionDto"];
             /** Format: int64 */
             minWellspacedTrees?: number;
             /** Format: int64 */
@@ -481,8 +482,9 @@ export type components = {
             heightRelativeToComp?: number;
         };
         OpeningDetailsStockingSpeciesDto: {
+            layer?: string;
             species?: components["schemas"]["CodeDescriptionDto"];
-            /** Format: int64 */
+            /** Format: float */
             minHeight?: number;
         };
         ForestClientLocationDto: {
@@ -713,6 +715,46 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type OpeningsPerYearDto = components['schemas']['OpeningsPerYearDto'];
+export type CodeDescriptionDto = components['schemas']['CodeDescriptionDto'];
+export type CommentDto = components['schemas']['CommentDto'];
+export type ForestClientDto = components['schemas']['ForestClientDto'];
+export type OpeningDetailsOverviewDto = components['schemas']['OpeningDetailsOverviewDto'];
+export type OpeningDetailsOverviewMilestoneDto = components['schemas']['OpeningDetailsOverviewMilestoneDto'];
+export type OpeningDetailsOverviewOpeningDto = components['schemas']['OpeningDetailsOverviewOpeningDto'];
+export type OpeningDetailsTombstoneDto = components['schemas']['OpeningDetailsTombstoneDto'];
+export type OpeningDetailsTombstoneOverviewDto = components['schemas']['OpeningDetailsTombstoneOverviewDto'];
+export type Pageable = components['schemas']['Pageable'];
+export type OpeningDetailsTenureDto = components['schemas']['OpeningDetailsTenureDto'];
+export type OpeningDetailsTenuresDto = components['schemas']['OpeningDetailsTenuresDto'];
+export type SimplePageDto = components['schemas']['SimplePageDto'];
+export type OpeningDetailsBecDto = components['schemas']['OpeningDetailsBecDto'];
+export type OpeningDetailsStockingDetailsDto = components['schemas']['OpeningDetailsStockingDetailsDto'];
+export type OpeningDetailsStockingDto = components['schemas']['OpeningDetailsStockingDto'];
+export type OpeningDetailsStockingLayerDto = components['schemas']['OpeningDetailsStockingLayerDto'];
+export type OpeningDetailsStockingSpeciesDto = components['schemas']['OpeningDetailsStockingSpeciesDto'];
+export type ForestClientLocationDto = components['schemas']['ForestClientLocationDto'];
+export type OpeningDetailsActivitiesDisturbanceDto = components['schemas']['OpeningDetailsActivitiesDisturbanceDto'];
+export type PageMetadata = components['schemas']['PageMetadata'];
+export type PagedModelOpeningDetailsActivitiesDisturbanceDto = components['schemas']['PagedModelOpeningDetailsActivitiesDisturbanceDto'];
+export type OpeningDetailsActivitiesActivitiesDto = components['schemas']['OpeningDetailsActivitiesActivitiesDto'];
+export type PagedModelOpeningDetailsActivitiesActivitiesDto = components['schemas']['PagedModelOpeningDetailsActivitiesActivitiesDto'];
+export type OpeningActivityBaseDto = components['schemas']['OpeningActivityBaseDto'];
+export type OpeningSearchResponseDto = components['schemas']['OpeningSearchResponseDto'];
+export type PagedModelOpeningSearchResponseDto = components['schemas']['PagedModelOpeningSearchResponseDto'];
+export type Crs = components['schemas']['Crs'];
+export type Feature = components['schemas']['Feature'];
+export type FeatureCollection = components['schemas']['FeatureCollection'];
+export type GeoJsonObject = components['schemas']['GeoJsonObject'];
+export type GeometryCollection = components['schemas']['GeometryCollection'];
+export type LineString = components['schemas']['LineString'];
+export type LngLatAlt = components['schemas']['LngLatAlt'];
+export type MultiLineString = components['schemas']['MultiLineString'];
+export type MultiPoint = components['schemas']['MultiPoint'];
+export type MultiPolygon = components['schemas']['MultiPolygon'];
+export type Point = components['schemas']['Point'];
+export type Polygon = components['schemas']['Polygon'];
+export type ForestClientAutocompleteResultDto = components['schemas']['ForestClientAutocompleteResultDto'];
 export type $defs = Record<string, never>;
 export interface operations {
     recordUserViewedOpening: {
