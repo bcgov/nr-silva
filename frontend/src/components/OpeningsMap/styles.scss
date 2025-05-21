@@ -45,8 +45,8 @@
 }
 
 .leaflet-control-layers-toggle {  
-  mask: url('/src/assets/svg/map-layers.svg') no-repeat center;
-  -webkit-mask: url('/src/assets/svg/map-layers.svg') no-repeat center;
+  mask: url('/map-layers.svg') no-repeat center;
+  -webkit-mask: url('/map-layers.svg') no-repeat center;
   background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
   width: 30px;
   height: 30px;

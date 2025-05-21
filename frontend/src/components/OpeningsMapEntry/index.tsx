@@ -28,7 +28,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
   });
 
   const markerIcon = new L.Icon({
-    iconUrl: "/src/assets/svg/marker.svg",
+    iconUrl: "/marker.svg",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
