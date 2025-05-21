@@ -57,10 +57,18 @@
       }
 
       .species-table-container {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1.5rem;
-        margin-left: 1.75rem;
+
+        .species-table-cell {
+          padding: 1rem;
+          vertical-align: top;
+
+          .verticle-cell-items {
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+            white-space: nowrap;
+          }
+        }
       }
 
       .subsection-col {

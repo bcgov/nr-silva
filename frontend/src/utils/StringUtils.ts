@@ -1,3 +1,5 @@
+import { NOT_APPLICABLE } from "@/constants";
+
 /**
  * Converts a string to kebab-case format by replacing spaces with hyphens
  * and converting to lowercase.
@@ -18,3 +20,21 @@ export const toKebabCase = (text: string): string => {
  */
 export const pluralize = (word: string, count?: number): string =>
     `${word}${count === 1 ? '' : 's'}`;
+
+
+/**
+ * Formats a label and value pair with a unit, returning a display string.
+ *
+ * @param label - The label to display (e.g., "Target", "Min").
+ * @param value - The numeric or string value to display. If undefined or falsy, a placeholder is used.
+ * @param unit - The unit to append after the value (e.g., "(st/ha)", "(m²/ha)").
+ * @returns A formatted string like "Target: 100 (st/ha)" or "Min: —" if the value is missing.
+ */
+export const renderLabelValueWithUnit = (
+    label: string,
+    value: string | number | null | undefined,
+    unit: string
+): string => {
+    const display = value ? `${value} ${unit}` : NOT_APPLICABLE;
+    return `${label}: ${display}`;
+};

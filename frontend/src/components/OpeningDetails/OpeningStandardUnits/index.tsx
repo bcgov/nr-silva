@@ -1,96 +1,187 @@
 import React from "react";
 import {
-  Accordion, AccordionItem, Column,
-  Grid, Table, TableBody, TableCell,
-  TableHead, TableHeader, TableRow,
-  TextAreaSkeleton
+  Accordion,
+  AccordionItem,
+  Column,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TextAreaSkeleton,
 } from "@carbon/react";
 import {
   CropGrowth as CropGrowthIcon,
   Security as SecurityIcon,
-  Layers as LayersIcon,
-  Launch as LaunchIcon
+  Launch as LaunchIcon,
 } from "@carbon/icons-react";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { PLACE_HOLDER } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
-import { pluralize } from "@/utils/StringUtils";
+import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { PLACE_HOLDER } from "@/constants";
+import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpeningTypes";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
+import Comments from "../../Comments";
 
-import { AcceptableSpeciesHeaders, PreferredSpeciesHeaders } from "./constants";
-import './styles.scss';
-
+import SpeciesTooltipList from "./SpeciesTooltipList";
+import { LayerHeaderConfig } from "./constants";
+import { countUniqueSpeciesByCode, isSingleLayer } from "./utils";
+import "./styles.scss";
 
 type OpeningStandardUnitsProps = {
-  openingId: number
-}
+  openingId: number;
+};
 
 const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
-
   const openingDetailSsuQuery = useQuery({
-    queryKey: ['openings', openingId, 'ssu'],
+    queryKey: ["openings", openingId, "ssu"],
     queryFn: () => fetchOpeningSsu(Number(openingId)),
     enabled: !!openingId,
-    refetchOnMount: 'always'
+    refetchOnMount: "always",
   });
 
+
+  const renderCellContent = (
+    rowKey: keyof OpeningDetailsStockingLayerDto | keyof OpeningDetailsStockingDto,
+    stockingStandard: OpeningDetailsStockingDto,
+    layer: OpeningDetailsStockingLayerDto
+  ) => {
+    switch (rowKey) {
+      case 'layers':
+        return `Layer ${codeDescriptionToDisplayText(layer.layer)}`;
+      case 'preferredSpecies':
+        return (
+          stockingStandard.preferredSpecies.filter((species) => species.layer === layer.layer.code).length
+            ? (
+              <div className="verticle-cell-items">
+                <SpeciesTooltipList speciesList={stockingStandard.preferredSpecies} layerCode={layer.layer.code} />
+              </div>
+            )
+            : PLACE_HOLDER
+        );
+
+      case 'acceptableSpecies':
+        return (
+          stockingStandard.acceptableSpecies.filter((species) => species.layer === layer.layer.code).length
+            ? (
+              <div className="verticle-cell-items">
+                <SpeciesTooltipList speciesList={stockingStandard.acceptableSpecies} layerCode={layer.layer.code} />
+              </div>
+            )
+            : PLACE_HOLDER
+        );
+      case 'targetWellspacedTrees':
+        const wellSpacedValues = [
+          { label: 'Target', value: layer.targetWellspacedTrees },
+          { label: 'Min', value: layer.minWellspacedTrees },
+          { label: 'Min preferred', value: layer.minPreferredWellspacedTrees },
+          { label: 'Min horizontal', value: layer.minHorizontalDistanceWellspacedTrees },
+        ];
+
+        return (
+          <div className="verticle-cell-items">
+            {
+              wellSpacedValues.map(({ label, value }) => (
+                <span key={label}>{renderLabelValueWithUnit(label, value, '(st/ha)')}</span>
+              ))
+            }
+          </div>
+        );
+      case 'minResidualBasalArea':
+        return (
+          layer.minResidualBasalArea ? `${layer.minResidualBasalArea} (m²/ha)` : PLACE_HOLDER
+        );
+      case 'minPostspacingDensity':
+        const postSpacingValues = [
+          { label: 'Min', value: layer.minPostspacingDensity },
+          { label: 'Max', value: layer.maxPostspacingDensity }
+        ];
+
+        return (
+          <div className="verticle-cell-items">
+            {
+              postSpacingValues.map(({ label, value }) => (
+                <span key={label}>{renderLabelValueWithUnit(label, value, '(st/ha)')}</span>
+              ))
+            }
+          </div>
+        );
+      case 'maxConiferous':
+        return (
+          layer.maxConiferous ? `${layer.maxConiferous} (st/ha)` : PLACE_HOLDER
+        )
+      case 'heightRelativeToComp':
+        return (
+          layer.heightRelativeToComp ? `${layer.heightRelativeToComp} (cm/%)` : PLACE_HOLDER
+        )
+      default:
+        return PLACE_HOLDER;
+    }
+  }
+
   if (openingDetailSsuQuery.isLoading) {
-    return (
-      <TextAreaSkeleton />
-    )
+    return <TextAreaSkeleton />;
   }
 
   return (
     <Grid className="opening-standard-units-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <h3 className="default-tab-content-title">
-          {
-            `${openingDetailSsuQuery.data?.length
-              ? openingDetailSsuQuery.data.length
-              : 'No'
+          {`${openingDetailSsuQuery.data?.length
+            ? openingDetailSsuQuery.data.length
+            : "No"
             }
-            ${pluralize('standard unit', openingDetailSsuQuery.data?.length)}
-            in the opening area`
-          }
+            ${pluralize("standard unit", openingDetailSsuQuery.data?.length)}
+            in the opening area`}
         </h3>
       </Column>
 
       {
         openingDetailSsuQuery.data?.map((standardUnit, index) => (
-          <Column sm={4} md={8} lg={16} className="accordion-col" key={`standard-unit-col-${index}`}>
-            <Accordion
-              className="default-tab-accordion"
-              align="end"
-              size="lg"
-            >
+          <Column
+            sm={4}
+            md={8}
+            lg={16}
+            className="accordion-col"
+            key={`standard-unit-col-${index}`}
+          >
+            <Accordion className="default-tab-accordion" align="end" size="lg">
               <AccordionItem
                 className="default-tab-accordion-item"
                 title={<AcoordionTitle standardUnit={standardUnit} />}
               >
                 <Grid className="standard-unit-content-grid">
-
                   <Column sm={4} md={8} lg={16}>
                     <Grid className="standard-unit-content-subgrid">
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Net area to be reforested (ha)" isNumber showSkeleton={openingDetailSsuQuery.isLoading}>
+                        <CardItem
+                          label="Net area to be reforested (ha)"
+                          isNumber
+                          showSkeleton={openingDetailSsuQuery.isLoading}
+                        >
                           {standardUnit.stocking.netArea}
                         </CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
-                        <CardItem label="Max soil allowable disturbance (%)" isNumber>
+                        <CardItem
+                          label="Max soil allowable disturbance (%)"
+                          isNumber
+                        >
                           {standardUnit.stocking.soilDisturbancePercent}
                         </CardItem>
                       </Column>
 
                       <Column sm={4} md={8} lg={16}>
                         <Grid className="standard-unit-bec-content-grid">
-
                           <Column sm={4} md={8} lg={16}>
                             <section className="section-title-without-icon">
                               <h4>BEC Information</h4>
@@ -140,7 +231,6 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                                   {standardUnit.stocking.bec.becSeral}
                                 </CardItem>
                               </Column>
-
                             </Grid>
                           </Column>
                         </Grid>
@@ -148,21 +238,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
                       <Column sm={4} md={8} lg={16}>
                         <CardItem label="Comment">
-                          {
-                            (standardUnit.comments ?? []).length > 0
-                              ? (
-                                <ul className="comment-list">
-                                  {standardUnit.comments.map((comment, index) =>
-                                    comment.commentText ? (
-                                      <li key={index}>
-                                        {comment.commentText}
-                                      </li>
-                                    ) : null
-                                  )}
-                                </ul>
-                              )
-                              : null
-                          }
+                          <Comments comments={standardUnit.comments} />
                         </CardItem>
                       </Column>
                     </Grid>
@@ -176,120 +252,40 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                     <CardTitle title="Stocking standard" />
                     <div className="stocking-standard-links">
                       {/* No standard unit id or FSP id */}
-                      {
-                        (!standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
-                          ? 'Manual stocking requirement'
-                          : null
-                      }
+                      {!standardUnit.stocking.ssid && !standardUnit.stocking.fspId
+                        ? "Manual stocking requirement"
+                        : null}
                       {/* Has standard unit id but no FSP id */}
-                      {
-                        (standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
-                          ? (
-                            <>
-                              {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
-                              <VerticalDivider />
-                              <span>Ministry default</span>
-                            </>
-                          )
-                          : null
-                      }
+                      {standardUnit.stocking.ssid &&
+                        !standardUnit.stocking.fspId ? (
+                        <>
+                          {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                          <VerticalDivider />
+                          <span>Ministry default</span>
+                        </>
+                      ) : null}
                       {/* Has standard unit id AND FSP id */}
-                      {
-                        (standardUnit.stocking.ssid && standardUnit.stocking.fspId)
-                          ? (
-                            <>
-                              {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
-                              <VerticalDivider />
-                              {
-                                <a
-                                  className="fsp-link"
-                                  href={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {`FSP ID ${standardUnit.stocking.fspId}`} <LaunchIcon />
-                                </a>
-                              }
-                            </>
-                          )
-                          : null
-                      }
+                      {standardUnit.stocking.ssid &&
+                        standardUnit.stocking.fspId ? (
+                        <>
+                          {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                          <VerticalDivider />
+                          {
+                            <a
+                              className="fsp-link"
+                              href={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {`FSP ID ${standardUnit.stocking.fspId}`}{" "}
+                              <LaunchIcon />
+                            </a>
+                          }
+                        </>
+                      ) : null}
                     </div>
                   </Column>
 
-                  <Column sm={4} md={8} lg={16}>
-                    <section className="section-title-with-icon">
-                      <CropGrowthIcon size={20} />
-                      <h4>
-                        {`${standardUnit.preferredSpecies.length + standardUnit.acceptableSpecies.length} species`}
-                      </h4>
-                    </section>
-                  </Column>
-
-                  <Column sm={4} md={8} lg={10} xlg={8}>
-                    <div className="species-table-container">
-                      {/* Preferred Species */}
-                      <Table
-                        className="default-expandable-table"
-                        aria-label="Preferred species table"
-
-                      >
-                        <TableHead>
-                          <TableRow>
-                            {
-                              PreferredSpeciesHeaders.map((header) => (
-                                <TableHeader key={header.key}>{header.header}</TableHeader>
-                              ))
-                            }
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {
-                            standardUnit.preferredSpecies.map((row) => (
-                              <TableRow key={row.species.code}>
-                                <TableCell>
-                                  {codeDescriptionToDisplayText(row.species)}
-                                </TableCell>
-                                <TableCell>
-                                  {row.minHeight ?? PLACE_HOLDER}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          }
-                        </TableBody>
-                      </Table>
-                      {/* Acceptable Species */}
-                      <Table
-                        className="default-zebra-table-with-border"
-                        aria-label="Recent openings table"
-                        useZebraStyles
-                      >
-                        <TableHead>
-                          <TableRow>
-                            {
-                              AcceptableSpeciesHeaders.map((header) => (
-                                <TableHeader key={header.key}>{header.header}</TableHeader>
-                              ))
-                            }
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {
-                            standardUnit.acceptableSpecies.map((row) => (
-                              <TableRow key={row.species.code}>
-                                <TableCell>
-                                  {codeDescriptionToDisplayText(row.species)}
-                                </TableCell>
-                                <TableCell>
-                                  {row.minHeight ?? PLACE_HOLDER}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          }
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </Column>
                   {/* Regen obligation */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
@@ -317,62 +313,69 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                       </Column>
                     </Grid>
                   </Column>
-                  {/* Single layer */}
+
+                  {/* Species and Layers */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
-                      <LayersIcon size={20} />
-                      <h4>Single layer</h4>
+                      <CropGrowthIcon size={20} />
+                      <h4>
+                        {
+                          `
+                          ${countUniqueSpeciesByCode(standardUnit.preferredSpecies, standardUnit.acceptableSpecies)} species
+                          in a ${isSingleLayer(standardUnit.layers) ? 'single' : 'multi'} layer
+                          `
+                        }
+                      </h4>
                     </section>
                   </Column>
 
                   <Column sm={4} md={8} lg={16} className="subsection-col">
-                    <Grid className="standard-unit-content-subgrid">
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum well-spaced trees" isNumber>
-                          {standardUnit.layer?.minWellspacedTrees}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum preferred well-spaced trees" isNumber>
-                          {standardUnit.layer?.minPreferredWellspacedTrees}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum horizontal distance well-spaced trees (m)" isNumber>
-                          {standardUnit.layer?.minHorizontalDistanceWellspacedTrees}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Target well-spaced trees (ha)" isNumber>
-                          {standardUnit.layer?.targetWellspacedTrees}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum residual basal area (m²/ha)" isNumber>
-                          {standardUnit.layer?.minResidualBasalArea}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Minimum post-spacing density (st/ha)" isNumber>
-                          {standardUnit.layer?.minPostspacingDensity}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum post-spacing density (st/ha)" isNumber>
-                          {standardUnit.layer?.maxPostspacingDensity}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Maximum Coniferous (st/ha)" isNumber>
-                          {standardUnit.layer?.maxConiferous}
-                        </CardItem>
-                      </Column>
-                      <Column sm={4} md={4} lg={4}>
-                        <CardItem label="Height relative to comp (cm/%)" isNumber>
-                          {standardUnit.layer?.heightRelativeToComp}
-                        </CardItem>
-                      </Column>
-                    </Grid>
+                    <TableContainer className="default-table-container">
+                      <Table
+                        className="species-table-container default-zebra-table"
+                        aria-label="Species and layer table"
+                        useZebraStyles
+                      >
+                        <TableHead>
+                          <TableRow>
+                            {
+                              LayerHeaderConfig
+                                .filter((header) => {
+                                  // Omit the layer column if it's single layer
+                                  if (isSingleLayer(standardUnit.layers)) {
+                                    return header.key !== 'layers'
+                                  }
+                                  return true;
+                                }).map((header) => (
+                                  <TableHeader key={header.key}>
+                                    {header.header}
+                                  </TableHeader>
+                                ))
+                            }
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {standardUnit.layers.map((row) => (
+                            <TableRow key={row.layer.code}>
+                              {
+                                LayerHeaderConfig
+                                  .filter((header) => {
+                                    // Omit the layer column if it's single layer
+                                    if (isSingleLayer(standardUnit.layers)) {
+                                      return header.key !== 'layers'
+                                    }
+                                    return true;
+                                  }).map((header) => (
+                                    <TableCell key={header.key} className="species-table-cell">
+                                      {renderCellContent(header.key, standardUnit, row)}
+                                    </TableCell>
+                                  ))
+                              }
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Column>
 
                   <Column sm={4} md={8} lg={16}>
@@ -384,11 +387,9 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
               </AccordionItem>
             </Accordion>
           </Column>
-        ))
-      }
-    </Grid >
+        ))}
+    </Grid>
   );
 };
-
 
 export default OpeningStandardUnits;
