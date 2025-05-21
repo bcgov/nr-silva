@@ -58,7 +58,6 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
         "object-src 'none'",
         "base-uri 'none'",
         "frame-ancestors 'none'",
-        "require-trusted-types-for 'script'",
         "report-uri " + selfUri
       );
     } else {
