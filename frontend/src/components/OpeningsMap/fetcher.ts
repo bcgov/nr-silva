@@ -2,6 +2,7 @@ import { useQueries } from "@tanstack/react-query";
 import { MapKindType, MapPositionType } from "@/types/MapLayer";
 import { THREE_HALF_HOURS, THREE_HOURS } from "@/constants/TimeUnits";
 import { fetchMapPoligons } from "@/services/OpeningMapService";
+import {  defaultLocation } from "./constants";
 
 const queries = (openingIds: number[], kind: MapKindType) =>
   openingIds.map((id) => ({
@@ -33,11 +34,7 @@ export const getUserLocation = async (): Promise<MapPositionType> => {
             });
           },
           () => {
-            resolve({
-              lat: 51.339506220208065,
-              lng: -121.40991210937501,
-              zoom: 6,
-            });
+            resolve(defaultLocation);
           },
           options
         );
@@ -56,9 +53,5 @@ export const getUserLocation = async (): Promise<MapPositionType> => {
   }
 
   // Fallback in case geolocation is not available
-  return Promise.resolve({
-    lat: 51.339506220208065,
-    lng: -121.40991210937501,
-    zoom: 6,
-  });
+  return Promise.resolve(defaultLocation);
 };

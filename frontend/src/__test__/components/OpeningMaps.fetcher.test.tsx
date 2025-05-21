@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import * as fetcher from "@/components/OpeningsMap/fetcher";
 import { MapKindType } from "@/types/MapLayer";
+import { defaultLocation } from "@/components/OpeningsMap/constants";
 
 // Mock fetchMapPoligons for getMapQueries
 vi.mock("@/services/OpeningMapService", () => ({
@@ -49,11 +50,7 @@ describe("getUserLocation", () => {
     // @ts-ignore
     global.navigator.geolocation = undefined;
     const loc = await fetcher.getUserLocation();
-    expect(loc).toEqual({
-      lat: 51.339506220208065,
-      lng: -121.40991210937501,
-      zoom: 6,
-    });
+    expect(loc).toEqual(defaultLocation);
   });
 
   it("returns current location if geolocation and permission granted", async () => {
@@ -93,11 +90,7 @@ describe("getUserLocation", () => {
       },
     };
     const loc = await fetcher.getUserLocation();
-    expect(loc).toEqual({
-      lat: 51.339506220208065,
-      lng: -121.40991210937501,
-      zoom: 6,
-    });
+    expect(loc).toEqual(defaultLocation);
   });
 
   it("returns fallback if permission is denied", async () => {
@@ -111,10 +104,6 @@ describe("getUserLocation", () => {
       getCurrentPosition: vi.fn(),
     };
     const loc = await fetcher.getUserLocation();
-    expect(loc).toEqual({
-      lat: 51.339506220208065,
-      lng: -121.40991210937501,
-      zoom: 6,
-    });
+    expect(loc).toEqual(defaultLocation);
   });
 });

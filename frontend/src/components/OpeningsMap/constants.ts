@@ -1,4 +1,4 @@
-import { BaseMapLayer, MapLayer } from "../../types/MapLayer";
+import { BaseMapLayer, MapLayer, MapPositionType } from "@/types/MapLayer";
 
 // Default layers
 export const allLayers: MapLayer[] = [
@@ -292,3 +292,9 @@ export const allBaseMaps: BaseMapLayer[] = [
     default: false
   }
 ];
+
+export const defaultLocation: MapPositionType = {
+  lat: 51.339506220208065,
+  lng: -121.40991210937501,
+  zoom: 6,
+};
