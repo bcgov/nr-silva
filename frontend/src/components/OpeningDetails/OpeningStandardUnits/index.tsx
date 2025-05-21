@@ -29,6 +29,7 @@ import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
+import Comments from "../../Comments";
 
 import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
@@ -237,15 +238,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
                       <Column sm={4} md={8} lg={16}>
                         <CardItem label="Comment">
-                          {(standardUnit.comments ?? []).length > 0 ? (
-                            <ul className="comment-list">
-                              {standardUnit.comments.map((comment, index) =>
-                                comment.commentText ? (
-                                  <li key={index}>{comment.commentText}</li>
-                                ) : null
-                              )}
-                            </ul>
-                          ) : null}
+                          <Comments comments={standardUnit.comments} />
                         </CardItem>
                       </Column>
                     </Grid>
