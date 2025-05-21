@@ -1,18 +1,51 @@
-import React, { useMemo, useState } from "react";
-import { Accordion, AccordionItem, Button, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow, Tag } from "@carbon/react";
-import { Activity, Search as SearchIcon } from "@carbon/icons-react";
-import { ActivityTableHeaders } from "./constants";
-import { MockedActivityType } from "./definitions";
-import { formatLocalDate } from "@/utils/DateUtils";
-import { PLACE_HOLDER } from "@/constants";
+import React, { useState } from "react";
+
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  DefinitionTooltip,
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableToolbar,
+  TableToolbarSearch,
+  Tag,
+} from "@carbon/react";
+import { Activity, Search } from "@carbon/icons-react";
+import { useQuery } from "@tanstack/react-query";
+
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
+import { SortDirectionType } from "@/types/PaginationTypes";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { PLACE_HOLDER } from "@/constants";
+
 import ActivityDetail from "./ActivityDetail";
+import EmptySection from "../../EmptySection";
+import TableSkeleton from "../../TableSkeleton";
+
+import { ActivityTableHeaders, DefaultFilter } from "./constants";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
+import { ActivityFilterType } from "./definitions";
+import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
+import { formatActivityObjective } from "./utils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
 import "./styles.scss";
 
 type ActivityAccordionProps = {
-  data: MockedActivityType[];
   openingId: number;
+  totalUnfiltered: number;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -27,20 +60,106 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
-const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
+const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
+  const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]);
+  const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
 
-  const filteredData = useMemo(() => {
-    const lower = searchTerm.toLowerCase();
+  const activityQuery = useQuery({
+    queryKey: ['opening', openingId, 'activities', { filter: activityFilter }],
+    queryFn: () => fetchOpeningActivities(openingId, activityFilter),
+  });
 
-    return data.filter((row) =>
-      ActivityTableHeaders.some(({ key }) => {
-        const value = row[key];
-        return value && String(value).toLowerCase().includes(lower);
-      })
-    );
-  }, [data, searchTerm]);
+  const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
+    let newDirection: SortDirectionType = 'NONE';
+
+    if (activityFilter.sortField !== field || activityFilter.sortDirection === 'NONE') {
+      newDirection = 'ASC';
+    } else if (activityFilter.sortDirection === 'ASC') {
+      newDirection = 'DESC';
+    }
+
+    setActivityFilter((prev) => {
+      if (newDirection === 'NONE') {
+        const { sortField, sortDirection, ...rest } = prev;
+        return { ...rest };
+      }
+
+      return {
+        ...prev,
+        sortField: field,
+        sortDirection: newDirection
+      };
+    });
+  };
+
+  const handlePagination = (paginationObj: PaginationOnChangeType) => {
+    // Convert to 0 based index
+    const nextPageNum = paginationObj.page - 1;
+    const nextPageSize = paginationObj.pageSize;
+
+    setCurrPageNumber(nextPageNum);
+    setCurrPageSize(nextPageSize);
+    setActivityFilter((prev) => ({
+      ...prev,
+      page: nextPageNum,
+      size: nextPageSize
+    }))
+  };
+
+  const handleSearchInputChange = (
+    event: "" | React.ChangeEvent<HTMLInputElement>,
+    _value?: string
+  ) => {
+    // Handle string clearing
+    if (event === "") {
+      setSearchInput("");
+      return;
+    }
+
+    const inputValue = event.target.value;
+
+    if (inputValue.length <= MAX_SEARCH_LENGTH) {
+      setSearchInput(inputValue);
+    }
+  };
+
+  const applySearchFilter = () => {
+    const trimmed = searchInput.trim();
+
+    setActivityFilter((prev) => {
+      const next = { ...prev, page: 0 };
+
+      if (trimmed === '') {
+        const { filter, ...rest } = next;
+        return rest;
+      }
+
+      return { ...next, filter: trimmed };
+    });
+
+    setCurrPageNumber(0);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      applySearchFilter();
+    }
+  };
+
+  const handleSearchClear = () => {
+    setSearchInput('');
+    setActivityFilter((prev) => {
+      const { filter, ...rest } = prev;
+      return {
+        ...rest,
+        page: 0
+      };
+    });
+    setCurrPageNumber(0);
+  };
 
   const handleRowExpand = (activityId: number) => {
     setExpandedRows((prev) =>
@@ -51,17 +170,17 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
   };
 
   const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["status", "base", "tech", "method", "objective", "fundingSource"];
+    const codeDescriptionColumns = ["status", "base", "tech", "method", "objective1", "funding"];
     return codeDescriptionColumns.includes(value);
   };
 
   const isDate = (value: string): boolean => {
-    const dateColumns = ["plannedDate", "endDate", "updateTimestamp"];
+    const dateColumns = ["plannedDate", "endDate", "lastUpdate"];
     return dateColumns.includes(value);
   };
 
   const renderCellContent = (
-    data: CodeDescriptionDto | string | number | null,
+    data: OpeningDetailsActivitiesActivitiesDto | CodeDescriptionDto | string | number | null,
     columnKey: string,
     isLastElement: boolean
   ) => {
@@ -79,7 +198,26 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
           </Tag>
         );
       } else if (columnKey === "base") {
-        return String(`${codeDescription.code} - ${codeDescription.description}`);
+        return codeDescriptionToDisplayText(codeDescription);
+      } else if (columnKey === "objective1") {
+        const { tooltipDefinition, displayText } = formatActivityObjective(data as OpeningDetailsActivitiesActivitiesDto);
+
+        if (displayText === PLACE_HOLDER) return PLACE_HOLDER;
+
+        return (
+          <DefinitionTooltip
+            className="activity-objective-tooltip-definition"
+            definition={
+              tooltipDefinition!.map((line, index) => (
+                <div key={index}>{line}</div>
+              ))
+            }
+            align={isLastElement ? "top" : "bottom"}
+            openOnHover={true}
+          >
+            <span>{displayText}</span>
+          </DefinitionTooltip>
+        );
       }
 
       return codeDescription?.code ? (
@@ -104,73 +242,121 @@ const ActivityAccordion = ({ data, openingId }: ActivityAccordionProps) => {
     <Accordion className="default-tab-accordion activity-accordion" align="end">
       <AccordionItem
         className="default-tab-accordion-item"
-        title={<AccordionTitle total={data.length} />}
+        title={<AccordionTitle total={totalUnfiltered} />}
       >
-        <div>
-          <div className="activity-filter-container">
-            <Search
-              id="activity-filter"
-              className="default-tab-search-bar"
-              size="lg"
-              labelText="Filter activities"
-              placeholder="Filter activities by keyword"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button className="filter-search-button">
-              <span>Filter</span>
-              <SearchIcon />
-            </Button>
-          </div>
 
-          <Table
-            className="default-zebra-table-with-border activity-table"
-            aria-label="Activity table"
-          >
-            <TableHead>
-              <TableRow>
-                <>
-                  <TableExpandHeader />
-                  {ActivityTableHeaders.map((header) => (
-                    <TableHeader key={header.key}>{header.header}</TableHeader>
-                  ))}
-                </>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredData.map((row, index) => {
-                const isExpanded = expandedRows.includes(row.activityId);
-                return (
-                  <React.Fragment key={row.activityId}>
-                    <TableExpandRow
-                      aria-label={`Expand row for Activity ID ${row.activityId}`}
-                      isExpanded={isExpanded}
-                      onExpand={() => handleRowExpand(row.activityId)}
-                    >
-                      {ActivityTableHeaders.map((header) => (
-                        <TableCell key={header.key}>
-                          {renderCellContent(
-                            row[header.key],
-                            header.key,
-                            index === filteredData.length - 1
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableExpandRow>
-                    <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
-                      {isExpanded ? (
-                        <ActivityDetail
-                          activity={row}
-                          openingId={openingId}
-                        />
-                      ) : null}
-                    </TableExpandedRow>
-                  </React.Fragment>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        <TableContainer className="default-table-container activity-table-container">
+          <TableToolbar className="activity-search-toolbar-container">
+            <TableToolbarSearch
+              className="default-tab-search-bar"
+              persistent
+              placeholder="Search by keyword"
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              onKeyDown={handleSearchKeyDown}
+              onClear={handleSearchClear}
+            />
+            <Button
+              kind="primary"
+              className="default-button-with-loading"
+              renderIcon={Search}
+              onClick={applySearchFilter}
+            >
+              Search
+            </Button>
+          </TableToolbar>
+
+          {/* Table skeleton */}
+          {
+            activityQuery.isLoading
+              ? <TableSkeleton
+                headers={ActivityTableHeaders}
+                showToolbar={false}
+                showHeader={false}
+                rowCount={10}
+              />
+              : (
+                <Table
+                  className="default-zebra-table activity-table"
+                  aria-label="Activity table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <>
+                        <TableExpandHeader />
+                        {ActivityTableHeaders.map((header) => (
+                          <TableHeader
+                            key={header.key}
+                            isSortable={header.sortable}
+                            isSortHeader={activityFilter.sortField === header.key}
+                            sortDirection={activityFilter.sortDirection}
+                            onClick={() => handleSort(header.key as keyof OpeningDetailsActivitiesActivitiesDto)}
+                          >
+                            {header.header}
+                          </TableHeader>
+                        ))}
+                      </>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {activityQuery.data?.content.map((row, index) => {
+                      const isExpanded = expandedRows.includes(row.atuId);
+                      return (
+                        <React.Fragment key={row.atuId}>
+                          <TableExpandRow
+                            aria-label={`Expand row for Activity ID ${row.atuId}`}
+                            isExpanded={isExpanded}
+                            onExpand={() => handleRowExpand(row.atuId)}
+                          >
+                            {ActivityTableHeaders.map((header) => (
+                              <TableCell key={header.key}>
+                                {renderCellContent(
+                                  header.key === "objective1" ? row : row[header.key],
+                                  header.key,
+                                  index === activityQuery.data?.content.length - 1
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableExpandRow>
+                          <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
+                            {isExpanded ? (
+                              <ActivityDetail
+                                activity={row}
+                                openingId={openingId}
+                              />
+                            ) : null}
+                          </TableExpandedRow>
+                        </React.Fragment>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )
+          }
+
+          {
+            activityQuery.data?.page.totalElements === 0
+              ? (
+                <EmptySection
+                  pictogram="UserSearch"
+                  title={`No results for "${activityFilter.filter}"`}
+                  description="Consider adjusting your search term and try again."
+                  whiteLayer
+                />
+              )
+              : (
+                <Pagination
+                  className="default-pagination-white"
+                  page={currPageNumber + 1}
+                  pageSize={currPageSize}
+                  pageSizes={OddPageSizesConfig}
+                  totalItems={activityQuery.data?.page.totalElements}
+                  onChange={handlePagination}
+                />
+              )
+          }
+        </TableContainer>
       </AccordionItem>
     </Accordion>
   );

@@ -1,5 +1,6 @@
 import CodeDescriptionDto from "./CodeDescriptionType";
 import { CommentDto } from "./CommentTypes";
+import { ForestClientLocationType } from "./ForestClientTypes/ForestClientLocationType";
 import { ForestClientType } from "./ForestClientTypes/ForestClientType";
 import { PaginatedResponseType } from "./PaginationTypes";
 
@@ -168,6 +169,101 @@ export type OpeningDetailsStockingDto = {
   layer: OpeningDetailsStockingLayerDto | null,
   comments: CommentDto[],
 };
+
+export type OpeningDetailsActivitiesDisturbanceDto = {
+  atuId: number,
+  disturbance: CodeDescriptionDto,
+  system: CodeDescriptionDto,
+  variant: CodeDescriptionDto,
+  cutPhase: CodeDescriptionDto,
+  disturbanceArea: number | null,
+  lastUpdatedOn: string | null,
+  startDate: string | null,
+  endDate: string | null,
+  licenseeActivityId: string | null,
+  forestClient: ForestClientType,
+  forestClientLocation: ForestClientLocationType,
+  licenceNumber: string | null,
+  cuttingPermitId: string | null,
+  cutBlock: string | null,
+  comments: CommentDto[],
+};
+
+export type OpeningDetailsActivitiesActivitiesDto = {
+  atuId: number,
+  status: CodeDescriptionDto,
+  base: CodeDescriptionDto,
+  tech: CodeDescriptionDto,
+  method: CodeDescriptionDto,
+  objective1: CodeDescriptionDto,
+  objective2: CodeDescriptionDto,
+  objective3: CodeDescriptionDto,
+  area: number | null,
+  funding: CodeDescriptionDto,
+  projectId: string | null,
+  lastUpdate: string | null,
+  plannedDate: string | null,
+  endDate: string | null,
+};
+
+export type OpeningActivityBaseDto = {
+  licenseeActivityId: string | null,
+  intraAgencyNumber: string | null,
+  activityClient: ForestClientType,
+  activityLocation: ForestClientLocationType,
+  plannedAmount: number | null,
+  treatedAmount: number | null,
+  plannedCost: number | null,
+  actualCost: number | null,
+  totalPlanting: number | null,
+  comments: CommentDto[],
+};
+
+export type OpeningActivityJuvelineDto = {
+  targetIntertreeDistance: number | null,
+  allowableVariationDistance: number | null,
+  allowableTreePerLot: number | null,
+  spacingPerHa: number | null,
+};
+
+export type OpeningActivityPruningDto = {
+  totalStemsPerHa: number | null,
+  stemsPerHaToPrune: number | null,
+  targetIntertreeDistance: number | null,
+  minimumIntertreeDistance: number | null,
+  heightAboveGround: number | null,
+  minimumLiveCrown: number | null,
+};
+
+export type OpeningActivitySitePrepDto = {
+  targetSpot: number | null,
+};
+
+export type OpeningActivitySpeciesDetailsDto = {
+  species: CodeDescriptionDto,
+  plantedNumber: number | null,
+  numberBeyondTransferLimit: number | null,
+  cbst: boolean | null,
+  requestId: number | null,
+  lot: number | null,
+  bidPricePerTree: number | null,
+};
+
+export type OpeningActivitySpeciesDto = {
+  species: OpeningActivitySpeciesDetailsDto[],
+};
+
+export type OpeningActivitySurveyDto = {
+  plotsCount: number | null,
+  surveyMinPlotsPerStratum: number | null,
+};
+
+export type OpeningActivityDetail = OpeningActivityBaseDto &
+  Partial<OpeningActivityJuvelineDto> &
+  Partial<OpeningActivityPruningDto> &
+  Partial<OpeningActivitySitePrepDto> &
+  Partial<OpeningActivitySpeciesDto> &
+  Partial<OpeningActivitySurveyDto>;
 
 export type OpeningTenureDto = {
   id: number,
