@@ -7,6 +7,13 @@ const SpeciesTooltipList: React.FC<{
   speciesList: OpeningDetailsStockingSpeciesDto[];
   layerCode: string;
 }> = ({ speciesList, layerCode }) => {
+
+  const minHeightSuffix = (ssuSpecies: OpeningDetailsStockingSpeciesDto) => (
+    ssuSpecies.minHeight
+      ? ` ${UNIQUE_CHARACTERS_UNICODE.BULLET} ${ssuSpecies.minHeight} m`
+      : ''
+  );
+
   return (
     <>
       {speciesList
@@ -18,17 +25,9 @@ const SpeciesTooltipList: React.FC<{
               openOnHover
               className="default-cell-definition-tooltip"
               align="right-bottom"
-              definition={
-                `${species.species.description}` +
-                (species.minHeight
-                  ? ` ${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.minHeight}`
-                  : '')
-              }
+              definition={`${species.species.description}${minHeightSuffix(species)}`}
             >
-              {`${species.species.code}` +
-                (species.minHeight
-                  ? ` ${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.minHeight}`
-                  : '')}
+              {`${species.species.code}${minHeightSuffix(species)}`}
             </DefinitionTooltip>
           ) : (
             PLACE_HOLDER
