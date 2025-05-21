@@ -218,3 +218,12 @@ ul.default-tab-accordion {
     min-block-size: unset;
   }
 }
+
+.default-cell-definition-tooltip {
+  width: fit-content;
+
+  .bx--popover-content {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+}

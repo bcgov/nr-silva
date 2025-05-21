@@ -5,8 +5,9 @@ import lombok.With;
 
 @With
 public record OpeningDetailsStockingSpeciesDto(
+    String layer,
     CodeDescriptionDto species,
-    Long minHeight
+    Float minHeight
 ) {
 
 }
