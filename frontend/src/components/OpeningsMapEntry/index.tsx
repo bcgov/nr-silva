@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
+import L from "leaflet";
 import { FeatureCollection } from "geojson";
 import {
   getStyleForFeature,
@@ -8,6 +9,8 @@ import {
   getCenterOfFeatureCollection,
 } from "@/types/MapLayer";
 import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
+
+import "./styles.scss";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
@@ -22,6 +25,14 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
   // Get the map instance from react-leaflet
   const map = useMapEvents({
     zoomend: () => setZoom(map.getZoom()),
+  });
+
+  const markerIcon = new L.Icon({
+    iconUrl: "/src/assets/svg/marker.svg",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
   });
 
   /**
@@ -93,6 +104,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       {zoom <= 10 &&
         features.filter(Boolean).map((featureCollection, index) => (
           <Marker
+            icon={markerIcon}
             data-testid="marker"
             key={geoKey(featureCollection, index)}
             position={getCenterOfFeatureCollection(featureCollection)}

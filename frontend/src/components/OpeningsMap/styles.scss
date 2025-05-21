@@ -11,7 +11,7 @@
 .leaflet-bar a:hover,
 .leaflet-control-zoom-in:hover,
 .leaflet-control-zoom-out:hover {
-  color: var(--#{vars.$bcgov-prefix}-button-tertiary) !important;  
+  color: var(--#{vars.$bcgov-prefix}-button-tertiary) !important;
   background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
 }
 
@@ -42,4 +42,16 @@
   svg {
     fill: var(--#{vars.$bcgov-prefix}-button-tertiary) !important;
   }
+}
+
+.leaflet-control-layers-toggle {  
+  mask: url('/src/assets/svg/map-layers.svg') no-repeat center;
+  -webkit-mask: url('/src/assets/svg/map-layers.svg') no-repeat center;
+  background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
+  width: 30px;
+  height: 30px;
+  background-size: 30px 30px;
+  mask-size: 30px 30px;
+  -webkit-mask-size: 30px 30px;
+  background-image: none !important;
 }
