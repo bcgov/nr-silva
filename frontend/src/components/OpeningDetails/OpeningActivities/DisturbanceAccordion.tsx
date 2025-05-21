@@ -1,17 +1,37 @@
 import React, { useMemo, useState } from "react";
-import { MockedDisturbanceType } from "./definitions";
-import { Accordion, AccordionItem, DefinitionTooltip, Search, Table, TableBody, TableCell, TableExpandedRow, TableExpandHeader, TableExpandRow, TableHead, TableHeader, TableRow } from "@carbon/react";
+
+import {
+  Accordion,
+  AccordionItem,
+  DefinitionTooltip,
+  Search,
+  Table,
+  TableBody,
+  TableCell,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
-import { DisturbanceTableHeaders } from "./constants";
-import DisturbanceDetail from "./DisturbanceDetail";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+
+import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
 import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { PLACE_HOLDER } from "@/constants";
-import { formatLocalDate } from "@/utils/DateUtils";
+
+import DisturbanceDetail from "./DisturbanceDetail";
 import EmptySection from "../../EmptySection";
 
+import { DisturbanceTableHeaders } from "./constants";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { PLACE_HOLDER } from "@/constants";
+
+import "./styles.scss";
+
 type DisturbanceAccordionProps = {
-  data: MockedDisturbanceType[]
+  data: OpeningDetailsActivitiesDisturbanceDto[]
 }
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -33,12 +53,12 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const isCodeDescription = (value: string): boolean => {
-    const codeDescriptionColumns = ["disturbance", "silvicultureSystem", "variant", "cutPhase"];
+    const codeDescriptionColumns = ["disturbance", "system", "variant", "cutPhase"];
     return codeDescriptionColumns.includes(value);
   }
 
   const isDate = (value: string): boolean => {
-    const dateColumns = ["startDate", "endDate", "updateTimestamp"];
+    const dateColumns = ["startDate", "endDate", "lastUpdatedOn"];
     return dateColumns.includes(value);
   }
 
@@ -70,7 +90,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
   const renderCellContent = (
     data: CodeDescriptionDto | string | number | null,
     columnKey: string,
-    isLastElement: boolean
+    isLastElement: boolean = false
   ) => {
     if (isCodeDescription(columnKey)) {
       const codeDescription = data as CodeDescriptionDto;
@@ -78,7 +98,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
       if (columnKey === "disturbance") {
         return codeDescriptionToDisplayText(codeDescription);
       }
-  
+
       return codeDescription?.code ? (
         <DefinitionTooltip
           definition={codeDescription.description}
@@ -139,19 +159,23 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
               {
                 filteredData.length ? (
                   filteredData.map((row, index) => {
-                    const isExpanded = expandedRows.includes(row.activityId);
+                    const isExpanded = expandedRows.includes(row.atuId);
                     return (
-                      <React.Fragment key={row.activityId}>
+                      <React.Fragment key={row.atuId}>
                         <TableExpandRow
-                          aria-label={`Expand row for Activity ID ${row.activityId}`}
+                          aria-label={`Expand row for Activity ID ${row.atuId}`}
                           isExpanded={isExpanded}
-                          onExpand={() => handleRowExpand(row.activityId)}
+                          onExpand={() => handleRowExpand(row.atuId)}
                         >
                           {
                             DisturbanceTableHeaders.map(header => (
                               <TableCell key={header.key}>
                                 {
-                                  renderCellContent(row[header.key], header.key, index === filteredData.length - 1)
+                                  renderCellContent(
+                                    row[header.key] as string | number | CodeDescriptionDto | null,
+                                    header.key,
+                                    index === filteredData.length - 1,
+                                  )
                                 }
                               </TableCell>
                             ))
@@ -166,11 +190,11 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                 ) : (
                   <TableRow key="empty-row">
                     <TableCell colSpan={DisturbanceTableHeaders.length + 1}>
-                        <EmptySection
-                          pictogram="UserSearch"
-                          title={`No results for "${searchTerm}"`}
-                          description="Consider adjusting your search term(s) and try again."
-                        />
+                      <EmptySection
+                        pictogram="UserSearch"
+                        title={`No results for "${searchTerm}"`}
+                        description="Consider adjusting your search term(s) and try again."
+                      />
                     </TableCell>
                   </TableRow>
                 )

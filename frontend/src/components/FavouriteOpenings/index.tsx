@@ -75,7 +75,6 @@ const FavouriteOpenings: React.FC = () => {
             ? (
               <EmptySection
                 pictogram="UserInsights"
-                fill="#0073E6"
                 title="You don't have any favourites to show yet!"
                 description="You can favourite your openings by clicking on the heart icon inside opening details page"
               />

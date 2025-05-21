@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
@@ -90,6 +91,15 @@ public class OpeningEndpoint {
       @PathVariable Long atuId
   ) {
     return openingService.getOpeningActivitiesActivity(openingId,atuId);
+  }
+
+  @GetMapping("/{openingId}/tenures")
+  public OpeningDetailsTenuresDto getTenures(
+      @PathVariable Long openingId,
+      @RequestParam(name = "filter",required = false) String filter,
+      Pageable pageable
+  ){
+    return openingService.getOpeningTenures(openingId, filter, pageable);
   }
 
   /**
