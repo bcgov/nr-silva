@@ -9,7 +9,7 @@ public record OpeningDetailsStockingDto(
     OpeningDetailsStockingDetailsDto stocking,
     List<OpeningDetailsStockingSpeciesDto> preferredSpecies,
     List<OpeningDetailsStockingSpeciesDto> acceptableSpecies,
-    OpeningDetailsStockingLayerDto layer,
+    List<OpeningDetailsStockingLayerDto> layers,
     List<CommentDto> comments
 ) {
 }

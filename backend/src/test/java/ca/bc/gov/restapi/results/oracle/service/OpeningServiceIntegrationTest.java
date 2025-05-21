@@ -112,7 +112,7 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
     Assertions.assertEquals("western redcedar",
         dto.preferredSpecies().get(0).species().description(),
         "Preferred species description should match");
-    Assertions.assertEquals(1L, dto.preferredSpecies().get(0).minHeight(),
+    Assertions.assertEquals(1.5f, dto.preferredSpecies().get(0).minHeight(),
         "Preferred species min height should match");
 
     // Verify acceptable species
@@ -122,25 +122,25 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
         "Acceptable species code should match");
     Assertions.assertEquals("amabilis fir", dto.acceptableSpecies().get(0).species().description(),
         "Acceptable species description should match");
-    Assertions.assertEquals(1L, dto.acceptableSpecies().get(0).minHeight(),
+    Assertions.assertEquals(1.8f, dto.acceptableSpecies().get(0).minHeight(),
         "Acceptable species min height should match");
 
-    // Verify stocking layer
-    Assertions.assertNotNull(dto.layer(), "Stocking layer should not be null");
-    Assertions.assertEquals(500, dto.layer().minWellspacedTrees(),
+    // Verify stocking layers
+    Assertions.assertNotNull(dto.layers(), "Stocking layers should not be null");
+    Assertions.assertEquals(500, dto.layers().get(0).minWellspacedTrees(),
         "Min well-spaced trees should match");
-    Assertions.assertEquals(400, dto.layer().minPreferredWellspacedTrees(),
+    Assertions.assertEquals(400, dto.layers().get(0).minPreferredWellspacedTrees(),
         "Min preferred well-spaced trees should match");
-    Assertions.assertEquals(2, dto.layer().minHorizontalDistanceWellspacedTrees(),
+    Assertions.assertEquals(2, dto.layers().get(0).minHorizontalDistanceWellspacedTrees(),
         "Min horizontal distance well-spaced trees should match");
-    Assertions.assertEquals(900, dto.layer().targetWellspacedTrees(),
+    Assertions.assertEquals(900, dto.layers().get(0).targetWellspacedTrees(),
         "Target well-spaced trees should match");
-    Assertions.assertEquals(800, dto.layer().minPostspacingDensity(),
+    Assertions.assertEquals(800, dto.layers().get(0).minPostspacingDensity(),
         "Min post-spacing density should match");
-    Assertions.assertEquals(2000, dto.layer().maxPostspacingDensity(),
+    Assertions.assertEquals(2000, dto.layers().get(0).maxPostspacingDensity(),
         "Max post-spacing density should match");
-    Assertions.assertEquals(10000, dto.layer().maxConiferous(), "Max coniferous should match");
-    Assertions.assertEquals(150, dto.layer().heightRelativeToComp(),
+    Assertions.assertEquals(10000, dto.layers().get(0).maxConiferous(), "Max coniferous should match");
+    Assertions.assertEquals(150, dto.layers().get(0).heightRelativeToComp(),
         "Height relative to competition should match");
   }
 
