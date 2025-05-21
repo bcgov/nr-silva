@@ -40,6 +40,10 @@ public class ApiAuthorizationCustomizer implements
       authorize
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
         .permitAll();
+    } else {
+      authorize
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+        .denyAll();
     }
 
     authorize
