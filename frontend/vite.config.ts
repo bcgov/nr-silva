@@ -1,12 +1,13 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url';
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
+import istanbul from 'vite-plugin-istanbul';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const define = {
-    global:{}
+    global: {}
   }
   return {
     define,
@@ -33,7 +34,8 @@ export default defineConfig(({ mode }) => {
     ],
     build: {
       chunkSizeWarningLimit: 1024,
-      outDir: 'build'
+      outDir: 'build',
+      sourcemap: true
     },
     server: {
       port: 3000,

@@ -31,7 +31,7 @@
     "vite-tsconfig-paths": "^5.0.0"
   },
   "scripts": {
-    "start": "vite --host",
+    "start": "VITE_COVERAGE=true vite --host",
     "build": "tsc && vite build",
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"3g6n2ha1loi4kp1jhaq359vrvb\\\", \\\"VITE_ZONE\\\": \\\"DEV\\\", \\\"VITE_BACKEND_URL\\\": \\\"http://localhost:8080\\\" };\" > build/env.js",
     "serve": "vite preview --port 4173",
@@ -42,10 +42,12 @@
     "test:build": "vitest watch",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "e2e:local": "BASE_URL=http://localhost:3000 playwright test",
-    "e2e:local:ui": "BASE_URL=http://localhost:3000 playwright test --ui",
-    "e2e:build": "BASE_URL=http://localhost:4173 npm run build && BASE_URL=http://localhost:4173 npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test serve http://localhost:4173 test:playwright",
-    "e2e:build:ui": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright:ui"
+    "precoverage": "rm -rf .nyc_output",
+    "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
+    "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
+    "e2e:build": "npm run precoverage && BASE_URL=http://localhost:4173 npm run build && npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test serve http://localhost:4173 test:playwright && npm run report:coverage",
+    "e2e:build:ui": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright:ui",
+    "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
   },
   "browserslist": {
     "production": [
@@ -60,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@playwright/test": "^1.51.1",
     "@testing-library/dom": "^10.2.0",
     "@testing-library/jest-dom": "^6.4.5",
@@ -89,10 +92,12 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "jsdom": "^26.0.0",
+    "nyc": "^17.1.0",
     "sass": "^1.62.1",
     "sass-loader": "^16.0.0",
     "start-server-and-test": "^2.0.11",
     "typescript": "^5.2.2",
+    "vite-plugin-istanbul": "^7.0.0",
     "vitest": "^3.0.5"
   },
   "overrides": {
@@ -102,5 +107,30 @@
     "@babel/runtime": "7.27.1",
     "@babel/helpers": "7.27.1",
     "react-router": "7.6.0"
+  },
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "reporter": [
+      "html",
+      "lcov"
+    ],
+    "report-dir": ".nyc_output/coverage",
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "exclude": [
+      "**/*.spec.ts",
+      "**/__e2e__/**",
+      "**/__test__/**",
+      "**/assets/**"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "all": true,
+    "sourceMap": true,
+    "instrument": false
   }
 }
