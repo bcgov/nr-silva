@@ -51,11 +51,7 @@ const DisturbanceDetail = ({ detail }: { detail: OpeningDetailsActivitiesDisturb
 
       <Column sm={4} md={8} lg={16}>
         <CardItem label="Comment">
-          {
-            (detail.comments ?? []).length > 0
-              ? <Comments comments={detail.comments} />
-              : null
-          }
+          <Comments comments={detail.comments ?? []} />
         </CardItem>
       </Column>
     </Grid>

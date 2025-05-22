@@ -74,13 +74,7 @@ const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) =>
 
       <Column sm={4} md={4} lg={16}>
         <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
-          {
-            activityDetailQuery.data?.comments?.length ? (
-              <Comments
-                comments={activityDetailQuery.data.comments}
-              />
-            ) : null
-          }
+          <Comments comments={activityDetailQuery.data?.comments ?? []} />
         </CardItem>
       </Column>
 
