@@ -7,7 +7,8 @@ export default defineConfig({
   testDir: './src/__e2e__',
   timeout: THIRTY_SECONDS,
   retries: 0,
-  globalSetup: './src/__e2e__/config/global.setup.ts',
+  globalSetup: './src/__e2e__/auth/auth.setup.ts',
+  globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
   use: {
     headless: true,
     baseURL,
@@ -17,5 +18,6 @@ export default defineConfig({
     launchOptions: {
       executablePath: chromium.executablePath(),
     },
+    storageState: './src/__e2e__/auth/user.json',
   },
 });
