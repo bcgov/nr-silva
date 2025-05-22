@@ -31,7 +31,7 @@
     "vite-tsconfig-paths": "^5.0.0"
   },
   "scripts": {
-    "start": "vite --host",
+    "start": "npm run generate:openapi && vite --host",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest -u",
