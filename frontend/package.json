@@ -31,14 +31,15 @@
     "vite-tsconfig-paths": "^5.0.0"
   },
   "scripts": {
-    "start": "vite --host",
+    "start": "npm run generate:openapi && vite --host",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest -u",
     "test:coverage": "vitest run --coverage --watch=false",
     "test:build": "vitest watch",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts"
   },
   "browserslist": {
     "production": [
@@ -80,6 +81,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "jsdom": "^26.0.0",
+    "openapi-typescript": "^7.8.0",
     "sass": "^1.62.1",
     "sass-loader": "^16.0.0",
     "typescript": "^5.2.2",

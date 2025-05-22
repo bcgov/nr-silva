@@ -19,7 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -30,6 +30,8 @@
         "./src/*"
       ]
     },
+    // TODO: This is recommended by openapi-typescript package for type safety but it causes type checking errors with our current code. Should be enabled when we fix the errors.
+    // "noUncheckedIndexedAccess": true,
   },
   "include": [
     "src/**/*"
