@@ -28,7 +28,7 @@ services:
   frontend:
     container_name: frontend
     entrypoint: sh -c "npm ci && npm run start"
-    image: node:20-bullseye@sha256:85a9eac929d8c0a181b17a6166caf20d54acd53bfc0800406cb43d5e18f6e104
+    image: node:20-bullseye@sha256:ce61e37b353643c4a0a3c68b7190803824ebcd9e3015478392c12dacfc911be7
     ports: [ "3000:3000" ]
     volumes: [ "./frontend:/app", "/app/node_modules" ]
     working_dir: "/app"
