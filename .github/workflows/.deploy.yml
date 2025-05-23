@@ -163,6 +163,7 @@ jobs:
         with:
           commands: |
             npm ci
+            npx playwright install --with-deps
             npm run e2e:ci:dev
           dir: frontend
           node_version: "20"
@@ -182,6 +183,13 @@ jobs:
           VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
           VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
           VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: E2E on dev server for coverage test results
+          path: /home/runner/work/nr-silva/nr-silva/frontend/test-results/
 
   tests-frontend-e2e-built:
     name: E2E with built frontend and backend
@@ -206,6 +214,17 @@ jobs:
         run: npm ci
         working-directory: frontend
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: frontend
+
       - name: Run E2E Tests
         run: npm run e2e:ci:build
         working-directory: frontend
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: E2E on built apps test results
+          path: /home/runner/work/nr-silva/nr-silva/frontend/test-results/
