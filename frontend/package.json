@@ -31,6 +31,7 @@
     "vite-tsconfig-paths": "^5.0.0"
   },
   "scripts": {
+    "dev": "vite --host",
     "start": "npm run generate:openapi && vite --host",
     "build": "tsc && vite build",
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"3g6n2ha1loi4kp1jhaq359vrvb\\\", \\\"VITE_ZONE\\\": \\\"DEV\\\", \\\"VITE_BACKEND_URL\\\": \\\"http://localhost:8080\\\" };\" > build/env.js",
@@ -44,9 +45,9 @@
     "lint:fix": "npm run lint -- --fix",
     "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
     "precoverage": "rm -rf .nyc_output",
-    "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
-    "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
-    "e2e:ci:dev": "npm run precoverage &&  BASE_URL=http://localhost:3000 start-server-and-test serve http://localhost:3000 test:playwright && npm run report:coverage",
+    "e2e:local": "npm run precoverage && VITE_BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
+    "e2e:local:ui": "npm run precoverage && VITE_BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
+    "e2e:ci:dev": "npm run precoverage && VITE_BASE_URL=http://localhost:3000 start-server-and-test dev http://localhost:3000 test:playwright && npm run report:coverage",
     "e2e:ci:build": "npm run precoverage && npm run test:playwright:ui",
     "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
   },
