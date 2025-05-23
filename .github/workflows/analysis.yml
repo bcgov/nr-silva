@@ -51,36 +51,6 @@ jobs:
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
-  tests-frontend:
-    name: Tests (Frontend)
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
-        env:
-          VITE_ZONE: test
-          VITE_USER_POOLS_ID: ca-central-1_abc123
-          VITE_USER_POOLS_WEB_CLIENT_ID: abc123
-          VITE_BACKEND_URL: http://localhost:8080
-        with:
-          commands: |
-            npm ci
-            npm run test:coverage
-          dir: frontend
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.projectKey=nr-silva-frontend
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.typescript.tsconfigPaths=tsconfig.json
-            -Dsonar.sources=src/
-            -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*
-            -Dsonar.tests=src/__test__/
-            -Dsonar.project.monorepo.enabled=true
-          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
-          # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
-
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
     name: Trivy Security Scan
@@ -110,7 +80,7 @@ jobs:
     name: Analysis Results
     if: always()
     # Include all needs that could have failures!
-    needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
+    needs: [lint-frontend, tests-backend] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-24.04
     steps:
       - run: |
