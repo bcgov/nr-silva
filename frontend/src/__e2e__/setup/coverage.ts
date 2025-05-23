@@ -1,17 +1,24 @@
 import fs from 'fs';
 import path from 'path';
-import { test as base } from '@playwright/test';
+import { test as base, TestInfo, Page } from '@playwright/test';
 import v8toIstanbul from 'v8-to-istanbul';
 
 const COVERAGE_DIR = path.resolve(process.cwd(), '.nyc_output');
 
-export const test = base.extend({
+export const test = base.extend<{
+  context: any;
+  page: Page;
+}>({
   context: async ({ browser }, use) => {
     const context = await browser.newContext();
+    await use(context);
+    await context.close(); // clean up
+  },
+
+  page: async ({ context }, use) => {
     const page = await context.newPage();
     await page.coverage.startJSCoverage({ reportAnonymousScripts: true });
-
-    await use(context);
+    await use(page);
 
     const jsCoverage = await page.coverage.stopJSCoverage();
 
@@ -19,28 +26,25 @@ export const test = base.extend({
       fs.mkdirSync(COVERAGE_DIR, { recursive: true });
     }
 
-    console.log('[debug] jsCoverage result:', JSON.stringify(jsCoverage, null, 2));
-
     for (const entry of jsCoverage) {
-      if (!entry.url.startsWith('http://localhost:3000')) continue;
+      if (!entry.url.startsWith('http://localhost:3000/src')) continue;
 
-      const relPath = entry.url.replace('http://localhost:3000', process.cwd());
-      if (!fs.existsSync(relPath)) {
-        console.warn(`[coverage] Skipping (not found): ${relPath}`);
+      const absPath = entry.url.replace('http://localhost:3000', process.cwd());
+      if (!fs.existsSync(absPath)) {
+        console.warn('[coverage] Skipping, file not found:', absPath);
         continue;
       }
 
-      const converter = v8toIstanbul(relPath, 0, {
-        source: fs.readFileSync(relPath, 'utf-8'),
-      });
-
+      const sourceCode = fs.readFileSync(absPath, 'utf-8');
+      const converter = v8toIstanbul(absPath, 0, { source: sourceCode });
       await converter.load();
       converter.applyCoverage(entry.functions);
 
       const istanbulCoverage = converter.toIstanbul();
-      const outPath = path.join(COVERAGE_DIR, `coverage-${Date.now()}.json`);
-      fs.writeFileSync(outPath, JSON.stringify(istanbulCoverage), 'utf-8');
-      console.log(`[coverage] Written: ${outPath}`);
+      const fileName = `coverage-${path.basename(absPath).replace(/\W+/g, '_')}-${Date.now()}.json`;
+      const outPath = path.join(COVERAGE_DIR, fileName);
+      fs.writeFileSync(outPath, JSON.stringify(istanbulCoverage, null, 2));
+      console.log('[coverage] Written:', outPath);
     }
   },
 });
