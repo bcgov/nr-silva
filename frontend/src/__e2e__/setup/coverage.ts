@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { test as base, TestInfo, Page } from '@playwright/test';
+import { test as base, Page } from '@playwright/test';
 import v8toIstanbul from 'v8-to-istanbul';
 
 const COVERAGE_DIR = path.resolve(process.cwd(), '.nyc_output');
