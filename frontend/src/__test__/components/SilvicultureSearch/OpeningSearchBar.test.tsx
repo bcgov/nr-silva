@@ -6,7 +6,7 @@ import "@testing-library/jest-dom";
 import OpeningSearchBar from "../../../components/SilvicultureSearch/OpeningSearch/OpeningSearchBar";
 import { OpeningSearchFilterType } from "../../../components/SilvicultureSearch/OpeningSearch/definitions";
 import CodeDescriptionDto from "../../../types/CodeDescriptionType";
-import { defaultSearchTableHeaders } from "../../../components/SilvicultureSearch/OpeningSearch/constants";
+import { defaultSearchTableHeaders } from "../../../utils/localStorageUtils";
 
 // Mock dependencies
 vi.mock("../../../hooks/UseBreakpoint", () => ({
@@ -52,7 +52,7 @@ const renderComponent = (props = {}) => {
         retry: false,
       },
     },
-  })
+  });
 
   return render(
     <QueryClientProvider client={queryClient}>
@@ -67,7 +67,8 @@ const renderComponent = (props = {}) => {
         totalResults={10}
         showMap={false}
         setShowMap={mockSetShowMap}
-        {...props}
+        setEnableSearch={vi.fn()}
+        resetPagination={vi.fn()}
       />
     </QueryClientProvider>
   );
@@ -82,16 +83,20 @@ describe("OpeningSearchBar", () => {
     renderComponent();
 
     // Ensure the search input exists
-    const searchInputs = screen.getAllByPlaceholderText("Search by opening ID, opening number or file ID");
+    const searchInputs = screen.getAllByPlaceholderText(
+      "Search by opening ID, opening number or file ID"
+    );
     expect(searchInputs.length).toBeGreaterThan(0);
     expect(searchInputs[0]).toBeInTheDocument();
 
     // Ensure the correct "Advanced Search" button is selected
-    const advancedSearchButtons = screen.getAllByRole("button", { name: "Advanced Search" });
+    const advancedSearchButtons = screen.getAllByRole("button", {
+      name: "Advanced Search",
+    });
     expect(advancedSearchButtons.length).toBeGreaterThan(0);
 
-    const textOnlyAdvancedSearchButton = advancedSearchButtons.find(
-      (button) => button.textContent?.includes("Advanced Search")
+    const textOnlyAdvancedSearchButton = advancedSearchButtons.find((button) =>
+      button.textContent?.includes("Advanced Search")
     );
     expect(textOnlyAdvancedSearchButton).toBeInTheDocument();
 
@@ -112,10 +117,14 @@ describe("OpeningSearchBar", () => {
     renderComponent();
 
     // Find all inputs with the placeholder text
-    const searchInputs = screen.getAllByPlaceholderText("Search by opening ID, opening number or file ID");
+    const searchInputs = screen.getAllByPlaceholderText(
+      "Search by opening ID, opening number or file ID"
+    );
 
     // Find the correct input (ensure it's not from advanced search)
-    const mainSearchInput = searchInputs.find((input) => input.id === "main-search-term-input");
+    const mainSearchInput = searchInputs.find(
+      (input) => input.id === "main-search-term-input"
+    );
     expect(mainSearchInput).toBeInTheDocument();
 
     // Simulate user typing "Test Opening"
@@ -129,7 +138,9 @@ describe("OpeningSearchBar", () => {
     renderComponent();
 
     // Get all matching "Advanced Search" buttons
-    const advancedSearchButtons = screen.getAllByRole("button", { name: /Advanced Search/i });
+    const advancedSearchButtons = screen.getAllByRole("button", {
+      name: /Advanced Search/i,
+    });
 
     // Select the first visible button (ensuring it's interactable)
     const advancedSearchButton = advancedSearchButtons[0];
@@ -149,7 +160,9 @@ describe("OpeningSearchBar", () => {
     fireEvent.click(categoryDropdown);
 
     // Wait for the category option to appear
-    const categoryOption = await screen.findByRole("option", { name: /Category 1/i });
+    const categoryOption = await screen.findByRole("option", {
+      name: /Category 1/i,
+    });
 
     // Select the category option
     fireEvent.click(categoryOption);
@@ -199,7 +212,9 @@ describe("OpeningSearchBar", () => {
     fireEvent.click(orgUnitDropdown);
 
     // Wait for the org unit option to appear
-    const orgUnitOption = await screen.findByRole("option", { name: /Org Unit DAS/i });
+    const orgUnitOption = await screen.findByRole("option", {
+      name: /Org Unit DAS/i,
+    });
 
     // Click the option
     fireEvent.click(orgUnitOption);
@@ -264,9 +279,7 @@ describe("OpeningSearchBar", () => {
       newState = lastCallArg;
     }
 
-    expect(newState).toEqual(
-      expect.objectContaining({ myOpenings: true })
-    );
+    expect(newState).toEqual(expect.objectContaining({ myOpenings: true }));
 
     // Find and click the "FRPA section 108" checkbox
     const frpaCheckbox = screen.getByLabelText("FRPA section 108");
@@ -296,9 +309,9 @@ describe("OpeningSearchBar", () => {
     renderComponent({ handleSearch: mockHandleSearch });
 
     // Get all buttons and filter by class name
-    const searchButtons = screen.getAllByRole("button").filter(btn =>
-      btn.classList.contains("search-button")
-    );
+    const searchButtons = screen
+      .getAllByRole("button")
+      .filter((btn) => btn.classList.contains("search-button"));
 
     const searchButton = searchButtons[0]; // Select the first one
 
@@ -312,9 +325,9 @@ describe("OpeningSearchBar", () => {
   it("toggles the map display when the map button is clicked", () => {
     renderComponent();
 
-    const mapButtons = screen.getAllByRole("button").filter(btn =>
-      btn.classList.contains("map-button")
-    );
+    const mapButtons = screen
+      .getAllByRole("button")
+      .filter((btn) => btn.classList.contains("map-button"));
 
     const mapButton = mapButtons[0];
 
