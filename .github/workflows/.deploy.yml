@@ -191,7 +191,7 @@ jobs:
         if: always()
         with:
           name: E2E on dev server for coverage test results
-          path: ${{ github.workspace }}/frontend/test-results/
+          path: frontend/test-results/
 
   # tests-frontend-e2e-built:
   # name: E2E with built frontend and backend

@@ -44,7 +44,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userRoles, setUserRoles] = useState<string[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  const appEnv = env.VITE_ZONE ?? "TEST";
+  /**
+   * Resolves the application environment.
+   * Defaults to "TEST" if VITE_ZONE is not set or is numeric from PR deployments.
+   */
+  const appEnv = isNaN(Number(env.VITE_ZONE)) ? env.VITE_ZONE ?? "TEST" : "TEST";
 
   const refreshUserState = async () => {
     setIsLoading(true);
