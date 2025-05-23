@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,13 @@ public class ApiAuthorizationCustomizer implements
         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
         > {
 
+  /**
+   * The environment of the application, which is injected from the application properties. The
+   * default value is "PROD".
+   */
+  @Value("${ca.bc.gov.nrs.environment:PROD}")
+  String environment;
+
   @Override
   public void customize(
       AuthorizeHttpRequestsConfigurer<HttpSecurity>
@@ -24,9 +32,21 @@ public class ApiAuthorizationCustomizer implements
 
     authorize
         // Allow actuator endpoints to be accessed without authentication
-        // This is useful for monitoring and health checks
         .requestMatchers(HttpMethod.GET, "/actuator/**")
-        .permitAll()
+        .permitAll();
+
+    // Only allow OpenAPI and Swagger UI in the local environment
+    if (SecurityEnvironmentUtils.isLocalEnvironment(environment)) {
+      authorize
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+        .permitAll();
+    } else {
+      authorize
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+        .denyAll();
+    }
+
+    authorize
         // Protect everything under /api with authentication
         .requestMatchers("/api/**")
         .authenticated()

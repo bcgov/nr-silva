@@ -31,7 +31,7 @@
     "vite-tsconfig-paths": "^5.0.0"
   },
   "scripts": {
-    "start": "VITE_COVERAGE=true vite --host",
+    "start": "npm run generate:openapi && vite --host",
     "build": "tsc && vite build",
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"3g6n2ha1loi4kp1jhaq359vrvb\\\", \\\"VITE_ZONE\\\": \\\"DEV\\\", \\\"VITE_BACKEND_URL\\\": \\\"http://localhost:8080\\\" };\" > build/env.js",
     "serve": "vite preview --port 4173",
@@ -42,6 +42,7 @@
     "test:build": "vitest watch",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
+    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
     "precoverage": "rm -rf .nyc_output",
     "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
     "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
@@ -92,6 +93,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "jsdom": "^26.0.0",
+    "openapi-typescript": "^7.8.0",
     "nyc": "^17.1.0",
     "sass": "^1.62.1",
     "sass-loader": "^16.0.0",
