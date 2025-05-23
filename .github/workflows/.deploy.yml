@@ -13,7 +13,7 @@ on:
         type: string
       environment:
         description: GitHub/OpenShift environment; usually PR number, test or prod
-        default: ''
+        default: ""
         required: false
         type: string
       tag:
@@ -28,21 +28,21 @@ on:
         type: string
       triggers:
         description: Triggers for deployment
-        default: ''
+        default: ""
         type: string
 
       ### Per-environment config
       backend_cpu_request:
         description: CPU request for backend
-        default: '50m'
+        default: "50m"
         type: string
       backend_min_replicas:
         description: Minimum replicas for backend
-        default: '3'
+        default: "3"
         type: string
       backend_max_replicas:
         description: Maximum replicas for backend
-        default: '5'
+        default: "5"
         type: string
 
     outputs:
@@ -88,8 +88,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           file: common/openshift.init.yml
           overwrite: true
-          parameters:
-            -p ZONE=${{ inputs.target }}
+          parameters: -p ZONE=${{ inputs.target }}
             -p ORACLE_DB_USER=${{ secrets.DB_USER }}
             -p ORACLE_DB_PASSWORD='${{ secrets.ORACLE_DB_PASSWORD }}'
             -p ORACLE_DB_HOST='${{ secrets.ORACLE_DB_HOST }}'
@@ -112,14 +111,12 @@ jobs:
         include:
           - name: database
             file: common/openshift.database.yml
-            parameters:
-              -p DB_PVC_SIZE=128Mi
+            parameters: -p DB_PVC_SIZE=128Mi
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
             overwrite: true
-            parameters:
-              -p DB_POOL_MAX_SIZE=1
+            parameters: -p DB_POOL_MAX_SIZE=1
               -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
               -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
               -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
@@ -131,8 +128,7 @@ jobs:
           - name: frontend
             file: frontend/openshift.deploy.yml
             overwrite: true
-            parameters:
-              -p MIN_REPLICAS=1
+            parameters: -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
     steps:
@@ -144,11 +140,72 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters:
-            -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }}
+          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }}
             ${{ matrix.parameters }}
           timeout: 15m
           triggers: ${{ inputs.triggers }}
           verification_path: ${{ matrix.verification_path }}
           verification_retry_attempts: 5
           verification_retry_seconds: 20
+
+  tests-frontend-dev-coverage:
+    name: E2E with frontend coverage
+    if: inputs.target != 'prod' && inputs.target != 'PROD'
+    needs: [deploy, init]
+    runs-on: ubuntu-24.04
+    env:
+      VITE_ZONE: ${{ inputs.target }}
+      VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+      VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+      VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+    steps:
+      - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
+        with:
+          commands: |
+            npm ci
+            npm run e2e:ci:dev
+          dir: frontend
+          node_version: "20"
+          sonar_args: >
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.projectKey=nr-silva-frontend
+            -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
+            -Dsonar.typescript.tsconfigPaths=tsconfig.json
+            -Dsonar.sources=src/
+            -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/__e2e__/**,
+            -Dsonar.tests=src/__e2e__/
+            -Dsonar.project.monorepo.enabled=true
+          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+        env:
+          VITE_ZONE: ${{ inputs.target }}
+          VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+          VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+
+  tests-frontend-e2e-built:
+    name: E2E with built frontend and backend
+    if: inputs.target != 'prod' && inputs.target != 'PROD'
+    needs: [deploy]
+    runs-on: ubuntu-24.04
+    env:
+      VITE_ZONE: ${{ inputs.target }}
+      VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+      VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+      VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+      VITE_BASE_URL: https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run E2E Tests
+        run: npm run e2e:ci:build
+        working-directory: frontend

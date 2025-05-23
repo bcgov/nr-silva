@@ -45,8 +45,8 @@
     "precoverage": "rm -rf .nyc_output",
     "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
     "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
-    "e2e:build": "npm run precoverage && BASE_URL=http://localhost:4173 npm run build && npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test serve http://localhost:4173 test:playwright && npm run report:coverage",
-    "e2e:build:ui": "npm run build && npm run build:env && start-server-and-test serve http://localhost:4173 test:playwright:ui",
+    "e2e:ci:dev": "npm run precoverage &&  BASE_URL=http://localhost:3000 start-server-and-test serve http://localhost:3000 test:playwright && npm run report:coverage",
+    "e2e:ci:build": "npm run precoverage && npm run test:playwright:ui",
     "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
   },
   "browserslist": {
