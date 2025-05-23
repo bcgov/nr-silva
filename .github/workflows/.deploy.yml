@@ -154,7 +154,7 @@ jobs:
     needs: [deploy, init]
     runs-on: ubuntu-24.04
     env:
-      VITE_ZONE: ${{ inputs.target }}
+      VITE_ZONE: TEST
       VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
       VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
       VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
@@ -179,7 +179,7 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
         env:
-          VITE_ZONE: ${{ inputs.target }}
+          VITE_ZONE: TEST
           VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
           VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
           VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
