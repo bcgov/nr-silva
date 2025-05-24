@@ -1,6 +1,6 @@
 ## Use this section once builds are fixed
 
-FROM node:20.19.1-bullseye-slim@sha256:d22f9a922b63416d8e96f8c4b3eaa7e8451cd1eee7d5b676966cd44a43655dfa AS build
+FROM node:20.19.2-bullseye-slim@sha256:105d30ef2a69e1ca4680b52e9b1b6d871a3c4fb6751539fd6a2a0963629c1fc0 AS build
 
 # Build static files
 WORKDIR /app
