@@ -50,7 +50,7 @@ async function globalSetup() {
   pageTitle = await page.title();
   console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
 
-  console.log(`[debug] content: ${page.content}`);
+  console.log('[debug] content:', await page.content());
 
   await page.waitForURL('**/dashboard', { timeout: TWO_MINUTE });
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
