@@ -44,7 +44,7 @@
     <testcontainers.version>1.21.0</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
     <spring-oauth2.version>3.4.5</spring-oauth2.version>
-    <spring-security.version>6.4.5</spring-security.version>
+    <spring-security.version>6.5.0</spring-security.version>
     <logback-classic.version>1.5.18</logback-classic.version>
     <spring-logging.version>3.4.5</spring-logging.version>
     <oracle-jdbc.version>23.8.0.25.04</oracle-jdbc.version>
