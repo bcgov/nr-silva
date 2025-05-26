@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import SilvicultureSearch from "../../screens/SilvicultureSearch";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 
 describe("SilvicultureSearch Component", () => {
   const queryClient = new QueryClient();
@@ -12,7 +13,9 @@ describe("SilvicultureSearch Component", () => {
     render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
-          <SilvicultureSearch />
+          <PreferenceProvider>
+            <SilvicultureSearch />
+          </PreferenceProvider>
         </QueryClientProvider>
       </BrowserRouter>
     );
