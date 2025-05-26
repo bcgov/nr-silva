@@ -196,7 +196,7 @@ jobs:
   tests-frontend-e2e-built:
     name: E2E with built frontend and backend
     if: inputs.target != 'prod' && inputs.target != 'PROD'
-    needs: [deploy, init]
+    needs: [init]
     runs-on: ubuntu-24.04
     env:
       VITE_ZONE: TEST
