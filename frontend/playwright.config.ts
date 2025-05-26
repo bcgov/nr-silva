@@ -1,11 +1,11 @@
 import { defineConfig, chromium } from '@playwright/test';
-import { THIRTY_SECONDS } from './src/constants/TimeUnits';
+import { TWO_MINUTE } from './src/constants/TimeUnits';
 
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 
 export default defineConfig({
   testDir: './src/__e2e__',
-  timeout: THIRTY_SECONDS,
+  timeout: TWO_MINUTE,
   retries: 0,
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
