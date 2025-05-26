@@ -12,6 +12,8 @@ const bceidPassword = process.env.TEST_BCEID_PASSWORD ?? '';
 
 
 async function globalSetup() {
+  console.log(`Global setup - Base URL: ${baseURL}`);
+
   const browser = await chromium.launch();
   const page = await browser.newPage();
 

@@ -6,7 +6,7 @@ const resolveQueryString = (queryString: string | null) => {
 }
 
 // Define the API base URL from the environment variables
-const API_BASE_URL = `${env.VITE_BACKEND_URL}/api`;
+const API_BASE_URL = `${env.VITE_BACKEND_URL ?? 'http://localhost:8080'}/api`;
 
 // Define the API endpoints, making it easier to refactor in the future when needed
 const API_ENDPOINTS = {
