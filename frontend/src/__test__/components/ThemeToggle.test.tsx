@@ -1,8 +1,10 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import ThemeToggle from '../../components/ThemeToggle';
-import { ThemePreference } from '../../utils/ThemePreference';
+import React from "react";
+import { render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import ThemeToggle from "../../components/ThemeToggle";
+import { ThemePreference } from "../../utils/ThemePreference";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -20,18 +22,25 @@ beforeAll(() => {
   });
 });
 
-describe('Theme toggle component tests', () => {
+describe("Theme toggle component tests", () => {
+  const queryClient = new QueryClient();
   const renderWithThemeProvider = (component: React.JSX.Element) =>
-    render(<ThemePreference>{component}</ThemePreference>);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <PreferenceProvider>
+          <ThemePreference>{component}</ThemePreference>
+        </PreferenceProvider>
+      </QueryClientProvider>
+    );
 
-  it('should render correctly', () => {
+  it("should render correctly", () => {
     const { container } = renderWithThemeProvider(<ThemeToggle />);
     expect(container).toMatchSnapshot();
   });
 
-  it('should toggle theme when button is clicked', () => {
+  it("should toggle theme when button is clicked", () => {
     const { container } = renderWithThemeProvider(<ThemeToggle />);
-    const button = container.querySelector('button');
+    const button = container.querySelector("button");
     button?.click();
     expect(container).toMatchSnapshot();
   });
