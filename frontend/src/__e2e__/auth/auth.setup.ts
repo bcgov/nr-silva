@@ -27,6 +27,11 @@ async function globalSetup() {
   await page.click('input[name="btnSubmit"]');
 
   // DEBUG
+  const userValue = await page.inputValue('#user');
+  const passwordValue = await page.inputValue('#password');
+
+  console.log(`[debug] user first char: ${userValue.charAt(0)}`);
+  console.log(`[debug] password first char: ${passwordValue.charAt(0)}`);
   await page.waitForTimeout(5000);
   let currentURL = page.url();
   let pageTitle = await page.title();
