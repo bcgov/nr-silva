@@ -10,7 +10,6 @@ export default defineConfig({
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
   use: {
-    navigationTimeout: TWO_MINUTE,
     headless: true,
     baseURL,
     viewport: { width: 1920, height: 1080 },

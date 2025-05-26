@@ -1,6 +1,7 @@
 import { chromium, expect } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { TWO_MINUTE } from '@/constants/TimeUnits';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,7 +26,13 @@ async function globalSetup() {
   await page.fill('#password', bceidPassword);
   await page.click('input[name="btnSubmit"]');
 
-  await page.waitForURL('**/dashboard');
+  // DEBUG
+  await page.waitForTimeout(5000);
+  const currentURL = page.url();
+  const pageTitle = await page.title();
+  console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
+
+  await page.waitForURL('**/dashboard', { timeout: TWO_MINUTE });
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   await page.context().storageState({ path: authFile });
