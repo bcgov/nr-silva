@@ -204,6 +204,8 @@ jobs:
       VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
       VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+      TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
+      TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 

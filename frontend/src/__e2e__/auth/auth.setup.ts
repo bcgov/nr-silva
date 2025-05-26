@@ -13,6 +13,10 @@ const bceidPassword = process.env.TEST_BCEID_PASSWORD ?? '';
 
 
 async function globalSetup() {
+  if (!bceidUser || !bceidPassword) {
+    throw new Error('No BCeID credential.')
+  }
+
   console.log(`Global setup - Base URL: ${baseURL}`);
 
   const browser = await chromium.launch();
@@ -25,37 +29,6 @@ async function globalSetup() {
   await page.fill('#user', bceidUser);
   await page.fill('#password', bceidPassword);
   await page.click('input[name="btnSubmit"]');
-
-  // DEBUG
-  const userValue = await page.inputValue('#user');
-  const passwordValue = await page.inputValue('#password');
-
-  console.log(`[debug] user first char: ${userValue.charAt(0)}`);
-  console.log(`[debug] password first char: ${passwordValue.charAt(0)}`);
-  await page.waitForTimeout(5000);
-  let currentURL = page.url();
-  let pageTitle = await page.title();
-  console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
-
-  // DEBUG
-  await page.waitForTimeout(5000);
-  currentURL = page.url();
-  pageTitle = await page.title();
-  console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
-
-  // DEBUG
-  await page.waitForTimeout(5000);
-  currentURL = page.url();
-  pageTitle = await page.title();
-  console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
-
-  // DEBUG
-  await page.waitForTimeout(5000);
-  currentURL = page.url();
-  pageTitle = await page.title();
-  console.log(`[debug] URL: ${currentURL}, Title: ${pageTitle}`);
-
-  console.log('[debug] content:', await page.content());
 
   await page.waitForURL('**/dashboard', { timeout: TWO_MINUTE });
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
