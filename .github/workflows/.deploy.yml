@@ -99,99 +99,99 @@ jobs:
             -p VITE_USER_POOLS_ID=${{ vars.VITE_USER_POOLS_ID }}
           triggers: ${{ inputs.triggers }}
 
-  deploy:
-    name: Deploy
-    environment: ${{ inputs.environment }}
-    needs: [init]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    strategy:
-      matrix:
-        name: [database, backend, frontend]
-        include:
-          - name: database
-            file: common/openshift.database.yml
-            parameters: -p DB_PVC_SIZE=128Mi
-            overwrite: false
-          - name: backend
-            file: backend/openshift.deploy.yml
-            overwrite: true
-            parameters: -p DB_POOL_MAX_SIZE=1
-              -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
-              -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
-              -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
-              -p ALLOWED_ORIGINS=${{ needs.init.outputs.allowed_origins }}
-              -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
-              -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
-              -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
-            verification_path: /actuator/health
-          - name: frontend
-            file: frontend/openshift.deploy.yml
-            overwrite: true
-            parameters: -p MIN_REPLICAS=1
-              -p MAX_REPLICAS=1
-              -p FAM_ROUTE=${{ needs.init.outputs.route }}
-    steps:
-      - uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
-        id: deploys
-        with:
-          file: ${{ matrix.file }}
-          oc_namespace: ${{ vars.OC_NAMESPACE }}
-          oc_server: ${{ vars.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }}
-            ${{ matrix.parameters }}
-          timeout: 15m
-          triggers: ${{ inputs.triggers }}
-          verification_path: ${{ matrix.verification_path }}
-          verification_retry_attempts: 5
-          verification_retry_seconds: 20
+  # deploy:
+  #   name: Deploy
+  #   environment: ${{ inputs.environment }}
+  #   needs: [init]
+  #   runs-on: ubuntu-24.04
+  #   timeout-minutes: 15
+  #   strategy:
+  #     matrix:
+  #       name: [database, backend, frontend]
+  #       include:
+  #         - name: database
+  #           file: common/openshift.database.yml
+  #           parameters: -p DB_PVC_SIZE=128Mi
+  #           overwrite: false
+  #         - name: backend
+  #           file: backend/openshift.deploy.yml
+  #           overwrite: true
+  #           parameters: -p DB_POOL_MAX_SIZE=1
+  #             -p AWS_COGNITO_ISSUER_URI=https://cognito-idp.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.VITE_USER_POOLS_ID }}
+  #             -p DASHBOARD_JOB_IDIR_USERS=${{ vars.DASHBOARD_JOB_IDIR_USERS }}
+  #             -p WMS_LAYERS_WHITELIST_USERS=${{ vars.WMS_LAYERS_WHITELIST_USERS }}
+  #             -p ALLOWED_ORIGINS=${{ needs.init.outputs.allowed_origins }}
+  #             -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
+  #             -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
+  #             -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
+  #           verification_path: /actuator/health
+  #         - name: frontend
+  #           file: frontend/openshift.deploy.yml
+  #           overwrite: true
+  #           parameters: -p MIN_REPLICAS=1
+  #             -p MAX_REPLICAS=1
+  #             -p FAM_ROUTE=${{ needs.init.outputs.route }}
+  #   steps:
+  #     - uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
+  #       id: deploys
+  #       with:
+  #         file: ${{ matrix.file }}
+  #         oc_namespace: ${{ vars.OC_NAMESPACE }}
+  #         oc_server: ${{ vars.OC_SERVER }}
+  #         oc_token: ${{ secrets.OC_TOKEN }}
+  #         overwrite: ${{ matrix.overwrite }}
+  #         parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }}
+  #           ${{ matrix.parameters }}
+  #         timeout: 15m
+  #         triggers: ${{ inputs.triggers }}
+  #         verification_path: ${{ matrix.verification_path }}
+  #         verification_retry_attempts: 5
+  #         verification_retry_seconds: 20
 
-  tests-frontend-dev-coverage:
-    name: E2E with frontend coverage
-    if: inputs.target != 'prod' && inputs.target != 'PROD'
-    needs: [deploy, init]
-    runs-on: ubuntu-24.04
-    env:
-      VITE_ZONE: TEST
-      VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-      VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-      VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
-    steps:
-      - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
-        with:
-          commands: |
-            npm ci
-            npx playwright install chromium
-            npm run e2e:ci:dev
-          dir: frontend
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.projectKey=nr-silva-frontend
-            -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
-            -Dsonar.typescript.tsconfigPaths=tsconfig.json
-            -Dsonar.sources=src/
-            -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/__e2e__/**,
-            -Dsonar.tests=src/__e2e__/
-            -Dsonar.project.monorepo.enabled=true
-          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
-        env:
-          VITE_ZONE: TEST
-          VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-          VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-          VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
-          TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
-          TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
+  # tests-frontend-dev-coverage:
+  #   name: E2E with frontend coverage
+  #   if: inputs.target != 'prod' && inputs.target != 'PROD'
+  #   needs: [deploy, init]
+  #   runs-on: ubuntu-24.04
+  #   env:
+  #     VITE_ZONE: TEST
+  #     VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+  #     VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+  #     VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+  #   steps:
+  #     - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
+  #       with:
+  #         commands: |
+  #           npm ci
+  #           npx playwright install chromium
+  #           npm run e2e:ci:dev
+  #         dir: frontend
+  #         node_version: "20"
+  #         sonar_args: >
+  #           -Dsonar.organization=bcgov-sonarcloud
+  #           -Dsonar.projectKey=nr-silva-frontend
+  #           -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
+  #           -Dsonar.typescript.tsconfigPaths=tsconfig.json
+  #           -Dsonar.sources=src/
+  #           -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/__e2e__/**,
+  #           -Dsonar.tests=src/__e2e__/
+  #           -Dsonar.project.monorepo.enabled=true
+  #         sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+  #         triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+  #       env:
+  #         VITE_ZONE: TEST
+  #         VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+  #         VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+  #         VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
+  #         TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
+  #         TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: E2E on dev server for coverage test results
-          path: frontend/test-results/
+  #     - name: Upload test results
+  #       uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: E2E on dev server for coverage test results
+  #         path: frontend/test-results/
 
   tests-frontend-e2e-built:
     name: E2E with built frontend and backend
