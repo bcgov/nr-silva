@@ -7,6 +7,7 @@ import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
 
 import "./styles.scss";
+import Comments from "../../Comments";
 
 type OpeningOverviewProps = {
   isLoading?: boolean
@@ -50,21 +51,7 @@ const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
           </Column>
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Comment" showSkeleton={isLoading}>
-              {
-                (overviewObj?.opening.comments ?? []).length > 0
-                  ? (
-                    <ul className="comment-list">
-                      {overviewObj?.opening?.comments?.map((comment, index) =>
-                        comment.commentText ? (
-                          <li key={index}>
-                            {comment.commentText}
-                          </li>
-                        ) : null
-                      )}
-                    </ul>
-                  )
-                  : null
-              }
+              <Comments comments={overviewObj?.opening.comments ?? []} />
             </CardItem>
           </Column>
         </Grid>
