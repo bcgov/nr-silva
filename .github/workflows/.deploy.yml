@@ -203,7 +203,7 @@ jobs:
       VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
       VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
       VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
-      BASE_URL: https://${{ github.event.repository.name }}-${{ needs.init.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+      BASE_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-frontend.apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v4
 
