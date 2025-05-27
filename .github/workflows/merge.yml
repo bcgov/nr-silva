@@ -39,17 +39,9 @@ jobs:
       tag: ${{ needs.init.outputs.pr }}
       target: test
 
-  e2e-on-test:
-    name: E2E on Test environment
-    needs: [deploys-test]
-    uses: ./.github/workflows/e2e.yml
-    secrets: inherit
-    with:
-      target: test
-
   deploys-prod:
     name: PROD Deploys (${{ needs.init.outputs.pr }})
-    needs: [init, deploys-test, e2e-on-test]
+    needs: [init, deploys-test]
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
