@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useEffect } from "react";
 import tokml from "tokml";
 
 interface OpeningsMapDownloaderProps {
@@ -8,19 +8,26 @@ interface OpeningsMapDownloaderProps {
 const OpeningsMapDownloader: React.FC<OpeningsMapDownloaderProps> = ({
   feature,
 }) => {
-  const kmlFileUrl = React.useMemo(() => {
+  const kmlFileUrl = useMemo(() => {
     const blob = new Blob([tokml(feature)], {
       type: "application/vnd.google-earth.kml+xml",
     });
     return URL.createObjectURL(blob);
   }, [feature]);
 
-  const geoJsonFileUrl = React.useMemo(() => {
+  const geoJsonFileUrl = useMemo(() => {
     const blob = new Blob([JSON.stringify(feature)], {
       type: "application/json",
     });
     return URL.createObjectURL(blob);
   }, [feature]);
+
+  useEffect(() => {
+    return () => {
+      URL.revokeObjectURL(kmlFileUrl);
+      URL.revokeObjectURL(geoJsonFileUrl);
+    };
+  }, [kmlFileUrl, geoJsonFileUrl]);
 
   return (
     <>

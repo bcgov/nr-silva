@@ -10,21 +10,28 @@ vi.mock("tokml", () => ({
 }));
 
 const mockCreateObjectURL = vi.fn(() => "blob:mock-url");
+const mockRevokeObjectURL = vi.fn();
 const originalCreateObjectURL = URL.createObjectURL;
+const originalRevokeObjectURL = URL.revokeObjectURL;
 
 describe("OpeningsMapDownloader", () => {
   beforeAll(() => {
     // @ts-ignore
     URL.createObjectURL = mockCreateObjectURL;
+    // @ts-ignore
+    URL.revokeObjectURL = mockRevokeObjectURL;
   });
 
   afterAll(() => {
     // @ts-ignore
     URL.createObjectURL = originalCreateObjectURL;
+    // @ts-ignore
+    URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
   beforeEach(() => {
     mockCreateObjectURL.mockClear();
+    mockRevokeObjectURL.mockClear();
   });
 
   const feature = {
@@ -53,5 +60,14 @@ describe("OpeningsMapDownloader", () => {
       "href",
       "blob:mock-url"
     );
+  });
+
+  it("revokes object URLs on unmount", () => {
+    const { unmount } = render(
+      <OpeningsMapDownloader feature={feature as any} />
+    );
+    unmount();
+    expect(mockRevokeObjectURL).toHaveBeenCalledTimes(2);
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:mock-url");
   });
 });
