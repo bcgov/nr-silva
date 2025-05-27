@@ -94,6 +94,9 @@
     "ws@8.17.0": "8.17.1",
     "@babel/runtime": "7.27.1",
     "@babel/helpers": "7.27.1",
-    "react-router": "7.6.0"
+    "react-router": "7.6.0",
+    "minimatch": "3.0.5",
+    "minimist": "1.2.6",
+    "uglify-js": "2.6.0"
   }
 }
