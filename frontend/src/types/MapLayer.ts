@@ -11,6 +11,7 @@ export type MapLayer = {
   styles: {name: string, title: string}[];
   catalogueUrl: string;
   getCapabilitiesUrl: string;
+  filterable: boolean;
 };
 
 export type BaseMapLayer = {
