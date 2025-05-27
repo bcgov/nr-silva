@@ -48,6 +48,7 @@ jobs:
   e2e:
     name: E2E test on (${{ github.event.number }})
     uses: ./.github/workflows/e2e.yml
+    secrets: inherit
     needs: [deploys]
 
   results:
