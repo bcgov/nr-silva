@@ -8,27 +8,26 @@ interface OpeningsMapDownloaderProps {
 const OpeningsMapDownloader: React.FC<OpeningsMapDownloaderProps> = ({
   feature,
 }) => {
-  const generateKmlFile = () => {
+  const kmlFileUrl = React.useMemo(() => {
     const blob = new Blob([tokml(feature)], {
       type: "application/vnd.google-earth.kml+xml",
     });
-
     return URL.createObjectURL(blob);
-  };
+  }, [feature]);
 
-  const generateGeoJsonFile = () => {
+  const geoJsonFileUrl = React.useMemo(() => {
     const blob = new Blob([JSON.stringify(feature)], {
       type: "application/json",
     });
     return URL.createObjectURL(blob);
-  };
+  }, [feature]);
 
   return (
     <>
-      <a href={generateKmlFile()} download="data.kml">
+      <a href={kmlFileUrl} download="data.kml">
         Download as a KML file
       </a>
-      <a href={generateGeoJsonFile()} download="data.geojson">
+      <a href={geoJsonFileUrl} download="data.geojson">
         Download as a GeoJSON file
       </a>
     </>
