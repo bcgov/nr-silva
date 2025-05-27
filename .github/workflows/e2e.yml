@@ -65,7 +65,7 @@ jobs:
           TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
 
       - name: Check test-results exists
-        run: ls -R frontend || echo "Not found"
+        run: ls frontend || echo "Not found"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -108,7 +108,7 @@ jobs:
         working-directory: frontend
 
       - name: Check test-results exists
-        run: ls -R frontend || echo "Not found"
+        run: ls frontend || echo "Not found"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
