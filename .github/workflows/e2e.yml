@@ -64,12 +64,15 @@ jobs:
           TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
           TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
 
+      - name: Check test-results exists
+        run: ls -R frontend || echo "Not found"
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: E2E on dev server for coverage test results
-          path: test-results/
+          path: frontend/test-results/
 
   tests-frontend-e2e-built:
     name: E2E with built frontend and backend
@@ -104,9 +107,12 @@ jobs:
         run: npm run e2e:ci:build
         working-directory: frontend
 
+      - name: Check test-results exists
+        run: ls -R frontend || echo "Not found"
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: E2E on built apps test results
-          path: test-results/
+          path: frontend/test-results/
