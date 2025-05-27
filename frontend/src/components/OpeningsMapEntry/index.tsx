@@ -96,6 +96,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
                   <OpeningsMapEntryPopup
                     openingId={getOpeningId(featureCollection)}
                     data={getPropertyForFeature(feature)}
+                    feature={featureCollection}
                   />
                 </Popup>
               ))}
@@ -122,6 +123,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
                   <OpeningsMapEntryPopup
                     openingId={getOpeningId(featureCollection)}
                     data={getPropertyForFeature(feature)}
+                    feature={featureCollection}
                   />
                 </Popup>
               ))}
