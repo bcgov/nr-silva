@@ -111,10 +111,11 @@ const OpeningsMap: React.FC<MapProps> = ({
    * and returns it as an object. Otherwise, it returns an empty object.
    * This should be true only inside opening details page, as it can impact negatively
    * the map layers when displaying all the openings.
+   * @param filterable - Indicates if the layer is filterable
    * @returns extra parameters for the WMS layer
    */
-  const extraParameters = () => {
-    if (layerFilter && openingIds?.length) {
+  const extraParameters = (filterable: boolean) => {
+    if (layerFilter && openingIds?.length && filterable) {
       return {
         CQL_FILTER: openingIds
           .map((id) => `OPENING_ID=${id}`)
@@ -162,7 +163,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                     layers: layer.layers,
                     transparent: layer.transparent,
                     styles: layer.styles[0].name,
-                    ...extraParameters(),
+                    ...extraParameters(layer.filterable),
                   }}
                 />
               </LayersControl.Overlay>
