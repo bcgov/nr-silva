@@ -2,6 +2,7 @@ name: E2E tests
 
 on:
   workflow_call:
+    secrets: inherit
     inputs:
       target:
         description: Deployment target; usually PR number, test or prod
