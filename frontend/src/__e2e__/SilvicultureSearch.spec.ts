@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../setup/coverage';
+import { test } from './setup/coverage';
 
 test('Navigate to Silviculture Search', async ({ page }) => {
   // Go to dashboard

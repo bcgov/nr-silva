@@ -128,7 +128,8 @@
       "**/*.spec.ts",
       "**/__e2e__/**",
       "**/__test__/**",
-      "**/assets/**"
+      "**/assets/**",
+      "**/Landing/index.tsx"
     ],
     "extension": [
       ".ts",

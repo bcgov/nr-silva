@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../setup/coverage';
+import { test } from './setup/coverage';
 
 test('Dashboard', async ({ page }) => {
   await page.goto('/');
