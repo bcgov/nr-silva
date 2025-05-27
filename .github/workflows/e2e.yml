@@ -9,6 +9,8 @@ on:
         required: false
         type: string
 
+permissions: {}
+
 jobs:
   fam-routing:
     runs-on: ubuntu-24.04
