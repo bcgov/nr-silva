@@ -11,28 +11,28 @@ concurrency:
 permissions: {}
 
 jobs:
-  # builds:
-  #   name: Builds
-  #   runs-on: ubuntu-24.04
-  #   permissions:
-  #     packages: write
-  #   strategy:
-  #     matrix:
-  #       name: [backend, frontend]
-  #       include:
-  #         - name: backend
-  #           triggers: ('backend/')
-  #         - name: frontend
-  #           triggers: ('frontend/')
-  #   steps:
-  #     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-  #     - uses: bcgov/action-builder-ghcr@ace71f7a527ca6fc43c15c7806314be5a4579d2c # v2.3.0
-  #       with:
-  #         package: ${{ matrix.name }}
-  #         tag: ${{ github.event.number }}
-  #         tag_fallback: latest
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         triggers: ${{ matrix.triggers }}
+  builds:
+    name: Builds
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        name: [backend, frontend]
+        include:
+          - name: backend
+            triggers: ('backend/')
+          - name: frontend
+            triggers: ('frontend/')
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: bcgov/action-builder-ghcr@ace71f7a527ca6fc43c15c7806314be5a4579d2c # v2.3.0
+        with:
+          package: ${{ matrix.name }}
+          tag: ${{ github.event.number }}
+          tag_fallback: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+          triggers: ${{ matrix.triggers }}
 
   deploys:
     name: Deploys (${{ github.event.number }})
@@ -44,11 +44,16 @@ jobs:
       backend_max_replicas: "1"
       triggers: ('backend/' 'common/' 'frontend/')
 
+  e2e:
+    name: E2E test on (${{ github.event.number }})
+    uses: ./.github/workflows/e2e.yml
+    needs: [deploys]
+
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [deploys]
+    needs: [deploys, e2e]
     runs-on: ubuntu-24.04
     steps:
       - run: |
