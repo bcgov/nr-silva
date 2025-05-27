@@ -15,7 +15,6 @@ jobs:
   fam-routing:
     runs-on: ubuntu-24.04
     name: Generate FAM routing
-    needs: [init]
     steps:
       - name: FAM routing
         id: route
