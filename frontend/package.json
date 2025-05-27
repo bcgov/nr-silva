@@ -129,7 +129,9 @@
       "**/__e2e__/**",
       "**/__test__/**",
       "**/assets/**",
-      "**/Landing/index.tsx"
+      "**/Landing/index.tsx",
+      "**/constants.ts",
+      "**/constants.tsx"
     ],
     "extension": [
       ".ts",

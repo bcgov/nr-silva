@@ -30,7 +30,7 @@ async function globalSetup() {
   await page.fill('#password', bceidPassword);
   await page.click('input[name="btnSubmit"]');
 
-  await page.waitForURL('**/dashboard', { timeout: TWO_MINUTE });
+  await page.waitForURL('**/dashboard');
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   await page.context().storageState({ path: authFile });
