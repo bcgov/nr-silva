@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const bceidUser = process.env.TEST_BCEID_USERNAME ?? '';
 const bceidPassword = process.env.TEST_BCEID_PASSWORD ?? '';
+const isAllBrowsers = process.env.ALL_BROWSERS === 'true';
 
 const browserMap = {
   chromium,
@@ -19,6 +20,8 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   const browserType = browserMap[browserTypeName];
   const browser = await browserType.launch();
   const page = await browser.newPage();
+
+  console.log(`Global setup - Browser: ${browserTypeName}, url: ${baseURL}`)
 
   await page.goto(baseURL);
   await page.click('[data-testid="landing-button__bceid"]');
@@ -39,11 +42,15 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
 
 async function globalSetup() {
   if (!bceidUser || !bceidPassword) {
-    throw new Error('No BCeID credentials set in env');
+    throw new Error('No BCeID credentials set in environment variables');
   }
 
-  for (const name of Object.keys(browserMap) as (keyof typeof browserMap)[]) {
-    await loginAndSaveStorage(name);
+  if (isAllBrowsers) {
+    for (const name of Object.keys(browserMap)) {
+      await loginAndSaveStorage(name as keyof typeof browserMap);
+    }
+  } else {
+    await loginAndSaveStorage('chromium');
   }
 }
 
