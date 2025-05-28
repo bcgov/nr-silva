@@ -321,10 +321,8 @@ export type components = {
             clientName?: string;
             legalFirstName?: string;
             legalMiddleName?: string;
-            /** @enum {string} */
-            clientStatusCode?: "ACT" | "DAC" | "DEC" | "REC" | "SPN";
-            /** @enum {string} */
-            clientTypeCode?: "A" | "B" | "C" | "F" | "G" | "I" | "L" | "P" | "R" | "S" | "T" | "U";
+            clientStatusCode?: components["schemas"]["CodeDescriptionDto"];
+            clientTypeCode?: components["schemas"]["CodeDescriptionDto"];
             acronym?: string;
             name?: string;
         };
@@ -595,10 +593,8 @@ export type components = {
             /** Format: int64 */
             openingId?: number;
             openingNumber?: string;
-            /** @enum {string} */
-            category?: "CONT" | "EXCLU" | "FFTFLTC" | "FFTITSL" | "FTCF" | "FTFSM" | "FTLEVY" | "FTML" | "FTMSL" | "FTNOLVY" | "FTPI" | "FTSBF" | "FTWL" | "NDAML" | "NDCF" | "NDVML" | "NDWL" | "NREQ" | "SPEX" | "UHRV";
-            /** @enum {string} */
-            status?: "AMD" | "AMG" | "APP" | "DFT" | "FG" | "RET" | "SUB";
+            category?: components["schemas"]["CodeDescriptionDto"];
+            status?: components["schemas"]["CodeDescriptionDto"];
             cuttingPermitId?: string;
             timberMark?: string;
             cutBlockId?: string;
@@ -1073,7 +1069,9 @@ export interface operations {
     };
     getOpeningPolygonAndProperties: {
         parameters: {
-            query?: never;
+            query?: {
+                kind?: string;
+            };
             header?: never;
             path: {
                 openingId: string;
