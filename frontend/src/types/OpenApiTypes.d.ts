@@ -1073,7 +1073,9 @@ export interface operations {
     };
     getOpeningPolygonAndProperties: {
         parameters: {
-            query?: never;
+            query?: {
+                kind?: string;
+            };
             header?: never;
             path: {
                 openingId: string;
