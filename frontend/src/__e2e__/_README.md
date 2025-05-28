@@ -16,7 +16,7 @@ Our E2E tests are configured to run only on screens where a user is logged in, s
 - `/auth` contains 3 files:
   1. `auth.setup.ts` signs in to the app and maintains the user session for all tests. The session is stored in `user.json`.
   2. `auth.teardown.ts` clears the user session by resetting `user.json`. This is triggered at the end of all test runs or when tests are manually terminated.
-  3. `user.json` stores the user session during E2E runs. Ensure that `user.json` is empty (`{}`) when pushing to the repo. Playwright should clear this automatically, but if it fails, clear it manually.
+  3. `user.{browser_name}.json` stores the user session during E2E runs. Ensure that `user.*.json` are empty (`{}`) when pushing to the repo. Playwright should clear this automatically, but if it fails, clear it manually.
 
 - `/setup` contains 1 file:
   1. `coverage.ts` collects one coverage file per test. These are merged by `nyc` in a separate script. All tests must `import { test } from './setup/coverage'` instead of importing from `@playwright/test` to enable coverage generation.

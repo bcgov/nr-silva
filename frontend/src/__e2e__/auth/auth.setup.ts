@@ -1,4 +1,4 @@
-import { chromium, firefox, webkit, expect, type FullConfig, type BrowserType } from '@playwright/test';
+import { chromium, firefox, webkit, expect } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -9,37 +9,19 @@ const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const bceidUser = process.env.TEST_BCEID_USERNAME ?? '';
 const bceidPassword = process.env.TEST_BCEID_PASSWORD ?? '';
 
+const browserMap = {
+  chromium,
+  firefox,
+  webkit,
+} as const;
 
-function getBrowserType(projectName: string): BrowserType {
-  switch (projectName) {
-    case 'firefox':
-      return firefox;
-    case 'webkit':
-      return webkit;
-    case 'chromium':
-    default:
-      return chromium;
-  }
-}
-
-async function globalSetup(config: FullConfig) {
-  if (!bceidUser || !bceidPassword) {
-    throw new Error('No BCeID credential.')
-  }
-
-  const projectName = config.projects[0].name;
-  const authFile = path.join(__dirname, `./user.${projectName}.json`);
-
-  console.log(authFile);
-
-  console.log(`Global setup - Base URL: ${baseURL}`);
-
-  const browser = await getBrowserType(projectName).launch();
+async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
+  const browserType = browserMap[browserTypeName];
+  const browser = await browserType.launch();
   const page = await browser.newPage();
 
   await page.goto(baseURL);
   await page.click('[data-testid="landing-button__bceid"]');
-
   await page.waitForSelector('#user');
   await page.fill('#user', bceidUser);
   await page.fill('#password', bceidPassword);
@@ -48,9 +30,21 @@ async function globalSetup(config: FullConfig) {
   await page.waitForURL('**/dashboard');
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
+  const authFile = path.join(__dirname, `./user.${browserTypeName}.json`);
   await page.context().storageState({ path: authFile });
-  await browser.close();
-};
 
+  console.log(`[globalSetup] Created: ${authFile}`);
+  await browser.close();
+}
+
+async function globalSetup() {
+  if (!bceidUser || !bceidPassword) {
+    throw new Error('No BCeID credentials set in env');
+  }
+
+  for (const name of Object.keys(browserMap) as (keyof typeof browserMap)[]) {
+    await loginAndSaveStorage(name);
+  }
+}
 
 export default globalSetup;
