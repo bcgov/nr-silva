@@ -2,9 +2,7 @@ import { defineConfig, devices, type VideoMode } from '@playwright/test';
 import { THIRTY_SECONDS } from './src/constants/TimeUnits';
 
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
-
-// Check if CLI args include "--all-browsers"
-const isAllBrowsers = process.argv.includes('--all-browsers');
+const isAllBrowsers = process.env.ALL_BROWSERS === 'true';
 
 const commonSettings = {
   headless: true,
