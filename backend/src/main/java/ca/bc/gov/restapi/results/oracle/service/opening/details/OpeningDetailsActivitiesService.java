@@ -162,7 +162,14 @@ public class OpeningDetailsActivitiesService {
     return switch (baseProjection.getKind()) {
       case "DS" -> new OpeningActivitySpeciesDto(baseDto)
           .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+              activityRepository
+                  .getOpeningActivitySpecies(openingId, atuId)
+                  .stream()
+                  .peek(projection -> {
+                    if(log.isDebugEnabled()){
+                      log.debug("Opening Activity Species Projection: DS : {}", projection);
+                    }
+                  })
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(
@@ -190,7 +197,14 @@ public class OpeningDetailsActivitiesService {
 
       case "PL" -> new OpeningActivitySpeciesDto(baseDto)
           .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+              activityRepository
+                  .getOpeningActivitySpecies(openingId, atuId)
+                  .stream()
+                  .peek(projection -> {
+                    if(log.isDebugEnabled()){
+                      log.debug("Opening Activity Species Projection: PL : {}", projection);
+                    }
+                  })
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(
