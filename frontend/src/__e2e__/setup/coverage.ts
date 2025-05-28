@@ -15,10 +15,17 @@ export const test = base.extend<{
     await context.close(); // clean up
   },
 
-  page: async ({ context }, use) => {
+  page: async ({ context }, use, testInfo) => {
+    const isChromium = testInfo.project.name === 'chromium';
     const page = await context.newPage();
-    await page.coverage.startJSCoverage({ reportAnonymousScripts: true });
+
+    if (isChromium) {
+      await page.coverage.startJSCoverage({ reportAnonymousScripts: true });
+    }
+
     await use(page);
+
+    if (!isChromium) return;
 
     const jsCoverage = await page.coverage.stopJSCoverage();
 
@@ -31,7 +38,7 @@ export const test = base.extend<{
 
       const absPath = entry.url.replace('http://localhost:3000', process.cwd());
       if (!fs.existsSync(absPath)) {
-        console.warn('[coverage] Skipping, file not found:', absPath);
+        // Skipping, file not found
         continue;
       }
 
@@ -44,7 +51,6 @@ export const test = base.extend<{
       const fileName = `coverage-${path.basename(absPath).replace(/\W+/g, '_')}-${Date.now()}.json`;
       const outPath = path.join(COVERAGE_DIR, fileName);
       fs.writeFileSync(outPath, JSON.stringify(istanbulCoverage, null, 2));
-      console.log('[coverage] Written:', outPath);
     }
   },
 });

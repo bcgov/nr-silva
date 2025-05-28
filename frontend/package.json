@@ -49,7 +49,7 @@
     "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
     "e2e:build": "npm run precoverage && npm run build && npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test preview http://localhost:4173 \"npm run test:playwright\"",
     "e2e:ci:dev": "npm run precoverage && BASE_URL=http://localhost:3000 start-server-and-test dev http://localhost:3000 test:playwright && npm run report:coverage",
-    "e2e:ci:build": "npm run precoverage && npm run test:playwright",
+    "e2e:ci:build": "npm run precoverage && npm run test:playwright -- --all-browsers",
     "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
   },
   "browserslist": {
@@ -102,7 +102,6 @@
     "start-server-and-test": "^2.0.11",
     "typescript": "^5.2.2",
     "v8-to-istanbul": "^9.3.0",
-    "vite-plugin-istanbul": "^7.0.0",
     "vitest": "^3.0.5"
   },
   "overrides": {

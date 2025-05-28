@@ -21,8 +21,15 @@ Our E2E tests are configured to run only on screens where a user is logged in, s
 - `/setup` contains 1 file:
   1. `coverage.ts` collects one coverage file per test. These are merged by `nyc` in a separate script. All tests must `import { test } from './setup/coverage'` instead of importing from `@playwright/test` to enable coverage generation.
 
-## Usage
 
+## Usage
+To run local end-to-end tests, ensure Chromium is installed, it’s the default browser used for local testing. You can optionally install additional browsers (Firefox, WebKit) if you’d like to test across multiple environments locally.
+```
+npx playwright install chromium
+```
+**Note**: On GitHub Actions, all three browsers (Chromium, Firefox, and WebKit) are installed and tested automatically as part of the CI workflow.
+
+#### Writing tests
 Import `test` from our modified wrapper in the coverage file. Import `expect` and other tools from Playwright directly.
 
 Example:
