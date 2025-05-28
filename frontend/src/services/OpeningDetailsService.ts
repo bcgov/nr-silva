@@ -2,18 +2,14 @@ import axios from "axios";
 import qs from "qs";
 import {
   OpeningActivityDetail,
-  OpeningDetailsActivitiesActivitiesDto,
-  OpeningDetailsActivitiesDisturbanceDto,
-  OpeningDetailsStockingDto,
-  OpeningDetailsTombstoneOverviewDto,
-  OpeningTenureDto,
   PaginatedPrimaryResponseDto
 } from "@/types/OpeningTypes";
 import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
 import { PaginatedResponseType } from "@/types/PaginationTypes";
 import { TenureFilterType } from "@/components/OpeningDetails/TenureIdentification/definitions";
-import { ActivityFilterType } from "../components/OpeningDetails/OpeningActivities/definitions";
+import { ActivityFilterType } from "@/components/OpeningDetails/OpeningActivities/definitions";
+import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto, OpeningDetailsStockingDto, OpeningDetailsTenureDto, OpeningDetailsTombstoneOverviewDto } from "@/types/OpenApiTypes";
 
 /**
  * Fetch the tombstone and overview information for the Opening details page.
@@ -100,7 +96,7 @@ export const fetchOpeningActivityDetail = (openingId: number, atuId: number): Pr
 export const fetchOpeningTenure = (
   openingId: number,
   filters?: TenureFilterType
-): Promise<PaginatedPrimaryResponseDto<OpeningTenureDto>> => {
+): Promise<PaginatedPrimaryResponseDto<OpeningDetailsTenureDto>> => {
   const authToken = getAuthIdToken();
 
   const query: Record<string, string> = { ...(filters ?? {}) } as any;

@@ -2,11 +2,9 @@ import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import {
   IOpeningPerYear,
-  PaginatedRecentOpeningsDto,
-  OpeningsPerYearDto
-} from '../types/OpeningTypes';
+} from '@/types/OpeningTypes';
 import { API_ENDPOINTS, defaultHeaders } from '@/services/apiConfig';
-import CodeDescriptionDto from '@/types/CodeDescriptionType';
+import { CodeDescriptionDto, OpeningsPerYearDto, PagedModelOpeningSearchResponseDto } from '@/types/OpenApiTypes';
 
 
 /**
@@ -47,7 +45,7 @@ export const fetchUserSubmissionTrends = (
 }
 
 // Used to fetch the recent openings for a user
-export const fetchUserRecentOpenings = (): Promise<PaginatedRecentOpeningsDto> => {
+export const fetchUserRecentOpenings = (): Promise<PagedModelOpeningSearchResponseDto> => {
 
   // Retrieve the auth token
   const authToken = getAuthIdToken();
