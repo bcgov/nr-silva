@@ -72,7 +72,7 @@ jobs:
           path: frontend/test-results/
 
   tests-frontend-e2e-built:
-    name: E2E with built frontend and backend
+    name: E2E Tests on Build - All Browsers
     if: inputs.target != 'prod' && inputs.target != 'PROD'
     needs: [fam-routing]
     runs-on: ubuntu-24.04
@@ -97,7 +97,7 @@ jobs:
         working-directory: frontend
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install
         working-directory: frontend
 
       - name: Run E2E Tests
