@@ -165,11 +165,6 @@ public class OpeningDetailsActivitiesService {
               activityRepository
                   .getOpeningActivitySpecies(openingId, atuId)
                   .stream()
-                  .peek(projection -> {
-                    if(log.isDebugEnabled()){
-                      log.debug("Opening Activity Species Projection: DS : {}", projection);
-                    }
-                  })
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(
@@ -200,11 +195,6 @@ public class OpeningDetailsActivitiesService {
               activityRepository
                   .getOpeningActivitySpecies(openingId, atuId)
                   .stream()
-                  .peek(projection -> {
-                    if(log.isDebugEnabled()){
-                      log.debug("Opening Activity Species Projection: PL : {}", projection);
-                    }
-                  })
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(
