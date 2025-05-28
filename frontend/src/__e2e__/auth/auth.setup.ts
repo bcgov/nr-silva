@@ -1,25 +1,40 @@
-import { chromium, expect } from '@playwright/test';
+import { chromium, firefox, webkit, expect, type FullConfig, type BrowserType } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { TWO_MINUTE } from '@/constants/TimeUnits';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const authFile = path.join(__dirname, './user.json');
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const bceidUser = process.env.TEST_BCEID_USERNAME ?? '';
 const bceidPassword = process.env.TEST_BCEID_PASSWORD ?? '';
 
 
-async function globalSetup() {
+function getBrowserType(projectName: string): BrowserType {
+  switch (projectName) {
+    case 'firefox':
+      return firefox;
+    case 'webkit':
+      return webkit;
+    case 'chromium':
+    default:
+      return chromium;
+  }
+}
+
+async function globalSetup(config: FullConfig) {
   if (!bceidUser || !bceidPassword) {
     throw new Error('No BCeID credential.')
   }
 
+  const projectName = config.projects[0].name;
+  const authFile = path.join(__dirname, `./user.${projectName}.json`);
+
+  console.log(authFile);
+
   console.log(`Global setup - Base URL: ${baseURL}`);
 
-  const browser = await chromium.launch();
+  const browser = await getBrowserType(projectName).launch();
   const page = await browser.newPage();
 
   await page.goto(baseURL);
