@@ -1,6 +1,6 @@
 import { PLACE_HOLDER } from "../constants";
 import { ForestClientAutocomplete } from "../services/OpeningClientLocationService";
-import CodeDescriptionDto from "../types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 
 
 /**
@@ -37,7 +37,7 @@ export const getClientLabel = (
  * @returns {string} A formatted label with non-empty values.
  */
 export const getClientLocationLabel = (location?: CodeDescriptionDto | null): string => {
-  if (!location) {
+  if (!location || (location && !location.code && !location.description)) {
     return '';
   }
   return [location.code, location.description]

@@ -1,4 +1,4 @@
-import { OpeningTenureDto } from "@/types/OpeningTypes";
+import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
 
 
 /**
@@ -8,7 +8,7 @@ import { OpeningTenureDto } from "@/types/OpeningTypes";
  * @param primary - The primary tenure object containing fileId, cutBlock, cuttingPermit, and timberMark.
  * @returns A formatted string with available parts separated by a dot (•).
  */
-export function formatPrimaryTenureLabel(primary: OpeningTenureDto): string {
+export function formatPrimaryTenureLabel(primary: OpeningDetailsTenureDto): string {
   const parts = [
     primary.fileId,
     primary.cutBlock,

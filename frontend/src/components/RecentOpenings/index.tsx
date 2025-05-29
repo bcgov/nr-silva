@@ -70,7 +70,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
           type="button"
           size={breakpoint === "sm" ? "sm" : "lg"}
           onClick={toggleMap}
-          disabled={!recentOpeningsQuery.data?.content.length}
+          disabled={!recentOpeningsQuery.data?.content?.length}
         >
           {showMap ? "Hide map" : "Show map"}
         </Button>
@@ -91,7 +91,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
           : null
       }
       {
-        showMap && recentOpeningsQuery.data?.content.length
+        showMap && recentOpeningsQuery.data?.content?.length
           ? (
             <OpeningsMap
               openingIds={selectedOpeningIds}
@@ -115,7 +115,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       {/* Empty Table */}
       {
         !recentOpeningsQuery.isLoading &&
-          !recentOpeningsQuery.data?.content.length ? (
+          !recentOpeningsQuery.data?.content?.length ? (
           <EmptySection
             pictogram="Magnify"
             title="There are no openings to show yet"
@@ -125,7 +125,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       }
       {/* Loaded table content */}
       {
-        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content.length ?
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content?.length ?
           (
             <Table
               className="recent-openings-table default-zebra-table"
