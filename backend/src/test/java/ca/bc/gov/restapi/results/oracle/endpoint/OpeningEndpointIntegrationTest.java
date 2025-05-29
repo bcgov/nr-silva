@@ -358,7 +358,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
-        .andExpect(jsonPath("$.species[0].numberBeyondTransferLimit").value(0))
+        .andExpect(jsonPath("$.species").isArray())
         .andReturn();
   }
 

@@ -26,13 +26,13 @@ public class OpeningDetailsTenureService {
 
   private static final Map<String, String> TENURE_SORT_FIELDS =
       Map.of(
-          "fileId", "cboa.FOREST_FILE_ID",
-          "cutBlock", "cboa.CUT_BLOCK_ID",
-          "cuttingPermit", "cboa.CUTTING_PERMIT_ID",
-          "timberMark", "cboa.TIMBER_MARK",
+          "fileId", "FOREST_FILE_ID",
+          "cutBlock", "CUT_BLOCK_ID",
+          "cuttingPermit", "CUTTING_PERMIT_ID",
+          "timberMark", "TIMBER_MARK",
           "status", "cb.BLOCK_STATUS_ST",
-          "plannedGrossArea", "cboa.PLANNED_GROSS_BLOCK_AREA",
-          "plannedNetArea", "cboa.PLANNED_NET_BLOCK_AREA");
+          "plannedGrossArea", "PLANNED_GROSS_BLOCK_AREA",
+          "plannedNetArea", "PLANNED_NET_BLOCK_AREA");
 
   public OpeningDetailsTenuresDto getOpeningTenures(
       Long openingId, String mainSearchTerm, Pageable pageable) {
@@ -49,7 +49,7 @@ public class OpeningDetailsTenureService {
                     pageable.getPageNumber(),
                     pageable.getPageSize(),
                     PaginationUtil.resolveSort(
-                        pageable.getSort(), "cboa.CUT_BLOCK_OPEN_ADMIN_ID", TENURE_SORT_FIELDS)))
+                        pageable.getSort(), "CUT_BLOCK_OPEN_ADMIN_ID", TENURE_SORT_FIELDS)))
             .map(mapProjectionToDto());
 
     OpeningDetailsTenureDto primaryTenure =
