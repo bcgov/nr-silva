@@ -1,12 +1,12 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url';
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const define = {
-    global:{}
+    global: {}
   }
   return {
     define,

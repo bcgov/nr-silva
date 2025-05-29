@@ -39,16 +39,22 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
-      backend_cpu_request: '30m'
-      backend_min_replicas: '1'
-      backend_max_replicas: '1'
+      backend_cpu_request: "30m"
+      backend_min_replicas: "1"
+      backend_max_replicas: "1"
       triggers: ('backend/' 'common/' 'frontend/')
+
+  e2e:
+    name: E2E test on (${{ github.event.number }})
+    uses: ./.github/workflows/e2e.yml
+    secrets: inherit
+    needs: [deploys]
 
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [builds, deploys]
+    needs: [builds, deploys, e2e]
     runs-on: ubuntu-24.04
     steps:
       - run: |

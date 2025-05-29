@@ -1,8 +1,8 @@
 x-frontend: &frontend
   environment:
-    VITE_ZONE: DEV
+    VITE_ZONE: TEST
     VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
-    VITE_USER_POOLS_WEB_CLIENT_ID: 3g6n2ha1loi4kp1jhaq359vrvb
+    VITE_USER_POOLS_WEB_CLIENT_ID: 1uhcp67qtfl3jra6b595e9f6jn
     VITE_BACKEND_URL: http://localhost:8080
   healthcheck:
     test: curl http://localhost:3000"
@@ -27,7 +27,7 @@ x-db-vars: &db-vars
 services:
   frontend:
     container_name: frontend
-    entrypoint: sh -c "npm ci && npm run start"
+    entrypoint: sh -c "npm ci && npm run dev"
     image: node:20-bullseye@sha256:ce61e37b353643c4a0a3c68b7190803824ebcd9e3015478392c12dacfc911be7
     ports: [ "3000:3000" ]
     volumes: [ "./frontend:/app", "/app/node_modules" ]

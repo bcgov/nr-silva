@@ -1,31 +1,37 @@
 import { env } from './env';
 
-const ZONE = env.VITE_ZONE.toLocaleLowerCase();
+const ZONE = env.VITE_ZONE.toLowerCase();
 const redirectUri = window.location.origin;
-const logoutDomain = `https://logon${ZONE === "prod" ? '' : 'test'}7.gov.bc.ca`;
-const returnUrlHost = ZONE === "prod" ? "loginproxy" : ZONE === "test" ? "test.loginproxy" : "dev.loginproxy";
+
+const isProd = ZONE === 'prod';
+
+const logoutDomain = isProd
+  ? 'https://logon7.gov.bc.ca'
+  : 'https://logontest7.gov.bc.ca';
+
+const returnUrlHost = isProd
+  ? 'loginproxy'
+  : 'test.loginproxy';
+
 const retUrl = `https://${returnUrlHost}.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
 
-const redirectSignOut =
-  env.VITE_REDIRECT_SIGN_OUT && env.VITE_REDIRECT_SIGN_OUT.trim() !== ""
-    ? env.VITE_REDIRECT_SIGN_OUT
-    : `${logoutDomain}/clp-cgi/logoff.cgi?retnow=1&returl=${retUrl}?redirect_uri=${redirectUri}/`;
+const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim()
+  ? env.VITE_REDIRECT_SIGN_OUT
+  : `${logoutDomain}/clp-cgi/logoff.cgi?retnow=1&returl=${retUrl}?redirect_uri=${redirectUri}/`;
 
-type verificationMethodsType = 'code' | 'token';
-const verificationMethods: verificationMethodsType = 'code';
+const verificationMethods: 'code' | 'token' = 'code';
 
-// https://docs.amplify.aws/javascript/build-a-backend/auth/set-up-auth/
 const amplifyconfig = {
   Auth: {
     Cognito: {
       userPoolId: env.VITE_USER_POOLS_ID,
       userPoolClientId: env.VITE_USER_POOLS_WEB_CLIENT_ID,
-      signUpVerificationMethod: verificationMethods, // 'code' | 'link'
+      signUpVerificationMethod: verificationMethods,
       loginWith: {
         oauth: {
-          domain: env.VITE_AWS_DOMAIN || "prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com",
+          domain: 'prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com',
           scopes: ['openid'],
-          redirectSignIn: [`${window.location.origin}/dashboard`],
+          redirectSignIn: [`${redirectUri}/dashboard`],
           redirectSignOut: [redirectSignOut],
           responseType: verificationMethods
         }
