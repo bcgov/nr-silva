@@ -600,20 +600,20 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_TENURES =
       """
       SELECT
-        	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
-        	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
-            cboa.FOREST_FILE_ID AS file_id,
-            cboa.CUT_BLOCK_ID AS cut_block,
-            cboa.CUTTING_PERMIT_ID AS cutting_permit,
-            cboa.TIMBER_MARK AS timber_mark,
-            cb.BLOCK_STATUS_ST AS status_code,
-            bsc.DESCRIPTION AS status_name,
-            cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
-            cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
-        FROM CUT_BLOCK_OPEN_ADMIN cboa
-        LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
-        LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
-        WHERE
+        cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+        CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
+        cboa.FOREST_FILE_ID AS file_id,
+        cboa.CUT_BLOCK_ID AS cut_block,
+        cboa.CUTTING_PERMIT_ID AS cutting_permit,
+        cboa.TIMBER_MARK AS timber_mark,
+        cb.BLOCK_STATUS_ST AS status_code,
+        bsc.DESCRIPTION AS status_name,
+        cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
+        cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
+      FROM CUT_BLOCK_OPEN_ADMIN cboa
+      LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
+      LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
+      WHERE
         	cboa.OPENING_ID = :openingId
         	AND (
         		NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
@@ -651,19 +651,19 @@ public class SilvaOracleQueryConstants {
 
   public static final String GET_OPENING_TENURE_PRIME =
       """
-      SELECT
-          	cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
-          	CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
-              cboa.FOREST_FILE_ID AS file_id,
-              cboa.CUT_BLOCK_ID AS cut_block,
-              cboa.CUTTING_PERMIT_ID AS cutting_permit,
-              cboa.TIMBER_MARK AS timber_mark,
-              cb.BLOCK_STATUS_ST AS status_code,
-              bsc.DESCRIPTION AS status_name,
-              cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
-              cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
-          FROM CUT_BLOCK_OPEN_ADMIN cboa
-          LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
-          LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
-          WHERE cboa.OPENING_ID = :openingId AND cboa.opening_prime_licence_ind = 'Y'""";
+          SELECT
+            cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+            CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
+               cboa.FOREST_FILE_ID AS file_id,
+               cboa.CUT_BLOCK_ID AS cut_block,
+               cboa.CUTTING_PERMIT_ID AS cutting_permit,
+               cboa.TIMBER_MARK AS timber_mark,
+               cb.BLOCK_STATUS_ST AS status_code,
+               bsc.DESCRIPTION AS status_name,
+               cboa.PLANNED_GROSS_BLOCK_AREA AS planned_gross_area,
+               cboa.PLANNED_NET_BLOCK_AREA AS planned_net_area
+           FROM CUT_BLOCK_OPEN_ADMIN cboa
+           LEFT JOIN CUT_BLOCK cb ON cb.CB_SKEY = cboa.CB_SKEY
+           LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
+           WHERE cboa.OPENING_ID = :openingId AND cboa.opening_prime_licence_ind = 'Y'""";
 }
