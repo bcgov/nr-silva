@@ -79,6 +79,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-noble
     env:
+      HOME: /root
       VITE_ZONE: TEST
       VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
       VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
