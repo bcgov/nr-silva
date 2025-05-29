@@ -54,6 +54,14 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       setupFiles: './src/setupTests.ts',
       css: false,
+      include: ['src/__test__/**/*.{test,spec}.{ts,tsx}'],
+      exclude: [
+        'src/__e2e__/**/*',
+        'src/amplifyconfiguration.ts',
+        'src/module.d.ts',
+        'src/react-app-env.d.ts',
+        'src/reportWebVitals.ts',
+      ],
       coverage: {
         provider: 'v8',
         reporter: ['lcov', 'cobertura', 'html'],
@@ -63,7 +71,7 @@ export default defineConfig(({ mode }) => {
           'src/module.d.ts',
           'src/react-app-env.d.ts',
           'src/reportWebVitals.ts',
-          'src/__e2e__',
+          'src/__e2e__/**/*.ts',
         ]
       },
       server: {
