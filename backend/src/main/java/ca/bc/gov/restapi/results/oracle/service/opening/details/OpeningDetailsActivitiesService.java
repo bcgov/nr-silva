@@ -37,31 +37,31 @@ public class OpeningDetailsActivitiesService {
 
   private static final Map<String, String> DISTURBANCE_SORT_FIELDS =
       Map.of(
-          "atuId", "atu.ACTIVITY_TREATMENT_UNIT_ID",
-          "disturbance", "atu.DISTURBANCE_CODE",
-          "variant", "atu.SILV_SYSTEM_VARIANT_CODE",
-          "system", "atu.SILV_SYSTEM_CODE",
-          "cutPhase", "atu.SILV_CUT_PHASE_CODE",
-          "disturbanceArea", "atu.TREATMENT_AMOUNT",
-          "startDate", "atu.ATU_START_DATE",
-          "endDate", "atu.ATU_COMPLETION_DATE",
-          "lastUpdate", "atu.UPDATE_TIMESTAMP");
+          "atuId", "ACTIVITY_TREATMENT_UNIT_ID",
+          "disturbance", "DISTURBANCE_CODE",
+          "variant", "SILV_SYSTEM_VARIANT_CODE",
+          "system", "SILV_SYSTEM_CODE",
+          "cutPhase", "SILV_CUT_PHASE_CODE",
+          "disturbanceArea", "TREATMENT_AMOUNT",
+          "startDate", "ATU_START_DATE",
+          "endDate", "ATU_COMPLETION_DATE",
+          "lastUpdate", "UPDATE_TIMESTAMP");
 
   private static final Map<String, String> ACTIVITIES_SORT_FIELDS =
       Map.ofEntries(
-          Map.entry("atuId", "atu.ACTIVITY_TREATMENT_UNIT_ID"),
-          Map.entry("base", "atu.SILV_BASE_CODE"),
-          Map.entry("tech", "atu.SILV_TECHNIQUE_CODE"),
-          Map.entry("method", "atu.SILV_METHOD_CODE"),
-          Map.entry("area", "atu.TREATMENT_AMOUNT"),
-          Map.entry("funding", "atu.SILV_FUND_SRCE_CODE"),
-          Map.entry("projectId", "atu.SILVICULTURE_PROJECT_ID"),
-          Map.entry("startDate", "atu.ATU_START_DATE"),
-          Map.entry("endDate", "atu.ATU_COMPLETION_DATE"),
-          Map.entry("lastUpdate", "atu.UPDATE_TIMESTAMP"),
-          Map.entry("objective1", "atu.SILV_OBJECTIVE_CODE_1"),
+          Map.entry("atuId", "ACTIVITY_TREATMENT_UNIT_ID"),
+          Map.entry("base", "SILV_BASE_CODE"),
+          Map.entry("tech", "SILV_TECHNIQUE_CODE"),
+          Map.entry("method", "SILV_METHOD_CODE"),
+          Map.entry("area", "TREATMENT_AMOUNT"),
+          Map.entry("funding", "SILV_FUND_SRCE_CODE"),
+          Map.entry("projectId", "SILVICULTURE_PROJECT_ID"),
+          Map.entry("startDate", "ATU_START_DATE"),
+          Map.entry("endDate", "ATU_COMPLETION_DATE"),
+          Map.entry("lastUpdate", "UPDATE_TIMESTAMP"),
+          Map.entry("objective1", "SILV_OBJECTIVE_CODE_1"),
           Map.entry("status", "status_code"),
-          Map.entry("plannedDate", "atu.PLANNED_DATE"));
+          Map.entry("plannedDate", "PLANNED_DATE"));
 
   public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningActivitiesDisturbances(
       Long openingId, Pageable pageable) {
@@ -72,7 +72,7 @@ public class OpeningDetailsActivitiesService {
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 PaginationUtil.resolveSort(
-                    pageable.getSort(), "atu.ACTIVITY_TU_SEQ_NO", DISTURBANCE_SORT_FIELDS)))
+                    pageable.getSort(), "ACTIVITY_TU_SEQ_NO", DISTURBANCE_SORT_FIELDS)))
         .map(
             projection ->
                 new OpeningDetailsActivitiesDisturbanceDto(
@@ -114,7 +114,7 @@ public class OpeningDetailsActivitiesService {
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 PaginationUtil.resolveSort(
-                    pageable.getSort(), "atu.ACTIVITY_TU_SEQ_NO", ACTIVITIES_SORT_FIELDS)))
+                    pageable.getSort(), "ACTIVITY_TU_SEQ_NO", ACTIVITIES_SORT_FIELDS)))
         .map(
             projection ->
                 new OpeningDetailsActivitiesActivitiesDto(
@@ -162,7 +162,9 @@ public class OpeningDetailsActivitiesService {
     return switch (baseProjection.getKind()) {
       case "DS" -> new OpeningActivitySpeciesDto(baseDto)
           .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+              activityRepository
+                  .getOpeningActivitySpecies(openingId, atuId)
+                  .stream()
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(
@@ -190,7 +192,9 @@ public class OpeningDetailsActivitiesService {
 
       case "PL" -> new OpeningActivitySpeciesDto(baseDto)
           .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+              activityRepository
+                  .getOpeningActivitySpecies(openingId, atuId)
+                  .stream()
                   .map(
                       projection ->
                           new OpeningActivitySpeciesDetailsDto(

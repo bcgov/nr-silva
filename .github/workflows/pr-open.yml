@@ -26,10 +26,9 @@ jobs:
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: bcgov/action-builder-ghcr@ace71f7a527ca6fc43c15c7806314be5a4579d2c # v2.3.0
+      - uses: bcgov/action-builder-ghcr@d63c76a4bb7914d3a986a035904b49d99c2c4613 # v3.0.0
         with:
           package: ${{ matrix.name }}
-          tag: ${{ github.event.number }}
           tag_fallback: latest
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
@@ -40,16 +39,22 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
-      backend_cpu_request: '30m'
-      backend_min_replicas: '1'
-      backend_max_replicas: '1'
+      backend_cpu_request: "30m"
+      backend_min_replicas: "1"
+      backend_max_replicas: "1"
       triggers: ('backend/' 'common/' 'frontend/')
+
+  e2e:
+    name: E2E test on (${{ github.event.number }})
+    uses: ./.github/workflows/e2e.yml
+    secrets: inherit
+    needs: [deploys]
 
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [builds, deploys]
+    needs: [builds, deploys, e2e]
     runs-on: ubuntu-24.04
     steps:
       - run: |

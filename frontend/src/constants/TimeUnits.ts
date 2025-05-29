@@ -9,6 +9,8 @@ export const EIGHT_SECONDS = 8 * ONE_SECOND;
 
 export const TEN_SECONDS = 10 * ONE_SECOND;
 
+export const THIRTY_SECONDS = 30 * ONE_SECOND;
+
 export const ONE_MINUTE = 60 * ONE_SECOND;
 
 export const TWO_MINUTE = 2 * ONE_MINUTE;

@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '*.md'
-      - '.github/**'
-      - '!.github/workflows/**'
+      - "*.md"
+      - ".github/**"
+      - "!.github/workflows/**"
   workflow_dispatch:
 
 concurrency:
@@ -22,7 +22,7 @@ jobs:
       pr: ${{ steps.pr.outputs.pr }}
     runs-on: ubuntu-24.04
     steps:
-        # Get PR number for squash merges to main
+      # Get PR number for squash merges to main
       - id: pr
         uses: bcgov/action-get-pr@21f9351425cd55a98e869ee28919a512aa30647d # v0.0.1
 
@@ -32,8 +32,8 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
-      backend_min_replicas: '1'
-      backend_max_replicas: '1'
+      backend_min_replicas: "1"
+      backend_max_replicas: "1"
       allowed_origins: https://silva-test.nrs.gov.bc.ca/
       environment: test
       tag: ${{ needs.init.outputs.pr }}
