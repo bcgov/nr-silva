@@ -1,9 +1,21 @@
 import React from "react";
-import { MemoryRouter } from 'react-router-dom';
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import ActionButtons from "../../components/ActionButtons";
 import { NotificationProvider } from "../../contexts/NotificationProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+vi.mock("@/services/OpeningFavouriteService", () => ({
+  putOpeningFavourite: vi.fn().mockResolvedValue({}),
+  deleteOpeningFavorite: vi.fn().mockResolvedValue({}),
+}));
 
 describe("ActionButtons", () => {
   const rowId = "123456";
@@ -24,9 +36,10 @@ describe("ActionButtons", () => {
 
   it("renders the 'Favorite Opening' button", () => {
     renderWithProviders();
-    expect(screen.getByRole("button", { name: /Favorite Opening/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Favorite Opening/i })
+    ).toBeInTheDocument();
   });
-
 
   it("sets the 'Favorite Opening' as favorited when button is clicked", async () => {
     renderWithProviders();
@@ -38,7 +51,7 @@ describe("ActionButtons", () => {
     expect(favButton).toHaveAttribute("aria-pressed", "false");
 
     // Click the button
-    fireEvent.click(favButton);
+    act(() => fireEvent.click(favButton));
 
     // Wait for the button to update
     await waitFor(() => {

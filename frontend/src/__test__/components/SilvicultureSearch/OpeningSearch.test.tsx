@@ -16,19 +16,25 @@ import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 
 const mockOpenings: OpeningSearchResponseDto[] = [openingA, openingB];
 
-vi.mock("../../../services/OpeningSearchService", () => ({
-  fetchCategories: vi.fn().mockResolvedValue([]),
-  fetchOpeningsOrgUnits: vi.fn().mockResolvedValue([]),
-  searchOpenings: vi.fn().mockResolvedValue({
-    content: [],
-    page: {
-      totalElements: 0,
-      size: 10,
-      number: 0,
-      totalPages: 1,
-    },
-  } as PaginatedRecentOpeningsDto),
-}));
+vi.mock("@/services/OpeningSearchService", async (original) => {
+  const actual = await original();
+  return {
+    ...actual,
+    fetchOpeningsOrgUnits: vi
+      .fn(() => Promise.resolve([]))
+      .mockResolvedValue([]),
+    fetchCategories: vi.fn(() => Promise.resolve([])).mockResolvedValue([]),
+    searchOpenings: vi.fn().mockResolvedValue({
+      content: [],
+      page: {
+        totalElements: 0,
+        size: 10,
+        page: 0,
+        totalPages: 1,
+      },
+    } as PaginatedRecentOpeningsDto),
+  };
+});
 
 vi.mock("../../../components/OpeningsMap", () => ({
   __esModule: true,
