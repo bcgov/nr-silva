@@ -11,5 +11,6 @@ export const OpeningDetailsTabs = [
   'overview',
   'tenure-identification',
   'standard-units',
-  'activities'
+  'activities',
+  'forest-cover'
 ] as const;
