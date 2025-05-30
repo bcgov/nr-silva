@@ -1,4 +1,4 @@
-import { OpeningsPerYearDto } from "../../types/OpeningTypes";
+import { OpeningsPerYearDto } from "@/types/OpenApiTypes";
 
 /**
  * The type that is used by the chart.

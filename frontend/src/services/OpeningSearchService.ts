@@ -1,12 +1,11 @@
 import axios from "axios";
 import qs from "qs";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { API_ENDPOINTS, defaultHeaders } from "./apiConfig";
 import { getAuthIdToken } from "./AuthService";
-import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
 import { extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
 import { OpeningSearchFilterType } from "@/components/SilvicultureSearch/OpeningSearch/definitions";
 import { PaginatedResponseType } from "@/types/PaginationTypes";
+import { CodeDescriptionDto, OpeningSearchResponseDto } from "@/types/OpenApiTypes";
 
 export const fetchCategories = async (): Promise<CodeDescriptionDto[]> => {
   // Retrieve the auth token

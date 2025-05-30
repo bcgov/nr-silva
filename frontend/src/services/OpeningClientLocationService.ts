@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAuthIdToken } from './AuthService';
 import { API_ENDPOINTS, defaultHeaders } from './apiConfig';
-import CodeDescriptionDto from '../types/CodeDescriptionType';
+import { CodeDescriptionDto } from '@/types/OpenApiTypes';
 
 export interface ForestClientAutocomplete {
   id: string;

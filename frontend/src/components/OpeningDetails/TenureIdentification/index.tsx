@@ -16,8 +16,8 @@ import { pluralize } from "@/utils/StringUtils";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PLACE_HOLDER } from "@/constants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
-import { OpeningTenureDto } from "@/types/OpeningTypes";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
 import CutBlockStatusTag from "../../CutBlockStatusTag";
@@ -44,7 +44,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
     queryFn: () => fetchOpeningTenure(openingId, tenureFilter),
   });
 
-  const renderCellContent = (headerKey: keyof OpeningTenureDto, row: OpeningTenureDto) => {
+  const renderCellContent = (headerKey: keyof OpeningDetailsTenureDto, row: OpeningDetailsTenureDto) => {
     const content = tenureQuery.data?.content
     if (!content) {
       return null;
@@ -94,7 +94,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
     )
   }
 
-  const handleSort = (field: keyof OpeningTenureDto) => {
+  const handleSort = (field: keyof OpeningDetailsTenureDto) => {
     let newDirection: SortDirectionType = 'NONE';
 
     if (tenureFilter.sortField !== field || tenureFilter.sortDirection === 'NONE') {

@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
 
 import { DATE_TYPES } from "@/types/DateTypes";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import GenericCodeDescriptionDto from "@/types/CodeDescriptionType";
 import useBreakpoint from "@/hooks/UseBreakpoint";
 import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
@@ -36,8 +36,8 @@ type OpeningSearchBarProps = {
   setHeaders: React.Dispatch<React.SetStateAction<OpeningHeaderType[]>>,
   filters: OpeningSearchFilterType,
   setFilters: React.Dispatch<React.SetStateAction<OpeningSearchFilterType>>,
-  categories: CodeDescriptionDto[],
-  orgUnits: CodeDescriptionDto[],
+  categories: GenericCodeDescriptionDto[],
+  orgUnits: GenericCodeDescriptionDto[],
   handleSearch: () => void,
   totalResults: number | undefined,
   showMap: boolean,
@@ -154,7 +154,7 @@ const OpeningSearchBar = ({
   }
 
   /* v8 ignore next 26 */
-  const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto<DATE_TYPES>>) => {
+  const handleDateTypeChange = (data: ComboBoxEvent<GenericCodeDescriptionDto<DATE_TYPES>>) => {
     const dateType = data.selectedItem;
 
     setFilters((prev) => {

@@ -24,7 +24,7 @@ import {
   codeDescriptionToDisplayText,
   MultiSelectEvent
 } from "../../utils/multiSelectUtils";
-import CodeDescriptionDto from "../../types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 import { OPENING_STATUS_LIST } from "../../constants";
 import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
 

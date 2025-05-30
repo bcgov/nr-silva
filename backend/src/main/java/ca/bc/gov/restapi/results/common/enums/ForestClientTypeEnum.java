@@ -2,6 +2,9 @@ package ca.bc.gov.restapi.results.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 /**
@@ -9,6 +12,11 @@ import lombok.Getter;
  */
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@Schema(
+  type = "object",
+  implementation = CodeDescriptionDto.class,
+  description = "Status code and description"
+)
 public enum ForestClientTypeEnum {
   @JsonProperty("A")
   ASSOCIATION('A', "Association"),

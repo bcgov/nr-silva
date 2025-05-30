@@ -3,7 +3,7 @@ import { JSX } from "react";
 import { Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
 
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
 import { fetchOpeningActivityDetail } from "@/services/OpeningDetailsService";
 
 import DirectSeedingActivityDetail from "./DirectSeedingActivityDetail";

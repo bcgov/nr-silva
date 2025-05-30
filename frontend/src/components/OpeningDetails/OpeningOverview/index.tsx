@@ -1,7 +1,9 @@
 import React from "react";
-import { CardContainer, CardItem, CardTitle } from "@/components/Card";
 import { Column, Grid } from "@carbon/react";
-import { OpeningDetailsOverviewDto } from "@/types/OpeningTypes";
+
+import { CardContainer, CardItem, CardTitle } from "@/components/Card";
+import { OpeningDetailsOverviewDto } from "@/types/OpenApiTypes";
+
 import { formatLocalDate } from "@/utils/DateUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";

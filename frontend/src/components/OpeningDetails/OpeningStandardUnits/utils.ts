@@ -1,4 +1,4 @@
-import type { OpeningDetailsStockingLayerDto, OpeningDetailsStockingSpeciesDto } from '@/types/OpeningTypes';
+import { OpeningDetailsStockingLayerDto, OpeningDetailsStockingSpeciesDto } from "@/types/OpenApiTypes";
 
 /**
  * Counts the number of unique species by `species.code` from two species arrays.

@@ -17,8 +17,7 @@ import {
 } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
 
-import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpenApiTypes";
 
 import DisturbanceDetail from "./DisturbanceDetail";
 import EmptySection from "../../EmptySection";

@@ -1,5 +1,5 @@
 import { SortDirectionType } from "@/types/PaginationTypes";
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
 
 export type ActivityFilterType = {
   page: number;

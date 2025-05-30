@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { ComboBox } from "@carbon/react";
 import { useMutation } from "@tanstack/react-query";
 
-import { fetchClientLocations, fetchClientsByNameAcronymNumber, ForestClientAutocomplete } from "../../services/OpeningClientLocationService";
-import { getClientLabel, getClientLocationLabel } from "../../utils/ForestClientUtils";
-import { ComboBoxEvent } from "../../types/CarbonTypes";
-import { TextInputEvent } from "../../types/GeneralTypes";
-import { createTextInputEvent } from "../../utils/InputUtils";
+import { fetchClientLocations, fetchClientsByNameAcronymNumber, ForestClientAutocomplete } from "@/services/OpeningClientLocationService";
+import { getClientLabel, getClientLocationLabel } from "@/utils/ForestClientUtils";
+import { ComboBoxEvent } from "@/types/CarbonTypes";
+import { TextInputEvent } from "@/types/GeneralTypes";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { createTextInputEvent } from "@/utils/InputUtils";
 
 import './styles.scss';
-import CodeDescriptionDto from "../../types/CodeDescriptionType";
 
 const emptyTextInputEvent = createTextInputEvent('');
 
@@ -104,7 +104,7 @@ const ForestClientInput = ({
     const { selectedItem } = e;
     if (selectedItem) {
       setSelectedLocation(selectedItem);
-      setClientLocationCode(createTextInputEvent(selectedItem.code));
+      setClientLocationCode(createTextInputEvent(selectedItem.code!));
     }
   };
 

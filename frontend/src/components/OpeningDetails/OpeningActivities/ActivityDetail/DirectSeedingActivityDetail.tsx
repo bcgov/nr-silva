@@ -1,6 +1,5 @@
 import { Column, Grid, SkeletonText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
 
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { ActivityDetailProps } from "./definitions";
 
 import TableSkeleton from "../../../TableSkeleton";
@@ -9,6 +8,7 @@ import EmptySection from "../../../EmptySection";
 import { DirectSeedingHeaders } from "./constants";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 
 
 const DirectSeedingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {

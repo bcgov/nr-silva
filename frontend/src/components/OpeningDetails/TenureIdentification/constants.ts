@@ -1,9 +1,9 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningTenureDto } from "@/types/OpeningTypes";
+import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
 import { TenureFilterType } from "./definitions";
 
-export const TenureTableHeaders: TableHeaderType<keyof OpeningTenureDto>[] = [
+export const TenureTableHeaders: TableHeaderType<keyof OpeningDetailsTenureDto>[] = [
   { key: "fileId", header: "File ID", sortable: true },
   { key: "cutBlock", header: "Cut block", sortable: true },
   { key: "cuttingPermit", header: "Cutting permit", sortable: true },

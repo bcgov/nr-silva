@@ -1,11 +1,17 @@
 package ca.bc.gov.restapi.results.oracle.dto.opening;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 
 @With
 public record OpeningDetailsTombstoneOverviewDto(
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     Long openingId,
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     OpeningDetailsTombstoneDto tombstone,
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     OpeningDetailsOverviewDto overview
 ) {
 
