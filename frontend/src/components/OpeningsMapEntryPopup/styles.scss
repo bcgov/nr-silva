@@ -1,5 +1,26 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
 .map-popup-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .map-popup-header-container {
+    h4 {
+      @include type.type-style('heading-02');
+    }
+  }
+
+  .map-popup-details-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0;
+  }
+
+  .map-popup-links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem
+  }
 }
