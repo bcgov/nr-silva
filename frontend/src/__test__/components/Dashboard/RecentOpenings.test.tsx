@@ -6,10 +6,18 @@ import RecentOpenings from "../../../components/RecentOpenings";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fetchUserRecentOpenings } from "../../../services/OpeningService";
 import { NotificationProvider } from "../../../contexts/NotificationProvider";
-import { openingA, openingB } from '../../fixtures/openings';
+import { openingA, openingB } from "../../fixtures/openings";
 
 vi.mock("../../../services/OpeningService", () => ({
-  fetchUserRecentOpenings: vi.fn(),
+  fetchUserRecentOpenings: vi.fn().mockResolvedValue({
+    content: [],
+    page: {
+      totalElements: 0,
+      size: 10,
+      number: 0,
+      totalPages: 1,
+    },
+  }),
 }));
 
 const renderWithProviders = () => {
@@ -43,7 +51,7 @@ describe("RecentOpenings Component", () => {
 
   it("should display a loading skeleton when fetching data", () => {
     (fetchUserRecentOpenings as vi.Mock).mockReturnValueOnce(
-      new Promise(() => { })
+      new Promise(() => {})
     );
 
     renderWithProviders();
