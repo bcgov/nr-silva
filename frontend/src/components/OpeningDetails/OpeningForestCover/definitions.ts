@@ -11,6 +11,8 @@ export type ForestCoverFilterType = {
 };
 
 export type OpeningForestCover = {
+  forestCoverId: string; // Optional for new entries
+
   forestCoverPolygonId: string;
   forestCoverStandardUnit: string | null;
   forestCoverUnmappedArea: string | null;
@@ -49,6 +51,7 @@ export type OpeningForestCoverDetails = {
 
 export const mockOpeningDetailsForestCover: OpeningForestCover[] = [
   {
+    forestCoverId: "3416434",
     forestCoverPolygonId: "A",
     forestCoverStandardUnit: null,
     forestCoverUnmappedArea: null,
@@ -75,6 +78,7 @@ export const mockOpeningDetailsForestCover: OpeningForestCover[] = [
     referenceYear: 2015
   },
   {
+    forestCoverId: "3416435",
     forestCoverPolygonId: "A",
     forestCoverStandardUnit: null,
     forestCoverUnmappedArea: null,
@@ -101,6 +105,7 @@ export const mockOpeningDetailsForestCover: OpeningForestCover[] = [
     referenceYear: 2015
   },
   {
+    forestCoverId: "3416436",
     forestCoverPolygonId: "B",
     forestCoverStandardUnit: "B",
     forestCoverUnmappedArea: null,
