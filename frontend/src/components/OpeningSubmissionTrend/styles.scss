@@ -16,6 +16,14 @@
 
     .bars {
       cursor: pointer;
+
+      path {
+        fill: var(--#{vars.$bcgov-prefix}-interactive);
+      }
+
+      :hover {
+        fill: var(--#{vars.$bcgov-prefix}-link-primary);
+      }
     }
   }
 
@@ -56,6 +64,15 @@
 
     .trend-loading-spinner {
       margin-top: 10%;
+    }
+
+    .cds--cc--tooltip {
+      background: var(--#{vars.$bcgov-prefix}-layer-02);
+      border-left: 0.25rem solid var(--#{vars.$bcgov-prefix}-link-primary);
+
+      .title-tooltip {
+        padding: 0;
+      }
     }
   }
 

@@ -2,17 +2,32 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@carbon/type';
 
-ul.bar--tooltip_status {
-  margin-bottom: 1rem;
-}
+.bar-chart-tooltip {
+  padding: 0.25rem 0.5rem;
 
-ul.bar--tooltip_status li {
-  list-style-type: disc;
-  margin-left: 2.5rem;
-  @include type.type-style('body-compact-02');
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 18px;
-  letter-spacing: 0.16px;
-  color: var(--bx-text-secondary);
+  .title-bold {
+    @include type.type-style('heading-02');
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+  }
+
+  .title-code {
+    @include type.type-style('code-02');
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
+    font-size: 1rem;
+  }
+
+  .helper-text {
+    @include type.type-style('helper-text-02');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    margin-top: 0.25rem;
+  }
+
+  .status-list {
+    list-style: disc;
+    list-style-position: inside;
+    padding-left: 1rem;
+    @include type.type-style('helper-text-02');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    margin-top: 0.5rem;
+  }
 }
