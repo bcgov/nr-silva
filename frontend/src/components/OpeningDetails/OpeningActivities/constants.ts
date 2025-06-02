@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpeningTypes";
+import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpenApiTypes";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import { ActivityFilterType } from "./definitions";
@@ -15,7 +15,7 @@ export const DisturbanceTableHeaders: TableHeaderType<keyof OpeningDetailsActivi
   { key: "variant", header: "Variant" },
   { key: "cutPhase", header: "Cut phase" },
   { key: "disturbanceArea", header: "Disturbance area (ha)" },
-  { key: "lastUpdatedOn", header: "Last updated" },
+  { key: "lastUpdate", header: "Last updated" },
   { key: "startDate", header: "Start date" },
   { key: "endDate", header: "End date" },
 ];

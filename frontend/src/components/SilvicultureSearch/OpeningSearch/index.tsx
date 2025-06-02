@@ -34,6 +34,7 @@ import { hasAnyActiveFilters } from "./utils";
 import { usePreference } from "@/contexts/PreferenceProvider";
 
 import "./styles.scss";
+import GenericCodeDescriptionDto from "@/types/CodeDescriptionType";
 
 const OpeningSearch: React.FC = () => {
   const searchParams = useSilvicultureSearchParams();
@@ -156,19 +157,19 @@ const OpeningSearch: React.FC = () => {
     const orgUnitsFromParams =
       orgUnitQuery.data && initialParamsRef.current.orgUnit
         ? (initialParamsRef.current.orgUnit
-            .map((code) =>
-              orgUnitQuery.data?.find((item) => item.code === code)
-            )
-            .filter(Boolean) as CodeDescriptionDto[])
+          .map((code) =>
+            orgUnitQuery.data?.find((item) => item.code === code)
+          )
+          .filter(Boolean) as CodeDescriptionDto[])
         : [];
 
     const statusFromParams =
       initialParamsRef.current.status && OPENING_STATUS_LIST.length > 0
         ? (initialParamsRef.current.status
-            .map((code) =>
-              OPENING_STATUS_LIST.find((item) => item.code === code)
-            )
-            .filter(Boolean) as CodeDescriptionDto[])
+          .map((code) =>
+            OPENING_STATUS_LIST.find((item) => item.code === code)
+          )
+          .filter(Boolean) as CodeDescriptionDto[])
         : [];
 
     const dateTypeCode = initialParamsRef.current?.dateType;
@@ -229,8 +230,8 @@ const OpeningSearch: React.FC = () => {
         setHeaders={setSearchTableHeaders}
         filters={filters}
         setFilters={setFilters}
-        categories={categoryQuery.data ?? []}
-        orgUnits={orgUnitQuery.data ?? []}
+        categories={(categoryQuery.data ?? []).filter((item) => item.code !== null) as GenericCodeDescriptionDto[]}
+        orgUnits={(orgUnitQuery.data ?? []).filter((item) => item.code !== null) as GenericCodeDescriptionDto[]}
         handleSearch={handleSearch}
         totalResults={searchQuery.data?.page.totalElements}
         setEnableSearch={setEnableSearch}
@@ -263,7 +264,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Adaptive initial empty display and error display */}
         {!searchQuery.isFetching &&
-        searchQuery.data?.page.totalElements === undefined ? (
+          searchQuery.data?.page.totalElements === undefined ? (
           <EmptySection
             className="initial-empty-section"
             pictogram="Summit"
@@ -323,7 +324,7 @@ const OpeningSearch: React.FC = () => {
             </Table>
             {/* Display either pagination or empty message */}
             {searchQuery.data?.page.totalElements &&
-            searchQuery.data?.page.totalElements > 0 ? (
+              searchQuery.data?.page.totalElements > 0 ? (
               <Pagination
                 className="default-pagination-white"
                 page={currPageNumber + 1}

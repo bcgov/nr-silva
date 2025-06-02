@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.oracle.enums;
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Objects;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,11 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(
+        type = "object",
+        implementation = CodeDescriptionDto.class,
+        description = "Status code and description"
+)
 public enum OpeningStatusEnum {
   AMD("AMD", "Amended"),
   AMG("AMG", "Amalgamate"),

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
 import { Location } from "@carbon/icons-react";
 
-import { OpeningDetailsTombstoneDto } from "@/types/OpeningTypes";
+import { OpeningDetailsTombstoneDto } from "@/types/OpenApiTypes";
 import { mapKinds } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
@@ -113,7 +113,7 @@ const OpeningSummary = ({
           id="opening-category-card-item"
           label="Opening category"
           showSkeleton={isLoading}
-          tooltipText={tombstoneObj?.openCategory.description}
+          tooltipText={tombstoneObj?.openCategory.description!}
         >
           {tombstoneObj?.openCategory.code}
         </CardItem>
@@ -238,7 +238,7 @@ const OpeningSummary = ({
         <Column className="map-col" sm={4} md={8} lg={16}>
           <OpeningsMap
             openingIds={openingId ? [openingId] : null}
-            setOpeningPolygonNotFound={() => {}}
+            setOpeningPolygonNotFound={() => { }}
             mapHeight={280}
             layerFilter={true}
             kind={mapKind(currentTab)}

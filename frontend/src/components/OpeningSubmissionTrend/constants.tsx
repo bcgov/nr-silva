@@ -14,8 +14,6 @@ const tooltip = (
   return ReactDOMServer.renderToString(tooltipContent);
 }
 
-const colors = { Openings: "#1192E8" };
-
 export const DefaultChartOptions: BarChartOptions = {
   axes: {
     left: { mapsTo: "value" },
@@ -23,9 +21,6 @@ export const DefaultChartOptions: BarChartOptions = {
       scaleType: ScaleTypes.LABELS,
       mapsTo: "key"
     }
-  },
-  color: {
-    scale: colors
   },
   height: "18.5rem",
   grid: {
@@ -50,7 +45,7 @@ export const DefaultChartOptions: BarChartOptions = {
   },
   tooltip: {
     enabled: true,
-    customHTML: tooltip
+    customHTML: tooltip,
   },
   legend: {
     enabled: false

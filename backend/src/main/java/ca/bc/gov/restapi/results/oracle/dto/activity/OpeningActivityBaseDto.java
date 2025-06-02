@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.dto.activity;
 
+import java.util.List;
+
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
 import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
-import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.With;
 
@@ -11,15 +13,34 @@ import lombok.With;
 @With
 public class OpeningActivityBaseDto {
 
+  @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   String licenseeActivityId;
+
+  @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   String intraAgencyNumber;
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   ForestClientDto activityClient;
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   ForestClientLocationDto activityLocation;
+
+  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   Float plannedAmount;
+
+  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   Float treatedAmount;
+
+  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   Float plannedCost;
+
+  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   Float actualCost;
+
+  @Schema(types = {"integer", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
   Long totalPlanting;
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   List<CommentDto> comments;
 
   public OpeningActivityBaseDto() {

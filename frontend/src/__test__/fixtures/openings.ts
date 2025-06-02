@@ -1,4 +1,4 @@
-import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "@/types/OpenApiTypes";
 
 export const openingA: OpeningSearchResponseDto = {
   openingId: 101,
@@ -25,10 +25,13 @@ export const openingA: OpeningSearchResponseDto = {
   entryUserId: "IDIR\\MYDUDE",
   submittedToFrpa: false,
   forestFileId: null,
-  silvaReliefAppId: "0",
+  silvaReliefAppId: 0,
   favourite: false,
   clientName: "",
   earlyFreeGrowingDate: "2036-01-20T00:00:00",
+  clientLocation: null,
+  lateFreeGrowingDate: null,
+  lastViewDate: null,
 };
 
 export const openingB: OpeningSearchResponseDto = {
@@ -42,9 +45,9 @@ export const openingB: OpeningSearchResponseDto = {
     code: "APP",
     description: "Approved",
   },
-  cuttingPermitId: 12,
+  cuttingPermitId: "12",
   timberMark: "47/12S",
-  cutBlockId: 12,
+  cutBlockId: "12",
   openingGrossAreaHa: 12.9,
   disturbanceStartDate: "2024-01-20T00:00:00",
   orgUnitCode: "DAS",
@@ -58,6 +61,9 @@ export const openingB: OpeningSearchResponseDto = {
   entryUserId: "idir-here",
   submittedToFrpa: true,
   forestFileId: "TFL47",
-  silvaReliefAppId: "101",
+  silvaReliefAppId: 101,
   favourite: false,
+  clientLocation: null,
+  lateFreeGrowingDate: null,
+  lastViewDate: null,
 };

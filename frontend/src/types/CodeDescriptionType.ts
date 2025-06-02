@@ -5,16 +5,16 @@
  *
  * @example
  * // Generic usage with default string
- * const item: CodeDescriptionDto = { code: "any-string", description: "Description" };
+ * const item: GenericCodeDescriptionDto = { code: "any-string", description: "Description" };
  *
  * @example
  * // Strictly typed usage
  * type Status = "open" | "closed";
- * const statusItem: CodeDescriptionDto<Status> = { code: "open", description: "Open status" };
+ * const statusItem: GenericCodeDescriptionDto<Status> = { code: "open", description: "Open status" };
  */
-type CodeDescriptionDto<T extends string = string> = {
+type GenericCodeDescriptionDto<T extends string = string> = {
   code: T;
   description: string;
 };
 
-export default CodeDescriptionDto;
+export default GenericCodeDescriptionDto;

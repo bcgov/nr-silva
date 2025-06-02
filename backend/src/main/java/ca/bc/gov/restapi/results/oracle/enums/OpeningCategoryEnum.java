@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.oracle.enums;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,11 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Schema(
+        type = "object",
+        implementation = CodeDescriptionDto.class,
+        description = "Status code and description"
+)
 public enum OpeningCategoryEnum {
   CONT("CONT", "SP as a part of contractual agreement"),
   EXCLU("EXCLU", "Openings excluded from Crown managed forests"),
