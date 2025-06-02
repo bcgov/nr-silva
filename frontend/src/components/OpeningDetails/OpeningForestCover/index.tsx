@@ -223,7 +223,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               rowCount={10}
             />
           ) : (
-            <Table className="default-zebra-table" aria-label="Forest cover table" useZebraStyles>
+            <Table className="default-zebra-table" aria-label="Forest cover table">
               <TableHead>
                 <TableRow>
                   <TableExpandHeader />
