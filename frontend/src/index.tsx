@@ -20,6 +20,7 @@ const container: HTMLElement | null = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
 
+  // @ts-ignore
   Amplify.configure(amplifyconfig);
   cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage());
 

@@ -58,7 +58,7 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
     [lastName, firstName] = [firstName, lastName];
   }
 
-  const sanitizedFirstName = hasComma ? firstName.split(' ')[0].trim() : firstName;
+  const sanitizedFirstName = hasComma ? firstName?.split(' ')[0]?.trim() : firstName || '';
 
   const userName = decodedIdToken?.['custom:idp_username'] as string || '';
   const email = decodedIdToken?.['email'] as string || '';

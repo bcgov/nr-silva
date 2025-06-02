@@ -11,9 +11,9 @@ interface AvatarImageProps {
 const getInitials = (userName: string) => {
   const nameParts = userName.split(' ');
   if (nameParts.length >= 2) {
-    return nameParts[0][0] + nameParts[1][0];
+    return (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
   } else if (nameParts.length === 1) {
-    return nameParts[0][0];
+    return nameParts[0]?.[0] || '';
   }
   return '';
 };

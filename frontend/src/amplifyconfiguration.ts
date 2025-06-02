@@ -1,6 +1,6 @@
 import { env } from './env';
 
-const ZONE = env.VITE_ZONE.toLowerCase();
+const ZONE = env.VITE_ZONE!.toLowerCase();
 const redirectUri = window.location.origin;
 
 const isProd = ZONE === 'prod';

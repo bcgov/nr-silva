@@ -63,7 +63,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
-  const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]);
+  const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]!);
   const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
 
   const activityQuery = useQuery({

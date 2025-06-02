@@ -9,13 +9,16 @@ import { LatLngExpression } from "leaflet";
 export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]): LatLngExpression[][] => {
   const newCoord: LatLngExpression[][] = [];
   for (let i = 0, len = coordinates.length; i < len; i++) {
-    const polygon: number[][] = coordinates[i];
+    const polygon: number[][] | undefined = coordinates[i];
+    if (!polygon) {
+      continue;
+    }
     const newSubArray: LatLngExpression[] = []
 
     for (let j = 0, lenj = polygon.length; j < lenj; j++) {
-      const lat = polygon[j][1];
-      const long = polygon[j][0];
-      const polygonPoint: LatLngExpression = [lat, long];
+      const lat = polygon[j]![1];
+      const long = polygon[j]![0];
+      const polygonPoint: LatLngExpression = [lat!, long!];
       newSubArray.push(polygonPoint);
     }
     newCoord.push(newSubArray);
@@ -23,7 +26,7 @@ export const shiftBcGwLngLat2LatLng = (coordinates: number[][][]): LatLngExpress
   return newCoord;
 }
 
-const createLatLngExpressionFromPointOrRing = (ringOrPoint: number[]|number[][]): LatLngExpression | LatLngExpression[] => {
+const createLatLngExpressionFromPointOrRing = (ringOrPoint: number[] | number[][]): LatLngExpression | LatLngExpression[] => {
   return Array.isArray(ringOrPoint[0])
     ? (ringOrPoint as number[][]).map(([lng, lat]) => [lat, lng] as LatLngExpression)
     : [ringOrPoint[1], ringOrPoint[0]] as LatLngExpression;
