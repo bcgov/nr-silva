@@ -8,7 +8,7 @@ export type MapLayer = {
   format: string;
   layers: string;
   transparent: boolean;
-  styles: {name: string, title: string}[];
+  styles: { name: string, title: string }[];
   catalogueUrl: string;
   getCapabilitiesUrl: string;
   filterable: boolean;
@@ -33,7 +33,7 @@ export type MapKindType = 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'
 
 export type LayerConfiguration = CodeDescriptionDto<MapKindType> & {
   style: Record<string, any>;
-  popup: (properties: GeoJsonProperties) => Record<string,any> 
+  popup: (properties: GeoJsonProperties) => Record<string, any>
 }
 
 export const defaultStyle = {
@@ -53,10 +53,10 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'blue',
       fillColor: '#4A90E2', // A vibrant but professional blue
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => {
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-      'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
-      'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`
+        'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
+        'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`
       }
     }
   },
@@ -68,12 +68,12 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'red',
       fillColor: '#E94E77', // A vibrant red
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => {
-      return{
-      'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
-      'Cut Block': properties?.CUT_BLOCK_ID,
-      'Client': `${properties?.CLIENT_NAME} (${properties?.CLIENT_NUMBER})`,
-      'Location': properties?.CLIENT_LOCATION_CODE,
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
+      return {
+        'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
+        'Cut Block': properties?.CUT_BLOCK_ID,
+        'Client': `${properties?.CLIENT_NAME} (${properties?.CLIENT_NUMBER})`,
+        'Location': properties?.CLIENT_LOCATION_CODE,
       }
     }
   },
@@ -85,11 +85,11 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'green',
       fillColor: '#50E3C2', // A vibrant green
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => {
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-      'Stocking Standards Id': properties?.STOCKING_STANDARD_UNIT_ID,
-      'Standard Units Id': properties?.STANDARDS_UNIT_ID,
-      'Net Area (ha)': properties?.NET_AREA,
+        'Stocking Standards Id': properties?.STOCKING_STANDARD_UNIT_ID,
+        'Standard Units Id': properties?.STANDARDS_UNIT_ID,
+        'Net Area (ha)': properties?.NET_AREA,
       }
     }
   },
@@ -101,10 +101,10 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'purple',
       fillColor: '#9013FE', // A vibrant purple
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => {
-      return{
-      'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
-      'Silviculture base code': properties?.SILV_BASE_CODE
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
+      return {
+        'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
+        'Silviculture base code': properties?.SILV_BASE_CODE
       }
     }
   },
@@ -116,7 +116,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'orange',
       fillColor: '#F5A623', // A vibrant orange
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => { return {}}
+    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
   },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
@@ -126,7 +126,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'yellow',
       fillColor: '#F8E71C', // A vibrant yellow
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => { return {}}
+    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
   },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
@@ -136,8 +136,8 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'pink',
       fillColor: '#D0021B', // A vibrant pink
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => { return {}}
-  },  
+    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
+  },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW',
     description: 'Planting',
@@ -146,7 +146,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'cyan',
       fillColor: '#50E3C2', // A vibrant cyan
     },
-    popup: (properties: GeoJsonProperties): Record<string,any> => { return {}}
+    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
   },
 ] as const;
 
@@ -157,9 +157,9 @@ export type MapPositionType = {
 };
 
 export const getStyleForFeature = (
-    feature: Feature<Geometry, any> | undefined
-  ): PathOptions =>{
-    if (!feature?.id) return defaultStyle;
+  feature: Feature<Geometry, any> | undefined
+): PathOptions => {
+  if (!feature?.id) return defaultStyle;
 
   const kindEntry = mapKinds.find((kind) =>
     String(feature.id).startsWith(kind.code)
@@ -177,17 +177,17 @@ export const getStyleForFeature = (
 
 const colorMap: Record<string, string[]> = {
   blue: ['#9FB3DF', '#9EC6F3', '#BDDDE4', '#FFF1D5'],
-  red: ['#DE5B7B','#ECCFD1','#F0E3C4','#98DED3'],
-  green: ['#ACE1AF','#B0EBB4','#BFF6C3','#E0FBE2'],
-  purple: ['#BEADFA','#D0BFFF','#DFCCFB','#FFF8C9'],
-  orange: ['#FFB38E','#FFCF9D','#FFB26F','#DE8F5F'],
-  yellow: ['#FFF085','#FCB454','#FF9B17','#F16767'],
+  red: ['#DE5B7B', '#ECCFD1', '#F0E3C4', '#98DED3'],
+  green: ['#ACE1AF', '#B0EBB4', '#BFF6C3', '#E0FBE2'],
+  purple: ['#BEADFA', '#D0BFFF', '#DFCCFB', '#FFF8C9'],
+  orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
+  yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
   pink: ['#8F87F1', '#C68EFD', '#E9A5F1', '#FED2E2'],
-  cyan: ['#F5F0BB','#DBDFAA','#B3C890','#73A9AD'],
+  cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
   default: [defaultStyle.fillColor],
 }
 
-export const getPropertyForFeature = (feature: Feature<Geometry,GeoJsonProperties>): Record<string,any> => {
+export const getPropertyForFeature = (feature: Feature<Geometry, GeoJsonProperties>): Record<string, any> => {
   const kindEntry = mapKinds.find((kind) =>
     String(feature.id).startsWith(kind.code)
   );

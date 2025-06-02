@@ -18,12 +18,13 @@ import {
   Security as SecurityIcon,
   Launch as LaunchIcon,
 } from "@carbon/icons-react";
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
 import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
-import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpeningTypes";
+import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpenApiTypes";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
@@ -35,6 +36,7 @@ import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
 import { countUniqueSpeciesByCode, isSingleLayer } from "./utils";
 import "./styles.scss";
+
 
 type OpeningStandardUnitsProps = {
   openingId: number;
@@ -62,7 +64,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
           stockingStandard.preferredSpecies.filter((species) => species.layer === layer.layer.code).length
             ? (
               <div className="verticle-cell-items">
-                <SpeciesTooltipList speciesList={stockingStandard.preferredSpecies} layerCode={layer.layer.code} />
+                <SpeciesTooltipList speciesList={stockingStandard.preferredSpecies} layerCode={layer.layer.code!} />
               </div>
             )
             : PLACE_HOLDER
@@ -73,7 +75,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
           stockingStandard.acceptableSpecies.filter((species) => species.layer === layer.layer.code).length
             ? (
               <div className="verticle-cell-items">
-                <SpeciesTooltipList speciesList={stockingStandard.acceptableSpecies} layerCode={layer.layer.code} />
+                <SpeciesTooltipList speciesList={stockingStandard.acceptableSpecies} layerCode={layer.layer.code!} />
               </div>
             )
             : PLACE_HOLDER

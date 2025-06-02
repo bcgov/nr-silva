@@ -1,5 +1,5 @@
 import { SortItemsOptions } from "@carbon/react/lib/components/MultiSelect/MultiSelectPropTypes";
-import CodeDescriptionDto from "../types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 import { PLACE_HOLDER } from "../constants";
 
 interface MultiSelectEvent {
@@ -42,7 +42,7 @@ const codeDescriptionToDisplayText = (codeDescriptionDto?: CodeDescriptionDto | 
  * @returns {string[]} An array of extracted `code` strings.
  */
 const extractCodesFromCodeDescriptionArr = (arr: CodeDescriptionDto[]): string[] => (
-  arr.map((item) => item.code)
+  arr.map((item) => item.code!)
 );
 
 interface SelectableCodeDescriptionDto extends CodeDescriptionDto {

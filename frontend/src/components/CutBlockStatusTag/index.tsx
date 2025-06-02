@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "@carbon/react";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 import { SIZES, TYPES } from "@carbon/react/lib/components/Tag/Tag";
 import { CodeType, codeColorMap, KNOWN_CODES } from "./constants";
 
@@ -16,13 +16,13 @@ const CutBlockStatusTag = ({ status, size }: CutBlockStatusTagProps) => {
   const { code, description } = status;
   let tagType: keyof typeof TYPES = 'gray';
 
-  if (isKnownCode(code)) {
+  if (isKnownCode(code!)) {
     tagType = codeColorMap[code];
   }
 
   return (
     <Tag
-      title={description}
+      title={description!}
       size={size ?? 'md'}
       type={tagType}
     >

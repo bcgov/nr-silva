@@ -4,13 +4,14 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
-import { OpeningSearchResponseDto } from "@/types/OpeningTypes";
+
 import StatusTag from "../StatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
+import { OpeningSearchResponseDto } from "@/types/OpenApiTypes";
 
 import { OpeningDetailsRoute } from "@/routes/config";
 import "./styles.scss";

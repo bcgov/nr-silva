@@ -298,92 +298,90 @@ export type components = {
     schemas: {
         OpeningsPerYearDto: {
             /** Format: int32 */
-            month?: number;
+            month: number;
             /** Format: int32 */
-            year?: number;
+            year: number;
             /** Format: int64 */
-            amount?: number;
-            statusCounts?: {
+            amount: number;
+            statusCounts: {
                 [key: string]: number;
             };
         };
         CodeDescriptionDto: {
-            code?: string;
-            description?: string;
+            code: string | null;
+            description: string | null;
         };
         CommentDto: {
-            commentSource?: components["schemas"]["CodeDescriptionDto"];
-            commentType?: components["schemas"]["CodeDescriptionDto"];
-            commentText?: string;
+            commentSource: components["schemas"]["CodeDescriptionDto"];
+            commentType: components["schemas"]["CodeDescriptionDto"];
+            commentText: string | null;
         };
         ForestClientDto: {
-            clientNumber?: string;
-            clientName?: string;
-            legalFirstName?: string;
-            legalMiddleName?: string;
-            /** @enum {string} */
-            clientStatusCode?: "ACT" | "DAC" | "DEC" | "REC" | "SPN";
-            /** @enum {string} */
-            clientTypeCode?: "A" | "B" | "C" | "F" | "G" | "I" | "L" | "P" | "R" | "S" | "T" | "U";
-            acronym?: string;
+            clientNumber: string;
+            clientName: string;
+            legalFirstName: string;
+            legalMiddleName: string;
+            clientStatusCode: components["schemas"]["CodeDescriptionDto"];
+            clientTypeCode: components["schemas"]["CodeDescriptionDto"];
+            acronym: string;
             name?: string;
         };
         OpeningDetailsOverviewDto: {
-            opening?: components["schemas"]["OpeningDetailsOverviewOpeningDto"];
-            milestones?: components["schemas"]["OpeningDetailsOverviewMilestoneDto"];
+            opening: components["schemas"]["OpeningDetailsOverviewOpeningDto"];
+            milestones: components["schemas"]["OpeningDetailsOverviewMilestoneDto"];
         };
         OpeningDetailsOverviewMilestoneDto: {
-            standardsUnitId?: string;
+            standardsUnitId: string | null;
             /** Format: date */
-            postHarvestDeclaredDate?: string;
+            postHarvestDeclaredDate: string | null;
             /** Format: date */
-            regenDeclaredDate?: string;
+            regenDeclaredDate: string | null;
             /** Format: int32 */
-            regenOffsetYears?: number;
+            regenOffsetYears: number | null;
             /** Format: date */
-            regenDueDate?: string;
+            regenDueDate: string | null;
             /** Format: date */
-            freeGrowingDeclaredDate?: string;
+            freeGrowingDeclaredDate: string | null;
             /** Format: int32 */
-            freeGrowingOffsetYears?: number;
+            freeGrowingOffsetYears: number | null;
             /** Format: date */
-            freeGrowingDueDate?: string;
+            freeGrowingDueDate: string | null;
         };
         OpeningDetailsOverviewOpeningDto: {
-            licenseeId?: string;
-            tenureType?: components["schemas"]["CodeDescriptionDto"];
-            managementUnitType?: components["schemas"]["CodeDescriptionDto"];
-            managementUnitId?: string;
-            timberSaleOffice?: components["schemas"]["CodeDescriptionDto"];
-            comments?: components["schemas"]["CommentDto"][];
+            licenseeId: string | null;
+            tenureType: components["schemas"]["CodeDescriptionDto"];
+            managementUnitType: components["schemas"]["CodeDescriptionDto"];
+            managementUnitId: string | null;
+            timberSaleOffice: components["schemas"]["CodeDescriptionDto"];
+            comments: components["schemas"]["CommentDto"][];
         };
         OpeningDetailsTombstoneDto: {
-            openingNumber?: string;
-            openingStatus?: components["schemas"]["CodeDescriptionDto"];
-            orgUnitCode?: string;
-            orgUnitName?: string;
-            openCategory?: components["schemas"]["CodeDescriptionDto"];
-            client?: components["schemas"]["ForestClientDto"];
-            fileId?: string;
-            cutBlockID?: string;
-            cuttingPermitId?: string;
-            timberMark?: string;
-            maxAllowedAccess?: string;
+            openingNumber: string | null;
+            openingStatus: components["schemas"]["CodeDescriptionDto"];
+            orgUnitCode: string | null;
+            orgUnitName: string | null;
+            openCategory: components["schemas"]["CodeDescriptionDto"];
+            client: components["schemas"]["ForestClientDto"];
+            fileId: string | null;
+            cutBlockID: string | null;
+            cuttingPermitId: string | null;
+            timberMark: string | null;
+            maxAllowedAccess: string | null;
             /** Format: float */
-            openingGrossArea?: number;
-            createdBy?: string;
+            openingGrossArea: number | null;
+            createdBy: string | null;
             /** Format: date */
-            createdOn?: string;
+            createdOn: string | null;
             /** Format: date */
-            lastUpdatedOn?: string;
+            lastUpdatedOn: string | null;
             /** Format: date */
-            disturbanceStartDate?: string;
+            disturbanceStartDate: string | null;
         };
         OpeningDetailsTombstoneOverviewDto: {
             /** Format: int64 */
-            openingId?: number;
-            tombstone?: components["schemas"]["OpeningDetailsTombstoneDto"];
-            overview?: components["schemas"]["OpeningDetailsOverviewDto"];
+            openingId: number;
+            tombstone: components["schemas"]["OpeningDetailsTombstoneDto"];
+            overview: components["schemas"]["OpeningDetailsOverviewDto"];
         };
         Pageable: {
             /** Format: int32 */
@@ -394,146 +392,146 @@ export type components = {
         };
         OpeningDetailsTenureDto: {
             /** Format: int64 */
-            id?: number;
-            primaryTenure?: boolean;
-            fileId?: string;
-            cutBlock?: string;
-            cuttingPermit?: string;
-            timberMark?: string;
-            status?: components["schemas"]["CodeDescriptionDto"];
+            id: number;
+            primaryTenure: boolean;
+            fileId: string | null;
+            cutBlock: string | null;
+            cuttingPermit: string | null;
+            timberMark: string | null;
+            status: components["schemas"]["CodeDescriptionDto"];
             /** Format: float */
-            plannedGrossArea?: number;
+            plannedGrossArea: number | null;
             /** Format: float */
-            plannedNetArea?: number;
+            plannedNetArea: number | null;
         };
         OpeningDetailsTenuresDto: {
-            primary?: components["schemas"]["OpeningDetailsTenureDto"];
-            content?: components["schemas"]["OpeningDetailsTenureDto"][];
-            page?: components["schemas"]["SimplePageDto"];
+            primary: components["schemas"]["OpeningDetailsTenureDto"];
+            content: components["schemas"]["OpeningDetailsTenureDto"][];
+            page: components["schemas"]["SimplePageDto"];
             /** Format: int64 */
-            totalUnfiltered?: number;
+            totalUnfiltered: number | null;
         };
         SimplePageDto: {
             /** Format: int64 */
-            size?: number;
+            size: number;
             /** Format: int64 */
-            number?: number;
+            number: number;
             /** Format: int64 */
-            totalElements?: number;
+            totalElements: number;
             /** Format: int64 */
-            totalPages?: number;
+            totalPages: number;
         };
         OpeningDetailsBecDto: {
-            becZoneCode?: string;
-            becSubzoneCode?: string;
-            becVariant?: string;
-            becPhase?: string;
-            becSiteSeries?: string;
-            becSiteType?: string;
-            becSeral?: string;
+            becZoneCode: string | null;
+            becSubzoneCode: string | null;
+            becVariant: string | null;
+            becPhase: string | null;
+            becSiteSeries: string | null;
+            becSiteType: string | null;
+            becSeral: string | null;
         };
         OpeningDetailsStockingDetailsDto: {
-            stockingStandardUnit?: string;
+            stockingStandardUnit: string | null;
             /** Format: int64 */
-            ssid?: number;
-            defaultMof?: boolean;
-            manualEntry?: boolean;
+            ssid: number | null;
+            defaultMof: boolean;
+            manualEntry: boolean;
             /** Format: int64 */
-            fspId?: number;
+            fspId: number | null;
             /** Format: float */
-            netArea?: number;
+            netArea: number | null;
             /** Format: float */
-            soilDisturbancePercent?: number;
-            bec?: components["schemas"]["OpeningDetailsBecDto"];
+            soilDisturbancePercent: number | null;
+            bec: components["schemas"]["OpeningDetailsBecDto"];
             /** Format: int64 */
-            regenDelay?: number;
+            regenDelay: number | null;
             /** Format: int64 */
-            freeGrowingLate?: number;
+            freeGrowingLate: number | null;
             /** Format: int64 */
-            freeGrowingEarly?: number;
-            additionalStandards?: string;
+            freeGrowingEarly: number | null;
+            additionalStandards: string | null;
         };
         OpeningDetailsStockingDto: {
-            stocking?: components["schemas"]["OpeningDetailsStockingDetailsDto"];
-            preferredSpecies?: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
-            acceptableSpecies?: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
-            layers?: components["schemas"]["OpeningDetailsStockingLayerDto"][];
-            comments?: components["schemas"]["CommentDto"][];
+            stocking: components["schemas"]["OpeningDetailsStockingDetailsDto"];
+            preferredSpecies: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
+            acceptableSpecies: components["schemas"]["OpeningDetailsStockingSpeciesDto"][];
+            layers: components["schemas"]["OpeningDetailsStockingLayerDto"][];
+            comments: components["schemas"]["CommentDto"][];
         };
         OpeningDetailsStockingLayerDto: {
-            layer?: components["schemas"]["CodeDescriptionDto"];
+            layer: components["schemas"]["CodeDescriptionDto"];
             /** Format: int64 */
-            minWellspacedTrees?: number;
+            minWellspacedTrees: number | null;
             /** Format: int64 */
-            minPreferredWellspacedTrees?: number;
+            minPreferredWellspacedTrees: number | null;
             /** Format: int64 */
-            minHorizontalDistanceWellspacedTrees?: number;
+            minHorizontalDistanceWellspacedTrees: number | null;
             /** Format: int64 */
-            targetWellspacedTrees?: number;
+            targetWellspacedTrees: number | null;
             /** Format: int64 */
-            minResidualBasalArea?: number;
+            minResidualBasalArea: number | null;
             /** Format: int64 */
-            minPostspacingDensity?: number;
+            minPostspacingDensity: number | null;
             /** Format: int64 */
-            maxPostspacingDensity?: number;
+            maxPostspacingDensity: number | null;
             /** Format: int64 */
-            maxConiferous?: number;
+            maxConiferous: number | null;
             /** Format: int64 */
-            heightRelativeToComp?: number;
+            heightRelativeToComp: number | null;
         };
         OpeningDetailsStockingSpeciesDto: {
-            layer?: string;
-            species?: components["schemas"]["CodeDescriptionDto"];
+            layer: string | null;
+            species: components["schemas"]["CodeDescriptionDto"];
             /** Format: float */
-            minHeight?: number;
+            minHeight: number | null;
         };
         ForestClientLocationDto: {
-            clientNumber?: string;
-            locationCode?: string;
-            locationName?: string;
-            companyCode?: string;
-            address1?: string;
-            address2?: string;
-            address3?: string;
-            city?: string;
-            province?: string;
-            postalCode?: string;
-            country?: string;
-            businessPhone?: string;
-            homePhone?: string;
-            cellPhone?: string;
-            faxNumber?: string;
-            email?: string;
-            /** @enum {string} */
-            expired?: "Y" | "N";
-            /** @enum {string} */
-            trusted?: "Y" | "N";
+            clientNumber: string | null;
+            locationCode: string | null;
+            locationName: string | null;
+            companyCode: string | null;
+            address1: string | null;
+            address2: string | null;
+            address3: string | null;
+            city: string | null;
+            province: string | null;
+            postalCode: string | null;
+            country: string | null;
+            businessPhone: string | null;
+            homePhone: string | null;
+            cellPhone: string | null;
+            faxNumber: string | null;
+            email: string | null;
+            /** @enum {string|null} */
+            expired: "Y" | "N" | null;
+            /** @enum {string|null} */
+            trusted: "Y" | "N" | null;
             /** Format: date */
-            returnedMailDate?: string;
-            comment?: string;
+            returnedMailDate: string | null;
+            comment: string | null;
         };
         OpeningDetailsActivitiesDisturbanceDto: {
             /** Format: int64 */
-            atuId?: number;
-            disturbance?: components["schemas"]["CodeDescriptionDto"];
-            system?: components["schemas"]["CodeDescriptionDto"];
-            variant?: components["schemas"]["CodeDescriptionDto"];
-            cutPhase?: components["schemas"]["CodeDescriptionDto"];
+            atuId: number;
+            disturbance: components["schemas"]["CodeDescriptionDto"];
+            system: components["schemas"]["CodeDescriptionDto"];
+            variant: components["schemas"]["CodeDescriptionDto"];
+            cutPhase: components["schemas"]["CodeDescriptionDto"];
             /** Format: float */
-            disturbanceArea?: number;
+            disturbanceArea: number | null;
             /** Format: date */
-            lastUpdate?: string;
+            lastUpdate: string | null;
             /** Format: date */
-            startDate?: string;
+            startDate: string | null;
             /** Format: date */
-            endDate?: string;
-            licenseeActivityId?: string;
-            forestClient?: components["schemas"]["ForestClientDto"];
-            forestClientLocation?: components["schemas"]["ForestClientLocationDto"];
-            licenceNumber?: string;
-            cuttingPermitId?: string;
-            cutBlock?: string;
-            comments?: components["schemas"]["CommentDto"][];
+            endDate: string | null;
+            licenseeActivityId: string | null;
+            forestClient: components["schemas"]["ForestClientDto"];
+            forestClientLocation: components["schemas"]["ForestClientLocationDto"];
+            licenceNumber: string | null;
+            cuttingPermitId: string | null;
+            cutBlock: string | null;
+            comments: components["schemas"]["CommentDto"][];
         };
         PageMetadata: {
             /** Format: int64 */
@@ -551,82 +549,80 @@ export type components = {
         };
         OpeningDetailsActivitiesActivitiesDto: {
             /** Format: int64 */
-            atuId?: number;
-            status?: components["schemas"]["CodeDescriptionDto"];
-            base?: components["schemas"]["CodeDescriptionDto"];
-            tech?: components["schemas"]["CodeDescriptionDto"];
-            method?: components["schemas"]["CodeDescriptionDto"];
-            objective1?: components["schemas"]["CodeDescriptionDto"];
-            objective2?: components["schemas"]["CodeDescriptionDto"];
-            objective3?: components["schemas"]["CodeDescriptionDto"];
+            atuId: number;
+            status: components["schemas"]["CodeDescriptionDto"];
+            base: components["schemas"]["CodeDescriptionDto"];
+            tech: components["schemas"]["CodeDescriptionDto"];
+            method: components["schemas"]["CodeDescriptionDto"];
+            objective1: components["schemas"]["CodeDescriptionDto"];
+            objective2: components["schemas"]["CodeDescriptionDto"];
+            objective3: components["schemas"]["CodeDescriptionDto"];
             /** Format: float */
-            area?: number;
-            funding?: components["schemas"]["CodeDescriptionDto"];
-            projectId?: string;
+            area: number | null;
+            funding: components["schemas"]["CodeDescriptionDto"];
+            projectId: string | null;
             /** Format: date */
-            lastUpdate?: string;
+            lastUpdate: string | null;
             /** Format: date */
-            plannedDate?: string;
+            plannedDate: string | null;
             /** Format: date */
-            endDate?: string;
+            endDate: string | null;
         };
         PagedModelOpeningDetailsActivitiesActivitiesDto: {
             content?: components["schemas"]["OpeningDetailsActivitiesActivitiesDto"][];
             page?: components["schemas"]["PageMetadata"];
         };
         OpeningActivityBaseDto: {
-            licenseeActivityId?: string;
-            intraAgencyNumber?: string;
-            activityClient?: components["schemas"]["ForestClientDto"];
-            activityLocation?: components["schemas"]["ForestClientLocationDto"];
+            licenseeActivityId: string | null;
+            intraAgencyNumber: string | null;
+            activityClient: components["schemas"]["ForestClientDto"];
+            activityLocation: components["schemas"]["ForestClientLocationDto"];
             /** Format: float */
-            plannedAmount?: number;
+            plannedAmount: number | null;
             /** Format: float */
-            treatedAmount?: number;
+            treatedAmount: number | null;
             /** Format: float */
-            plannedCost?: number;
+            plannedCost: number | null;
             /** Format: float */
-            actualCost?: number;
+            actualCost: number | null;
             /** Format: int64 */
-            totalPlanting?: number;
-            comments?: components["schemas"]["CommentDto"][];
+            totalPlanting: number | null;
+            comments: components["schemas"]["CommentDto"][];
         };
         OpeningSearchResponseDto: {
             /** Format: int64 */
-            openingId?: number;
-            openingNumber?: string;
-            /** @enum {string} */
-            category?: "CONT" | "EXCLU" | "FFTFLTC" | "FFTITSL" | "FTCF" | "FTFSM" | "FTLEVY" | "FTML" | "FTMSL" | "FTNOLVY" | "FTPI" | "FTSBF" | "FTWL" | "NDAML" | "NDCF" | "NDVML" | "NDWL" | "NREQ" | "SPEX" | "UHRV";
-            /** @enum {string} */
-            status?: "AMD" | "AMG" | "APP" | "DFT" | "FG" | "RET" | "SUB";
-            cuttingPermitId?: string;
-            timberMark?: string;
-            cutBlockId?: string;
-            openingGrossAreaHa?: number;
+            openingId: number;
+            openingNumber: string | null;
+            category: components["schemas"]["CodeDescriptionDto"];
+            status: components["schemas"]["CodeDescriptionDto"];
+            cuttingPermitId: string | null;
+            timberMark: string | null;
+            cutBlockId: string | null;
+            openingGrossAreaHa: number | null;
             /** Format: date */
-            disturbanceStartDate?: string;
-            orgUnitCode?: string;
-            orgUnitName?: string;
-            clientNumber?: string;
-            clientLocation?: string;
-            clientAcronym?: string;
-            clientName?: string;
+            disturbanceStartDate: string | null;
+            orgUnitCode: string;
+            orgUnitName: string;
+            clientNumber: string | null;
+            clientLocation: string | null;
+            clientAcronym: string | null;
+            clientName: string | null;
             /** Format: date */
-            regenDelayDate?: string;
+            regenDelayDate: string;
             /** Format: date */
-            earlyFreeGrowingDate?: string;
+            earlyFreeGrowingDate: string | null;
             /** Format: date */
-            lateFreeGrowingDate?: string;
+            lateFreeGrowingDate: string | null;
             /** Format: date-time */
-            updateTimestamp?: string;
-            entryUserId?: string;
-            submittedToFrpa?: boolean;
-            forestFileId?: string;
+            updateTimestamp: string;
+            entryUserId: string;
+            submittedToFrpa: boolean;
+            forestFileId: string | null;
             /** Format: int64 */
-            silvaReliefAppId?: number;
+            silvaReliefAppId: number | null;
             /** Format: date-time */
-            lastViewDate?: string;
-            favourite?: boolean;
+            lastViewDate: string | null;
+            favourite: boolean;
             valid?: boolean;
         };
         PagedModelOpeningSearchResponseDto: {

@@ -28,7 +28,7 @@ services:
   frontend:
     container_name: frontend
     entrypoint: sh -c "npm ci && npm run dev"
-    image: node:20-bullseye@sha256:ce61e37b353643c4a0a3c68b7190803824ebcd9e3015478392c12dacfc911be7
+    image: node:20-bullseye
     ports: [ "3000:3000" ]
     volumes: [ "./frontend:/app", "/app/node_modules" ]
     working_dir: "/app"
@@ -46,7 +46,7 @@ services:
     container_name: backend
     entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
-    image: maven:3.9.9-eclipse-temurin-17@sha256:75c4d813eab02660a1dd7c5af04c2531db326b2b2998fa48082303cb28c1022c
+    image: maven:3.9.9-eclipse-temurin-17
     network_mode: host
     volumes:
       - ./backend:/app
@@ -77,7 +77,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    image: postgis/postgis:13-master@sha256:030cb327736b4f06b6f8d5d33ebd4f8818e73c1bdf9a70ba55944df60c54ba5c
+    image: postgis/postgis:13-master
 
   backend-native:
     container_name: backend-native
@@ -87,7 +87,7 @@ services:
     <<: *backend
 
   wiremock:
-    image: "wiremock/wiremock:latest@sha256:8d9a0330e4de2f9e2035fc290df0a370ac7c2a92072a6c8752a42597310edb09"
+    image: "wiremock/wiremock:latest
     container_name: forest-client-api-stub
     ports: [ "9000:9000", "9001:9001" ]
     volumes:
@@ -104,7 +104,7 @@ services:
       APP_USER: THE
       ORACLE_RANDOM_PASSWORD: yes
     platform: "linux/amd64"
-    image: gvenzl/oracle-free:23.7-full-faststart@sha256:7b313ef05800e6c6be1b1cca1e323e3162704e12db4330ac9697600eab3e5b6c
+    image: gvenzl/oracle-free:23.7-full-faststart
     ports: [ 1521:1521 ]
     volumes: [ /opt/oracle/oradata ]
     healthcheck:

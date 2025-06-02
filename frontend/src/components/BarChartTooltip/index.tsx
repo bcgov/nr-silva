@@ -1,5 +1,4 @@
 import React from "react";
-import ChartTitle from "../ChartTitle";
 import { SubmissionTrendChartObj } from "../OpeningSubmissionTrend/definitions";
 import { OPENING_STATUS_LIST } from "../../constants";
 
@@ -10,18 +9,32 @@ interface BarChartTooltipProps {
 }
 
 const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
+  console.log(datum);
 
   const statusDescription = (code: string) => (
     OPENING_STATUS_LIST.find((statusData) => statusData.code.toLowerCase() === code.toLowerCase())?.description ?? code
   ).toLowerCase();
 
   return (
-    <div>
-      <ChartTitle title={`${datum.value} ${datum.group}`} subtitle="Click on the bar to see openings" />
-      <ul className="bar--tooltip_status">
-        {Object.keys(datum.statusCounts).map((key) => (<li key={key}><p><b>{datum.statusCounts[key]} {statusDescription(key)}</b></p></li>))}
+    <section className="bar-chart-tooltip" aria-label="Bar chart details">
+      <header>
+        <span className="title-bold">{datum.group}</span>
+        {' '}
+        <span className="title-code">{datum.value}</span>
+      </header>
+
+      <div className="helper-text">Click on the bar to see the list in detail</div>
+
+      <ul className="status-list">
+        {
+          Object.keys(datum.statusCounts).map((key) => (
+            <li key={key}>
+              {`${datum.statusCounts[key]} ${statusDescription(key)}`}
+            </li>
+          ))
+        }
       </ul>
-    </div>
+    </section>
   );
 };
 

@@ -1,8 +1,8 @@
 import React from "react";
-import { OpeningTenureDto } from "@/types/OpeningTypes";
+import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
 
 
-const OpeningTenureTooltip: React.FC<{ primary: OpeningTenureDto }> = ({ primary }) => {
+const OpeningTenureTooltip: React.FC<{ primary: OpeningDetailsTenureDto }> = ({ primary }) => {
   const fields = [
     { label: "File ID:", value: primary.fileId },
     { label: "Cut Block:", value: primary.cutBlock },
