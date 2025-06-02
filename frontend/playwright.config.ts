@@ -1,5 +1,8 @@
 import { defineConfig, devices, type VideoMode } from '@playwright/test';
+import * as dotenv from 'dotenv';
 import { THIRTY_SECONDS } from './src/constants/TimeUnits';
+
+dotenv.config();
 
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const isAllBrowsers = process.env.ALL_BROWSERS === 'true';
