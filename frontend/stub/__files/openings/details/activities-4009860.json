@@ -1,0 +1,14 @@
+{
+  "licenseeActivityId": null,
+  "intraAgencyNumber": null,
+  "activityClient": null,
+  "activityLocation": null,
+  "plannedAmount": null,
+  "treatedAmount": null,
+  "plannedCost": null,
+  "actualCost": null,
+  "totalPlanting": null,
+  "comments": null,
+  "species": [],
+  "totalSpecies": 0
+}

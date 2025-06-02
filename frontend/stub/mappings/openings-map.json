@@ -1,0 +1,205 @@
+{
+  "mappings": [
+    {
+      "id": "6db5a270-e592-3160-ba5a-2244f73831fb",
+      "request": {
+        "urlPathPattern": "/api/openings/map/([0-9]*)",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Access-Control-Allow-Headers": "access-control-allow-origin, authorization",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Access-Control-Max-Age": "300"
+        }
+      },
+      "uuid": "6db5a270-e592-3160-ba5a-2244f73831fb"
+    },
+    {
+      "id": "4135c352-d27c-30eb-8063-f0e207f6765d",
+      "request": {
+        "urlPathPattern": "/api/openings/map/([0-9]*)",
+        "method": "GET",
+        "queryParameters": {
+          "kind": {
+            "equalTo": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "openings/map/atu.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "4135c352-d27c-30eb-8063-f0e207f6765d"
+    },
+    {
+      "id": "7627024b-cde3-37e6-8d88-1577871f82ae",
+      "request": {
+        "urlPathPattern": "/api/openings/map/([0-9]*)",
+        "method": "GET",
+        "queryParameters": {
+          "kind": {
+            "equalTo": "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "openings/map/opening.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "7627024b-cde3-37e6-8d88-1577871f82ae"
+    },
+    {
+      "id": "68008e0e-c5ae-3d9d-b124-8bfa1247e97f",
+      "request": {
+        "urlPathPattern": "/api/openings/map/([0-9]*)",
+        "method": "GET",
+        "queryParameters": {
+          "kind": {
+            "equalTo": "WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "openings/map/su.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "68008e0e-c5ae-3d9d-b124-8bfa1247e97f"
+    },
+    {
+      "id": "9fbd50b1-d06c-3e4d-8661-bd937e1de4b7",
+      "request": {
+        "urlPathPattern": "/api/openings/map/([0-9]*)",
+        "method": "GET",
+        "queryParameters": {
+          "kind": {
+            "equalTo": "WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "openings/map/cutblock.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "9fbd50b1-d06c-3e4d-8661-bd937e1de4b7"
+    }
+  ]
+}

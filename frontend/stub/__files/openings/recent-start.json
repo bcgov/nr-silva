@@ -1,0 +1,78 @@
+{
+  "content": [
+    {
+      "openingId": 1004185,
+      "openingNumber": null,
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "FG",
+        "description": "Free Growing"
+      },
+      "cuttingPermitId": "12U",
+      "timberMark": "47/12U",
+      "cutBlockId": "12-44",
+      "openingGrossAreaHa": 79.4,
+      "disturbanceStartDate": "2004-09-08",
+      "orgUnitCode": "DAS",
+      "orgUnitName": "Development Unit",
+      "clientNumber": "00010003",
+      "clientLocation": "13",
+      "clientAcronym": null,
+      "clientName": "THE CONTINENTAL",
+      "regenDelayDate": "2007-09-08",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2017-12-19T10:03:56",
+      "entryUserId": "IDIR\\adellavi",
+      "submittedToFrpa": false,
+      "forestFileId": "TFL47",
+      "silvaReliefAppId": 0,
+      "lastViewDate": "2025-05-29T11:11:29.218061",
+      "favourite": false,
+      "valid": true
+    },
+    {
+      "openingId": 60000,
+      "openingNumber": "  73",
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "FG",
+        "description": "Free Growing"
+      },
+      "cuttingPermitId": "145",
+      "timberMark": "FA9145",
+      "cutBlockId": "1",
+      "openingGrossAreaHa": 47.6,
+      "disturbanceStartDate": "1998-06-01",
+      "orgUnitCode": "TWO",
+      "orgUnitName": "Design Unit",
+      "clientNumber": "00010006",
+      "clientLocation": "00",
+      "clientAcronym": null,
+      "clientName": "THOUSAND SUNNY",
+      "regenDelayDate": "2005-06-01",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2012-04-16T08:37:33",
+      "entryUserId": "MLSIS",
+      "submittedToFrpa": false,
+      "forestFileId": "A13840",
+      "silvaReliefAppId": 0,
+      "lastViewDate": "2025-05-28T13:43:43.790707",
+      "favourite": false,
+      "valid": true
+    }
+  ],
+  "page": {
+    "size": 10,
+    "number": 0,
+    "totalElements": 2,
+    "totalPages": 1
+  }
+}
