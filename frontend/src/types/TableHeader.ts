@@ -1,4 +1,4 @@
-import { OpeningSearchResponseDto } from "./OpeningTypes";
+import { OpeningSearchResponseDto } from "./OpenApiTypes";
 
 export type TableHeaderType<T> = {
   key: T;

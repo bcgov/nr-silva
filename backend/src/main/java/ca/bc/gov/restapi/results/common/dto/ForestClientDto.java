@@ -1,13 +1,16 @@
 package ca.bc.gov.restapi.results.common.dto;
 
-import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
-import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.springframework.data.annotation.Transient;
+
+import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
+import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.With;
-import org.springframework.data.annotation.Transient;
 
 /**
  * This record represents a Forest Client object.
@@ -15,14 +18,28 @@ import org.springframework.data.annotation.Transient;
 @Builder
 @With
 public record ForestClientDto(
-    String clientNumber,
-    String clientName,
-    String legalFirstName,
-    String legalMiddleName,
-    ForestClientStatusEnum clientStatusCode,
-    ForestClientTypeEnum clientTypeCode,
-    String acronym,
-    String name
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  String clientNumber,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  String clientName,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  String legalFirstName,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  String legalMiddleName,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  ForestClientStatusEnum clientStatusCode,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  ForestClientTypeEnum clientTypeCode,
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  String acronym,
+
+  String name
 ) {
 
   /**

@@ -23,11 +23,10 @@ import {
 import { Activity, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpeningTypes";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { PLACE_HOLDER } from "@/constants";
+import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
 
 import ActivityDetail from "./ActivityDetail";
 import EmptySection from "../../EmptySection";

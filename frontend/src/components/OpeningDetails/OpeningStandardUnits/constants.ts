@@ -1,6 +1,6 @@
 
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningDetailsStockingLayerDto, OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpenApiTypes";
 
 export const LayerHeaderConfig: TableHeaderType<keyof OpeningDetailsStockingLayerDto | keyof OpeningDetailsStockingDto>[] = [
   {

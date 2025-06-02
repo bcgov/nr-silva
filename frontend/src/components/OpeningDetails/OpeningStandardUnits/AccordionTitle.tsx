@@ -1,8 +1,10 @@
 import React from "react";
 import { Location as LocationIcon } from "@carbon/icons-react";
-import VerticalDivider from "../../VerticalDivider";
-import { OpeningDetailsStockingDto } from "@/types/OpeningTypes";
+
 import { PLACE_HOLDER } from "@/constants";
+import { OpeningDetailsStockingDto } from "@/types/OpenApiTypes";
+
+import VerticalDivider from "../../VerticalDivider";
 
 type AcoordionTitleProp = {
   standardUnit: OpeningDetailsStockingDto;

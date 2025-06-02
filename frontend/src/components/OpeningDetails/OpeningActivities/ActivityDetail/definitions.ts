@@ -1,4 +1,4 @@
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/types/OpenApiTypes";
 import {
   OpeningActivityDetail,
 } from "@/types/OpeningTypes";
