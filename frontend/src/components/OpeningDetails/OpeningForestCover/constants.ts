@@ -14,5 +14,5 @@ export const ForestCoverTableHeaders: TableHeaderType<string>[] = [
 
 export const DefaultFilter: ForestCoverFilterType = {
   page: DEFAULT_PAGE_NUM,
-  size: PageSizesConfig[0],
+  size: PageSizesConfig[0] as number,
 } as const;
