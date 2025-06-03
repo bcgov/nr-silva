@@ -10,7 +10,7 @@ export type ForestCoverFilterType = {
   sortDirection?: SortDirectionType,
 };
 
-export type OpeningForestCover = {
+export type OpeningForestCoverType = {
   forestCoverId: string; // Optional for new entries
 
   forestCoverPolygonId: string;
@@ -49,7 +49,7 @@ export type OpeningForestCoverDetails = {
   comment: string | null;
 };
 
-export const mockOpeningDetailsForestCover: OpeningForestCover[] = [
+export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
   {
     forestCoverId: "3416434",
     forestCoverPolygonId: "A",

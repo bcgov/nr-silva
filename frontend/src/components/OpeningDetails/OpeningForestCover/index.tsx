@@ -12,7 +12,7 @@ import {
   mockOpeningDetailsForestCover,
   mockPolygonDetails,
   ForestCoverFilterType,
-  type OpeningForestCover,
+  type OpeningForestCoverType,
 } from "./definitions";
 import { delayMock } from "@/utils/MockUtils";
 import ForestCoverDetail from "./ForestCoverDetail";
@@ -22,6 +22,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { DEFAULT_PAGE_NUM, PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 import "./styles.scss";
 import { formatForestCoverSpeciesArray } from "./utils";
+import { NOT_APPLICABLE } from "../../../constants";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];
@@ -107,7 +108,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
 
   // Render cell content similar to ActivityAccordion
   const renderCellContent = (
-    row: OpeningForestCover,
+    row: OpeningForestCoverType,
     headerKey: string
   ) => {
     switch (headerKey) {
@@ -116,13 +117,11 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
           <div className="opening-forest-cover-cell-multiple-lines">
             <span>Polygon ID: {row.forestCoverPolygonId}</span>
             <span>
-              Standard unit: {row.forestCoverStandardUnit ?? "N/A"}
+              Standard unit: {row.forestCoverStandardUnit ?? NOT_APPLICABLE}
             </span>
-            {row.forestCoverUnmappedArea && (
-              <span>
-                Unmapped area: {row.forestCoverUnmappedArea ?? "N/A"}
-              </span>
-            )}
+            <span>
+              Unmapped area: {row.forestCoverUnmappedArea ?? NOT_APPLICABLE}
+            </span>
           </div>
         );
       case "polygonArea":
@@ -133,9 +132,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
           </div>
         );
       case "stockingStatus":
-        return <span>{row.stockingStatus}</span>
+        return row.stockingStatus;
       case "stockingType":
-        return <span>{row.stockingType}</span>;
+        return row.stockingType;
       case "inventoryLayer": {
         const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.inventoryLayerSpecies)
         return (
@@ -143,18 +142,18 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             <DefinitionTooltip
               className="forest-cover-species-tooltip-definition"
               definition={
-                tooltipDefinition!.map((line, index) => (
+                tooltipDefinition.map((line, index) => (
                   <div key={index}>{line}</div>
                 ))
               }
-              openOnHover={true}
+              openOnHover
             >
               <span>Species: {displayText}</span>
             </DefinitionTooltip>
-            <span>Total: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : "N/A"}</span>
-            <span>Total well spaced: {row.inventoryLayerTotalWellSpaced !== null ? `${row.inventoryLayerTotalWellSpaced} (st/ha)` : "N/A"}</span>
-            <span>Well spaced: {row.inventoryLayerWellSpaced !== null ? `${row.inventoryLayerWellSpaced} (st/ha)` : "N/A"}</span>
-            <span>Free growing: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : "N/A"}</span>
+            <span>Total: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total well spaced: {row.inventoryLayerTotalWellSpaced !== null ? `${row.inventoryLayerTotalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Well spaced: {row.inventoryLayerWellSpaced !== null ? `${row.inventoryLayerWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Free growing: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
           </div>
         );
       }
@@ -166,7 +165,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             <DefinitionTooltip
               className="forest-cover-species-tooltip-definition"
               definition={
-                tooltipDefinition!.map((line, index) => (
+                tooltipDefinition.map((line, index) => (
                   <div key={index}>{line}</div>
                 ))
               }
@@ -174,9 +173,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             >
               <span>Species: {displayText}</span>
             </DefinitionTooltip>
-            <span>Total well spaced: {row.silvicultureLayerTotalWellSpaced !== null ? `${row.silvicultureLayerTotalWellSpaced} (st/ha)` : "N/A"}</span>
-            <span>Well spaced: {row.silvicultureLayerWellSpaced !== null ? `${row.silvicultureLayerWellSpaced} (st/ha)` : "N/A"}</span>
-            <span>Free growing: {row.silvicultureLayerFreeGrowing !== null ? `${row.silvicultureLayerFreeGrowing} (st/ha)` : "N/A"}</span>
+            <span>Total well spaced: {row.silvicultureLayerTotalWellSpaced !== null ? `${row.silvicultureLayerTotalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Well spaced: {row.silvicultureLayerWellSpaced !== null ? `${row.silvicultureLayerWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Free growing: {row.silvicultureLayerFreeGrowing !== null ? `${row.silvicultureLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
           </div>
         );
       }
@@ -244,7 +243,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                         onExpand={() => handleRowExpand(row.forestCoverPolygonId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
-                          <TableCell key={String(header.key)}>
+                          <TableCell key={String(header.key)} className="forest-cover-table-cell">
                             {renderCellContent(row, String(header.key))}
                           </TableCell>
                         ))}

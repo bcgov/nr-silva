@@ -2,6 +2,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { OpeningForestCoverDetails, mockPolygonDetails } from "../definitions";
 import { delayMock } from "@/utils/MockUtils";
+import EmptySection from "../../../EmptySection";
+import { Grid } from "@carbon/react";
 
 const fetchPolygonDetails = async (forestCoverId: string) => {
   const details = mockPolygonDetails.find((d) => d.forestCoverId === forestCoverId);
@@ -20,10 +22,19 @@ const ForestCoverDetail = ({ forestCoverId }: ForestCoverDetailProps) => {
   });
 
   if (isLoading) return <div className="opening-forest-cover-details">Loading details...</div>;
-  if (!data) return <div className="opening-forest-cover-details">No details found.</div>;
+
+  if (!data) {
+    return (
+      <EmptySection
+        pictogram="UserSearch"
+        title=""
+        description={`Forest cover ${forestCoverId} not found.`}
+      />
+    )
+  }
 
   return (
-    <div className="opening-forest-cover-details">
+    <Grid className=" opening-forest-cover-details-grid">
       <div className="opening-forest-cover-details-title">Polygon details</div>
       <div className="opening-forest-cover-details-fields">
         <div className="opening-forest-cover-details-field"><strong>Forest cover ID:</strong> {data.forestCoverId}</div>
@@ -41,7 +52,7 @@ const ForestCoverDetail = ({ forestCoverId }: ForestCoverDetailProps) => {
           <div>{data.comment}</div>
         </div>
       )}
-    </div>
+    </Grid>
   );
 };
 

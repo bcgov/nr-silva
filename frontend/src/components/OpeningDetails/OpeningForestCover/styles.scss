@@ -5,11 +5,6 @@
   padding: 0;
   row-gap: 1.5rem;
 
-  tr.#{vars.$bcgov-prefix}--parent-row .#{vars.$bcgov-prefix}--expandable-row+tr[data-child-row] td .#{vars.$bcgov-prefix}--child-row-inner-container {
-    padding-block: 2rem;
-    padding-block-end: 2rem;
-  }
-
   .expanded-row-content-grid {
     row-gap: 2rem;
 
@@ -23,16 +18,16 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      margin: 1rem 0;
       align-items: flex-start;
-      justify-items: start;
     }
 
     .activity-objective-tooltip-definition {
       white-space: nowrap;
 
       .#{vars.$bcgov-prefix}--definition-term {
-        margin-top: 0.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
       }
 
       .#{vars.$bcgov-prefix}--definition-tooltip {
@@ -42,6 +37,11 @@
         border-radius: 0.25rem;
         @include type.type-style('body-compact-02');
       }
+    }
+
+    .forest-cover-table-cell {
+      align-content: start;
+      padding: 1rem;
     }
   }
 }

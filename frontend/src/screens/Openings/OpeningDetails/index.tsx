@@ -42,7 +42,6 @@ const OpeningStandardUnits = lazy(
 const OpeningActivities = lazy(
   () => import("@/components/OpeningDetails/OpeningActivities")
 );
-
 const OpeningForestCover = lazy(
   () => import("@/components/OpeningDetails/OpeningForestCover")
 );

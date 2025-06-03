@@ -15,10 +15,10 @@ import CodeDescriptionDto from "@/types/CodeDescriptionType";
  */
 export const formatForestCoverSpeciesArray = (
   species: CodeDescriptionDto[] | null | undefined,
-): { tooltipDefinition: string[] | null; displayText: string } => {
+): { tooltipDefinition: string[]; displayText: string } => {
   if (!species || !Array.isArray(species)) {
     return {
-      tooltipDefinition: null,
+      tooltipDefinition: [],
       displayText: PLACE_HOLDER
     }
   }
