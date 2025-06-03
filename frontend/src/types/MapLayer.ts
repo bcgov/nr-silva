@@ -167,7 +167,7 @@ export const getStyleForFeature = (
 
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
-  const fillColor = colors[Math.floor(Math.random() * colors.length)];
+  const fillColor = colors![Math.floor(Math.random() * colors!.length)];
   return {
     ...defaultStyle,
     ...kindEntry.style,

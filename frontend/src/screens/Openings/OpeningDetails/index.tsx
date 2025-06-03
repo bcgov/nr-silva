@@ -68,7 +68,7 @@ const OpeningDetails = () => {
     setActiveTab(selectedTabIndex);
     const tabName = OpeningDetailsTabs[selectedTabIndex];
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set("tab", tabName);
+    newSearchParams.set("tab", tabName!);
     setSearchParams(newSearchParams, { replace: true });
   };
 

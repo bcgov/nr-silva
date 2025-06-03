@@ -53,7 +53,7 @@ const OpeningSearch: React.FC = () => {
   const [filters, setFilters] = useState<OpeningSearchFilterType>({});
   const [searchTableHeaders, setSearchTableHeaders] = useState<
     OpeningHeaderType[]
-  >(() => structuredClone(userPreference.visibleColumns.silvicultureSearch));
+  >(() => structuredClone(userPreference.visibleColumns.silvicultureSearch) || []);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openingPolygonNotFound, setOpeningPolygonNotFound] =
@@ -62,14 +62,14 @@ const OpeningSearch: React.FC = () => {
   const [currPageNumber, setCurrPageNumber] =
     useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(
-    () => PageSizesConfig[0]
+    () => PageSizesConfig[0]!
   );
   const [isSearchFilterEmpty, setIsSearchFilterEmpty] =
     useState<boolean>(false);
 
   const resetPagination = () => {
     setCurrPageNumber(DEFAULT_PAGE_NUM);
-    setCurrPageSize(PageSizesConfig[0]);
+    setCurrPageSize(PageSizesConfig[0]!);
   };
 
   /**

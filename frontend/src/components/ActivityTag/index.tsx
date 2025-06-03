@@ -10,10 +10,10 @@ type ActivityTagProps = {
 
 const ActivityTag = ({ type, fileFormat }: ActivityTagProps) => {
   const iconName = (fileFormat && FileIconMap[fileFormat]) ? FileIconMap[fileFormat] : ActivityIconMap[type];
-  
+
   return (
     <>
-      <DynamicIcon iconName={iconName} size={18} />&nbsp;{type}
+      <DynamicIcon iconName={iconName!} size={18} />&nbsp;{type}
     </>
   );
 };
