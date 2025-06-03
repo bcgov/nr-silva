@@ -1,6 +1,9 @@
 @use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
 .opening-overview-card-container {
+  background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+
   .comment-list {
     list-style-type: disc;
     padding-left: 1.75rem;
