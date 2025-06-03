@@ -29,7 +29,8 @@ describe("BarChartTooltip", () => {
     render(<BarChartTooltip datum={mockDatum} />);
 
     // Header with value and group
-    expect(screen.getByText("2023 Engineering")).toBeInTheDocument();
+    expect(screen.getByText("Engineering")).toBeInTheDocument();
+    expect(screen.getByText("2023")).toBeInTheDocument();
 
     // Status counts and descriptions
     expect(screen.getByText("10 open")).toBeInTheDocument();
@@ -52,5 +53,7 @@ describe("BarChartTooltip", () => {
     render(<BarChartTooltip datum={mockDatum} />);
 
     expect(screen.getByText("3 unknown")).toBeInTheDocument();
+    expect(screen.getByText("2023")).toBeInTheDocument();
+    expect(screen.getByText("HR")).toBeInTheDocument();
   });
 });
