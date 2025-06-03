@@ -20,7 +20,7 @@ export type OpeningForestCoverType = {
   polygonAreaGross: number; // in ha
   polygonAreaNet: number;   // in ha
 
-  stockingStatus: string; // e.g., "Immature", "Non-productive"
+  stockingStatus: CodeDescriptionDto<string>; // e.g., "Immature", "Non-productive"
   stockingType: string;   // e.g., "Art - Artificial", "UNN - Unnatural"
 
   inventoryLayerSpecies: CodeDescriptionDto[];
@@ -57,7 +57,10 @@ export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
     forestCoverUnmappedArea: null,
     polygonAreaGross: 31.1,
     polygonAreaNet: 27.7,
-    stockingStatus: "Immature",
+    stockingStatus: {
+      code: "NSR",
+      description: "Not Satisfactorily Restocked"
+    },
     stockingType: "Art - Artificial",
     inventoryLayerSpecies: [
       { code: "FDC", description: "Douglas Fir" },
@@ -79,12 +82,15 @@ export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
   },
   {
     forestCoverId: "3416435",
-    forestCoverPolygonId: "A",
+    forestCoverPolygonId: "B",
     forestCoverStandardUnit: null,
     forestCoverUnmappedArea: null,
     polygonAreaGross: 3.4,
     polygonAreaNet: 1.7,
-    stockingStatus: "Non-productive",
+    stockingStatus: {
+      code: "NP",
+      description: "Non-productive"
+    },
     stockingType: "UNN - Unnatural",
     inventoryLayerSpecies: [
       { code: "FDC", description: "Douglas Fir" },
@@ -106,12 +112,15 @@ export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
   },
   {
     forestCoverId: "3416436",
-    forestCoverPolygonId: "B",
+    forestCoverPolygonId: "C",
     forestCoverStandardUnit: "B",
     forestCoverUnmappedArea: null,
     polygonAreaGross: 17.6,
     polygonAreaNet: 17.1,
-    stockingStatus: "Immature",
+    stockingStatus: {
+      code: "IMM",
+      description: "Immature"
+    },
     stockingType: "Art - Artificial",
     inventoryLayerSpecies: [
       { code: "HW", description: "Hardwood" },

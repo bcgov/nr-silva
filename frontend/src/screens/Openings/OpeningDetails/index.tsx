@@ -155,7 +155,7 @@ const OpeningDetails = () => {
               Standard units
             </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
-            <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest Cover</Tab>
+            <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest cover</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">

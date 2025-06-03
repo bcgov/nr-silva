@@ -7,37 +7,28 @@ import {
   DefinitionTooltip
 } from "@carbon/react";
 import { Search } from "@carbon/icons-react";
+import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
+import TableSkeleton from "@/components/TableSkeleton";
+import EmptySection from "@/components/EmptySection";
+import { delayMock } from "@/utils/MockUtils";
+import { PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
+
 import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
 import {
   mockOpeningDetailsForestCover,
-  mockPolygonDetails,
   ForestCoverFilterType,
   type OpeningForestCoverType,
 } from "./definitions";
-import { delayMock } from "@/utils/MockUtils";
-import ForestCoverDetail from "./ForestCoverDetail";
-import TableSkeleton from "@/components/TableSkeleton";
-import EmptySection from "@/components/EmptySection";
-import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { DEFAULT_PAGE_NUM, PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
-import "./styles.scss";
 import { formatForestCoverSpeciesArray } from "./utils";
-import { NOT_APPLICABLE } from "../../../constants";
+import ForestCoverDetail from "./ForestCoverDetail";
+
+import "./styles.scss";
+import StockingStatusTag from "../../StockingStatusTag";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];
-  if (filter.filter) {
-    const f = filter.filter.toLowerCase();
-    data = data.filter(row =>
-      row.forestCoverPolygonId.toLowerCase().includes(f) ||
-      row.stockingStatus.toLowerCase().includes(f) ||
-      row.stockingType.toLowerCase().includes(f)
-    );
-  }
   const totalElements = data.length;
-  const start = (filter.page ?? 0) * (filter.size ?? PageSizesConfig[0]);
-  const end = start + (filter.size ?? PageSizesConfig[0]);
-  const content = data.slice(start, end);
+  const content = data;
   return delayMock({ content, page: { totalElements } }, 500);
 };
 
@@ -132,7 +123,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
           </div>
         );
       case "stockingStatus":
-        return row.stockingStatus;
+        return (
+          <StockingStatusTag status={row.stockingStatus} />
+        );
       case "stockingType":
         return row.stockingType;
       case "inventoryLayer": {
@@ -169,7 +162,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                   <div key={index}>{line}</div>
                 ))
               }
-              openOnHover={true}
+              openOnHover
             >
               <span>Species: {displayText}</span>
             </DefinitionTooltip>
@@ -182,9 +175,19 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
       case "referenceYear":
         return row.referenceYear;
       default:
-        return null;
+        return PLACE_HOLDER;
     }
   };
+
+  if (forestCoverQuery.data?.page.totalElements === 0) {
+    return (
+      <EmptySection
+        pictogram="Summit"
+        title="Nothing to show yet!"
+        description="No forest cover have been added to this opening yet"
+      />
+    )
+  }
 
   return (
     <Grid className="opening-forest-cover-grid default-grid">
@@ -244,11 +247,11 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                       >
                         {ForestCoverTableHeaders.map((header) => (
                           <TableCell key={String(header.key)} className="forest-cover-table-cell">
-                            {renderCellContent(row, String(header.key))}
+                            {renderCellContent(row, header.key)}
                           </TableCell>
                         ))}
                       </TableExpandRow>
-                      <TableExpandedRow colSpan={ForestCoverTableHeaders.length + 1}>
+                      <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
                         {isExpanded ? (
                           <ForestCoverDetail forestCoverId={row.forestCoverId} />
                         ) : null}
