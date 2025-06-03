@@ -53,15 +53,9 @@ parameters:
     description: Environment name for OpenSearch. # One of: development, test, production
     required: true
     value: development
-  - name: DATABASE_HOST
-    description: Where the database is hosted
-    value: nrcdb03.bcgov
   - name: DATABASE_PORT
     description: The port to be used for the connection to the database
     value: "1543"
-  - name: SERVICE_NAME
-    description: The database's name
-    value: dbq01.nrs.bcgov
   - name: ORACLEDB_KEYSTORE
     description: Keystore location path
     value: /app/jssecacerts
