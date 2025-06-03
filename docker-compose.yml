@@ -53,11 +53,11 @@ services:
       - $HOME/zscaler-certs:/certs
     working_dir: /app
     environment:
-      DATABASE_HOST: nrcdb03.bcgov
+      DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: "1543"
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      SERVICE_NAME: dbq01.nrs.bcgov
+      SERVICE_NAME: ${SERVICE_NAME}
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
       AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
