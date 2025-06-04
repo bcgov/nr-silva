@@ -51,6 +51,38 @@ jobs:
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
 
+  tests-frontend:
+    name: Tests (Frontend)
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
+        env:
+          VITE_ZONE: test
+          VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
+          VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          VITE_BACKEND_URL: http://localhost:8080
+          TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
+          TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
+        with:
+          commands: |
+            npm ci
+            npm run coverage
+          dir: frontend
+          node_version: "20"
+          sonar_args: >
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.projectKey=nr-silva-frontend
+            -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
+            -Dsonar.typescript.tsconfigPaths=tsconfig.json
+            -Dsonar.sources=src/
+            -Dsonar.exclusions=src/__test__/**,src/__e2e__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*
+            -Dsonar.tests=src/__test__/,src/__e2e__/
+            -Dsonar.project.monorepo.enabled=true
+          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+          # Only use triggers for PRs
+          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
     name: Trivy Security Scan
@@ -80,7 +112,7 @@ jobs:
     name: Analysis Results
     if: always()
     # Include all needs that could have failures!
-    needs: [lint-frontend, tests-backend] # Include trivy when/if it gets back to being reliable
+    needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-24.04
     steps:
       - run: |

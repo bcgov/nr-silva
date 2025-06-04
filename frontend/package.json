@@ -34,26 +34,34 @@
   "scripts": {
     "predev": "npm run generate:openapi",
     "dev": "npm start",
+
     "start": "vite --host",
-    "build": "tsc && vite build",
+    
+    "prebuild": "tsc",
+    "build": "vite build",
+    
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"1uhcp67qtfl3jra6b595e9f6jn\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
+    
     "preview": "vite preview --port 4173",
-    "test": "vitest --reporter=verbose",
-    "test:playwright": "playwright test",
-    "test:playwright:ui": "playwright test --ui",
-    "test:coverage": "vitest run --coverage --watch=false",
-    "test:build": "vitest watch",
+    
+    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
+
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
-    "precoverage": "rm -rf .nyc_output",
-    "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
-    "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
-    "e2e:local:build": "npm run precoverage && BASE_URL=http://localhost:3000 && start-server-and-test start http://localhost:3000 \"npm run test:playwright:ui\"",
-    "e2e:build": "npm run precoverage && npm run build && npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test preview http://localhost:4173 \"npm run test:playwright\"",
-    "e2e:ci:dev": "npm run precoverage && BASE_URL=http://localhost:3000 start-server-and-test dev http://localhost:3000 test:playwright && npm run report:coverage",
-    "e2e:ci:build": "npm run precoverage && ALL_BROWSERS=true npm run test:playwright",
-    "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
+
+    "precoverage": "rm -rf .nyc_output coverage",
+    "coverage": " npm run test:unit && npm run test:ui",
+    "postcoverage": "mkdir -p coverage && touch coverage/coverage-final.json && cp coverage/coverage-final.json .nyc_output/unit-test.json && nyc merge .nyc_output .nyc_output/coverage.json && nyc report",
+
+    "test:unit": "vitest run --coverage --watch=false",
+    "test:unit:dev": "vitest --reporter=verbose",
+
+    "test:ui": "BASE_URL=http://localhost:3000 && start-server-and-test start http://localhost:3000 test:playwright",
+    "test:ui:dev": "BASE_URL=http://localhost:3000 && start-server-and-test start http://localhost:3000 test:playwright:ui",
+
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui"
+
   },
   "browserslist": {
     "production": [
