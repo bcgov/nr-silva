@@ -120,15 +120,22 @@ const OpeningSummary = ({
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
-        <CardItem id="client-card-item" label="Client" showSkeleton={isLoading}>
-          {getClientLabel(
-            {
-              id: tombstoneObj?.client.clientNumber ?? "",
-              name: tombstoneObj?.client.clientName ?? "",
-              acronym: tombstoneObj?.client.acronym ?? "",
-            },
-            true
-          )}
+        <CardItem
+          id="client-card-item"
+          label="Client"
+          showSkeleton={isLoading}
+          tooltipText={tombstoneObj?.client?.clientName}
+        >
+          {
+            getClientLabel(
+              {
+                id: tombstoneObj?.client.clientNumber ?? "",
+                name: "",
+                acronym: tombstoneObj?.client.acronym ?? "",
+              },
+              true
+            )
+          }
         </CardItem>
       </Column>
 
