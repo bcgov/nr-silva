@@ -31,15 +31,15 @@ const OpeningSummary = ({
   const mapKind = (tabIndex: number) => {
     switch (tabIndex) {
       case 0:
-        return mapKinds[0].code;
+        return mapKinds[0]!.code;
       case 1:
-        return mapKinds[1].code;
+        return mapKinds[1]!.code;
       case 2:
-        return mapKinds[2].code;
+        return mapKinds[2]!.code;
       case 3:
-        return mapKinds[3].code;
+        return mapKinds[3]!.code;
       default:
-        return mapKinds[0].code;
+        return mapKinds[0]!.code;
     }
   };
 

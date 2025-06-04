@@ -36,7 +36,7 @@ type OpeningTenureProps = {
 const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
   const [searchInput, setSearchInput] = useState('');
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
-  const [currPageSize, setCurrPageSize] = useState<number>(() => OddPageSizesConfig[0]);
+  const [currPageSize, setCurrPageSize] = useState<number>(() => OddPageSizesConfig[0]!);
   const [tenureFilter, setTenureFilter] = useState<TenureFilterType>(() => DefaultFilter);
 
   const tenureQuery = useQuery({

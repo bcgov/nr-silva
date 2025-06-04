@@ -52,7 +52,7 @@ interface BarChartGroupedEvent {
  */
 const OpeningSubmissionTrend = () => {
   const yearOptions = generateYearList();
-  const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]);
+  const [selectedYear, setSelectedYear] = useState<number>(yearOptions[0]!);
 
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<CodeDescriptionDto[]>([]);
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<CodeDescriptionDto[]>([]);
@@ -101,7 +101,7 @@ const OpeningSubmissionTrend = () => {
     if (e.selectedItem) {
       setSelectedYear(e.selectedItem)
     } else {
-      setSelectedYear(yearOptions[0])
+      setSelectedYear(yearOptions[0]!)
     }
   }
 

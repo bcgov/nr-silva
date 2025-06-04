@@ -186,7 +186,7 @@ const OpeningSearchBar = ({
   const handleDateChange = (isStartDate: boolean) => (dates?: (Date)[]) => {
     if (!filters.dateType || !dates) return;
 
-    const formattedDate = dates.length ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT) : "";
+    const formattedDate = dates.length && dates[0] ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT) : "";
 
     const key = `${filters.dateType.code}${isStartDate ? "DateStart" : "DateEnd"}` as keyof OpeningSearchFilterType;
 
