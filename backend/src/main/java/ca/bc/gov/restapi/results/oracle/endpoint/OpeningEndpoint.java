@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
@@ -100,6 +101,14 @@ public class OpeningEndpoint {
       Pageable pageable
   ){
     return openingService.getOpeningTenures(openingId, filter, pageable);
+  }
+
+  @GetMapping("/{openingId}/cover")
+  public List<OpeningForestCoverDto> getCover(
+      @PathVariable Long openingId,
+      @RequestParam(name = "mainSearchTerm", required = false) String mainSearchTerm
+  ) {
+    return openingService.getOpeningForestCoverList(openingId, mainSearchTerm);
   }
 
   /**

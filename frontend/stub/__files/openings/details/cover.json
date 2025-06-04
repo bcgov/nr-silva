@@ -1,0 +1,352 @@
+[
+    {
+        "coverId": 4401631,
+        "polygonId": "3",
+        "standardUnitId": null,
+        "unmappedArea": {
+            "code": null,
+            "description": null
+        },
+        "grossArea": 2.2,
+        "netArea": 2.2,
+        "status": {
+            "code": "MAT",
+            "description": "Mature"
+        },
+        "coverType": {
+            "code": "NAT",
+            "description": "Natural"
+        },
+        "inventoryLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "referenceYear": 2019
+    },
+    {
+        "coverId": 4401624,
+        "polygonId": "A1",
+        "standardUnitId": "A",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 22.0,
+        "netArea": 20.4,
+        "status": {
+            "code": "IMM",
+            "description": "Immature"
+        },
+        "coverType": {
+            "code": "ART",
+            "description": "Artificial"
+        },
+        "inventoryLayer": {
+            "species": [
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                },
+                {
+                    "code": "HW",
+                    "description": "western hemlock"
+                },
+                {
+                    "code": "CW",
+                    "description": "western redcedar"
+                },
+                {
+                    "code": "PW",
+                    "description": "western white pine"
+                }
+            ],
+            "total": 1782.0,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                },
+                {
+                    "code": "HW",
+                    "description": "western hemlock"
+                },
+                {
+                    "code": "CW",
+                    "description": "western redcedar"
+                }
+            ],
+            "total": null,
+            "totalWellSpaced": 927.0,
+            "wellSpaced": 850.0,
+            "freeGrowing": null
+        },
+        "referenceYear": 2022
+    },
+    {
+        "coverId": 4401625,
+        "polygonId": "B2",
+        "standardUnitId": "B",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 3.4,
+        "netArea": 3.3,
+        "status": {
+            "code": "IMM",
+            "description": "Immature"
+        },
+        "coverType": {
+            "code": "ART",
+            "description": "Artificial"
+        },
+        "inventoryLayer": {
+            "species": [
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                },
+                {
+                    "code": "HW",
+                    "description": "western hemlock"
+                },
+                {
+                    "code": "PW",
+                    "description": "western white pine"
+                }
+            ],
+            "total": 1480.0,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                },
+                {
+                    "code": "PW",
+                    "description": "western white pine"
+                }
+            ],
+            "total": null,
+            "totalWellSpaced": 920.0,
+            "wellSpaced": 680.0,
+            "freeGrowing": null
+        },
+        "referenceYear": 2022
+    },
+    {
+        "coverId": 4401626,
+        "polygonId": "C3",
+        "standardUnitId": "C",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 1.2,
+        "netArea": 1.1,
+        "status": {
+            "code": "IMM",
+            "description": "Immature"
+        },
+        "coverType": {
+            "code": "ART",
+            "description": "Artificial"
+        },
+        "inventoryLayer": {
+            "species": [
+                {
+                    "code": "CW",
+                    "description": "western redcedar"
+                },
+                {
+                    "code": "HW",
+                    "description": "western hemlock"
+                },
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                }
+            ],
+            "total": 1080.0,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [
+                {
+                    "code": "CW",
+                    "description": "western redcedar"
+                },
+                {
+                    "code": "HW",
+                    "description": "western hemlock"
+                },
+                {
+                    "code": "FDC",
+                    "description": "coastal Douglas-fir"
+                }
+            ],
+            "total": null,
+            "totalWellSpaced": 760.0,
+            "wellSpaced": 700.0,
+            "freeGrowing": null
+        },
+        "referenceYear": 2022
+    },
+    {
+        "coverId": 4401627,
+        "polygonId": "A",
+        "standardUnitId": "A",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 1.6,
+        "netArea": 0.0,
+        "status": {
+            "code": "NSR",
+            "description": "Not Satisfactorily Restocked"
+        },
+        "coverType": {
+            "code": "PL",
+            "description": "Plantable"
+        },
+        "inventoryLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "referenceYear": 2021
+    },
+    {
+        "coverId": 4401628,
+        "polygonId": "B",
+        "standardUnitId": "B",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 0.1,
+        "netArea": 0.0,
+        "status": {
+            "code": "NSR",
+            "description": "Not Satisfactorily Restocked"
+        },
+        "coverType": {
+            "code": "PL",
+            "description": "Plantable"
+        },
+        "inventoryLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "referenceYear": 2021
+    },
+    {
+        "coverId": 4401629,
+        "polygonId": "C",
+        "standardUnitId": "C",
+        "unmappedArea": {
+            "code": "UNN",
+            "description": "Unnatural"
+        },
+        "grossArea": 0.1,
+        "netArea": 0.0,
+        "status": {
+            "code": "NSR",
+            "description": "Not Satisfactorily Restocked"
+        },
+        "coverType": {
+            "code": "PL",
+            "description": "Plantable"
+        },
+        "inventoryLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "referenceYear": 2021
+    },
+    {
+        "coverId": 4401630,
+        "polygonId": "2",
+        "standardUnitId": null,
+        "unmappedArea": {
+            "code": null,
+            "description": null
+        },
+        "grossArea": 2.9,
+        "netArea": 2.9,
+        "status": {
+            "code": "MAT",
+            "description": "Mature"
+        },
+        "coverType": {
+            "code": "NAT",
+            "description": "Natural"
+        },
+        "inventoryLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "silvicultureLayer": {
+            "species": [],
+            "total": null,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null
+        },
+        "referenceYear": 2019
+    }
+]
