@@ -86,6 +86,10 @@
     @include type.type-style('body-compact-01');
     color: var(--#{vars.$bcgov-prefix}-text-primary);
   }
+
+  .#{vars.$bcgov-prefix}--table-expand__svg {
+    fill: var(--#{vars.$bcgov-prefix}-icon-primary);
+  }
 }
 
 .default-zebra-table-with-border {
