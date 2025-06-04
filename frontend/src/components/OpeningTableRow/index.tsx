@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 
-import StatusTag from "../StatusTag";
+import OpeningStatusTag from "../OpeningStatusTag";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -49,7 +49,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
     switch (header) {
       case "status":
         return (
-          <StatusTag description={rowData.status?.description ?? "Unknown"} />
+          <OpeningStatusTag status={rowData.status}></OpeningStatusTag>
         );
       case "actions":
         return (
