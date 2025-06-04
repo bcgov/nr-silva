@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
@@ -23,6 +24,7 @@ public class OpeningDetailsService {
   private final OpeningDetailsStockingService stockingService;
   private final OpeningDetailsActivitiesService activitiesService;
   private final OpeningDetailsTenureService tenureService;
+  private final OpeningDetailsForestCoverService forestCoverService;
 
 
   public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(Long openingId) {
@@ -50,5 +52,9 @@ public class OpeningDetailsService {
   public OpeningDetailsTenuresDto getOpeningTenures(Long openingId, String filter,
       Pageable pageable) {
     return tenureService.getOpeningTenures(openingId, filter, pageable);
+  }
+
+  public List<OpeningForestCoverDto> getOpeningForestCoverList(Long openingId, String mainSearchTerm) {
+    return forestCoverService.getOpeningForestCoverList(openingId, mainSearchTerm);
   }
 }
