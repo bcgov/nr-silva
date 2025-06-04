@@ -56,11 +56,8 @@
     "test:unit": "vitest run --coverage --watch=false",
     "test:unit:dev": "vitest --reporter=verbose",
 
-    "test:ui": "BASE_URL=http://localhost:3000 && start-server-and-test start http://localhost:3000 test:playwright",
-    "test:ui:dev": "BASE_URL=http://localhost:3000 && start-server-and-test start http://localhost:3000 test:playwright:ui",
-
-    "test:playwright": "playwright test",
-    "test:playwright:ui": "playwright test --ui"
+    "test:ui": "playwright test",
+    "test:ui:dev": "playwright test --ui"
 
   },
   "browserslist": {

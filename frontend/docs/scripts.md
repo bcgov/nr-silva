@@ -72,8 +72,8 @@ Same as [test:unit](#testunit), but runs in watch mode, allowing developers to s
 
 ### test:ui
 
-Runs `playwright test` to execute UI tests. It uses the `BASE_URL` environment variable to determine the base URL for the tests, which is set to `http://localhost:3000` by default. It starts the frontend server before running the tests, ensuring that the application is available for testing.
+Runs `playwright test` to execute UI tests in a headless mode, generating coverage in the process. Playwright will spin up the local server (using the `start` script) and run the tests against it.
 
 ### test:ui:dev
 
-Runs `playwright test` in watch mode, allowing developers to see UI test results in real-time as they make changes to the code. It uses the `BASE_URL` environment variable to determine the base URL for the tests, which is set to `http://localhost:3000` by default. It starts the frontend server before running the tests, ensuring that the application is available for testing.
+Runs `playwright test` in watch mode, allowing developers to see UI test results in real-time as they make changes to the code. Playwright will spin up the local server (using the `start` script) and run the tests against it.

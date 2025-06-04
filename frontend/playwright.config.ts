@@ -55,4 +55,9 @@ export default defineConfig({
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
   projects,
+  webServer: {
+    command: 'npm start',
+    url: baseURL,
+    reuseExistingServer: true,
+  }
 });
