@@ -67,6 +67,7 @@ jobs:
         with:
           commands: |
             npm ci
+            npx playwright install chromium
             npm run coverage
           dir: frontend
           node_version: "20"
