@@ -89,11 +89,11 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
     });
   };
 
-  const handleRowExpand = (polygonId: string) => {
+  const handleRowExpand = (forestCoverId: string) => {
     setExpandedRows((prev) =>
-      prev.includes(polygonId)
-        ? prev.filter((id) => id !== polygonId)
-        : [...prev, polygonId]
+      prev.includes(forestCoverId)
+        ? prev.filter((id) => id !== forestCoverId)
+        : [...prev, forestCoverId]
     );
   };
 
@@ -236,14 +236,14 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               </TableHead>
               <TableBody>
                 {forestCoverQuery.data?.content.map((row, idx) => {
-                  const isExpanded = expandedRows.includes(row.forestCoverPolygonId);
+                  const isExpanded = expandedRows.includes(row.forestCoverId);
                   return (
-                    <React.Fragment key={row.forestCoverPolygonId + idx}>
+                    <React.Fragment key={row.forestCoverId + idx}>
                       <TableExpandRow
                         className="opening-forest-cover-table-row"
-                        aria-label={`Expand row for Polygon ID ${row.forestCoverPolygonId}`}
+                        aria-label={`Expand row for Polygon ID ${row.forestCoverId}`}
                         isExpanded={isExpanded}
-                        onExpand={() => handleRowExpand(row.forestCoverPolygonId)}
+                        onExpand={() => handleRowExpand(row.forestCoverId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
                           <TableCell key={String(header.key)} className="forest-cover-table-cell">
