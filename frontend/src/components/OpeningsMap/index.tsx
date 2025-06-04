@@ -92,7 +92,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         .map((id) => Number(id));
 
       if (errorIds.length > 0) {
-        setOpeningPolygonNotFound(true, errorIds[0]);
+        setOpeningPolygonNotFound(true, errorIds[0] ?? null);
       }
     }
   }, [mapQueries.map((query) => query.status).join(","), kind, openingIds]);
@@ -162,7 +162,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                     format: layer.format,
                     layers: layer.layers,
                     transparent: layer.transparent,
-                    styles: layer.styles[0].name,
+                    styles: layer.styles[0]!.name,
                     ...extraParameters(layer.filterable),
                   }}
                 />

@@ -15,5 +15,5 @@ export const TenureTableHeaders: TableHeaderType<keyof OpeningDetailsTenureDto>[
 
 export const DefaultFilter: TenureFilterType = {
   page: DEFAULT_PAGE_NUM,
-  size: OddPageSizesConfig[0]
+  size: OddPageSizesConfig[0]!,
 } as const;

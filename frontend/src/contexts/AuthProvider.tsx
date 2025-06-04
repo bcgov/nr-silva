@@ -130,8 +130,12 @@ const loadUserToken = async (): Promise<JWT | undefined> => {
     // This is for test only
     const token = getUserTokenFromCookie();
     if (token) {
-      const jwtBody = JSON.parse(atob(token.split(".")[1]));
-      return { payload: jwtBody };
+      const splittedToken = token.split(".")[1];
+      if (splittedToken) {
+        const jwtBody = JSON.parse(atob(splittedToken));
+        return { payload: jwtBody };
+      }
+      throw new Error("Error parsing token");
     }
     throw new Error("No token found");
   }
@@ -153,5 +157,5 @@ const getCookie = (name: string): string => {
   const cookie = document.cookie
     .split(";")
     .find((cookieValue) => cookieValue.trim().startsWith(name));
-  return cookie ? cookie.split("=")[1] : "";
+  return cookie ? cookie.split("=")[1] ?? "" : "";
 };

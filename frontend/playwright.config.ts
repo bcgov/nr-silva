@@ -39,7 +39,7 @@ const browserProjects = [
 ];
 
 // Filter based on ALL_BROWSERS env
-const projects = (isAllBrowsers ? browserProjects : [browserProjects[0]]).map(({ name, device, storageState }) => ({
+const projects = (isAllBrowsers ? browserProjects : [browserProjects[0]!]).map(({ name, device, storageState }) => ({
   name,
   use: {
     ...commonSettings,
