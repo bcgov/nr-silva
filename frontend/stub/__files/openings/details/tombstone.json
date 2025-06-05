@@ -1,0 +1,71 @@
+{
+  "openingId": 1761935,
+  "tombstone": {
+    "openingNumber": " 92K 041 0.0  534",
+    "openingStatus": {
+      "code": "APP",
+      "description": "Approved"
+    },
+    "orgUnitCode": "VWC",
+    "orgUnitName": "Victoria Working Center",
+    "openCategory": {
+      "code": "FTML",
+      "description": "Forest Tenure - Major Licensee"
+    },
+    "client": {
+      "clientNumber": "00010003",
+      "clientName": "THE CONTINENTAL",
+      "legalFirstName": null,
+      "legalMiddleName": null,
+      "clientStatusCode": {
+        "code": "ACT",
+        "description": "Active"
+      },
+      "clientTypeCode": {
+        "code": "C",
+        "description": "Corporation"
+      },
+      "acronym": null,
+      "name": "THE CONTINENTAL"
+    },
+    "fileId": "TFL47",
+    "cutBlockID": null,
+    "cuttingPermitId": "6AK",
+    "timberMark": "47/6AK",
+    "maxAllowedAccess": "6",
+    "openingGrossArea": 33.6,
+    "createdBy": "BCEID\\ANYA.DENNILL",
+    "createdOn": "2022-05-07",
+    "lastUpdatedOn": "2025-04-16",
+    "disturbanceStartDate": "2021-01-07"
+  },
+  "overview": {
+    "opening": {
+      "licenseeId": "97351",
+      "tenureType": {
+        "code": "A02",
+        "description": "Tree Farm Licence"
+      },
+      "managementUnitType": {
+        "code": "T",
+        "description": "TREE FARM LICENCE"
+      },
+      "managementUnitId": "47",
+      "timberSaleOffice": {
+        "code": "LSB",
+        "description": "Lumber Sale Branch"
+      },
+      "comments": []
+    },
+    "milestones": {
+      "standardsUnitId": "A",
+      "postHarvestDeclaredDate": null,
+      "regenDeclaredDate": "2022-10-26",
+      "regenOffsetYears": 3,
+      "regenDueDate": "2024-01-07",
+      "freeGrowingDeclaredDate": null,
+      "freeGrowingOffsetYears": 20,
+      "freeGrowingDueDate": "2041-01-07"
+    }
+  }
+}

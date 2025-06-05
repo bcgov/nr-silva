@@ -1,0 +1,150 @@
+{
+  "mappings": [
+    {
+      "id": "6a029207-98cb-3cbb-9eba-b241ad3dbac7",
+      "request": {
+        "url": "/api/codes/org-units",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "codes/org-units.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "6a029207-98cb-3cbb-9eba-b241ad3dbac7"
+    },
+    {
+      "id": "e2c95b9c-9879-3375-9e2d-373dc440294f",
+      "request": {
+        "url": "/api/codes/org-units",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Access-Control-Allow-Headers": "access-control-allow-origin, authorization",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Access-Control-Max-Age": "300"
+        }
+      },
+      "uuid": "e2c95b9c-9879-3375-9e2d-373dc440294f"
+    },
+    {
+      "id": "9640cef4-11ad-33cd-b5bc-11813f82466d",
+      "request": {
+        "url": "/api/codes/categories",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "codes/categories.json",
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "9640cef4-11ad-33cd-b5bc-11813f82466d"
+    },
+    {
+      "id": "eae8fe05-cef4-39d4-a9bd-6e5907c70a2e",
+      "request": {
+        "url": "/api/codes/categories",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "Keep-Alive": "timeout=60",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "X-Content-Type-Options": "nosniff",
+          "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
+          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
+          "Pragma": "no-cache",
+          "Date": "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
+          "Access-Control-Allow-Headers": "access-control-allow-origin, authorization",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
+          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+          "Access-Control-Allow-Credentials": "true",
+          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
+          "Vary": [
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ],
+          "Expires": "0",
+          "Access-Control-Max-Age": "300"
+        }
+      },
+      "uuid": "eae8fe05-cef4-39d4-a9bd-6e5907c70a2e"
+    }
+  ]
+}

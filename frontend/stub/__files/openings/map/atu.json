@@ -1,0 +1,91 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::4326"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ACTIVITY_TREATMENT_UNIT_ID": 4187958,
+        "OPENING_ID": 1761935,
+        "MAP_LABEL": "PL-FP(2025)",
+        "SILV_BASE_CODE": "PL",
+        "ATU_WHO_CREATED": "BCEID\\ALEXANDRA.VALLEE",
+        "ATU_WHEN_CREATED": "2025-04-16Z",
+        "ATU_WHO_UPDATED": "BCEID\\ALEXANDRA.VALLEE",
+        "ATU_WHEN_UPDATED": "2025-04-16Z",
+        "OBJECTID": 9669862
+      },
+      "geometry": null,
+      "id": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW.fid-775352d2_1971e2573a1_-4fd6"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ACTIVITY_TREATMENT_UNIT_ID": 3910947,
+        "OPENING_ID": 1761935,
+        "MAP_LABEL": "DN-L(2021)",
+        "SILV_BASE_CODE": "DN",
+        "ATU_WHO_CREATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_CREATED": "2022-05-07Z",
+        "ATU_WHO_UPDATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_UPDATED": "2022-05-07Z",
+        "OBJECTID": 9405992
+      },
+      "geometry": null,
+      "id": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW.fid-775352d2_1971e2573a1_-4fd5"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ACTIVITY_TREATMENT_UNIT_ID": 3910949,
+        "OPENING_ID": 1761935,
+        "MAP_LABEL": "PC-SE(2022)",
+        "SILV_BASE_CODE": "PC",
+        "ATU_WHO_CREATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_CREATED": "2022-05-07Z",
+        "ATU_WHO_UPDATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_UPDATED": "2022-05-07Z",
+        "OBJECTID": 9405993
+      },
+      "geometry": null,
+      "id": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW.fid-775352d2_1971e2573a1_-4fd4"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ACTIVITY_TREATMENT_UNIT_ID": 3910948,
+        "OPENING_ID": 1761935,
+        "MAP_LABEL": "PL-PL(2022)",
+        "SILV_BASE_CODE": "PL",
+        "ATU_WHO_CREATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_CREATED": "2022-05-07Z",
+        "ATU_WHO_UPDATED": "BCEID\\ANYA.DENNILL",
+        "ATU_WHEN_UPDATED": "2022-05-07Z",
+        "OBJECTID": 9406005
+      },
+      "geometry": null,
+      "id": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW.fid-775352d2_1971e2573a1_-4fd3"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ACTIVITY_TREATMENT_UNIT_ID": 4009860,
+        "OPENING_ID": 1761935,
+        "MAP_LABEL": "PL-RO(2023)",
+        "SILV_BASE_CODE": "PL",
+        "ATU_WHO_CREATED": "BCEID\\ALEXANDRA.VALLEE",
+        "ATU_WHEN_CREATED": "2023-06-01Z",
+        "ATU_WHO_UPDATED": "BCEID\\ALEXANDRA.VALLEE",
+        "ATU_WHEN_UPDATED": "2023-06-01Z",
+        "OBJECTID": 9476698
+      },
+      "geometry": null,
+      "id": "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW.fid-775352d2_1971e2573a1_-4fd2"
+    }
+  ]
+}
