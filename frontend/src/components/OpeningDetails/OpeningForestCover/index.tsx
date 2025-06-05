@@ -20,7 +20,7 @@ import {
   type OpeningForestCoverType,
 } from "./definitions";
 import { formatForestCoverSpeciesArray } from "./utils";
-import ForestCoverDetail from "./ForestCoverDetail";
+import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
 import StockingStatusTag from "../../StockingStatusTag";
@@ -225,7 +225,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               rowCount={10}
             />
           ) : (
-            <Table className="default-zebra-table" aria-label="Forest cover table">
+            <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
               <TableHead>
                 <TableRow>
                   <TableExpandHeader />
@@ -253,7 +253,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                       </TableExpandRow>
                       <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
                         {isExpanded ? (
-                          <ForestCoverDetail forestCoverId={row.forestCoverId} />
+                          <ForestCoverExpandedRow forestCoverId={row.forestCoverId} />
                         ) : null}
                       </TableExpandedRow>
                     </React.Fragment>

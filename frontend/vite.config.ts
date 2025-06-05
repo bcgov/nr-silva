@@ -62,7 +62,8 @@ export default defineConfig(({ mode }) => {
           'src/amplifyconfiguration.ts',
           'src/module.d.ts',
           'src/react-app-env.d.ts',
-          'src/reportWebVitals.ts'
+          'src/reportWebVitals.ts',
+          'src/__e2e__/**'
         ]
       },
       server: {

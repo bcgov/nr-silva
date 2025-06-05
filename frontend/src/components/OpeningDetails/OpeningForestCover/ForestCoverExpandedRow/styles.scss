@@ -1,0 +1,39 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-forest-cover-details-grid {
+  row-gap: 2.5rem;
+
+  .details-title {
+    @include type.type-style('heading-03');
+  }
+
+  .forest-cover-details-subgrid {
+    column-gap: 2rem;
+    row-gap: 2.25rem;
+  }
+
+  .card-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .icon-and-title {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.5rem;
+      align-items: center;
+
+      h3 {
+        @include type.type-style('heading-02');
+      }
+    }
+
+    .card-subtitle {
+      @include type.type-style('body-compact-02');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      margin-left: 1.75rem;
+    }
+  }
+
+}

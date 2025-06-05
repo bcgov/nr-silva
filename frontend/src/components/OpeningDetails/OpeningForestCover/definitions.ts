@@ -37,7 +37,7 @@ export type OpeningForestCoverType = {
   referenceYear: number;
 };
 
-export type OpeningForestCoverDetails = {
+export type PolygonDetailDto = {
   forestCoverId: string;
   reserveType: string | null;
   reserveObjective: string | null;
@@ -47,6 +47,23 @@ export type OpeningForestCoverDetails = {
   treeCoverPattern: string | null;
   reEntryYear: number | null;
   comment: string | null;
+}
+
+export type UnmappedAreaDto = {
+  unmappedAreaId: string;
+  area: number;
+  stockingStatus: CodeDescriptionDto;
+  stockingType: CodeDescriptionDto;
+}
+
+export type ForestManagementDto = {
+  unmappedArea: UnmappedAreaDto[];
+  layers?: null
+}
+
+export type OpeningForestCoverDetails = {
+  polygonDetail: PolygonDetailDto,
+  forestManagement: ForestManagementDto
 };
 
 export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
@@ -144,39 +161,93 @@ export const mockOpeningDetailsForestCover: OpeningForestCoverType[] = [
 
 export const mockPolygonDetails: OpeningForestCoverDetails[] = [
   {
-    forestCoverId: "3416434",
-    reserveType: null,
-    reserveObjective: "Riparian",
-    siteClass: null,
-    siteIndex: 36,
-    siteIndexSource: "H - SI from stand before harvest",
-    treeCoverPattern: null,
-    reEntryYear: null,
-    comment:
-      "A Free Growing heli survey was done on this block by Mike Netzel and Paul Larsen on 2001/10/04. This block is Free Growing. There is some alder along the road through the block and along the creek. Mike Netzel"
+    polygonDetail: {
+      forestCoverId: "3416434",
+      reserveType: null,
+      reserveObjective: "Riparian",
+      siteClass: null,
+      siteIndex: 36,
+      siteIndexSource: "H - SI from stand before harvest",
+      treeCoverPattern: null,
+      reEntryYear: null,
+      comment:
+        "A Free Growing heli survey was done on this block by Mike Netzel and Paul Larsen on 2001/10/04. This block is Free Growing. There is some alder along the road through the block and along the creek. Mike Netzel"
+    },
+    forestManagement: {
+      unmappedArea: [
+        {
+          unmappedAreaId: 'A1',
+          area: 23,
+          stockingStatus: {
+            code: 'A', description: 'Alpine'
+          },
+          stockingType: {
+            code: 'RT', description: 'Road'
+          },
+        },
+        {
+          unmappedAreaId: 'A2',
+          area: 2.2,
+          stockingStatus: {
+            code: 'S', description: 'Swamp'
+          },
+          stockingType: {
+            code: 'RT', description: 'Road'
+          },
+        }
+      ],
+    }
   },
   {
-    forestCoverId: "3416435",
-    reserveType: null,
-    reserveObjective: "Wildlife",
-    siteClass: null,
-    siteIndex: 28,
-    siteIndexSource: "S - SI from sample plot",
-    treeCoverPattern: null,
-    reEntryYear: 2010,
-    comment:
-      "Wildlife reserve established in 2010. Some evidence of deer browsing. Surveyed by Jane Doe."
+    polygonDetail: {
+      forestCoverId: "3416435",
+      reserveType: null,
+      reserveObjective: "Wildlife",
+      siteClass: null,
+      siteIndex: 28,
+      siteIndexSource: "S - SI from sample plot",
+      treeCoverPattern: null,
+      reEntryYear: 2010,
+      comment:
+        "Wildlife reserve established in 2010. Some evidence of deer browsing. Surveyed by Jane Doe."
+    },
+    forestManagement: {
+      unmappedArea: [{
+        unmappedAreaId: 'A1',
+        area: 23,
+        stockingStatus: {
+          code: 'AF', description: 'Alpine Forest'
+        },
+        stockingType: {
+          code: 'RT', description: 'Road'
+        },
+      }],
+    }
   },
   {
-    forestCoverId: "3416436",
-    reserveType: "Riparian",
-    reserveObjective: null,
-    siteClass: "A",
-    siteIndex: null,
-    siteIndexSource: null,
-    treeCoverPattern: "Patchy",
-    reEntryYear: null,
-    comment:
-      "Riparian buffer zone. No recent activity. Maintained for water quality."
+    polygonDetail: {
+      forestCoverId: "3416436",
+      reserveType: "Riparian",
+      reserveObjective: null,
+      siteClass: "A",
+      siteIndex: null,
+      siteIndexSource: null,
+      treeCoverPattern: "Patchy",
+      reEntryYear: null,
+      comment:
+        "Riparian buffer zone. No recent activity. Maintained for water quality."
+    },
+    forestManagement: {
+      unmappedArea: [{
+        unmappedAreaId: 'A1',
+        area: 23,
+        stockingStatus: {
+          code: 'C', description: 'Cultivated'
+        },
+        stockingType: {
+          code: 'RT', description: 'Road'
+        },
+      }],
+    }
   }
 ];
