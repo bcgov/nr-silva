@@ -93,7 +93,7 @@ describe("OpeningRow component", () => {
 
   it("should render a status tag with correct text", () => {
     renderWithProviders();
-    expect(screen.getByTestId("status-tag")).toHaveTextContent("Free Growing");
+    expect(screen.getByTestId(`tag__status_colored_tag_${"teal"}`)).toHaveTextContent("Free Growing");
   });
 
   it("should display tooltip with category description", async () => {
