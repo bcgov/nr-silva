@@ -2,6 +2,7 @@ import React from "react";
 import { Column, TextAreaSkeleton } from "@carbon/react";
 import UnmappedArea from "./UnmappedArea";
 import { ForestManagementDto } from "../../definitions";
+import SingleMultiLayer from "./SingleMultiLayer";
 
 type ForestManagementProps = {
   forestManagementData?: ForestManagementDto;
@@ -37,9 +38,14 @@ const ForestManagement = ({ isLoading, forestManagementData }: ForestManagementP
               </Column>
             )
             : (
-              <Column sm={4} md={8} lg={16}>
-                <UnmappedArea data={forestManagementData.unmappedArea} />
-              </Column>
+              <>
+                <Column sm={4} md={8} lg={16}>
+                  <UnmappedArea data={forestManagementData.unmappedArea} />
+                </Column>
+                <Column sm={4} md={8} lg={16}>
+                  <SingleMultiLayer layers={forestManagementData.layers} />
+                </Column>
+              </>
             )
         }
       </>
