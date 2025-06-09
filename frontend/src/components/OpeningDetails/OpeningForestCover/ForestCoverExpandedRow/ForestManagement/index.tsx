@@ -9,13 +9,17 @@ type ForestManagementProps = {
   isLoading?: boolean;
 }
 
+const Title = () => (
+  <Column sm={4} md={8} lg={16}>
+    <h2 className="details-title">Forest management</h2>
+  </Column >
+);
+
 const ForestManagement = ({ isLoading, forestManagementData }: ForestManagementProps) => {
   if (isLoading) {
     return (
       <>
-        <Column sm={4} md={8} lg={16}>
-          <h2 className="details-title">Forest management</h2>
-        </Column >
+        <Title />
         <Column sm={4} md={8} lg={16}>
           <TextAreaSkeleton />
         </Column>
@@ -26,10 +30,7 @@ const ForestManagement = ({ isLoading, forestManagementData }: ForestManagementP
   if (forestManagementData) {
     return (
       <>
-        <Column sm={4} md={8} lg={16}>
-          <h2 className="details-title">Forest management</h2>
-        </Column >
-
+        <Title />
         {
           isLoading
             ? (

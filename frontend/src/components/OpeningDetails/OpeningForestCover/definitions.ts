@@ -60,9 +60,9 @@ export type LayerDto = {
   speciesDistribution: {
     species: CodeDescriptionDto;
     distribution: number;
+    averageAge: number;
+    averageHeight: number;
   }[];
-  averageAge: number;
-  averageHeight: number;
   crownClosure: number;
   basalAreaPerTotalStems: number;
   totalStems: number;

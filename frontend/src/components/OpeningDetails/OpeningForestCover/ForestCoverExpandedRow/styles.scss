@@ -36,4 +36,43 @@
     }
   }
 
+  .single-multi-layer-card-container {
+    padding-bottom: 0;
+
+    .accordion-col {
+      margin: auto -2rem;
+
+      .layer-accordion {
+        border-left: unset;
+        border-right: unset;
+        border-radius: unset;
+      }
+
+      .layer-item {
+        .#{vars.$bcgov-prefix}--accordion__title {
+          padding: 1rem 2rem;
+        }
+
+        .#{vars.$bcgov-prefix}--accordion__content {
+          padding: 0 2rem;
+        }
+      }
+    }
+
+    .layer-accordion-title-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+
+      h4 {
+        @include type.type-style('body-02');
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
+      }
+
+      p {
+        @include type.type-style('body-compact-01');
+        color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      }
+    }
+  }
 }
