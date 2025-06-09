@@ -7,10 +7,11 @@ import { mapKinds } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
-import StatusTag from "@/components/StatusTag";
+import StatusTag from "@/components/OpeningStatusTag";
 import OpeningsMap from "@/components/OpeningsMap";
 
 import "./styles.scss";
+import OpeningStatusTag from "@/components/OpeningStatusTag";
 
 type OpeningSummaryProps = {
   openingId?: number;
@@ -82,7 +83,7 @@ const OpeningSummary = ({
           showSkeleton={isLoading}
         >
           {tombstoneObj?.openingStatus?.description ? (
-            <StatusTag description={tombstoneObj.openingStatus.description} />
+            <OpeningStatusTag status={tombstoneObj.openingStatus} />
           ) : null}
         </CardItem>
       </Column>
@@ -120,15 +121,22 @@ const OpeningSummary = ({
       </Column>
 
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
-        <CardItem id="client-card-item" label="Client" showSkeleton={isLoading}>
-          {getClientLabel(
-            {
-              id: tombstoneObj?.client.clientNumber ?? "",
-              name: tombstoneObj?.client.clientName ?? "",
-              acronym: tombstoneObj?.client.acronym ?? "",
-            },
-            true
-          )}
+        <CardItem
+          id="client-card-item"
+          label="Client"
+          showSkeleton={isLoading}
+          tooltipText={tombstoneObj?.client?.clientName}
+        >
+          {
+            getClientLabel(
+              {
+                id: tombstoneObj?.client.clientNumber ?? "",
+                name: "",
+                acronym: tombstoneObj?.client.acronym ?? "",
+              },
+              true
+            )
+          }
         </CardItem>
       </Column>
 
