@@ -246,7 +246,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                         onExpand={() => handleRowExpand(row.forestCoverId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
-                          <TableCell key={String(header.key)} className="forest-cover-table-cell">
+                          <TableCell key={String(header.key)} className="default-table-cell">
                             {renderCellContent(row, header.key)}
                           </TableCell>
                         ))}

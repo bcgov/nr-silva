@@ -20,18 +20,14 @@ export const UnmappedAreaHeaders: TableHeaderType<keyof UnmappedAreaDto>[] = [
   }
 ];
 
-export const LayerTableHeaders: TableHeaderType<keyof LayerDto>[] = [
+export const LayerTableHeaders: TableHeaderType<keyof LayerDto | string>[] = [
   {
     key: 'speciesDistribution',
     header: 'Species • Distribution'
   },
   {
-    key: 'averageAge',
+    key: 'averageAgeHeight',
     header: 'Average age  • Average height'
-  },
-  {
-    key: 'crownClosure',
-    header: 'Crown closure'
   },
   {
     key: 'crownClosure',

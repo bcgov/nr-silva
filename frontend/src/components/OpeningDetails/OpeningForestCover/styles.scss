@@ -40,11 +40,6 @@
     }
 
     .forest-cover-table {
-      .forest-cover-table-cell {
-        align-content: start;
-        padding: 1rem;
-      }
-
       .forest-cover-expanded-row .#{vars.$bcgov-prefix}--child-row-inner-container:not(:empty) {
         padding-block: 2rem;
       }

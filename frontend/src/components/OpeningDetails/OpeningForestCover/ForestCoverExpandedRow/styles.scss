@@ -74,5 +74,17 @@
         color: var(--#{vars.$bcgov-prefix}-text-secondary);
       }
     }
+
+    .layer-table-title {
+      padding: 1rem 1.5rem;
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+
+    .cell-content-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
 }
