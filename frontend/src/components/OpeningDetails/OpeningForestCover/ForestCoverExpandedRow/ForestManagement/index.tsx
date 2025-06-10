@@ -1,8 +1,9 @@
 import React from "react";
 import { Column, TextAreaSkeleton } from "@carbon/react";
-import UnmappedArea from "./UnmappedArea";
 import { ForestManagementDto } from "../../definitions";
+import UnmappedArea from "./UnmappedArea";
 import SingleMultiLayer from "./SingleMultiLayer";
+
 
 type ForestManagementProps = {
   forestManagementData?: ForestManagementDto;

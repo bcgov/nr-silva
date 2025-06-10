@@ -56,6 +56,12 @@ export type UnmappedAreaDto = {
   stockingType: CodeDescriptionDto;
 }
 
+export type DamageAgentDto = {
+  species: CodeDescriptionDto;
+  forestHealthIncidence: number;
+  incidenceArea: number;
+}
+
 export type LayerDto = {
   speciesDistribution: {
     species: CodeDescriptionDto;
@@ -70,11 +76,7 @@ export type LayerDto = {
   wellSpaced: number;
   freeGrowing: number;
 
-  damageAgent?: {
-    species: CodeDescriptionDto;
-    forestHealthIncidence: number;
-    incidenceArea: number;
-  }
+  damageAgent?: DamageAgentDto[];
 }
 
 export type ForestManagementLayerDto = {
@@ -216,7 +218,7 @@ export const mockPolygonDetails: OpeningForestCoverDetails[] = [
       ],
       layers: [
         {
-          layer: { code: "01", description: "Layer 1" },
+          layer: { code: "1", description: "Layer 1" },
           inventoryLayer: {
             speciesDistribution: [
               { species: { code: "PL", description: "Lodgepole Pine" }, distribution: 60, averageAge: 45, averageHeight: 14.3 },
@@ -228,11 +230,11 @@ export const mockPolygonDetails: OpeningForestCoverDetails[] = [
             totalWellSpaced: 720,
             wellSpaced: 620,
             freeGrowing: 500,
-            damageAgent: {
+            damageAgent: [{
               species: { code: "IB", description: "Insect - Bark Beetle" },
               forestHealthIncidence: 2,
               incidenceArea: 1.2
-            }
+            }]
           },
           silvicultureLayer: {
             speciesDistribution: [
@@ -243,7 +245,20 @@ export const mockPolygonDetails: OpeningForestCoverDetails[] = [
             totalStems: 300,
             totalWellSpaced: 280,
             wellSpaced: 250,
-            freeGrowing: 200
+            freeGrowing: 200,
+
+            damageAgent: [
+              {
+                species: { code: "IB", description: "Insect - Bark Beetle" },
+                forestHealthIncidence: 2,
+                incidenceArea: 1.2
+              },
+              {
+                species: { code: "HS", description: "Human sapiens" },
+                forestHealthIncidence: 1,
+                incidenceArea: 0.5
+              },
+            ]
           }
         }
       ]
@@ -272,7 +287,7 @@ export const mockPolygonDetails: OpeningForestCoverDetails[] = [
       ],
       layers: [
         {
-          layer: { code: "01", description: "Layer 1" },
+          layer: { code: "1", description: "Layer 1" },
           inventoryLayer: {
             speciesDistribution: [
               { species: { code: "PL", description: "Lodgepole Pine" }, distribution: 60, averageAge: 36, averageHeight: 13.5 },
@@ -321,39 +336,39 @@ export const mockPolygonDetails: OpeningForestCoverDetails[] = [
           stockingType: { code: "RT", description: "Road" }
         }
       ],
-      layers: [
-        {
-          layer: { code: "01", description: "Layer 1" },
-          inventoryLayer: {
-            speciesDistribution: [
-              { species: { code: "AT", description: "Trembling Aspen" }, distribution: 50, averageAge: 28, averageHeight: 10 },
-              { species: { code: "EP", description: "Poplar" }, distribution: 50, averageAge: 28, averageHeight: 10 }
-            ],
-            crownClosure: 65,
-            basalAreaPerTotalStems: 12.5,
-            totalStems: 850,
-            totalWellSpaced: 600,
-            wellSpaced: 500,
-            freeGrowing: 400,
-            damageAgent: {
-              species: { code: "FR", description: "Frost" },
-              forestHealthIncidence: 3,
-              incidenceArea: 0.8
+      layers: Array.from({ length: 4 }, (_, i) => ({
+        layer: { code: `${i + 1}`, description: `Fake Layer ${i + 1}` },
+        inventoryLayer: {
+          speciesDistribution: [
+            { species: { code: "PL", description: "Lodgepole Pine" }, distribution: 50, averageAge: 20 + i * 2, averageHeight: 10 + i },
+            { species: { code: "SX", description: "Spruce" }, distribution: 50, averageAge: 20 + i * 2, averageHeight: 10 + i }
+          ],
+          crownClosure: 60,
+          basalAreaPerTotalStems: 10 + i,
+          totalStems: 800 + i * 100,
+          totalWellSpaced: 600 + i * 80,
+          wellSpaced: 500 + i * 70,
+          freeGrowing: 400 + i * 60,
+          damageAgent: [
+            {
+              species: { code: "IB", description: "Insect - Bark Beetle" },
+              forestHealthIncidence: 2,
+              incidenceArea: 1.2
             }
-          },
-          silvicultureLayer: {
-            speciesDistribution: [
-              { species: { code: "PL", description: "Lodgepole Pine" }, distribution: 100, averageAge: 10, averageHeight: 2 }
-            ],
-            crownClosure: 30,
-            basalAreaPerTotalStems: 5,
-            totalStems: 200,
-            totalWellSpaced: 180,
-            wellSpaced: 150,
-            freeGrowing: 120
-          }
+          ]
+        },
+        silvicultureLayer: {
+          speciesDistribution: [
+            { species: { code: "FD", description: "Douglas Fir" }, distribution: 100, averageAge: 10 + i, averageHeight: 5 + i }
+          ],
+          crownClosure: 30,
+          basalAreaPerTotalStems: 5 + i,
+          totalStems: 200 + i * 50,
+          totalWellSpaced: 180 + i * 40,
+          wellSpaced: 150 + i * 30,
+          freeGrowing: 120 + i * 20
         }
-      ]
+      }))
     }
   }
 ];

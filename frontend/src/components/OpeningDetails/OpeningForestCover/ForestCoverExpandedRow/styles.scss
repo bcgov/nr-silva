@@ -27,10 +27,14 @@
       h3 {
         @include type.type-style('heading-02');
       }
+
+      h4 {
+        @include type.type-style('heading-01');
+      }
     }
 
     .card-subtitle {
-      @include type.type-style('body-compact-02');
+      @include type.type-style('body-compact-01');
       color: var(--#{vars.$bcgov-prefix}-text-secondary);
       margin-left: 1.75rem;
     }
@@ -86,5 +90,23 @@
       flex-direction: column;
       gap: 0.5rem;
     }
+  }
+
+  .layer-table-grid {
+    row-gap: 2rem;
+  }
+
+  .damage-agent-table-container {
+    margin-left: 1.75rem;
+  }
+
+  .multi-layer-accordion-item-grid {
+    padding: 1rem 0;
+    row-gap: 2.5rem;
+  }
+
+  .multi-layer-table-container {
+    margin-top: 2rem;
+    margin-left: 1.75rem;
   }
 }

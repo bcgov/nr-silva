@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { LayerDto, UnmappedAreaDto } from "../../definitions";
+import { DamageAgentDto, LayerDto, UnmappedAreaDto } from "../../definitions";
 
 export const UnmappedAreaHeaders: TableHeaderType<keyof UnmappedAreaDto>[] = [
   {
@@ -41,7 +41,22 @@ export const LayerTableHeaders: TableHeaderType<keyof LayerDto | string>[] = [
     key: 'totalStems',
     header: 'Stems'
   },
-]
+];
+
+export const DamageAgentTableHeader: TableHeaderType<keyof DamageAgentDto>[] = [
+  {
+    key: 'species',
+    header: 'Damage agent'
+  },
+  {
+    key: 'forestHealthIncidence',
+    header: 'Forest health incidence'
+  },
+  {
+    key: 'incidenceArea',
+    header: 'Incidence area'
+  }
+];
 
 export const TEXT_CONFIG = {
   singleLayerDesc: 'A forest stand with trees predominantly in the same age or height class, forming a single canopy layer',

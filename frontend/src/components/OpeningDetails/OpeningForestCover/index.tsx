@@ -11,7 +11,8 @@ import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { delayMock } from "@/utils/MockUtils";
-import { PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
+import StockingStatusTag from "@/components/StockingStatusTag";
+import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 
 import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
 import {
@@ -23,7 +24,6 @@ import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-import StockingStatusTag from "../../StockingStatusTag";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];

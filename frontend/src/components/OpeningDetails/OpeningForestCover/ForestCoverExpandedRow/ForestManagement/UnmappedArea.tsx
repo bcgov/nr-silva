@@ -1,11 +1,11 @@
 import React from "react";
 import { CardContainer } from "@/components/Card";
-import { Column, Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from "@carbon/react";
+import { Column, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
 import { Road } from "@carbon/icons-react";
-import { UnmappedAreaHeaders } from "./constants";
-import { UnmappedAreaDto } from "../../definitions";
 import StockingStatusTag from "@/components/StockingStatusTag";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { UnmappedAreaDto } from "../../definitions";
+import { UnmappedAreaHeaders } from "./constants";
 
 type UnmappedAreaProps = {
   data: UnmappedAreaDto[];
@@ -18,8 +18,10 @@ const UnmappedArea = ({ data }: UnmappedAreaProps) => {
         return <StockingStatusTag status={row.stockingStatus} />;
       case 'stockingType':
         return codeDescriptionToDisplayText(row.stockingType);
+      case 'area':
+        return `${row.area} ha`
       default:
-        return row[key];
+        return String(row[key]);
     }
   }
 

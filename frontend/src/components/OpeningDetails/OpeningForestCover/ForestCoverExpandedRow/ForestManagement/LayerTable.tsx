@@ -1,8 +1,14 @@
 import React from "react";
-import { LayerDto } from "../../definitions";
-import { Column, DefinitionTooltip, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from "@carbon/react";
-import { LayerTableHeaders } from "./constants";
-import { NOT_APPLICABLE, UNIQUE_CHARACTERS_UNICODE } from "../../../../../constants";
+import { DamageAgentDto, LayerDto } from "../../definitions";
+import {
+  Column, DefinitionTooltip, Grid,
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableHeader, TableRow
+} from "@carbon/react";
+import { TreeFallRisk } from "@carbon/icons-react";
+import { NOT_APPLICABLE, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { DamageAgentTableHeader, LayerTableHeaders } from "./constants";
 
 type LayerTableProps = {
   layer: LayerDto;
@@ -10,8 +16,21 @@ type LayerTableProps = {
 
 const LayerTable = ({ layer }: LayerTableProps) => {
 
+  const renderDamageAgentCell = (row: DamageAgentDto, key: keyof DamageAgentDto) => {
+    switch (key) {
+      case 'species':
+        return codeDescriptionToDisplayText(row.species);
+      case 'forestHealthIncidence':
+        return `${row.forestHealthIncidence}%`;
+      case 'incidenceArea':
+        return `${row.incidenceArea} ha`;
+      default:
+        return String(row[key]);
+    }
+  }
+
   return (
-    <Grid>
+    <Grid className="layer-table-grid">
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container">
           <div className="layer-table-title">
@@ -34,7 +53,7 @@ const LayerTable = ({ layer }: LayerTableProps) => {
                 <TableCell className="default-table-cell">
                   <ul className="cell-content-list">
                     {layer.speciesDistribution.map((species) => (
-                      <li>
+                      <li key={species.species.code}>
                         <DefinitionTooltip
                           openOnHover
                           definition={species.species.description}
@@ -53,7 +72,7 @@ const LayerTable = ({ layer }: LayerTableProps) => {
                 <TableCell className="default-table-cell">
                   <ul className="cell-content-list">
                     {layer.speciesDistribution.map((species) => (
-                      <li>
+                      <li key={species.species.code}>
                         {`${species.averageAge} ${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.averageHeight} m`}
                       </li>
                     ))}
@@ -82,6 +101,59 @@ const LayerTable = ({ layer }: LayerTableProps) => {
           </Table>
         </TableContainer>
       </Column>
+
+      {
+        layer.damageAgent?.length
+          ? (
+            <>
+              <Column sm={4} md={8} lg={16}>
+                <div className="card-title-container">
+                  <div className="icon-and-title">
+                    <TreeFallRisk size={20} />
+                    <h4>
+                      Damage agent
+                    </h4>
+                  </div>
+                  <p className="card-subtitle">Biotic or abiotic factor causing harm to forest ecosystems</p>
+                </div>
+              </Column>
+              <Column sm={4} md={8} lg={16}>
+                <div className="damage-agent-table-container">
+                  <Table className="default-zebra-table-with-border child-table" aria-label="Damage agent table">
+                    <TableHead>
+                      <TableRow>
+                        {
+                          DamageAgentTableHeader.map((header) => (
+                            <TableHeader key={header.key}>{header.header}</TableHeader>
+                          ))
+                        }
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {
+                        layer.damageAgent.map((row) => {
+                          return (
+                            <TableRow key={row.species.code}>
+                              {
+                                DamageAgentTableHeader.map((header) => (
+                                  <TableCell key={header.key}>
+                                    {renderDamageAgentCell(row, header.key)}
+                                  </TableCell>
+                                ))
+                              }
+                            </TableRow>
+                          )
+                        })
+                      }
+                    </TableBody>
+                  </Table>
+                </div>
+              </Column>
+            </>
+          )
+          : null
+      }
 
     </Grid>
   );

@@ -1,10 +1,8 @@
 import React from "react";
-
-import { PolygonDetailDto } from "../../definitions";
-
 import { Column, Grid } from "@carbon/react";
-import { CardItem } from "../../../../Card";
-import Comments from "../../../../Comments";
+import { CardItem } from "@/components/Card";
+import Comments from "@/components/Comments";
+import { PolygonDetailDto } from "../../definitions";
 
 type PolygonDetailProps = {
   polygon?: PolygonDetailDto,

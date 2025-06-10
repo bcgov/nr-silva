@@ -1,6 +1,8 @@
 import React from "react";
 import { CardContainer, CardTitle } from "@/components/Card";
-import { Accordion, AccordionItem, Column } from "@carbon/react";
+import { Accordion, AccordionItem, Column, Grid } from "@carbon/react";
+import { Firewall } from "@carbon/icons-react";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { ForestManagementLayerDto } from "../../definitions";
 import LayerAccordionTitle from "./LayerAccordionTitle";
 import { TEXT_CONFIG } from "./constants";
@@ -33,7 +35,59 @@ const SingleMultiLayer = ({ layers }: SingleMultiLayerProps) => {
       {
         isMultiLayer
           ? (
-            <div>ss</div>
+            // MULTI LAYER
+            <Column sm={4} md={8} lg={16} className="accordion-col">
+              {
+                layers.map((layer) => (
+                  <Accordion className="layer-accordion" align="end" key={layer.layer.code}>
+                    <AccordionItem
+                      className="layer-item"
+                      title={
+                        <LayerAccordionTitle
+                          title={`Layer ${codeDescriptionToDisplayText(layer.layer)}`}
+                        />
+                      }
+                    >
+                      <Grid className="multi-layer-accordion-item-grid">
+                        <Column sm={4} md={8} lg={16}>
+                          <div className="card-title-container">
+                            <div className="icon-and-title">
+                              <Firewall size={20} />
+                              <h4>
+                                {TEXT_CONFIG.inventoryLayer.title}
+                              </h4>
+                            </div>
+                            <p className="card-subtitle">{TEXT_CONFIG.inventoryLayer.subtitle}</p>
+                          </div>
+                          <div className="multi-layer-table-container">
+                            <LayerTable layer={layer.inventoryLayer} />
+                          </div>
+                        </Column>
+
+                        <Column sm={4} md={8} lg={16}>
+                          <hr className="expanded-row-hr" />
+                        </Column>
+
+                        <Column sm={4} md={8} lg={16}>
+                          <div className="card-title-container">
+                            <div className="icon-and-title">
+                              <Firewall size={20} />
+                              <h4>
+                                {TEXT_CONFIG.silvicultureLayer.title}
+                              </h4>
+                            </div>
+                            <p className="card-subtitle">{TEXT_CONFIG.silvicultureLayer.subtitle}</p>
+                          </div>
+                          <div className="multi-layer-table-container">
+                            <LayerTable layer={layer.silvicultureLayer} />
+                          </div>
+                        </Column>
+                      </Grid>
+                    </AccordionItem>
+                  </Accordion>
+                ))
+              }
+            </Column>
           )
           : (
             // SINGLE LAYER
