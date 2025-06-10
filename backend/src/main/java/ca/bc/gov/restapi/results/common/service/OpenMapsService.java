@@ -48,7 +48,7 @@ public class OpenMapsService {
                   )
                   .queryParam("outputFormat", "application/json")
                   .queryParam("SrsName", "EPSG:4326")
-                  .queryParam("PROPERTYNAME", "GEOMETRY")
+                  .queryParam("PROPERTYNAME", "GEOMETRY,OPENING_ID")
                   .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
                   .build(Map.of())
           )

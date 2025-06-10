@@ -66,6 +66,15 @@
 
 .default-zebra-table,
 .default-zebra-table-with-border {
+  thead {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+
+    th,
+    button {
+      background-color: inherit;
+    }
+  }
+
   &.#{vars.$bcgov-prefix}--data-table tbody {
     background: var(--#{vars.$bcgov-prefix}-layer-02);
   }

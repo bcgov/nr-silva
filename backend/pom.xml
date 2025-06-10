@@ -41,7 +41,7 @@
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
     <hibernate.version>6.6.3.Final</hibernate.version>
-    <testcontainers.version>1.21.0</testcontainers.version>
+    <testcontainers.version>1.21.1</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
     <spring-oauth2.version>3.5.0</spring-oauth2.version>
     <spring-security.version>6.5.0</spring-security.version>
@@ -497,7 +497,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>10.24.0</version>
+            <version>10.25.0</version>
           </dependency>
         </dependencies>
         <configuration>
