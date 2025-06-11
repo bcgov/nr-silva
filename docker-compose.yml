@@ -87,7 +87,7 @@ services:
     <<: *backend
 
   wiremock:
-    image: "wiremock/wiremock:latest
+    image: "wiremock/wiremock:latest"
     container_name: forest-client-api-stub
     ports: [ "9000:9000", "9001:9001" ]
     volumes:

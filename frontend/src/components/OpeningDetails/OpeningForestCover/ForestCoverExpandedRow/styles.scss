@@ -1,0 +1,112 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-forest-cover-details-grid {
+  row-gap: 2.5rem;
+
+  .details-title {
+    @include type.type-style('heading-03');
+  }
+
+  .forest-cover-details-subgrid {
+    column-gap: 2rem;
+    row-gap: 2.25rem;
+  }
+
+  .card-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .icon-and-title {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.5rem;
+      align-items: center;
+
+      h3 {
+        @include type.type-style('heading-02');
+      }
+
+      h4 {
+        @include type.type-style('heading-01');
+      }
+    }
+
+    .card-subtitle {
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      margin-left: 1.75rem;
+    }
+  }
+
+  .single-multi-layer-card-container {
+    padding-bottom: 0;
+
+    .accordion-col {
+      margin: auto -2rem;
+
+      .layer-accordion {
+        border-left: unset;
+        border-right: unset;
+        border-radius: unset;
+      }
+
+      .layer-item {
+        .#{vars.$bcgov-prefix}--accordion__title {
+          padding: 1rem 2rem;
+        }
+
+        .#{vars.$bcgov-prefix}--accordion__content {
+          padding: 0 2rem;
+        }
+      }
+    }
+
+    .layer-accordion-title-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+
+      h4 {
+        @include type.type-style('body-02');
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
+      }
+
+      p {
+        @include type.type-style('body-compact-01');
+        color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      }
+    }
+
+    .layer-table-title {
+      padding: 1rem 1.5rem;
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+
+    .cell-content-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+
+  .layer-table-grid {
+    row-gap: 2rem;
+  }
+
+  .damage-agent-table-container {
+    margin-left: 1.75rem;
+  }
+
+  .multi-layer-accordion-item-grid {
+    padding: 1rem 0;
+    row-gap: 2.5rem;
+  }
+
+  .multi-layer-table-container {
+    margin-top: 2rem;
+    margin-left: 1.75rem;
+  }
+}
