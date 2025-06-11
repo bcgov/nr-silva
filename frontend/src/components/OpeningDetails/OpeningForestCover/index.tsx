@@ -11,7 +11,8 @@ import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { delayMock } from "@/utils/MockUtils";
-import { PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
+import StockingStatusTag from "@/components/StockingStatusTag";
+import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 
 import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
 import {
@@ -20,10 +21,9 @@ import {
   type OpeningForestCoverType,
 } from "./definitions";
 import { formatForestCoverSpeciesArray } from "./utils";
-import ForestCoverDetail from "./ForestCoverDetail";
+import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-import StockingStatusTag from "../../StockingStatusTag";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];
@@ -225,7 +225,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               rowCount={10}
             />
           ) : (
-            <Table className="default-zebra-table" aria-label="Forest cover table">
+            <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
               <TableHead>
                 <TableRow>
                   <TableExpandHeader />
@@ -246,14 +246,14 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                         onExpand={() => handleRowExpand(row.forestCoverId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
-                          <TableCell key={String(header.key)} className="forest-cover-table-cell">
+                          <TableCell key={String(header.key)} className="default-table-cell">
                             {renderCellContent(row, header.key)}
                           </TableCell>
                         ))}
                       </TableExpandRow>
                       <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
                         {isExpanded ? (
-                          <ForestCoverDetail forestCoverId={row.forestCoverId} />
+                          <ForestCoverExpandedRow forestCoverId={row.forestCoverId} />
                         ) : null}
                       </TableExpandedRow>
                     </React.Fragment>
