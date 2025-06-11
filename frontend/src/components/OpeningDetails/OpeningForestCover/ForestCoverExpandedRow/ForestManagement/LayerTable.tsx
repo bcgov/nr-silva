@@ -36,7 +36,7 @@ const LayerTable = ({ layer }: LayerTableProps) => {
           <div className="layer-table-title">
             {`${layer.speciesDistribution.length} species`}
           </div>
-          <Table className="default-zebra-table-with-border child-table" aria-label="Layer table">
+          <Table className="default-zebra-table child-table" aria-label="Layer table">
             <TableHead>
               <TableRow>
                 {

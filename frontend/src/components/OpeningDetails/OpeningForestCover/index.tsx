@@ -24,6 +24,7 @@ import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
+import { UnderConstructionTag, UnderConstTagWrapper } from "../../Tags";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];
@@ -192,9 +193,11 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
   return (
     <Grid className="opening-forest-cover-grid default-grid">
       <Column sm={4} md={8} lg={16}>
-        <h3 className="default-tab-content-title">
-          {forestCoverQuery.data?.page.totalElements ?? 0} forest cover polygons in this opening
-        </h3>
+        <UnderConstTagWrapper>
+          <h3 className="default-tab-content-title">
+            {forestCoverQuery.data?.page.totalElements ?? 0} forest cover polygons in this opening
+          </h3>
+        </UnderConstTagWrapper>
       </Column>
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container opening-forest-cover-table-container">

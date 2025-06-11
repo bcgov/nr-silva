@@ -121,7 +121,6 @@ const OpeningDetails = () => {
         title={`Opening ID ${openingId}`}
         subtitle="Check and manage this opening"
         breadCrumbs={OpeningDetailBreadCrumbs}
-        experimental
       >
         <ActionableFavouriteButton openingId={Number(openingId)} />
       </PageTitle>
