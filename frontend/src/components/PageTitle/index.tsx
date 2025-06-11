@@ -51,7 +51,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
           {children}
           {
             experimental
-              ? <UnderConstructionTag />
+              ? <UnderConstructionTag type='page' />
               : null
           }
         </div>
