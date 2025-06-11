@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 
-import OpeningStatusTag from "../OpeningStatusTag";
+import { OpeningStatusTag } from "../Tags";
 import SpatialCheckbox from "../SpatialCheckbox";
 import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "@/utils/DateUtils";
