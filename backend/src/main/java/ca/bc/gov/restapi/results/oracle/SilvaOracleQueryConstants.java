@@ -737,8 +737,8 @@ public class SilvaOracleQueryConstants {
       	fc.SITE_INDEX AS site_index,
       	fc.SITE_INDEX_SOURCE_CODE AS site_index_source_code,
       	sisc.DESCRIPTION AS site_index_source_name,
-      	fc.TREE_COVER_PATTERN_CODE AS tree_cover_patern_code,
-      	tcpc.DESCRIPTION AS tree_cover_patern_name,
+      	fc.TREE_COVER_PATTERN_CODE AS tree_cover_pattern_code,
+      	tcpc.DESCRIPTION AS tree_cover_pattern_name,
       	fc.REENTRY_YEAR
       FROM FOREST_COVER fc
       LEFT JOIN SILV_RESERVE_CODE src ON src.SILV_RESERVE_CODE = fc.SILV_RESERVE_CODE
