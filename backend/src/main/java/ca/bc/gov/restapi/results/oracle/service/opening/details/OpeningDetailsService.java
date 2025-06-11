@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
@@ -56,5 +58,10 @@ public class OpeningDetailsService {
 
   public List<OpeningForestCoverDto> getOpeningForestCoverList(Long openingId, String mainSearchTerm) {
     return forestCoverService.getOpeningForestCoverList(openingId, mainSearchTerm);
+  }
+
+  public OpeningForestCoverDetailsDto getOpeningForestCoverDetails(Long forestCoverId) {
+    return forestCoverService.getDetails(forestCoverId)
+        .orElseThrow(() -> new NotFoundGenericException("Forest cover polygon with id " + forestCoverId));
   }
 }
