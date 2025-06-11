@@ -201,9 +201,9 @@ public class OpeningDetailsForestCoverService {
         .orElse(null);
   }
 
-  private List<CodeDescriptionDto> getLayerSpecies(Long coverId, String I) {
+  private List<CodeDescriptionDto> getLayerSpecies(Long coverId, String layerCodeIndicator) {
     return coverRepository
-        .findByOpeningDetailsSpecies(coverId, I)
+        .findByOpeningDetailsSpecies(coverId, layerCodeIndicator)
         .stream()
         .map(projection -> new CodeDescriptionDto(
                 projection.getSpeciesCode(),
