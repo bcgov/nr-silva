@@ -11,7 +11,7 @@ import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { delayMock } from "@/utils/MockUtils";
-import StockingStatusTag from "@/components/StockingStatusTag";
+import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 
 import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
