@@ -1,6 +1,6 @@
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { codeDescriptionToDisplayText, extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 /**
  * Generates tooltip definitions and display text for a species array.

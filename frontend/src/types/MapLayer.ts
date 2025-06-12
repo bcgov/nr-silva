@@ -1,4 +1,4 @@
-import CodeDescriptionDto from '@/types/CodeDescriptionType';
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { PathOptions } from 'leaflet';
 
@@ -31,7 +31,7 @@ export type MapKindType = 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'
   | 'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY'
   | 'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW';
 
-export type LayerConfiguration = CodeDescriptionDto<MapKindType> & {
+export type LayerConfiguration = CodeDescriptionDto & {
   style: Record<string, any>;
   popup: (properties: GeoJsonProperties) => Record<string, any>
 }
@@ -161,8 +161,8 @@ export const getStyleForFeature = (
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
-  const kindEntry = mapKinds.find((kind) =>
-    String(feature.id).startsWith(kind.code)
+  const kindEntry = mapKinds.find(
+    (kind) => kind.code !== null && String(feature.id).startsWith(kind.code)
   );
 
   if (!kindEntry) return defaultStyle;
@@ -188,8 +188,8 @@ const colorMap: Record<string, string[]> = {
 }
 
 export const getPropertyForFeature = (feature: Feature<Geometry, GeoJsonProperties>): Record<string, any> => {
-  const kindEntry = mapKinds.find((kind) =>
-    String(feature.id).startsWith(kind.code)
+  const kindEntry = mapKinds.find(
+    (kind) => !!kind.code && String(feature.id).startsWith(kind.code)
   );
 
   if (!kindEntry) return {};

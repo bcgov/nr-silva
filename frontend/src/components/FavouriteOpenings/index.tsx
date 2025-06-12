@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from '@/contexts/NotificationProvider';
-import { fetchOpeningFavourites, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
 import { EIGHT_SECONDS } from "@/constants/TimeUnits";
 import { OpeningDetailsRoute } from "@/routes/config";
+import API from "@/services/API";
 
 import FavoriteButton from '../FavoriteButton';
 import EmptySection from "../EmptySection";
@@ -19,12 +19,12 @@ const FavouriteOpenings: React.FC = () => {
 
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
-    queryFn: () => fetchOpeningFavourites(),
+    queryFn: () => API.OpeningFavoriteEndpointService.getFavorites(),
     refetchOnMount: 'always'
   });
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId),
     onSuccess: (_, openingId) => {
       displayNotification({
         title: `Opening Id ${openingId} unfavourited`,

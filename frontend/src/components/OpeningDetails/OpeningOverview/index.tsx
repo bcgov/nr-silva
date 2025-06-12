@@ -2,7 +2,7 @@ import React from "react";
 import { Column, Grid } from "@carbon/react";
 
 import { CardContainer, CardItem, CardTitle } from "@/components/Card";
-import { OpeningDetailsOverviewDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsOverviewDto } from "@/services/OpenApi";
 
 import { formatLocalDate } from "@/utils/DateUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";

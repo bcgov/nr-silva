@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Column, DismissibleTag } from "@carbon/react";
 
 import { OpeningSearchFilterType } from "./definitions";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import { filterDisplayNameMap } from "./constants";
 
 type OpeningFilterBarProps = {
@@ -64,16 +64,18 @@ const OpeningFilterBar = ({ filters, setFilters, handleClearFilters }: OpeningFi
             const filterVal = filters[filterKey];
 
             if (Array.isArray(filterVal)) {
-              return filterVal.map((subVal: CodeDescriptionDto) => (
-                <DismissibleTag
-                  key={subVal.code}
-                  className="silviculture-search-dismissible-tag"
-                  size="md"
-                  type="outline"
-                  text={`${getFilterDisplayName(filterKey)}: ${subVal.code}`}
-                  onClose={() => handleClose(filterKey, subVal.code)}
-                />
-              ))
+              return filterVal
+                .filter((subVal): subVal is CodeDescriptionDto & { code: string } => subVal.code !== null)
+                .map((subVal) => (
+                  <DismissibleTag
+                    key={subVal.code}
+                    className="silviculture-search-dismissible-tag"
+                    size="md"
+                    type="outline"
+                    text={`${getFilterDisplayName(filterKey)}: ${subVal.code}`}
+                    onClose={() => handleClose(filterKey, subVal.code)}
+                  />
+                ));
             }
             return (
               <DismissibleTag

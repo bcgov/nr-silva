@@ -2,7 +2,7 @@ import React from "react";
 
 import { Column, Grid } from "@carbon/react";
 
-import { OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsActivitiesDisturbanceDto } from "@/services/OpenApi";
 
 import { CardItem } from "../../Card";
 import Comments from "../../Comments";
