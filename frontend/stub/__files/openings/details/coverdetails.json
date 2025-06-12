@@ -1,0 +1,107 @@
+{
+    "polygon": {
+        "forestCoverId": 3768869,
+        "reserve": {
+            "code": null,
+            "description": null
+        },
+        "objective": {
+            "code": null,
+            "description": null
+        },
+        "siteClass": {
+            "code": null,
+            "description": null
+        },
+        "siteIndex": 17,
+        "siteIndexSource": {
+            "code": "E",
+            "description": "SI from Biogeoclimatic Ecosystem Classification"
+        },
+        "treeCoverPattern": {
+            "code": null,
+            "description": null
+        },
+        "reentryYear": null
+    },
+    "unmapped": null,
+    "layers": [
+        {
+            "layerId": 4240092,
+            "layer": {
+                "code": "S",
+                "description": "Silviculture Layer - even aged"
+            },
+            "crownClosure": null,
+            "basalAreaSt": 1,
+            "totalStems": null,
+            "totalWellSpaced": 1000,
+            "wellSpaced": 837,
+            "freeGrowing": null,
+            "species": [
+                {
+                    "species": {
+                        "code": "FDI",
+                        "description": "interior Douglas-fir"
+                    },
+                    "percentage": 63,
+                    "averageAge": 5,
+                    "averageHeight": 0
+                },
+                {
+                    "species": {
+                        "code": "PLI",
+                        "description": "lodgepole pine"
+                    },
+                    "percentage": 37,
+                    "averageAge": null,
+                    "averageHeight": null
+                }
+            ],
+            "damage": null
+        },
+        {
+            "layerId": 4240093,
+            "layer": {
+                "code": "I",
+                "description": "Inventory Layer"
+            },
+            "crownClosure": 1,
+            "basalAreaSt": 1,
+            "totalStems": 3956,
+            "totalWellSpaced": null,
+            "wellSpaced": null,
+            "freeGrowing": null,
+            "species": [
+                {
+                    "species": {
+                        "code": "FDI",
+                        "description": "interior Douglas-fir"
+                    },
+                    "percentage": 50,
+                    "averageAge": 4,
+                    "averageHeight": 0
+                },
+                {
+                    "species": {
+                        "code": "PLI",
+                        "description": "lodgepole pine"
+                    },
+                    "percentage": 40,
+                    "averageAge": 4,
+                    "averageHeight": 0
+                },
+                {
+                    "species": {
+                        "code": "AT",
+                        "description": "trembling aspen"
+                    },
+                    "percentage": 10,
+                    "averageAge": 6,
+                    "averageHeight": 1
+                }
+            ],
+            "damage": null
+        }
+    ]
+}
