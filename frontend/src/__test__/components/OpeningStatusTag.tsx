@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { OpeningStatusTag } from '@/components/Tags';
-import { CodeDescriptionDto } from '@/types/OpenApiTypes';
+import { CodeDescriptionDto } from '@/services/OpenApi';
 
 describe('Status Tag component tests', () => {
   it('should have completed color status tag rendered', () => {

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { ComboBox } from "@carbon/react";
 import { useMutation } from "@tanstack/react-query";
 
-import { fetchClientLocations, fetchClientsByNameAcronymNumber, ForestClientAutocomplete } from "@/services/OpeningClientLocationService";
 import { getClientLabel, getClientLocationLabel } from "@/utils/ForestClientUtils";
 import { ComboBoxEvent } from "@/types/CarbonTypes";
 import { TextInputEvent } from "@/types/GeneralTypes";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import { createTextInputEvent } from "@/utils/InputUtils";
+import API from "@/services/API";
+import { ForestClientAutocompleteResultDto } from "@/services/OpenApi";
 
 import './styles.scss';
 
@@ -36,19 +37,19 @@ const ForestClientInput = ({
   setClientLocationCode
 }: ForestClientProps) => {
   const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
-  const [selectedClient, setSelectedClient] = useState<ForestClientAutocomplete | null>(null);
-  const [matchingClients, setMatchingClients] = useState<ForestClientAutocomplete[]>([]);
+  const [selectedClient, setSelectedClient] = useState<ForestClientAutocompleteResultDto | null>(null);
+  const [matchingClients, setMatchingClients] = useState<ForestClientAutocompleteResultDto[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<CodeDescriptionDto | null>(null);
   const [matchingLocationCodes, setMatchingLocationCodes] = useState<CodeDescriptionDto[]>([]);
 
   const clientMutation = useMutation({
     mutationKey: ["forest-clients", "byNameAcronymNumber"],
-    mutationFn: (searchParam: string) => fetchClientsByNameAcronymNumber(searchParam),
+    mutationFn: (searchParam: string) => API.ForestClientEndpointService.searchForestClients(searchParam),
     onSuccess: (data) => setMatchingClients(data),
   });
 
   const locationCodeMutation = useMutation({
-    mutationFn: (clientId: string) => fetchClientLocations(clientId),
+    mutationFn: (clientId: string) => API.ForestClientEndpointService.getForestClientLocations(clientId),
     onSuccess: (data) => setMatchingLocationCodes(data)
   })
 
@@ -90,13 +91,13 @@ const ForestClientInput = ({
     setClientSearchTerm(inputText);
   };
 
-  const handleClientSelection = (e: ComboBoxEvent<ForestClientAutocomplete>) => {
+  const handleClientSelection = (e: ComboBoxEvent<ForestClientAutocompleteResultDto>) => {
     const { selectedItem } = e;
     if (selectedItem) {
       setSelectedClient(selectedItem);
       setClientSearchTerm(getClientLabel(selectedItem));
-      setClientNumber(createTextInputEvent(selectedItem.id))
-      locationCodeMutation.mutate(selectedItem.id);
+      setClientNumber(createTextInputEvent(selectedItem.id ?? ''))
+      locationCodeMutation.mutate(selectedItem.id ?? '');
     }
   };
 

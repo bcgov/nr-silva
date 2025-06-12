@@ -6,8 +6,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Icons from "@carbon/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FavoriteButton from "../FavoriteButton";
+import API from "@/services/API";
 import { useNotification } from "@/contexts/NotificationProvider";
-import { putOpeningFavourite, deleteOpeningFavorite } from "@/services/OpeningFavouriteService";
 import { EIGHT_SECONDS } from "@/constants/TimeUnits";
 import { DashboardRoute } from "@/routes/config";
 
@@ -57,7 +57,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => deleteOpeningFavorite(openingId),
+    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId),
     onSuccess: (_, openingId) => {
       if (showToast) {
         displayFavSuccessToast(openingId, false);
@@ -75,7 +75,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   });
 
   const putFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => putOpeningFavourite(openingId),
+    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.addToFavorites(openingId),
     onSuccess: (_, openingId) => {
       if (showToast) {
         displayFavSuccessToast(openingId, true);

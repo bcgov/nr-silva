@@ -8,7 +8,7 @@ import EmptySection from "../../../EmptySection";
 import { DirectSeedingHeaders } from "./constants";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 
 const DirectSeedingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {

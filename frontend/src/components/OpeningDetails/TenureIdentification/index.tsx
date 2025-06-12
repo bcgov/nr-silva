@@ -11,12 +11,12 @@ import {
 } from "@carbon/react";
 import { Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchOpeningTenure } from "@/services/OpeningDetailsService";
 import { pluralize } from "@/utils/StringUtils";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PLACE_HOLDER } from "@/constants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
+import API from "@/services/API";
+import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
@@ -40,8 +40,23 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
   const [tenureFilter, setTenureFilter] = useState<TenureFilterType>(() => DefaultFilter);
 
   const tenureQuery = useQuery({
-    queryKey: ['opening', openingId, 'tenure', { tenureFilter }],
-    queryFn: () => fetchOpeningTenure(openingId, tenureFilter),
+    queryKey: ['opening', openingId, 'tenure', tenureFilter],
+    queryFn: () => {
+      const { page, size, sortField, sortDirection, filter } = tenureFilter;
+
+      const sort =
+        sortField && sortDirection !== 'NONE'
+          ? [`${sortField},${sortDirection}`]
+          : undefined;
+
+      return API.OpeningEndpointService.getTenures(
+        openingId,
+        filter,
+        page,
+        size,
+        sort
+      );
+    },
   });
 
   const renderCellContent = (headerKey: keyof OpeningDetailsTenureDto, row: OpeningDetailsTenureDto) => {
@@ -193,7 +208,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
             {tenureQuery.data?.totalUnfiltered ?? '...'}
             {' '}
             {
-              pluralize('tenure', tenureQuery.data?.totalUnfiltered)
+              pluralize('tenure', tenureQuery.data?.totalUnfiltered ?? 0)
             }
             {' '}
             in this opening

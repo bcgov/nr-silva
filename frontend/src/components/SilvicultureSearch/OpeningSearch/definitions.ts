@@ -1,5 +1,4 @@
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
-import { DATE_TYPES } from "@/types/DateTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 export type OpeningSearchFilterType = {
   mainSearchTerm?: string;
@@ -23,7 +22,9 @@ export type OpeningSearchFilterType = {
   timberMark?: string;
   page?: number;
   size?: number;
-  dateType?: CodeDescriptionDto<DATE_TYPES>;
+  dateType?: CodeDescriptionDto;
+  sortField?: string;
+  sortDirection?: "ASC" | "DESC" | "NONE";
 }
 
 export type FilterDisplayNameMapType = {

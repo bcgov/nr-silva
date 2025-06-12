@@ -1,7 +1,7 @@
 import React from 'react';
 import { SIZES, TYPES } from '@carbon/react/lib/components/Tag/Tag';
 import { Tag } from '@carbon/react';
-import { CodeDescriptionDto } from '@/types/OpenApiTypes';
+import { CodeDescriptionDto } from '@/services/OpenApi';
 import { codeColorMap, CodeType, KNOWN_CODES } from './constants';
 
 type OpeningStatusTagProps = {

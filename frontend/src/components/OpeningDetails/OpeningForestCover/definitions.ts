@@ -1,5 +1,5 @@
 import { SortDirectionType } from "@/types/PaginationTypes";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 // TODO: Replace 'any' with the actual type for forest cover data
 export type ForestCoverFilterType = {
@@ -20,7 +20,7 @@ export type OpeningForestCoverType = {
   polygonAreaGross: number; // in ha
   polygonAreaNet: number;   // in ha
 
-  stockingStatus: CodeDescriptionDto<string>; // e.g., "Immature", "Non-productive"
+  stockingStatus: CodeDescriptionDto; // e.g., "Immature", "Non-productive"
   stockingType: string;   // e.g., "Art - Artificial", "UNN - Unnatural"
 
   inventoryLayerSpecies: CodeDescriptionDto[];

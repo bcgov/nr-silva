@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import qs from 'qs';
 import {
   Accordion,
   AccordionItem,
@@ -26,7 +26,8 @@ import { useQuery } from "@tanstack/react-query";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { PLACE_HOLDER } from "@/constants";
-import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
+import API from "@/services/API";
+import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 
 import ActivityDetail from "./ActivityDetail";
 import EmptySection from "../../EmptySection";
@@ -36,7 +37,6 @@ import { ActivityTableHeaders, DefaultFilter } from "./constants";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { ActivityFilterType } from "./definitions";
-import { fetchOpeningActivities } from "@/services/OpeningDetailsService";
 import { formatActivityObjective } from "./utils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
@@ -67,8 +67,23 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
   const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
 
   const activityQuery = useQuery({
-    queryKey: ['opening', openingId, 'activities', { filter: activityFilter }],
-    queryFn: () => fetchOpeningActivities(openingId, activityFilter),
+    queryKey: ['opening', openingId, 'activities', activityFilter],
+    queryFn: () => {
+      const { page, size, sortField, sortDirection, filter } = activityFilter;
+
+      const sort =
+        sortField && sortDirection !== 'NONE'
+          ? [`${sortField},${sortDirection}`]
+          : undefined;
+
+      return API.OpeningEndpointService.getOpeningActivities(
+        openingId,
+        filter,
+        page,
+        size,
+        sort
+      );
+    },
   });
 
   const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
@@ -299,7 +314,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                   </TableHead>
 
                   <TableBody>
-                    {activityQuery.data?.content.map((row, index) => {
+                    {activityQuery.data?.content?.map((row, index) => {
                       const isExpanded = expandedRows.includes(row.atuId);
                       return (
                         <React.Fragment key={row.atuId}>
@@ -313,7 +328,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                                 {renderCellContent(
                                   header.key === "objective1" ? row : row[header.key],
                                   header.key,
-                                  index === activityQuery.data?.content.length - 1
+                                  index === (activityQuery.data?.content?.length ?? 0) - 1
                                 )}
                               </TableCell>
                             ))}
@@ -335,7 +350,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
           }
 
           {
-            activityQuery.data?.page.totalElements === 0
+            activityQuery.data?.page?.totalElements === 0
               ? (
                 <EmptySection
                   pictogram="UserSearch"
@@ -350,7 +365,7 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                   page={currPageNumber + 1}
                   pageSize={currPageSize}
                   pageSizes={OddPageSizesConfig}
-                  totalItems={activityQuery.data?.page.totalElements}
+                  totalItems={activityQuery.data?.page?.totalElements}
                   onChange={handlePagination}
                 />
               )

@@ -1,19 +1,19 @@
 import { useQueries } from "@tanstack/react-query";
 import { MapKindType, MapPositionType } from "@/types/MapLayer";
 import { THREE_HALF_HOURS, THREE_HOURS } from "@/constants/TimeUnits";
-import { fetchMapPoligons } from "@/services/OpeningMapService";
-import {  defaultLocation } from "./constants";
+import API from "@/services/API";
+import { defaultLocation } from "./constants";
 
 const queries = (openingIds: number[], kind: MapKindType) =>
   openingIds.map((id) => ({
     queryKey: ["opening", "map", id, { kind }],
-    queryFn: () => fetchMapPoligons(id, kind),
+    queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id.toString(), kind),
     staleTime: THREE_HOURS,
     cacheTime: THREE_HALF_HOURS,
     refetchOnReconnect: false,
   }));
 
-export const getMapQueries = (openingIds: number[], kind: MapKindType)  => useQueries({ queries: queries(openingIds, kind) });
+export const getMapQueries = (openingIds: number[], kind: MapKindType) => useQueries({ queries: queries(openingIds, kind) });
 
 export const getUserLocation = async (): Promise<MapPositionType> => {
   if (navigator.geolocation) {

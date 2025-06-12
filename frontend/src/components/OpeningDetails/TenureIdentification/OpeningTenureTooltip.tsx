@@ -1,5 +1,5 @@
 import React from "react";
-import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 
 
 const OpeningTenureTooltip: React.FC<{ primary: OpeningDetailsTenureDto }> = ({ primary }) => {

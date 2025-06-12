@@ -2,9 +2,8 @@ import { JSX } from "react";
 
 import { Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
-
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
-import { fetchOpeningActivityDetail } from "@/services/OpeningDetailsService";
+import API from "@/services/API";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 
 import DirectSeedingActivityDetail from "./DirectSeedingActivityDetail";
 import JuvenileSpacingActivityDetail from "./JuvenileSpacingActivityDetail";
@@ -28,7 +27,7 @@ type ActivityDetailOutlineProps = {
 const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
     queryKey: ["opening", openingId, "activities", activity.atuId],
-    queryFn: () => fetchOpeningActivityDetail(openingId, activity.atuId),
+    queryFn: () => API.OpeningEndpointService.getOpeningActivity(openingId, activity.atuId),
     enabled: !!activity && !!openingId,
   });
 

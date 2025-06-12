@@ -14,15 +14,15 @@ import {
   Location as LocationIcon,
 } from "@carbon/icons-react";
 import { DateTime } from "luxon";
+import { useSearchParams } from "react-router-dom";
 
-import { DATE_TYPES } from "@/types/DateTypes";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
-import GenericCodeDescriptionDto from "@/types/CodeDescriptionType";
 import useBreakpoint from "@/hooks/UseBreakpoint";
 import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
 import { ComboBoxEvent } from "@/types/CarbonTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 import CustomMultiSelect from "../../CustomMultiSelect";
 import ForestClientInput from "../../ForestClientInput";
@@ -36,8 +36,8 @@ type OpeningSearchBarProps = {
   setHeaders: React.Dispatch<React.SetStateAction<OpeningHeaderType[]>>,
   filters: OpeningSearchFilterType,
   setFilters: React.Dispatch<React.SetStateAction<OpeningSearchFilterType>>,
-  categories: GenericCodeDescriptionDto[],
-  orgUnits: GenericCodeDescriptionDto[],
+  categories: CodeDescriptionDto[],
+  orgUnits: CodeDescriptionDto[],
   handleSearch: () => void,
   totalResults: number | undefined,
   showMap: boolean,
@@ -67,6 +67,7 @@ const OpeningSearchBar = ({
 ) => {
   const breakpoint = useBreakpoint();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * Tracks whether the date is changed by system via params or user action.
@@ -154,7 +155,7 @@ const OpeningSearchBar = ({
   }
 
   /* v8 ignore next 26 */
-  const handleDateTypeChange = (data: ComboBoxEvent<GenericCodeDescriptionDto<DATE_TYPES>>) => {
+  const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto>) => {
     const dateType = data.selectedItem;
 
     setFilters((prev) => {
@@ -268,6 +269,12 @@ const OpeningSearchBar = ({
 
   /* v8 ignore next 18 */
   const handleClearFilters = () => {
+    // Keep the "tab" param only
+    const tab = searchParams.get("tab");
+    const newSearchParams = new URLSearchParams();
+    if (tab) newSearchParams.set("tab", tab);
+    setSearchParams(newSearchParams);
+
     setFilters((prev) => {
       const newFilters: OpeningSearchFilterType = {};
 

@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
 import { TenureFilterType } from "./definitions";
 

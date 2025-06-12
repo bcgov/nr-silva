@@ -78,7 +78,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   useEffect(() => {
     const allSuccess = mapQueries.every((query) => query.status === "success");
     if (allSuccess) {
-      setOpenings(mapQueries.map((query) => query.data));
+      setOpenings(mapQueries.map((query) => query.data as FeatureCollection));
     } else {
       // Check if there are any errors and extract their IDs
       const errorIds = mapQueries
