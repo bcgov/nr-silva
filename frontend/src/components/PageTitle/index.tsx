@@ -1,10 +1,10 @@
 import React from 'react';
-import { Breadcrumb, BreadcrumbItem, Column, Tag, Tooltip } from "@carbon/react";
-import { Chemistry } from '@carbon/icons-react';
+import { Breadcrumb, BreadcrumbItem, Column } from "@carbon/react";
 import { useNavigate } from 'react-router-dom';
 
 import { BreadCrumbType } from '@/types/BreadCrumbTypes';
 import Subtitle from '../Subtitle';
+import UnderConstructionTag from '../Tags/UnderConstructionTag';
 
 import './styles.scss';
 
@@ -51,21 +51,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
           {children}
           {
             experimental
-              ? (
-                <Tooltip
-                  label="This page is under development. Features may be incomplete or display incorrect data."
-                  align="bottom"
-                >
-                  <Tag
-                    className="experimental-tag"
-                    type="cyan"
-                    size="md"
-                    renderIcon={Chemistry}
-                  >
-                    Experimental
-                  </Tag>
-                </Tooltip>
-              )
+              ? <UnderConstructionTag type='page' />
               : null
           }
         </div>

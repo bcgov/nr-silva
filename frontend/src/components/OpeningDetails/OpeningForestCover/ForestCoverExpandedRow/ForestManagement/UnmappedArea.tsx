@@ -2,7 +2,7 @@ import React from "react";
 import { CardContainer } from "@/components/Card";
 import { Column, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@carbon/react";
 import { Road } from "@carbon/icons-react";
-import StockingStatusTag from "@/components/StockingStatusTag";
+import { StockingStatusTag } from "@/components/Tags";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { UnmappedAreaDto } from "../../definitions";
 import { UnmappedAreaHeaders } from "./constants";
