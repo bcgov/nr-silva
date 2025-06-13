@@ -450,6 +450,31 @@ export type components = {
             /** Format: int64 */
             freeGrowingEarly: number | null;
             additionalStandards: string | null;
+            milestones: components["schemas"]["OpeningDetailsStockingDetailsMilestoneDto"];
+        };
+        OpeningDetailsStockingDetailsMilestoneDto: {
+            /** Format: date */
+            postHarvestDeclaredDate: string | null;
+            /** Format: date */
+            regenDeclaredDate: string | null;
+            /** Format: int32 */
+            regenOffsetYears: number | null;
+            /** Format: date */
+            regenDueDate: string | null;
+            /** Format: date */
+            noRegenDeclaredDate: string | null;
+            /** Format: int32 */
+            noRegenOffsetYears: number | null;
+            /** Format: date */
+            noRegenDueDate: string | null;
+            /** Format: date */
+            freeGrowingDeclaredDate: string | null;
+            /** Format: int32 */
+            freeGrowingOffsetYears: number | null;
+            /** Format: date */
+            freeGrowingDueDate: string | null;
+            noRegenIndicated: boolean;
+            comments: components["schemas"]["CommentDto"][];
         };
         OpeningDetailsStockingDto: {
             stocking: components["schemas"]["OpeningDetailsStockingDetailsDto"];
@@ -726,6 +751,7 @@ export type OpeningDetailsTenuresDto = components['schemas']['OpeningDetailsTenu
 export type SimplePageDto = components['schemas']['SimplePageDto'];
 export type OpeningDetailsBecDto = components['schemas']['OpeningDetailsBecDto'];
 export type OpeningDetailsStockingDetailsDto = components['schemas']['OpeningDetailsStockingDetailsDto'];
+export type OpeningDetailsStockingDetailsMilestoneDto = components['schemas']['OpeningDetailsStockingDetailsMilestoneDto'];
 export type OpeningDetailsStockingDto = components['schemas']['OpeningDetailsStockingDto'];
 export type OpeningDetailsStockingLayerDto = components['schemas']['OpeningDetailsStockingLayerDto'];
 export type OpeningDetailsStockingSpeciesDto = components['schemas']['OpeningDetailsStockingSpeciesDto'];
