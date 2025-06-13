@@ -27,4 +27,6 @@ public interface OpeningStockingMilestoneProjection {
 
     Boolean getNoRegenIndicated();
 
+    Boolean getExtentDeclared();
+
 }

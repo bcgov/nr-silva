@@ -191,6 +191,7 @@ null
                       projection.getFreeGrowingOffsetYears(),
                       projection.getFreeGrowingDueDate(),
                       projection.getNoRegenIndicated(),
+                      projection.getExtentDeclared(),
                       getMilestonesComments(ssuId)
               )).orElse(
                       new OpeningDetailsStockingDetailsMilestoneDto(
@@ -204,6 +205,7 @@ null
                               null,
                               null,
                               null,
+                              false,
                               false,
                               List.of()
                       )

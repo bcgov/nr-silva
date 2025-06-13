@@ -42,6 +42,9 @@ public record OpeningDetailsStockingDetailsMilestoneDto(
     @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Boolean noRegenIndicated,
 
+    @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    Boolean extentDeclared,
+
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     List<CommentDto> comments
 ) {}
