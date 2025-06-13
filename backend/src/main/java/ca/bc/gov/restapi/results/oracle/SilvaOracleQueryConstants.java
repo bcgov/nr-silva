@@ -376,7 +376,7 @@ public class SilvaOracleQueryConstants {
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN sm.LATE_OFFSET_YEARS END) AS free_growing_offset_years,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN TO_CHAR(sm.DUE_LATE_DATE, 'YYYY-MM-DD') END) AS free_growing_due_date,
             CASE
-                WHEN MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN 1 ELSE 0 END) = 1 THEN true
+              WHEN MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN 1 ELSE 0 END) = 1 THEN true
               ELSE false
             END AS no_regen_indicated
           FROM THE.STOCKING_MILESTONE sm
