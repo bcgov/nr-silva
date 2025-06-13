@@ -20,7 +20,7 @@ import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
-import CutBlockStatusTag from "../../CutBlockStatusTag";
+import { CutBlockStatusTag } from "@/components/Tags";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 

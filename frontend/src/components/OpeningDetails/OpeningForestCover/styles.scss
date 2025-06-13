@@ -1,0 +1,65 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-forest-cover-grid {
+  padding: 0;
+  row-gap: 1.5rem;
+
+  .expanded-row-content-grid {
+    row-gap: 2rem;
+
+    .expanded-row-title {
+      @include type.type-style('heading-02');
+    }
+  }
+
+  .opening-forest-cover-table-container {
+    .opening-forest-cover-cell-multiple-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .activity-objective-tooltip-definition {
+      white-space: nowrap;
+
+      .#{vars.$bcgov-prefix}--definition-term {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .#{vars.$bcgov-prefix}--definition-tooltip {
+        max-inline-size: unset;
+        min-width: 12rem;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        @include type.type-style('body-compact-02');
+      }
+    }
+
+    .forest-cover-table {
+      .forest-cover-expanded-row .#{vars.$bcgov-prefix}--child-row-inner-container:not(:empty) {
+        padding-block: 2rem;
+      }
+
+      tr.bx--expandable-row.forest-cover-expanded-row[data-child-row="true"] td {
+        padding-inline-end: 2rem;
+      }
+
+      .child-table-container {
+        margin-left: 2rem;
+      }
+
+      .forest-cover-expanded-row .child-table td,
+      .forest-cover-expanded-row .child-table th {
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
+      }
+
+      .forest-cover-expanded-row[data-child-row="true"] td .child-table td {
+        padding-inline: 1rem;
+      }
+    }
+  }
+}

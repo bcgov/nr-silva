@@ -16,6 +16,7 @@ import {
   Development,
   CropHealth,
   Certificate,
+  VegetationAsset,
 } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -40,6 +41,9 @@ const OpeningStandardUnits = lazy(
 );
 const OpeningActivities = lazy(
   () => import("@/components/OpeningDetails/OpeningActivities")
+);
+const OpeningForestCover = lazy(
+  () => import("@/components/OpeningDetails/OpeningForestCover")
 );
 
 import "./styles.scss";
@@ -117,7 +121,6 @@ const OpeningDetails = () => {
         title={`Opening ID ${openingId}`}
         subtitle="Check and manage this opening"
         breadCrumbs={OpeningDetailBreadCrumbs}
-        experimental
       >
         <ActionableFavouriteButton openingId={Number(openingId)} />
       </PageTitle>
@@ -151,6 +154,7 @@ const OpeningDetails = () => {
               Standard units
             </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
+            <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest cover</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
@@ -184,6 +188,14 @@ const OpeningDetails = () => {
               {isActive(3) ? (
                 <Suspense fallback={<AccordionSkeleton />}>
                   <OpeningActivities openingId={Number(openingId)} />
+                </Suspense>
+              ) : null}
+            </TabPanel>
+
+            <TabPanel className="tab-content full-width-col">
+              {isActive(4) ? (
+                <Suspense fallback={<TextAreaSkeleton />}>
+                  <OpeningForestCover openingId={Number(openingId)} />
                 </Suspense>
               ) : null}
             </TabPanel>
