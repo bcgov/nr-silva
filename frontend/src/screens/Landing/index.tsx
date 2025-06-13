@@ -1,14 +1,14 @@
 import React from "react";
 import { Button, Column, Grid } from "@carbon/react";
-import { Login } from '@carbon/icons-react';
+import { Login } from "@carbon/icons-react";
 
 import BCGovLogo from "../../components/BCGovLogo";
-import LandingImg from '../../assets/img/landing.jpg';
+import LandingImg from "../../assets/img/landing.jpg";
 import { useAuth } from "../../contexts/AuthProvider";
 import useBreakpoint from "../../hooks/UseBreakpoint";
 import { BreakpointType } from "../../types/BreakpointType";
 
-import './styles.scss';
+import "./styles.scss";
 
 const Landing: React.FC = () => {
   const { login } = useAuth();
@@ -20,7 +20,7 @@ const Landing: React.FC = () => {
     xlg: 6,
     lg: 6,
     md: 3,
-    sm: 2.5
+    sm: 2.5,
   };
 
   /**
@@ -31,21 +31,25 @@ const Landing: React.FC = () => {
   /**
    * Defines whether the login buttons should be on the same row.
    */
-  const isBtnSingleRow = breakpoint === "max" || breakpoint === "xlg" || breakpoint === "md";
+  const isBtnSingleRow =
+    breakpoint === "max" || breakpoint === "xlg" || breakpoint === "md";
 
   return (
     <div className="landing-grid-container">
       <Grid fullWidth className="landing-grid">
         {/* First - Column */}
         <Column className="landing-content-col" sm={4} md={8} lg={8}>
-          <div className="landing-content-wrapper" style={{ "gap": `${elementGap}rem` }}>
+          <div
+            className="landing-content-wrapper"
+            style={{ gap: `${elementGap}rem` }}
+          >
             {/* Logo */}
-            <div >
+            <div>
               <BCGovLogo />
             </div>
 
             {/* Welcome - Title and Subtitle */}
-            <h1 data-testid="landing-title" className="landing-title" >
+            <h1 data-testid="landing-title" className="landing-title">
               Welcome to Silva
             </h1>
 
@@ -54,7 +58,11 @@ const Landing: React.FC = () => {
             </h2>
 
             {/* Login buttons */}
-            <div className={`buttons-container ${isBtnSingleRow ? "single-row" : "two-rows"}`}>
+            <div
+              className={`buttons-container ${
+                isBtnSingleRow ? "single-row" : "two-rows"
+              }`}
+            >
               <Button
                 type="button"
                 onClick={() => login("idir")}
@@ -77,17 +85,12 @@ const Landing: React.FC = () => {
                 Login with Business BCeID
               </Button>
             </div>
-
           </div>
         </Column>
 
         {/* Landing cover */}
         <Column className="landing-img-col" sm={4} md={8} lg={8}>
-          <img
-            src={LandingImg}
-            alt="Landing cover"
-            className="landing-img"
-          />
+          <img src={LandingImg} alt="Landing cover" className="landing-img" />
         </Column>
       </Grid>
     </div>

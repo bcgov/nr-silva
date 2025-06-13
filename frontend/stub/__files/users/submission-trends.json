@@ -1,0 +1,80 @@
+[
+  {
+    "month": 1,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 2,
+    "year": 2025,
+    "amount": 1,
+    "statusCounts": {
+      "APP": 1
+    }
+  },
+  {
+    "month": 3,
+    "year": 2025,
+    "amount": 1,
+    "statusCounts": {
+      "APP": 1
+    }
+  },
+  {
+    "month": 4,
+    "year": 2025,
+    "amount": 2,
+    "statusCounts": {
+      "APP": 2
+    }
+  },
+  {
+    "month": 5,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 6,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 7,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 8,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 9,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 10,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 11,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  },
+  {
+    "month": 12,
+    "year": 2025,
+    "amount": 0,
+    "statusCounts": {}
+  }
+]

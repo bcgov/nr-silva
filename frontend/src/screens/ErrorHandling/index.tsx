@@ -1,14 +1,16 @@
-import React from 'react';
-import { isRouteErrorResponse, useRouteError, Navigate } from 'react-router-dom';
+import React from "react";
+import {
+  isRouteErrorResponse,
+  useRouteError,
+  Navigate,
+} from "react-router-dom";
 
 const ErrorHandling: React.FC = () => {
   const error = useRouteError();
-  
-  console.log('ErrorHandling',error);
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 401) {
-      return <Navigate to={"/"} replace />
+      return <Navigate to={"/"} replace />;
     } else if (error.status === 403) {
       return <h1>Unauthorized</h1>;
     } else if (error.status === 404) {

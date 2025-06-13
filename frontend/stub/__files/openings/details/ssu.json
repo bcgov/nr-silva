@@ -1,0 +1,228 @@
+[
+  {
+    "stocking": {
+      "stockingStandardUnit": "A",
+      "ssid": 2333293,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": 93,
+      "netArea": 22.0,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "CWH",
+        "becSubzoneCode": "dm",
+        "becVariant": null,
+        "becPhase": null,
+        "becSiteSeries": "01",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": 3,
+      "freeGrowingLate": 20,
+      "freeGrowingEarly": null,
+      "additionalStandards": "Risk of Pw blister rust; unless rust resistant Pw planted stock is used, can not contribute to MSS and limited to 10% of TSS.  Resistant stock can contribute to MSS and up to 25% of MSP and 100% of MSP for Phellinus root rot areas."
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "CW",
+          "description": "western redcedar"
+        },
+        "minHeight": 1.5
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "FDC",
+          "description": "coastal Douglas-fir"
+        },
+        "minHeight": 3.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "HW",
+          "description": "western hemlock"
+        },
+        "minHeight": 3.0
+      }
+    ],
+    "acceptableSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "PW",
+          "description": "western white pine"
+        },
+        "minHeight": 2.5
+      }
+    ],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 500,
+        "minPreferredWellspacedTrees": 400,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 900,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": null
+      }
+    ],
+    "comments": []
+  },
+  {
+    "stocking": {
+      "stockingStandardUnit": "B",
+      "ssid": 2333294,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": 93,
+      "netArea": 3.4,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "CWH",
+        "becSubzoneCode": "dm",
+        "becVariant": null,
+        "becPhase": null,
+        "becSiteSeries": "03",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": 3,
+      "freeGrowingLate": 20,
+      "freeGrowingEarly": null,
+      "additionalStandards": "Hw is suitable on thick forest floors an dis preferred on northerly aspects or in situations where advanced natural regeneration of Hw precludes planting with other species and is acceptable in all other situations.\\nRisk of white pine blister rust.  Unless resistant stock is planted, Pw cannot contribute to MSS and limited to 10% of TSS.  Resistant stock can contribute to MSS and up to 25% of MSP and 100% of MSP on Phellinus root rot sites."
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "FDC",
+          "description": "coastal Douglas-fir"
+        },
+        "minHeight": 2.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "HW",
+          "description": "western hemlock"
+        },
+        "minHeight": 2.0
+      }
+    ],
+    "acceptableSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "CW",
+          "description": "western redcedar"
+        },
+        "minHeight": 1.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "PW",
+          "description": "western white pine"
+        },
+        "minHeight": 2.0
+      }
+    ],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 400,
+        "minPreferredWellspacedTrees": 400,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 800,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": null
+      }
+    ],
+    "comments": []
+  },
+  {
+    "stocking": {
+      "stockingStandardUnit": "C",
+      "ssid": 2333295,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": 93,
+      "netArea": 1.2,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "CWH",
+        "becSubzoneCode": "dm",
+        "becVariant": null,
+        "becPhase": null,
+        "becSiteSeries": "06",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": 6,
+      "freeGrowingLate": 20,
+      "freeGrowingEarly": null,
+      "additionalStandards": "Elevated microsites are preferred for Fdc."
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "CW",
+          "description": "western redcedar"
+        },
+        "minHeight": 1.5
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "HW",
+          "description": "western hemlock"
+        },
+        "minHeight": 3.0
+      }
+    ],
+    "acceptableSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "FDC",
+          "description": "coastal Douglas-fir"
+        },
+        "minHeight": 3.0
+      }
+    ],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 500,
+        "minPreferredWellspacedTrees": 400,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 900,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": null
+      }
+    ],
+    "comments": []
+  }
+]

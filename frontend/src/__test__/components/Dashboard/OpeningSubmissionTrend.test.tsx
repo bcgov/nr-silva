@@ -26,7 +26,7 @@ vi.mock("../../../services/OpeningService", () => ({
 }));
 
 vi.mock("../../../services/OpeningSearchService", () => ({
-  fetchOpeningsOrgUnits: vi.fn(),
+  fetchOpeningsOrgUnits: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock("react-router-dom", async () => {

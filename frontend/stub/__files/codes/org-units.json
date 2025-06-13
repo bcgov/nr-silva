@@ -1,0 +1,38 @@
+[
+  {
+    "code": "DAS",
+    "description": "Development Unit"
+  },
+  {
+    "code": "HVA",
+    "description": "Timber Pricing Branch"
+  },
+  {
+    "code": "LSB",
+    "description": "Lumber Sale Branch"
+  },
+  {
+    "code": "TAB",
+    "description": "Timber Appraisal Branch"
+  },
+  {
+    "code": "TSB",
+    "description": "Timber Sale Branch"
+  },
+  {
+    "code": "TWB",
+    "description": "Timber Wood Branch"
+  },
+  {
+    "code": "TWO",
+    "description": "Design Unit"
+  },
+  {
+    "code": "VWC",
+    "description": "Victoria Working Center"
+  },
+  {
+    "code": "WSB",
+    "description": "Wood Sale Branch"
+  }
+]
