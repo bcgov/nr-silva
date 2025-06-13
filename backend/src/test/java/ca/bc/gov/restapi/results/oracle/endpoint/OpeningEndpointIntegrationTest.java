@@ -251,6 +251,19 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(
             jsonPath("$[0].stocking.additionalStandards")
                 .value(Matchers.containsString("(ALL625)")))
+        .andExpect(jsonPath("$[0].stocking.milestones.postHarvestDeclaredDate").value("2005-01-24"))
+        .andExpect(jsonPath("$[0].stocking.milestones.regenDeclaredDate").value("2007-06-15"))
+        .andExpect(jsonPath("$[0].stocking.milestones.regenOffsetYears").value(6))
+        .andExpect(jsonPath("$[0].stocking.milestones.regenDueDate").value("2010-01-19"))
+        .andExpect(jsonPath("$[0].stocking.milestones.noRegenDeclaredDate").isEmpty())
+        .andExpect(jsonPath("$[0].stocking.milestones.noRegenOffsetYears").isEmpty())
+        .andExpect(jsonPath("$[0].stocking.milestones.noRegenDueDate").isEmpty())
+        .andExpect(jsonPath("$[0].stocking.milestones.freeGrowingDeclaredDate").value("2017-05-30"))
+        .andExpect(jsonPath("$[0].stocking.milestones.freeGrowingOffsetYears").value(14))
+        .andExpect(jsonPath("$[0].stocking.milestones.freeGrowingDueDate").value("2018-01-19"))
+        .andExpect(jsonPath("$[0].stocking.milestones.noRegenIndicated").value(false))
+        .andExpect(jsonPath("$[0].stocking.milestones.comments").isArray())
+        .andExpect(jsonPath("$[0].stocking.milestones.comments").isEmpty())
 
         // Verify preferred species
         .andExpect(jsonPath("$[0].preferredSpecies[0].species.code").value("CW"))
