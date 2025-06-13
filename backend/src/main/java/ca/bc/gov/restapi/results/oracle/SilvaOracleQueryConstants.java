@@ -296,7 +296,7 @@ public class SilvaOracleQueryConstants {
       ocl.OPENING_ID = :openingId
       OR atcl.ACTIVITY_TREATMENT_UNIT_ID = :atuId
       OR scl.STOCKING_STANDARD_UNIT_ID = :ssuId
-      OR (smcl.STOCKING_STANDARD_UNIT_ID = :ssuMId AND smcl.SILV_MILESTONE_TYPE_CODE = :smtc)
+      OR smcl.STOCKING_STANDARD_UNIT_ID = :ssuMId
       OR spcl.SILVICULTURE_PROJECT_ID = :projectId
       ORDER BY COMMENT_DATE DESC""";
 
@@ -360,6 +360,28 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN STOCKING_LAYER_CODE slc ON sl.STOCKING_LAYER_CODE = slc.STOCKING_LAYER_CODE
       WHERE sl.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId
       ORDER BY sl.STOCKING_LAYER_CODE DESC""";
+
+  public static final String GET_OPENING_SS_MILESTONES =
+          """
+          SELECT
+            sm.STOCKING_STANDARD_UNIT_ID AS ssid,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'PH' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS post_harvest_declared_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS regen_declared_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN sm.LATE_OFFSET_YEARS END) AS regen_offset_years,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN TO_CHAR(sm.DUE_LATE_DATE, 'YYYY-MM-DD') END) AS regen_due_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS no_regen_declared_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN sm.LATE_OFFSET_YEARS END) AS no_regen_offset_years,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN TO_CHAR(sm.DUE_LATE_DATE, 'YYYY-MM-DD') END) AS no_regen_due_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS free_growing_declared_date,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN sm.LATE_OFFSET_YEARS END) AS free_growing_offset_years,
+            MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN TO_CHAR(sm.DUE_LATE_DATE, 'YYYY-MM-DD') END) AS free_growing_due_date,
+            CASE
+                WHEN MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN 1 ELSE 0 END) = 1 THEN true
+              ELSE false
+            END AS no_regen_indicated
+          FROM THE.STOCKING_MILESTONE sm
+          WHERE sm.STOCKING_STANDARD_UNIT_ID = :ssuId
+          GROUP BY sm.STOCKING_STANDARD_UNIT_ID""";
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
       """
