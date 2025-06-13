@@ -1,17 +1,20 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDetailsDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingLayerDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingSpeciesDto;
+import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingMilestoneProjection;
+import ca.bc.gov.restapi.results.oracle.enums.StockingMilestoneTypeEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -31,6 +34,7 @@ public class OpeningDetailsStockingService {
         .getOpeningStockingDetailsByOpeningId(openingId)
         .stream()
         .map(getDetails())
+        .map(detailsDto -> getMilestones(detailsDto.stocking().ssid()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
         .map(getComments())
@@ -61,7 +65,8 @@ public class OpeningDetailsStockingService {
           projection.getRegenDelay(),
           projection.getFreeGrowingLate(),
           projection.getFreeGrowingEarly(),
-          projection.getAdditionalStandards()
+          projection.getAdditionalStandards(),
+null
       );
 
       return new OpeningDetailsStockingDto(
@@ -161,5 +166,63 @@ public class OpeningDetailsStockingService {
             );
   }
 
+  private Function<OpeningDetailsStockingDto, OpeningDetailsStockingDto> getMilestones(
+      Long ssuId
+  ) {
+    return detailsDto ->
+            detailsDto.
+                    withStocking(
+                            detailsDto.stocking().withMilestones(getOpeningDetailsStockingDetailsMilestoneDto(ssuId))
+                    );
+  }
 
+  private OpeningDetailsStockingDetailsMilestoneDto getOpeningDetailsStockingDetailsMilestoneDto(Long ssuId) {
+      return openingRepository
+              .getOpeningStockingMilestoneBySsuId(ssuId)
+              .map(projection -> new OpeningDetailsStockingDetailsMilestoneDto(
+                      projection.getPostHarvestDeclaredDate(),
+                      projection.getRegenDeclaredDate(),
+                      projection.getRegenOffsetYears(),
+                      projection.getRegenDueDate(),
+                      projection.getNoRegenDeclaredDate(),
+                      projection.getNoRegenOffsetYears(),
+                      projection.getNoRegenDueDate(),
+                      projection.getFreeGrowingDeclaredDate(),
+                      projection.getFreeGrowingOffsetYears(),
+                      projection.getFreeGrowingDueDate(),
+                      projection.getNoRegenIndicated(),
+                      getMilestonesComments(ssuId)
+              )).orElse(
+                      new OpeningDetailsStockingDetailsMilestoneDto(
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              false,
+                              List.of()
+                      )
+              );
+  }
+
+    private List<CommentDto> getMilestonesComments(Long ssuId) {
+        return Arrays.stream(StockingMilestoneTypeEnum.values())
+                .flatMap(type ->
+                        commentRepository.getCommentById(
+                                null,
+                                null,
+                                null,
+                                ssuId,
+                                type.getCode(),
+                                null
+
+                        ).stream()
+                ).map(OpeningDetailsCommentConverter.mapComments())
+                .toList();
+    }
 }
