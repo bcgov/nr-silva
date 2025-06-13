@@ -7,11 +7,10 @@ import { mapKinds } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
-import StatusTag from "@/components/OpeningStatusTag";
+import { OpeningStatusTag } from "@/components/Tags";
 import OpeningsMap from "@/components/OpeningsMap";
 
 import "./styles.scss";
-import OpeningStatusTag from "@/components/OpeningStatusTag";
 
 type OpeningSummaryProps = {
   openingId?: number;

@@ -511,4 +511,38 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.primary.id").value(258073))
         .andReturn();
   }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover listAll should succeed")
+  void getOpeningForestCover_listAll_shouldReturn() throws Exception {
+
+    mockMvc
+        .perform(
+            get("/api/openings/60000/cover")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.[3].coverId").value(2638622))
+        .andExpect(jsonPath("$.[3].polygonId").value("D4"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover details should succeed")
+  void getOpeningForestCover_details_shouldReturn() throws Exception {
+
+    mockMvc
+        .perform(
+            get("/api/openings/60000/cover/2638620")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.polygon.forestCoverId").value(2638620))
+        .andExpect(jsonPath("$.unmapped").isEmpty())
+        .andExpect(jsonPath("$.layers[0].totalWellSpaced").value(1164))
+        .andExpect(jsonPath("$.layers[1].damage.damageAgent.code").value("IWS"))
+        .andReturn();
+  }
 }

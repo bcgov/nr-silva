@@ -10,9 +10,9 @@ type CardTitleProps = {
 
 const CardTitle = ({ title, id, subtitle }: CardTitleProps) => (
   <section className="card-title-section">
-    <h4 className="card-title" id={id}>
+    <h3 className="card-title" id={id}>
       {title}
-    </h4>
+    </h3>
     {
       subtitle
         ? <h5 className="card-subtitle" >{subtitle}</h5>

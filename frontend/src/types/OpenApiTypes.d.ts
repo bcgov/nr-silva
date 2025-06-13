@@ -116,6 +116,38 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/openings/{openingId}/cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/openings/{openingId}/cover/{forestCoverId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCoverDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/openings/{openingId}/activities": {
         parameters: {
             query?: never;
@@ -572,6 +604,95 @@ export type components = {
             content?: components["schemas"]["OpeningDetailsActivitiesDisturbanceDto"][];
             page?: components["schemas"]["PageMetadata"];
         };
+        OpeningForestCoverDto: {
+            /** Format: int64 */
+            coverId: number;
+            polygonId: string;
+            standardUnitId: string | null;
+            unmappedArea: components["schemas"]["CodeDescriptionDto"];
+            /** Format: float */
+            grossArea: number;
+            /** Format: float */
+            netArea: number;
+            status: components["schemas"]["CodeDescriptionDto"];
+            coverType: components["schemas"]["CodeDescriptionDto"];
+            inventoryLayer: components["schemas"]["OpeningForestCoverLayerListDescriptionDto"];
+            silvicultureLayer: components["schemas"]["OpeningForestCoverLayerListDescriptionDto"];
+            /** Format: int32 */
+            referenceYear: number;
+        };
+        OpeningForestCoverLayerListDescriptionDto: {
+            species: components["schemas"]["CodeDescriptionDto"][];
+            /** Format: float */
+            total: number | null;
+            /** Format: float */
+            totalWellSpaced: number | null;
+            /** Format: float */
+            wellSpaced: number | null;
+            /** Format: float */
+            freeGrowing: number | null;
+        };
+        OpeningForestCoverDamageDto: {
+            damageAgent: components["schemas"]["CodeDescriptionDto"];
+            /** Format: int32 */
+            healthIncidencePercentage: number | null;
+            /** Format: float */
+            incidenceArea: number | null;
+        };
+        OpeningForestCoverDetailedSpeciesDto: {
+            species: components["schemas"]["CodeDescriptionDto"];
+            /** Format: int64 */
+            percentage: number | null;
+            /** Format: int64 */
+            averageAge: number | null;
+            /** Format: int64 */
+            averageHeight: number | null;
+        };
+        OpeningForestCoverDetailsDto: {
+            polygon: components["schemas"]["OpeningForestCoverPolygonDto"];
+            unmapped: components["schemas"]["OpeningForestCoverUnmappedDto"];
+            layers: components["schemas"]["OpeningForestCoverLayerDto"][];
+        };
+        OpeningForestCoverLayerDto: {
+            /** Format: int64 */
+            layerId: number;
+            layer: components["schemas"]["CodeDescriptionDto"];
+            /** Format: int64 */
+            crownClosure: number | null;
+            /** Format: int64 */
+            basalAreaSt: number | null;
+            /** Format: int64 */
+            totalStems: number | null;
+            /** Format: int64 */
+            totalWellSpaced: number | null;
+            /** Format: int64 */
+            wellSpaced: number | null;
+            /** Format: int64 */
+            freeGrowing: number | null;
+            species: components["schemas"]["OpeningForestCoverDetailedSpeciesDto"][];
+            damage: components["schemas"]["OpeningForestCoverDamageDto"];
+        };
+        OpeningForestCoverPolygonDto: {
+            /** Format: int64 */
+            forestCoverId: number;
+            reserve: components["schemas"]["CodeDescriptionDto"];
+            objective: components["schemas"]["CodeDescriptionDto"];
+            siteClass: components["schemas"]["CodeDescriptionDto"];
+            /** Format: int64 */
+            siteIndex: number | null;
+            siteIndexSource: components["schemas"]["CodeDescriptionDto"];
+            treeCoverPattern: components["schemas"]["CodeDescriptionDto"];
+            /** Format: int64 */
+            reentryYear: number | null;
+        };
+        OpeningForestCoverUnmappedDto: {
+            /** Format: int64 */
+            unmappedAreaId: number;
+            /** Format: float */
+            area: number | null;
+            stockingStatus: components["schemas"]["CodeDescriptionDto"];
+            stockingType: components["schemas"]["CodeDescriptionDto"];
+        };
         OpeningDetailsActivitiesActivitiesDto: {
             /** Format: int64 */
             atuId: number;
@@ -759,6 +880,14 @@ export type ForestClientLocationDto = components['schemas']['ForestClientLocatio
 export type OpeningDetailsActivitiesDisturbanceDto = components['schemas']['OpeningDetailsActivitiesDisturbanceDto'];
 export type PageMetadata = components['schemas']['PageMetadata'];
 export type PagedModelOpeningDetailsActivitiesDisturbanceDto = components['schemas']['PagedModelOpeningDetailsActivitiesDisturbanceDto'];
+export type OpeningForestCoverDto = components['schemas']['OpeningForestCoverDto'];
+export type OpeningForestCoverLayerListDescriptionDto = components['schemas']['OpeningForestCoverLayerListDescriptionDto'];
+export type OpeningForestCoverDamageDto = components['schemas']['OpeningForestCoverDamageDto'];
+export type OpeningForestCoverDetailedSpeciesDto = components['schemas']['OpeningForestCoverDetailedSpeciesDto'];
+export type OpeningForestCoverDetailsDto = components['schemas']['OpeningForestCoverDetailsDto'];
+export type OpeningForestCoverLayerDto = components['schemas']['OpeningForestCoverLayerDto'];
+export type OpeningForestCoverPolygonDto = components['schemas']['OpeningForestCoverPolygonDto'];
+export type OpeningForestCoverUnmappedDto = components['schemas']['OpeningForestCoverUnmappedDto'];
 export type OpeningDetailsActivitiesActivitiesDto = components['schemas']['OpeningDetailsActivitiesActivitiesDto'];
 export type PagedModelOpeningDetailsActivitiesActivitiesDto = components['schemas']['PagedModelOpeningDetailsActivitiesActivitiesDto'];
 export type OpeningActivityBaseDto = components['schemas']['OpeningActivityBaseDto'];
@@ -978,6 +1107,53 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedModelOpeningDetailsActivitiesDisturbanceDto"];
+                };
+            };
+        };
+    };
+    getCover: {
+        parameters: {
+            query?: {
+                mainSearchTerm?: string;
+            };
+            header?: never;
+            path: {
+                openingId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OpeningForestCoverDto"][];
+                };
+            };
+        };
+    };
+    getCoverDetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                openingId: number;
+                forestCoverId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OpeningForestCoverDetailsDto"];
                 };
             };
         };

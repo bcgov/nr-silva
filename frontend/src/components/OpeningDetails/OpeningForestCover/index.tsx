@@ -11,7 +11,8 @@ import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { delayMock } from "@/utils/MockUtils";
-import { PageSizesConfig, MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
+import { StockingStatusTag } from "@/components/Tags";
+import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 
 import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
 import {
@@ -20,10 +21,10 @@ import {
   type OpeningForestCoverType,
 } from "./definitions";
 import { formatForestCoverSpeciesArray } from "./utils";
-import ForestCoverDetail from "./ForestCoverDetail";
+import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-import StockingStatusTag from "../../StockingStatusTag";
+import { UnderConstructionTag, UnderConstTagWrapper } from "../../Tags";
 
 const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
   let data = [...mockOpeningDetailsForestCover];
@@ -192,9 +193,11 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
   return (
     <Grid className="opening-forest-cover-grid default-grid">
       <Column sm={4} md={8} lg={16}>
-        <h3 className="default-tab-content-title">
-          {forestCoverQuery.data?.page.totalElements ?? 0} forest cover polygons in this opening
-        </h3>
+        <UnderConstTagWrapper>
+          <h3 className="default-tab-content-title">
+            {forestCoverQuery.data?.page.totalElements ?? 0} forest cover polygons in this opening
+          </h3>
+        </UnderConstTagWrapper>
       </Column>
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container opening-forest-cover-table-container">
@@ -225,7 +228,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               rowCount={10}
             />
           ) : (
-            <Table className="default-zebra-table" aria-label="Forest cover table">
+            <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
               <TableHead>
                 <TableRow>
                   <TableExpandHeader />
@@ -246,14 +249,14 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                         onExpand={() => handleRowExpand(row.forestCoverId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
-                          <TableCell key={String(header.key)} className="forest-cover-table-cell">
+                          <TableCell key={String(header.key)} className="default-table-cell">
                             {renderCellContent(row, header.key)}
                           </TableCell>
                         ))}
                       </TableExpandRow>
                       <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
                         {isExpanded ? (
-                          <ForestCoverDetail forestCoverId={row.forestCoverId} />
+                          <ForestCoverExpandedRow forestCoverId={row.forestCoverId} />
                         ) : null}
                       </TableExpandedRow>
                     </React.Fragment>
