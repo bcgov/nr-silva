@@ -104,6 +104,20 @@ public class OpeningServiceIntegrationTest extends AbstractTestContainerIntegrat
     Assertions.assertEquals(5.0F, dto.stocking().soilDisturbancePercent(),
         "Soil disturbance percent should match");
 
+    Assertions.assertEquals("2005-01-24", dto.stocking().milestones().postHarvestDeclaredDate(), "Post-harvest declared date should match");
+    Assertions.assertEquals("2007-06-15", dto.stocking().milestones().regenDeclaredDate(), "Regen declared date should match");
+    Assertions.assertEquals(6, dto.stocking().milestones().regenOffsetYears(), "Regen offset years should match");
+    Assertions.assertEquals("2010-01-19", dto.stocking().milestones().regenDueDate(), "Regen due date should match");
+    Assertions.assertNull(dto.stocking().milestones().noRegenDeclaredDate(), "No regen declared date should be null");
+    Assertions.assertNull(dto.stocking().milestones().noRegenOffsetYears(), "No regen offset years should be null");
+    Assertions.assertNull(dto.stocking().milestones().noRegenDueDate(), "No regen due date should be null");
+    Assertions.assertEquals("2017-05-30", dto.stocking().milestones().freeGrowingDeclaredDate(), "Free growing declared date should match");
+    Assertions.assertEquals(14, dto.stocking().milestones().freeGrowingOffsetYears(), "Free growing offset years should match");
+    Assertions.assertEquals("2018-01-19", dto.stocking().milestones().freeGrowingDueDate(), "Free growing due date should match");
+    Assertions.assertFalse(dto.stocking().milestones().noRegenIndicated(), "No regen indicated should be false");
+    Assertions.assertNotNull(dto.stocking().milestones().comments(), "Comments should not be null");
+    Assertions.assertTrue(dto.stocking().milestones().comments().isEmpty(), "Comments should be empty");
+
     // Verify preferred species
     Assertions.assertEquals(3, dto.preferredSpecies().size(),
         "Preferred species size should match");

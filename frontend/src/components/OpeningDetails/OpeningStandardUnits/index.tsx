@@ -25,6 +25,7 @@ import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpenApiTypes";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
@@ -286,6 +287,99 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                         </>
                       ) : null}
                     </div>
+                  </Column>
+
+                  {/* Regen obligation */}
+                  <Column sm={4} md={8} lg={16}>
+                    <section className="section-title-with-icon">
+                      <SecurityIcon size={20} />
+                      <h4>Milestones</h4>
+                    </section>
+                  </Column>
+
+                  <Column sm={4} md={8} lg={16} className="subsection-col">
+                    <Grid className="standard-unit-content-subgrid">
+                      <Column sm={4} md={8} lg={16}>
+                        <CardItem label="Post harvested declared date">
+                          {standardUnit.stocking.milestones?.postHarvestDeclaredDate
+                            ? formatLocalDate(standardUnit.stocking.milestones.postHarvestDeclaredDate, true)
+                            : PLACE_HOLDER}
+                        </CardItem>
+                      </Column>
+
+                      {!standardUnit.stocking.milestones?.noRegenIndicated ? (
+                        <>
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration offset (Years)">
+                              {standardUnit.stocking.milestones?.regenOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration declared date">
+                              {standardUnit.stocking.milestones?.regenDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.regenDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration due date">
+                              {standardUnit.stocking.milestones?.regenDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.regenDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing offset (Years)">
+                              {standardUnit.stocking.milestones?.freeGrowingOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing declared date">
+                              {standardUnit.stocking.milestones?.freeGrowingDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.freeGrowingDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing due date">
+                              {standardUnit.stocking.milestones?.freeGrowingDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.freeGrowingDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+                        </>
+                      ) : (
+                        <>
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration offset (Years)">
+                              {standardUnit.stocking.milestones?.noRegenOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration declared date">
+                              {standardUnit.stocking.milestones?.regenDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.noRegenDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration due date">
+                              {standardUnit.stocking.milestones?.regenDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.noRegenDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+                        </>
+                      )}
+
+                    </Grid>
                   </Column>
 
                   {/* Regen obligation */}
