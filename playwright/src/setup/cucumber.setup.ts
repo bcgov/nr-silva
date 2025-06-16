@@ -16,13 +16,14 @@ const generateTestContent = (child: FeatureChild, steps: string[]): string => {
   if (!child.scenario) return '';
   return `
   test('${child.scenario.name}', async ({ page }) => {
-    ${steps.join('\n    ')}
+    ${steps.join('\n\n    ')}
   });`;
 }
 
 const generateSpecFileContent = (feature, scenarioBlocks: string) => {
   return `
 import { test, expect } from '@playwright/test';
+import { QuantityAttribute, validAttributes } from '../steps/stepTypes';
 
 test.describe('${feature.name}', () => {
   ${scenarioBlocks}
