@@ -8,7 +8,7 @@ This document describes each script in the `scripts` block of the `package.json`
 
 ### dev
 
-Runs `npm start` [see start for more info](#start). It trigger a pre-script that execute the [OpenAPI type generation](#generateopenapi) before starting the server, updating the type definitions.
+Runs `npm start` [see start for more info](#start). It uses `start-server-and-test` lib to first run the [stubs](#stub) as a way to aleviate and reduce the amount of applications running, in case you only want to do front-end changes that do not require new or different data. Its useful when just dealing with CSS tweaks, or developing around a closed response.
 
 #### Pre script {#predev}
 
@@ -45,6 +45,10 @@ Runs `eslint src --ext .ts` to lint all TypeScript files in the `src` directory.
 ### lint:fix
 
 Runs `eslint` with `--fix`, which automatically fixes lint errors where possible. This is useful for quickly resolving simple issues without manual intervention.
+
+### stub
+
+Runs `wiremock` and serves a stubbed version of the backend. It serves it with cors enabled, verbosely and pointing out to the [stubs](../stub/) folder, where you can find some of the responses already mapped. These stubs are used to simulate backend responses for development purposes, allowing developers to work on the frontend without needing a live backend.
 
 ---
 

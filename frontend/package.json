@@ -31,34 +31,24 @@
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.0"
   },
-  "scripts": {
-    "predev": "npm run generate:openapi",
-    "dev": "npm start",
-
+  "scripts": {    
+    "dev": "start-server-and-test stub http://127.0.0.1:8080 start",
     "start": "vite --host",
-    
     "prebuild": "tsc",
     "build": "vite build",
-    
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"1uhcp67qtfl3jra6b595e9f6jn\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
-    
     "preview": "vite preview --port 4173",
-    
     "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
-
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-
     "precoverage": "rm -rf .nyc_output coverage",
     "coverage": " npm run test:unit && npm run test:ui",
     "postcoverage": "mkdir -p coverage && touch coverage/coverage-final.json && cp coverage/coverage-final.json .nyc_output/unit-test.json && nyc merge .nyc_output .nyc_output/coverage.json && nyc report",
-
     "test:unit": "vitest run --coverage --watch=false",
     "test:unit:dev": "vitest --reporter=verbose",
-
     "test:ui": "playwright test",
-    "test:ui:dev": "playwright test --ui"
-
+    "test:ui:dev": "playwright test --ui",
+    "stub": "wiremock --enable-stub-cors --global-response-templating --port 8080 --https-port 8081 --root-dir ./stub --verbose"
   },
   "browserslist": {
     "production": [
@@ -111,7 +101,8 @@
     "start-server-and-test": "^2.0.11",
     "typescript": "^5.2.2",
     "v8-to-istanbul": "^9.3.0",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wiremock": "^3.13.1"
   },
   "overrides": {
     "braces@3.0.2": "3.0.3",
