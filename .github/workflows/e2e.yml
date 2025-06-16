@@ -33,7 +33,7 @@ jobs:
     needs: [fam-routing]
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.53.0-noble@sha256:c30040b375c6daebbc1997818ea5889e74a26916c7837e0354cfa1de30fafbed
+      image: mcr.microsoft.com/playwright:v1.52.0-noble
     env:
       HOME: /root
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
