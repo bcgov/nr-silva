@@ -1,9 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ClickableTile } from '@carbon/react';
-import * as Icons from '@carbon/icons-react';
-import { FavouriteCardProps } from './definitions';
-import './styles.scss';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ClickableTile } from "@carbon/react";
+import * as Icons from "@carbon/icons-react";
+import { FavouriteCardProps } from "./definitions";
+import "./styles.scss";
 
 /**
  * A card component that displays a favourite item.
@@ -20,15 +20,18 @@ function FavouriteCard({
   index,
   title,
   link,
-  icon
+  icon,
 }: FavouriteCardProps): React.JSX.Element {
   const navigate = useNavigate();
   const Icon = Icons[icon];
 
   return (
     <ClickableTile
+      aria-label={title}
+      data-testid={`fav-card-${index}`}
+      role="button"
       id={`fav-card-${index}`}
-      className='fav-card'
+      className="fav-card"
       tabIndex={index}
       onClick={() => navigate(link)}
     >
