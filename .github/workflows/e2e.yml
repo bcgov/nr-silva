@@ -27,50 +27,6 @@ jobs:
             echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
           fi
 
-  tests-frontend-dev-coverage:
-    name: E2E with frontend coverage
-    if: inputs.target != 'prod' && inputs.target != 'PROD'
-    runs-on: ubuntu-24.04
-    env:
-      VITE_ZONE: TEST
-      VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-      VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-      VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
-    steps:
-      - uses: bcgov/action-test-and-analyse@e2ba34132662c1638dbde806064eb7004b3761c3 # v1.3.0
-        with:
-          commands: |
-            npm ci
-            npx playwright install chromium
-            npm run e2e:ci:dev
-          dir: frontend
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.projectKey=nr-silva-frontend
-            -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
-            -Dsonar.typescript.tsconfigPaths=tsconfig.json
-            -Dsonar.sources=src/
-            -Dsonar.exclusions=src/__test__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/__e2e__/**,
-            -Dsonar.tests=src/__e2e__/
-            -Dsonar.project.monorepo.enabled=true
-          sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
-        env:
-          VITE_ZONE: TEST
-          VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-          VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-          VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
-          TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
-          TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: E2E on dev server for coverage test results
-          path: frontend/test-results/
-
   tests-frontend-e2e-built:
     name: E2E Tests on Build - All Browsers
     if: inputs.target != 'prod' && inputs.target != 'PROD'
@@ -80,10 +36,6 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.53.0-noble@sha256:c30040b375c6daebbc1997818ea5889e74a26916c7837e0354cfa1de30fafbed
     env:
       HOME: /root
-      VITE_ZONE: TEST
-      VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-      VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
-      VITE_BACKEND_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-backend.apps.silver.devops.gov.bc.ca
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
       TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
       TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
@@ -97,15 +49,26 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-        working-directory: frontend
+        working-directory: playwright
 
       - name: Run E2E Tests
-        run: npm run e2e:ci:build
-        working-directory: frontend
+        run: npm run test
+        working-directory: playwright
+
+      - name: Publish Results
+        uses: mikepenz/action-junit-report@a83fd2b5d58d4fc702e690c1ea688d702d28d281 # v5
+        continue-on-error: true
+        if: always()
+        with:
+          report_paths: playwright/result.xml
+          commit: ${{ github.event.pull_request.head.sha }}
+          summary: Playwright Test Results
+          detailed_summary: true
+          job_name: User Journeys
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: E2E on built apps test results
-          path: frontend/test-results/
+          path: playwright/test-results/
