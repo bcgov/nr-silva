@@ -1,7 +1,8 @@
 import { navigationSteps } from './navigation.steps';
 import { assertionSteps } from './assertions.steps';
+import { formSteps } from './form.steps';
 
-const allSteps = [...navigationSteps, ...assertionSteps];
+const allSteps = [...navigationSteps, ...assertionSteps,...formSteps];
 
 const generateCodeFromStep = (text: string): string => {
   for (const step of allSteps) {
