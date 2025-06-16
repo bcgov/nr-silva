@@ -45,9 +45,14 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
-  const forestCoverQuery = useQuery({
+  const forestCoverDefaultQuery = useQuery({
+    queryKey: ["opening", openingId, "cover"],
+    queryFn: () => API.OpeningEndpointService.getCover(openingId)
+  });
+
+  const forestCoverSearchQuery = useQuery({
     queryKey: ["opening", openingId, "cover", { mainSearchTerm: searchTerm }],
-    queryFn: () => API.OpeningEndpointService.getCover(openingId, searchTerm)
+    queryFn: () => API.OpeningEndpointService.getCover(openingId, searchTerm),
   });
 
   const handleSearchInputChange = (
@@ -169,22 +174,22 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
     }
   };
 
-  // if (forestCoverQuery.data?.length === 0) {
-  //   return (
-  //     <EmptySection
-  //       pictogram="Summit"
-  //       title="Nothing to show yet!"
-  //       description="No forest cover have been added to this opening yet"
-  //     />
-  //   )
-  // }
+  if (forestCoverDefaultQuery.data?.length === 0) {
+    return (
+      <EmptySection
+        pictogram="Summit"
+        title="Nothing to show yet!"
+        description="No forest cover have been added to this opening yet"
+      />
+    )
+  }
 
   return (
     <Grid className="opening-forest-cover-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <UnderConstTagWrapper>
           <h3 className="default-tab-content-title">
-            {forestCoverQuery.data?.length ?? 0} forest cover polygons in this opening
+            {forestCoverDefaultQuery.data?.length ?? 0} forest cover polygons in this opening
           </h3>
         </UnderConstTagWrapper>
       </Column>
@@ -209,52 +214,63 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
               Search
             </Button>
           </TableToolbar>
-          {forestCoverQuery.isLoading ? (
-            <TableSkeleton
-              headers={ForestCoverTableHeaders}
-              showToolbar={false}
-              showHeader={false}
-              rowCount={10}
-            />
-          ) : (
-            <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
-              <TableHead>
-                <TableRow>
-                  <TableExpandHeader />
-                  {ForestCoverTableHeaders.map((header) => (
-                    <TableHeader key={String(header.key)}>{header.header}</TableHeader>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {forestCoverQuery.data?.map((row, idx) => {
-                  const isExpanded = expandedRows.includes(row.coverId);
-                  return (
-                    <React.Fragment key={row.coverId + idx}>
-                      <TableExpandRow
-                        className="opening-forest-cover-table-row"
-                        aria-label={`Expand row for Polygon ID ${row.coverId}`}
-                        isExpanded={isExpanded}
-                        onExpand={() => handleRowExpand(row.coverId)}
-                      >
-                        {ForestCoverTableHeaders.map((header) => (
-                          <TableCell key={String(header.key)} className="default-table-cell">
-                            {renderCellContent(row, header.key)}
-                          </TableCell>
-                        ))}
-                      </TableExpandRow>
-                      <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
-                        {isExpanded ? (
-                          // <ForestCoverExpandedRow forestCoverId={row.coverId} />
-                          <div>ss</div>
-                        ) : null}
-                      </TableExpandedRow>
-                    </React.Fragment>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          )}
+          {
+            (forestCoverDefaultQuery.isLoading || forestCoverSearchQuery.isLoading)
+              ? (
+                <TableSkeleton
+                  headers={ForestCoverTableHeaders}
+                  showToolbar={false}
+                  showHeader={false}
+                  rowCount={10}
+                />
+              ) : (
+                <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
+                  <TableHead>
+                    <TableRow>
+                      <TableExpandHeader />
+                      {ForestCoverTableHeaders.map((header) => (
+                        <TableHeader key={String(header.key)}>{header.header}</TableHeader>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {forestCoverSearchQuery.data?.map((row, idx) => {
+                      const isExpanded = expandedRows.includes(row.coverId);
+                      return (
+                        <React.Fragment key={row.coverId + idx}>
+                          <TableExpandRow
+                            className="opening-forest-cover-table-row"
+                            aria-label={`Expand row for Polygon ID ${row.coverId}`}
+                            isExpanded={isExpanded}
+                            onExpand={() => handleRowExpand(row.coverId)}
+                          >
+                            {ForestCoverTableHeaders.map((header) => (
+                              <TableCell key={String(header.key)} className="default-table-cell">
+                                {renderCellContent(row, header.key)}
+                              </TableCell>
+                            ))}
+                          </TableExpandRow>
+                          <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
+                            {isExpanded ? <ForestCoverExpandedRow forestCoverId={row.coverId} openingId={openingId} /> : null}
+                          </TableExpandedRow>
+                        </React.Fragment>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )
+          }
+          {
+            forestCoverSearchQuery.data?.length === 0
+              ? (
+                <EmptySection
+                  pictogram="UserSearch"
+                  title="No results found"
+                  description="No results found with the current filters. Try adjusting them to refine your search."
+                />
+              )
+              : null
+          }
         </TableContainer>
       </Column>
     </Grid>

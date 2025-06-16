@@ -4,26 +4,23 @@ import { delayMock } from "@/utils/MockUtils";
 import EmptySection from "@/components/EmptySection";
 import { Column, Grid } from "@carbon/react";
 import PolygonDetail from "./PolygonDetail";
-
-import { OpeningForestCoverDetails, mockPolygonDetails } from "../definitions";
+import API from "@/services/API";
 
 import './styles.scss';
 import ForestManagement from "./ForestManagement";
 
 
-const fetchPolygonDetails = async (forestCoverId: string) => {
-  const details = mockPolygonDetails.find((d) => d.polygonDetail.forestCoverId === forestCoverId);
-  return delayMock(details ?? null, 500);
-};
+
 
 type ForestCoverDetailProps = {
   forestCoverId: number;
+  openingId: number;
 };
 
-const ForestCoverExpandedRow = ({ forestCoverId }: ForestCoverDetailProps) => {
-  const { data, isLoading } = useQuery<OpeningForestCoverDetails | null>({
+const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailProps) => {
+  const { data, isLoading } = useQuery({
     queryKey: ["forestCoverDetails", forestCoverId],
-    queryFn: () => fetchPolygonDetails(forestCoverId),
+    queryFn: () => API.OpeningEndpointService.getCoverDetails(openingId, forestCoverId),
   });
 
   if (!data && !isLoading) {
@@ -38,13 +35,13 @@ const ForestCoverExpandedRow = ({ forestCoverId }: ForestCoverDetailProps) => {
 
   return (
     <Grid className="opening-forest-cover-details-grid">
-      <PolygonDetail polygon={data?.polygonDetail} isLoading={isLoading} />
+      <PolygonDetail polygon={data?.polygon} isLoading={isLoading} />
 
       <Column sm={4} md={8} lg={16}>
         <hr className="expanded-row-hr" />
       </Column>
 
-      <ForestManagement forestManagementData={data?.forestManagement} isLoading={isLoading} />
+      <ForestManagement forestManagementData={data?.layers} isLoading={isLoading} />
     </Grid >
   );
 };
