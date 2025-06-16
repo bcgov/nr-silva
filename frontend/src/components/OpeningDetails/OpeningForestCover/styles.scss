@@ -21,14 +21,8 @@
       align-items: flex-start;
     }
 
-    .activity-objective-tooltip-definition {
+    .forest-cover-species-tooltip-definition {
       white-space: nowrap;
-
-      .#{vars.$bcgov-prefix}--definition-term {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
 
       .#{vars.$bcgov-prefix}--definition-tooltip {
         max-inline-size: unset;

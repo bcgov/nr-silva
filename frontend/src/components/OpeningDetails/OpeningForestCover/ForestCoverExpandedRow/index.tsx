@@ -17,7 +17,7 @@ const fetchPolygonDetails = async (forestCoverId: string) => {
 };
 
 type ForestCoverDetailProps = {
-  forestCoverId: string;
+  forestCoverId: number;
 };
 
 const ForestCoverExpandedRow = ({ forestCoverId }: ForestCoverDetailProps) => {

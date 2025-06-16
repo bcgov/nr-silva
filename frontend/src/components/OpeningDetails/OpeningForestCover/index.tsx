@@ -14,7 +14,7 @@ import { delayMock } from "@/utils/MockUtils";
 import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 
-import { DefaultFilter, ForestCoverTableHeaders } from "./constants";
+import { ForestCoverTableHeaders } from "./constants";
 import {
   mockOpeningDetailsForestCover,
   ForestCoverFilterType,
@@ -22,11 +22,14 @@ import {
 } from "./definitions";
 import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
+import { UnderConstTagWrapper } from "@/components/Tags";
+import API from "@/services/API";
 
 import "./styles.scss";
-import { UnderConstructionTag, UnderConstTagWrapper } from "../../Tags";
+import { OpeningForestCoverDto } from "@/services/OpenApi";
+import { codeDescriptionToDisplayText } from "../../../utils/multiSelectUtils";
 
-const fetchForestCover = async (_openingId: number, filter: ForestCoverFilterType) => {
+const fetchForestCover = async (_openingId: number) => {
   let data = [...mockOpeningDetailsForestCover];
   const totalElements = data.length;
   const content = data;
@@ -38,13 +41,13 @@ type OpeningForestCoverProps = {
 };
 
 const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
-  const [expandedRows, setExpandedRows] = useState<string[]>([]);
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filter, setFilter] = useState<ForestCoverFilterType>(DefaultFilter);
+  const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
   const forestCoverQuery = useQuery({
-    queryKey: ["opening", openingId, "forestcover", { filter }],
-    queryFn: () => fetchForestCover(openingId, filter),
+    queryKey: ["opening", openingId, "cover", { mainSearchTerm: searchTerm }],
+    queryFn: () => API.OpeningEndpointService.getCover(openingId, searchTerm)
   });
 
   const handleSearchInputChange = (
@@ -62,15 +65,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
   };
 
   const applySearchFilter = () => {
-    const trimmed = searchInput.trim();
-    setFilter((prev) => {
-      const next = { ...prev, page: 0 };
-      if (trimmed === '') {
-        const { filter, ...rest } = next;
-        return rest;
-      }
-      return { ...next, filter: trimmed };
-    });
+    setSearchTerm(searchInput);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -81,16 +76,10 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
 
   const handleSearchClear = () => {
     setSearchInput('');
-    setFilter((prev) => {
-      const { filter, ...rest } = prev;
-      return {
-        ...rest,
-        page: 0
-      };
-    });
+    setSearchTerm(undefined);
   };
 
-  const handleRowExpand = (forestCoverId: string) => {
+  const handleRowExpand = (forestCoverId: number) => {
     setExpandedRows((prev) =>
       prev.includes(forestCoverId)
         ? prev.filter((id) => id !== forestCoverId)
@@ -100,37 +89,37 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
 
   // Render cell content similar to ActivityAccordion
   const renderCellContent = (
-    row: OpeningForestCoverType,
-    headerKey: string
+    row: OpeningForestCoverDto,
+    headerKey: keyof OpeningForestCoverDto
   ) => {
     switch (headerKey) {
-      case "forestCover":
+      case "coverId":
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
-            <span>Polygon ID: {row.forestCoverPolygonId}</span>
+            <span>Polygon ID: {row.polygonId}</span>
             <span>
-              Standard unit: {row.forestCoverStandardUnit ?? NOT_APPLICABLE}
+              Standard unit: {row.standardUnitId ?? NOT_APPLICABLE}
             </span>
             <span>
-              Unmapped area: {row.forestCoverUnmappedArea ?? NOT_APPLICABLE}
+              Unmapped area: {row.unmappedArea.code ? codeDescriptionToDisplayText(row.unmappedArea) : NOT_APPLICABLE}
             </span>
           </div>
         );
-      case "polygonArea":
+      case "grossArea":
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
-            <span>Gross: {row.polygonAreaGross} ha</span>
-            <span>Net: {row.polygonAreaNet} ha</span>
+            <span>Gross: {row.grossArea} ha</span>
+            <span>Net: {row.netArea} ha</span>
           </div>
         );
-      case "stockingStatus":
+      case "status":
         return (
-          <StockingStatusTag status={row.stockingStatus} />
+          <StockingStatusTag status={row.status} />
         );
-      case "stockingType":
-        return row.stockingType;
+      case "coverType":
+        return codeDescriptionToDisplayText(row.coverType);
       case "inventoryLayer": {
-        const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.inventoryLayerSpecies)
+        const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.inventoryLayer.species)
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
             <DefinitionTooltip
@@ -144,15 +133,15 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             >
               <span>Species: {displayText}</span>
             </DefinitionTooltip>
-            <span>Total: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Total well spaced: {row.inventoryLayerTotalWellSpaced !== null ? `${row.inventoryLayerTotalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Well spaced: {row.inventoryLayerWellSpaced !== null ? `${row.inventoryLayerWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Free growing: {row.inventoryLayerFreeGrowing !== null ? `${row.inventoryLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total: {row.inventoryLayer.total !== null ? `${row.inventoryLayer.total} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total well spaced: {row.inventoryLayer.totalWellSpaced !== null ? `${row.inventoryLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Well spaced: {row.inventoryLayer.wellSpaced !== null ? `${row.inventoryLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Free growing: {row.inventoryLayer.freeGrowing !== null ? `${row.inventoryLayer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
           </div>
         );
       }
       case "silvicultureLayer": {
-        const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.silvicultureLayerSpecies)
+        const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.silvicultureLayer.species)
 
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
@@ -167,9 +156,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             >
               <span>Species: {displayText}</span>
             </DefinitionTooltip>
-            <span>Total well spaced: {row.silvicultureLayerTotalWellSpaced !== null ? `${row.silvicultureLayerTotalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Well spaced: {row.silvicultureLayerWellSpaced !== null ? `${row.silvicultureLayerWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Free growing: {row.silvicultureLayerFreeGrowing !== null ? `${row.silvicultureLayerFreeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total well spaced: {row.silvicultureLayer.totalWellSpaced !== null ? `${row.silvicultureLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Well spaced: {row.silvicultureLayer.wellSpaced !== null ? `${row.silvicultureLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Free growing: {row.silvicultureLayer.freeGrowing !== null ? `${row.silvicultureLayer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
           </div>
         );
       }
@@ -180,22 +169,22 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
     }
   };
 
-  if (forestCoverQuery.data?.page.totalElements === 0) {
-    return (
-      <EmptySection
-        pictogram="Summit"
-        title="Nothing to show yet!"
-        description="No forest cover have been added to this opening yet"
-      />
-    )
-  }
+  // if (forestCoverQuery.data?.length === 0) {
+  //   return (
+  //     <EmptySection
+  //       pictogram="Summit"
+  //       title="Nothing to show yet!"
+  //       description="No forest cover have been added to this opening yet"
+  //     />
+  //   )
+  // }
 
   return (
     <Grid className="opening-forest-cover-grid default-grid">
       <Column sm={4} md={8} lg={16}>
         <UnderConstTagWrapper>
           <h3 className="default-tab-content-title">
-            {forestCoverQuery.data?.page.totalElements ?? 0} forest cover polygons in this opening
+            {forestCoverQuery.data?.length ?? 0} forest cover polygons in this opening
           </h3>
         </UnderConstTagWrapper>
       </Column>
@@ -238,15 +227,15 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {forestCoverQuery.data?.content.map((row, idx) => {
-                  const isExpanded = expandedRows.includes(row.forestCoverId);
+                {forestCoverQuery.data?.map((row, idx) => {
+                  const isExpanded = expandedRows.includes(row.coverId);
                   return (
-                    <React.Fragment key={row.forestCoverId + idx}>
+                    <React.Fragment key={row.coverId + idx}>
                       <TableExpandRow
                         className="opening-forest-cover-table-row"
-                        aria-label={`Expand row for Polygon ID ${row.forestCoverId}`}
+                        aria-label={`Expand row for Polygon ID ${row.coverId}`}
                         isExpanded={isExpanded}
-                        onExpand={() => handleRowExpand(row.forestCoverId)}
+                        onExpand={() => handleRowExpand(row.coverId)}
                       >
                         {ForestCoverTableHeaders.map((header) => (
                           <TableCell key={String(header.key)} className="default-table-cell">
@@ -256,7 +245,8 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                       </TableExpandRow>
                       <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
                         {isExpanded ? (
-                          <ForestCoverExpandedRow forestCoverId={row.forestCoverId} />
+                          // <ForestCoverExpandedRow forestCoverId={row.coverId} />
+                          <div>ss</div>
                         ) : null}
                       </TableExpandedRow>
                     </React.Fragment>
