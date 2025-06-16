@@ -10,27 +10,7 @@
         "status": 200,
         "transformers": ["response-template"],
         "headers": {
-          "Keep-Alive": "timeout=60",
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-          "X-Content-Type-Options": "nosniff",
-          "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
-          "Permissions-Policy": "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma": "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Access-Control-Allow-Headers": "access-control-allow-origin, authorization",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "X-Frame-Options": "DENY",
-          "Access-Control-Expose-Headers": "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials": "true",
-          "Content-Security-Policy": "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary": [
-            "Origin",
-            "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
-          ],
-          "Expires": "0",
-          "Access-Control-Max-Age": "300"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid": "6747b17b-960d-3213-b244-5b6abe083382"
@@ -45,23 +25,7 @@
         "status" : 200,
         "transformers": ["response-template"],
         "headers" : {
-          "Keep-Alive" : "timeout=60",
-          "Access-Control-Allow-Origin" : "http://localhost:3000",
-          "X-Content-Type-Options" : "nosniff",
-          "Access-Control-Allow-Methods" : "OPTIONS,GET,POST,PUT,DELETE",
-          "Permissions-Policy" : "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma" : "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Access-Control-Allow-Headers" : "access-control-allow-origin, authorization, content-type",
-          "Referrer-Policy" : "strict-origin-when-cross-origin",
-          "X-Frame-Options" : "DENY",
-          "Access-Control-Expose-Headers" : "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials" : "true",
-          "Content-Security-Policy" : "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary" : [ "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers" ],
-          "Expires" : "0",
-          "Access-Control-Max-Age" : "300"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid" : "4f6a1f95-fcb3-3b68-a468-59e187da919c"
@@ -79,21 +43,7 @@
         "transformers": ["response-template"],
         "bodyFileName" : "openings/recent-start.json",
         "headers" : {
-          "Keep-Alive" : "timeout=60",
-          "Access-Control-Allow-Origin" : "http://localhost:3000",
-          "X-Content-Type-Options" : "nosniff",
-          "Permissions-Policy" : "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma" : "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Referrer-Policy" : "strict-origin-when-cross-origin",
-          "X-Frame-Options" : "DENY",
-          "Access-Control-Expose-Headers" : "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials" : "true",
-          "Content-Security-Policy" : "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary" : [ "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers" ],
-          "Expires" : "0",
-          "Content-Type" : "application/json"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid" : "6c9c5789-8c9a-3d18-8b7f-869a6adba782"
@@ -111,20 +61,7 @@
         "status" : 202,
         "transformers": ["response-template"],
         "headers" : {
-          "Keep-Alive" : "timeout=60",
-          "Access-Control-Allow-Origin" : "http://localhost:3000",
-          "X-Content-Type-Options" : "nosniff",
-          "Permissions-Policy" : "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma" : "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Referrer-Policy" : "strict-origin-when-cross-origin",
-          "X-Frame-Options" : "DENY",
-          "Access-Control-Expose-Headers" : "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials" : "true",
-          "Content-Security-Policy" : "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary" : [ "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers" ],
-          "Expires" : "0"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid" : "fe301e57-a17f-3ca0-9bee-62372191b0d6"
@@ -142,21 +79,7 @@
         "transformers": ["response-template"],
         "bodyFileName" : "openings/recent-favved.json",
         "headers" : {
-          "Keep-Alive" : "timeout=60",
-          "Access-Control-Allow-Origin" : "http://localhost:3000",
-          "X-Content-Type-Options" : "nosniff",
-          "Permissions-Policy" : "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma" : "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Referrer-Policy" : "strict-origin-when-cross-origin",
-          "X-Frame-Options" : "DENY",
-          "Access-Control-Expose-Headers" : "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials" : "true",
-          "Content-Security-Policy" : "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary" : [ "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers" ],
-          "Expires" : "0",
-          "Content-Type" : "application/json"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid" : "6c9c5789-8c9a-3d18-8b7f-869a6adba783"
@@ -174,20 +97,7 @@
         "status" : 202,
         "transformers": ["response-template"],
         "headers" : {
-          "Keep-Alive" : "timeout=60",
-          "Access-Control-Allow-Origin" : "http://localhost:3000",
-          "X-Content-Type-Options" : "nosniff",
-          "Permissions-Policy" : "geolocation=(), microphone=(), camera=(), speaker=(), usb=(), bluetooth=(), payment=(), interest-cohort=()",
-          "Pragma" : "no-cache",
-          "Date" : "{{now format='EEE, d MMM yyyy HH:mm:ss z'}}",
-          "Referrer-Policy" : "strict-origin-when-cross-origin",
-          "X-Frame-Options" : "DENY",
-          "Access-Control-Expose-Headers" : "x-requested-with, X-REQUESTED-WITH, authorization, Authorization, Content-Type, content-type, credential, CREDENTIAL, X-XSRF-TOKEN, access-control-allow-origin, Access-Control-Allow-Origin, DNT, Keep-Alive,, User-Agent,, X-Requested-With,, If-Modified-Since,, Cache-Control,, Content-Range,, Range, Location, location",
-          "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-          "Access-Control-Allow-Credentials" : "true",
-          "Content-Security-Policy" : "default-src 'self'; connect-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; report-uri http://localhost:8080",
-          "Vary" : [ "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers" ],
-          "Expires" : "0"
+          "content-type": "application/json;charset=UTF-8"
         }
       },
       "uuid" : "fe301e57-a17f-3ca0-9bee-62372191b0d7"
