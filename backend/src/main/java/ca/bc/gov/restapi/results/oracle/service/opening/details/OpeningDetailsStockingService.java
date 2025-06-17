@@ -5,6 +5,8 @@ import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingMilestoneProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingNotificationProjection;
+import ca.bc.gov.restapi.results.oracle.enums.OpeningDetailsNotificationStatusEnum;
 import ca.bc.gov.restapi.results.oracle.enums.StockingMilestoneTypeEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
@@ -12,7 +14,9 @@ import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetail
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
@@ -225,6 +229,63 @@ null
 
                         ).stream()
                 ).map(OpeningDetailsCommentConverter.mapComments())
+                .toList();
+    }
+
+    public List<OpeningDetailsNotificationDto> getOpeningNotifications(Long openingId) {
+        // Fetch projections from the repository
+        List<OpeningStockingNotificationProjection> projections =
+                openingRepository.getOpeningStockingNotificationsByOpeningId(openingId);
+
+        // Group by notificationType and silvMilestoneTypeCode
+        return projections.stream()
+                .collect(Collectors.groupingBy(
+                        projection -> Map.entry(projection.getNotificationType(), projection.getSilvMilestoneTypeCode()),
+                        Collectors.toList()
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    // Extract notification type and milestone type code
+                    String notificationType = entry.getKey().getKey();
+                    String milestoneTypeCode = entry.getKey().getValue();
+
+                    // Aggregate standardsUnitId for the title
+                    String title = "\"" + entry.getValue().stream()
+                            .map(OpeningStockingNotificationProjection::getStandardsUnitId)
+                            .distinct()
+                            .sorted()
+                            .collect(Collectors.joining(", ")) + "\"";
+
+                    // Get the description from StockingMilestoneTypeEnum
+                    String milestoneDescription = Arrays.stream(StockingMilestoneTypeEnum.values())
+                            .filter(enumValue -> enumValue.getCode().equals(milestoneTypeCode))
+                            .findFirst()
+                            .map(StockingMilestoneTypeEnum::getDescription)
+                            .orElse("Unknown");
+
+                    // Customize title and description based on notification type
+                    String finalTitle;
+                    String finalDescription;
+
+                    if ("ERROR".equalsIgnoreCase(notificationType)) {
+                        finalTitle = "Overdue milestone detected for standard unit " + title;
+                        finalDescription = "Immediate action required!";
+                    } else if ("WARNING".equalsIgnoreCase(notificationType)) {
+                        finalTitle = "Upcoming milestone detected for standard unit " + title;
+                        finalDescription = "Monitor progress closely to declare your " + milestoneDescription + " in time!";
+                    } else {
+                        finalTitle = title;
+                        finalDescription = milestoneDescription;
+                    }
+
+                    // Map to OpeningDetailsNotificationDto
+                    return new OpeningDetailsNotificationDto(
+                            finalTitle,
+                            finalDescription,
+                            OpeningDetailsNotificationStatusEnum.valueOf(notificationType.toUpperCase())
+                    );
+                })
                 .toList();
     }
 }

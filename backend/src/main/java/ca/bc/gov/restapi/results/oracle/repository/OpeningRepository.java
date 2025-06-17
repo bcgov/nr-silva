@@ -60,4 +60,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_MILESTONES)
   Optional<OpeningStockingMilestoneProjection> getOpeningStockingMilestoneBySsuId(Long ssuId);
 
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_NOTIFICATIONS)
+  List<OpeningStockingNotificationProjection> getOpeningStockingNotificationsByOpeningId(Long openingId);
+
 }
