@@ -1,12 +1,14 @@
 import React from "react";
 import { Column, TextAreaSkeleton } from "@carbon/react";
-import { ForestManagementDto } from "../../definitions";
+import { ForestManagementDto, UnmappedAreaDto } from "../../definitions";
 import UnmappedArea from "./UnmappedArea";
 import SingleMultiLayer from "./SingleMultiLayer";
+import { OpeningForestCoverLayerDto, OpeningForestCoverUnmappedDto } from "@/services/OpenApi";
 
 
 type ForestManagementProps = {
-  forestManagementData?: ForestManagementDto;
+  layersData?: OpeningForestCoverLayerDto[];
+  unmappedAreaData?: OpeningForestCoverUnmappedDto;
   isLoading?: boolean;
 }
 
@@ -16,7 +18,7 @@ const Title = () => (
   </Column >
 );
 
-const ForestManagement = ({ isLoading, forestManagementData }: ForestManagementProps) => {
+const ForestManagement = ({ isLoading, layersData, unmappedAreaData }: ForestManagementProps) => {
   if (isLoading) {
     return (
       <>
@@ -28,31 +30,41 @@ const ForestManagement = ({ isLoading, forestManagementData }: ForestManagementP
     )
   }
 
-  if (forestManagementData) {
-    return (
-      <>
-        <Title />
-        {
-          isLoading
-            ? (
-              <Column sm={4} md={8} lg={16}>
-                <TextAreaSkeleton />
-              </Column>
-            )
-            : (
-              <>
-                <Column sm={4} md={8} lg={16}>
-                  <UnmappedArea data={forestManagementData.unmappedArea} />
-                </Column>
-                <Column sm={4} md={8} lg={16}>
-                  <SingleMultiLayer layers={forestManagementData.layers} />
-                </Column>
-              </>
-            )
-        }
-      </>
-    )
-  }
+  return (
+    <>
+      <Title />
+      {
+        isLoading
+          ? (
+            <Column sm={4} md={8} lg={16}>
+              <TextAreaSkeleton />
+            </Column>
+          )
+          : (
+            <>
+              {
+                unmappedAreaData
+                  ? (
+                    <Column sm={4} md={8} lg={16}>
+                      <UnmappedArea data={unmappedAreaData} />
+                    </Column>
+                  )
+                  : null
+              }
+              {
+                layersData
+                  ? (
+                    <Column sm={4} md={8} lg={16}>
+                      <SingleMultiLayer layers={layersData} />
+                    </Column>
+                  )
+                  : null
+              }
+            </>
+          )
+      }
+    </>
+  )
 };
 
 export default ForestManagement;

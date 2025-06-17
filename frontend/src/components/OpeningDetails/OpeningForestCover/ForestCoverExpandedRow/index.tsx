@@ -1,16 +1,11 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { delayMock } from "@/utils/MockUtils";
 import EmptySection from "@/components/EmptySection";
 import { Column, Grid } from "@carbon/react";
-import PolygonDetail from "./PolygonDetail";
 import API from "@/services/API";
-
-import './styles.scss';
 import ForestManagement from "./ForestManagement";
-
-
-
+import PolygonDetail from "./PolygonDetail";
+import './styles.scss';
 
 type ForestCoverDetailProps = {
   forestCoverId: number;
@@ -19,7 +14,7 @@ type ForestCoverDetailProps = {
 
 const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailProps) => {
   const { data, isLoading } = useQuery({
-    queryKey: ["forestCoverDetails", forestCoverId],
+    queryKey: ["openings", openingId, "cover", forestCoverId],
     queryFn: () => API.OpeningEndpointService.getCoverDetails(openingId, forestCoverId),
   });
 
@@ -41,7 +36,7 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailP
         <hr className="expanded-row-hr" />
       </Column>
 
-      <ForestManagement forestManagementData={data?.layers} isLoading={isLoading} />
+      <ForestManagement layersData={data?.layers} unmappedAreaData={data?.unmapped} isLoading={isLoading} />
     </Grid >
   );
 };

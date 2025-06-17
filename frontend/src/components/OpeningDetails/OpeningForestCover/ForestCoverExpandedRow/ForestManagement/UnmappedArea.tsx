@@ -6,9 +6,10 @@ import { StockingStatusTag } from "@/components/Tags";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { UnmappedAreaDto } from "../../definitions";
 import { UnmappedAreaHeaders } from "./constants";
+import { OpeningForestCoverUnmappedDto } from "@/services/OpenApi";
 
 type UnmappedAreaProps = {
-  data: UnmappedAreaDto[];
+  data: OpeningForestCoverUnmappedDto[];
 }
 
 const UnmappedArea = ({ data }: UnmappedAreaProps) => {
