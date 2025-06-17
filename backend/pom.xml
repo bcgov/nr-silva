@@ -585,16 +585,6 @@
         <artifactId>logback-classic</artifactId>
         <version>${logback-classic.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-websocket</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
