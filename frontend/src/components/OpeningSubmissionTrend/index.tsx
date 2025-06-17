@@ -13,22 +13,23 @@ import {
 } from "@carbon/react";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import API from "@/services/API";
 
 // Utility functions
-import { getMonthAbbreviation } from "../../utils/DateUtils";
-import { ComboBoxEvent } from "../../types/CarbonTypes";
-import { fetchUserSubmissionTrends } from "../../services/OpeningService";
-import { fetchOpeningsOrgUnits } from "../../services/OpeningSearchService";
+import { getMonthAbbreviation } from "@/utils/DateUtils";
+import { ComboBoxEvent } from "@/types/CarbonTypes";
 import {
   extractCodesFromCodeDescriptionArr,
   codeDescriptionToDisplayText,
   MultiSelectEvent
-} from "../../utils/multiSelectUtils";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
-import { OPENING_STATUS_LIST } from "../../constants";
-import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
+} from "@/utils/multiSelectUtils";
+import { buildQueryString } from "@/utils/UrlUtils";
+import { Chart } from "@carbon/charts";
+import { CodeDescriptionDto } from "@/services/OpenApi";
+import { OPENING_STATUS_LIST } from "@/constants";
 
 // Local components
+import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
 import { DefaultChartOptions } from "./constants";
@@ -38,8 +39,6 @@ import { generateYearList, getYearBoundaryDate } from "./utils";
 // Styles
 import "@carbon/charts/styles.css";
 import "./styles.scss";
-import { buildQueryString } from "../../utils/UrlUtils";
-import { Chart } from "@carbon/charts";
 
 interface BarChartGroupedEvent {
   detail: {
@@ -61,7 +60,7 @@ const OpeningSubmissionTrend = () => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: fetchOpeningsOrgUnits,
+    queryFn: API.CodesEndpointService.getOpeningOrgUnits,
   });
 
   const submissionTrendQuery = useQuery({
@@ -72,18 +71,19 @@ const OpeningSubmissionTrend = () => {
         entryStartDate: getYearBoundaryDate(selectedYear, true),
         entryEndDate: getYearBoundaryDate(selectedYear, false),
         statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
-        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits)
+        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
       }
     ],
     queryFn: async () => {
-      const data = await fetchUserSubmissionTrends({
-        orgUnitCode: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
-        statusCode: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
-        entryDateStart: getYearBoundaryDate(selectedYear, true),
-        entryDateEnd: getYearBoundaryDate(selectedYear, false),
-      });
-      // This is to handle the 204 no content
-      return data.length ? data : null;
+      const result = await API.UserActionsEndpointService.getOpeningsSubmissionTrends(
+        extractCodesFromCodeDescriptionArr(selectedOrgUnits),
+        extractCodesFromCodeDescriptionArr(selectedStatusCodes),
+        getYearBoundaryDate(selectedYear, true) ?? undefined,
+        getYearBoundaryDate(selectedYear, false) ?? undefined
+      );
+
+      // Handles 204 no content
+      return result.length ? result : null;
     },
     select: (data): SubmissionTrendChartObj[] | undefined =>
       data

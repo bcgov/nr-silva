@@ -1,4 +1,4 @@
-import { OpeningSearchResponseDto } from "@/types/OpenApiTypes";
+import { OpeningSearchResponseDto } from "@/services/OpenApi";
 
 export const openingA: OpeningSearchResponseDto = {
   openingId: 101,

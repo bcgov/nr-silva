@@ -1,4 +1,4 @@
-import { CommentDto } from "@/types/OpenApiTypes";
+import { CommentDto } from "@/services/OpenApi";
 import { PLACE_HOLDER } from "@/constants";
 
 interface CommentProps {

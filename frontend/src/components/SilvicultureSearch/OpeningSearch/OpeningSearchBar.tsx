@@ -25,15 +25,13 @@ import {
   Location as LocationIcon,
 } from "@carbon/icons-react";
 import { DateTime } from "luxon";
-
-import { DATE_TYPES } from "@/types/DateTypes";
+import { useSearchParams } from "react-router-dom";
 import {
   API_DATE_FORMAT,
   DATE_PICKER_FORMAT,
   DATE_TYPE_LIST,
   OPENING_STATUS_LIST,
 } from "@/constants";
-import GenericCodeDescriptionDto from "@/types/CodeDescriptionType";
 import useBreakpoint from "@/hooks/UseBreakpoint";
 import {
   codeDescriptionToDisplayText,
@@ -42,6 +40,7 @@ import {
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
 import { ComboBoxEvent } from "@/types/CarbonTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 import CustomMultiSelect from "../../CustomMultiSelect";
 import ForestClientInput from "../../ForestClientInput";
@@ -51,19 +50,19 @@ import OpeningFilterBar from "./OpeningFilterBar";
 import { OpeningSearchFilterType } from "./definitions";
 
 type OpeningSearchBarProps = {
-  headers: OpeningHeaderType[];
-  setHeaders: React.Dispatch<React.SetStateAction<OpeningHeaderType[]>>;
-  filters: OpeningSearchFilterType;
-  setFilters: React.Dispatch<React.SetStateAction<OpeningSearchFilterType>>;
-  categories: GenericCodeDescriptionDto[];
-  orgUnits: GenericCodeDescriptionDto[];
-  handleSearch: () => void;
-  totalResults: number | undefined;
-  showMap: boolean;
-  setShowMap: React.Dispatch<React.SetStateAction<boolean>>;
-  setEnableSearch: React.Dispatch<React.SetStateAction<boolean>>;
-  resetPagination: () => void;
-};
+  headers: OpeningHeaderType[],
+  setHeaders: React.Dispatch<React.SetStateAction<OpeningHeaderType[]>>,
+  filters: OpeningSearchFilterType,
+  setFilters: React.Dispatch<React.SetStateAction<OpeningSearchFilterType>>,
+  categories: CodeDescriptionDto[],
+  orgUnits: CodeDescriptionDto[],
+  handleSearch: () => void,
+  totalResults: number | undefined,
+  showMap: boolean,
+  setShowMap: React.Dispatch<React.SetStateAction<boolean>>,
+  setEnableSearch: React.Dispatch<React.SetStateAction<boolean>>,
+  resetPagination: () => void
+}
 
 type CustomInputProp = {
   id: string;
@@ -84,8 +83,8 @@ const OpeningSearchBar = ({
   resetPagination,
 }: OpeningSearchBarProps) => {
   const breakpoint = useBreakpoint();
-  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] =
-    useState<boolean>(false);
+  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * Tracks whether the date is changed by system via params or user action.
@@ -178,9 +177,8 @@ const OpeningSearchBar = ({
     };
 
   /* v8 ignore next 26 */
-  const handleDateTypeChange = (
-    data: ComboBoxEvent<GenericCodeDescriptionDto<DATE_TYPES>>
-  ) => {
+  const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto>) => {
+
     const dateType = data.selectedItem;
 
     setFilters((prev) => {
@@ -313,6 +311,12 @@ const OpeningSearchBar = ({
 
   /* v8 ignore next 18 */
   const handleClearFilters = () => {
+    // Keep the "tab" param only
+    const tab = searchParams.get("tab");
+    const newSearchParams = new URLSearchParams();
+    if (tab) newSearchParams.set("tab", tab);
+    setSearchParams(newSearchParams);
+
     setFilters((prev) => {
       const newFilters: OpeningSearchFilterType = {};
 

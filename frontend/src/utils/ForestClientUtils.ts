@@ -1,6 +1,6 @@
-import { PLACE_HOLDER } from "../constants";
-import { ForestClientAutocomplete } from "../services/OpeningClientLocationService";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { PLACE_HOLDER } from "@/constants";
+import { ForestClientAutocompleteResultDto } from "@/services/OpenApi";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 
 /**
@@ -16,7 +16,7 @@ import { CodeDescriptionDto } from "@/types/OpenApiTypes";
  * @returns {string} A formatted string like "Name, ID, Acronym" or a fallback value.
  */
 export const getClientLabel = (
-  client?: ForestClientAutocomplete | null,
+  client?: ForestClientAutocompleteResultDto | null,
   returnPlaceHolder = false
 ): string => {
   const fallback = returnPlaceHolder ? PLACE_HOLDER : '';

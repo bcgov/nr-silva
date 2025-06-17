@@ -5,7 +5,7 @@ import OpeningsMap from '../OpeningsMap';
 import SectionTitle from '../SectionTitle';
 import useBreakpoint from '@/hooks/UseBreakpoint';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserRecentOpenings } from '@/services/OpeningService';
+import API from '@/services/API';
 import TableSkeleton from '../TableSkeleton';
 import { recentOpeningsHeaders } from './constants';
 import EmptySection from '../EmptySection';
@@ -30,7 +30,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
 
   const recentOpeningsQuery = useQuery({
     queryKey: ["opening", "recent"],
-    queryFn: () => fetchUserRecentOpenings(),
+    queryFn: () => API.UserRecentOpeningEndpointService.getUserRecentOpenings({}),
     refetchOnMount: "always",
   });
 

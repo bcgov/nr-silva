@@ -11,7 +11,7 @@ import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
-import { OpeningSearchResponseDto } from "@/types/OpenApiTypes";
+import { OpeningSearchResponseDto } from "@/services/OpenApi";
 
 import { OpeningDetailsRoute } from "@/routes/config";
 import "./styles.scss";

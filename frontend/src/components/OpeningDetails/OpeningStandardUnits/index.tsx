@@ -20,11 +20,11 @@ import {
 } from "@carbon/icons-react";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchOpeningSsu } from "@/services/OpeningDetailsService";
 import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
-import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/types/OpenApiTypes";
+import API from "@/services/API";
+import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/services/OpenApi";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
@@ -45,7 +45,7 @@ type OpeningStandardUnitsProps = {
 const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
   const openingDetailSsuQuery = useQuery({
     queryKey: ["openings", openingId, "ssu"],
-    queryFn: () => fetchOpeningSsu(Number(openingId)),
+    queryFn: () => API.OpeningEndpointService.getOpeningSsu(openingId),
     enabled: !!openingId,
     refetchOnMount: "always",
   });

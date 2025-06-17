@@ -2,7 +2,7 @@ import React from "react";
 import { Location as LocationIcon } from "@carbon/icons-react";
 
 import { PLACE_HOLDER } from "@/constants";
-import { OpeningDetailsStockingDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsStockingDto } from "@/services/OpenApi";
 
 import VerticalDivider from "../../VerticalDivider";
 

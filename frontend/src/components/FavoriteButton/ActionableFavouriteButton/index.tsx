@@ -3,11 +3,12 @@ import { Favorite, FavoriteFilled } from "@carbon/icons-react";
 import { Button, InlineLoading } from "@carbon/react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import API from "@/services/API";
 
 import { useNotification } from "@/contexts/NotificationProvider";
 import { EIGHT_SECONDS } from "@/constants/TimeUnits";
 import { DashboardRoute } from "@/routes/config";
-import { deleteOpeningFavorite, isOpeningFavourite, putOpeningFavourite } from "@/services/OpeningFavouriteService";
+// import { deleteOpeningFavorite, isOpeningFavourite, putOpeningFavourite } from "@/services/OpeningFavouriteService";
 
 import './styles.scss'
 
@@ -26,7 +27,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
 
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites", openingId],
-    queryFn: () => isOpeningFavourite(openingId!),
+    queryFn: () => API.OpeningFavoriteEndpointService.checkFavorite(openingId!),
     refetchOnMount: 'always',
     enabled: !!openingId,
   })
@@ -57,7 +58,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
   };
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: () => deleteOpeningFavorite(openingId!),
+    mutationFn: () => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId!),
     onSuccess: (_, openingId) => {
       displayFavSuccessToast(false);
       // Invalidate favourite data for this component
@@ -67,7 +68,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
   });
 
   const putFavOpenMutation = useMutation({
-    mutationFn: () => putOpeningFavourite(openingId!),
+    mutationFn: () => API.OpeningFavoriteEndpointService.addToFavorites(openingId!),
     onSuccess: () => {
       displayFavSuccessToast(true);
       // Invalidate favourite data for this component
