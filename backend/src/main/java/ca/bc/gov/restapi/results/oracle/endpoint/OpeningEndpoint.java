@@ -114,13 +114,6 @@ public class OpeningEndpoint {
     return openingService.getOpeningForestCoverDetails(forestCoverId);
   }
 
-    @GetMapping("/{openingId}/notifications")
-    public List<OpeningDetailsNotificationDto> getNotifications(
-            @PathVariable Long openingId
-    ) {
-        return openingService.getOpeningNotifications(openingId);
-    }
-
   /**
    * Search for Openings with different filters.
    *

@@ -61,8 +61,4 @@ public class OpeningDetailsService {
     return forestCoverService.getDetails(forestCoverId)
         .orElseThrow(() -> new NotFoundGenericException("Forest cover polygon with id " + forestCoverId));
   }
-
-  public List<OpeningDetailsNotificationDto> getOpeningNotifications(Long openingId) {
-    return stockingService.getOpeningNotifications(openingId);
-  }
 }
