@@ -20,6 +20,7 @@ public class OpeningDetailsTombstoneService {
   private final OpeningRepository openingRepository;
   private final ForestClientService forestClientService;
   private final SilvicultureCommentRepository commentRepository;
+  private final OpeningDetailsNotificationService openingDetailsNotificationService;
 
   public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(Long openingId) {
 
@@ -40,7 +41,8 @@ public class OpeningDetailsTombstoneService {
             //Finally we load the comments. This is the last step, and it loads comments associated to
             // the opening. This is done in a separate step to avoid loading comments if no tombstone
             // is found. This is a performance optimization.
-            .map(getComments(openingId));
+            .map(getComments(openingId))
+            .map(getNotifications(openingId));
   }
 
   private Function<OpeningDetailsTombstoneOverviewDto, OpeningDetailsTombstoneOverviewDto> getForestClientInformation() {
@@ -97,6 +99,15 @@ public class OpeningDetailsTombstoneService {
                             )
                     )
             );
+  }
+
+  private Function<OpeningDetailsTombstoneOverviewDto, OpeningDetailsTombstoneOverviewDto> getNotifications(
+          Long openingId
+  ) {
+      return tombstone ->
+              tombstone.withNotifications(
+                      openingDetailsNotificationService.getNotifications(openingId)
+              );
   }
 
 }

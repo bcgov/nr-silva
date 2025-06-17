@@ -75,7 +75,8 @@ public class OpeningDetailsTombstoneConverter {
                     0,
                     null
                 )
-            )
+            ),
+            List.of()
         );
   }
 
