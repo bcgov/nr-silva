@@ -1,7 +1,7 @@
 import React from 'react';
 import { DefinitionTooltip } from '@carbon/react';
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from '@/constants';
-import { OpeningDetailsStockingSpeciesDto } from '@/types/OpenApiTypes';
+import { OpeningDetailsStockingSpeciesDto } from '@/services/OpenApi';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 
 const SpeciesTooltipList: React.FC<{

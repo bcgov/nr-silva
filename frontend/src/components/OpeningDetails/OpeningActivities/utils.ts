@@ -1,5 +1,5 @@
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
-import { OpeningDetailsActivitiesActivitiesDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText, extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
 
 /**

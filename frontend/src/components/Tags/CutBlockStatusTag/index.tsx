@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "@carbon/react";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import { SIZES, TYPES } from "@carbon/react/lib/components/Tag/Tag";
 import { CodeType, codeColorMap, KNOWN_CODES } from "./constants";
 

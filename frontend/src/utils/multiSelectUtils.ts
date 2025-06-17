@@ -1,6 +1,6 @@
 import { SortItemsOptions } from "@carbon/react/lib/components/MultiSelect/MultiSelectPropTypes";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
-import { PLACE_HOLDER } from "../constants";
+import { CodeDescriptionDto } from "@/services/OpenApi";
+import { PLACE_HOLDER } from "@/constants";
 
 interface MultiSelectEvent {
   selectedItems: CodeDescriptionDto[];

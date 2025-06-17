@@ -13,11 +13,8 @@ import {
 } from "@carbon/react";
 import { OpeningHeaderType } from "@/types/TableHeader";
 import { OpeningSearchFilterType } from "./definitions";
-import {
-  fetchCategories,
-  fetchOpeningsOrgUnits,
-  searchOpenings,
-} from "@/services/OpeningSearchService";
+import API from "@/services/API";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import TableSkeleton from "../../TableSkeleton";
 import OpeningTableRow from "../../OpeningTableRow";
 import OpeningSearchBar from "./OpeningSearchBar";
@@ -27,14 +24,12 @@ import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import useSilvicultureSearchParams from "../hooks";
 import { SilvicultureSearchParams } from "../definitions";
-import CodeDescriptionDto from "@/types/CodeDescriptionType";
 import { DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
-import { DATE_TYPES } from "@/types/DateTypes";
+import { extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
 import { hasAnyActiveFilters } from "./utils";
 import { usePreference } from "@/contexts/PreferenceProvider";
 
 import "./styles.scss";
-import GenericCodeDescriptionDto from "@/types/CodeDescriptionType";
 
 const OpeningSearch: React.FC = () => {
   const searchParams = useSilvicultureSearchParams();
@@ -93,12 +88,12 @@ const OpeningSearch: React.FC = () => {
    */
   const categoryQuery = useQuery({
     queryKey: ["codes", "categories"],
-    queryFn: fetchCategories,
+    queryFn: () => API.CodesEndpointService.getOpeningCategories(),
   });
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: fetchOpeningsOrgUnits,
+    queryFn: API.CodesEndpointService.getOpeningOrgUnits,
     // A refetch is needed here to ensure filters are properly applied from url params
     refetchOnMount: "always",
   });
@@ -118,12 +113,45 @@ const OpeningSearch: React.FC = () => {
         size: currPageSize,
       },
     ],
-    queryFn: () =>
-      searchOpenings({
-        ...filters,
-        page: currPageNumber,
-        size: currPageSize,
-      }),
+    queryFn: async () => {
+      const {
+        orgUnit,
+        category,
+        statusList,
+        sortField,
+        sortDirection,
+      } = filters;
+
+      const sort =
+        sortField && sortDirection !== "NONE"
+          ? [`${sortField},${sortDirection}`]
+          : undefined;
+
+      return await API.OpeningEndpointService.openingSearch(
+        filters.mainSearchTerm ?? undefined,
+        extractCodesFromCodeDescriptionArr(orgUnit ?? []) ?? undefined,
+        extractCodesFromCodeDescriptionArr(category ?? []) ?? undefined,
+        extractCodesFromCodeDescriptionArr(statusList ?? []) ?? undefined,
+        filters.myOpenings ?? undefined,
+        filters.submittedToFrpa ?? undefined,
+        filters.disturbanceDateStart ?? undefined,
+        filters.disturbanceDateEnd ?? undefined,
+        filters.regenDelayDateStart ?? undefined,
+        filters.regenDelayDateEnd ?? undefined,
+        filters.freeGrowingDateStart ?? undefined,
+        filters.freeGrowingDateEnd ?? undefined,
+        filters.updateDateStart ?? undefined,
+        filters.updateDateEnd ?? undefined,
+        filters.cuttingPermitId ?? undefined,
+        filters.cutBlockId ?? undefined,
+        filters.clientLocationCode ?? undefined,
+        filters.clientNumber ?? undefined,
+        filters.timberMark ?? undefined,
+        currPageNumber ?? undefined,
+        currPageSize ?? undefined,
+        sort ?? undefined
+      );
+    },
     enabled: enableSearch,
     gcTime: 0,
     staleTime: 0,
@@ -173,7 +201,7 @@ const OpeningSearch: React.FC = () => {
         : [];
 
     const dateTypeCode = initialParamsRef.current?.dateType;
-    let dateType: CodeDescriptionDto<DATE_TYPES> | undefined = undefined;
+    let dateType: CodeDescriptionDto | undefined = undefined;
 
     if (dateTypeCode) {
       dateType = DATE_TYPE_LIST.find((d) => d.code === dateTypeCode);
@@ -230,10 +258,10 @@ const OpeningSearch: React.FC = () => {
         setHeaders={setSearchTableHeaders}
         filters={filters}
         setFilters={setFilters}
-        categories={(categoryQuery.data ?? []).filter((item) => item.code !== null) as GenericCodeDescriptionDto[]}
-        orgUnits={(orgUnitQuery.data ?? []).filter((item) => item.code !== null) as GenericCodeDescriptionDto[]}
+        categories={(categoryQuery.data ?? []).filter((item) => item.code !== null) as CodeDescriptionDto[]}
+        orgUnits={(orgUnitQuery.data ?? []).filter((item) => item.code !== null) as CodeDescriptionDto[]}
         handleSearch={handleSearch}
-        totalResults={searchQuery.data?.page.totalElements}
+        totalResults={searchQuery.data?.page?.totalElements}
         setEnableSearch={setEnableSearch}
         resetPagination={resetPagination}
       />
@@ -264,7 +292,7 @@ const OpeningSearch: React.FC = () => {
 
         {/* Adaptive initial empty display and error display */}
         {!searchQuery.isFetching &&
-          searchQuery.data?.page.totalElements === undefined ? (
+          searchQuery.data?.page?.totalElements === undefined ? (
           <EmptySection
             className="initial-empty-section"
             pictogram="Summit"
@@ -310,7 +338,7 @@ const OpeningSearch: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {searchQuery.data?.content.map((row) => (
+                {searchQuery.data?.content?.map((row) => (
                   <OpeningTableRow
                     key={row.openingId}
                     headers={searchTableHeaders}
@@ -323,7 +351,7 @@ const OpeningSearch: React.FC = () => {
               </TableBody>
             </Table>
             {/* Display either pagination or empty message */}
-            {searchQuery.data?.page.totalElements &&
+            {searchQuery.data?.page?.totalElements &&
               searchQuery.data?.page.totalElements > 0 ? (
               <Pagination
                 className="default-pagination-white"

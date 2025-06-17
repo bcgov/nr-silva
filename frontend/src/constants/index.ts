@@ -1,5 +1,4 @@
-import CodeDescriptionDto from "../types/CodeDescriptionType";
-import { DATE_TYPES } from "../types/DateTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 
 export const PLACE_HOLDER = "--" as const;
 
@@ -14,7 +13,7 @@ export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [
   { code: 'SUB', description: 'Submitted' }
 ] as const;
 
-export const DATE_TYPE_LIST: CodeDescriptionDto<DATE_TYPES>[] = [
+export const DATE_TYPE_LIST: CodeDescriptionDto[] = [
   { code: "disturbance", description: "Disturbance" },
   { code: "regenDelay", description: "Regen Delay" },
   { code: "freeGrowing", description: "Free Growing" },

@@ -1,4 +1,4 @@
-import { OpeningSearchResponseDto } from "./OpenApiTypes";
+import { OpeningSearchResponseDto } from "@/services/OpenApi";
 
 export type TableHeaderType<T> = {
   key: T;

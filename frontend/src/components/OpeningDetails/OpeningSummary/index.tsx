@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
 import { Location } from "@carbon/icons-react";
 
-import { OpeningDetailsTombstoneDto } from "@/types/OpenApiTypes";
-import { mapKinds } from "@/types/MapLayer";
+import { OpeningDetailsTombstoneDto } from "@/services/OpenApi";
+import { mapKinds, MapKindType } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
 import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -27,18 +27,18 @@ const OpeningSummary = ({
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
-  const mapKind = (tabIndex: number) => {
+  const mapKind = (tabIndex: number): MapKindType => {
     switch (tabIndex) {
       case 0:
-        return mapKinds[0]!.code;
+        return mapKinds[0]!.code as MapKindType;
       case 1:
-        return mapKinds[1]!.code;
+        return mapKinds[1]!.code as MapKindType;
       case 2:
-        return mapKinds[2]!.code;
+        return mapKinds[2]!.code as MapKindType;
       case 3:
-        return mapKinds[3]!.code;
+        return mapKinds[3]!.code as MapKindType;
       default:
-        return mapKinds[0]!.code;
+        return mapKinds[0]!.code as MapKindType;
     }
   };
 

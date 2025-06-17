@@ -12,7 +12,7 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({ datum }) => {
   console.log(datum);
 
   const statusDescription = (code: string) => (
-    OPENING_STATUS_LIST.find((statusData) => statusData.code.toLowerCase() === code.toLowerCase())?.description ?? code
+    OPENING_STATUS_LIST.find((statusData) => statusData.code?.toLowerCase() === code.toLowerCase())?.description ?? code
   ).toLowerCase();
 
   return (
