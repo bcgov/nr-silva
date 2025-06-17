@@ -9,7 +9,7 @@ import { getAuthIdToken } from "./AuthService";
 import { PaginatedResponseType } from "@/types/PaginationTypes";
 import { TenureFilterType } from "@/components/OpeningDetails/TenureIdentification/definitions";
 import { ActivityFilterType } from "@/components/OpeningDetails/OpeningActivities/definitions";
-import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto, OpeningDetailsStockingDto, OpeningDetailsTenureDto, OpeningDetailsTombstoneOverviewDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto, OpeningDetailsNotificationDto, OpeningDetailsStockingDto, OpeningDetailsTenureDto, OpeningDetailsTombstoneOverviewDto } from "@/types/OpenApiTypes";
 
 /**
  * Fetch the tombstone and overview information for the Opening details page.
@@ -30,6 +30,13 @@ export const fetchOpeningSsu = (openingId: number): Promise<OpeningDetailsStocki
   return axios.get(API_ENDPOINTS.openingSsu(openingId), defaultHeaders(authToken))
     .then((res) => res.data);
 }
+
+export const fetchOpeningSsuNotifications = (openingId: number): Promise<OpeningDetailsNotificationDto[]> => {
+  const authToken = getAuthIdToken();
+
+  return axios.get(API_ENDPOINTS.openingSsuNotifications(openingId), defaultHeaders(authToken))
+    .then((res) => res.data);
+};
 
 /**
  * Fetches the disturbances associated with a specific opening.
