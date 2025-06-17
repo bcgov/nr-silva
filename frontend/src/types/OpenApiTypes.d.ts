@@ -100,6 +100,22 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/openings/{openingId}/ssu/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/openings/{openingId}/disturbances": {
         parameters: {
             query?: never;
@@ -506,6 +522,7 @@ export type components = {
             /** Format: date */
             freeGrowingDueDate: string | null;
             noRegenIndicated: boolean;
+            extentDeclared: boolean;
             comments: components["schemas"]["CommentDto"][];
         };
         OpeningDetailsStockingDto: {
@@ -541,6 +558,15 @@ export type components = {
             species: components["schemas"]["CodeDescriptionDto"];
             /** Format: float */
             minHeight: number | null;
+        };
+        OpeningDetailsNotificationDto: {
+            title: string | null;
+            description: string | null;
+            /**
+             * @description Represents the status of a notification in the opening details.
+             * @enum {string}
+             */
+            status: "ERROR" | "WARNING" | "INFO" | "SUCCESS";
         };
         ForestClientLocationDto: {
             clientNumber: string | null;
@@ -876,6 +902,7 @@ export type OpeningDetailsStockingDetailsMilestoneDto = components['schemas']['O
 export type OpeningDetailsStockingDto = components['schemas']['OpeningDetailsStockingDto'];
 export type OpeningDetailsStockingLayerDto = components['schemas']['OpeningDetailsStockingLayerDto'];
 export type OpeningDetailsStockingSpeciesDto = components['schemas']['OpeningDetailsStockingSpeciesDto'];
+export type OpeningDetailsNotificationDto = components['schemas']['OpeningDetailsNotificationDto'];
 export type ForestClientLocationDto = components['schemas']['ForestClientLocationDto'];
 export type OpeningDetailsActivitiesDisturbanceDto = components['schemas']['OpeningDetailsActivitiesDisturbanceDto'];
 export type PageMetadata = components['schemas']['PageMetadata'];
@@ -1080,6 +1107,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["OpeningDetailsStockingDto"][];
+                };
+            };
+        };
+    };
+    getNotifications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                openingId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OpeningDetailsNotificationDto"][];
                 };
             };
         };
