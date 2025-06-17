@@ -48,6 +48,7 @@
     <logback-classic.version>1.5.18</logback-classic.version>
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-jdbc.version>23.8.0.25.04</oracle-jdbc.version>
+    <tomcat.version>10.1.42</tomcat.version>
   </properties>
 
   <profiles>
@@ -583,6 +584,16 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logback-classic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${tomcat.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-websocket</artifactId>
+        <version>${tomcat.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
