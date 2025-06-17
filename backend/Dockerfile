@@ -8,7 +8,7 @@ COPY src ./src
 COPY .mvn/ ./.mvn
 
 # Build
-RUN ./mvnw -Pnative native:compile -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
+RUN ./mvnw -Pnative package -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
 
 ### Deployer
 FROM gcr.io/distroless/java-base:nonroot
@@ -22,8 +22,6 @@ COPY --from=build /app/target/results ./results
 USER 1001
 EXPOSE ${PORT}
 HEALTHCHECK CMD curl -f http://localhost:${PORT}/actuator/health | grep '"status":"UP"'
-
-ENV SPRING_PROFILES_ACTIVE=container,prod
 
 ENV SPRING_PROFILES_ACTIVE=container,prod
 
