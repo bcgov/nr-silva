@@ -49,6 +49,7 @@
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-jdbc.version>23.8.0.25.04</oracle-jdbc.version>
     <tomcat.version>10.1.42</tomcat.version>
+    <postgresql.version>42.7.7</postgresql.version>
   </properties>
 
   <profiles>
