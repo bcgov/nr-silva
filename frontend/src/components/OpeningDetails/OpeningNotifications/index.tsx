@@ -18,7 +18,8 @@ const OpeningNotifications = ({ notifications }: OpeningNotificationsProps) => {
       {
         sortedNotifications.map((notification, idx) => (
           <InlineNotification
-            key={idx}
+            key={`notification-${idx}`}
+            data-testid={`notification-${idx}`}
             kind={statusToKind[notification.status]}
             title={notification.title!}
             subtitle={notification.description!}
