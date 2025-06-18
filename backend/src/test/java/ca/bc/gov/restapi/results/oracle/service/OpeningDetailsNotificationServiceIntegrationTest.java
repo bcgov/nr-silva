@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
+import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsNotificationDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningDetailsNotificationStatusEnum;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsNotificationService;
@@ -11,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @DisplayName("Integrated Test | Opening Details Notification Service")
-public class OpeningDetailsNotificationServiceIntegrationTest {
+public class OpeningDetailsNotificationServiceIntegrationTest extends AbstractTestContainerIntegrationTest {
 
     @Autowired
     private OpeningDetailsNotificationService openingDetailsNotificationService;
