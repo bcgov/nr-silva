@@ -113,7 +113,8 @@
     "react-router": "7.6.2",
     "minimatch": "8.0.4",
     "minimist": "1.2.8",
-    "uglify-js": "3.19.3"
+    "uglify-js": "3.19.3",
+    "brace-expansion": "2.0.2"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
