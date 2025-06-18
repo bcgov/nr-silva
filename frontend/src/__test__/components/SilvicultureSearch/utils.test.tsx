@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { hasAnyActiveFilters } from "../../../components/SilvicultureSearch/OpeningSearch/utils";
 import { OpeningSearchFilterType } from "../../../components/SilvicultureSearch/OpeningSearch/definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import { CodeDescriptionDto } from "../../../services/OpenApi";
 
 describe("hasAnyActiveFilters", () => {
   const mockCodeDesc = (code: string, desc: string): CodeDescriptionDto => ({

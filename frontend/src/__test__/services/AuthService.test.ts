@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { parseToken, getAuthIdToken } from '../../services/AuthService';
 import { formatRolesArray } from '../../utils/famUtils';
 import { JWT } from '../../types/amplify';

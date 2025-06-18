@@ -31,27 +31,24 @@
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.0"
   },
-  "scripts": {
-    "dev": "vite --host",
-    "start": "npm run generate:openapi && vite --host",
-    "build": "tsc && vite build",
+  "scripts": {    
+    "dev": "start-server-and-test stub http://127.0.0.1:8080 start",
+    "start": "vite --host",
+    "prebuild": "tsc",
+    "build": "vite build",
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"1uhcp67qtfl3jra6b595e9f6jn\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
     "preview": "vite preview --port 4173",
-    "test": "vitest -u",
-    "test:playwright": "playwright test",
-    "test:playwright:ui": "playwright test --ui",
-    "test:coverage": "vitest run --coverage --watch=false",
-    "test:build": "vitest watch",
+    "generate:openapi": "npx openapi-typescript -t true --root-types true --root-types-no-schema-prefix true http://localhost:8080/v3/api-docs -o ./src/types/OpenApiTypes.d.ts",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "generate:openapi": "rm -rf ./src/services/OpenApi && npx bcgov-typescript-codegen --input http://localhost:8080/v3/api-docs --output ./src/services/OpenApi --client axios",
-    "precoverage": "rm -rf .nyc_output",
-    "e2e:local": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright && npm run report:coverage",
-    "e2e:local:ui": "npm run precoverage && BASE_URL=http://localhost:3000 && npm run test:playwright:ui",
-    "e2e:build": "npm run precoverage && npm run build && npm run build:env && BASE_URL=http://localhost:4173 start-server-and-test preview http://localhost:4173 \"npm run test:playwright\"",
-    "e2e:ci:dev": "npm run precoverage && BASE_URL=http://localhost:3000 start-server-and-test dev http://localhost:3000 test:playwright && npm run report:coverage",
-    "e2e:ci:build": "npm run precoverage && ALL_BROWSERS=true npm run test:playwright",
-    "report:coverage": "nyc merge .nyc_output .nyc_output/coverage.json && nyc report"
+    "precoverage": "rm -rf .nyc_output coverage",
+    "coverage": " npm run test:unit && npm run test:ui",
+    "postcoverage": "mkdir -p coverage && touch coverage/coverage-final.json && cp coverage/coverage-final.json .nyc_output/unit-test.json && nyc merge .nyc_output .nyc_output/coverage.json && nyc report",
+    "test:unit": "vitest run --coverage --watch=false",
+    "test:unit:dev": "vitest --reporter=verbose",
+    "test:ui": "playwright test",
+    "test:ui:dev": "playwright test --ui",
+    "stub": "wiremock --enable-stub-cors --global-response-templating --port 8080 --https-port 8081 --root-dir ./stub --verbose"
   },
   "browserslist": {
     "production": [
@@ -85,6 +82,7 @@
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "@vitest/coverage-v8": "^3.0.5",
+    "dotenv": "^16.5.0",
     "bcgov-typescript-codegen": "^1.0.9",
     "eslint": "^8.48.0",
     "eslint-config-love": "^43.1.0",
@@ -103,7 +101,8 @@
     "start-server-and-test": "^2.0.11",
     "typescript": "^5.2.2",
     "v8-to-istanbul": "^9.3.0",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wiremock": "^3.13.1"
   },
   "overrides": {
     "braces@3.0.2": "3.0.3",

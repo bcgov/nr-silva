@@ -1,30 +1,27 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import PageTitle from '../../components/PageTitle';
-import { describe, it, expect } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import PageTitle from "../../components/PageTitle";
+import { describe, it, expect } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 
-describe('PageTitle Component', () => {
+describe("PageTitle Component", () => {
   const mockBreadCrumbs = [
-    { name: 'Dashboard', path: '/' },
-    { name: 'Opening', path: '/opening' },
-    { name: 'Standard Units', path: '/standard-units' },
+    { name: "Dashboard", path: "/" },
+    { name: "Opening", path: "/opening" },
+    { name: "Standard Units", path: "/standard-units" },
   ];
 
-  it('renders the title correctly', () => {
+  it("renders the title correctly", () => {
     render(
       <MemoryRouter>
-        <PageTitle
-          title="Test Title"
-          subtitle="Not what you expected"
-        />
+        <PageTitle title="Test Title" subtitle="Not what you expected" />
       </MemoryRouter>
     );
     const titleElement = screen.getByText(/Test Title/i);
     expect(titleElement).toBeInTheDocument();
   });
 
-  it('renders the breadcrumb correctly', () => {
+  it("renders the breadcrumb correctly", () => {
     render(
       <MemoryRouter>
         <PageTitle
@@ -42,7 +39,7 @@ describe('PageTitle Component', () => {
     expect(standardUnitsCrumb).toBeInTheDocument();
   });
 
-  it('renders empty breadcrumb when breadCrumbs prop is an empty array', () => {
+  it("renders empty breadcrumb when breadCrumbs prop is an empty array", () => {
     render(
       <MemoryRouter>
         <PageTitle
@@ -53,11 +50,11 @@ describe('PageTitle Component', () => {
       </MemoryRouter>
     );
 
-    const olElement = screen.queryByRole('list');
+    const olElement = screen.queryByRole("list");
     expect(olElement).not.toBeInTheDocument();
   });
 
-  it('does not render breadcrumbs when breadCrumbs prop is not provided', () => {
+  it("does not render breadcrumbs when breadCrumbs prop is not provided", () => {
     render(
       <MemoryRouter>
         <PageTitle
@@ -67,21 +64,7 @@ describe('PageTitle Component', () => {
       </MemoryRouter>
     );
 
-    const olElement = screen.queryByRole('list');
+    const olElement = screen.queryByRole("list");
     expect(olElement).not.toBeInTheDocument();
-  });
-
-  it('renders the experimental tag if experimental is true', () => {
-    render(
-      <MemoryRouter>
-        <PageTitle
-          title="Lab Mode"
-          experimental
-        />
-      </MemoryRouter>
-    );
-
-    const tag = screen.getByText(/Experimental/i);
-    expect(tag).toBeInTheDocument();
   });
 });

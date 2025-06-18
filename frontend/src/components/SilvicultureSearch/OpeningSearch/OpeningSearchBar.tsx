@@ -1,11 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Button, Checkbox, CheckboxGroup,
-  Column, ComboBox, ComposedModal, DatePicker,
-  DatePickerInput, Grid,
-  ModalBody, ModalFooter, ModalHeader,
-  Search, TableToolbar, TableToolbarContent,
-  TableToolbarMenu, TextInput
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Column,
+  ComboBox,
+  ComposedModal,
+  DatePicker,
+  DatePickerInput,
+  Grid,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Search,
+  TableToolbar,
+  TableToolbarContent,
+  TableToolbarMenu,
+  TextInput,
 } from "@carbon/react";
 import {
   FilterEdit as FilterIcon,
@@ -15,10 +26,17 @@ import {
 } from "@carbon/icons-react";
 import { DateTime } from "luxon";
 import { useSearchParams } from "react-router-dom";
-
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
+import {
+  API_DATE_FORMAT,
+  DATE_PICKER_FORMAT,
+  DATE_TYPE_LIST,
+  OPENING_STATUS_LIST,
+} from "@/constants";
 import useBreakpoint from "@/hooks/UseBreakpoint";
-import { codeDescriptionToDisplayText, MultiSelectEvent } from "@/utils/multiSelectUtils";
+import {
+  codeDescriptionToDisplayText,
+  MultiSelectEvent,
+} from "@/utils/multiSelectUtils";
 import { CheckBoxEvent, TextInputEvent } from "@/types/GeneralTypes";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
 import { ComboBoxEvent } from "@/types/CarbonTypes";
@@ -47,8 +65,8 @@ type OpeningSearchBarProps = {
 }
 
 type CustomInputProp = {
-  id: string,
-}
+  id: string;
+};
 
 const OpeningSearchBar = ({
   showMap,
@@ -62,9 +80,8 @@ const OpeningSearchBar = ({
   handleSearch,
   totalResults,
   setEnableSearch,
-  resetPagination
-}: OpeningSearchBarProps
-) => {
+  resetPagination,
+}: OpeningSearchBarProps) => {
   const breakpoint = useBreakpoint();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -112,7 +129,8 @@ const OpeningSearchBar = ({
       const typedKey = key as keyof OpeningSearchFilterType;
 
       // Ignore mainSearchTerm
-      if (typedKey === "mainSearchTerm" || typedKey === 'dateType') return false;
+      if (typedKey === "mainSearchTerm" || typedKey === "dateType")
+        return false;
 
       // Ignore undefined/null
       if (value === undefined || value === null) return false;
@@ -129,33 +147,38 @@ const OpeningSearchBar = ({
   };
 
   // Generic handler for string-based filters
-  const handleStringChange = (key: keyof OpeningSearchFilterType) => (event: TextInputEvent) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: event.target.value
-    }));
-  };
+  const handleStringChange =
+    (key: keyof OpeningSearchFilterType) => (event: TextInputEvent) => {
+      setFilters((prev) => ({
+        ...prev,
+        [key]: event.target.value,
+      }));
+    };
 
   // Generic handler for boolean-based filters
-  const handleBooleanChange = (key: keyof OpeningSearchFilterType): CheckBoxEvent => (_evt, data) => {
-    // When a check box is unchecked, we should not set it to false, it's rather undefined
-    const newVal = data.checked === true ? true : undefined;
-    setFilters((prev) => ({
-      ...prev,
-      [key]: newVal,
-    }));
-  };
+  const handleBooleanChange =
+    (key: keyof OpeningSearchFilterType): CheckBoxEvent =>
+    (_evt, data) => {
+      // When a check box is unchecked, we should not set it to false, it's rather undefined
+      const newVal = data.checked === true ? true : undefined;
+      setFilters((prev) => ({
+        ...prev,
+        [key]: newVal,
+      }));
+    };
 
   // Generic handler for CodeDescriptionDto array filters
-  const handleMultiSelectChange = (key: keyof OpeningSearchFilterType) => (event: MultiSelectEvent) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: event.selectedItems,
-    }));
-  }
+  const handleMultiSelectChange =
+    (key: keyof OpeningSearchFilterType) => (event: MultiSelectEvent) => {
+      setFilters((prev) => ({
+        ...prev,
+        [key]: event.selectedItems,
+      }));
+    };
 
   /* v8 ignore next 26 */
   const handleDateTypeChange = (data: ComboBoxEvent<CodeDescriptionDto>) => {
+
     const dateType = data.selectedItem;
 
     setFilters((prev) => {
@@ -172,24 +195,29 @@ const OpeningSearchBar = ({
           freeGrowingDateStart: undefined,
           freeGrowingDateEnd: undefined,
           updateDateStart: undefined,
-          updateDateEnd: undefined
+          updateDateEnd: undefined,
         };
       }
 
       return {
         ...prev,
-        dateType: dateType ?? undefined
+        dateType: dateType ?? undefined,
       };
     });
-  }
+  };
 
   /* v8 ignore next 19 */
-  const handleDateChange = (isStartDate: boolean) => (dates?: (Date)[]) => {
+  const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
     if (!filters.dateType || !dates) return;
 
-    const formattedDate = dates.length && dates[0] ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT) : "";
+    const formattedDate =
+      dates.length && dates[0]
+        ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
+        : "";
 
-    const key = `${filters.dateType.code}${isStartDate ? "DateStart" : "DateEnd"}` as keyof OpeningSearchFilterType;
+    const key = `${filters.dateType.code}${
+      isStartDate ? "DateStart" : "DateEnd"
+    }` as keyof OpeningSearchFilterType;
 
     setFilters((prev) => {
       // Prevent unnecessary updates
@@ -206,10 +234,12 @@ const OpeningSearchBar = ({
 
   /* v8 ignore next 9 */
   const toggleColumn = (key: OpendingHeaderKeyType) => {
-    if (key !== 'openingId' && key !== 'actions') {
+    if (key !== "openingId" && key !== "actions") {
       setHeaders((prevHeaders) =>
         prevHeaders.map((header) =>
-          header.key === key ? { ...header, selected: !header.selected } : header
+          header.key === key
+            ? { ...header, selected: !header.selected }
+            : header
         )
       );
     }
@@ -223,11 +253,14 @@ const OpeningSearchBar = ({
     const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
 
     const maxDate = filters[endDateKey]
-      ? DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      ? DateTime.fromFormat(
+          filters[endDateKey] as string,
+          API_DATE_FORMAT
+        ).toFormat(DATE_PICKER_FORMAT)
       : DateTime.now().toFormat(DATE_PICKER_FORMAT);
 
     return maxDate;
-  }
+  };
 
   const getEndMinDate = () => {
     if (!filters.dateType) {
@@ -237,11 +270,14 @@ const OpeningSearchBar = ({
     const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
 
     const minDate = filters[startDateKey]
-      ? DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      ? DateTime.fromFormat(
+          filters[startDateKey] as string,
+          API_DATE_FORMAT
+        ).toFormat(DATE_PICKER_FORMAT)
       : undefined;
 
     return minDate;
-  }
+  };
 
   const getStartDateValue = () => {
     if (!filters.dateType) {
@@ -250,10 +286,13 @@ const OpeningSearchBar = ({
     const type = filters.dateType.code;
     const startDateKey = `${type}DateStart` as keyof OpeningSearchFilterType;
     if (filters[startDateKey]) {
-      return DateTime.fromFormat(filters[startDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      return DateTime.fromFormat(
+        filters[startDateKey] as string,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT);
     }
     return undefined;
-  }
+  };
 
   const getEndDateValue = () => {
     if (!filters.dateType) {
@@ -262,10 +301,13 @@ const OpeningSearchBar = ({
     const type = filters.dateType.code;
     const endDateKey = `${type}DateEnd` as keyof OpeningSearchFilterType;
     if (filters[endDateKey]) {
-      return DateTime.fromFormat(filters[endDateKey] as string, API_DATE_FORMAT).toFormat(DATE_PICKER_FORMAT)
+      return DateTime.fromFormat(
+        filters[endDateKey] as string,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT);
     }
     return undefined;
-  }
+  };
 
   /* v8 ignore next 18 */
   const handleClearFilters = () => {
@@ -313,7 +355,6 @@ const OpeningSearchBar = ({
     };
   }, []);
 
-
   /**
    * Returns `true` if the current mouse position is hovering
    * over any of the visible Search buttons in the DOM.
@@ -325,10 +366,7 @@ const OpeningSearchBar = ({
       if (!btn?.offsetParent) return false; // skip hidden buttons
       const rect = btn.getBoundingClientRect();
       return (
-        x >= rect.left &&
-        x <= rect.right &&
-        y >= rect.top &&
-        y <= rect.bottom
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
       );
     });
   };
@@ -336,6 +374,9 @@ const OpeningSearchBar = ({
   // Child components, shared between search bar and advanced modal
   const SearchInput = ({ id }: CustomInputProp) => (
     <Search
+      aria-label="Search by opening ID, opening number or file ID"
+      data-testid={id}
+      role="searchbox"
       size="md"
       placeholder="Search by opening ID, opening number or file ID"
       labelText="Search"
@@ -343,14 +384,14 @@ const OpeningSearchBar = ({
       id={id}
       onBlur={(e) => {
         if (isMouseOverSearchButton()) {
-          handleStringChange('mainSearchTerm')(e);
+          handleStringChange("mainSearchTerm")(e);
           setEnableSearch(true);
         } else {
-          handleStringChange('mainSearchTerm')(e);
+          handleStringChange("mainSearchTerm")(e);
         }
       }}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
           e.currentTarget.blur();
           setEnableSearch(true);
         }
@@ -359,7 +400,7 @@ const OpeningSearchBar = ({
     />
   );
 
-  const SearchButton = ({ size, id }: { size: 'md' | 'lg', id: string }) => {
+  const SearchButton = ({ size, id }: { size: "md" | "lg"; id: string }) => {
     const refCallback = (el: HTMLButtonElement | null) => {
       if (el && !searchButtonRefs.current.includes(el)) {
         searchButtonRefs.current.push(el);
@@ -389,7 +430,7 @@ const OpeningSearchBar = ({
 
   const openAdvancedSearch = () => {
     setIsAdvancedSearchOpen(true);
-  }
+  };
 
   const AdvancedSearchButton = ({ hasIconOnly }: { hasIconOnly?: boolean }) => (
     <Button
@@ -420,7 +461,7 @@ const OpeningSearchBar = ({
           id="category-multi-select"
           items={categories}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('category')}
+          onChange={handleMultiSelectChange("category")}
           selectedItems={filters.category}
         />
       </Column>
@@ -432,7 +473,7 @@ const OpeningSearchBar = ({
           id="orgunit-multiselect"
           items={orgUnits}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('orgUnit')}
+          onChange={handleMultiSelectChange("orgUnit")}
           selectedItems={filters.orgUnit}
         />
       </Column>
@@ -444,7 +485,7 @@ const OpeningSearchBar = ({
           placeholder="Status"
           items={OPENING_STATUS_LIST}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('statusList')}
+          onChange={handleMultiSelectChange("statusList")}
           selectedItems={filters.statusList}
         />
       </Column>
@@ -468,76 +509,70 @@ const OpeningSearchBar = ({
       </Column>
 
       {/* Filter tag bar */}
-      {
-        hasActiveFilters()
-          ? (
-            <OpeningFilterBar
-              filters={filters}
-              setFilters={setFilters}
-              handleClearFilters={handleClearFilters}
-            />)
-          : null
-      }
+      {hasActiveFilters() ? (
+        <OpeningFilterBar
+          filters={filters}
+          setFilters={setFilters}
+          handleClearFilters={handleClearFilters}
+        />
+      ) : null}
 
       {/* Action button row, hidden until a search is completed */}
-      {
-        totalResults !== undefined
-          ? (
-            <Column className="table-toolbar-col  subgrid-full-width-no-row-gap-col" sm={4} md={8} lg={16}>
-              <TableToolbar>
-                <TableToolbarContent>
-                  <div className="total-rows-display">
-                    Total search results: {totalResults}
+      {totalResults !== undefined ? (
+        <Column
+          className="table-toolbar-col  subgrid-full-width-no-row-gap-col"
+          sm={4}
+          md={8}
+          lg={16}
+        >
+          <TableToolbar>
+            <TableToolbarContent>
+              <div className="total-rows-display">
+                Total search results: {totalResults}
+              </div>
+              <div className="action-button-group">
+                <Button
+                  className="map-button"
+                  renderIcon={LocationIcon}
+                  iconDescription="Toggle map"
+                  type="button"
+                  size="lg"
+                  kind="ghost"
+                  hasIconOnly={breakpoint === "sm"}
+                  onClick={() => setShowMap(!showMap)}
+                >
+                  {showMap ? "Hide" : "Show"} map
+                </Button>
+                <TableToolbarMenu
+                  className="action-menu-button column-menu-button"
+                  renderIcon={ColumnIcon}
+                  iconDescription="Edit columns"
+                  menuOptionsClass="opening-search-action-menu-option"
+                >
+                  <div className="opening-search-action-menu-option-item">
+                    <div className="helper-text">
+                      Select columns you want to see
+                    </div>
+                    {headers.map((header) =>
+                      header.key !== "actions" ? (
+                        <Checkbox
+                          key={header.key}
+                          className="column-checkbox"
+                          id={`${header.key}-checkbox`}
+                          labelText={header.header}
+                          checked={header.selected}
+                          onChange={() => toggleColumn(header.key)}
+                          readOnly={header.key === "openingId"}
+                        />
+                      ) : null
+                    )}
                   </div>
-                  <div className="action-button-group">
-                    <Button
-                      className="map-button"
-                      renderIcon={LocationIcon}
-                      iconDescription="Toggle map"
-                      type="button"
-                      size="lg"
-                      kind="ghost"
-                      hasIconOnly={breakpoint === 'sm'}
-                      onClick={() => setShowMap(!showMap)}
-                    >
-                      {showMap ? 'Hide' : 'Show'} map
-                    </Button>
-                    <TableToolbarMenu
-                      className="action-menu-button column-menu-button"
-                      renderIcon={ColumnIcon}
-                      iconDescription="Edit columns"
-                      menuOptionsClass="opening-search-action-menu-option"
-                    >
-                      <div className="opening-search-action-menu-option-item">
-                        <div className="helper-text">
-                          Select columns you want to see
-                        </div>
-                        {
-                          headers.map((header) => (
-                            header.key !== 'actions'
-                              ? (
-                                <Checkbox
-                                  key={header.key}
-                                  className="column-checkbox"
-                                  id={`${header.key}-checkbox`}
-                                  labelText={header.header}
-                                  checked={header.selected}
-                                  onChange={() => toggleColumn(header.key)}
-                                  readOnly={header.key === 'openingId'}
-                                />
-                              )
-                              : null
-                          ))
-                        }
-                      </div>
-                    </TableToolbarMenu>
-                  </div>
-                </TableToolbarContent>
-              </TableToolbar>
-            </Column>
-          )
-          : null
-      }
+                </TableToolbarMenu>
+              </div>
+            </TableToolbarContent>
+          </TableToolbar>
+        </Column>
+      ) : null}
 
       {/* Modal Section, conatins some duplicated inputs. These input components can't be made into their own due to behaviour issues. */}
       <ComposedModal
@@ -566,13 +601,13 @@ const OpeningSearchBar = ({
                   id="created-by-me-checkbox"
                   labelText="Openings created by me"
                   checked={filters.myOpenings}
-                  onChange={handleBooleanChange('myOpenings')}
+                  onChange={handleBooleanChange("myOpenings")}
                 />
                 <Checkbox
                   id="frpa-checkbox"
                   labelText="FRPA section 108"
                   checked={filters.submittedToFrpa}
-                  onChange={handleBooleanChange('submittedToFrpa')}
+                  onChange={handleBooleanChange("submittedToFrpa")}
                 />
               </CheckboxGroup>
             </Column>
@@ -581,11 +616,11 @@ const OpeningSearchBar = ({
             <Column sm={4} md={4} lg={8}>
               <CustomMultiSelect
                 placeholder="Category"
-                id={'advanced-category-multiselect'}
+                id={"advanced-category-multiselect"}
                 titleText="Category"
                 items={categories}
                 itemToString={codeDescriptionToDisplayText}
-                onChange={handleMultiSelectChange('category')}
+                onChange={handleMultiSelectChange("category")}
                 selectedItems={filters.category}
               />
             </Column>
@@ -598,7 +633,7 @@ const OpeningSearchBar = ({
                 titleText="Org unit"
                 items={orgUnits}
                 itemToString={codeDescriptionToDisplayText}
-                onChange={handleMultiSelectChange('orgUnit')}
+                onChange={handleMultiSelectChange("orgUnit")}
                 selectedItems={filters.orgUnit}
               />
             </Column>
@@ -611,7 +646,7 @@ const OpeningSearchBar = ({
                 titleText="Status"
                 items={OPENING_STATUS_LIST}
                 itemToString={codeDescriptionToDisplayText}
-                onChange={handleMultiSelectChange('statusList')}
+                onChange={handleMultiSelectChange("statusList")}
                 selectedItems={filters.statusList}
               />
             </Column>
@@ -622,9 +657,9 @@ const OpeningSearchBar = ({
                 clientInputId="opening-advanced-search-client-input"
                 locationInputId="opening-advanced-location-code-input"
                 clientNumber={filters.clientNumber}
-                setClientNumber={handleStringChange('clientNumber')}
+                setClientNumber={handleStringChange("clientNumber")}
                 locationCode={filters.clientLocationCode}
-                setClientLocationCode={handleStringChange('clientLocationCode')}
+                setClientLocationCode={handleStringChange("clientLocationCode")}
               />
             </Column>
             <Column sm={4} md={4} lg={8}>
@@ -642,7 +677,11 @@ const OpeningSearchBar = ({
                 />
                 {/* Start date */}
                 <DatePicker
-                  key={filters.dateType ? filters.dateType.code + '-start' : 'start'}
+                  key={
+                    filters.dateType
+                      ? filters.dateType.code + "-start"
+                      : "start"
+                  }
                   className="advanced-date-picker"
                   datePickerType="single"
                   dateFormat="Y/m/d"
@@ -661,7 +700,9 @@ const OpeningSearchBar = ({
                 </DatePicker>
                 {/* End date */}
                 <DatePicker
-                  key={filters.dateType ? filters.dateType.code + '-end' : 'end'}
+                  key={
+                    filters.dateType ? filters.dateType.code + "-end" : "end"
+                  }
                   className="advanced-date-picker"
                   datePickerType="single"
                   dateFormat="Y/m/d"
@@ -690,7 +731,7 @@ const OpeningSearchBar = ({
                 type="text"
                 labelText="Cut block"
                 defaultValue={filters.cutBlockId}
-                onBlur={handleStringChange('cutBlockId')}
+                onBlur={handleStringChange("cutBlockId")}
                 maxLength={MAX_TEXT_INPUT_LEN}
               />
             </Column>
@@ -703,7 +744,7 @@ const OpeningSearchBar = ({
                 type="text"
                 labelText="Cutting permit"
                 value={filters.cuttingPermitId}
-                onBlur={handleStringChange('cuttingPermitId')}
+                onBlur={handleStringChange("cuttingPermitId")}
                 maxLength={MAX_TEXT_INPUT_LEN}
               />
             </Column>
@@ -716,21 +757,24 @@ const OpeningSearchBar = ({
                 type="text"
                 labelText="Timber mark"
                 defaultValue={filters.timberMark}
-                onBlur={handleStringChange('timberMark')}
+                onBlur={handleStringChange("timberMark")}
                 maxLength={MAX_TEXT_INPUT_LEN}
               />
             </Column>
           </Grid>
         </ModalBody>
         <ModalFooter>
-          <Button kind="secondary" onClick={() => setIsAdvancedSearchOpen(false)}>
+          <Button
+            kind="secondary"
+            onClick={() => setIsAdvancedSearchOpen(false)}
+          >
             Cancel
           </Button>
           <SearchButton id="modal-search-button-sm" size="lg" />
         </ModalFooter>
       </ComposedModal>
     </>
-  )
-}
+  );
+};
 
 export default OpeningSearchBar;
