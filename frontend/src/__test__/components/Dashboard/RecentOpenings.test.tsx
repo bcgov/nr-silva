@@ -4,21 +4,19 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import RecentOpenings from "../../../components/RecentOpenings";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fetchUserRecentOpenings } from "../../../services/OpeningService";
+import API from "../../../services/API";
 import { NotificationProvider } from "../../../contexts/NotificationProvider";
 import { openingA, openingB } from "../../fixtures/openings";
 
-vi.mock("../../../services/OpeningService", () => ({
-  fetchUserRecentOpenings: vi.fn().mockResolvedValue({
-    content: [],
-    page: {
-      totalElements: 0,
-      size: 10,
-      number: 0,
-      totalPages: 1,
+vi.mock("../../../services/API", () => {
+  return {
+    default: {
+      UserRecentOpeningEndpointService: {
+        getUserRecentOpenings: vi.fn(),
+      },
     },
-  }),
-}));
+  };
+});
 
 const renderWithProviders = () => {
   const queryClient = new QueryClient();
@@ -39,6 +37,9 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should render the section title and subtitle", () => {
+    (
+      API.UserRecentOpeningEndpointService.getUserRecentOpenings as vi.Mock
+    ).mockResolvedValueOnce({ content: [] });
     renderWithProviders();
 
     expect(screen.getByText("Recent openings")).toBeInTheDocument();
@@ -50,9 +51,9 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should display a loading skeleton when fetching data", () => {
-    (fetchUserRecentOpenings as vi.Mock).mockReturnValueOnce(
-      new Promise(() => {})
-    );
+    (
+      API.UserRecentOpeningEndpointService.getUserRecentOpenings as vi.Mock
+    ).mockReturnValueOnce(new Promise(() => {}));
 
     renderWithProviders();
 
@@ -60,7 +61,9 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should display an empty state if no recent openings are available", async () => {
-    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ content: [] });
+    (
+      API.UserRecentOpeningEndpointService.getUserRecentOpenings as vi.Mock
+    ).mockResolvedValueOnce({ content: [] });
 
     renderWithProviders();
 
@@ -79,7 +82,9 @@ describe("RecentOpenings Component", () => {
   it("should render the table when recent openings data is available", async () => {
     const mockData = { content: [openingA, openingB] };
 
-    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce(mockData);
+    (
+      API.UserRecentOpeningEndpointService.getUserRecentOpenings as vi.Mock
+    ).mockResolvedValueOnce(mockData);
 
     renderWithProviders();
 
@@ -94,7 +99,9 @@ describe("RecentOpenings Component", () => {
   });
 
   it("should disable the map button if no openings exist", async () => {
-    (fetchUserRecentOpenings as vi.Mock).mockResolvedValueOnce({ content: [] });
+    (
+      API.UserRecentOpeningEndpointService.getUserRecentOpenings as vi.Mock
+    ).mockResolvedValueOnce({ content: [] });
 
     renderWithProviders();
 

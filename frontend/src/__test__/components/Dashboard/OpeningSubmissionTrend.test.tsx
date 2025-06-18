@@ -10,10 +10,7 @@ import {
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OpeningSubmissionTrend from "../../../components/OpeningSubmissionTrend";
-import "@testing-library/jest-dom";
-
-import { fetchUserSubmissionTrends } from "../../../services/OpeningService";
-import { fetchOpeningsOrgUnits } from "../../../services/OpeningSearchService";
+import API from "../../../services/API";
 
 vi.mock("@carbon/charts-react", () => ({
   GroupedBarChart: React.forwardRef((_props, _ref) => (
@@ -21,13 +18,18 @@ vi.mock("@carbon/charts-react", () => ({
   )),
 }));
 
-vi.mock("../../../services/OpeningService", () => ({
-  fetchUserSubmissionTrends: vi.fn(),
-}));
-
-vi.mock("../../../services/OpeningSearchService", () => ({
-  fetchOpeningsOrgUnits: vi.fn().mockResolvedValue([]),
-}));
+vi.mock("../../../services/API", () => {
+  return {
+    default: {
+      CodesEndpointService: {
+        getOpeningOrgUnits: vi.fn(),
+      },
+      UserActionsEndpointService: {
+        getOpeningsSubmissionTrends: vi.fn(),
+      },
+    },
+  };
+});
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -58,18 +60,29 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should render the component correctly", async () => {
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([
+      { code: "DAS", description: "District A" },
+      { code: "DBS", description: "District B" },
+    ]);
     await renderWithProviders();
-    expect(
-      screen.getByText("Opening submission per year")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Opening submission per year")).toBeInTheDocument();
     expect(
       screen.getByText("Check quantity and evolution of openings")
     ).toBeInTheDocument();
   });
 
   it("should display the dropdowns and combo box after fetching org unit data", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([
       { code: "DAS", description: "District A" },
       { code: "DBS", description: "District B" },
     ]);
@@ -89,8 +102,12 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should show no results message when no data is returned", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([]);
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([]);
 
     await renderWithProviders();
 
@@ -105,11 +122,15 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should render the chart when data is available", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([
       { monthName: "Jan", year: 2023, amount: 10 },
       { monthName: "Feb", year: 2023, amount: 20 },
     ]);
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([]);
 
     await renderWithProviders();
 
@@ -119,10 +140,12 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should update year and refetch data", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
-      { code: "DAS", description: "District A" },
-    ]);
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([{ code: "DAS", description: "District A" }]);
 
     const { getByText } = await renderWithProviders();
 
@@ -136,17 +159,21 @@ describe("OpeningSubmissionTrend Component", () => {
       ).toBeInTheDocument();
     });
 
-    const yearInput = document.getElementById("trend-year-selection") as HTMLInputElement;
+    const yearInput = document.getElementById(
+      "trend-year-selection"
+    ) as HTMLInputElement;
     fireEvent.change(yearInput, { target: { value: "2022" } });
 
     expect(yearInput.value).toBe("2022");
   });
 
   it("should update org units and trigger data fetch", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockResolvedValueOnce([]);
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([
-      { code: "DAS", description: "District A" },
-    ]);
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockResolvedValueOnce([]);
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([{ code: "DAS", description: "District A" }]);
 
     await renderWithProviders();
 
@@ -158,7 +185,9 @@ describe("OpeningSubmissionTrend Component", () => {
       expect(within(container!).getByText("District")).toBeInTheDocument();
     });
 
-    const districtInput = document.getElementById("district-dropdown-input") as HTMLInputElement;
+    const districtInput = document.getElementById(
+      "district-dropdown-input"
+    ) as HTMLInputElement;
     expect(districtInput).toBeInTheDocument();
 
     fireEvent.change(districtInput, { target: { value: "District A" } });
@@ -169,10 +198,12 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should show loading spinner when fetching", async () => {
-    (fetchUserSubmissionTrends as vi.Mock).mockImplementation(
-      () => new Promise(() => { })
-    );
-    (fetchOpeningsOrgUnits as vi.Mock).mockResolvedValueOnce([]);
+    (
+      API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
+    ).mockImplementation(() => new Promise(() => {}));
+    (
+      API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
+    ).mockResolvedValueOnce([]);
 
     const { container } = await renderWithProviders();
     const spinner = container.querySelector(".trend-loading-spinner");
