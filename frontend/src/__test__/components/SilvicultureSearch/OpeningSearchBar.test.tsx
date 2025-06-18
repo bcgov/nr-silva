@@ -3,9 +3,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
+import { MemoryRouter } from "react-router-dom";
 import OpeningSearchBar from "../../../components/SilvicultureSearch/OpeningSearch/OpeningSearchBar";
 import { OpeningSearchFilterType } from "../../../components/SilvicultureSearch/OpeningSearch/definitions";
-import CodeDescriptionDto from "../../../types/CodeDescriptionType";
+import { CodeDescriptionDto } from "../../../services/OpenApi";
 import { defaultSearchTableHeaders } from "../../../utils/localStorageUtils";
 
 // Mock dependencies
@@ -56,20 +57,22 @@ const renderComponent = (props = {}) => {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <OpeningSearchBar
-        headers={mockHeaders}
-        setHeaders={mockSetHeaders}
-        filters={mockFilters}
-        setFilters={mockSetFilters}
-        categories={mockCategories}
-        orgUnits={mockOrgUnits}
-        handleSearch={mockHandleSearch}
-        totalResults={10}
-        showMap={false}
-        setShowMap={mockSetShowMap}
-        setEnableSearch={vi.fn()}
-        resetPagination={vi.fn()}
-      />
+      <MemoryRouter>
+        <OpeningSearchBar
+          headers={mockHeaders}
+          setHeaders={mockSetHeaders}
+          filters={mockFilters}
+          setFilters={mockSetFilters}
+          categories={mockCategories}
+          orgUnits={mockOrgUnits}
+          handleSearch={mockHandleSearch}
+          totalResults={10}
+          showMap={false}
+          setShowMap={mockSetShowMap}
+          setEnableSearch={vi.fn()}
+          resetPagination={vi.fn()}
+        />
+      </MemoryRouter>
     </QueryClientProvider>
   );
 };
