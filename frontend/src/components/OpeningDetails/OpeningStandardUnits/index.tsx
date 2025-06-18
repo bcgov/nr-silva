@@ -363,7 +363,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
                           <Column sm={4} md={4} lg={5}>
                             <CardItem label="No regeneration declared date">
-                              {standardUnit.stocking.milestones?.regenDeclaredDate
+                              {standardUnit.stocking.milestones?.noRegenDeclaredDate
                                 ? formatLocalDate(standardUnit.stocking.milestones.noRegenDeclaredDate, true)
                                 : PLACE_HOLDER}
                             </CardItem>
@@ -371,7 +371,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
                           <Column sm={4} md={4} lg={5}>
                             <CardItem label="No regeneration due date">
-                              {standardUnit.stocking.milestones?.regenDueDate
+                              {standardUnit.stocking.milestones?.noRegenDueDate
                                 ? formatLocalDate(standardUnit.stocking.milestones.noRegenDueDate, true)
                                 : PLACE_HOLDER}
                             </CardItem>
