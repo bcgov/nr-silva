@@ -32,6 +32,7 @@ import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 import Comments from "../../Comments";
+import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTga";
 
 import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
@@ -294,6 +295,13 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                     <section className="section-title-with-icon">
                       <SecurityIcon size={20} />
                       <h4>Milestones</h4>
+                      {
+                        standardUnit.stocking.milestones.extentDeclared ?
+                          <StockingStandardMilestoneStatusTag
+                            status="EX"
+                          />
+                          : null
+                      }
                     </section>
                   </Column>
 
