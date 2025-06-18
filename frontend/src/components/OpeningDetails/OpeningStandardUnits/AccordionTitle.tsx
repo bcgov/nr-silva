@@ -2,7 +2,7 @@ import React from "react";
 import { Location as LocationIcon } from "@carbon/icons-react";
 
 import { PLACE_HOLDER } from "@/constants";
-import { OpeningDetailsStockingDetailsMilestoneDto, OpeningDetailsStockingDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsStockingDetailsMilestoneDto, OpeningDetailsStockingDto } from "@/services/OpenApi";
 
 import VerticalDivider from "../../VerticalDivider";
 import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTga";

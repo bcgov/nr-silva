@@ -1,0 +1,172 @@
+{
+  "mappings": [
+    {
+      "id" : "0502dadc-7847-3e94-9578-384d73ea61d2",
+      "request" : {
+        "url" : "/api/openings/favourites",
+        "method" : "OPTIONS"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "0502dadc-7847-3e94-9578-384d73ea61d2"
+    },
+    {
+      "id" : "1de2344d-a93c-3dba-955b-70a4277a380a",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "OPTIONS"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "1de2344d-a93c-3dba-955b-70a4277a380a"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Started",
+      "id": "7ecaf3bc-d824-3454-846f-d3db1bfefe56",
+      "request": {
+        "url": "/api/openings/favourites",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": ["response-template"],
+        "body": "[]",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "7ecaf3bc-d824-3454-846f-d3db1bfefe56"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Started",
+      "id" : "2883becb-c942-3dc7-8716-3d683069f3ec",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "body" : "false",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "2883becb-c942-3dc7-8716-3d683069f3ec"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Add opening to favorites",
+      "id" : "019d5c3a-3d51-3368-ada5-1dc6f62b4428",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "PUT"
+      },
+      "response" : {
+        "status" : 202,
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "019d5c3a-3d51-3368-ada5-1dc6f62b4428"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Add opening to favorites",
+      "id" : "2883becb-c942-3dc7-8716-3d683069f3ed",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "body" : "true",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "2883becb-c942-3dc7-8716-3d683069f3ed"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Add opening to favorites",
+      "id": "7ecaf3bc-d824-3454-846f-d3db1bfefe55",
+      "request": {
+        "url": "/api/openings/favourites",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": ["response-template"],
+        "body": "[1761935]",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "7ecaf3bc-d824-3454-846f-d3db1bfefe55"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Add opening to favorites",
+      "newScenarioState": "Started",
+      "id" : "d9b9d938-9d18-3214-b02e-2275e017745b",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "DELETE"
+      },
+      "response" : {
+        "status" : 204,
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "d9b9d938-9d18-3214-b02e-2275e017745b"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Started",
+      "id" : "d9b9d938-9d18-3214-b02e-2275e017745c",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "DELETE"
+      },
+      "response" : {
+        "status" : 404,
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "d9b9d938-9d18-3214-b02e-2275e017745c"
+    },
+    {
+      "scenarioName": "Favorite Openings",
+      "requiredScenarioState": "Add opening to favorites",
+      "id" : "019d5c3a-3d51-3368-ada5-1dc6f62b4438",
+      "request" : {
+        "urlPathPattern" : "/api/openings/favourites/([0-9]*)",
+        "method" : "PUT"
+      },
+      "response" : {
+        "status" : 202,
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "019d5c3a-3d51-3368-ada5-1dc6f62b4438"
+    }
+  ]
+}

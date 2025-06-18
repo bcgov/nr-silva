@@ -20,8 +20,7 @@ import {
 } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchOpeningTombstone } from "@/services/OpeningDetailsService";
-import { putUserRecentOpening } from "@/services/OpeningService";
+import API from "@/services/API";
 import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
 import PageTitle from "@/components/PageTitle";
 import EmptySection from "@/components/EmptySection";
@@ -79,13 +78,13 @@ const OpeningDetails = () => {
 
   const openingDetailsTombstoneQuery = useQuery({
     queryKey: ["openings", openingId, "tombstone"],
-    queryFn: () => fetchOpeningTombstone(Number(openingId)),
+    queryFn: () => API.OpeningEndpointService.getOpeningTombstone(Number(openingId)),
     enabled: !!openingId,
     refetchOnMount: "always",
   });
 
   const postRecentOpeningMutation = useMutation({
-    mutationFn: (openingId: number) => putUserRecentOpening(openingId),
+    mutationFn: (openingId: number) => API.UserRecentOpeningEndpointService.recordUserViewedOpening(openingId),
   });
 
   useEffect(() => {

@@ -3,14 +3,16 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import OpeningTableRow from "../../components/OpeningTableRow";
 import { recentOpeningsHeaders } from "../../components/RecentOpenings/constants";
-import { OpeningSearchResponseDto } from "../../types/OpeningTypes";
+import { OpeningSearchResponseDto } from "../../services/OpenApi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
 // Mock components
 vi.mock("../../components/StatusTag", () => ({
-  default: ({ description }: { description: string }) => <span data-testid="status-tag">{description}</span>,
+  default: ({ description }: { description: string }) => (
+    <span data-testid="status-tag">{description}</span>
+  ),
 }));
 
 vi.mock("../../components/SpatialCheckbox", () => ({
@@ -26,7 +28,9 @@ vi.mock("../../components/SpatialCheckbox", () => ({
 
 vi.mock("../../components/ActionButtons", () => ({
   default: ({ rowId, favorited }: { rowId: string; favorited: boolean }) => (
-    <button data-testid={`action-button-${rowId}`}>{favorited ? "Unfavorite" : "Favorite"}</button>
+    <button data-testid={`action-button-${rowId}`}>
+      {favorited ? "Unfavorite" : "Favorite"}
+    </button>
   ),
 }));
 
@@ -93,7 +97,9 @@ describe("OpeningRow component", () => {
 
   it("should render a status tag with correct text", () => {
     renderWithProviders();
-    expect(screen.getByTestId(`tag__status_colored_tag_${"teal"}`)).toHaveTextContent("Free Growing");
+    expect(
+      screen.getByTestId(`tag__status_colored_tag_${"teal"}`)
+    ).toHaveTextContent("Free Growing");
   });
 
   it("should display tooltip with category description", async () => {
@@ -113,6 +119,8 @@ describe("OpeningRow component", () => {
 
   it("should display the action buttons", () => {
     renderWithProviders();
-    expect(screen.getByTestId("action-button-101")).toHaveTextContent("Favorite");
+    expect(screen.getByTestId("action-button-101")).toHaveTextContent(
+      "Favorite"
+    );
   });
 });

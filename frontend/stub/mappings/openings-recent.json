@@ -1,0 +1,106 @@
+{
+  "mappings": [
+    {
+      "id": "6747b17b-960d-3213-b244-5b6abe083382",
+      "request": {
+        "url": "/api/openings/recent?size=10",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": ["response-template"],
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "6747b17b-960d-3213-b244-5b6abe083382"
+    },
+    {
+      "id" : "4f6a1f95-fcb3-3b68-a468-59e187da919c",
+      "request" : {
+        "urlPathPattern" : "/api/openings/recent/([0-9]*)",
+        "method" : "OPTIONS"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "4f6a1f95-fcb3-3b68-a468-59e187da919c"
+    },
+    {
+      "scenarioName": "Recent Openings",
+      "requiredScenarioState": "Started",
+      "id" : "6c9c5789-8c9a-3d18-8b7f-869a6adba782",
+      "request" : {
+        "url" : "/api/openings/recent?size=10",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/recent-start.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "6c9c5789-8c9a-3d18-8b7f-869a6adba782"
+    },
+    {
+      "scenarioName": "Recent Openings",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Add opening to recent",      
+      "id" : "fe301e57-a17f-3ca0-9bee-62372191b0d6",
+      "request" : {
+        "urlPathPattern" : "/api/openings/recent/([0-9]*)",
+        "method" : "PUT"
+      },
+      "response" : {
+        "status" : 202,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "fe301e57-a17f-3ca0-9bee-62372191b0d6"
+    },
+    {
+      "scenarioName": "Recent Openings",
+      "requiredScenarioState": "Add opening to recent",
+      "id" : "6c9c5789-8c9a-3d18-8b7f-869a6adba783",
+      "request" : {
+        "url" : "/api/openings/recent?size=10",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/recent-favved.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "6c9c5789-8c9a-3d18-8b7f-869a6adba783"
+    },
+    {
+      "scenarioName": "Recent Openings",
+      "requiredScenarioState": "Add opening to recent",
+      "newScenarioState": "Started",      
+      "id" : "fe301e57-a17f-3ca0-9bee-62372191b0d7",
+      "request" : {
+        "urlPathPattern" : "/api/openings/recent/([0-9]*)",
+        "method" : "DELETE"
+      },
+      "response" : {
+        "status" : 202,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "fe301e57-a17f-3ca0-9bee-62372191b0d7"
+    }
+  ]
+}

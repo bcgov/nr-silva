@@ -6,7 +6,6 @@ import {
   PreferenceProvider,
   usePreference,
 } from "@/contexts/PreferenceProvider";
-import { UserPreference } from "@/types/PreferencesType";
 
 // Mock localStorageUtils
 vi.mock("@/utils/localStorageUtils", () => {

@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsActivitiesActivitiesDto, OpeningDetailsActivitiesDisturbanceDto } from "@/services/OpenApi";
 import { DEFAULT_PAGE_NUM, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import { ActivityFilterType } from "./definitions";

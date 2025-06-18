@@ -1,0 +1,39 @@
+{
+  "mappings": [
+    {
+      "id": "e6b96b70-ee30-309f-8d00-9e2d70a0ef78",
+      "request": {
+        "urlPath": "/api/openings/search",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "openings/search.json",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "e6b96b70-ee30-309f-8d00-9e2d70a0ef78"
+    },
+    {
+      "id": "08540832-3436-3b02-8951-a8ae1433742a",
+      "request": {
+        "urlPath": "/api/openings/search",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "08540832-3436-3b02-8951-a8ae1433742a"
+    }
+  ]
+}

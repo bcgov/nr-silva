@@ -1,4 +1,4 @@
-import { OpeningDetailsTenureDto } from "@/types/OpenApiTypes";
+import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 
 
 /**

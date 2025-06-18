@@ -1,0 +1,150 @@
+[
+  {
+    "code": "BLCF",
+    "description": "Backlog SP Area - Community Forest (Expired)"
+  },
+  {
+    "code": "BLFS",
+    "description": "Backlog SP Area - Forest Service (Expired)"
+  },
+  {
+    "code": "BLML",
+    "description": "Backlog SP Area - Major Licensee (Expired)"
+  },
+  {
+    "code": "BLWL",
+    "description": "Backlog SP Area - Woodlot License (Expired)"
+  },
+  {
+    "code": "CONT",
+    "description": "SP as a part of contractual agreement"
+  },
+  {
+    "code": "EXCLU",
+    "description": "Openings excluded from Crown managed forests"
+  },
+  {
+    "code": "FFTFLTC",
+    "description": "Forest For Tomorrow - Forestry Licence to Cut"
+  },
+  {
+    "code": "FFTITSL",
+    "description": "Forest For Tomorrow - Innovative Timber Sale Licence"
+  },
+  {
+    "code": "FG",
+    "description": "Opening that has achieved free growing (Expired)"
+  },
+  {
+    "code": "FTCF",
+    "description": "Forest Tenure - Site Plan under Community Forest"
+  },
+  {
+    "code": "FTFSM",
+    "description": "Forest Tenure - Forest Stand Management FPC s.71"
+  },
+  {
+    "code": "FTLEVY",
+    "description": "Forest Stand Levy under FSM Fund Reg."
+  },
+  {
+    "code": "FTML",
+    "description": "Forest Tenure - Major Licensee"
+  },
+  {
+    "code": "FTMSL",
+    "description": "Forest Tenure Ministry Silviculture Liability"
+  },
+  {
+    "code": "FTNOLVY",
+    "description": "Post April 1/09 blocks (1-5 ha) for which there is no opportunity within the appraisal manual to collect a levy."
+  },
+  {
+    "code": "FTPI",
+    "description": "Forest Tenure - pilot agreement"
+  },
+  {
+    "code": "FTSBF",
+    "description": "Forest Tenure - Small Business Forest Enterprise Program"
+  },
+  {
+    "code": "FTWL",
+    "description": "Forest Tenure - Woodlot: Site Plan"
+  },
+  {
+    "code": "NDAML",
+    "description": "Natural Disturbance - area-based Major Licensee"
+  },
+  {
+    "code": "NDCF",
+    "description": "Natural Disturbance - Community Forest"
+  },
+  {
+    "code": "NDFS",
+    "description": "Natural Disturbance - forest service"
+  },
+  {
+    "code": "NDVML",
+    "description": "Natural Disturbance - volume-based Major Licensee"
+  },
+  {
+    "code": "NDWL",
+    "description": "Natural Disturbance - Woodlot License"
+  },
+  {
+    "code": "NREQ",
+    "description": "Areas where SP/SMP's are not required by law"
+  },
+  {
+    "code": "P87",
+    "description": "Pre-87 areas that is either NSR, or stocked but not FG (Expired)"
+  },
+  {
+    "code": "SMPCF",
+    "description": "Stand Management Prescription - Community Forest (Expired)"
+  },
+  {
+    "code": "SMPEX",
+    "description": "Areas where exemptions to SMP's apply (Expired)"
+  },
+  {
+    "code": "SMPFS",
+    "description": "Stand Management Prescription - Forest service (Expired)"
+  },
+  {
+    "code": "SMPML",
+    "description": "Stand Management Prescription - Major Licensee (Expired)"
+  },
+  {
+    "code": "SMPWL",
+    "description": "Stand Management Prescription - Woodlot License (Expired)"
+  },
+  {
+    "code": "SPEX",
+    "description": "Areas with no reforestation or FG obligations and the area is exempt from a site plan requirement"
+  },
+  {
+    "code": "UHCF",
+    "description": "Unauthorized Harvest - Community Forest (Expired)"
+  },
+  {
+    "code": "UHFS",
+    "description": "Unauthorized Harvesting - Forest Service (Expired)"
+  },
+  {
+    "code": "UHML",
+    "description": "Unauthorized Harvesting - Major Licensee (Expired)"
+  },
+  {
+    "code": "UHRV",
+    "description": "Unauthorized Harvesting"
+  },
+  {
+    "code": "UHWL",
+    "description": "Unauthorized Harvest - Woodlot License (Expired)"
+  },
+  {
+    "code": "UNKN",
+    "description": "Unknown (Expired)"
+  }
+]

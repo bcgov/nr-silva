@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-
+import React from "react";
+import qs from 'qs';
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
+import API from "@/services/API";
 
 import EmptySection from "../../EmptySection";
 import DisturbanceAccordion from "./DisturbanceAccordion";
 import ActivityAccordion from "./ActivityAccordion";
 
-import { fetchOpeningActivities, fetchOpeningDisturbances } from "@/services/OpeningDetailsService";
 import { DefaultFilter } from "./constants";
 
 import "./styles.scss";
@@ -20,12 +20,22 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
-    queryFn: () => fetchOpeningDisturbances(openingId),
+    queryFn: () => API.OpeningEndpointService.getOpeningDisturbances(openingId, {}),
   });
 
   const activityQuery = useQuery({
-    queryKey: ['opening', openingId, 'activities', { filter: DefaultFilter }],
-    queryFn: () => fetchOpeningActivities(openingId, DefaultFilter),
+    queryKey: ['opening', openingId, 'activities', DefaultFilter],
+    queryFn: () => {
+      const { page, size } = DefaultFilter;
+
+      return API.OpeningEndpointService.getOpeningActivities(
+        openingId,
+        undefined,
+        page,
+        size,
+        undefined
+      );
+    },
   });
 
 
@@ -39,7 +49,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
   // Empty case
   if (
     disturbanceQuery.isSuccess && activityQuery.isSuccess &&
-    (disturbanceQuery.data.content.length + activityQuery.data.page.totalElements < 1)
+    ((disturbanceQuery.data.content?.length ?? 0) + (activityQuery.data.page?.totalElements ?? 0) < 1)
   ) {
     return (
       <EmptySection
@@ -56,29 +66,29 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         <h3 className="default-tab-content-title">
           {
             `
-              ${(activityQuery.data?.page.totalElements ?? 0) + (disturbanceQuery.data?.content.length ?? 0)}
+              ${(activityQuery.data?.page?.totalElements ?? 0) + (disturbanceQuery.data?.content?.length ?? 0)}
               activities in the opening area
             `
           }
         </h3>
       </Column>
       {
-        (disturbanceQuery.data?.content.length ?? 0) > 0
+        (disturbanceQuery.data?.content?.length ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <DisturbanceAccordion data={disturbanceQuery.data!.content} />
+              <DisturbanceAccordion data={disturbanceQuery.data!.content!} />
             </Column>
           )
           : null
       }
 
       {
-        (activityQuery.data?.page.totalElements ?? 0) > 0
+        (activityQuery.data?.page?.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
               <ActivityAccordion
                 openingId={openingId}
-                totalUnfiltered={activityQuery.data?.page.totalElements ?? 0}
+                totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
               />
             </Column>
           )

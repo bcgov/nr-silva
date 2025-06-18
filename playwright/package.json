@@ -1,0 +1,41 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "echo '{}' > ./src/auth/user.chromium.json && echo '{}' > ./src/auth/user.firefox.json && echo '{}' > ./src/auth/user.webkit.json",
+    "test": "playwright test",
+    "pretest:ui": "npm run pretest",
+    "test:ui": "playwright test --ui",
+    "pretest:debug": "npm run pretest",
+    "test:debug": "playwright test --debug"
+  },
+  "keywords": [],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@playwright/test": "^1.52.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^22.15.29",
+    "dotenv": "^16.5.0"
+  },
+  "dependencies": {
+    "@cucumber/gherkin": "^32.1.2"
+  }
+}

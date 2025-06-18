@@ -22,10 +22,10 @@ spring:
       url: ${spring.oracle.jdbcUrl}
       username: ${spring.oracle.username}
       password: ${spring.oracle.password}
-      connectionTimeout: 30000         # 30 seconds
-      idleTimeout: 60000              # 1 minute
-      maxLifetime: 180000             # 3 minutes
-      keepaliveTime: 60000            # 1 minute
+      connectionTimeout: 30000 # 30 seconds
+      idleTimeout: 60000 # 1 minute
+      maxLifetime: 180000 # 3 minutes
+      keepaliveTime: 60000 # 1 minute
       poolName: SilvaOracleConnPool
       minimumIdle: 1
       maximumPoolSize: 5
@@ -41,10 +41,10 @@ spring:
       jdbcUrl: ${spring.datasource.jdbcUrl}
       username: ${spring.datasource.username}
       password: ${spring.datasource.password}
-      connectionTimeout: 30000         # 30 seconds
-      idleTimeout: 60000              # 1 minute
-      maxLifetime: 180000             # 3 minutes
-      keepaliveTime: 60000            # 1 minute
+      connectionTimeout: 30000 # 30 seconds
+      idleTimeout: 60000 # 1 minute
+      maxLifetime: 180000 # 3 minutes
+      keepaliveTime: 60000 # 1 minute
       poolName: SilvaPostgresConnPool
       minimumIdle: 1
       maximumPoolSize: 3
@@ -73,7 +73,7 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 
-# FAM
+  # FAM
   security:
     oauth2:
       resourceserver:
@@ -81,7 +81,7 @@ spring:
           issuer-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}
           jwk-set-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}/.well-known/jwks.json
 
-# Flyway
+  # Flyway
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -175,4 +175,4 @@ spring:
 
 logging:
   pattern:
-    console: "{\"time\": \"%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}\", \"level\": \"${LOG_LEVEL:%5p}\", \"app\":\"${spring.application.name:-}\", \"user\":\"%X{X-USER:-}\", \"traceId\":\"%X{${X-TRACE-ID:traceId}:-}\", \"spanId\":\"%X{spanId:-}\", \"pid\": \"${PID: }\", \"thread\": \"%t\", \"source\": \"%logger{63}:%L\", \"message\": \"%m\", \"exception\":\"${LOG_EXCEPTION_CONVERSION_WORD:%wEx}\"}%n"
+    console: '{"time": "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}", "level": "${LOG_LEVEL:%5p}", "app":"${spring.application.name:-}", "user":"%X{X-USER:-}", "traceId":"%X{${X-TRACE-ID:traceId}:-}", "spanId":"%X{spanId:-}", "pid": "${PID: }", "thread": "%t", "source": "%logger{63}:%L", "message": "%m", "exception":"${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"}%n'

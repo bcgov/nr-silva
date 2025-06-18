@@ -7,7 +7,7 @@ import EmptySection from "../../../EmptySection";
 
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { CodeDescriptionDto } from "@/types/OpenApiTypes";
+import { CodeDescriptionDto } from "@/services/OpenApi";
 import { PlantingHeaders } from "./constants";
 
 const PlantingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {

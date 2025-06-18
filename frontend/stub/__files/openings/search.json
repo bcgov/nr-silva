@@ -1,0 +1,112 @@
+{
+  "content": [
+    {
+      "openingId": 1761935,
+      "openingNumber": " 534",
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "APP",
+        "description": "Approved"
+      },
+      "cuttingPermitId": "6AK",
+      "timberMark": "47/6AK",
+      "cutBlockId": "6-117",
+      "openingGrossAreaHa": 33.6,
+      "disturbanceStartDate": "2021-01-07",
+      "orgUnitCode": "VWC",
+      "orgUnitName": "Victoria Working Center",
+      "clientNumber": "00010003",
+      "clientLocation": "13",
+      "clientAcronym": null,
+      "clientName": "THE CONTINENTAL",
+      "regenDelayDate": "2024-01-07",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2025-04-16T10:31:20",
+      "entryUserId": "BCEID\\ANYA.DENNILL",
+      "submittedToFrpa": false,
+      "forestFileId": "TFL47",
+      "silvaReliefAppId": 0,
+      "lastViewDate": null,
+      "favourite": false,
+      "valid": true
+    },
+    {
+      "openingId": 1004185,
+      "openingNumber": null,
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "FG",
+        "description": "Free Growing"
+      },
+      "cuttingPermitId": "12U",
+      "timberMark": "47/12U",
+      "cutBlockId": "12-44",
+      "openingGrossAreaHa": 79.4,
+      "disturbanceStartDate": "2004-09-08",
+      "orgUnitCode": "DAS",
+      "orgUnitName": "Development Unit",
+      "clientNumber": "00010003",
+      "clientLocation": "13",
+      "clientAcronym": null,
+      "clientName": "THE CONTINENTAL",
+      "regenDelayDate": "2007-09-08",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2017-12-19T10:03:56",
+      "entryUserId": "IDIR\\adellavi",
+      "submittedToFrpa": false,
+      "forestFileId": "TFL47",
+      "silvaReliefAppId": 0,
+      "lastViewDate": null,
+      "favourite": false,
+      "valid": true
+    },
+    {
+      "openingId": 101017,
+      "openingNumber": " 514",
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "FG",
+        "description": "Free Growing"
+      },
+      "cuttingPermitId": "12K",
+      "timberMark": "47/12K",
+      "cutBlockId": "12-11",
+      "openingGrossAreaHa": 16.6,
+      "disturbanceStartDate": "2001-09-18",
+      "orgUnitCode": "DAS",
+      "orgUnitName": "Development Unit",
+      "clientNumber": "00010003",
+      "clientLocation": "13",
+      "clientAcronym": null,
+      "clientName": "THE CONTINENTAL",
+      "regenDelayDate": "2004-09-18",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2014-04-02T11:37:09",
+      "entryUserId": "BABAYAGA",
+      "submittedToFrpa": false,
+      "forestFileId": "TFL47",
+      "silvaReliefAppId": 0,
+      "lastViewDate": null,
+      "favourite": false,
+      "valid": true
+    }
+  ],
+  "page": {
+    "size": 20,
+    "number": 0,
+    "totalElements": 3,
+    "totalPages": 1
+  }
+}
