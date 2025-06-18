@@ -1,5 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.enums;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum StockingMilestoneTypeEnum {
     FG("FG", "Free Growing"),
     RG("RG", "Regeneration"),
@@ -8,17 +14,4 @@ public enum StockingMilestoneTypeEnum {
 
     private final String code;
     private final String description;
-
-    StockingMilestoneTypeEnum(String code, String description) {
-        this.code = code;
-        this.description = description;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }
