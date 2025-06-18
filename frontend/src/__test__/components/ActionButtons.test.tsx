@@ -11,11 +11,18 @@ import {
 import ActionButtons from "../../components/ActionButtons";
 import { NotificationProvider } from "../../contexts/NotificationProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import API from "../../services/API";
 
-vi.mock("@/services/OpeningFavouriteService", () => ({
-  putOpeningFavourite: vi.fn().mockResolvedValue({}),
-  deleteOpeningFavorite: vi.fn().mockResolvedValue({}),
-}));
+vi.mock("../../services/API", () => {
+  return {
+    default: {
+      OpeningFavoriteEndpointService: {
+        removeFromFavorites: vi.fn(),
+        addToFavorites: vi.fn(),
+      },
+    },
+  };
+});
 
 describe("ActionButtons", () => {
   const rowId = "123456";
@@ -35,6 +42,12 @@ describe("ActionButtons", () => {
   };
 
   it("renders the 'Favorite Opening' button", () => {
+    (
+      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+    ).mockResolvedValueOnce();
+    (
+      API.OpeningFavoriteEndpointService.addToFavorites as vi.Mock
+    ).mockResolvedValueOnce();
     renderWithProviders();
     expect(
       screen.getByRole("button", { name: /Favorite Opening/i })
@@ -42,6 +55,12 @@ describe("ActionButtons", () => {
   });
 
   it("sets the 'Favorite Opening' as favorited when button is clicked", async () => {
+    (
+      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+    ).mockResolvedValueOnce();
+    (
+      API.OpeningFavoriteEndpointService.addToFavorites as vi.Mock
+    ).mockResolvedValueOnce();
     renderWithProviders();
 
     // Find the button
