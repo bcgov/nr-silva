@@ -1,5 +1,5 @@
-import { OpeningDetailsNotificationDto } from "@/types/OpenApiTypes";
 import { InlineNotification } from "@carbon/react";
+import { OpeningDetailsNotificationDto } from "@/services/OpenApi";
 import { statusOrder, statusToKind } from "./definitions";
 
 import "./styles.scss";
