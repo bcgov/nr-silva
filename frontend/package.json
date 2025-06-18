@@ -115,7 +115,7 @@
     "minimatch": "8.0.4",
     "minimist": "1.2.8",
     "uglify-js": "3.19.3",
-    "brace-expansion": "2.0.2"
+    "brace-expansion": "4.0.1"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
