@@ -28,18 +28,11 @@ public class OpeningDetailsNotificationServiceIntegrationTest extends AbstractTe
         List<OpeningDetailsNotificationDto> result = openingDetailsNotificationService.getNotifications(openingId);
 
         // Assert
-        Assertions.assertEquals(2, result.size(), "Result size should match the number of notifications");
+        Assertions.assertEquals(1, result.size(), "Result size should match the number of notifications");
 
-        // Verify first notification
         OpeningDetailsNotificationDto notification1 = result.get(0);
-        Assertions.assertEquals("Overdue milestone detected for standard unit \"A\"", notification1.title(), "Title should match");
+        Assertions.assertEquals("Overdue milestone detected for standard unit \"A, B\"", notification1.title(), "Title should match");
         Assertions.assertEquals("Immediate action required!", notification1.description(), "Description should match");
         Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.ERROR, notification1.status(), "Status should match");
-
-        // Verify second notification
-        OpeningDetailsNotificationDto notification2 = result.get(1);
-        Assertions.assertEquals("Overdue milestone detected for standard unit \"B\"", notification2.title(), "Title should match");
-        Assertions.assertEquals("Immediate action required!", notification2.description(), "Description should match");
-        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.ERROR, notification2.status(), "Status should match");
     }
 }
