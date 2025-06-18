@@ -204,6 +204,11 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.overview.milestones.freeGrowingDeclaredDate").value("2012-04-30"))
         .andExpect(jsonPath("$.overview.milestones.freeGrowingOffsetYears").value(11))
         .andExpect(jsonPath("$.overview.milestones.freeGrowingDueDate").value("2012-09-18"))
+
+        // Verify notifications section
+        .andExpect(jsonPath("$.notifications[0].title").value("Overdue milestone detected for standard unit \"A, B\""))
+        .andExpect(jsonPath("$.notifications[0].description").value("Immediate action required!"))
+        .andExpect(jsonPath("$.notifications[0].status").value("ERROR"))
         .andReturn();
   }
 
