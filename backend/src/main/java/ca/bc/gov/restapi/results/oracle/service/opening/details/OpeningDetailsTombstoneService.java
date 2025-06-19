@@ -92,7 +92,7 @@ public class OpeningDetailsTombstoneService {
                             .opening()
                             .withComments(
                                 commentRepository
-                                    .getCommentById(openingId, null, null, null, null, null)
+                                    .getCommentById(openingId, null, null, null, null)
                                     .stream()
                                     .map(OpeningDetailsCommentConverter.mapComments())
                                     .toList()

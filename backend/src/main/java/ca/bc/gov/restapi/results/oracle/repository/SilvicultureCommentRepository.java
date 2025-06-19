@@ -17,7 +17,6 @@ public interface SilvicultureCommentRepository extends JpaRepository<Silvicultur
       Long atuId,
       Long ssuId,
       Long ssuMId,
-      String smtc,
       Long projectId
   );
 

@@ -160,7 +160,6 @@ null
                         null,
                         tombstone.stocking().ssid(),
                         null,
-                        null,
                         null
                     )
                     .stream()
@@ -216,19 +215,12 @@ null
               );
   }
 
-    private List<CommentDto> getMilestonesComments(Long ssuId) {
-        return Arrays.stream(StockingMilestoneTypeEnum.values())
-                .flatMap(type ->
-                        commentRepository.getCommentById(
-                                null,
-                                null,
-                                null,
-                                ssuId,
-                                type.getCode(),
-                                null
-
-                        ).stream()
-                ).map(OpeningDetailsCommentConverter.mapComments())
-                .toList();
+    private List<CommentDto> getMilestonesComments(Long ssuMId) {
+        return
+                commentRepository
+                        .getCommentById(null, null, null, ssuMId, null)
+                        .stream()
+                        .map(OpeningDetailsCommentConverter.mapComments())
+                        .toList();
     }
 }
