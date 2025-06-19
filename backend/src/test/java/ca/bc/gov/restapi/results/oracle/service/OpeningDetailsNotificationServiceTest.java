@@ -38,7 +38,6 @@ public class OpeningDetailsNotificationServiceTest {
 
         OpeningStockingNotificationProjection projection1 = mock(OpeningStockingNotificationProjection.class);
         when(projection1.getNotificationType()).thenReturn("ERROR");
-        when(projection1.getSilvMilestoneTypeCode()).thenReturn("FG");
         when(projection1.getStandardsUnitId()).thenReturn("A");
 
         OpeningStockingNotificationProjection projection2 = mock(OpeningStockingNotificationProjection.class);
