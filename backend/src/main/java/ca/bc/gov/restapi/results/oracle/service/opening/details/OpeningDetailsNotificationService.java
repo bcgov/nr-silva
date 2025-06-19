@@ -35,10 +35,16 @@ public class OpeningDetailsNotificationService {
         List<OpeningStockingNotificationProjection> projections =
                 openingRepository.getOpeningStockingNotificationsByOpeningId(openingId);
 
-        // Group by notificationType and silvMilestoneTypeCode
+        // Group by notificationType and conditionally by milestoneTypeCode
         return projections.stream()
                 .collect(Collectors.groupingBy(
-                        projection -> Map.entry(projection.getNotificationType(), projection.getSilvMilestoneTypeCode()),
+                        projection -> {
+                            if (OpeningDetailsNotificationStatusEnum.ERROR.toString()
+                                    .equalsIgnoreCase(projection.getNotificationType())) {
+                                return Map.entry(projection.getNotificationType(), "ALL");
+                            }
+                            return Map.entry(projection.getNotificationType(), projection.getSilvMilestoneTypeCode());
+                        },
                         Collectors.toList()
                 ))
                 .entrySet()
