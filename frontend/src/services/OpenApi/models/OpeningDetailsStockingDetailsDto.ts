@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { OpeningDetailsBecDto } from './OpeningDetailsBecDto';
+import type { OpeningDetailsStockingDetailsMilestoneDto } from './OpeningDetailsStockingDetailsMilestoneDto';
 export type OpeningDetailsStockingDetailsDto = {
     stockingStandardUnit: string | null;
     ssid: number | null;
@@ -16,5 +17,6 @@ export type OpeningDetailsStockingDetailsDto = {
     freeGrowingLate: number | null;
     freeGrowingEarly: number | null;
     additionalStandards: string | null;
+    milestones: OpeningDetailsStockingDetailsMilestoneDto;
 };
 
