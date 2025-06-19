@@ -5,7 +5,7 @@ import { PLACE_HOLDER } from "@/constants";
 import { OpeningDetailsStockingDetailsMilestoneDto, OpeningDetailsStockingDto } from "@/services/OpenApi";
 
 import VerticalDivider from "../../VerticalDivider";
-import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTga";
+import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTag";
 
 type AcoordionTitleProp = {
   standardUnit: OpeningDetailsStockingDto;

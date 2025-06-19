@@ -32,7 +32,7 @@ import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 import Comments from "../../Comments";
-import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTga";
+import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTag";
 
 import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
