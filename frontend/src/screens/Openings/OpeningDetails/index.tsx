@@ -125,11 +125,14 @@ const OpeningDetails = () => {
         <ActionableFavouriteButton openingId={Number(openingId)} />
       </PageTitle>
 
-      <Column sm={4} md={8} lg={16}>
-        <OpeningNotifications
-          notifications={openingDetailsTombstoneQuery.data?.notifications ?? []}
-        />
-      </Column>
+      {
+        openingDetailsTombstoneQuery.data?.notifications.length! > 0 ? <Column sm={4} md={8} lg={16}>
+          <OpeningNotifications
+            notifications={openingDetailsTombstoneQuery.data?.notifications ?? []}
+          />
+        </Column>
+          : null
+      }
 
       <Column sm={4} md={8} lg={16}>
         <OpeningSummary
