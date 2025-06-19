@@ -290,7 +290,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                     </div>
                   </Column>
 
-                  {/* Regen obligation */}
+                  {/* Milestones */}
                   <Column sm={4} md={8} lg={16}>
                     <section className="section-title-with-icon">
                       <SecurityIcon size={20} />
