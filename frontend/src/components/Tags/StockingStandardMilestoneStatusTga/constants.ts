@@ -13,11 +13,11 @@ export type CodeType = typeof KNOWN_CODES[number];
 
 export const codeColorMap: Record<CodeType, keyof typeof TYPES> = {
   FG: "teal",
-  RG: "teal",
-  PH: "teal",
-  NR: "teal",
-  EX: "teal",
-  UN: "gray"
+  RG: "green",
+  PH: "purple",
+  NR: "green",
+  EX: "blue",
+  UN: "outline"
 };
 
 export const codeNameMap: Record<CodeType, string> = {
