@@ -386,6 +386,13 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                           </Column>
                         </>
                       )}
+                      <Column sm={4} md={8} lg={16}>
+                        <CardItem label="Comments">
+                          <Comments
+                            comments={standardUnit.stocking.milestones.comments}
+                          />
+                        </CardItem>
+                      </Column>
 
                     </Grid>
                   </Column>
