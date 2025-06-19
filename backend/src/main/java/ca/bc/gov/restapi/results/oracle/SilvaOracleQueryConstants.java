@@ -376,12 +376,12 @@ public class SilvaOracleQueryConstants {
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN sm.LATE_OFFSET_YEARS END) AS free_growing_offset_years,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'FG' THEN TO_CHAR(sm.DUE_LATE_DATE, 'YYYY-MM-DD') END) AS free_growing_due_date,
             CASE
-              WHEN MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN 1 ELSE 0 END) = 1 THEN true
-              ELSE false
+              WHEN MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'NR' THEN 1 ELSE 0 END) = 1 THEN 'true'
+              ELSE 'false'
             END AS no_regen_indicated,
             CASE
-              WHEN MAX(CASE WHEN sm.EXTENT_FEASIBLE_DECLARED_IND = 'N' THEN 0 ELSE 1 END) = 1 THEN TRUE
-              ELSE false
+              WHEN MAX(CASE WHEN sm.EXTENT_FEASIBLE_DECLARED_IND = 'N' THEN 0 ELSE 1 END) = 1 THEN 'true'
+              ELSE 'false'
             END AS extent_declared
           FROM THE.STOCKING_MILESTONE sm
           WHERE sm.STOCKING_STANDARD_UNIT_ID = :ssuId
