@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@playwright/test": "^1.53.0",
+    "@playwright/test": "^1.53.1",
     "@testing-library/dom": "^10.2.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^16.0.0",
@@ -82,8 +82,8 @@
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "@vitest/coverage-v8": "^3.0.5",
-    "dotenv": "^16.5.0",
     "bcgov-typescript-codegen": "^1.0.9",
+    "dotenv": "^16.5.0",
     "eslint": "^8.48.0",
     "eslint-config-love": "^43.1.0",
     "eslint-import-resolver-typescript": "^3.7.0",
