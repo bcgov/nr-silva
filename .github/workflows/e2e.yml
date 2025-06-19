@@ -9,7 +9,8 @@ on:
         required: false
         type: string
 
-permissions: {}
+permissions:
+  checks: write # This workflow requires checks permission which must be granted by the caller
 
 jobs:
   fam-routing:
@@ -31,8 +32,6 @@ jobs:
     name: E2E Tests on Build - All Browsers
     if: inputs.target != 'prod' && inputs.target != 'PROD'
     needs: [fam-routing]
-    permissions:
-      checks: write  # Create check runs
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-noble
