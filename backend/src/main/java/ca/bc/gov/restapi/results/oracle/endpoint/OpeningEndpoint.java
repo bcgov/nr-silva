@@ -58,13 +58,7 @@ public class OpeningEndpoint {
    */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(@PathVariable Long openingId) {
-    List<OpeningDetailsStockingDto> results = openingService.getOpeningStockingDetails(openingId);
-
-    if (results.isEmpty()) {
-      throw new OpeningNotFoundException(openingId);
-    }
-
-    return results;
+    return openingService.getOpeningStockingDetails(openingId);
   }
 
   @GetMapping("/{openingId}/disturbances")
