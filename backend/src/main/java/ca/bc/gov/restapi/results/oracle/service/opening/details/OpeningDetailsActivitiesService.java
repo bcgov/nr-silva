@@ -72,7 +72,8 @@ public class OpeningDetailsActivitiesService {
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 PaginationUtil.resolveSort(
-                    pageable.getSort(), "ACTIVITY_TU_SEQ_NO", DISTURBANCE_SORT_FIELDS)))
+                    pageable.getSort(), "ACTIVITY_TU_SEQ_NO", DISTURBANCE_SORT_FIELDS))
+        )
         .map(
             projection ->
                 new OpeningDetailsActivitiesDisturbanceDto(
@@ -100,7 +101,8 @@ public class OpeningDetailsActivitiesService {
                     projection.getLicenceNumber(),
                     projection.getCuttingPermitId(),
                     projection.getCutBlock(),
-                    List.of()))
+                    List.of())
+        )
         .map(dto -> dto.withComments(getComments(dto.atuId())));
   }
 
