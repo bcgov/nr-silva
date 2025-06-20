@@ -28,7 +28,7 @@ public interface ForestCoverEntityRepository extends JpaRepository<ForestCoverEn
   Optional<ForestCoverPolygonProjection> findByOpeningDetailsPolygon(Long forestCoverId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_UNMAPPED)
-  Optional<ForestCoverUnmappedProjection> findByOpeningDetailsUnmapped(Long forestCoverId);
+  List<ForestCoverUnmappedProjection> findByOpeningDetailsUnmapped(Long forestCoverId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_LAYER)
   List<ForestCoverDetailsLayerProjection> findByOpeningDetailsLayer(Long forestCoverId);
@@ -37,7 +37,7 @@ public interface ForestCoverEntityRepository extends JpaRepository<ForestCoverEn
   List<ForestCoverDetailedSpeciesProjection> findByOpeningDetailsDetailedSpecies(Long forestCoverLayerId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_DAMAGE)
-  Optional<ForestCoverDetailsDamageProjection> findByOpeningDetailsDamage(Long forestCoverLayerId);
+  List<ForestCoverDetailsDamageProjection> findByOpeningDetailsDamage(Long forestCoverLayerId);
 
 
 }
