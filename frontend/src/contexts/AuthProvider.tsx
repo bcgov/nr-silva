@@ -23,7 +23,6 @@ import { JWT, ProviderType } from "../types/amplify";
 // 1. Define an interface for the context value
 interface AuthContextType {
   user: FamLoginUser | undefined;
-  userRoles: string[] | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
   login: (provider: ProviderType) => void;
@@ -41,7 +40,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // 4. Create the AuthProvider component with explicit typing
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
-  const [userRoles, setUserRoles] = useState<string[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   /**
@@ -56,14 +54,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const idToken = await loadUserToken();
       if (idToken) {
         setUser(parseToken(idToken));
-        setUserRoles(extractGroups(idToken.payload));
       } else {
         setUser(undefined);
-        setUserRoles(undefined);
       }
     } catch {
       setUser(undefined);
-      setUserRoles(undefined);
     } finally {
       setIsLoading(false);
     }
@@ -89,19 +84,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     await signOut();
     setUser(undefined);
-    setUserRoles(undefined);
   };
 
   const contextValue: AuthContextType = useMemo(
     () => ({
       user,
-      userRoles,
       isLoggedIn: !!user,
       isLoading,
       login,
       logout
     }),
-    [user, userRoles, isLoading]
+    [user, isLoading]
   );
 
   return (
