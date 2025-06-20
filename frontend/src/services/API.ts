@@ -25,7 +25,7 @@ if (API_BASE_URL.endsWith("/api")) {
 
 // Configure global OpenAPI settings
 OpenAPI.BASE = API_BASE_URL;
-OpenAPI.WITH_CREDENTIALS = true;
+OpenAPI.WITH_CREDENTIALS = false;
 OpenAPI.HEADERS = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": window.location.origin,
