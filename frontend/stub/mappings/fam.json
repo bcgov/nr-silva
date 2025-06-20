@@ -32,7 +32,7 @@
             "matches": "(.*)"
           },
           "identity_provider": {
-            "equalTo": "DEV-IDIR"
+            "equalTo": "TEST-IDIR"
           },
           "scope": {
             "equalTo": "openid profile email"
@@ -66,7 +66,7 @@
         "headers": {
           "Location": "http://{{request.host}}:3000/dashboard",
           "Set-Cookie": [
-            "CognitoIdentityServiceProvider.69u4hdmcoiuuhpmi59qmndhikk.LastAuthUser=abc123; sameSite=Lax; path=/; Expires={{now offset='10 years' format='EEE, d MMM yyyy HH:mm:ss'}} GMT; domain={{request.host}}",            
+            "CognitoIdentityServiceProvider.69u4hdmcoiuuhpmi59qmndhikk.LastAuthUser=abc123; sameSite=Lax; path=/; Expires={{now offset='10 years' format='EEE, d MMM yyyy HH:mm:ss'}} GMT; domain={{request.host}}",
             "CognitoIdentityServiceProvider.69u4hdmcoiuuhpmi59qmndhikk.abc123.idToken={{lookup parameters.idTokenMap (defaultIfEmpty request.cookies.stubrole 'EDITOR')}}; sameSite=Lax; path=/; Expires={{now offset='10 years' format='EEE, d MMM yyyy HH:mm:ss'}} GMT; domain={{request.host}}"
           ]
         }

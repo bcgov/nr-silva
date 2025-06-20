@@ -1,11 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { getClientLabel, getClientLocationLabel } from "../../utils/ForestClientUtils";
-import { ForestClientAutocomplete } from "../../services/OpeningClientLocationService";
-import CodeDescriptionDto from "../../types/CodeDescriptionType";
+import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "../../services/OpenApi";
 
 describe("getClientLabel", () => {
   it("should return a properly formatted label with name, id, and acronym", () => {
-    const client: ForestClientAutocomplete = {
+    const client: ForestClientAutocompleteResultDto = {
       name: "Forest Corp",
       id: "12345",
       acronym: "FC",
@@ -15,7 +14,7 @@ describe("getClientLabel", () => {
   });
 
   it("should omit empty values", () => {
-    const client: ForestClientAutocomplete = {
+    const client: ForestClientAutocompleteResultDto = {
       name: "Forest Corp",
       id: "",
       acronym: "FC",
@@ -33,11 +32,11 @@ describe("getClientLabel", () => {
   });
 
   it("should handle missing properties", () => {
-    const client: Partial<ForestClientAutocomplete> = {
+    const client: Partial<ForestClientAutocompleteResultDto> = {
       name: "Forest Corp",
     };
 
-    expect(getClientLabel(client as ForestClientAutocomplete)).toBe("Forest Corp");
+    expect(getClientLabel(client as ForestClientAutocompleteResultDto)).toBe("Forest Corp");
   });
 });
 
