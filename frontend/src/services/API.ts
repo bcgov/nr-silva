@@ -1,5 +1,4 @@
 import axios from "axios";
-import { TEN_SECONDS } from "@/constants/TimeUnits";
 import { env } from "@/env";
 import { getAuthIdToken } from "@/services/AuthService";
 import { OpenAPI } from "./OpenApi/core/OpenAPI";
@@ -15,7 +14,6 @@ import { UserRecentOpeningEndpointService } from "./OpenApi/services/UserRecentO
 
 // Setup global axios defaults
 axios.defaults.headers.common["Content-Type"] = "application/json";
-axios.defaults.timeout = TEN_SECONDS;
 
 // Clean baseURL
 let API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
