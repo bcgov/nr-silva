@@ -15,6 +15,6 @@ export type OpeningForestCoverLayerDto = {
     wellSpaced: number | number | null;
     freeGrowing: number | number | null;
     species: Array<OpeningForestCoverDetailedSpeciesDto>;
-    damage: OpeningForestCoverDamageDto;
+    damage: Array<OpeningForestCoverDamageDto>;
 };
 
