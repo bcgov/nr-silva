@@ -15,13 +15,13 @@ vi.mock('@carbon/react', () => ({
 
 describe('ProtectedRoute', () => {
   it('should redirect to unauthorized when requiredRoles are not met', () => {
-    (useAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['user'] });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: true });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
         <Routes>
           <Route path="/unauthorized" element={<div>Unauthorized Page</div>} />
-          <Route path="/protected" element={<ProtectedRoute requiredRoles={['admin']} />} />
+          <Route path="/protected" element={<ProtectedRoute />} />
         </Routes>
       </MemoryRouter>
     );
@@ -30,12 +30,12 @@ describe('ProtectedRoute', () => {
   });
 
   it('should render child routes when all checks pass', () => {
-    (useAuth as Mock).mockReturnValue({ isLoggedIn: true, userRoles: ['admin'] });
+    (useAuth as Mock).mockReturnValue({ isLoggedIn: true });
 
     const { container } = render(
       <MemoryRouter initialEntries={['/protected']}>
         <Routes>
-          <Route path="/protected" element={<ProtectedRoute requiredRoles={['admin']} />}>
+          <Route path="/protected" element={<ProtectedRoute />}>
             <Route path="" element={<div>Protected Content</div>} />
           </Route>
         </Routes>

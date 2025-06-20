@@ -15,10 +15,9 @@ import {
   parseToken,
   FamLoginUser,
   setAuthIdToken
-} from "../services/AuthService";
-import { extractGroups } from "../utils/famUtils";
+} from "@/services/AuthService";
 import { env } from "../env";
-import { JWT, ProviderType } from "../types/amplify";
+import { JWT, ProviderType } from "@/types/amplify";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
