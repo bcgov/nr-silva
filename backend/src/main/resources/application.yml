@@ -4,6 +4,7 @@ server:
     include-message: always
   port: ${SERVER_PORT:8080}
   shutdown: graceful
+  max-http-request-header-size: 32KB
 
 spring:
   application:
