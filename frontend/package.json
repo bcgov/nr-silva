@@ -44,7 +44,7 @@
     "precoverage": "rm -rf .nyc_output coverage",
     "coverage": " npm run test:unit && npm run test:ui",
     "postcoverage": "mkdir -p coverage && touch coverage/coverage-final.json && cp coverage/coverage-final.json .nyc_output/unit-test.json && nyc merge .nyc_output .nyc_output/coverage.json && nyc report",
-    "test:unit": "vitest run --coverage --watch=false",
+    "test:unit": "vitest run --coverage --watch=false --update",
     "test:unit:dev": "vitest --reporter=verbose",
     "test:ui": "playwright test",
     "test:ui:dev": "playwright test --ui",

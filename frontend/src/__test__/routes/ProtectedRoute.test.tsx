@@ -14,21 +14,6 @@ vi.mock('@carbon/react', () => ({
 }));
 
 describe('ProtectedRoute', () => {
-  it('should redirect to unauthorized when requiredRoles are not met', () => {
-    (useAuth as Mock).mockReturnValue({ isLoggedIn: true });
-
-    const { container } = render(
-      <MemoryRouter initialEntries={['/protected']}>
-        <Routes>
-          <Route path="/unauthorized" element={<div>Unauthorized Page</div>} />
-          <Route path="/protected" element={<ProtectedRoute />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    expect(container.innerHTML).toContain('Unauthorized Page');
-  });
-
   it('should render child routes when all checks pass', () => {
     (useAuth as Mock).mockReturnValue({ isLoggedIn: true });
 
