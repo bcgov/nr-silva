@@ -39,7 +39,10 @@ public record OpeningDetailsStockingDetailsDto(
     Long freeGrowingEarly,
 
     @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    String additionalStandards
+    String additionalStandards,
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    OpeningDetailsStockingDetailsMilestoneDto milestones
 ) {
 
 }

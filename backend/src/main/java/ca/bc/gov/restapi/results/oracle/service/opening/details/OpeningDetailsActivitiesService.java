@@ -254,7 +254,7 @@ public class OpeningDetailsActivitiesService {
   }
 
   private List<CommentDto> getComments(Long atuId) {
-    return commentRepository.getCommentById(null, atuId, null, null, null, null).stream()
+    return commentRepository.getCommentById(null, atuId, null, null,  null).stream()
         .map(OpeningDetailsCommentConverter.mapComments())
         .toList();
   }

@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.oracle.dto.opening;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 
+import java.util.List;
+
 @With
 public record OpeningDetailsTombstoneOverviewDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -12,7 +14,10 @@ public record OpeningDetailsTombstoneOverviewDto(
     OpeningDetailsTombstoneDto tombstone,
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    OpeningDetailsOverviewDto overview
+    OpeningDetailsOverviewDto overview,
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    List<OpeningDetailsNotificationDto> notifications
 ) {
 
 }
