@@ -7,7 +7,8 @@ import type { OpeningForestCoverPolygonDto } from './OpeningForestCoverPolygonDt
 import type { OpeningForestCoverUnmappedDto } from './OpeningForestCoverUnmappedDto';
 export type OpeningForestCoverDetailsDto = {
     polygon: OpeningForestCoverPolygonDto;
-    unmapped: OpeningForestCoverUnmappedDto;
+    isSingleLayer: boolean;
+    unmapped: Array<OpeningForestCoverUnmappedDto>;
     layers: Array<OpeningForestCoverLayerDto>;
 };
 
