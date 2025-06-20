@@ -49,7 +49,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       .map((feature) => feature.id)
       .filter(Boolean)
       .map((id) => String(id))
-      .reduce((acc, id) => id, "") ?? `geo-${index}`;
+      .reduce((acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
 
   /**
    * Function to get the opening ID from the polygon
