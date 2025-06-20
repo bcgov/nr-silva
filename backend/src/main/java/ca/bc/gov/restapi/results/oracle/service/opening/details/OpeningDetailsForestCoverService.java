@@ -9,12 +9,15 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerListDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverPolygonDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverUnmappedDto;
+import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -89,39 +92,30 @@ public class OpeningDetailsForestCoverService {
 
     return coverRepository
         .findByOpeningDetailsPolygon(coverId)
-        .map(projection ->
-            new OpeningForestCoverDetailsDto(
-                new OpeningForestCoverPolygonDto(
-                    projection.getForestCoverId(),
-                    new CodeDescriptionDto(
-                        projection.getReserveCode(),
-                        projection.getReserveName()
-                    ),
-                    new CodeDescriptionDto(
-                        projection.getObjectiveCode(),
-                        projection.getObjectiveName()
-                    ),
-                    new CodeDescriptionDto(
-                        projection.getSiteClassCode(),
-                        projection.getSiteClassName()
-                    ),
-                    projection.getSiteIndex(),
-                    new CodeDescriptionDto(
-                        projection.getSiteIndexSourceCode(),
-                        projection.getSiteIndexSourceName()
-                    ),
-                    new CodeDescriptionDto(
-                        projection.getTreeCoverPatternCode(),
-                        projection.getTreeCoverPatternName()
-                    ),
-                    projection.getReentryYear()
-                ),
-                null,
-                List.of()
-            )
-        )
-        .map(dto ->
-            dto.withUnmapped(
+        .map(convertProjectionToPolygon())
+        .map(getUnmappedArea(coverId))
+        .map(dto -> dto.withLayers(getDetailsLayer(coverId)))
+        .map(checkLayerType());
+  }
+
+  private Function<OpeningForestCoverDetailsDto, OpeningForestCoverDetailsDto> checkLayerType() {
+    return dto ->
+        dto.withSingleLayer(
+            //If no layers, then it is a single layer
+            CollectionUtils.isEmpty(dto.layers()) || dto
+                .layers()
+                .stream()
+                .map(OpeningForestCoverLayerDto::layer)
+                .map(CodeDescriptionDto::code)
+                //If any layer is S or I, then it is a single layer
+                .anyMatch(code -> code.equals("S") || code.equals("I"))
+        );
+  }
+
+  private Function<OpeningForestCoverDetailsDto, OpeningForestCoverDetailsDto> getUnmappedArea(
+      Long coverId) {
+    return dto ->
+        dto.withUnmapped(
             coverRepository
                 .findByOpeningDetailsUnmapped(coverId)
                 .stream()
@@ -140,10 +134,40 @@ public class OpeningDetailsForestCoverService {
                     )
                 )
                 .toList()
-            )
-        )
-        .map(dto ->
-            dto.withLayers(getDetailsLayer(coverId))
+        );
+  }
+
+  private Function<ForestCoverPolygonProjection, OpeningForestCoverDetailsDto> convertProjectionToPolygon() {
+    return projection ->
+        new OpeningForestCoverDetailsDto(
+            new OpeningForestCoverPolygonDto(
+                projection.getForestCoverId(),
+                new CodeDescriptionDto(
+                    projection.getReserveCode(),
+                    projection.getReserveName()
+                ),
+                new CodeDescriptionDto(
+                    projection.getObjectiveCode(),
+                    projection.getObjectiveName()
+                ),
+                new CodeDescriptionDto(
+                    projection.getSiteClassCode(),
+                    projection.getSiteClassName()
+                ),
+                projection.getSiteIndex(),
+                new CodeDescriptionDto(
+                    projection.getSiteIndexSourceCode(),
+                    projection.getSiteIndexSourceName()
+                ),
+                new CodeDescriptionDto(
+                    projection.getTreeCoverPatternCode(),
+                    projection.getTreeCoverPatternName()
+                ),
+                projection.getReentryYear()
+            ),
+            true,
+            null,
+            List.of()
         );
   }
 
