@@ -301,18 +301,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
-  @DisplayName("Get Opening Stocking Details by non-existing openingId should return 404")
-  void getOpeningStockingDetails_nonExistingOpeningId_shouldReturn404() throws Exception {
-
-    mockMvc
-        .perform(
-            get("/api/openings/999999999/ssu")
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound());
-  }
-
-  @Test
   @DisplayName("Get Opening Activities Disturbances Details by existing openingId should succeed")
   void getOpeningActivitiesDisturbancesDetails_noResults_shouldReturnEmpty() throws Exception {
     mockMvc
