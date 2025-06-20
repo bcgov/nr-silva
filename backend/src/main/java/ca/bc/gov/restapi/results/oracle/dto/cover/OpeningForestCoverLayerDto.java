@@ -26,7 +26,7 @@ public record OpeningForestCoverLayerDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     List<OpeningForestCoverDetailedSpeciesDto> species,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    OpeningForestCoverDamageDto damage
+    List<OpeningForestCoverDamageDto> damage
 ) {
 
 }

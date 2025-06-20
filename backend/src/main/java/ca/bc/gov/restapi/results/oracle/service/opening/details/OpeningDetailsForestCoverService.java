@@ -121,8 +121,10 @@ public class OpeningDetailsForestCoverService {
             )
         )
         .map(dto ->
+            dto.withUnmapped(
             coverRepository
                 .findByOpeningDetailsUnmapped(coverId)
+                .stream()
                 .map(projection ->
                     new OpeningForestCoverUnmappedDto(
                         projection.getUnmappedAreaId(),
@@ -137,8 +139,8 @@ public class OpeningDetailsForestCoverService {
                         )
                     )
                 )
-                .map(dto::withUnmapped)
-                .orElse(dto)
+                .toList()
+            )
         )
         .map(dto ->
             dto.withLayers(getDetailsLayer(coverId))
@@ -186,9 +188,10 @@ public class OpeningDetailsForestCoverService {
         .toList();
   }
 
-  private OpeningForestCoverDamageDto getDamage(Long coverLayerId) {
+  private List<OpeningForestCoverDamageDto> getDamage(Long coverLayerId) {
     return coverRepository
         .findByOpeningDetailsDamage(coverLayerId)
+        .stream()
         .map(projection -> new OpeningForestCoverDamageDto(
                 new CodeDescriptionDto(
                     projection.getDamageAgentCode(),
@@ -198,7 +201,7 @@ public class OpeningDetailsForestCoverService {
                 projection.getIncidenceArea()
             )
         )
-        .orElse(null);
+        .toList();
   }
 
   private List<CodeDescriptionDto> getLayerSpecies(Long coverId, String layerCodeIndicator) {

@@ -547,7 +547,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.polygon.forestCoverId").value(2638620))
         .andExpect(jsonPath("$.unmapped").isEmpty())
         .andExpect(jsonPath("$.layers[0].totalWellSpaced").value(1164))
-        .andExpect(jsonPath("$.layers[1].damage.damageAgent.code").value("IWS"))
+        .andExpect(jsonPath("$.layers[1].damage[0].damageAgent.code").value("IWS"))
         .andReturn();
   }
 }

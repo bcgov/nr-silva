@@ -9,7 +9,7 @@ public record OpeningForestCoverDetailsDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     OpeningForestCoverPolygonDto polygon,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    OpeningForestCoverUnmappedDto unmapped,
+    List<OpeningForestCoverUnmappedDto> unmapped,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     List<OpeningForestCoverLayerDto> layers
 ) {
