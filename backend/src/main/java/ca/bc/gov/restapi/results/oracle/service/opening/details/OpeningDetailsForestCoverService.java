@@ -166,7 +166,7 @@ public class OpeningDetailsForestCoverService {
                 projection.getReentryYear()
             ),
             true,
-            null,
+            List.of(),
             List.of()
         );
   }
