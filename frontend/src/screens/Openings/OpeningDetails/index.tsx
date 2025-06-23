@@ -25,6 +25,7 @@ import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFav
 import PageTitle from "@/components/PageTitle";
 import EmptySection from "@/components/EmptySection";
 import { OpeningSummary } from "@/components/OpeningDetails";
+import OpeningNotifications from "@/components/OpeningDetails/OpeningNotifications";
 
 import { OpeningDetailBreadCrumbs, OpeningDetailsTabs } from "./constants";
 
@@ -123,6 +124,15 @@ const OpeningDetails = () => {
       >
         <ActionableFavouriteButton openingId={Number(openingId)} />
       </PageTitle>
+
+      {
+        openingDetailsTombstoneQuery.data?.notifications.length! > 0 ? <Column sm={4} md={8} lg={16}>
+          <OpeningNotifications
+            notifications={openingDetailsTombstoneQuery.data?.notifications ?? []}
+          />
+        </Column>
+          : null
+      }
 
       <Column sm={4} md={8} lg={16}>
         <OpeningSummary

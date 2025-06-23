@@ -1,0 +1,99 @@
+{
+  "mappings":[
+    {
+      "id" : "b21db106-5b74-3b7c-b96c-edd3ad82bdfb",
+      "request" : {
+        "urlPath" : "/api/users/submission-trends",
+        "method" : "OPTIONS"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "b21db106-5b74-3b7c-b96c-edd3ad82bdfb"
+    },
+    {
+      "id" : "48162576-33bc-3ba2-8cf8-81c639fcaed1",
+      "request" : {
+        "urlPath" : "/api/users/submission-trends",
+        "method" : "GET",
+        "queryParameters" : {
+            "entryDateStart" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-01-01$"
+          },
+          "entryDateEnd" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-12-31$"
+          },
+          "orgUnitCode" : {
+            "matches" : "^[A-Z]{3,4}$"
+          },
+          "statusCode" : {
+            "matches" : "^[A-Z]{3,4}$"
+          }
+        }
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "users/submission-trends.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "48162576-33bc-3ba2-8cf8-81c639fcaed1"
+    },
+    {
+      "id" : "f3a8f071-8665-3c0b-9bb4-46e09b233fd4",
+      "request" : {
+        "urlPath" : "/api/users/submission-trends",
+        "method" : "GET",
+        "queryParameters" : {
+            "entryDateStart" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-01-01$"
+          },
+          "entryDateEnd" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-12-31$"
+          },
+          "orgUnitCode" : {
+            "matches" : "^[A-Z]{3,4}$"
+          }
+        }
+      },
+      "response" : {
+        "status" : 200,
+        "bodyFileName" : "users/submission-trends.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "f3a8f071-8665-3c0b-9bb4-46e09b233fd4"
+    },
+    {
+      "id" : "b4256557-25d6-3a15-9a46-db6b02b3d35f",
+      "request" : {
+        "urlPath" : "/api/users/submission-trends",
+        "method" : "GET",
+        "queryParameters" : {
+            "entryDateStart" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-01-01$"
+          },
+          "entryDateEnd" : {
+            "matches" : "^(19[0-9]{2}|20[0-1][0-9]|202[0-6])-12-31$"
+          }
+        }
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "users/submission-trends.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "b4256557-25d6-3a15-9a46-db6b02b3d35f"
+    }
+  ]
+}

@@ -1,42 +1,31 @@
-import { UserClientRolesType } from '../types/UserRoleType';
+import { ROLE_TYPE, SILVA_ROLES, USER_PRIVILEGE_TYPE } from '@/types/AuthTypes';
 
-/**
- * Decode user roles from token and format for the UserClientRolesType type.
- *
- * @param {object | undefined} decodedIdToken Decoded token with payload.
- * @returns {UserClientRolesType} Array of UserClientRolesType containing user roles.
- */
-export function formatRolesArray(decodedIdToken: object | undefined): UserClientRolesType[] {
-  if (!decodedIdToken) {
-    return [];
-  }
 
-  if ('cognito:groups' in decodedIdToken) {
-    const cognitoGroups: string[] = extractGroups(decodedIdToken);
-    const rolesMap: { [key: string]: string[] } = {};
+export function parsePrivileges(input: string[]): USER_PRIVILEGE_TYPE {
+  const result: USER_PRIVILEGE_TYPE = {};
 
-    cognitoGroups.forEach((group: string) => {
-      if (group.indexOf('_') > 0) {
-        const [role, clientId] = group.split('_');
-        if (clientId && role) {
-          if (!rolesMap[clientId]) {
-            rolesMap[clientId] = [];
-          }
-          rolesMap[clientId].push(role);
-        }
+  for (const item of input) {
+    const parts = item.split("_");
+    const last = parts[parts.length - 1] ?? "";
+    const isNumeric = last !== "" && Number.isFinite(Number(last));
+
+    if (isNumeric) {
+      const roleName = parts.slice(0, -1).join("_");
+      if (SILVA_ROLES.includes(roleName as ROLE_TYPE)) {
+        const role = roleName as ROLE_TYPE;
+        if (!result[role]) result[role] = [];
+        (result[role] as string[]).push(last);
       }
-    });
-
-    const rolesArray: UserClientRolesType[] = Object.keys(rolesMap).map(clientId => ({
-      clientId,
-      roles: rolesMap[clientId] || [],
-      clientName: `Client Number ${clientId}` // Placeholder for client name, modify as needed
-    }));
-    return rolesArray;
+    } else {
+      if (SILVA_ROLES.includes(item as ROLE_TYPE)) {
+        result[item as ROLE_TYPE] = null;
+      }
+    }
   }
 
-  return [];
+  return result;
 }
+
 
 /**
  * Extract groups from the decoded token.

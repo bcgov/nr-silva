@@ -1,0 +1,76 @@
+{
+  "content": [
+    {
+      "atuId": 3910947,
+      "disturbance": {
+        "code": "L",
+        "description": "Logged"
+      },
+      "system": {
+        "code": "CLEAR",
+        "description": "Clearcut"
+      },
+      "variant": {
+        "code": null,
+        "description": null
+      },
+      "cutPhase": {
+        "code": "REMOV",
+        "description": "Removal"
+      },
+      "disturbanceArea": 28.4,
+      "lastUpdate": "2022-05-07",
+      "startDate": "2021-01-07",
+      "endDate": "2021-04-14",
+      "licenseeActivityId": "97351",
+      "forestClient": {
+        "clientNumber": "00010003",
+        "clientName": "THE CONTINENTAL",
+        "legalFirstName": null,
+        "legalMiddleName": null,
+        "clientStatusCode": {
+          "code": "ACT",
+          "description": "Active"
+        },
+        "clientTypeCode": {
+          "code": "C",
+          "description": "Corporation"
+        },
+        "acronym": null,
+        "name": "THE CONTINENTAL"
+      },
+      "forestClientLocation": {
+        "clientNumber": "00010003",
+        "locationCode": "13",
+        "locationName": "THE OTHER ONE",
+        "companyCode": "1",
+        "address1": "BOX 86131",
+        "address2": null,
+        "address3": null,
+        "city": "NORTH VANCOUVER",
+        "province": "BC",
+        "postalCode": "V7L4J5",
+        "country": "CANADA",
+        "businessPhone": "6049999999",
+        "homePhone": null,
+        "cellPhone": null,
+        "faxNumber": "6049999998",
+        "email": null,
+        "expired": "N",
+        "trusted": "N",
+        "returnedMailDate": null,
+        "comment": null
+      },
+      "licenceNumber": "TFL47",
+      "cuttingPermitId": null,
+      "cutBlock": "6-117",
+      "comments": []
+    }
+  ],
+  "page": {
+    "size": 20,
+    "number": 0,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}

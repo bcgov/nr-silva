@@ -1,0 +1,74 @@
+{
+  "mappings": [
+    {
+      "id": "6a029207-98cb-3cbb-9eba-b241ad3dbac7",
+      "request": {
+        "url": "/api/codes/org-units",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "codes/org-units.json",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "6a029207-98cb-3cbb-9eba-b241ad3dbac7"
+    },
+    {
+      "id": "e2c95b9c-9879-3375-9e2d-373dc440294f",
+      "request": {
+        "url": "/api/codes/org-units",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "e2c95b9c-9879-3375-9e2d-373dc440294f"
+    },
+    {
+      "id": "9640cef4-11ad-33cd-b5bc-11813f82466d",
+      "request": {
+        "url": "/api/codes/categories",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "bodyFileName": "codes/categories.json",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "9640cef4-11ad-33cd-b5bc-11813f82466d"
+    },
+    {
+      "id": "eae8fe05-cef4-39d4-a9bd-6e5907c70a2e",
+      "request": {
+        "url": "/api/codes/categories",
+        "method": "OPTIONS"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "response-template"
+        ],
+        "headers": {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid": "eae8fe05-cef4-39d4-a9bd-6e5907c70a2e"
+    }
+  ]
+}

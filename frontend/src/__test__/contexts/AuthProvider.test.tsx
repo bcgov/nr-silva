@@ -1,13 +1,11 @@
-import React from 'react';
-import { render, act, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { AuthProvider, useAuth } from '../../contexts/AuthProvider';
-import { signInWithRedirect, signOut } from 'aws-amplify/auth';
-import { parseToken } from '../../services/AuthService';
-import { extractGroups } from '../../utils/famUtils';
-import { env } from '../../env';
+import React from "react";
+import { render, act, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { AuthProvider, useAuth } from "../../contexts/AuthProvider";
+import { signInWithRedirect, signOut } from "aws-amplify/auth";
+import { env } from "../../env";
 
-vi.mock('aws-amplify/auth', () => ({
+vi.mock("aws-amplify/auth", () => ({
   signInWithRedirect: vi.fn(),
   signOut: vi.fn(),
 }));
@@ -23,24 +21,23 @@ function setAuthCookies(value: string | null) {
   }
 }
 
-const sampleAuthToken = 'eyJhbGciOiJIUzI1NiJ9.eyJjb2duaXRvOmdyb3VwcyI6WyJncm91cDEiLCJncm91cDIiXSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYjVlY2RiMDk0ZGZiNDE0OWE2YTg0NDVhMDFhOTZiZjBAaWRpciIsImN1c3RvbTppZHBfdXNlcl9pZCI6IkI1RUNEQjA5NERGQjQxNDlBNkE4NDQ1QTAxQTk2QkYwIiwiY3VzdG9tOmlkcF91c2VybmFtZSI6IkpSWUFOIiwiY3VzdG9tOmlkcF9kaXNwbGF5X25hbWUiOiJSeWFuLCBKYWNrIENJQTpJTiIsImVtYWlsIjoiamFjay5yeWFuQGdvdi5iYy5jYSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY3VzdG9tOmlkcF9uYW1lIjoiaWRpciIsImdpdmVuX25hbWUiOiJKYWNrIiwibmFtZSI6IkphY2sgUnlhbiIsImZhbWlseV9uYW1lIjoiUnlhbiJ9.cLEC8Yh08HErgP2x33pgt2koYJlFNRfi7ja7etcabrM';
+const sampleAuthToken =
+  "eyJhbGciOiJIUzI1NiJ9.eyJjb2duaXRvOmdyb3VwcyI6WyJQbGFubmVyXzAwMDEyNzk3IiwiUGxhbm5lcl8wMDAwMTAxMiIsIlBsYW5uZXJfMDAwMDIxNzYiLCJWaWV3ZXIiLCJTdWJtaXR0ZXJfMDAwMDEwMTIiXSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYjVlY2RiMDk0ZGZiNDE0OWE2YTg0NDVhMDFhOTZiZjBAaWRpciIsImN1c3RvbTppZHBfdXNlcl9pZCI6IkI1RUNEQjA5NERGQjQxNDlBNkE4NDQ1QTAxQTk2QkYwIiwiY3VzdG9tOmlkcF91c2VybmFtZSI6IkpSWUFOIiwiY3VzdG9tOmlkcF9kaXNwbGF5X25hbWUiOiJSeWFuLCBKYWNrIENJQTpJTiIsImVtYWlsIjoiamFjay5yeWFuQGdvdi5iYy5jYSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY3VzdG9tOmlkcF9uYW1lIjoiaWRpciIsImdpdmVuX25hbWUiOiJKYWNrIiwibmFtZSI6IkphY2sgUnlhbiIsImZhbWlseV9uYW1lIjoiUnlhbiJ9.cLEC8Yh08HErgP2x33pgt2koYJlFNRfi7ja7etcabrM";
 
-describe('AuthProvider', () => {
-  const mockUser = { firstName: 'John', lastName: 'Doe' };
-
+describe("AuthProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should initialize correctly', async () => {
+  it("should initialize correctly", async () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
       const { user, isLoggedIn, isLoading } = useAuth();
       return (
         <div>
-          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
-          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
+          <span>{isLoading ? "Loading" : "Loaded"}</span>
+          <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
           <span>{user?.firstName}</span>
         </div>
       );
@@ -55,21 +52,21 @@ describe('AuthProvider', () => {
       ));
     });
 
-    await waitFor(() => expect(getByText('Loaded')).toBeDefined());
-    expect(getByText('Logged In')).toBeDefined();
-    expect(getByText('Jack')).toBeDefined();
+    await waitFor(() => expect(getByText("Loaded")).toBeDefined());
+    expect(getByText("Logged In")).toBeDefined();
+    expect(getByText("Jack")).toBeDefined();
   });
 
-  it('should find no token', async () => {
+  it("should find no token", async () => {
     setAuthCookies(null);
 
     const TestComponent = () => {
       const { user, isLoggedIn, isLoading } = useAuth();
       return (
         <div>
-          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
-          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
-          <span>Welcome {user?.firstName || 'nobody'}</span>
+          <span>{isLoading ? "Loading" : "Loaded"}</span>
+          <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
+          <span>Welcome {user?.firstName || "nobody"}</span>
         </div>
       );
     };
@@ -83,15 +80,15 @@ describe('AuthProvider', () => {
       ));
     });
 
-    await waitFor(() => expect(getByText('Loaded')).toBeDefined());
-    expect(getByText('Logged Out')).toBeDefined();
-    expect(getByText('Welcome nobody')).toBeDefined();
+    await waitFor(() => expect(getByText("Loaded")).toBeDefined());
+    expect(getByText("Logged Out")).toBeDefined();
+    expect(getByText("Welcome nobody")).toBeDefined();
   });
 
-  it('should handle login correctly', async () => {
+  it("should handle login correctly", async () => {
     setAuthCookies(sampleAuthToken);
-    const provider = 'idir';
-    const envProvider = `${env.VITE_ZONE ?? 'DEV'}-IDIR`;
+    const provider = "idir";
+    const envProvider = `${env.VITE_ZONE ?? "TEST"}-IDIR`;
 
     const TestComponent = () => {
       const { login } = useAuth();
@@ -108,7 +105,7 @@ describe('AuthProvider', () => {
     });
 
     act(() => {
-      getByText('Login').click();
+      getByText("Login").click();
     });
 
     expect(signInWithRedirect).toHaveBeenCalledWith({
@@ -116,7 +113,7 @@ describe('AuthProvider', () => {
     });
   });
 
-  it('should handle logout correctly', async () => {
+  it("should handle logout correctly", async () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
@@ -134,18 +131,18 @@ describe('AuthProvider', () => {
     });
 
     act(() => {
-      getByText('Logout').click();
+      getByText("Logout").click();
     });
 
     await waitFor(() => expect(signOut).toHaveBeenCalled());
   });
 
-  it('should handle userDetails correctly', async () => {
+  it("should handle userDetails correctly", async () => {
     setAuthCookies(sampleAuthToken);
 
     const TestComponent = () => {
       const { user } = useAuth();
-      return <div>{user ? user.firstName : 'No User'}</div>;
+      return <div>{user ? user.firstName : "No User"}</div>;
     };
 
     let getByText;
@@ -157,17 +154,17 @@ describe('AuthProvider', () => {
       ));
     });
 
-    await waitFor(() => expect(getByText('Jack')).toBeDefined());
+    await waitFor(() => expect(getByText("Jack")).toBeDefined());
   });
 
-  it('should throw error if useAuth is used outside AuthProvider', () => {
+  it("should throw error if useAuth is used outside AuthProvider", () => {
     const TestComponent = () => {
       useAuth();
       return <div>Test</div>;
     };
 
     expect(() => render(<TestComponent />)).toThrow(
-      'useAuth must be used within an AuthProvider'
+      "useAuth must be used within an AuthProvider"
     );
   });
 });

@@ -1,0 +1,115 @@
+{
+  "mappings": [
+    {
+      "id" : "81f8f58a-e47f-3cf4-8e4b-8960619deabc",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/(.*)",
+        "method" : "OPTIONS"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "81f8f58a-e47f-3cf4-8e4b-8960619deabc"
+    },
+    {
+      "id" : "4cd7e468-3753-3341-ab37-896c46d129c9",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/activities",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/details/activities.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "4cd7e468-3753-3341-ab37-896c46d129c9"
+    },
+    {
+      "id" : "e908a345-3d2e-3af4-93b9-81089144bcd1",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/tombstone",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/details/tombstone.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "e908a345-3d2e-3af4-93b9-81089144bcd1"
+    },
+    {
+      "id" : "1f033548-7846-3dcf-818c-92c1f0ccbaa6",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/tenures",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/details/tenures.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "1f033548-7846-3dcf-818c-92c1f0ccbaa6"
+    },
+    {
+      "id" : "1f8d505d-f31b-3f11-ade0-46bab40eca2f",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/ssu",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/details/ssu.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "1f8d505d-f31b-3f11-ade0-46bab40eca2f"
+    },
+    {
+      "id" : "d0911fbd-9407-3614-a8b0-1470bea32de0",
+      "request" : {
+        "urlPathPattern" : "/api/openings/([0-9]*)/disturbances",
+        "method" : "GET"
+      },
+      "response" : {
+        "status" : 200,
+        "transformers": ["response-template"],
+        "bodyFileName" : "openings/details/disturbances.json",
+        "headers" : {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      },
+      "uuid" : "d0911fbd-9407-3614-a8b0-1470bea32de0"
+    },
+{
+  "id" : "d0ed441f-67d1-3f12-9c3e-9a95188a0b46",
+  "request" : {
+    "urlPathPattern" : "/api/openings/([0-9]*)/activities/([0-9]*)",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "transformers": ["response-template"],
+    "bodyFileName" : "openings/details/activities-4187958.json",
+    "headers" : {
+      "content-type": "application/json;charset=UTF-8"
+    }
+  },
+  "uuid" : "d0ed441f-67d1-3f12-9c3e-9a95188a0b46"
+}
+  ]
+}

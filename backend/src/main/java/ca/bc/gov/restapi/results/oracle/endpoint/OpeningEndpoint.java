@@ -14,7 +14,6 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -59,19 +58,12 @@ public class OpeningEndpoint {
    */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(@PathVariable Long openingId) {
-    List<OpeningDetailsStockingDto> results = openingService.getOpeningStockingDetails(openingId);
-
-    if (results.isEmpty()) {
-      throw new OpeningNotFoundException(openingId);
-    }
-
-    return results;
+    return openingService.getOpeningStockingDetails(openingId);
   }
 
   @GetMapping("/{openingId}/disturbances")
   public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
       @PathVariable Long openingId,
-      @RequestParam Map<String, String> allRequestParams,
       @ParameterObject Pageable pageable) {
     return openingService.getOpeningActivitiesDisturbances(openingId, pageable);
   }

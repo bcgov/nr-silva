@@ -1,5 +1,8 @@
 import { defineConfig, devices, type VideoMode } from '@playwright/test';
+import * as dotenv from 'dotenv';
 import { THIRTY_SECONDS } from './src/constants/TimeUnits';
+
+dotenv.config();
 
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const isAllBrowsers = process.env.ALL_BROWSERS === 'true';
@@ -52,4 +55,9 @@ export default defineConfig({
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
   projects,
+  webServer: {
+    command: 'npm start',
+    url: baseURL,
+    reuseExistingServer: true,
+  }
 });

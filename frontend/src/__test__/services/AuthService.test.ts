@@ -1,11 +1,20 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { parseToken, getAuthIdToken } from '../../services/AuthService';
-import { formatRolesArray } from '../../utils/famUtils';
 import { JWT } from '../../types/amplify';
 
-vi.mock('../../utils/famUtils', () => ({
-  formatRolesArray: vi.fn(),
-}));
+// Partially mock famUtils, only override parsePrivileges
+vi.mock('../../utils/famUtils', async () => {
+  const actual = await vi.importActual<typeof import('../../utils/famUtils')>(
+    '../../utils/famUtils'
+  );
+
+  return {
+    ...actual,
+    parsePrivileges: vi.fn(),
+  };
+});
+
+import { parsePrivileges } from '../../utils/famUtils';
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -22,8 +31,11 @@ describe('AuthService', () => {
       const mockToken: JWT = {
         payload: {
           "cognito:groups": [
-            "group1",
-            "group2"
+            "Planner_00012797",
+            "Planner_00001012",
+            "Planner_00002176",
+            "Viewer",
+            "Submitter_00001012"
           ],
           "preferred_username": "b5ecdb094dfb4149a6a8445a01a96bf0@idir",
           "custom:idp_user_id": "B5ECDB094DFB4149A6A8445A01A96BF0",
@@ -39,7 +51,11 @@ describe('AuthService', () => {
         toString: () => 'mockTokenString',
       };
 
-      (formatRolesArray as vi.Mock).mockReturnValue([{ role: 'role1' }, { role: 'role2' }]);
+      (parsePrivileges as vi.Mock).mockReturnValue({
+        Planner: ["00012797", "00001012"],
+        Viewer: null,
+        Submitter: ["00001012"]
+      });
 
       const result = parseToken(mockToken);
 
@@ -49,7 +65,11 @@ describe('AuthService', () => {
         displayName: "Ryan, Jack CIA:IN",
         email: 'jack.ryan@gov.bc.ca',
         idpProvider: 'IDIR',
-        clientRoles: [{ role: 'role1' }, { role: 'role2' }],
+        privileges: {
+          Planner: ["00012797", "00001012"],
+          Viewer: null,
+          Submitter: ["00001012"]
+        },
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
@@ -60,8 +80,11 @@ describe('AuthService', () => {
       const mockToken: JWT = {
         payload: {
           "cognito:groups": [
-            "group1",
-            "group2"
+            "Planner_00012797",
+            "Planner_00001012",
+            "Planner_00002176",
+            "Viewer",
+            "Submitter_00001012"
           ],
           "preferred_username": "b5ecdb094dfb4149a6a8445a01a96bf0@idir",
           "custom:idp_user_id": "B5ECDB094DFB4149A6A8445A01A96BF0",
@@ -77,7 +100,11 @@ describe('AuthService', () => {
         toString: () => 'mockTokenString',
       };
 
-      (formatRolesArray as vi.Mock).mockReturnValue([{ role: 'role1' }, { role: 'role2' }]);
+      (parsePrivileges as vi.Mock).mockReturnValue({
+        Planner: ["00012797", "00001012"],
+        Viewer: null,
+        Submitter: ["00001012"]
+      });
 
       const result = parseToken(mockToken);
 
@@ -87,7 +114,11 @@ describe('AuthService', () => {
         displayName: 'Jack Ryan',
         email: 'jack.ryan@gov.bc.ca',
         idpProvider: 'IDIR',
-        clientRoles: [{ role: 'role1' }, { role: 'role2' }],
+        privileges: {
+          Planner: ["00012797", "00001012"],
+          Viewer: null,
+          Submitter: ["00001012"]
+        },
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
@@ -104,7 +135,7 @@ describe('AuthService', () => {
         toString: () => 'mockTokenString',
       };
 
-      (formatRolesArray as vi.Mock).mockReturnValue([{ role: 'role1' }, { role: 'role2' }]);
+      (parsePrivileges as vi.Mock).mockReturnValue({});
 
       const result = parseToken(mockToken);
 
@@ -114,7 +145,7 @@ describe('AuthService', () => {
         displayName: 'Doe, John',
         email: 'john.doe@example.com',
         idpProvider: '',
-        clientRoles: [{ role: 'role1' }, { role: 'role2' }],
+        privileges: {},
         firstName: 'John',
         lastName: 'Doe',
         providerUsername: '\\johndoe',

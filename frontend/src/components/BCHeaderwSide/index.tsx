@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useCallback, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   HeaderContainer,
   Header,
@@ -13,13 +13,13 @@ import {
   SideNavLink,
   SideNavMenu,
   SideNavMenuItem,
-} from '@carbon/react';
-import * as Icons from '@carbon/icons-react';
-import RightPanelTitle from '../RightPanelTitle';
-import ThemeToggle from '../ThemeToggle';
-import MyProfile from '../MyProfile';
-import { LeftMenuItem, mainActivitiesItems } from './constants';
-import './BCHeaderwSide.scss';
+} from "@carbon/react";
+import * as Icons from "@carbon/icons-react";
+import RightPanelTitle from "../RightPanelTitle";
+import ThemeToggle from "../ThemeToggle";
+import MyProfile from "../MyProfile";
+import { LeftMenuItem, mainActivitiesItems } from "./constants";
+import "./BCHeaderwSide.scss";
 
 /**
  * Renders an BC Headerw Side component.
@@ -42,28 +42,36 @@ function BCHeaderwSide(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const renderSideNavMenu = (subItem: LeftMenuItem, IconComponent: React.ElementType) => {
+  const renderSideNavMenu = (
+    subItem: LeftMenuItem,
+    IconComponent: React.ElementType
+  ) => {
     const isActive = subItem.subItems?.some((subSubItem) =>
       location.pathname.startsWith(subSubItem.link)
     );
 
     return (
       <SideNavMenu
-        key={subItem.name}
+        key={subItem.id}
+        aria-label={subItem.name}
         title={subItem.name}
         renderIcon={IconComponent as any}
         isActive={isActive}
         isSideNavExpanded={isActive}
         defaultExpanded={isActive}
       >
-        {subItem.subItems?.map((subSubItem) => renderSideNavMenuItem(subSubItem))}
+        {subItem.subItems?.map((subSubItem) =>
+          renderSideNavMenuItem(subSubItem)
+        )}
       </SideNavMenu>
     );
   };
 
   const renderSideNavMenuItem = (subSubItem: LeftMenuItem) => (
     <SideNavMenuItem
-      key={subSubItem.name}
+      id={subSubItem.id}
+      key={subSubItem.id}
+      aria-label={subSubItem.name}
       onClick={() => navigate(subSubItem.link)}
       isActive={location.pathname.startsWith(subSubItem.link)}
     >
@@ -71,10 +79,15 @@ function BCHeaderwSide(): React.JSX.Element {
     </SideNavMenuItem>
   );
 
-  const renderSideNavLink = (subItem: LeftMenuItem, IconComponent: React.ElementType) => (
+  const renderSideNavLink = (
+    subItem: LeftMenuItem,
+    IconComponent: React.ElementType
+  ) => (
     <SideNavLink
+      id={subItem.id}
       className="side-nav-item"
-      key={subItem.name}
+      key={subItem.id}
+      aria-label={subItem.name}
       renderIcon={IconComponent as any}
       onClick={() => navigate(subItem.link)}
       isActive={location.pathname.startsWith(subItem.link)}
@@ -95,7 +108,13 @@ function BCHeaderwSide(): React.JSX.Element {
 
   return (
     <HeaderContainer
-      render={({ isSideNavExpanded, onClickSideNavExpand }: { isSideNavExpanded: boolean; onClickSideNavExpand: () => void }) => (
+      render={({
+        isSideNavExpanded,
+        onClickSideNavExpand,
+      }: {
+        isSideNavExpanded: boolean;
+        onClickSideNavExpand: () => void;
+      }) => (
         <Header
           aria-label="Silva header"
           className="silva-header"
@@ -125,14 +144,20 @@ function BCHeaderwSide(): React.JSX.Element {
               <Icons.UserAvatar className="profile-icon" size={20} />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
-          <HeaderPanel aria-label="User Profile Tab" expanded={myProfile} className="notifications-panel">
-            <RightPanelTitle
-              title="My Profile"
-              closeFn={closeMyProfilePanel}
-            />
+          <HeaderPanel
+            aria-label="User Profile Tab"
+            expanded={myProfile}
+            className="notifications-panel"
+          >
+            <RightPanelTitle title="My Profile" closeFn={closeMyProfilePanel} />
             <MyProfile />
           </HeaderPanel>
-          <SideNav isChildOfHeader expanded={isSideNavExpanded} aria-label="Side menu" className="bcheaderwside-sidenav">
+          <SideNav
+            isChildOfHeader
+            expanded={isSideNavExpanded}
+            aria-label="Side menu"
+            className="bcheaderwside-sidenav"
+          >
             <SideNavItems>
               {mainActivitiesItems.map((item) => (
                 <div key={item.name}>

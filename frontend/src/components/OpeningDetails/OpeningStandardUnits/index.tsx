@@ -23,6 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
+import { formatLocalDate } from "@/utils/DateUtils";
 import API from "@/services/API";
 import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto } from "@/services/OpenApi";
 
@@ -31,6 +32,7 @@ import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 import Comments from "../../Comments";
+import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTag";
 
 import SpeciesTooltipList from "./SpeciesTooltipList";
 import { LayerHeaderConfig } from "./constants";
@@ -286,6 +288,113 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                         </>
                       ) : null}
                     </div>
+                  </Column>
+
+                  {/* Milestones */}
+                  <Column sm={4} md={8} lg={16}>
+                    <section className="section-title-with-icon">
+                      <SecurityIcon size={20} />
+                      <h4>Milestones</h4>
+                      {
+                        standardUnit.stocking.milestones.extentDeclared ?
+                          <StockingStandardMilestoneStatusTag
+                            status="EX"
+                          />
+                          : null
+                      }
+                    </section>
+                  </Column>
+
+                  <Column sm={4} md={8} lg={16} className="subsection-col">
+                    <Grid className="standard-unit-content-subgrid">
+                      <Column sm={4} md={8} lg={16}>
+                        <CardItem label="Post harvested declared date">
+                          {standardUnit.stocking.milestones?.postHarvestDeclaredDate
+                            ? formatLocalDate(standardUnit.stocking.milestones.postHarvestDeclaredDate, true)
+                            : PLACE_HOLDER}
+                        </CardItem>
+                      </Column>
+
+                      {!standardUnit.stocking.milestones?.noRegenIndicated ? (
+                        <>
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration offset (Years)">
+                              {standardUnit.stocking.milestones?.regenOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration declared date">
+                              {standardUnit.stocking.milestones?.regenDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.regenDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Regeneration due date">
+                              {standardUnit.stocking.milestones?.regenDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.regenDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing offset (Years)">
+                              {standardUnit.stocking.milestones?.freeGrowingOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing declared date">
+                              {standardUnit.stocking.milestones?.freeGrowingDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.freeGrowingDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="Free growing due date">
+                              {standardUnit.stocking.milestones?.freeGrowingDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.freeGrowingDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+                        </>
+                      ) : (
+                        <>
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration offset (Years)">
+                              {standardUnit.stocking.milestones?.noRegenOffsetYears ?? PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration declared date">
+                              {standardUnit.stocking.milestones?.noRegenDeclaredDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.noRegenDeclaredDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+
+                          <Column sm={4} md={4} lg={5}>
+                            <CardItem label="No regeneration due date">
+                              {standardUnit.stocking.milestones?.noRegenDueDate
+                                ? formatLocalDate(standardUnit.stocking.milestones.noRegenDueDate, true)
+                                : PLACE_HOLDER}
+                            </CardItem>
+                          </Column>
+                        </>
+                      )}
+                      <Column sm={4} md={8} lg={16}>
+                        <CardItem label="Comments">
+                          <Comments
+                            comments={standardUnit.stocking.milestones.comments}
+                          />
+                        </CardItem>
+                      </Column>
+
+                    </Grid>
                   </Column>
 
                   {/* Regen obligation */}

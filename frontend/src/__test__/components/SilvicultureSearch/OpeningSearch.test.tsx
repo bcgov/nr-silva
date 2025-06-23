@@ -8,27 +8,36 @@ import { NotificationProvider } from "../../../contexts/NotificationProvider";
 import { openingA, openingB } from "../../fixtures/openings";
 import {
   OpeningSearchResponseDto,
-  PaginatedRecentOpeningsDto,
-} from "../../../types/OpeningTypes";
+  PagedModelOpeningSearchResponseDto,
+} from "../../../services/OpenApi";
 import { DEFAULT_PAGE_CONFIG } from "../../fixtures/defaults";
 import * as utils from "../../../components/SilvicultureSearch/OpeningSearch/utils";
 import { PreferenceProvider } from "@/contexts/PreferenceProvider";
+import API from "../../../services/API";
 
 const mockOpenings: OpeningSearchResponseDto[] = [openingA, openingB];
 
-vi.mock("../../../services/OpeningSearchService", () => ({
-  fetchCategories: vi.fn().mockResolvedValue([]),
-  fetchOpeningsOrgUnits: vi.fn().mockResolvedValue([]),
-  searchOpenings: vi.fn().mockResolvedValue({
-    content: [],
-    page: {
-      totalElements: 0,
-      size: 10,
-      number: 0,
-      totalPages: 1,
+vi.mock("../../../services/API", () => {
+  return {
+    default: {
+      CodesEndpointService: {
+        getOpeningOrgUnits: vi.fn().mockResolvedValue([]),
+        getOpeningCategories: vi.fn().mockResolvedValue([]),
+      },
+      OpeningEndpointService: {
+        openingSearch: vi.fn().mockResolvedValue({
+          content: [],
+          page: {
+            totalElements: 0,
+            size: 10,
+            page: 0,
+            totalPages: 1,
+          },
+        } as PagedModelOpeningSearchResponseDto),
+      },
     },
-  } as PaginatedRecentOpeningsDto),
-}));
+  };
+});
 
 vi.mock("../../../components/OpeningsMap", () => ({
   __esModule: true,
@@ -53,21 +62,32 @@ const renderComponent = () =>
 describe("OpeningSearch Component", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    (API.CodesEndpointService.getOpeningOrgUnits as vi.Mock).mockResolvedValue(
+      []
+    );
+    (
+      API.CodesEndpointService.getOpeningCategories as vi.Mock
+    ).mockResolvedValue([]);
   });
 
   it("renders the table initially empty", async () => {
+    (API.OpeningEndpointService.openingSearch as vi.Mock).mockResolvedValueOnce(
+      {
+        content: [],
+        page: DEFAULT_PAGE_CONFIG,
+      }
+    );
     renderComponent();
     expect(await screen.findByText("Nothing to show yet!")).toBeInTheDocument();
   });
 
   it("renders the table with rows when search is successful", async () => {
-    const { searchOpenings } = await import(
-      "../../../services/OpeningSearchService"
+    (API.OpeningEndpointService.openingSearch as vi.Mock).mockResolvedValueOnce(
+      {
+        content: mockOpenings,
+        page: DEFAULT_PAGE_CONFIG,
+      }
     );
-    (searchOpenings as vi.Mock).mockResolvedValueOnce({
-      content: mockOpenings,
-      page: DEFAULT_PAGE_CONFIG,
-    });
 
     vi.spyOn(utils, "hasAnyActiveFilters").mockReturnValue(true);
 
