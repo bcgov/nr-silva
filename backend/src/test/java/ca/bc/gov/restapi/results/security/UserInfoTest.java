@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Unit Test | User Information")
 class UserInfoTest {
 
   @Test
-  @DisplayName("createUserInfo")
+  @DisplayName("Create user info")
   void createUserInfo() {
     UserInfo userInfo =
         new UserInfo(
@@ -37,7 +38,7 @@ class UserInfoTest {
   }
 
   @Test
-  @DisplayName("createInvalidNullUser")
+  @DisplayName("Create invalid null user")
   void createInvalidNullUser() {
     // Id not null
     Assertions.assertThrows(

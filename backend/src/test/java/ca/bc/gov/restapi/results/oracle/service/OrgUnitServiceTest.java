@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
+@DisplayName("Unit Test | Org Unit Service")
 class OrgUnitServiceTest {
 
   @Mock OrgUnitRepository orgUnitRepository;
