@@ -68,5 +68,9 @@ export const TEXT_CONFIG = {
   silvicultureLayer: {
     title: 'Silviculture layer',
     subtitle: 'Data layer information related to preferred and acceptable tree species'
+  },
+  veteranLayer: {
+    title: 'Veteran layer',
+    subtitle: 'Mature forest trees characterized by age, size, and features like dead wood, cavities, and decay.'
   }
 }

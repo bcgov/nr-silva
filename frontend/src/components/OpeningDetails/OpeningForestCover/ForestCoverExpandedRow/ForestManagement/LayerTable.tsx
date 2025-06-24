@@ -54,38 +54,51 @@ const LayerTable = ({ layer }: LayerTableProps) => {
               <TableRow>
                 {/* Species • Distribution */}
                 <TableCell className="default-table-cell">
-                  <ul className="cell-content-list">
-                    {layer.species.map((species) => (
-                      <li key={species.species.code}>
-                        <DefinitionTooltip
-                          openOnHover
-                          definition={species.species.description}
-                          align="right"
-                        >
-                          {`${species.species.code}`}
-                        </DefinitionTooltip>
-                        {' '}
-                        {`${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.percentage}%`}
-                      </li>
-                    ))}
-                  </ul>
+                  {
+                    layer.species.length
+                      ? (
+                        <ul className="cell-content-list">
+                          {layer.species.map((species) => (
+                            <li key={species.species.code}>
+                              <DefinitionTooltip
+                                openOnHover
+                                definition={species.species.description}
+                                align="right"
+                              >
+                                {`${species.species.code}`}
+                              </DefinitionTooltip>
+                              {' '}
+                              {`${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.percentage}%`}
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                      : PLACE_HOLDER
+                  }
+
                 </TableCell>
 
                 {/* Average age  • Average height */}
                 <TableCell className="default-table-cell">
-                  <ul className="cell-content-list">
-                    {layer.species.map((species) => (
-                      <li key={species.species.code}>
-                        {
-                          `
-                          ${species.averageAge ? species.averageAge : PLACE_HOLDER}
-                          ${UNIQUE_CHARACTERS_UNICODE.BULLET}
-                          ${species.averageAge ? `${species.averageHeight} m` : PLACE_HOLDER}
-                          `
-                        }
-                      </li>
-                    ))}
-                  </ul>
+                  {
+                    layer.species.length
+                      ? (
+                        <ul className="cell-content-list">
+                          {layer.species.map((species) => (
+                            <li key={species.species.code}>
+                              {
+                                `
+                                  ${species.averageAge ? species.averageAge : PLACE_HOLDER}
+                                  ${UNIQUE_CHARACTERS_UNICODE.BULLET}
+                                  ${species.averageAge ? `${species.averageHeight} m` : PLACE_HOLDER}
+                                  `
+                              }
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                      : PLACE_HOLDER
+                  }
                 </TableCell>
 
                 <TableCell className="default-table-cell">
