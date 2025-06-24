@@ -34,7 +34,7 @@ export const formatDateForDatePicker = (date: any) => {
  * @param {boolean} [usePlaceholder] - Whether to return a placeholder if no date is provided.
  * @returns {string} The formatted date (e.g., "Oct 21, 2011"), an empty string, or a placeholder if specified.
  */
-export const formatLocalDate = (localDate?: string | null | number, usePlaceholder?: boolean): string => {
+export const formatLocalDate = (localDate?: string | null, usePlaceholder?: boolean): string => {
   if (!localDate) {
     return usePlaceholder ? PLACE_HOLDER : ""
   }
