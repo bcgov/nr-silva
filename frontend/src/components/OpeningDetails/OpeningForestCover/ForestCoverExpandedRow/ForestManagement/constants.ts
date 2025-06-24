@@ -1,7 +1,7 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { DamageAgentDto, LayerDto, UnmappedAreaDto } from "../../definitions";
+import { OpeningForestCoverDamageDto, OpeningForestCoverDetailedSpeciesDto, OpeningForestCoverLayerDto, OpeningForestCoverUnmappedDto } from "@/services/OpenApi";
 
-export const UnmappedAreaHeaders: TableHeaderType<keyof UnmappedAreaDto>[] = [
+export const UnmappedAreaHeaders: TableHeaderType<keyof OpeningForestCoverUnmappedDto>[] = [
   {
     key: 'unmappedAreaId',
     header: 'Unmapped area ID'
@@ -20,13 +20,13 @@ export const UnmappedAreaHeaders: TableHeaderType<keyof UnmappedAreaDto>[] = [
   }
 ];
 
-export const LayerTableHeaders: TableHeaderType<keyof LayerDto | string>[] = [
+export const LayerTableHeaders: TableHeaderType<keyof OpeningForestCoverLayerDto | keyof OpeningForestCoverDetailedSpeciesDto>[] = [
   {
-    key: 'speciesDistribution',
+    key: 'species',
     header: 'Species • Distribution'
   },
   {
-    key: 'averageAgeHeight',
+    key: 'averageAge',
     header: 'Average age  • Average height'
   },
   {
@@ -34,7 +34,7 @@ export const LayerTableHeaders: TableHeaderType<keyof LayerDto | string>[] = [
     header: 'Crown closure'
   },
   {
-    key: 'basalAreaPerTotalStems',
+    key: 'basalAreaSt',
     header: 'Basal area per total stems'
   },
   {
@@ -43,13 +43,13 @@ export const LayerTableHeaders: TableHeaderType<keyof LayerDto | string>[] = [
   },
 ];
 
-export const DamageAgentTableHeader: TableHeaderType<keyof DamageAgentDto>[] = [
+export const DamageAgentTableHeader: TableHeaderType<keyof OpeningForestCoverDamageDto>[] = [
   {
-    key: 'species',
+    key: 'damageAgent',
     header: 'Damage agent'
   },
   {
-    key: 'forestHealthIncidence',
+    key: 'healthIncidencePercentage',
     header: 'Forest health incidence'
   },
   {

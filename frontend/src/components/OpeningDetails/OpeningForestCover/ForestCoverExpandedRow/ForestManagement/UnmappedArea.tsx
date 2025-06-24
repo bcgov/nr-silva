@@ -4,7 +4,6 @@ import { Column, Table, TableBody, TableCell, TableHead, TableHeader, TableRow }
 import { Road } from "@carbon/icons-react";
 import { StockingStatusTag } from "@/components/Tags";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { UnmappedAreaDto } from "../../definitions";
 import { UnmappedAreaHeaders } from "./constants";
 import { OpeningForestCoverUnmappedDto } from "@/services/OpenApi";
 
@@ -13,7 +12,7 @@ type UnmappedAreaProps = {
 }
 
 const UnmappedArea = ({ data }: UnmappedAreaProps) => {
-  const renderCellContent = (row: UnmappedAreaDto, key: keyof UnmappedAreaDto) => {
+  const renderCellContent = (row: OpeningForestCoverUnmappedDto, key: keyof OpeningForestCoverUnmappedDto) => {
     switch (key) {
       case 'stockingStatus':
         return <StockingStatusTag status={row.stockingStatus} />;

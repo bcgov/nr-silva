@@ -5,6 +5,7 @@ import { Column, Grid } from "@carbon/react";
 import API from "@/services/API";
 import ForestManagement from "./ForestManagement";
 import PolygonDetail from "./PolygonDetail";
+
 import './styles.scss';
 
 type ForestCoverDetailProps = {
@@ -32,11 +33,24 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailP
     <Grid className="opening-forest-cover-details-grid">
       <PolygonDetail polygon={data?.polygon} isLoading={isLoading} />
 
-      <Column sm={4} md={8} lg={16}>
-        <hr className="expanded-row-hr" />
-      </Column>
+      {
+        data?.layers.length
+          ? (
+            <>
+              <Column sm={4} md={8} lg={16}>
+                <hr className="expanded-row-hr" />
+              </Column>
 
-      <ForestManagement layersData={data?.layers} unmappedAreaData={data?.unmapped} isLoading={isLoading} />
+              <ForestManagement
+                isSingleLayer={data?.isSingleLayer}
+                layersData={data?.layers}
+                unmappedAreaData={data?.unmapped}
+                isLoading={isLoading}
+              />
+            </>
+          )
+          : null
+      }
     </Grid >
   );
 };

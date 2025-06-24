@@ -10,31 +10,18 @@ import { Search } from "@carbon/icons-react";
 import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
-import { delayMock } from "@/utils/MockUtils";
 import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
-
-import { ForestCoverTableHeaders } from "./constants";
-import {
-  mockOpeningDetailsForestCover,
-  ForestCoverFilterType,
-  type OpeningForestCoverType,
-} from "./definitions";
-import { formatForestCoverSpeciesArray } from "./utils";
-import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 import { UnderConstTagWrapper } from "@/components/Tags";
 import API from "@/services/API";
+import { OpeningForestCoverDto } from "@/services/OpenApi";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+
+import { ForestCoverTableHeaders } from "./constants";
+import { formatForestCoverSpeciesArray } from "./utils";
+import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-import { OpeningForestCoverDto } from "@/services/OpenApi";
-import { codeDescriptionToDisplayText } from "../../../utils/multiSelectUtils";
-
-const fetchForestCover = async (_openingId: number) => {
-  let data = [...mockOpeningDetailsForestCover];
-  const totalElements = data.length;
-  const content = data;
-  return delayMock({ content, page: { totalElements } }, 500);
-};
 
 type OpeningForestCoverProps = {
   openingId: number;
@@ -127,17 +114,23 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
         const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.inventoryLayer.species)
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
-            <DefinitionTooltip
-              className="forest-cover-species-tooltip-definition"
-              definition={
-                tooltipDefinition.map((line, index) => (
-                  <div key={index}>{line}</div>
-                ))
-              }
-              openOnHover
-            >
-              <span>Species: {displayText}</span>
-            </DefinitionTooltip>
+            {
+              row.inventoryLayer.species.length
+                ? (
+                  <DefinitionTooltip
+                    className="forest-cover-species-tooltip-definition"
+                    definition={
+                      tooltipDefinition.map((line, index) => (
+                        <div key={index}>{line}</div>
+                      ))
+                    }
+                    openOnHover
+                  >
+                    <span>Species: {displayText}</span>
+                  </DefinitionTooltip>
+                )
+                : `Species: ${NOT_APPLICABLE}`
+            }
             <span>Total: {row.inventoryLayer.total !== null ? `${row.inventoryLayer.total} (st/ha)` : NOT_APPLICABLE}</span>
             <span>Total well spaced: {row.inventoryLayer.totalWellSpaced !== null ? `${row.inventoryLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
             <span>Well spaced: {row.inventoryLayer.wellSpaced !== null ? `${row.inventoryLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
@@ -150,17 +143,23 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
 
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
-            <DefinitionTooltip
-              className="forest-cover-species-tooltip-definition"
-              definition={
-                tooltipDefinition.map((line, index) => (
-                  <div key={index}>{line}</div>
-                ))
-              }
-              openOnHover
-            >
-              <span>Species: {displayText}</span>
-            </DefinitionTooltip>
+            {
+              row.silvicultureLayer.species.length
+                ? (
+                  <DefinitionTooltip
+                    className="forest-cover-species-tooltip-definition"
+                    definition={
+                      tooltipDefinition.map((line, index) => (
+                        <div key={index}>{line}</div>
+                      ))
+                    }
+                    openOnHover
+                  >
+                    <span>Species: {displayText}</span>
+                  </DefinitionTooltip>
+                )
+                : `Species: ${NOT_APPLICABLE}`
+            }
             <span>Total well spaced: {row.silvicultureLayer.totalWellSpaced !== null ? `${row.silvicultureLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
             <span>Well spaced: {row.silvicultureLayer.wellSpaced !== null ? `${row.silvicultureLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
             <span>Free growing: {row.silvicultureLayer.freeGrowing !== null ? `${row.silvicultureLayer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</span>

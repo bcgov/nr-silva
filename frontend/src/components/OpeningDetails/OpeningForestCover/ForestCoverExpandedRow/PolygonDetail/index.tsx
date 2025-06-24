@@ -1,10 +1,9 @@
 import React from "react";
 import { Column, Grid } from "@carbon/react";
 import { CardItem } from "@/components/Card";
-import Comments from "@/components/Comments";
 import { OpeningForestCoverPolygonDto } from "@/services/OpenApi";
-import { codeDescriptionToDisplayText } from "../../../../../utils/multiSelectUtils";
-import { formatLocalDate } from "../../../../../utils/DateUtils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 type PolygonDetailProps = {
   polygon?: OpeningForestCoverPolygonDto,
@@ -63,20 +62,6 @@ const PolygonDetail = ({ polygon, isLoading }: PolygonDetailProps) => (
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Re-entry year" showSkeleton={isLoading}>
             {formatLocalDate(polygon?.reentryYear, true)}
-          </CardItem>
-        </Column>
-
-        <Column sm={4} md={8} lg={16}>
-          <CardItem label="Comment" showSkeleton={isLoading}>
-            <Comments
-              comments={[
-                {
-                  commentSource: { code: '', description: '' },
-                  commentType: { code: '', description: '' },
-                  commentText: null
-                }
-              ]}
-            />
           </CardItem>
         </Column>
       </Grid>

@@ -1,14 +1,14 @@
 import React from "react";
 import { Column, TextAreaSkeleton } from "@carbon/react";
-import { ForestManagementDto, UnmappedAreaDto } from "../../definitions";
 import UnmappedArea from "./UnmappedArea";
 import SingleMultiLayer from "./SingleMultiLayer";
 import { OpeningForestCoverLayerDto, OpeningForestCoverUnmappedDto } from "@/services/OpenApi";
 
 
 type ForestManagementProps = {
+  isSingleLayer?: boolean;
   layersData?: OpeningForestCoverLayerDto[];
-  unmappedAreaData?: OpeningForestCoverUnmappedDto;
+  unmappedAreaData?: OpeningForestCoverUnmappedDto[];
   isLoading?: boolean;
 }
 
@@ -18,7 +18,12 @@ const Title = () => (
   </Column >
 );
 
-const ForestManagement = ({ isLoading, layersData, unmappedAreaData }: ForestManagementProps) => {
+const ForestManagement = ({
+  isLoading,
+  layersData,
+  unmappedAreaData,
+  isSingleLayer = true
+}: ForestManagementProps) => {
   if (isLoading) {
     return (
       <>
@@ -43,7 +48,7 @@ const ForestManagement = ({ isLoading, layersData, unmappedAreaData }: ForestMan
           : (
             <>
               {
-                unmappedAreaData
+                unmappedAreaData?.length
                   ? (
                     <Column sm={4} md={8} lg={16}>
                       <UnmappedArea data={unmappedAreaData} />
@@ -55,7 +60,7 @@ const ForestManagement = ({ isLoading, layersData, unmappedAreaData }: ForestMan
                 layersData
                   ? (
                     <Column sm={4} md={8} lg={16}>
-                      <SingleMultiLayer layers={layersData} />
+                      <SingleMultiLayer isSingleLayer={isSingleLayer} layersData={layersData} />
                     </Column>
                   )
                   : null

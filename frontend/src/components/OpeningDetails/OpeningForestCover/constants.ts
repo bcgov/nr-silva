@@ -1,9 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { ForestCoverFilterType } from "./definitions";
-import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
 import { OpeningForestCoverDto } from "@/services/OpenApi";
-
-
 
 export const ForestCoverTableHeaders: TableHeaderType<keyof OpeningForestCoverDto>[] = [
   { key: "coverId", header: "Forest cover" },
