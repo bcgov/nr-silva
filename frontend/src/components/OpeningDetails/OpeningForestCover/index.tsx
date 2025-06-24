@@ -12,7 +12,6 @@ import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
-import { UnderConstTagWrapper } from "@/components/Tags";
 import API from "@/services/API";
 import { OpeningForestCoverDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
@@ -186,11 +185,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
   return (
     <Grid className="opening-forest-cover-grid default-grid">
       <Column sm={4} md={8} lg={16}>
-        <UnderConstTagWrapper>
-          <h3 className="default-tab-content-title">
-            {forestCoverDefaultQuery.data?.length ?? 0} forest cover polygons in this opening
-          </h3>
-        </UnderConstTagWrapper>
+        <h3 className="default-tab-content-title">
+          {forestCoverDefaultQuery.isLoading ? '...' : `${forestCoverDefaultQuery.data?.length ?? 0}`} forest cover polygons in this opening
+        </h3>
       </Column>
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container opening-forest-cover-table-container">
