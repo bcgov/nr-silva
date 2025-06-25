@@ -61,7 +61,7 @@ const PolygonDetail = ({ polygon, isLoading }: PolygonDetailProps) => (
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Re-entry year" showSkeleton={isLoading}>
-            polygon?.reentryYear
+            {polygon?.reentryYear}
           </CardItem>
         </Column>
       </Grid>
