@@ -105,11 +105,11 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
   };
 
   return (
-    <TableRow className="opening-table-row">
+    <TableRow className="opening-table-row" data-testid={`opening-table-row-${rowData.openingId}`}>
       {headers
         .filter((header) => header.selected)
         .map((header) => (
-          <TableCell key={header.key}>
+          <TableCell key={header.key} data-testid={`opening-table-cell-${header.key}-${rowData.openingId}`}>
             {header.key !== "actions" ? (
               <Link className="table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>
                 {renderCellContent(header.key) ?? PLACE_HOLDER}
