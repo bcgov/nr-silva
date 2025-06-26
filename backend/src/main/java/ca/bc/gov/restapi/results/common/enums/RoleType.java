@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.security;
+package ca.bc.gov.restapi.results.common.enums;
 
 /**
  * Enum representing the two types of roles in the system:

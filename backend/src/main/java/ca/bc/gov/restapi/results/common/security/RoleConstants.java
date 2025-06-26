@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import ca.bc.gov.restapi.results.common.enums.Role;
 import org.springframework.stereotype.Component;
 
 

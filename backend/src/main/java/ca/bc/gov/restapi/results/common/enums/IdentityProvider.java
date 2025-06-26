@@ -1,18 +1,17 @@
-package ca.bc.gov.restapi.results.common.security;
+package ca.bc.gov.restapi.results.common.enums;
 
 import java.util.Arrays;
 import java.util.Optional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 /** Enumeration of the identity providers our application works with. */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum IdentityProvider {
   IDIR("idir"),
   BUSINESS_BCEID("bceidbusiness");
 
   private final String claimName;
-
-  IdentityProvider(String claimName) {
-    this.claimName = claimName;
-  }
 
   /**
    * Extract the identity provider from a Jwt.

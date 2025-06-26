@@ -1,12 +1,15 @@
-package ca.bc.gov.restapi.results.common.security;
+package ca.bc.gov.restapi.results.common.enums;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Enum representing all roles in the system, each associated with a {@link RoleType}.
  * Used for authorization checks in conjunction with Spring Security's @PreAuthorize.
  */
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Role {
     VIEWER(RoleType.CONCRETE),
     SUBMITTER(RoleType.ABSTRACT),
@@ -15,10 +18,6 @@ public enum Role {
     ADMIN(RoleType.ABSTRACT);
 
     private final RoleType type;
-
-    Role(RoleType type) {
-        this.type = type;
-    }
 
     /**
      * Checks if the role is of type CONCRETE.
