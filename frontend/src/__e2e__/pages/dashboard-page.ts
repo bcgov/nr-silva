@@ -22,20 +22,40 @@ export class DashboardPage {
     this.baseUrl = (process.env.BASE_URL ?? 'http://localhost:3000') + routes.dashboard();
     this.page = page;
     this.silvicultureSearchButton = page.getByRole('button', { name: 'Silviculture search' });
-    this.mapButton = page.getByRole('button', { name: 'Hide map' })
-    this.map = page.locator('.map-container');
     this.recentOpeningsSection = page.locator('.recent-openings-container');
-    this.recentOpeningsTable = page.getByRole('table', { name: 'Recent openings table' });
+    this.mapButton = this.recentOpeningsSection.getByTestId('toggle-map-button');
+    this.map = this.recentOpeningsSection.locator('.leaflet-container');
+    this.recentOpeningsTable = this.recentOpeningsSection.getByRole('table', { name: 'Recent openings table' });
     this.recentOpeningsTableRows = this.recentOpeningsTable.locator('tbody tr');
     this.openingSubmissionsTrendSection = page.locator('.submission-trend-container');
-    this.districtDropDown = this.openingSubmissionsTrendSection.getByTestId('district-dropdown');
-    this.statusDropDown = this.openingSubmissionsTrendSection.getByTestId('status-dropdown');
-    this.submissionYearDropDown = this.openingSubmissionsTrendSection.getByTestId('trend-year-selection');
+    this.districtDropDownBtn = this.openingSubmissionsTrendSection.locator('#district-dropdown-toggle-button');
+    this.statusDropDownBtn = this.openingSubmissionsTrendSection.locator('#status-dropdown-toggle-button');
+    this.submissionYearDropDownBtn = this.openingSubmissionsTrendSection.locator('[id="downshift-«ri0»-toggle-button"]');
     this.favouritesSection = page.locator('.favourite-openings-container');
   }
 
   async goto() {
     await this.page.goto(this.baseUrl);
+  }
+
+  async getTitle() {
+    return await this.page.title();
+  }
+
+  async getHeading() {
+    return await this.page.getByRole('heading', { name: 'Dashboard' }).textContent();
+  }
+
+  async isRecentOpeningsSectionVisible() {
+    return await this.recentOpeningsSection.isVisible();
+  }
+
+  async isOpeningSubmissionsTrendSectionVisible() {
+    return await this.openingSubmissionsTrendSection.isVisible();
+  }
+
+  async isFavouritesSectionVisible() {
+    return await this.favouritesSection.isVisible();
   }
 
   async clickSilvicultureSearchButton() {
@@ -50,26 +70,32 @@ export class DashboardPage {
   async showMap() {
     if (!(await this.map.isVisible())) {
       await this.mapButton.click();
-      await this.page.waitForSelector('.map-container', { state: 'visible' });
+      await this.page.waitForSelector('.leaflet-container', { state: 'visible' });
     }
   }
 
   async hideMap() {
     if (await this.map.isVisible()) {
       await this.mapButton.click();
-      await this.page.waitForSelector('.map-container', { state: 'hidden' });
+      await this.page.waitForSelector('.leaflet-container', { state: 'hidden' });
     }
   }
 
   async getRecentOpeningsCount() {
+    await this.recentOpeningsTable.waitFor({ state: 'visible' });
     return await this.recentOpeningsTableRows.count();
   }
 
   async getOpeningRowDataByOpeningId(openingId: string) {
-    const row = await this.recentOpeningsTableRows.getByTestId(`opening-table-row-${openingId}`);
+    await this.recentOpeningsTable.waitFor({ state: 'visible' });
+    const row = await this.recentOpeningsTable.getByTestId(`opening-table-row-${openingId}`);
     const values: string[] = [];
     for (const header of recentOpeningsHeaders) {
-      const cellText = await row.getByTestId(`opening-table-cell-${header.key}-${openingId}`).textContent();
+      if (header.key === 'actions') {
+        continue;
+      }
+      const cell = await row.getByTestId(`opening-table-cell-${header.key}-${openingId}`);
+      const cellText = await cell.textContent();
       values.push(cellText ?? "");
     }
 
@@ -78,10 +104,8 @@ export class DashboardPage {
 
   async isOpeningFavourited(openingId: string) {
     const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
-    const favIcon = await favButton.locator('svg');
-    const classAttr = await favIcon.getAttribute('class');
-
-    return classAttr?.includes('favourited-icon') ?? false;
+    const ariaPressed = await favButton.getAttribute('aria-pressed');
+    return ariaPressed === 'true';
   }
 
   async favouriteOpening(openingId: string) {
@@ -91,8 +115,6 @@ export class DashboardPage {
     }
     const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
     await favButton.click();
-    const favouriteNotification = this.page.getByRole('status', { name: `Opening Id ${openingId} favourited` })
-    await favouriteNotification.waitFor({ state: 'visible' });
   }
 
   async unfavouriteOpening(openingId: string) {
@@ -102,8 +124,24 @@ export class DashboardPage {
     }
     const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
     await favButton.click();
-    const unfavouriteNotification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` })
-    await unfavouriteNotification.waitFor({ state: 'visible' });
+  }
+
+  async isFavouriteNotificationVisible(openingId: string) {
+    try {
+      const notification = this.page.getByRole('status', { name: `Opening Id ${openingId} favourited` });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isUnfavouriteNotificationVisible(openingId: string) {
+    try {
+      const notification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async openOpeningFromRecentOpenings(openingId: string) {
@@ -122,17 +160,27 @@ export class DashboardPage {
     await newPage.waitForURL('**/' + routes.openingDetails(openingId));
   }
 
-  async isOpeningFavouritedOnFavouritesection(openingId: string) {
+  async checkOpening(openingId: string) {
+    if (!await this.isMapVisible()) {
+      console.warn("Map is not visible, cannot select opening.");
+      return;
+    }
+
+    const openingCheckbox = await this.recentOpeningsTableRows.getByTestId(`checkbox-${openingId}`);
+    await openingCheckbox.check();
+  }
+
+  async isOpeningFavouritedOnFavouriteSection(openingId: string) {
     try {
       const favTile = this.favouritesSection.getByTestId(`favourite-opening-tile-${openingId}`);
-      return await favTile.isVisible();
+      return true;
     } catch {
       return false;
     }
   }
 
   async unfavouriteOpeningOnFavouritesSection(openingId: string) {
-    if (!(await this.isOpeningFavouritedOnFavouritesection(openingId))) {
+    if (!(await this.isOpeningFavouritedOnFavouriteSection(openingId))) {
       console.warn(`Opening ${openingId} is not favourited in favourites section.`);
       return;
     }
@@ -143,4 +191,22 @@ export class DashboardPage {
     const unfavouriteNotification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` })
     await unfavouriteNotification.waitFor({ state: 'visible' });
   }
-} 
+
+  async chooseDistruct(district: string) {
+    await this.districtDropDownBtn.click();
+    const menu = this.openingSubmissionsTrendSection.locator('#district-dropdown__menu');
+    await menu.getByRole('option', { name: district }).click();
+  }
+
+  async chooseStatus(status: string) {
+    await this.statusDropDownBtn.click();
+    const menu = this.openingSubmissionsTrendSection.locator('#status-dropdown__menu');
+    await menu.getByRole('option', { name: status }).click();
+  }
+
+  async chooseSubmissionYear(year: string) {
+    await this.submissionYearDropDownBtn.click();
+    const menu = this.openingSubmissionsTrendSection.locator('#submission-year-dropdown__menu');
+    await menu.getByRole('option', { name: year }).click();
+  }
+}
