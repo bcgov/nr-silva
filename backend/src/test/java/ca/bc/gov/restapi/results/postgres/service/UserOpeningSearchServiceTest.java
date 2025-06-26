@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Unit Test | User Opening Search")
 class UserOpeningSearchServiceTest {
 
   @Mock

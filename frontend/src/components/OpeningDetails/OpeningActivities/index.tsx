@@ -20,7 +20,7 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
-    queryFn: () => API.OpeningEndpointService.getOpeningDisturbances(openingId, {}),
+    queryFn: () => API.OpeningEndpointService.getOpeningDisturbances(openingId),
   });
 
   const activityQuery = useQuery({

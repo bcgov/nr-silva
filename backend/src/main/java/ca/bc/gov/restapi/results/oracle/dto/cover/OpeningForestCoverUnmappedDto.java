@@ -7,7 +7,7 @@ import lombok.With;
 @With
 public record OpeningForestCoverUnmappedDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    Long unmappedAreaId,
+    String unmappedAreaId,
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Float area,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
