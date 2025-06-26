@@ -3,8 +3,8 @@ package ca.bc.gov.restapi.results.security;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.common.security.IdentityProvider;
-import ca.bc.gov.restapi.results.common.security.Role;
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
+import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.UserAuthenticationHelper;
 import ca.bc.gov.restapi.results.common.security.UserInfo;
 import java.util.List;

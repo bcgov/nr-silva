@@ -1,10 +1,13 @@
 package ca.bc.gov.restapi.results.security;
-import ca.bc.gov.restapi.results.common.security.Role;
-import ca.bc.gov.restapi.results.common.security.RoleType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import ca.bc.gov.restapi.results.common.enums.Role;
+import ca.bc.gov.restapi.results.common.enums.RoleType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Unit Test | Role Enum")
 class RoleTest {
