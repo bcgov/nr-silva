@@ -41,7 +41,7 @@ export class DashboardPage {
 
   async clickSilvicultureSearchButton() {
     await this.silvicultureSearchButton.click();
-    await this.page.waitForURL(routes.silvicultureSearch());
+    await this.page.waitForURL('**/' + routes.silvicultureSearch());
   }
 
   async isMapVisible() {
@@ -111,7 +111,7 @@ export class DashboardPage {
     const cell = await this.recentOpeningsTableRows.getByTestId(`opening-table-cell-openingId-${openingId}`);
     const link = await cell.locator('a');
     await link.click();
-    await this.page.waitForURL(`**/openings/${openingId}`);
+    await this.page.waitForURL('**/' + routes.openingDetails(openingId));
   }
 
   async openOpeningInNewTab(openingId: string) {
@@ -120,7 +120,7 @@ export class DashboardPage {
       this.page.context().waitForEvent('page'),
       btn.click(),
     ]);
-    await newPage.waitForURL(`**/openings/${openingId}`);
+    await newPage.waitForURL('**/' + routes.openingDetails(openingId));
   }
 
   async isOpeningFavouritedOnFavouritesection(openingId: string) {
