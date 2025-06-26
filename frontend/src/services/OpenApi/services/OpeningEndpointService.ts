@@ -79,7 +79,6 @@ export class OpeningEndpointService {
     }
     /**
      * @param openingId
-     * @param allRequestParams
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -88,7 +87,6 @@ export class OpeningEndpointService {
      */
     public static getOpeningDisturbances(
         openingId: number,
-        allRequestParams: Record<string, string>,
         page?: number,
         size: number = 20,
         sort?: Array<string>,
@@ -100,7 +98,6 @@ export class OpeningEndpointService {
                 'openingId': openingId,
             },
             query: {
-                'allRequestParams': allRequestParams,
                 'page': page,
                 'size': size,
                 'sort': sort,
