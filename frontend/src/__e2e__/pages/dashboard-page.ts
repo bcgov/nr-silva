@@ -19,7 +19,7 @@ export class DashboardPage {
   private baseUrl: string;
 
   constructor(page: Page) {
-    this.baseUrl = (process.env.BASE_URL ?? 'http://localhost:3000') + routes.dashboard;
+    this.baseUrl = (process.env.BASE_URL ?? 'http://localhost:3000') + routes.dashboard();
     this.page = page;
     this.silvicultureSearchButton = page.getByRole('button', { name: 'Silviculture search' });
     this.mapButton = page.getByRole('button', { name: 'Hide map' })
