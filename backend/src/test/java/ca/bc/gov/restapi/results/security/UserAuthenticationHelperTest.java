@@ -3,7 +3,8 @@ package ca.bc.gov.restapi.results.security;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.common.security.IdentityProvider;
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
+import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.UserAuthenticationHelper;
 import ca.bc.gov.restapi.results.common.security.UserInfo;
 import java.util.List;
@@ -49,7 +50,7 @@ class UserAuthenticationHelperTest {
     builder.claim("custom:idp_username", "BAGGINGS");
     builder.claim("custom:idp_name", "idir");
     builder.claim("cognito:username", "IDIR\\BAGGINGS");
-    builder.claim("client_roles", List.of("admin", "manager"));
+    builder.claim("cognito:groups", List.of("Viewer", "Planner_00001012"));
 
     when(authentication.getPrincipal()).thenReturn(builder.build());
 
@@ -113,5 +114,49 @@ class UserAuthenticationHelperTest {
 
     Optional<UserInfo> userInfoOptional = userAuthenticationHelper.getUserInfo();
     Assertions.assertFalse(userInfoOptional.isPresent());
+  }
+
+  @Test
+  @DisplayName("hasConcreteRole returns true for matching concrete role")
+  void testHasConcreteRole() {
+    Authentication authentication = mock(Authentication.class);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    Jwt.Builder builder = Jwt.withTokenValue("myTokenValue");
+    builder.header("alg", "HS256");
+    builder.header("typ", "JWT");
+    builder.claim("custom:idp_display_name", "Test User");
+    builder.claim("custom:idp_username", "TESTUSER");
+    builder.claim("custom:idp_name", "idir");
+    builder.claim("email", "test@gov.bc.ca");
+    builder.claim("cognito:groups", List.of("VIEWER"));
+
+    Jwt jwt = builder.build();
+    when(authentication.isAuthenticated()).thenReturn(true);
+    when(authentication.getPrincipal()).thenReturn(jwt);
+
+    Assertions.assertTrue(userAuthenticationHelper.hasConcreteRole(Role.VIEWER));
+  }
+
+  @Test
+  @DisplayName("hasAbstractRole returns true for matching abstract role with clientId")
+  void testHasAbstractRole() {
+    Authentication authentication = mock(Authentication.class);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    Jwt.Builder builder = Jwt.withTokenValue("myTokenValue");
+    builder.header("alg", "HS256");
+    builder.header("typ", "JWT");
+    builder.claim("custom:idp_display_name", "Test User");
+    builder.claim("custom:idp_username", "TESTUSER");
+    builder.claim("custom:idp_name", "idir");
+    builder.claim("email", "test@gov.bc.ca");
+    builder.claim("cognito:groups", List.of("PLANNER_00001012"));
+
+    Jwt jwt = builder.build();
+    when(authentication.isAuthenticated()).thenReturn(true);
+    when(authentication.getPrincipal()).thenReturn(jwt);
+
+    Assertions.assertTrue(userAuthenticationHelper.hasAbstractRole(Role.PLANNER, "00001012"));
   }
 }

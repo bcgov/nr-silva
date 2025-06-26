@@ -1,8 +1,13 @@
 package ca.bc.gov.restapi.results.common.security;
 
-import java.util.HashSet;
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
+import ca.bc.gov.restapi.results.common.enums.Role;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
@@ -15,7 +20,7 @@ import org.springframework.stereotype.Component;
  * This class contains helper methods to retrieved authenticated user.
  */
 @Slf4j
-@Component
+@Component("auth")
 @RequiredArgsConstructor
 public class UserAuthenticationHelper {
 
@@ -64,11 +69,48 @@ public class UserAuthenticationHelper {
   }
 
   private static Set<String> getRoles(Jwt jwtPrincipal) {
-    Set<String> roles = new HashSet<>();
-    if (jwtPrincipal.getClaims().containsKey("client_roles")) {
-      roles.addAll(jwtPrincipal.getClaimAsStringList("client_roles"));
+    Object groupsObj = jwtPrincipal.getClaims().get("cognito:groups");
+
+    if (groupsObj instanceof List<?> rawList) {
+      return rawList.stream()
+              .filter(Objects::nonNull)
+              .map(Object::toString)
+              .collect(Collectors.toSet());
     }
-    return roles;
+
+    return Collections.emptySet();
+  }
+
+  /**
+   * Checks whether the currently authenticated user has the specified concrete role
+   * (e.g., "VIEWER").
+   *
+   * @param role the concrete role to check
+   * @return true if the user has the role; false otherwise
+   */
+  public boolean hasConcreteRole(Role role) {
+    if (!role.isConcrete()) return false;
+    return getUserInfo()
+            .map(user -> user.roles().stream()
+                    .anyMatch(r -> r.equalsIgnoreCase(role.name())))
+            .orElse(false);
+  }
+
+  /**
+   * Checks whether the currently authenticated user has the specified abstract role
+   * for a given client ID (e.g., "PLANNER_00001012").
+   *
+   * @param role     the abstract role to check
+   * @param clientId the client ID to append to the role
+   * @return true if the user has the role; false otherwise
+   */
+  public boolean hasAbstractRole(Role role, String clientId) {
+    if (!role.isAbstract()) return false;
+    String expected = role.name() + "_" + clientId;
+    return getUserInfo()
+            .map(user -> user.roles().stream()
+                    .anyMatch(r -> r.equalsIgnoreCase(expected)))
+            .orElse(false);
   }
 
   private Triple<String, String, String> getName(Jwt jwtPrincipal) {

@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
 import ca.bc.gov.restapi.results.common.exception.UserNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

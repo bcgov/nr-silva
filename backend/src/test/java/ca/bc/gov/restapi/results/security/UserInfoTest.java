@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.security;
 
-import ca.bc.gov.restapi.results.common.security.IdentityProvider;
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
 import ca.bc.gov.restapi.results.common.security.UserInfo;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
