@@ -1,8 +1,8 @@
 package ca.bc.gov.restapi.results.common.security;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * This class contains helper methods to retrieved authenticated user.
  */
 @Slf4j
-@Component
+@Component("auth")
 @RequiredArgsConstructor
 public class UserAuthenticationHelper {
 
@@ -64,11 +64,31 @@ public class UserAuthenticationHelper {
   }
 
   private static Set<String> getRoles(Jwt jwtPrincipal) {
-    Set<String> roles = new HashSet<>();
-    if (jwtPrincipal.getClaims().containsKey("client_roles")) {
-      roles.addAll(jwtPrincipal.getClaimAsStringList("client_roles"));
+    Object groupsObj = jwtPrincipal.getClaims().get("cognito:groups");
+
+    if (groupsObj instanceof List<?> rawList) {
+      return rawList.stream()
+              .filter(Objects::nonNull)
+              .map(Object::toString)
+              .collect(Collectors.toSet());
     }
-    return roles;
+
+    return Collections.emptySet();
+  }
+
+  public boolean hasConcreteRole(ConcreteRole role) {
+    return getUserInfo()
+            .map(user -> user.roles().stream()
+                    .anyMatch(r -> r.equalsIgnoreCase(role.name())))
+            .orElse(false);
+  }
+
+  public boolean hasAbstractRole(AbstractRole role, String clientId) {
+    String expected = role.name() + "_" + clientId;
+    return getUserInfo()
+            .map(user -> user.roles().stream()
+                    .anyMatch(r -> r.equalsIgnoreCase(expected)))
+            .orElse(false);
   }
 
   private Triple<String, String, String> getName(Jwt jwtPrincipal) {
