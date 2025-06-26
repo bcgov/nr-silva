@@ -10,7 +10,8 @@ export class LoginPage {
   readonly bceidUsernameInput: Locator;
   readonly bceidPasswordInput: Locator;
   readonly bceidLoginSubmitButton: Locator;
-  readonly baseUrl: string;
+
+  private baseUrl: string;
 
   constructor(page: Page) {
     this.page = page;
