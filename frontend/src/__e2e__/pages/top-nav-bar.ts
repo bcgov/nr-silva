@@ -48,25 +48,6 @@ export class TopNavBar {
     return classAttr?.includes('bx--header-panel--expanded') ?? false;
   }
 
-  // async clickProfileButton() {
-  //   const wasOpen = await this.isProfileMenuOpen();
-  //   await this.profileButton.click();
-  //   const menuHandle = await this.profileMenu.elementHandle();
-  //   if (!menuHandle) throw new Error('Profile menu element not found');
-  //   if (wasOpen) {
-  //     // Wait for the menu to close
-  //     await this.page.waitForFunction(
-  //       (el) => !el.classList.contains('bx--header-panel--expanded'),
-  //       menuHandle
-  //     );
-  //   } else {
-  //     // Wait for the menu to open
-  //     await this.page.waitForFunction(
-  //       (el) => el.classList.contains('bx--header-panel--expanded'),
-  //       menuHandle
-  //     );
-  //   }
-  // }
   async openProfileMenu() {
     if (!(await this.isProfileMenuOpen())) {
       await this.profileButton.click();
