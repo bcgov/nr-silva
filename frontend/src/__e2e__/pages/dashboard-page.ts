@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { routes } from "../utils/routes";
-import { recentOpeningsHeaders } from "../../components/RecentOpenings/constants";
+import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
 
 export class DashboardPage {
   readonly page: Page;
