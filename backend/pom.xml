@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -43,7 +43,7 @@
     <hibernate.version>6.6.3.Final</hibernate.version>
     <testcontainers.version>1.21.1</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
-    <spring-oauth2.version>3.5.1</spring-oauth2.version>
+    <spring-oauth2.version>3.5.2</spring-oauth2.version>
     <spring-security.version>6.5.0</spring-security.version>
     <logback.version>1.5.18</logback.version>
     <spring-logging.version>3.5.0</spring-logging.version>
