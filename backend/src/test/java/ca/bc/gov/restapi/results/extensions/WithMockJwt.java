@@ -15,9 +15,8 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @WithSecurityContext(factory = WithMockJwtSecurityContextFactory.class)
 public @interface WithMockJwt {
   String value() default "test";
-  String[] roles() default {"user_read"};
+  String[] cognitoGroups() default {};
   String email() default "test@test.ca";
   String idp() default "idir";
   String displayName() default "Test, Automated WLRS:EX";
-
 }

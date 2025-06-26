@@ -76,14 +76,31 @@ public class UserAuthenticationHelper {
     return Collections.emptySet();
   }
 
-  public boolean hasConcreteRole(ConcreteRole role) {
+  /**
+   * Checks whether the currently authenticated user has the specified concrete role
+   * (e.g., "VIEWER").
+   *
+   * @param role the concrete role to check
+   * @return true if the user has the role; false otherwise
+   */
+  public boolean hasConcreteRole(Role role) {
+    if (!role.isConcrete()) return false;
     return getUserInfo()
             .map(user -> user.roles().stream()
                     .anyMatch(r -> r.equalsIgnoreCase(role.name())))
             .orElse(false);
   }
 
-  public boolean hasAbstractRole(AbstractRole role, String clientId) {
+  /**
+   * Checks whether the currently authenticated user has the specified abstract role
+   * for a given client ID (e.g., "PLANNER_00001012").
+   *
+   * @param role     the abstract role to check
+   * @param clientId the client ID to append to the role
+   * @return true if the user has the role; false otherwise
+   */
+  public boolean hasAbstractRole(Role role, String clientId) {
+    if (!role.isAbstract()) return false;
     String expected = role.name() + "_" + clientId;
     return getUserInfo()
             .map(user -> user.roles().stream()

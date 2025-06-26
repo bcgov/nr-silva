@@ -44,7 +44,6 @@ public class OpeningEndpoint {
    * @throws OpeningNotFoundException if no tombstone information is found for the given Opening ID.
    */
   @GetMapping("/{openingId}/tombstone")
-  @PreAuthorize("@auth.hasConcreteRole(T(ca.bc.gov.restapi.results.common.security.ConcreteRole).VIEWER)")
   public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(@PathVariable Long openingId) {
     return openingService
         .getOpeningTombstone(openingId)
