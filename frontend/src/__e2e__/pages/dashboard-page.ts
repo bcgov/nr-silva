@@ -3,19 +3,18 @@ import { routes } from "../utils/routes";
 import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
 
 export class DashboardPage {
-  readonly page: Page;
-  readonly silvicultureSearchButton: Locator;
-  readonly mapButton: Locator;
-  readonly map: Locator;
-  readonly recentOpeningsSection: Locator;
-  readonly recentOpeningsTable: Locator;
-  readonly recentOpeningsTableRows: Locator;
-  readonly openingSubmissionsTrendSection: Locator;
-  readonly districtDropDown: Locator;
-  readonly statusDropDown: Locator;
-  readonly submissionYearDropDown: Locator;
-  readonly favouritesSection: Locator;
-  readonly favouriteNotification?: Locator;
+  private readonly page: Page;
+  private readonly silvicultureSearchButton: Locator;
+  private readonly mapButton: Locator;
+  private readonly map: Locator;
+  private readonly recentOpeningsSection: Locator;
+  private readonly recentOpeningsTable: Locator;
+  private readonly recentOpeningsTableRows: Locator;
+  private readonly openingSubmissionsTrendSection: Locator;
+  private readonly districtDropDownBtn: Locator;
+  private readonly statusDropDownBtn: Locator;
+  private readonly submissionYearDropDownBtn: Locator;
+  private readonly favouritesSection: Locator;
 
   private baseUrl: string;
 
