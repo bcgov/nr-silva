@@ -66,6 +66,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
         />
         <Button
           className="map-button"
+          data-testid="toggle-map-button"
           renderIcon={Location}
           type="button"
           size={breakpoint === "sm" ? "sm" : "lg"}
