@@ -1,11 +1,12 @@
 import React from "react";
 import { Column, Grid } from "@carbon/react";
 import { CardItem } from "@/components/Card";
-import Comments from "@/components/Comments";
-import { PolygonDetailDto } from "../../definitions";
+import { OpeningForestCoverPolygonDto } from "@/services/OpenApi";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 type PolygonDetailProps = {
-  polygon?: PolygonDetailDto,
+  polygon?: OpeningForestCoverPolygonDto,
   isLoading?: boolean
 }
 
@@ -24,19 +25,19 @@ const PolygonDetail = ({ polygon, isLoading }: PolygonDetailProps) => (
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Reserve type" showSkeleton={isLoading}>
-            {polygon?.reserveType}
+            {codeDescriptionToDisplayText(polygon?.reserve)}
           </CardItem>
         </Column>
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Reserve objective" showSkeleton={isLoading}>
-            {polygon?.reserveObjective}
+            {codeDescriptionToDisplayText(polygon?.objective)}
           </CardItem>
         </Column>
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Site class" showSkeleton={isLoading}>
-            {polygon?.siteClass}
+            {codeDescriptionToDisplayText(polygon?.siteClass)}
           </CardItem>
         </Column>
 
@@ -48,33 +49,19 @@ const PolygonDetail = ({ polygon, isLoading }: PolygonDetailProps) => (
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Site index source" showSkeleton={isLoading}>
-            {polygon?.siteIndexSource}
+            {codeDescriptionToDisplayText(polygon?.siteIndexSource)}
           </CardItem>
         </Column>
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Tree cover pattern" showSkeleton={isLoading}>
-            {polygon?.treeCoverPattern}
+            {codeDescriptionToDisplayText(polygon?.treeCoverPattern)}
           </CardItem>
         </Column>
 
         <Column sm={4} md={4} lg={4} max={2}>
           <CardItem label="Re-entry year" showSkeleton={isLoading}>
-            {polygon?.reEntryYear}
-          </CardItem>
-        </Column>
-
-        <Column sm={4} md={8} lg={16}>
-          <CardItem label="Comment" showSkeleton={isLoading}>
-            <Comments
-              comments={[
-                {
-                  commentSource: { code: '', description: '' },
-                  commentType: { code: '', description: '' },
-                  commentText: polygon?.comment ?? null
-                }
-              ]}
-            />
+            {polygon?.reentryYear}
           </CardItem>
         </Column>
       </Grid>

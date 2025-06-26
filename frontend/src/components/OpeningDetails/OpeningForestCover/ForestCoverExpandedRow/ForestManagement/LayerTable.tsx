@@ -1,29 +1,32 @@
 import React from "react";
-import { DamageAgentDto, LayerDto } from "../../definitions";
 import {
   Column, DefinitionTooltip, Grid,
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableHeader, TableRow
 } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
-import { NOT_APPLICABLE, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { NOT_APPLICABLE, PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { OpeningForestCoverDamageDto, OpeningForestCoverLayerDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { DamageAgentTableHeader, LayerTableHeaders } from "./constants";
 
 type LayerTableProps = {
-  layer: LayerDto;
+  layer?: OpeningForestCoverLayerDto;
 }
 
 const LayerTable = ({ layer }: LayerTableProps) => {
+  if (!layer) {
+    return null;
+  }
 
-  const renderDamageAgentCell = (row: DamageAgentDto, key: keyof DamageAgentDto) => {
+  const renderDamageAgentCell = (row: OpeningForestCoverDamageDto, key: keyof OpeningForestCoverDamageDto) => {
     switch (key) {
-      case 'species':
-        return codeDescriptionToDisplayText(row.species);
-      case 'forestHealthIncidence':
-        return `${row.forestHealthIncidence}%`;
+      case 'damageAgent':
+        return codeDescriptionToDisplayText(row.damageAgent);
+      case 'healthIncidencePercentage':
+        return row.healthIncidencePercentage ? `${row.healthIncidencePercentage}%` : PLACE_HOLDER;
       case 'incidenceArea':
-        return `${row.incidenceArea} ha`;
+        return row.incidenceArea ? `${row.incidenceArea} ha` : PLACE_HOLDER;
       default:
         return String(row[key]);
     }
@@ -34,7 +37,7 @@ const LayerTable = ({ layer }: LayerTableProps) => {
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container">
           <div className="layer-table-title">
-            {`${layer.speciesDistribution.length} species`}
+            {`${layer.species.length} species`}
           </div>
           <Table className="default-zebra-table child-table" aria-label="Layer table">
             <TableHead>
@@ -51,40 +54,59 @@ const LayerTable = ({ layer }: LayerTableProps) => {
               <TableRow>
                 {/* Species • Distribution */}
                 <TableCell className="default-table-cell">
-                  <ul className="cell-content-list">
-                    {layer.speciesDistribution.map((species) => (
-                      <li key={species.species.code}>
-                        <DefinitionTooltip
-                          openOnHover
-                          definition={species.species.description}
-                          align="right"
-                        >
-                          {`${species.species.code}`}
-                        </DefinitionTooltip>
-                        {' '}
-                        {`${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.distribution}%`}
-                      </li>
-                    ))}
-                  </ul>
+                  {
+                    layer.species.length
+                      ? (
+                        <ul className="cell-content-list">
+                          {layer.species.map((species) => (
+                            <li key={species.species.code}>
+                              <DefinitionTooltip
+                                openOnHover
+                                definition={species.species.description}
+                                align="right"
+                              >
+                                {`${species.species.code}`}
+                              </DefinitionTooltip>
+                              {' '}
+                              {`${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.percentage}%`}
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                      : PLACE_HOLDER
+                  }
+
                 </TableCell>
 
                 {/* Average age  • Average height */}
                 <TableCell className="default-table-cell">
-                  <ul className="cell-content-list">
-                    {layer.speciesDistribution.map((species) => (
-                      <li key={species.species.code}>
-                        {`${species.averageAge} ${UNIQUE_CHARACTERS_UNICODE.BULLET} ${species.averageHeight} m`}
-                      </li>
-                    ))}
-                  </ul>
+                  {
+                    layer.species.length
+                      ? (
+                        <ul className="cell-content-list">
+                          {layer.species.map((species) => (
+                            <li key={species.species.code}>
+                              {
+                                `
+                                  ${species.averageAge ? species.averageAge : PLACE_HOLDER}
+                                  ${UNIQUE_CHARACTERS_UNICODE.BULLET}
+                                  ${species.averageAge ? `${species.averageHeight} m` : PLACE_HOLDER}
+                                  `
+                              }
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                      : PLACE_HOLDER
+                  }
                 </TableCell>
 
                 <TableCell className="default-table-cell">
-                  {`${layer.crownClosure}%`}
+                  {layer.crownClosure ? `${layer.crownClosure}%` : PLACE_HOLDER}
                 </TableCell>
 
                 <TableCell className="default-table-cell">
-                  {`${layer.basalAreaPerTotalStems} (m²/ha)`}
+                  {layer.basalAreaSt ? `${layer.basalAreaSt} (m²/ha)` : PLACE_HOLDER}
                 </TableCell>
 
                 {/* Stems */}
@@ -103,7 +125,7 @@ const LayerTable = ({ layer }: LayerTableProps) => {
       </Column>
 
       {
-        layer.damageAgent?.length
+        layer.damage?.length
           ? (
             <>
               <Column sm={4} md={8} lg={16}>
@@ -132,9 +154,9 @@ const LayerTable = ({ layer }: LayerTableProps) => {
 
                     <TableBody>
                       {
-                        layer.damageAgent.map((row) => {
+                        layer.damage.map((row) => {
                           return (
-                            <TableRow key={row.species.code}>
+                            <TableRow key={row.damageAgent.code}>
                               {
                                 DamageAgentTableHeader.map((header) => (
                                   <TableCell key={header.key}>

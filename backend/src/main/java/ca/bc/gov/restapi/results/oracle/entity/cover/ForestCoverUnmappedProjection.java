@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.entity.cover;
 
 public interface ForestCoverUnmappedProjection {
 
-  Long getUnmappedAreaId();
+  String getUnmappedAreaId();
 
   Float getArea();
 
