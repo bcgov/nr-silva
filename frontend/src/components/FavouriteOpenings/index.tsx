@@ -91,6 +91,7 @@ const FavouriteOpenings: React.FC = () => {
                       key={openingId}
                       className="fav-open-tile-container"
                       id={`favourite-opening-tile-${openingId}`}
+                      data-testid={`favourite-opening-tile-${openingId}`}
                     >
                       <FavoriteButton
                         tooltipPosition="bottom"
