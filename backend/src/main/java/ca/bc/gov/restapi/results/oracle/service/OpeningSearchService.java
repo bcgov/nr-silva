@@ -4,7 +4,7 @@ import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 public class OpeningSearchService {
 
   private final OpeningRepository openingRepository;
-  private final LoggedUserService loggedUserService;
+  private final LoggedUserHelper loggedUserHelper;
   private final ForestClientApiProvider forestClientApiProvider;
   private final UserOpeningService userOpeningService;
 
@@ -59,7 +59,7 @@ public class OpeningSearchService {
     // Set the user in the filter, if required
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS) && Boolean.TRUE.equals(
         filtersDto.getMyOpenings())) {
-      filtersDto.setRequestUserId(loggedUserService.getLoggedUserId());
+      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
     }
     List<SilvicultureSearchProjection> searchContent = openingRepository.searchBy(
         filtersDto,

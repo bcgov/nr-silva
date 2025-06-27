@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
-import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserRecentOpeningService {
 
-  private final LoggedUserService loggedUserService;
+  private final LoggedUserHelper loggedUserHelper;
   private final UserRecentOpeningRepository userRecentOpeningRepository;
   private final OpeningSearchService openingSearchService;
   private final OpeningRepository openingRepository;
@@ -40,7 +40,7 @@ public class UserRecentOpeningService {
   @Transactional
   public UserRecentOpeningDto storeViewedOpening(Long openingId) {
     log.info("Adding opening ID {} as recently viewed for user {}", openingId,
-        loggedUserService.getLoggedUserId());
+        loggedUserHelper.getLoggedUserId());
 
     if (openingId == null) {
       log.info("Opening ID is null");
@@ -55,11 +55,11 @@ public class UserRecentOpeningService {
     UserRecentOpeningEntity recentOpening =
         userRecentOpeningRepository.saveAndFlush(
             userRecentOpeningRepository
-                .findById(new UserOpeningEntityId(loggedUserService.getLoggedUserId(), openingId))
+                .findById(new UserOpeningEntityId(loggedUserHelper.getLoggedUserId(), openingId))
                 .map(entity -> entity.withLastViewed(LocalDateTime.now()))
                 .orElse(
                     new UserRecentOpeningEntity(
-                        loggedUserService.getLoggedUserId(),
+                        loggedUserHelper.getLoggedUserId(),
                         openingId,
                         LocalDateTime.now()
                     )
@@ -75,7 +75,7 @@ public class UserRecentOpeningService {
   }
 
   public Page<OpeningSearchResponseDto> getAllRecentOpeningsForUser(Pageable pageable) {
-    String userId = loggedUserService.getLoggedUserId();
+    String userId = loggedUserHelper.getLoggedUserId();
 
     // Fetch recent openings for the user
     Page<UserRecentOpeningEntity> recentOpenings = userRecentOpeningRepository

@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,8 +28,12 @@ public class Oauth2SecurityCustomizer implements
   }
 
   private Converter<Jwt, AbstractAuthenticationToken> converter() {
+    JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    grantedAuthoritiesConverter.setAuthoritiesClaimName("cognito:groups");
+    grantedAuthoritiesConverter.setAuthorityPrefix("");
+
     JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-    converter.setJwtGrantedAuthoritiesConverter(new GrantedAuthoritiesConverter());
+    converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
     return converter;
   }
 
