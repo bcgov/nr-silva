@@ -1,8 +1,6 @@
 package ca.bc.gov.restapi.results.extensions;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,14 +17,15 @@ public class WithMockJwtSecurityContextFactory implements WithSecurityContextFac
         .withTokenValue("token")
         .header("alg", "none")
         .claim("sub", annotation.value())
-            .claim("cognito:groups", List.of(annotation.cognitoGroups()))
+        .claim("cognito:groups", List.of(annotation.cognitoGroups()))
         .claim("custom:idp_name", annotation.idp())
         .claim("custom:idp_username", annotation.value())
         .claim("custom:idp_display_name", annotation.displayName())
         .claim("email", annotation.email())
         .build();
 
-    List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(annotation.cognitoGroups());
+    List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
+        annotation.cognitoGroups());
     JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
     SecurityContext context = SecurityContextHolder.createEmptyContext();

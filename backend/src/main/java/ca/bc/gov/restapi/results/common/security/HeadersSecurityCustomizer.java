@@ -1,10 +1,11 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import ca.bc.gov.restapi.results.common.util.SecurityEnvironmentUtil;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,8 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.XXssConfig;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.stereotype.Component;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * This class holds the configuration for HTTP headers security.
@@ -48,7 +47,7 @@ public class HeadersSecurityCustomizer implements Customizer<HeadersConfigurer<H
   public void customize(HeadersConfigurer<HttpSecurity> headerSpec) {
     String policyDirectives;
 
-    if (SecurityEnvironmentUtils.isLocalEnvironment(environment)) {
+    if (SecurityEnvironmentUtil.isLocalEnvironment(environment)) {
       policyDirectives = String.join("; ",
         "default-src 'self'",
         "connect-src 'self' " + selfUri,

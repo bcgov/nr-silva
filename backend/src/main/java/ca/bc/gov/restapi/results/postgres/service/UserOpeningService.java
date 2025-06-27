@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
-import ca.bc.gov.restapi.results.common.security.LoggedUserService;
+import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
@@ -22,20 +22,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserOpeningService {
 
-  private final LoggedUserService loggedUserService;
+  private final LoggedUserHelper loggedUserHelper;
 
   private final UserOpeningRepository userOpeningRepository;
 
   private final OpeningRepository openingRepository;
 
   public List<Long> listUserFavoriteOpenings() {
-    log.info("Loading user favorite openings for {}", loggedUserService.getLoggedUserId());
+    log.info("Loading user favorite openings for {}", loggedUserHelper.getLoggedUserId());
 
     List<UserOpeningEntity> userList = userOpeningRepository
-        .findAllByUserId(loggedUserService.getLoggedUserId(), PageRequest.of(0, 32));
+        .findAllByUserId(loggedUserHelper.getLoggedUserId(), PageRequest.of(0, 32));
 
     if (userList.isEmpty()) {
-      log.info("No saved openings for {}", loggedUserService.getLoggedUserId());
+      log.info("No saved openings for {}", loggedUserHelper.getLoggedUserId());
       return List.of();
     }
 
@@ -48,12 +48,12 @@ public class UserOpeningService {
 
   public List<Long> checkForFavorites(List<Long> openingIds) {
     log.info("Checking {} favorite for openings from the following list of openings {}",
-        loggedUserService.getLoggedUserId(),
+        loggedUserHelper.getLoggedUserId(),
         openingIds
     );
 
     return userOpeningRepository
-        .findAllByUserIdAndOpeningIdIn(loggedUserService.getLoggedUserId(), openingIds)
+        .findAllByUserIdAndOpeningIdIn(loggedUserHelper.getLoggedUserId(), openingIds)
         .stream()
         .map(UserOpeningEntity::getOpeningId)
         .toList();
@@ -62,7 +62,7 @@ public class UserOpeningService {
   @Transactional
   public void addUserFavoriteOpening(Long openingId) {
     log.info("Adding opening ID {} as favorite for user {}", openingId,
-        loggedUserService.getLoggedUserId());
+        loggedUserHelper.getLoggedUserId());
 
     if (openingRepository.findById(openingId).isEmpty()) {
       log.info("Opening ID not found: {}", openingId);
@@ -70,10 +70,10 @@ public class UserOpeningService {
     }
 
     log.info("Opening ID {} added as favorite for user {}", openingId,
-        loggedUserService.getLoggedUserId());
+        loggedUserHelper.getLoggedUserId());
     userOpeningRepository.saveAndFlush(
         new UserOpeningEntity(
-            loggedUserService.getLoggedUserId(),
+            loggedUserHelper.getLoggedUserId(),
             openingId
         )
     );
@@ -82,10 +82,10 @@ public class UserOpeningService {
   @Transactional
   public void removeUserFavoriteOpening(Long openingId) {
     log.info("Removing opening ID {} from the favorites for user {}", openingId,
-        loggedUserService.getLoggedUserId());
+        loggedUserHelper.getLoggedUserId());
     userOpeningRepository.findById(
         new UserOpeningEntityId(
-            loggedUserService.getLoggedUserId(),
+            loggedUserHelper.getLoggedUserId(),
             openingId
         )
     ).ifPresentOrElse(
