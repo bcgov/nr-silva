@@ -107,8 +107,8 @@ class JwtPrincipalUtilTest {
       "'', '', 'John Wick',  bceidbusiness, John Wick",
       "'', '', 'John Valeus Wick',  bceidbusiness, John Valeus Wick",
       "'', '', 'Wick, John WLRS:EX',  idir, John Wick",
-      "'', '', 'da Silva, Anderson WLRS:EX',  idir, Anderson da Silva",
-      "'', '', 'Wick, John V WLRS:EX',  idir, John V Wick",
+      "'', '', 'da Silva, Anderson WLRS:EX',  idir, Anderson Silva",
+      "'', '', 'Wick, John V WLRS:EX',  idir, John Wick",
       "'', '', '',  bceidbusiness, ''",
       "'', '', '', '', ''"
   })
@@ -139,8 +139,8 @@ class JwtPrincipalUtilTest {
       "'', '', 'John Wick',  bceidbusiness, Wick",
       "'', '', 'John Valeus Wick',  bceidbusiness, Valeus Wick",
       "'', '', 'Wick, John WLRS:EX',  idir, Wick",
-      "'', '', 'da Silva, Anderson WLRS:EX',  idir, da Silva",
-      "'', '', 'Wick, John V WLRS:EX',  idir, V Wick",
+      "'', '', 'da Silva, Anderson WLRS:EX',  idir, Silva",
+      "'', '', 'Wick, John V WLRS:EX',  idir, Wick",
       "'', '', '',  bceidbusiness, ''",
       "'', '', '', '', ''"
   })
