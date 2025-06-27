@@ -577,6 +577,7 @@ const OpeningSearchBar = ({
       {/* Modal Section, conatins some duplicated inputs. These input components can't be made into their own due to behaviour issues. */}
       <ComposedModal
         className="advanced-search-modal"
+        data-testid="advanced-search-modal"
         open={isAdvancedSearchOpen}
         onClose={() => setIsAdvancedSearchOpen(false)}
         size="lg"
@@ -599,12 +600,14 @@ const OpeningSearchBar = ({
               >
                 <Checkbox
                   id="created-by-me-checkbox"
+                  data-testid="created-by-me-checkbox"
                   labelText="Openings created by me"
                   checked={filters.myOpenings}
                   onChange={handleBooleanChange("myOpenings")}
                 />
                 <Checkbox
                   id="frpa-checkbox"
+                  data-testid="frpa-checkbox"
                   labelText="FRPA section 108"
                   checked={filters.submittedToFrpa}
                   onChange={handleBooleanChange("submittedToFrpa")}
@@ -641,7 +644,7 @@ const OpeningSearchBar = ({
             {/* Status */}
             <Column sm={4} md={4} lg={8}>
               <CustomMultiSelect
-                id="status-multiselect"
+                id="advanced-status-multiselect"
                 placeholder="Status"
                 titleText="Status"
                 items={OPENING_STATUS_LIST}
@@ -766,6 +769,7 @@ const OpeningSearchBar = ({
         <ModalFooter>
           <Button
             kind="secondary"
+            data-testid="advanced-modal-cancel-button"
             onClick={() => setIsAdvancedSearchOpen(false)}
           >
             Cancel
