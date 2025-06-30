@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import ca.bc.gov.restapi.results.common.util.SecurityEnvironmentUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -36,7 +37,7 @@ public class ApiAuthorizationCustomizer implements
         .permitAll();
 
     // Only allow OpenAPI and Swagger UI in the local environment
-    if (SecurityEnvironmentUtils.isLocalEnvironment(environment)) {
+    if (SecurityEnvironmentUtil.isLocalEnvironment(environment)) {
       authorize
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
         .permitAll();
