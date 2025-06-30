@@ -16,4 +16,12 @@ export class BasePage {
   async getTitle() {
     return await this.page.title();
   }
+
+  async getHeading() {
+    return await this.page.getByRole('heading', { name: 'Silviculture Search' }).textContent();
+  }
+
+  async isHeadingVisible() {
+    return await this.page.getByRole('heading', { name: 'Silviculture Search' }).isVisible();
+  }
 }
