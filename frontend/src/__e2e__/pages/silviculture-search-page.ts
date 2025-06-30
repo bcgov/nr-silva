@@ -24,9 +24,11 @@ export class SilvicultureSearchPage extends BasePage {
   private readonly advancedSearchCategoryDropdownButton: Locator;
   private readonly advancedSearchOrgUnitDropdownButton: Locator;
   private readonly advancedSearchStatusDropdownButton: Locator;
+  private readonly advancedSearchClientComboxBox: Locator;
   private readonly advancedSearchClientDropdownInput: Locator;
-  private readonly advancedSearchClientDropdownButton: Locator;
+  private readonly advancedSearchLocationCodeComboxBox: Locator;
   private readonly advancedSearchLocationCodeInput: Locator;
+  private readonly advancedSearchDateFilterContainer: Locator;
   private readonly advancedSearchDateTypeDropdownButton: Locator;
   private readonly advancedSearchStartDateInput: Locator;
   private readonly advancedSearchEndDateInput: Locator;
@@ -52,25 +54,27 @@ export class SilvicultureSearchPage extends BasePage {
     this.map = page.locator('.leaflet-container');
     this.searchResultsTable = page.getByRole('table', { name: 'Opening search table' });
 
-    this.advancedSearchModal = page.getByTestId('advanced-search-modal');
+    this.advancedSearchModal = page.locator('.advanced-search-modal');
     this.advancedSearchCloseButton = this.advancedSearchModal.locator('.bx--modal-close-button')
     this.advancedSearchSearchInput = this.advancedSearchModal.getByTestId('advanced-search-input');
-    this.advancedSearchCreatedByMeCheckbox = this.advancedSearchModal.getByTestId('created-by-me-checkbox');
-    this.advancedSearchFrpaCheckbox = this.advancedSearchModal.getByTestId('frpa-checkbox');
+    this.advancedSearchCreatedByMeCheckbox = this.advancedSearchModal.locator('label').filter({ hasText: 'Openings created by me' });
+    this.advancedSearchFrpaCheckbox = this.advancedSearchModal.locator('label').filter({ hasText: 'FRPA section' });
     this.advancedSearchCategoryDropdownButton = this.advancedSearchModal.locator('#advanced-category-multiselect-toggle-button');
     this.advancedSearchOrgUnitDropdownButton = this.advancedSearchModal.locator('#advanced-orgunit-multiselect-toggle-button');
     this.advancedSearchStatusDropdownButton = this.advancedSearchModal.locator('#advanced-status-multiselect-toggle-button');
+    this.advancedSearchClientComboxBox = this.advancedSearchModal.locator('.client-name-combobox');
     this.advancedSearchClientDropdownInput = this.advancedSearchModal.locator('#opening-advanced-search-client-input');
-    this.advancedSearchClientDropdownButton = this.advancedSearchModal.locator('#downshift-«r1d»-toggle-button');
+    this.advancedSearchLocationCodeComboxBox = this.advancedSearchModal.locator('.location-code-combobox');
     this.advancedSearchLocationCodeInput = this.advancedSearchModal.locator('#opening-advanced-location-code-input');
+    this.advancedSearchDateFilterContainer = this.advancedSearchModal.locator('.date-filter-container');
     this.advancedSearchDateTypeDropdownButton = this.advancedSearchModal.locator('.date-filter-container').locator('#downshift-«r1j»-toggle-button');
     this.advancedSearchStartDateInput = this.advancedSearchModal.getByRole('textbox', { name: 'Start Date' });
     this.advancedSearchEndDateInput = this.advancedSearchModal.getByRole('textbox', { name: 'End Date' });
     this.advancedSearchCutBlockInput = this.advancedSearchModal.locator('#cut-block-text-input');
     this.advancedSearchCuttingPermitInput = this.advancedSearchModal.locator('#cutting-permit-text-input');
     this.advancedSearchTimberMarkInput = this.advancedSearchModal.locator('#timber-mark-text-input');
-    this.advnacedSearchCancelButton = this.advancedSearchModal.getByTestId('advanced-modal-cancel-button');
-    this.advancedSearchSearchButton = this.advancedSearchModal.locator('#modal-search-button-sm');
+    this.advnacedSearchCancelButton = page.locator('.bx--modal-footer').getByTestId('advanced-modal-cancel-button');
+    this.advancedSearchSearchButton = page.locator('.bx--modal-footer').locator('#modal-search-button-sm')
   }
 
   async isOpeningsTabVisible() {
@@ -130,6 +134,93 @@ export class SilvicultureSearchPage extends BasePage {
     return hiddenAttribute ? hiddenAttribute === 'false' : true;
   }
 
+  async fillAdvancedSearchInput(value: string) {
+    await this.advancedSearchSearchInput.fill(value);
+  }
+
+  async toggleCreatedByMeCheckbox() {
+    await this.advancedSearchCreatedByMeCheckbox.click();
+  }
+
+  async toggleFrpaCheckbox() {
+    await this.advancedSearchFrpaCheckbox.click();
+  }
+
+  async chooseAdvancedCategoryDropdownOption(option: string) {
+    await this.advancedSearchCategoryDropdownButton.click();
+    const menu = this.page.locator('#advanced-category-multiselect__menu');
+    await menu.getByRole('option', { name: option }).click();
+  }
+
+  async chooseAdvancedOrgUnitDropdownOption(option: string) {
+    await this.advancedSearchOrgUnitDropdownButton.click();
+    const menu = this.page.locator('#advanced-orgunit-multiselect__menu');
+    await menu.getByRole('option', { name: option }).click();
+  }
+
+  async chooseAdvancedStatusDropdownOption(option: string) {
+    await this.advancedSearchStatusDropdownButton.click();
+    const menu = this.page.locator('#advanced-status-multiselect__menu');
+    await menu.getByRole('option', { name: option }).click();
+  }
+
+  async chooseAdvancedClientDropdownOption(value: string) {
+    await this.advancedSearchClientDropdownInput.click();
+    await this.advancedSearchClientDropdownInput.fill(value);
+
+    try {
+      await this.advancedSearchClientComboxBox.getByRole('option', { name: value }).click();
+    } catch (error) {
+      throw new Error(`Client option with value "${value}" not found`);
+    }
+  }
+
+  async chooseAdvancedLocationCodeInput(value: string) {
+    await this.advancedSearchLocationCodeInput.click();
+    try {
+      await this.advancedSearchLocationCodeComboxBox.getByRole('option', { name: value }).click();
+    } catch (error) {
+      throw new Error(`Location code option with value "${value}" not found`);
+    }
+  }
+
+  async chooseAdvancedDateTypeDropdownOption(value: string) {
+    await this.advancedSearchDateTypeDropdownButton.click();
+    try {
+      await this.advancedSearchDateFilterContainer.getByRole('option', { name: value }).click();
+    } catch (error) {
+      throw new Error(`Date type option with value "${value}" not found`);
+    }
+  }
+
+  async fillAdvancedSearchStartDate(value: string) {
+    await this.advancedSearchStartDateInput.fill(value);
+  }
+
+  async fillAdvancedSearchEndDate(value: string) {
+    await this.advancedSearchEndDateInput.fill(value);
+  }
+
+  async fillAdvancedSearchCutBlock(value: string) {
+    await this.advancedSearchCutBlockInput.fill(value);
+  }
+
+  async fillAdvancedSearchCuttingPermit(value: string) {
+    await this.advancedSearchCuttingPermitInput.fill(value);
+  }
+
+  async fillAdvancedSearchTimberMark(value: string) {
+    await this.advancedSearchTimberMarkInput.fill(value);
+  }
+
+  async clickAdavancedSearchSearchButton() {
+    await this.advancedSearchSearchButton.click();
+  }
+
+  async clickAdvancedSearchCancelButton() {
+    await this.advnacedSearchCancelButton.click();
+  }
+
   private async getSearchResultsTableRowByOpeningId(openingId: string) {
     const row = this.searchResultsTable.getByTestId(`opening-table-row-${openingId}`);
     await row.waitFor({ state: 'visible' });
@@ -159,12 +250,12 @@ export class SilvicultureSearchPage extends BasePage {
     await checkbox.click();
   }
 
-  async isOpeningVisibleOnMap(): Promise<boolean> {
+  async isOpeningVisibleOnMap() {
     const overlayPane = this.page.locator('.leaflet-overlay-pane');
     const gTag = overlayPane.locator('svg > g');
-    // Wait for the overlay pane to be attached (optional, depending on your flow)
+
     await overlayPane.waitFor({ state: 'attached' });
-    // Check if the <g> tag has any child elements (e.g., <path>)
+
     const childCount = await gTag.evaluate((g) => g.children.length);
     return childCount > 0;
   }
