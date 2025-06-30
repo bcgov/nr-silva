@@ -96,7 +96,7 @@ test.describe('Dashboard', () => {
   })
 
   test('opening trend fields should be okay to fill', async ({ page }) => {
-    await dashboardPage.chooseDistruct('DAS - Development Unit');
+    await dashboardPage.chooseDistrict('DAS - Development Unit');
     await dashboardPage.chooseStatus('AMD - Amended');
     await dashboardPage.chooseSubmissionYear('2023');
   });

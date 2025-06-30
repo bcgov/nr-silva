@@ -192,7 +192,7 @@ export class DashboardPage {
     await unfavouriteNotification.waitFor({ state: 'visible' });
   }
 
-  async chooseDistruct(district: string) {
+  async chooseDistrict(district: string) {
     await this.districtDropDownBtn.click();
     const menu = this.openingSubmissionsTrendSection.locator('#district-dropdown__menu');
     await menu.getByRole('option', { name: district }).click();
