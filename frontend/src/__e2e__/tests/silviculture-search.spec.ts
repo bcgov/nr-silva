@@ -94,7 +94,7 @@ test.describe('Silviculture Search', () => {
     });
   });
 
-  test('header should be visible', async ({ page }) => {
+  test('header should be visible', async () => {
     expect(await silvicultureSearchPage.getHeading()).toBe('Silviculture Search');
     expect(await silvicultureSearchPage.isHeadingVisible()).toBe(true);
   });
