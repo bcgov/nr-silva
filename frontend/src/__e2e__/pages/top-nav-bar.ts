@@ -85,10 +85,10 @@ export class TopNavBar {
   }
 
   async changeThemeFromMenu() {
-    this.changeThemeButton.click();
+    await this.changeThemeButton.click();
   }
 
   async logout() {
-    this.logoutButton.click();
+    await this.logoutButton.click();
   }
 }
