@@ -13,10 +13,10 @@ export class SideBar {
     this.page = page;
     this.baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
     this.sideBarMenu = page.getByRole('navigation', { name: 'Side menu' }).getByRole('list');
-    this.mainActivitiesTitle = page.getByText('Main activities');
-    this.dashboardButton = page.getByLabel('Dashboard');
-    this.silvicultureSearchButton = page.getByTestId('header').getByLabel('Silviculture search')
-    this.openingsButton = page.getByLabel('Openings');
+    this.mainActivitiesTitle = this.sideBarMenu.getByText('Main activities');
+    this.dashboardButton = this.sideBarMenu.getByTestId('side-nav-link-dashboard');
+    this.silvicultureSearchButton = this.sideBarMenu.getByTestId('side-nav-link-silviculture-search');
+    this.openingsButton = this.sideBarMenu.getByTestId('side-nav-link-openings');
   }
 
   async goto() {
