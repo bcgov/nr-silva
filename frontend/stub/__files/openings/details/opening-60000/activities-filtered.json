@@ -1,0 +1,50 @@
+{
+  "content": [
+    {
+      "atuId": 4187958,
+      "status": {
+        "code": "CPT",
+        "description": "Complete"
+      },
+      "base": {
+        "code": "PL",
+        "description": "Planting"
+      },
+      "tech": {
+        "code": "FP",
+        "description": "Fill Planting"
+      },
+      "method": {
+        "code": "CTAIN",
+        "description": "Container"
+      },
+      "objective1": {
+        "code": null,
+        "description": null
+      },
+      "objective2": {
+        "code": null,
+        "description": null
+      },
+      "objective3": {
+        "code": null,
+        "description": null
+      },
+      "area": 0.4,
+      "funding": {
+        "code": "IA",
+        "description": "Industrial Appraisal"
+      },
+      "projectId": null,
+      "lastUpdate": "2025-04-16",
+      "plannedDate": null,
+      "endDate": "2025-03-07"
+    }
+  ],
+  "page": {
+    "size": 10,
+    "number": 0,
+    "totalElements": 4,
+    "totalPages": 1
+  }
+}
