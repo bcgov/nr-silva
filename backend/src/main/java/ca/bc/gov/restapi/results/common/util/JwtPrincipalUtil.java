@@ -42,17 +42,15 @@ public class JwtPrincipalUtil {
   }
 
   /**
-   * Retrieves the provider of the JWT token from the given Jwt principal. The provider is extracted
-   * from the token attributes under the key "custom:idp_name". If the provider starts with
-   * "ca.bc.gov.flnr.fam.", it is replaced with "BCSC". If the provider is not blank, it is returned
-   * in uppercase. If the provider is blank, an empty string is returned.
+   * Retrieves the identity provider from the given Jwt token.
+   * It extracts the value under the "custom:idp_name" claim.
    *
-   * @param principal Jwt object from which the provider is to be extracted.
-   * @return The provider of the JWT token in uppercase, or an empty string if the provider is
-   * blank.
+   * @param principal the Jwt token containing the claims
+   * @return the identity provider as a string, or an empty string if the claim is missing or not a string
    */
   public static String getProvider(Jwt principal) {
-    return getProviderValue(principal.getClaims());
+    Object rawProvider = principal.getClaims().get("custom:idp_name");
+    return (rawProvider instanceof String) ? (String) rawProvider : "";
   }
 
   /**

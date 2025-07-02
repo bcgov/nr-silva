@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.security;
 
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.exception.UserNotFoundException;
 import ca.bc.gov.restapi.results.common.util.JwtPrincipalUtil;
@@ -34,6 +35,19 @@ public class LoggedUserHelper {
    */
   public String getLoggedUserId() {
     return JwtPrincipalUtil.getUserId(getPrincipal());
+  }
+
+  /**
+   * Checks whether the currently authenticated user is from the IDIR identity provider.
+   *
+   * <p>This method retrieves the identity provider from the current JWT principal
+   * and returns {@code true} if the provider matches {@link IdentityProvider#IDIR}.
+   *
+   * @return {@code true} if the user is authenticated via IDIR, {@code false} otherwise
+   */
+  public boolean isIdirUser() {
+    IdentityProvider provider = JwtPrincipalUtil.getIdentityProvider(getPrincipal());
+    return provider == IdentityProvider.IDIR;
   }
 
   /**
