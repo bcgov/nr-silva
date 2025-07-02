@@ -4,11 +4,8 @@ import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.*;
+
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +24,7 @@ public class OpeningDetailsService {
   private final OpeningDetailsActivitiesService activitiesService;
   private final OpeningDetailsTenureService tenureService;
   private final OpeningDetailsForestCoverService forestCoverService;
+  private final OpeningDetailsAttachmentService attachmentService;
 
 
   public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(Long openingId) {
@@ -102,5 +100,11 @@ public class OpeningDetailsService {
     return forestCoverService.getDetails(forestCoverId)
         .orElseThrow(
             () -> new NotFoundGenericException("Forest cover polygon with id " + forestCoverId));
+  }
+
+  public List<OpeningDetailsAttachmentMetaDto> getOpeningAttachments(Long openingId) {
+    log.info("Fetching attachment list for opening with id: {}", openingId);
+
+    return attachmentService.getAttachmentList(openingId);
   }
 }

@@ -4,13 +4,7 @@ import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesActivitiesDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
@@ -31,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/openings")
 @RequiredArgsConstructor
 @Slf4j
-@PreAuthorize("@auth.isIdirUser()")
 public class OpeningEndpoint {
 
   private final OpeningSearchService openingSearchService;
@@ -173,5 +166,12 @@ public class OpeningEndpoint {
             clientNumber,
             mainSearchTerm);
     return openingSearchService.openingSearch(filtersDto, paginationParameters);
+  }
+
+  @GetMapping("/{openingId}/attachments")
+  @PreAuthorize("@auth.isIdirUser()")
+  public List<OpeningDetailsAttachmentMetaDto> getTenures(
+          @PathVariable Long openingId) {
+    return openingService.getOpeningAttachments(openingId);
   }
 }
