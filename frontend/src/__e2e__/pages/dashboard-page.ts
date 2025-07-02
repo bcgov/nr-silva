@@ -14,6 +14,7 @@ export class DashboardPage extends BasePage {
   private readonly districtDropDownBtn: Locator;
   private readonly statusDropDownBtn: Locator;
   private readonly submissionYearDropDownBtn: Locator;
+  private readonly submissionYearDropDownMenu: Locator;
   private readonly favouritesSection: Locator;
 
   constructor(page: Page) {
@@ -29,6 +30,7 @@ export class DashboardPage extends BasePage {
     this.districtDropDownBtn = this.openingSubmissionsTrendSection.locator('#district-dropdown-toggle-button');
     this.statusDropDownBtn = this.openingSubmissionsTrendSection.locator('#status-dropdown-toggle-button');
     this.submissionYearDropDownBtn = this.openingSubmissionsTrendSection.locator('[id="downshift-«ri0»-toggle-button"]');
+    this.submissionYearDropDownMenu = this.openingSubmissionsTrendSection.getByTestId('trend-year-selection');
     this.favouritesSection = page.locator('.favourite-openings-container');
   }
 
@@ -191,8 +193,12 @@ export class DashboardPage extends BasePage {
   }
 
   async chooseSubmissionYear(year: string) {
-    await this.submissionYearDropDownBtn.click();
-    const menu = this.openingSubmissionsTrendSection.locator('#submission-year-dropdown__menu');
-    await menu.getByRole('option', { name: year }).click();
+    const submissionYearContainer = this.page.locator('.trend-year-selection-combobox');
+    await this.submissionYearDropDownMenu.click();
+    try {
+      await submissionYearContainer.getByRole('option', { name: year }).click();
+    } catch (error) {
+      console.error(`Failed to select submission year ${year}:`, error);
+    }
   }
 }

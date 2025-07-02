@@ -53,13 +53,13 @@ test.describe('Dashboard', () => {
     expect(await dashboardPage.getHeading()).toBe('Dashboard');
   });
 
-  test('sections should be visible', async ({ page }) => {
+  test('sections should be visible', async () => {
     expect(await dashboardPage.isRecentOpeningsSectionVisible()).toBe(true);
     expect(await dashboardPage.isOpeningSubmissionsTrendSectionVisible()).toBe(true);
     expect(await dashboardPage.isFavouritesSectionVisible()).toBe(true);
   });
 
-  test('map button toggles map visibility', async ({ page }) => {
+  test('map button toggles map visibility', async () => {
     const initialMapVisibility = await dashboardPage.isMapVisible();
     await dashboardPage.showMap();
     expect(await dashboardPage.isMapVisible()).toBe(!initialMapVisibility);
@@ -67,19 +67,19 @@ test.describe('Dashboard', () => {
     expect(await dashboardPage.isMapVisible()).toBe(initialMapVisibility);
   });
 
-  test('recent openings count should be correct', async ({ page }) => {
+  test('recent openings count should be correct', async () => {
     const count = await dashboardPage.getRecentOpeningsCount();
     expect(count).toBe(2);
   });
 
 
-  test('recent opening should have correct data', async ({ page }) => {
+  test('recent opening should have correct data', async () => {
     const openingData = await dashboardPage.getOpeningRowDataByOpeningId('1004185');
     const expectedData = ['1004185', 'TFL47', 'FTMLForest Tenure - Major Licensee', 'Free Growing', '12U', '47/12U', '12-44', '79.4', 'Sep 08, 2004'];
     expect(openingData).toEqual(expectedData);
   });
 
-  test('favourite and unfavourite opening', async ({ page }) => {
+  test('favourite and unfavourite opening', async () => {
     const openingId = '60000';
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
     await dashboardPage.favouriteOpening(openingId);
@@ -89,16 +89,15 @@ test.describe('Dashboard', () => {
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
   });
 
-  test('favourite opening should be visible in favourites section', async ({ page }) => {
+  test('favourite opening should be visible in favourites section', async () => {
     const openingId = '1004185';
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(true);
     expect(await dashboardPage.isOpeningFavouritedOnFavouriteSection(openingId)).toBe(true);
-  })
+  });
 
-  test('opening trend fields should be okay to fill', async ({ page }) => {
+  test('opening trend fields should be okay to fill', async () => {
     await dashboardPage.chooseDistrict('DAS - Development Unit');
     await dashboardPage.chooseStatus('AMD - Amended');
     await dashboardPage.chooseSubmissionYear('2023');
   });
-
 });
