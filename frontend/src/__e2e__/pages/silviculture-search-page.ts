@@ -252,6 +252,7 @@ export class SilvicultureSearchPage extends BasePage {
 
   async isOpeningVisibleOnMap() {
     const overlayPane = this.page.locator('.leaflet-overlay-pane');
+    await this.page.waitForTimeout(1000); // Wait for the map to render
     const gTag = overlayPane.locator('svg > g');
 
     await overlayPane.waitFor({ state: 'attached' });

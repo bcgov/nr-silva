@@ -92,6 +92,14 @@ test.describe('Silviculture Search', () => {
         body: loadStub('search/search_openings_60000.json'),
       });
     });
+
+    await page.route(`**/api/openings/map/${openingId}**`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: loadStub(`openings/map`, 'opening.json'),
+      });
+    });
   });
 
   test('header should be visible', async () => {

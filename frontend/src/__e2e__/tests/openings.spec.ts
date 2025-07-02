@@ -17,6 +17,14 @@ test.describe('Openings', () => {
         body: loadStub('openings/recent-start.json'),
       });
     });
+
+    await page.route(`**/api/openings/map/${openingId}**`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: loadStub(`openings/map`, 'opening.json'),
+      });
+    });
   });
 
   test('map button should hide and reveal map', async () => {
