@@ -1,9 +1,9 @@
 import { Locator, Page } from "@playwright/test";
 import { routes } from "../utils/routes";
 import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
+import { BasePage } from "./base-page";
 
-export class DashboardPage {
-  private readonly page: Page;
+export class DashboardPage extends BasePage {
   private readonly silvicultureSearchButton: Locator;
   private readonly mapButton: Locator;
   private readonly map: Locator;
@@ -16,11 +16,9 @@ export class DashboardPage {
   private readonly submissionYearDropDownBtn: Locator;
   private readonly favouritesSection: Locator;
 
-  private baseUrl: string;
-
   constructor(page: Page) {
-    this.baseUrl = (process.env.BASE_URL ?? 'http://localhost:3000') + routes.dashboard();
-    this.page = page;
+    super(page, routes.dashboard());
+
     this.silvicultureSearchButton = page.getByRole('button', { name: 'Silviculture search' });
     this.recentOpeningsSection = page.locator('.recent-openings-container');
     this.mapButton = this.recentOpeningsSection.getByTestId('toggle-map-button');
@@ -32,18 +30,6 @@ export class DashboardPage {
     this.statusDropDownBtn = this.openingSubmissionsTrendSection.locator('#status-dropdown-toggle-button');
     this.submissionYearDropDownBtn = this.openingSubmissionsTrendSection.locator('[id="downshift-«ri0»-toggle-button"]');
     this.favouritesSection = page.locator('.favourite-openings-container');
-  }
-
-  async goto() {
-    await this.page.goto(this.baseUrl);
-  }
-
-  async getTitle() {
-    return await this.page.title();
-  }
-
-  async getHeading() {
-    return await this.page.getByRole('heading', { name: 'Dashboard' }).textContent();
   }
 
   async isRecentOpeningsSectionVisible() {
