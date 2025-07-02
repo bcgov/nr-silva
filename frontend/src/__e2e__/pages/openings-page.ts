@@ -3,14 +3,14 @@ import { BasePage } from "./base-page";
 import { routes } from "../utils/routes";
 
 export class OpeningsPage extends BasePage {
-  private mapButton: Locator;
-  private map: Locator;
-  private mapZoomInButton: Locator;
-  private mapZoomOutButton: Locator;
-  private mapExpandButton: Locator;
+  private readonly mapButton: Locator;
+  private readonly map: Locator;
+  private readonly mapZoomInButton: Locator;
+  private readonly mapZoomOutButton: Locator;
+  private readonly mapExpandButton: Locator;
 
-  private recentOpeningsTable: Locator;
-  private recentOpeningsTableRows: Locator;
+  private readonly recentOpeningsTable: Locator;
+  private readonly recentOpeningsTableRows: Locator;
 
   constructor(page: Page) {
     super(page, routes.openings());
