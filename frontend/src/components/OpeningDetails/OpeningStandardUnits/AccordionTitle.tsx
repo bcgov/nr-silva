@@ -35,7 +35,9 @@ const renderMilestoneStatusTag = (milestones: OpeningDetailsStockingDetailsMiles
 const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
 
   return (
-    <div className="default-accordion-title-container">
+    <div
+      className="default-accordion-title-container"
+      data-testid={`standard-unit-accordion-${standardUnit.stocking.stockingStandardUnit ?? "unknown"}`}>
       <div className="accordion-title-top">
         <LocationIcon size={20} />
         <h4>
