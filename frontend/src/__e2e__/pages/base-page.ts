@@ -18,10 +18,13 @@ export class BasePage {
   }
 
   async getHeading() {
-    return await this.page.getByRole('heading', { name: 'Silviculture Search' }).textContent();
+    const titleContainer = await this.page.locator('.title-container h1');
+    const titleText = await titleContainer.textContent();
+    return titleText ? titleText.trim() : '';
   }
 
   async isHeadingVisible() {
-    return await this.page.getByRole('heading', { name: 'Silviculture Search' }).isVisible();
+    const titleContainer = await this.page.locator('.title-container h1');
+    return await titleContainer.isVisible();
   }
 }
