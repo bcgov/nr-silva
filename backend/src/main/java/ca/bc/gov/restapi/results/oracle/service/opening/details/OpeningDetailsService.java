@@ -8,8 +8,12 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -106,5 +110,11 @@ public class OpeningDetailsService {
     log.info("Fetching attachment list for opening with id: {}", openingId);
 
     return attachmentService.getAttachmentList(openingId);
+  }
+
+  public OpeningAttachmentEntity getOpeningAttachmentContent(UUID guid) {
+    log.info("Download attachment with guid: {}", guid);
+
+    return attachmentService.getAttachmentEntity(guid).orElseThrow(() -> new OpenApiResourceNotFoundException("Attachment not found"));
   }
 }

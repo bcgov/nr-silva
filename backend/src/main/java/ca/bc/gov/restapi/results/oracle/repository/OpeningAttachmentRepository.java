@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface OpeningAttachmentRepository extends JpaRepository<OpeningAttachmentEntity, Long> {
 
@@ -18,4 +20,12 @@ public interface OpeningAttachmentRepository extends JpaRepository<OpeningAttach
      */
     @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ATTACHMENT_LIST)
     List<OpeningAttachmentMetaProjection> findByOpeningId(Long openingId);
+
+    /**
+     * Finds the full attachment entity (including file data) by its GUID.
+     *
+     * @param attachmentGuid GUID of the attachment.
+     * @return Optional containing the attachment if found.
+     */
+    Optional<OpeningAttachmentEntity> findByAttachmentGuid(UUID attachmentGuid);
 }
