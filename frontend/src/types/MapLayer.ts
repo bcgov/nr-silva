@@ -55,6 +55,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'Polygon type': 'Opening',
         'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
         'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`
       }
@@ -70,6 +71,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'Polygon type': 'Tenure / Cut Block',
         'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
         'Cut Block': properties?.CUT_BLOCK_ID,
         'Client': `${properties?.CLIENT_NAME} (${properties?.CLIENT_NUMBER})`,
@@ -87,6 +89,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'Polygon type': 'Standard Unit',
         'Stocking Standards Id': properties?.STOCKING_STANDARD_UNIT_ID,
         'Standard Units Id': properties?.STANDARDS_UNIT_ID,
         'Net Area (ha)': properties?.NET_AREA,
@@ -103,8 +106,10 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'Polygon type': 'Activity',
         'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
-        'Silviculture base code': properties?.SILV_BASE_CODE
+        'Silviculture base code': properties?.SILV_BASE_CODE,
+        'Map Label': properties?.MAP_LABEL
       }
     }
   },
@@ -116,7 +121,16 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'orange',
       fillColor: '#F5A623', // A vibrant orange
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
+    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+      return {
+        'Polygon type': 'Forest Cover Inventory',
+        'Forest Cover Id': properties?.FOREST_COVER_ID,
+        'Polygon': properties?.SILV_POLYGON_NUMBER,
+        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
+        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
+        'Reference Year': properties?.REFERENCE_YEAR
+      } 
+    }
   },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
@@ -126,7 +140,13 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'yellow',
       fillColor: '#F8E71C', // A vibrant yellow
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
+    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+      return {
+        'Polygon type': 'Forest Cover Reserve',
+        'Polygon': properties?.SILV_POLYGON_NO,
+        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
+      } 
+    }
   },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
@@ -136,7 +156,17 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'pink',
       fillColor: '#D0021B', // A vibrant pink
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
+    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+      return {
+        'Polygon type': 'Forest Cover Silviculture',
+        'Forest Cover Id': properties?.FOREST_COVER_ID,
+        'Polygon': properties?.SILV_POLYGON_NUMBER,
+        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
+        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
+        'Non Mapped Area (ha)': properties?.SILV_NON_MAPPED_AREA,
+        'Reference Year': properties?.REFERENCE_YEAR
+      }
+    }
   },
   {
     code: 'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW',
@@ -146,7 +176,16 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'cyan',
       fillColor: '#50E3C2', // A vibrant cyan
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { return {} }
+    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+      return {
+        'Polygon type': 'Activity: Planting',
+        'Activity Treatment Unit Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
+        'Map Label': properties?.MAP_LABEL,
+        'Silviculture Base Code': properties?.SILV_BASE_CODE,
+        'Planting Results Seq Number': properties?.PLANTING_RESULTS_SEQ_NUMBER,
+        'Silviculture Tree Species Code': properties?.SILV_TREE_SPECIES_CODE
+      }
+    }
   },
 ] as const;
 
