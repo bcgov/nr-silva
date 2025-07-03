@@ -64,6 +64,4 @@ public record OpeningDetailsAttachmentMetaDto(
             requiredMode = Schema.RequiredMode.REQUIRED)
         String attachmentGuid,
     @Schema(description = "Size of the attachment file in bytes.", example = "204800")
-    Long attachmentSize
-    )
-{}
+        Long attachmentSize) {}
