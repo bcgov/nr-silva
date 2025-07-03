@@ -27,18 +27,29 @@ const OpeningSummary = ({
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
-  const mapKind = (tabIndex: number): MapKindType => {
+  const mapKind = (tabIndex: number): MapKindType[] => {
     switch (tabIndex) {
+      //Overview tab shows the Openings layer
       case 0:
-        return mapKinds[0]!.code as MapKindType;
+        return [mapKinds[0]!.code] as MapKindType[];
+      // Tenure tab shows the Tenure/Activity Treatment Unit layer
       case 1:
-        return mapKinds[1]!.code as MapKindType;
+        return [mapKinds[1]!.code] as MapKindType[];
+      // Standard tab shows the Standards Unit layer
       case 2:
-        return mapKinds[2]!.code as MapKindType;
+        return [mapKinds[2]!.code] as MapKindType[];
+      // Activities tab shows the activities and disturbances layers
       case 3:
-        return mapKinds[3]!.code as MapKindType;
+        return [mapKinds[3]!.code, mapKinds[7]!.code] as MapKindType[];
+      // Forest cover tab shows all the Forest Cover layers
+      case 4:
+        return [
+          mapKinds[4]!.code,
+          mapKinds[5]!.code,
+          mapKinds[6]!.code,
+        ] as MapKindType[];
       default:
-        return mapKinds[0]!.code as MapKindType;
+        return [mapKinds[0]!.code] as MapKindType[];
     }
   };
 
@@ -126,16 +137,14 @@ const OpeningSummary = ({
           showSkeleton={isLoading}
           tooltipText={tombstoneObj?.client?.clientName}
         >
-          {
-            getClientLabel(
-              {
-                id: tombstoneObj?.client.clientNumber ?? "",
-                name: "",
-                acronym: tombstoneObj?.client.acronym ?? "",
-              },
-              true
-            )
-          }
+          {getClientLabel(
+            {
+              id: tombstoneObj?.client.clientNumber ?? "",
+              name: "",
+              acronym: tombstoneObj?.client.acronym ?? "",
+            },
+            true
+          )}
         </CardItem>
       </Column>
 
@@ -245,7 +254,7 @@ const OpeningSummary = ({
         <Column className="map-col" sm={4} md={8} lg={16}>
           <OpeningsMap
             openingIds={openingId ? [openingId] : null}
-            setOpeningPolygonNotFound={() => { }}
+            setOpeningPolygonNotFound={() => {}}
             mapHeight={280}
             layerFilter={true}
             kind={mapKind(currentTab)}
