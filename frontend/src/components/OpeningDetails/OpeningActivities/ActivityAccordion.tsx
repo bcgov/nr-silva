@@ -253,7 +253,10 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
   };
 
   return (
-    <Accordion className="default-tab-accordion activity-accordion" align="end">
+    <Accordion
+      className="default-tab-accordion activity-accordion"
+      align="end"
+      data-testid="activity-accordion-container">
       <AccordionItem
         className="default-tab-accordion-item"
         title={<AccordionTitle total={totalUnfiltered} />}

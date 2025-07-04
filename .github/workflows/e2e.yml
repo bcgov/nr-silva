@@ -34,7 +34,7 @@ jobs:
     needs: [fam-routing]
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.53.1-noble
+      image: mcr.microsoft.com/playwright:v1.53.2-noble
     env:
       HOME: /root
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
@@ -59,7 +59,7 @@ jobs:
         working-directory: playwright
 
       - name: Publish Results
-        uses: mikepenz/action-junit-report@a83fd2b5d58d4fc702e690c1ea688d702d28d281 # v5
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5
         continue-on-error: true
         if: always()
         with:
