@@ -56,4 +56,9 @@ class LoggedUserHelperIntegrationTest extends AbstractTestContainerIntegrationTe
     assertEquals("IDIR\\BAGGINGS", userAuthenticationHelper.getLoggedUserId());
   }
 
+  @Test
+  @DisplayName("isIdirUser returns true when provider is IDIR")
+  void shouldReturnTrueIfIdirUser() {
+    Assertions.assertTrue(userAuthenticationHelper.isIdirUser());
+  }
 }
