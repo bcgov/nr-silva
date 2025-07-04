@@ -11,7 +11,6 @@ import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -63,8 +62,7 @@ public class OpeningEndpoint {
 
   @GetMapping("/{openingId}/disturbances")
   public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
-      @PathVariable Long openingId,
-      @ParameterObject Pageable pageable) {
+      @PathVariable Long openingId, @ParameterObject Pageable pageable) {
     return openingService.getOpeningActivitiesDisturbances(openingId, pageable);
   }
 
@@ -175,19 +173,21 @@ public class OpeningEndpoint {
 
   @GetMapping("/{openingId}/attachments")
   @PreAuthorize("@auth.isIdirUser()")
-  public List<OpeningDetailsAttachmentMetaDto> getAttachments(
-          @PathVariable Long openingId) {
+  public List<OpeningDetailsAttachmentMetaDto> getAttachments(@PathVariable Long openingId) {
     return openingService.getOpeningAttachments(openingId);
   }
 
   @GetMapping("/{openingId}/attachments/{guid}")
   @PreAuthorize("@auth.isIdirUser()")
-  public ResponseEntity<byte[]> getAttachmentByGuid(@PathVariable UUID guid) {
+  public ResponseEntity<byte[]> getAttachmentByGuid(
+      @PathVariable("openingId") Long openingId, @PathVariable UUID guid) {
     OpeningAttachmentEntity attachment = openingService.getOpeningAttachmentContent(guid);
 
     return ResponseEntity.ok()
-            .header("Content-Disposition", "attachment; filename=\"" + attachment.getAttachmentName() + "\"")
-            .header("Content-Type", MimeTypeResolver.resolve(attachment.getMimeTypeCode()))
-            .body(attachment.getAttachmentData());
+        .header(
+            "Content-Disposition",
+            "attachment; filename=\"" + attachment.getAttachmentName() + "\"")
+        .header("Content-Type", MimeTypeResolver.resolve(attachment.getMimeTypeCode()))
+        .body(attachment.getAttachmentData());
   }
 }

@@ -31,7 +31,7 @@ public class UuidToBytesConverter implements AttributeConverter<UUID, byte[]> {
    */
   @Override
   public byte[] convertToDatabaseColumn(UUID uuid) {
-    if (uuid == null) return null;
+    if (uuid == null) return new byte[0];
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
     bb.putLong(uuid.getMostSignificantBits());
     bb.putLong(uuid.getLeastSignificantBits());

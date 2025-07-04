@@ -7,7 +7,6 @@ import ca.bc.gov.restapi.results.oracle.repository.OpeningAttachmentRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.OpenApiResourceNotFoundException;
@@ -44,7 +43,7 @@ public class OpeningDetailsAttachmentService {
                     p.getRevisionCount(),
                     p.getAttachmentGuid(),
                     p.getAttachmentSize()))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
