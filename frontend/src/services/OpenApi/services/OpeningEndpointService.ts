@@ -162,17 +162,20 @@ export class OpeningEndpointService {
         });
     }
     /**
+     * @param openingId
      * @param guid
      * @returns string OK
      * @throws ApiError
      */
     public static getAttachmentByGuid(
+        openingId: number,
         guid: string,
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/openings/{openingId}/attachments/{guid}',
             path: {
+                'openingId': openingId,
                 'guid': guid,
             },
         });
