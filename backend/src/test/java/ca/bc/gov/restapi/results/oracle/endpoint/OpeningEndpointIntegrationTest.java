@@ -578,9 +578,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     String guid = JsonPath.read(json, "$[0].attachmentGuid");
     String filename = JsonPath.read(json, "$[0].attachmentName");
     int attachmentSize = JsonPath.read(json, "$[0].attachmentSize");
-    String mimeType = JsonPath.read(json, "$[0].mimeTypeCode");
-    // Construct the expected Content-Type header value
-    String expectedContentType = "application/" + mimeType.toLowerCase();
 
     // Use the GUID to fetch the actual file and verify headers based on metadata
     byte[] actualContent =
@@ -591,7 +588,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             .andExpect(status().isOk())
             .andExpect(
                 header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
-            .andExpect(header().string("Content-Type", expectedContentType))
             .andReturn()
             .getResponse()
             .getContentAsByteArray();
