@@ -23,7 +23,7 @@ interface MapProps {
   setOpeningPolygonNotFound: (value: boolean, openingId: number | null) => void;
   mapHeight?: number;
   layerFilter?: boolean;
-  kind?: MapKindType;
+  kind?: MapKindType[];
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -31,7 +31,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   setOpeningPolygonNotFound,
   mapHeight = 400,
   layerFilter = false,
-  kind = "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW",
+  kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<FeatureCollection[]>([]);
@@ -45,7 +45,7 @@ const OpeningsMap: React.FC<MapProps> = ({
    * This function is used to fetch the map queries based on the selected opening IDs
    * and the kind of map data.
    */
-  const mapQueries = getMapQueries(selectedOpeningIds ?? [], kind);
+  const mapQueries = getMapQueries(selectedOpeningIds ?? [], ...kind);
 
   /**
    * This effect is used to set the map position and zoom level when the component mounts
@@ -136,13 +136,6 @@ const OpeningsMap: React.FC<MapProps> = ({
         {/* Resizer to adjust the map height */}
         <OpeningsMapResizer height={mapSize} />
 
-        {/* Default tile layer */}
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-          attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
-          zIndex={-10000}
-        />
-
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry polygons={openings} />
         <OpeningsMapFitBound
@@ -154,6 +147,34 @@ const OpeningsMap: React.FC<MapProps> = ({
         {/* Default layers */}
         {allLayers.length > 0 && (
           <LayersControl position="topright">
+            <LayersControl.BaseLayer checked name="ESRI Topography">
+              <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+                attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
+                zIndex={-10000}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="ESRI Satellite">
+              <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
+                zIndex={-10000}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="OpenTopoMap">
+              <TileLayer
+                url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+                attribution='Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+                zIndex={-10000}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="OpenStreets">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                zIndex={-10000}
+              />
+            </LayersControl.BaseLayer>
             {allLayers.map((layer: MapLayer) => (
               <LayersControl.Overlay key={layer.name} name={layer.name}>
                 <WMSTileLayer
