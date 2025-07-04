@@ -148,7 +148,7 @@ describe('AuthService', () => {
         privileges: {},
         firstName: 'John',
         lastName: 'Doe',
-        providerUsername: 'johndoe',
+        providerUsername: "undefined\\johndoe",
       });
     });
   });
