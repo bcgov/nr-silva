@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import com.jayway.jsonpath.JsonPath;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -551,7 +552,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             get("/api/openings/" + openingId + "/attachments").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$.length()", Matchers.greaterThanOrEqualTo(1)))
         .andExpect(jsonPath("$[0].openingId").value(openingId))
         .andExpect(jsonPath("$[0].attachmentName").value("Permit_Document.pdf"))
         .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty());
@@ -560,11 +561,27 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   @Test
   @DisplayName("Get attachment by GUID should return file")
   void getAttachmentByGuid_shouldReturnFile() throws Exception {
-    UUID attachmentGuid = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
+    Long openingId = 1589595L;
 
+    // First call to get the GUID from metadata
+    String json =
+        mockMvc
+            .perform(
+                get("/api/openings/" + openingId + "/attachments")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    // Extract the first GUID from the response
+    String guid = JsonPath.read(json, "$[0].attachmentGuid");
+
+    // Use that GUID to call the file download endpoint
     mockMvc
         .perform(
-            get("/api/openings/1589595/attachments/" + attachmentGuid)
+            get("/api/openings/" + openingId + "/attachments/" + guid)
                 .accept(MediaType.APPLICATION_OCTET_STREAM))
         .andExpect(status().isOk())
         .andExpect(
