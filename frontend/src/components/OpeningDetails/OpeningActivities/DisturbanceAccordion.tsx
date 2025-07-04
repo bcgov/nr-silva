@@ -120,6 +120,7 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
     <Accordion
       className="default-tab-accordion"
       align="end"
+      data-testid="disturbance-accordion-container"
     >
       <AccordionItem
         className="default-tab-accordion-item"

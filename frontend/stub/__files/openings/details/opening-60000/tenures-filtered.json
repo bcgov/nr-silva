@@ -1,0 +1,39 @@
+{
+  "primary": {
+    "id": 482445,
+    "primaryTenure": true,
+    "fileId": "TFL47",
+    "cutBlock": "6-117",
+    "cuttingPermit": "6AK",
+    "timberMark": "47/6AK",
+    "status": {
+      "code": "S",
+      "description": "Silviculture"
+    },
+    "plannedGrossArea": 28.378,
+    "plannedNetArea": 25.0
+  },
+  "content": [
+    {
+      "id": 482445,
+      "primaryTenure": true,
+      "fileId": "TFL47",
+      "cutBlock": "6-117",
+      "cuttingPermit": "6AK",
+      "timberMark": "47/6AK",
+      "status": {
+        "code": "S",
+        "description": "Silviculture"
+      },
+      "plannedGrossArea": 28.378,
+      "plannedNetArea": 25.0
+    }
+  ],
+  "page": {
+    "size": 10,
+    "number": 0,
+    "totalElements": 1,
+    "totalPages": 1
+  },
+  "totalUnfiltered": 2
+}

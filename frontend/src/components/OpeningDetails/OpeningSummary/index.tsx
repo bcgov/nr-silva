@@ -67,6 +67,7 @@ const OpeningSummary = ({
               size="sm"
               renderIcon={Location}
               onClick={() => setShowMap((prev) => !prev)}
+              data-testid="toggle-map-button"
             >
               {`${showMap ? "Hide" : "Show"} Map`}
             </Button>

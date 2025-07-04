@@ -1,0 +1,66 @@
+{
+  "openingId": 60000,
+  "tombstone": {
+    "openingNumber": " 93P 016 0.0   73",
+    "openingStatus": {
+      "code": "FG",
+      "description": "Free Growing"
+    },
+    "orgUnitCode": "TWO",
+    "orgUnitName": "Design Unit",
+    "openCategory": {
+      "code": "FTML",
+      "description": "Forest Tenure - Major Licensee"
+    },
+    "client": {
+      "clientNumber": "00010006",
+      "clientName": null,
+      "legalFirstName": null,
+      "legalMiddleName": null,
+      "clientStatusCode": null,
+      "clientTypeCode": null,
+      "acronym": null,
+      "name": null
+    },
+    "fileId": "A13840",
+    "cutBlockID": null,
+    "cuttingPermitId": "145",
+    "timberMark": "FA9145",
+    "maxAllowedAccess": "7",
+    "openingGrossArea": 47.6,
+    "createdBy": "MLSIS",
+    "createdOn": "1999-10-15",
+    "lastUpdatedOn": "2012-04-16",
+    "disturbanceStartDate": "1998-06-01"
+  },
+  "overview": {
+    "opening": {
+      "licenseeId": "418385",
+      "tenureType": {
+        "code": "A01",
+        "description": "Forest Licence"
+      },
+      "managementUnitType": {
+        "code": "U",
+        "description": "TIMBER SUPPLY AREA"
+      },
+      "managementUnitId": "41",
+      "timberSaleOffice": {
+        "code": null,
+        "description": null
+      },
+      "comments": []
+    },
+    "milestones": {
+      "standardsUnitId": "1",
+      "postHarvestDeclaredDate": null,
+      "regenDeclaredDate": "2001-10-11",
+      "regenOffsetYears": 7,
+      "regenDueDate": "2005-06-01",
+      "freeGrowingDeclaredDate": "2011-05-25",
+      "freeGrowingOffsetYears": 15,
+      "freeGrowingDueDate": "2013-06-01"
+    }
+  },
+  "notifications": []
+}
