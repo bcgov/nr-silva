@@ -3,7 +3,7 @@ import { OpeningDetailsAttachmentMetaDto } from "@/services/OpenApi";
 
 export const AttachmentTableHeaders: TableHeaderType<keyof OpeningDetailsAttachmentMetaDto>[] = [
   { key: "attachmentName", header: "File name" },
-  { key: "mimeTypeCode", header: "File type" },
+  { key: "attachmentDescription", header: "Description" },
   { key: "attachmentSize", header: "File size" },
   { key: "updateTimestamp", header: "Updated at" },
   { key: "updateUserId", header: "Updated by" },
