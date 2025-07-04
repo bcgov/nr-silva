@@ -17,6 +17,7 @@ import {
   CropHealth,
   Certificate,
   VegetationAsset,
+  DocumentAttachment
 } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -44,6 +45,9 @@ const OpeningActivities = lazy(
 );
 const OpeningForestCover = lazy(
   () => import("@/components/OpeningDetails/OpeningForestCover")
+);
+const OpeningAttachment = lazy(
+  () => import("@/components/OpeningDetails/OpeningAttachment")
 );
 
 import "./styles.scss";
@@ -164,6 +168,7 @@ const OpeningDetails = () => {
             </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
             <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest cover</Tab>
+            <Tab renderIcon={() => <DocumentAttachment size={16} />}>Attachment</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
@@ -205,6 +210,14 @@ const OpeningDetails = () => {
               {isActive(4) ? (
                 <Suspense fallback={<TextAreaSkeleton />}>
                   <OpeningForestCover openingId={Number(openingId)} />
+                </Suspense>
+              ) : null}
+            </TabPanel>
+
+            <TabPanel className="tab-content full-width-col">
+              {isActive(5) ? (
+                <Suspense fallback={<TextAreaSkeleton />}>
+                  <OpeningAttachment openingId={Number(openingId)} />
                 </Suspense>
               ) : null}
             </TabPanel>
