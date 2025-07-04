@@ -22,48 +22,43 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @DisplayName("Unit Test | JwtPrincipalUtil")
 class JwtPrincipalUtilTest {
 
-  @ParameterizedTest(name = "For custom:idp_name {0} provider is {1}")
+  @ParameterizedTest(name = "For custom:idp_name {0} → JwtAuthenticationToken: {1}, Jwt: {2}")
   @CsvSource({
-      "ca.bc.gov.flnr.fam.dev, BCSC",
-      "idir, IDIR",
-      "bceidbusiness, BCEIDBUSINESS",
-      "'', ''"
+    "ca.bc.gov.flnr.fam.dev, BCSC, ca.bc.gov.flnr.fam.dev",
+    "idir, IDIR, idir",
+    "bceidbusiness, BCEIDBUSINESS, bceidbusiness",
+    "'', '', ''"
   })
   @DisplayName("get provider")
-  void shouldGetProvider(String idpName, String provider) {
+  void shouldGetProvider(String idpName, String expectedTokenValue, String expectedJwtValue) {
     Map<String, Object> claims = Map.of("custom:idp_name", idpName);
 
-    assertEquals(provider,
+    assertEquals(
+        expectedTokenValue,
         JwtPrincipalUtil.getProvider(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(provider,
-        JwtPrincipalUtil.getProvider(createJwt(claims)));
+    assertEquals(expectedJwtValue, JwtPrincipalUtil.getProvider(createJwt(claims)));
   }
 
   @ParameterizedTest(name = "For custom:idp_username {0} and custom:idp_name {1} userId is {2}")
   @CsvSource({
-      "username, userid, ca.bc.gov.flnr.fam.dev, BCSC\\username",
-      "username, userid, idir, IDIR\\username",
-      "username, userid, bceidbusiness, BCEIDBUSINESS\\username",
-      "'', userid, ca.bc.gov.flnr.fam.dev, BCSC\\userid",
-      "'', userid, idir, IDIR\\userid",
-      "'', userid, bceidbusiness, BCEIDBUSINESS\\userid",
-      "'', '','', ''"
+    "username, userid, ca.bc.gov.flnr.fam.dev, BCSC\\username",
+    "username, userid, idir, IDIR\\username",
+    "username, userid, bceidbusiness, BCEIDBUSINESS\\username",
+    "'', userid, ca.bc.gov.flnr.fam.dev, BCSC\\userid",
+    "'', userid, idir, IDIR\\userid",
+    "'', userid, bceidbusiness, BCEIDBUSINESS\\userid",
+    "'', '','', ''"
   })
   @DisplayName("get userId returns userId prefixed with provider when userId is not blank")
-  void shouldGetUserId(
-      String idpUsername,
-      String idpUserId,
-      String idpName,
-      String expected
-  ) {
-    Map<String, Object> claims = Map.of(
-        "custom:idp_username", idpUsername,
-        "custom:idp_user_id", idpUserId,
-        "custom:idp_name", idpName
-    );
+  void shouldGetUserId(String idpUsername, String idpUserId, String idpName, String expected) {
+    Map<String, Object> claims =
+        Map.of(
+            "custom:idp_username", idpUsername,
+            "custom:idp_user_id", idpUserId,
+            "custom:idp_name", idpName);
 
-    assertEquals(expected,
-        JwtPrincipalUtil.getUserId(createJwtAuthenticationTokenWithAttributes(claims)));
+    assertEquals(
+        expected, JwtPrincipalUtil.getUserId(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(expected, JwtPrincipalUtil.getUserId(createJwt(claims)));
   }
 
@@ -73,8 +68,8 @@ class JwtPrincipalUtilTest {
   void shouldGetBusinessId(String value) {
     Map<String, Object> claims = Map.of("custom:idp_business_id", value);
 
-    assertEquals(value,
-        JwtPrincipalUtil.getBusinessId(createJwtAuthenticationTokenWithAttributes(claims)));
+    assertEquals(
+        value, JwtPrincipalUtil.getBusinessId(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(value, JwtPrincipalUtil.getBusinessId(createJwt(claims)));
   }
 
@@ -84,7 +79,8 @@ class JwtPrincipalUtilTest {
   void shouldGetBusinessName(String value) {
     Map<String, Object> claims = Map.of("custom:idp_business_name", value);
 
-    assertEquals(value,
+    assertEquals(
+        value,
         JwtPrincipalUtil.getBusinessName(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(value, JwtPrincipalUtil.getBusinessName(createJwt(claims)));
   }
@@ -95,82 +91,74 @@ class JwtPrincipalUtilTest {
   void shouldGetEmail(String value) {
     Map<String, Object> claims = Map.of("email", value);
 
-    assertEquals(value,
-        JwtPrincipalUtil.getEmail(createJwtAuthenticationTokenWithAttributes(claims)));
+    assertEquals(
+        value, JwtPrincipalUtil.getEmail(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(value, JwtPrincipalUtil.getEmail(createJwt(claims)));
   }
 
-  @ParameterizedTest(name = "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3} fullname is {4}")
+  @ParameterizedTest(
+      name =
+          "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3}"
+              + " fullname is {4}")
   @CsvSource({
-      "John, Wick, '',  ca.bc.gov.flnr.fam.dev, John Wick",
-      "John, Wick, '',  idir, John Wick",
-      "'', '', 'John Wick',  bceidbusiness, John Wick",
-      "'', '', 'John Valeus Wick',  bceidbusiness, John Valeus Wick",
-      "'', '', 'Wick, John WLRS:EX',  idir, John Wick",
-      "'', '', 'da Silva, Anderson WLRS:EX',  idir, Anderson Silva",
-      "'', '', 'Wick, John V WLRS:EX',  idir, John Wick",
-      "'', '', '',  bceidbusiness, ''",
-      "'', '', '', '', ''"
+    "John, Wick, '',  ca.bc.gov.flnr.fam.dev, John Wick",
+    "John, Wick, '',  idir, John Wick",
+    "'', '', 'John Wick',  bceidbusiness, John Wick",
+    "'', '', 'John Valeus Wick',  bceidbusiness, John Valeus Wick",
+    "'', '', 'Wick, John WLRS:EX',  idir, John Wick",
+    "'', '', 'da Silva, Anderson WLRS:EX',  idir, Anderson Silva",
+    "'', '', 'Wick, John V WLRS:EX',  idir, John Wick",
+    "'', '', '',  bceidbusiness, ''",
+    "'', '', '', '', ''"
   })
   @DisplayName("get name")
   void shouldGetName(
-      String givenName,
-      String familyName,
-      String displayName,
-      String idpName,
-      String expected
-  ) {
-    Map<String, Object> claims = Map.of(
-        "given_name", givenName,
-        "family_name", familyName,
-        "custom:idp_name", idpName,
-        "custom:idp_display_name", displayName
-    );
+      String givenName, String familyName, String displayName, String idpName, String expected) {
+    Map<String, Object> claims =
+        Map.of(
+            "given_name", givenName,
+            "family_name", familyName,
+            "custom:idp_name", idpName,
+            "custom:idp_display_name", displayName);
 
-    assertEquals(expected,
-        JwtPrincipalUtil.getName(createJwtAuthenticationTokenWithAttributes(claims)));
+    assertEquals(
+        expected, JwtPrincipalUtil.getName(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(expected, JwtPrincipalUtil.getName(createJwt(claims)));
   }
 
-  @ParameterizedTest(name = "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3} fullname is {4}")
+  @ParameterizedTest(
+      name =
+          "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3}"
+              + " fullname is {4}")
   @CsvSource({
-      "John, Wick, '',  ca.bc.gov.flnr.fam.dev, Wick",
-      "John, Wick, '',  idir, Wick",
-      "'', '', 'John Wick',  bceidbusiness, Wick",
-      "'', '', 'John Valeus Wick',  bceidbusiness, Valeus Wick",
-      "'', '', 'Wick, John WLRS:EX',  idir, Wick",
-      "'', '', 'da Silva, Anderson WLRS:EX',  idir, Silva",
-      "'', '', 'Wick, John V WLRS:EX',  idir, Wick",
-      "'', '', '',  bceidbusiness, ''",
-      "'', '', '', '', ''"
+    "John, Wick, '',  ca.bc.gov.flnr.fam.dev, Wick",
+    "John, Wick, '',  idir, Wick",
+    "'', '', 'John Wick',  bceidbusiness, Wick",
+    "'', '', 'John Valeus Wick',  bceidbusiness, Valeus Wick",
+    "'', '', 'Wick, John WLRS:EX',  idir, Wick",
+    "'', '', 'da Silva, Anderson WLRS:EX',  idir, Silva",
+    "'', '', 'Wick, John V WLRS:EX',  idir, Wick",
+    "'', '', '',  bceidbusiness, ''",
+    "'', '', '', '', ''"
   })
   @DisplayName("get last name")
   void shouldGetLastName(
-      String givenName,
-      String familyName,
-      String displayName,
-      String idpName,
-      String expected
-  ) {
-    Map<String, Object> claims = Map.of(
-        "given_name", givenName,
-        "family_name", familyName,
-        "custom:idp_name", idpName,
-        "custom:idp_display_name", displayName
-    );
+      String givenName, String familyName, String displayName, String idpName, String expected) {
+    Map<String, Object> claims =
+        Map.of(
+            "given_name", givenName,
+            "family_name", familyName,
+            "custom:idp_name", idpName,
+            "custom:idp_display_name", displayName);
 
-    assertEquals(expected,
-        JwtPrincipalUtil.getLastName(createJwtAuthenticationTokenWithAttributes(claims)));
+    assertEquals(
+        expected, JwtPrincipalUtil.getLastName(createJwtAuthenticationTokenWithAttributes(claims)));
     assertEquals(expected, JwtPrincipalUtil.getLastName(createJwt(claims)));
   }
 
   private JwtAuthenticationToken createJwtAuthenticationTokenWithAttributes(
-      Map<String, Object> attributes
-  ) {
-    return new JwtAuthenticationToken(
-        createJwt(attributes),
-        List.of()
-    );
+      Map<String, Object> attributes) {
+    return new JwtAuthenticationToken(createJwt(attributes), List.of());
   }
 
   private static @NotNull Jwt createJwt(Map<String, Object> attributes) {
@@ -179,53 +167,35 @@ class JwtPrincipalUtilTest {
         LocalDateTime.now().minusMinutes(10).toInstant(ZoneOffset.UTC),
         LocalDateTime.now().plusMinutes(90).toInstant(ZoneOffset.UTC),
         Map.of("alg", "HS256", "typ", "JWT"),
-        attributes
-    );
+        attributes);
   }
-  
+
   @ParameterizedTest
   @DisplayName("getGroups should return expected group list")
   @MethodSource("provideGroupsTestData")
   void shouldGetGroups(Map<String, Object> tokenAttributes, Set<String> expectedGroups) {
-      JwtAuthenticationToken jwtAuthenticationToken = tokenAttributes == null
-          ? null
-          : createJwtAuthenticationTokenWithAttributes(tokenAttributes);
+    JwtAuthenticationToken jwtAuthenticationToken =
+        tokenAttributes == null
+            ? null
+            : createJwtAuthenticationTokenWithAttributes(tokenAttributes);
 
-      Set<String> actualGroups = JwtPrincipalUtil.getGroups(jwtAuthenticationToken);
+    Set<String> actualGroups = JwtPrincipalUtil.getGroups(jwtAuthenticationToken);
 
-      assertEquals(expectedGroups, actualGroups);
+    assertEquals(expectedGroups, actualGroups);
   }
 
   private static Stream<Arguments> provideGroupsTestData() {
-      return Stream.of(
-          // Case 1: Token attributes contain "CLIENT_ADMIN"
-          Arguments.of(
-              Map.of("cognito:groups", List.of("CLIENT_ADMIN")),
-              Set.of("CLIENT_ADMIN")
-          ),
-          // Case 2: Token attributes contain an empty group list
-          Arguments.of(
-              Map.of("cognito:groups", List.of()),
-              Set.of()
-          ),
-          // Case 3: Token attributes contain null groups
-          Arguments.of(
-              new HashMap<>() {{
-                  put("cognito:groups", null);
-              }},
-              Set.of()
-          ),
-          // Case 4: Token attributes missing "cognito:groups"
-          Arguments.of(
-              Map.of("otherKey", "someValue"),
-              Set.of()
-          ),
-          // Case 5: Null JwtAuthenticationToken
-          Arguments.of(
-              null,
-              Set.of()
-          )
-      );
+    return Stream.of(
+        Arguments.of(Map.of("cognito:groups", List.of("CLIENT_ADMIN")), Set.of("CLIENT_ADMIN")),
+        Arguments.of(Map.of("cognito:groups", List.of()), Set.of()),
+        Arguments.of(
+            new HashMap<>() {
+              {
+                put("cognito:groups", null);
+              }
+            },
+            Set.of()),
+        Arguments.of(Map.of("otherKey", "someValue"), Set.of()),
+        Arguments.of(null, Set.of()));
   }
-  
 }

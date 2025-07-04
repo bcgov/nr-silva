@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -207,7 +206,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.overview.milestones.freeGrowingDueDate").value("2012-09-18"))
 
         // Verify notifications section
-        .andExpect(jsonPath("$.notifications[0].title").value("Overdue milestone detected for standard unit \"A, B\""))
+        .andExpect(
+            jsonPath("$.notifications[0].title")
+                .value("Overdue milestone detected for standard unit \"A, B\""))
         .andExpect(jsonPath("$.notifications[0].description").value("Immediate action required!"))
         .andExpect(jsonPath("$.notifications[0].status").value("ERROR"))
         .andReturn();
@@ -546,15 +547,14 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     Long openingId = 1589595L;
 
     mockMvc
-            .perform(
-                    get("/api/openings/" + openingId + "/attachments")
-                            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].openingId").value(openingId))
-            .andExpect(jsonPath("$[0].attachmentName").value("Permit_Document.pdf"))
-            .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty());
+        .perform(
+            get("/api/openings/" + openingId + "/attachments").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].openingId").value(openingId))
+        .andExpect(jsonPath("$[0].attachmentName").value("Permit_Document.pdf"))
+        .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty());
   }
 
   @Test
@@ -563,13 +563,14 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     UUID attachmentGuid = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
 
     mockMvc
-            .perform(
-                    get("/api/openings/1589595/attachments/" + attachmentGuid)
-                            .accept(MediaType.APPLICATION_OCTET_STREAM))
-            .andExpect(status().isOk())
-            .andExpect(header().string("Content-Disposition", "attachment; filename=\"Permit_Document.pdf\""))
-            .andExpect(header().string("Content-Type", "application/pdf"))
-            .andExpect(content().bytes("dummy content".getBytes(StandardCharsets.UTF_8)));
+        .perform(
+            get("/api/openings/1589595/attachments/" + attachmentGuid)
+                .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isOk())
+        .andExpect(
+            header().string("Content-Disposition", "attachment; filename=\"Permit_Document.pdf\""))
+        .andExpect(header().string("Content-Type", "application/pdf"))
+        .andExpect(content().bytes("dummy content".getBytes(StandardCharsets.UTF_8)));
   }
 
   @Test
@@ -578,9 +579,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     UUID nonExistentGuid = UUID.randomUUID();
 
     mockMvc
-            .perform(
-                    get("/api/openings/1589595/attachments/" + nonExistentGuid)
-                            .accept(MediaType.APPLICATION_OCTET_STREAM))
-            .andExpect(status().isNotFound());
+        .perform(
+            get("/api/openings/1589595/attachments/" + nonExistentGuid)
+                .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isNotFound());
   }
 }
