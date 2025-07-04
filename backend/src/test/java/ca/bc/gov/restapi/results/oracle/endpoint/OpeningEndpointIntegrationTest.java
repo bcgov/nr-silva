@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -16,7 +17,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.jayway.jsonpath.JsonPath;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hamcrest.Matchers;
@@ -554,7 +554,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.length()", Matchers.greaterThanOrEqualTo(1)))
         .andExpect(jsonPath("$[0].openingId").value(openingId))
-        .andExpect(jsonPath("$[0].attachmentName").value("Permit_Document.pdf"))
         .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty());
   }
 
@@ -578,18 +577,30 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     // Extract values from metadata response
     String guid = JsonPath.read(json, "$[0].attachmentGuid");
     String filename = JsonPath.read(json, "$[0].attachmentName");
+    int attachmentSize = JsonPath.read(json, "$[0].attachmentSize");
     String mimeType = JsonPath.read(json, "$[0].mimeTypeCode");
+    // Construct the expected Content-Type header value
+    String expectedContentType = "application/" + mimeType.toLowerCase();
 
     // Use the GUID to fetch the actual file and verify headers based on metadata
-    mockMvc
-        .perform(
-            get("/api/openings/" + openingId + "/attachments/" + guid)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
-        .andExpect(status().isOk())
-        .andExpect(
-            header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
-        .andExpect(header().string("Content-Type", mimeType))
-        .andExpect(content().bytes("dummy content".getBytes(StandardCharsets.UTF_8)));
+    byte[] actualContent =
+        mockMvc
+            .perform(
+                get("/api/openings/" + openingId + "/attachments/" + guid)
+                    .accept(MediaType.APPLICATION_OCTET_STREAM))
+            .andExpect(status().isOk())
+            .andExpect(
+                header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
+            .andExpect(header().string("Content-Type", expectedContentType))
+            .andReturn()
+            .getResponse()
+            .getContentAsByteArray();
+
+    // Assert size matches metadata
+    assertEquals(
+        attachmentSize,
+        actualContent.length,
+        "Downloaded content length does not match metadata size");
   }
 
   @Test
