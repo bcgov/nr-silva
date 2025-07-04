@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * This class holds methods for fetching and handling {@link OpeningEntity} in general.
- */
+/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,6 +17,4 @@ public class OpeningService {
   private final OpeningRepository openingRepository;
   private final ForestClientService forestClientService;
   private final SilvicultureCommentRepository commentRepository;
-
-
 }

@@ -27,9 +27,6 @@ vi.mock('react-dom/client', () => ({
     render: vi.fn(),
   })),
 }));
-vi.mock('lottie-react', () => ({
-  useLottie: vi.fn(),
-}));
 
 describe('index.tsx', () => {
   it('should initialize the app correctly', async () => {

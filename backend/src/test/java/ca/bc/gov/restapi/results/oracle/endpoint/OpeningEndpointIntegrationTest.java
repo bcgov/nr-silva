@@ -3,10 +3,9 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
@@ -16,8 +15,10 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import com.jayway.jsonpath.JsonPath;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @WithMockJwt
-@DisplayName("Integrated Test | Opening Search Endpoint")
+@DisplayName("Integrated Test | Opening Endpoint")
 class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
@@ -206,7 +207,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.overview.milestones.freeGrowingDueDate").value("2012-09-18"))
 
         // Verify notifications section
-        .andExpect(jsonPath("$.notifications[0].title").value("Overdue milestone detected for standard unit \"A, B\""))
+        .andExpect(
+            jsonPath("$.notifications[0].title")
+                .value("Overdue milestone detected for standard unit \"A, B\""))
         .andExpect(jsonPath("$.notifications[0].description").value("Immediate action required!"))
         .andExpect(jsonPath("$.notifications[0].status").value("ERROR"))
         .andReturn();
@@ -537,5 +540,74 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.layers[0].totalWellSpaced").value(1164))
         .andExpect(jsonPath("$.layers[1].damage[0].damageAgent.code").value("IWS"))
         .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get attachments metadata by openingId should return list")
+  void getAttachmentsMetadata_shouldReturnList() throws Exception {
+    Long openingId = 1589595L;
+
+    mockMvc
+        .perform(
+            get("/api/openings/" + openingId + "/attachments").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()", Matchers.greaterThanOrEqualTo(1)))
+        .andExpect(jsonPath("$[0].openingId").value(openingId))
+        .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty());
+  }
+
+  @Test
+  @DisplayName("Get attachment by GUID should return file")
+  void getAttachmentByGuid_shouldReturnFile() throws Exception {
+    Long openingId = 1589595L;
+
+    // First call to get the GUID from metadata
+    String json =
+        mockMvc
+            .perform(
+                get("/api/openings/" + openingId + "/attachments")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    // Extract values from metadata response
+    String guid = JsonPath.read(json, "$[0].attachmentGuid");
+    String filename = JsonPath.read(json, "$[0].attachmentName");
+    int attachmentSize = JsonPath.read(json, "$[0].attachmentSize");
+
+    // Use the GUID to fetch the actual file and verify headers based on metadata
+    byte[] actualContent =
+        mockMvc
+            .perform(
+                get("/api/openings/" + openingId + "/attachments/" + guid)
+                    .accept(MediaType.APPLICATION_OCTET_STREAM))
+            .andExpect(status().isOk())
+            .andExpect(
+                header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
+            .andReturn()
+            .getResponse()
+            .getContentAsByteArray();
+
+    // Assert size matches metadata
+    assertEquals(
+        attachmentSize,
+        actualContent.length,
+        "Downloaded content length does not match metadata size");
+  }
+
+  @Test
+  @DisplayName("Get attachment by non-existing GUID should return 404")
+  void getAttachmentByGuid_shouldReturnNotFound() throws Exception {
+    UUID nonExistentGuid = UUID.randomUUID();
+
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/attachments/" + nonExistentGuid)
+                .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isNotFound());
   }
 }

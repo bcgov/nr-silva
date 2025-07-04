@@ -25,6 +25,7 @@ export type { MultiPolygon } from './models/MultiPolygon';
 export type { OpeningActivityBaseDto } from './models/OpeningActivityBaseDto';
 export type { OpeningDetailsActivitiesActivitiesDto } from './models/OpeningDetailsActivitiesActivitiesDto';
 export type { OpeningDetailsActivitiesDisturbanceDto } from './models/OpeningDetailsActivitiesDisturbanceDto';
+export type { OpeningDetailsAttachmentMetaDto } from './models/OpeningDetailsAttachmentMetaDto';
 export type { OpeningDetailsBecDto } from './models/OpeningDetailsBecDto';
 export { OpeningDetailsNotificationDto } from './models/OpeningDetailsNotificationDto';
 export type { OpeningDetailsOverviewDto } from './models/OpeningDetailsOverviewDto';

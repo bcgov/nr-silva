@@ -21,7 +21,7 @@ public enum IdentityProvider {
    */
   public static Optional<IdentityProvider> fromClaim(String provider) {
     return Arrays.stream(values())
-        .filter(enumValue -> enumValue.claimName.equals(provider))
+        .filter(enumValue -> enumValue.claimName.equalsIgnoreCase(provider))
         .findFirst();
   }
 }

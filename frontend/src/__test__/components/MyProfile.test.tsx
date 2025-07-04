@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import MyProfile from '../../components/MyProfile';
 import { useThemePreference } from '../../utils/ThemePreference';
 import { useAuth } from '../../contexts/AuthProvider';
-import { FamLoginUser } from '../../services/AuthService';
+import { FamLoginUser } from '../../types/AuthTypes';
 
 // Mock dependencies
 vi.mock('../../utils/ThemePreference', () => ({
@@ -23,7 +23,8 @@ describe('MyProfile Component', () => {
     lastName: 'Doe',
     userName: 'johndoe',
     email: 'john.doe@example.com',
-    idpProvider: 'IDIR'
+    idpProvider: 'IDIR',
+    privileges: {}
   };
 
   beforeEach(() => {

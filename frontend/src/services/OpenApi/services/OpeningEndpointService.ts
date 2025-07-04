@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { OpeningActivityBaseDto } from '../models/OpeningActivityBaseDto';
+import type { OpeningDetailsAttachmentMetaDto } from '../models/OpeningDetailsAttachmentMetaDto';
 import type { OpeningDetailsStockingDto } from '../models/OpeningDetailsStockingDto';
 import type { OpeningDetailsTenuresDto } from '../models/OpeningDetailsTenuresDto';
 import type { OpeningDetailsTombstoneOverviewDto } from '../models/OpeningDetailsTombstoneOverviewDto';
@@ -141,6 +142,41 @@ export class OpeningEndpointService {
             path: {
                 'openingId': openingId,
                 'forestCoverId': forestCoverId,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @returns OpeningDetailsAttachmentMetaDto OK
+     * @throws ApiError
+     */
+    public static getAttachments(
+        openingId: number,
+    ): CancelablePromise<Array<OpeningDetailsAttachmentMetaDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/attachments',
+            path: {
+                'openingId': openingId,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @param guid
+     * @returns string OK
+     * @throws ApiError
+     */
+    public static getAttachmentByGuid(
+        openingId: number,
+        guid: string,
+    ): CancelablePromise<string> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/attachments/{guid}',
+            path: {
+                'openingId': openingId,
+                'guid': guid,
             },
         });
     }

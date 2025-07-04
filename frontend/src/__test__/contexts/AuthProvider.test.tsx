@@ -87,7 +87,7 @@ describe("AuthProvider", () => {
 
   it("should handle login correctly", async () => {
     setAuthCookies(sampleAuthToken);
-    const provider = "idir";
+    const provider = "IDIR";
     const envProvider = `${env.VITE_ZONE ?? "TEST"}-IDIR`;
 
     const TestComponent = () => {

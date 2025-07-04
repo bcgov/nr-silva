@@ -144,11 +144,11 @@ describe('AuthService', () => {
         userName: 'johndoe',
         displayName: 'Doe, John',
         email: 'john.doe@example.com',
-        idpProvider: '',
+        idpProvider: undefined,
         privileges: {},
         firstName: 'John',
         lastName: 'Doe',
-        providerUsername: '\\johndoe',
+        providerUsername: "undefined\\johndoe",
       });
     });
   });

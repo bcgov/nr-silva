@@ -67,7 +67,7 @@
 .default-zebra-table,
 .default-zebra-table-with-border {
   thead {
-    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+    background-color: var(--#{vars.$bcgov-prefix}-layer-selected-hover-02);
 
     th,
     button {

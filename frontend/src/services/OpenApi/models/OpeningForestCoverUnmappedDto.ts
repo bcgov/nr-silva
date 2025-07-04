@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningForestCoverUnmappedDto = {
-    unmappedAreaId: number;
+    unmappedAreaId: string;
     area: number | null;
     stockingStatus: CodeDescriptionDto;
     stockingType: CodeDescriptionDto;

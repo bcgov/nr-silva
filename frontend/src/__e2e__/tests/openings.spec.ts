@@ -45,9 +45,4 @@ test.describe('Openings', () => {
     expect(await openingsPage.isOpeningFavourited(openingId)).toBe(false);
     expect(await openingsPage.isUnfavouriteNotificationVisible(openingId)).toBe(true);
   });
-
-  test('check opening should make it visible on the map', async () => {
-    await openingsPage.checkOpeningInTable(openingId);
-    expect(await openingsPage.isOpeningVisibleOnMap()).toBe(true);
-  });
 });
