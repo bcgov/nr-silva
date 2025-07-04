@@ -39,7 +39,7 @@ const OpeningsMapFitBound: React.FC<OpeningsMapFitBoundProps> = ({
       // If no polygons are found, set the map to the default location
       map.setView(defaultLocation, defaultZoom, { animate: true });
     }
-  }, [polygons, map]);
+  }, [polygons, map, defaultLocation, defaultZoom]);
 
   return null;
 };
