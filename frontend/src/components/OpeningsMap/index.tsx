@@ -23,7 +23,7 @@ interface MapProps {
   setOpeningPolygonNotFound: (value: boolean, openingId: number | null) => void;
   mapHeight?: number;
   layerFilter?: boolean;
-  kind: MapKindType[];
+  kind?: MapKindType[];
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
