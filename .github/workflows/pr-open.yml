@@ -48,11 +48,12 @@ jobs:
 
   e2e:
     name: E2E test on (${{ github.event.number }})
+    if: needs.deploys.outputs.run_tests == 'true'
+    needs: [deploys]
     permissions:
       checks: write
     uses: ./.github/workflows/e2e.yml
     secrets: inherit
-    needs: [deploys]
 
   results:
     name: PR Results

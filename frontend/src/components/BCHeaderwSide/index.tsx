@@ -70,6 +70,7 @@ function BCHeaderwSide(): React.JSX.Element {
   const renderSideNavMenuItem = (subSubItem: LeftMenuItem) => (
     <SideNavMenuItem
       id={subSubItem.id}
+      data-testid={`side-nav-item-${subSubItem.id}`}
       key={subSubItem.id}
       aria-label={subSubItem.name}
       onClick={() => navigate(subSubItem.link)}
@@ -85,6 +86,7 @@ function BCHeaderwSide(): React.JSX.Element {
   ) => (
     <SideNavLink
       id={subItem.id}
+      data-testid={`side-nav-link-${subItem.id}`}
       className="side-nav-item"
       key={subItem.id}
       aria-label={subItem.name}

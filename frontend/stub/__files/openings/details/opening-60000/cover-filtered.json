@@ -1,0 +1,36 @@
+[
+  {
+    "coverId": 4401631,
+    "polygonId": "3",
+    "standardUnitId": null,
+    "unmappedArea": {
+      "code": null,
+      "description": null
+    },
+    "grossArea": 2.2,
+    "netArea": 2.2,
+    "status": {
+      "code": "MAT",
+      "description": "Mature"
+    },
+    "coverType": {
+      "code": "NAT",
+      "description": "Natural"
+    },
+    "inventoryLayer": {
+      "species": [],
+      "total": null,
+      "totalWellSpaced": null,
+      "wellSpaced": null,
+      "freeGrowing": null
+    },
+    "silvicultureLayer": {
+      "species": [],
+      "total": null,
+      "totalWellSpaced": null,
+      "wellSpaced": null,
+      "freeGrowing": null
+    },
+    "referenceYear": 2019
+  }
+]
