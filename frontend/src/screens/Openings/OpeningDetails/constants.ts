@@ -13,5 +13,5 @@ export const OpeningDetailsTabs = [
   'standard-units',
   'activities',
   'forest-cover',
-  'attachment'
+  'attachments'
 ] as const;
