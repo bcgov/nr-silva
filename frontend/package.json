@@ -27,7 +27,7 @@
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.0.0",
     "tokml": "^0.4.0",
-    "vite": "^6.0.0",
+    "vite": "^7.0.0",
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.0"
   },
