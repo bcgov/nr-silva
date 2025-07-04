@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
+import { renderToString } from "react-dom/server";
 import L from "leaflet";
-import { FeatureCollection } from "geojson";
+import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
+import { Feature, FeatureCollection, Geometry } from "geojson";
 import {
   getStyleForFeature,
   getPropertyForFeature,
@@ -9,7 +10,6 @@ import {
   getCenterOfFeatureCollection,
 } from "@/types/MapLayer";
 import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
-
 import "./styles.scss";
 
 interface OpeningsMapEntryProps {
@@ -57,7 +57,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
    * @param polygon The polygon to get the opening ID from
    * @returns The opening ID of the polygon or 0 if not found
    */
-  const getOpeningId = (polygon: FeatureCollection) =>
+  const getOpeningIdByCollection = (polygon: FeatureCollection) =>
     polygon.features
       .filter(Boolean)
       .map((feature) => feature.properties?.OPENING_ID)
@@ -67,11 +67,39 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
       .find((id) => id && id !== 0) ?? 0;
 
   /**
+   * Function to get the opening ID from the polygon
+   * This is used to display the opening ID in the popup when a polygon is clicked
+   * @param feature The feature to get the opening ID from
+   * @returns The opening ID of the polygon or 0 if not found
+   */
+  const getOpeningIdByFeature = (feature: Feature<Geometry, any>) => {
+    const openingId = feature.properties?.OPENING_ID || "0";
+    return parseFloat(openingId);
+  };
+
+  /**
    * Effect to set the map view when the component mounts or when the polygons change
    */
   useEffect(() => {
     setFeatures([...polygons]);
   }, [polygons]);
+
+  const createPopup =
+    (featureCollection: FeatureCollection) =>
+    (feature: Feature<Geometry, any>, layer: L.Layer): void => {
+      const popupContent = renderToString(
+        <OpeningsMapEntryPopup
+          openingId={getOpeningIdByFeature(feature)}
+          data={getPropertyForFeature(feature)}
+          feature={featureCollection}
+        />
+      );
+
+      layer.bindPopup(popupContent, {
+        maxWidth: 700,
+        autoPan: false,
+      });
+    };
 
   return (
     <>
@@ -79,28 +107,11 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
         features.filter(Boolean).map((featureCollection, index) => (
           <GeoJSON
             data-testid="geojson"
-            data={featureCollection}
-            key={geoKey(featureCollection, index)}
-            style={getStyleForFeature}
-          >
-            {featureCollection?.features
-              ?.filter((feature) => feature.geometry)
-              .map((feature, index) => (
-                <Popup
-                  data-testid="popup"
-                  key={`popup-${geoKey(featureCollection, index)}-geo`}
-                  maxWidth={700}
-                  autoPan={false}
-                  position={getPopupCenter(feature.geometry)}
-                >
-                  <OpeningsMapEntryPopup
-                    openingId={getOpeningId(featureCollection)}
-                    data={getPropertyForFeature(feature)}
-                    feature={featureCollection}
-                  />
-                </Popup>
-              ))}
-          </GeoJSON>
+            data={featureCollection} // This is the entire GeoJSON data
+            key={geoKey(featureCollection, index)} // Unique key for each GeoJSON layer
+            style={getStyleForFeature} // Function to style the polygons
+            onEachFeature={createPopup(featureCollection)} // Function to create popups for each feature
+          />
         ))}
       {zoom <= 10 &&
         features.filter(Boolean).map((featureCollection, index) => (
@@ -121,7 +132,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
                   position={getPopupCenter(feature.geometry)}
                 >
                   <OpeningsMapEntryPopup
-                    openingId={getOpeningId(featureCollection)}
+                    openingId={getOpeningIdByCollection(featureCollection)}
                     data={getPropertyForFeature(feature)}
                     feature={featureCollection}
                   />

@@ -34,12 +34,12 @@ const OpeningsMapFitBound: React.FC<OpeningsMapFitBoundProps> = ({
       ).getBounds();
 
       if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20] });
-      else map.setView(defaultLocation, defaultZoom);
+      else map.setView(defaultLocation, defaultZoom, { animate: true });
     } else {
       // If no polygons are found, set the map to the default location
-      map.setView(defaultLocation, defaultZoom);
+      map.setView(defaultLocation, defaultZoom, { animate: true });
     }
-  }, [polygons, map]);
+  }, [polygons, map, defaultLocation, defaultZoom]);
 
   return null;
 };

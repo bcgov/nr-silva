@@ -4,16 +4,16 @@ import { THREE_HALF_HOURS, THREE_HOURS } from "@/constants/TimeUnits";
 import API from "@/services/API";
 import { defaultLocation } from "./constants";
 
-const queries = (openingIds: number[], kind: MapKindType) =>
+const queries = (openingIds: number[], ...kinds: MapKindType[]) =>
   openingIds.map((id) => ({
-    queryKey: ["opening", "map", id, { kind }],
-    queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id.toString(), kind),
+    queryKey: ["opening", "map", id, { kinds }],
+    queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id.toString(), kinds.join(",")),
     staleTime: THREE_HOURS,
     cacheTime: THREE_HALF_HOURS,
     refetchOnReconnect: false,
   }));
 
-export const getMapQueries = (openingIds: number[], kind: MapKindType) => useQueries({ queries: queries(openingIds, kind) });
+export const getMapQueries = (openingIds: number[], ...kinds: MapKindType[]) => useQueries({ queries: queries(openingIds, ...kinds) });
 
 export const getUserLocation = async (): Promise<MapPositionType> => {
   if (navigator.geolocation) {
