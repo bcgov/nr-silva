@@ -192,6 +192,7 @@ const OpeningSubmissionTrend = () => {
               <>
                 <FilterableMultiSelect
                   id="district-dropdown"
+                  data-testid="district-dropdown"
                   titleText="District"
                   items={orgUnitQuery.data ?? []}
                   itemToString={codeDescriptionToDisplayText}
@@ -202,6 +203,7 @@ const OpeningSubmissionTrend = () => {
 
                 <FilterableMultiSelect
                   id="status-dropdown"
+                  data-testid="status-dropdown"
                   titleText="Status"
                   items={OPENING_STATUS_LIST}
                   itemToString={codeDescriptionToDisplayText}
@@ -213,6 +215,7 @@ const OpeningSubmissionTrend = () => {
                 <ComboBox
                   className="trend-year-selection-combobox"
                   id="trend-year-selection"
+                  data-testid="trend-year-selection"
                   onChange={handleYearSelection}
                   items={yearOptions}
                   titleText="Opening submission year"

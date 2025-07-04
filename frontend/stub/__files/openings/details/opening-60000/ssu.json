@@ -1,0 +1,306 @@
+[
+  {
+    "stocking": {
+      "stockingStandardUnit": "1",
+      "ssid": 101419,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": null,
+      "netArea": 13.3,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "BWBS",
+        "becSubzoneCode": "wk",
+        "becVariant": "1",
+        "becPhase": null,
+        "becSiteSeries": "03",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": null,
+      "freeGrowingLate": null,
+      "freeGrowingEarly": null,
+      "additionalStandards": null,
+      "milestones": {
+        "postHarvestDeclaredDate": null,
+        "regenDeclaredDate": "2001-10-11",
+        "regenOffsetYears": 7,
+        "regenDueDate": "2005-06-01",
+        "noRegenDeclaredDate": null,
+        "noRegenOffsetYears": null,
+        "noRegenDueDate": null,
+        "freeGrowingDeclaredDate": "2011-05-25",
+        "freeGrowingOffsetYears": 15,
+        "freeGrowingDueDate": "2013-06-01",
+        "noRegenIndicated": false,
+        "extentDeclared": false,
+        "comments": []
+      }
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "PLI",
+          "description": "lodgepole pine"
+        },
+        "minHeight": 2.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "SW",
+          "description": "white spruce"
+        },
+        "minHeight": 1.0
+      }
+    ],
+    "acceptableSpecies": [],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 700,
+        "minPreferredWellspacedTrees": 600,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 1200,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": 150
+      }
+    ],
+    "comments": []
+  },
+  {
+    "stocking": {
+      "stockingStandardUnit": "2",
+      "ssid": 101420,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": null,
+      "netArea": 10.1,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "BWBS",
+        "becSubzoneCode": "wk",
+        "becVariant": "1",
+        "becPhase": null,
+        "becSiteSeries": "01",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": null,
+      "freeGrowingLate": null,
+      "freeGrowingEarly": null,
+      "additionalStandards": null,
+      "milestones": {
+        "postHarvestDeclaredDate": null,
+        "regenDeclaredDate": "2001-10-11",
+        "regenOffsetYears": 4,
+        "regenDueDate": "2002-06-01",
+        "noRegenDeclaredDate": null,
+        "noRegenOffsetYears": null,
+        "noRegenDueDate": null,
+        "freeGrowingDeclaredDate": "2011-05-25",
+        "freeGrowingOffsetYears": 15,
+        "freeGrowingDueDate": "2013-06-01",
+        "noRegenIndicated": false,
+        "extentDeclared": false,
+        "comments": []
+      }
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "PLI",
+          "description": "lodgepole pine"
+        },
+        "minHeight": 2.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "SW",
+          "description": "white spruce"
+        },
+        "minHeight": 1.0
+      }
+    ],
+    "acceptableSpecies": [],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 700,
+        "minPreferredWellspacedTrees": 600,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 1200,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": 150
+      }
+    ],
+    "comments": []
+  },
+  {
+    "stocking": {
+      "stockingStandardUnit": "3",
+      "ssid": 101421,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": null,
+      "netArea": 10.5,
+      "soilDisturbancePercent": 5.0,
+      "bec": {
+        "becZoneCode": "BWBS",
+        "becSubzoneCode": "wk",
+        "becVariant": "1",
+        "becPhase": null,
+        "becSiteSeries": "05",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": null,
+      "freeGrowingLate": null,
+      "freeGrowingEarly": null,
+      "additionalStandards": null,
+      "milestones": {
+        "postHarvestDeclaredDate": null,
+        "regenDeclaredDate": "2001-10-11",
+        "regenOffsetYears": 7,
+        "regenDueDate": "2005-06-01",
+        "noRegenDeclaredDate": null,
+        "noRegenOffsetYears": null,
+        "noRegenDueDate": null,
+        "freeGrowingDeclaredDate": "2011-05-25",
+        "freeGrowingOffsetYears": 15,
+        "freeGrowingDueDate": "2013-06-01",
+        "noRegenIndicated": false,
+        "extentDeclared": false,
+        "comments": []
+      }
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "SW",
+          "description": "white spruce"
+        },
+        "minHeight": 1.0
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "PLI",
+          "description": "lodgepole pine"
+        },
+        "minHeight": 2.0
+      }
+    ],
+    "acceptableSpecies": [],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 700,
+        "minPreferredWellspacedTrees": 600,
+        "minHorizontalDistanceWellspacedTrees": 2,
+        "targetWellspacedTrees": 1200,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": 150
+      }
+    ],
+    "comments": []
+  },
+  {
+    "stocking": {
+      "stockingStandardUnit": "4",
+      "ssid": 101422,
+      "defaultMof": false,
+      "manualEntry": false,
+      "fspId": null,
+      "netArea": 1.9,
+      "soilDisturbancePercent": 10.0,
+      "bec": {
+        "becZoneCode": "BWBS",
+        "becSubzoneCode": "wk",
+        "becVariant": "1",
+        "becPhase": null,
+        "becSiteSeries": "08",
+        "becSiteType": null,
+        "becSeral": null
+      },
+      "regenDelay": null,
+      "freeGrowingLate": null,
+      "freeGrowingEarly": null,
+      "additionalStandards": null,
+      "milestones": {
+        "postHarvestDeclaredDate": null,
+        "regenDeclaredDate": "2001-10-11",
+        "regenOffsetYears": 4,
+        "regenDueDate": "2002-06-01",
+        "noRegenDeclaredDate": null,
+        "noRegenOffsetYears": null,
+        "noRegenDueDate": null,
+        "freeGrowingDeclaredDate": "2011-05-25",
+        "freeGrowingOffsetYears": 15,
+        "freeGrowingDueDate": "2013-06-01",
+        "noRegenIndicated": false,
+        "extentDeclared": false,
+        "comments": []
+      }
+    },
+    "preferredSpecies": [
+      {
+        "layer": "I",
+        "species": {
+          "code": "SW",
+          "description": "white spruce"
+        },
+        "minHeight": 0.8
+      },
+      {
+        "layer": "I",
+        "species": {
+          "code": "PLI",
+          "description": "lodgepole pine"
+        },
+        "minHeight": 1.4
+      }
+    ],
+    "acceptableSpecies": [],
+    "layers": [
+      {
+        "layer": {
+          "code": "I",
+          "description": "Inventory Layer"
+        },
+        "minWellspacedTrees": 200,
+        "minPreferredWellspacedTrees": 200,
+        "minHorizontalDistanceWellspacedTrees": 1,
+        "targetWellspacedTrees": 400,
+        "minResidualBasalArea": null,
+        "minPostspacingDensity": null,
+        "maxPostspacingDensity": null,
+        "maxConiferous": null,
+        "heightRelativeToComp": 150
+      }
+    ],
+    "comments": []
+  }
+]

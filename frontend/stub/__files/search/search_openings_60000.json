@@ -1,0 +1,44 @@
+{
+  "content": [
+    {
+      "openingId": 60000,
+      "openingNumber": "  73",
+      "category": {
+        "code": "FTML",
+        "description": "Forest Tenure - Major Licensee"
+      },
+      "status": {
+        "code": "FG",
+        "description": "Free Growing"
+      },
+      "cuttingPermitId": "145",
+      "timberMark": "FA9145",
+      "cutBlockId": "1",
+      "openingGrossAreaHa": 47.6,
+      "disturbanceStartDate": "1998-06-01",
+      "orgUnitCode": "TWO",
+      "orgUnitName": "Design Unit",
+      "clientNumber": "00010006",
+      "clientLocation": "00",
+      "clientAcronym": "",
+      "clientName": "",
+      "regenDelayDate": "2005-06-01",
+      "earlyFreeGrowingDate": null,
+      "lateFreeGrowingDate": null,
+      "updateTimestamp": "2012-04-16T08:37:33",
+      "entryUserId": "MLSIS",
+      "submittedToFrpa": false,
+      "forestFileId": "A13840",
+      "silvaReliefAppId": 0,
+      "lastViewDate": null,
+      "favourite": false,
+      "valid": true
+    }
+  ],
+  "page": {
+    "size": 20,
+    "number": 0,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}
