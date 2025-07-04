@@ -575,18 +575,20 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             .getResponse()
             .getContentAsString();
 
-    // Extract the first GUID from the response
+    // Extract values from metadata response
     String guid = JsonPath.read(json, "$[0].attachmentGuid");
+    String filename = JsonPath.read(json, "$[0].attachmentName");
+    String mimeType = JsonPath.read(json, "$[0].mimeTypeCode");
 
-    // Use that GUID to call the file download endpoint
+    // Use the GUID to fetch the actual file and verify headers based on metadata
     mockMvc
         .perform(
             get("/api/openings/" + openingId + "/attachments/" + guid)
                 .accept(MediaType.APPLICATION_OCTET_STREAM))
         .andExpect(status().isOk())
         .andExpect(
-            header().string("Content-Disposition", "attachment; filename=\"Permit_Document.pdf\""))
-        .andExpect(header().string("Content-Type", "application/pdf"))
+            header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
+        .andExpect(header().string("Content-Type", mimeType))
         .andExpect(content().bytes("dummy content".getBytes(StandardCharsets.UTF_8)));
   }
 
