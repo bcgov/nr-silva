@@ -48,7 +48,7 @@ on:
     outputs:
       run_tests:
         description: Run Cypress tests if the core apps have changed (excludes sync)
-        value: ${{ jobs.init.outputs.deploy_core }}
+        value: ${{ jobs.init.outputs.run_tests }}
 
 permissions: {}
 
@@ -59,6 +59,7 @@ jobs:
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
       route: ${{ steps.route.outputs.route }}
+      run_tests: ${{ steps.deploy.outputs.triggered }}
     runs-on: ubuntu-24.04
     steps:
       - name: FAM routing
@@ -81,6 +82,7 @@ jobs:
           fi
 
       - name: OpenShift Init
+        id: deploy
         uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
@@ -140,10 +142,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }}
-            ${{ matrix.parameters }}
+          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }} ${{ matrix.parameters }}
           timeout: 15m
           triggers: ${{ inputs.triggers }}
-          verification_path: ${{ matrix.verification_path }}
-          verification_retry_attempts: 5
-          verification_retry_seconds: 20
