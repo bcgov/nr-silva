@@ -24,9 +24,9 @@ class JwtPrincipalUtilTest {
 
   @ParameterizedTest(name = "For custom:idp_name {0} → JwtAuthenticationToken: {1}, Jwt: {2}")
   @CsvSource({
-    "ca.bc.gov.flnr.fam.dev, BCSC, ca.bc.gov.flnr.fam.dev",
-    "idir, IDIR, idir",
-    "bceidbusiness, BCEIDBUSINESS, bceidbusiness",
+    "ca.bc.gov.flnr.fam.dev, BCSC, BCSC",
+    "idir, IDIR, IDIR",
+    "bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
     "'', '', ''"
   })
   @DisplayName("get provider")

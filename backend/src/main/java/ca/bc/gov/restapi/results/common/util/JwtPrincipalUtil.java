@@ -50,8 +50,7 @@ public class JwtPrincipalUtil {
    *     string
    */
   public static String getProvider(Jwt principal) {
-    Object rawProvider = principal.getClaims().get("custom:idp_name");
-    return (rawProvider instanceof String string) ? string : "";
+    return getProviderValue(principal.getClaims());
   }
 
   /**
