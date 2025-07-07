@@ -10,27 +10,30 @@ export const publicRoutes: RouteObject[] = [
     path: '*',
     element: <Landing />
   }
-];
+] as const;
 
+const protectedRouteList: RouteObject[] = [
+  {
+    path: "/",
+    element: <Navigate to={DashboardRoute.path!} replace /> // Redirect `/` to `/dashboard` for logged-in users
+  },
+  DashboardRoute,
+  SilvicultureSearchRoute,
+  OpeningsRoute,
+  OpeningDetailsRoute
+] as const;
+
+export const validPaths = protectedRouteList.map((route) => route.path).filter((path): path is string => typeof path === "string");
 
 export const protectedRoutes: RouteObject[] = [
   {
     element: <ProtectedRoute />,
     errorElement: <ErrorHandling />, // Global error element for protected routes
-    children: [
-      {
-        path: "/",
-        element: <Navigate to={DashboardRoute.path!} replace /> // Redirect `/` to `/dashboard` for logged-in users
-      },
-      DashboardRoute,
-      SilvicultureSearchRoute,
-      OpeningsRoute,
-      OpeningDetailsRoute
-    ]
+    children: protectedRouteList
   },
   // Catch-all route for unmatched paths
   {
     path: "*",
     element: <ErrorHandling />
   }
-];
+] as const;
