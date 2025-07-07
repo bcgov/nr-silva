@@ -9,10 +9,6 @@ vi.mock("../../contexts/AuthProvider", () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock("lottie-react", () => ({
-  useLottie: vi.fn(),
-}));
-
 vi.mock("@carbon/react", () => ({
   Button: ({ onClick, children, ...props }) => (
     <button onClick={onClick} {...props}>
@@ -53,23 +49,23 @@ describe("Landing", () => {
     expect(getByAltText("Landing cover")).toBeInTheDocument();
   });
 
-  it('should call login with "idir" when Login with IDIR button is clicked', () => {
+  it('should call login with "IDIR" when Login with IDIR button is clicked', () => {
     const mockLogin = vi.fn();
     (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
 
     const { getByTestId } = render(<Landing />);
 
     fireEvent.click(getByTestId("landing-button__idir"));
-    expect(mockLogin).toHaveBeenCalledWith("idir");
+    expect(mockLogin).toHaveBeenCalledWith("IDIR");
   });
 
-  it('should call login with "bceid" when Login with Business BCeID button is clicked', () => {
+  it('should call login with "BCEIDBUSINESS" when Login with Business BCeID button is clicked', () => {
     const mockLogin = vi.fn();
     (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
 
     const { getByTestId } = render(<Landing />);
 
     fireEvent.click(getByTestId("landing-button__bceid"));
-    expect(mockLogin).toHaveBeenCalledWith("bceid");
+    expect(mockLogin).toHaveBeenCalledWith("BCEIDBUSINESS");
   });
 });

@@ -13,18 +13,18 @@ import {
 } from "aws-amplify/auth";
 import {
   parseToken,
-  FamLoginUser,
   setAuthIdToken
 } from "@/services/AuthService";
 import { env } from "../env";
-import { JWT, ProviderType } from "@/types/amplify";
+import { JWT } from "@/types/amplify";
+import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
   user: FamLoginUser | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (provider: ProviderType) => void;
+  login: (provider: IdpProviderType) => void;
   logout: () => void;
 }
 
@@ -69,9 +69,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const login = async (provider: ProviderType) => {
+  const login = async (provider: IdpProviderType) => {
     const envProvider =
-      provider.localeCompare("idir") === 0
+      provider === 'IDIR'
         ? `${appEnv.toLocaleUpperCase()}-IDIR`
         : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
 

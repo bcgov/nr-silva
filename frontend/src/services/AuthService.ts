@@ -1,24 +1,9 @@
-import { JWT } from '../types/amplify';
-import { extractGroups, parsePrivileges } from '../utils/famUtils';
-import { USER_PRIVILEGE_TYPE } from '../types/AuthTypes';
-
+import { JWT } from '@/types/amplify';
+import { FamLoginUser, IdpProviderType, validIdpProviders } from '@/types/AuthTypes';
+import { extractGroups, parsePrivileges } from '@/utils/famUtils';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
-
-export interface FamLoginUser {
-  providerUsername?: string;
-  userName?: string;
-  displayName?: string;
-  email?: string;
-  idpProvider?: string;
-  roles?: string[];
-  authToken?: string;
-  exp?: number;
-  privileges: USER_PRIVILEGE_TYPE;
-  firstName?: string;
-  lastName?: string;
-}
 
 // Function to set the authIdToken variable
 export const setAuthIdToken = (token: string | null) => {
@@ -30,7 +15,6 @@ export const getAuthIdToken = () => {
   return authIdToken;
 };
 
-
 /**
  * Function to parse roles and extract client IDs
  */
@@ -40,7 +24,17 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
   const decodedIdToken = idToken?.payload;
 
   const displayName = decodedIdToken?.['custom:idp_display_name'] as string || '';
-  const idpProvider = (decodedIdToken?.['custom:idp_name'] as string || '').toUpperCase();
+
+  /**
+   * Normalizes and validates IDP provider from token.
+   * Returns valid provider or undefined.
+   */
+  const idpProvider = validIdpProviders.includes(
+    (decodedIdToken?.['custom:idp_name'] as string)?.toUpperCase() as IdpProviderType
+  )
+    ? ((decodedIdToken?.['custom:idp_name'] as string).toUpperCase() as IdpProviderType)
+    : undefined;
+
   const hasComma = displayName.includes(',');
 
   let [lastName, firstName] = hasComma

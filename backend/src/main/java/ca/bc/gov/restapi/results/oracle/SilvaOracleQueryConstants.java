@@ -850,4 +850,28 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN SILV_DAMAGE_AGENT_CODE sdac ON sdac.SILV_DAMAGE_AGENT_CODE = fr.SILV_DAMAGE_AGENT_CODE
       WHERE
       	fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId""";
+
+  public static final String GET_OPENING_ATTACHMENT_LIST = """
+          SELECT
+            OPENING_ATTACHMENT_FILE_ID AS openingAttachmentFileId,
+            OPENING_ID AS openingId,
+            ATTACHMENT_NAME AS attachmentName,
+            ATTACHMENT_DESCRIPTION AS attachmentDescription,
+            MIME_TYPE_CODE AS mimeTypeCode,
+            ENTRY_USERID AS entryUserId,
+            ENTRY_TIMESTAMP AS entryTimestamp,
+            UPDATE_USERID AS updateUserId,
+            UPDATE_TIMESTAMP AS updateTimestamp,
+            REVISION_COUNT AS revisionCount,
+            LOWER(
+              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 1, 8) || '-' ||
+              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 9, 4) || '-' ||
+              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 13, 4) || '-' ||
+              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 17, 4) || '-' ||
+              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 21)
+            ) AS attachmentGuid,
+            DBMS_LOB.GETLENGTH(ATTACHMENT_DATA) AS attachmentSize
+          FROM THE.OPENING_ATTACHMENT
+          WHERE OPENING_ID = :openingId
+          """;
 }
