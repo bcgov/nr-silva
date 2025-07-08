@@ -850,4 +850,42 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN SILV_DAMAGE_AGENT_CODE sdac ON sdac.SILV_DAMAGE_AGENT_CODE = fr.SILV_DAMAGE_AGENT_CODE
       WHERE
       	fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId""";
+
+  public static final String GET_OPENING_HISTORY_AUDIT_LIST = """
+      SELECT
+        rae.OPENING_ID AS opening_id,
+        rae.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
+        rae.STANDARDS_REGIME_ID AS regime_id,
+        rae.SILVICULTURE_PROJECT_ID AS project_id,
+        rae.RESULTS_AUDIT_ACTION_CODE AS action_code,
+        TO_CHAR(rae.ACTION_DATE, 'YYYY-MM-DD HH24:MI:SS') AS action_timestamp,
+        rae.DESCRIPTION AS description,
+        rae.USER_ID AS user_id,
+        CASE
+            WHEN rae.EMAIL_SENT_IND = 'Y' THEN 'true'
+            ELSE 'false'
+        END AS is_email_sent,
+        rae.XML_SUBMISSION_ID AS xml_submission_id,
+        rae.OPENING_AMENDMENT_NUMBER AS opening_amendment_number,
+        rae.ENTRY_USERID AS entry_user_id,
+        TO_CHAR(rae.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
+      FROM RESULTS_AUDIT_EVENT rae
+      WHERE rae.OPENING_ID = :openingId;
+      """;
+
+  public static final String GET_OPENING_HISTORY_AUDIT_DETAIL_LIST = """
+      SELECT
+        rad.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
+        rad.RESULTS_AUDIT_DETAIL_ID AS audit_detail_id,
+        rad.BUSINESS_IDENTIFIER AS business_identifier,
+        rad.TABLE_NAME AS table_name,
+        rad.COLUMN_NAME AS column_name,
+        rad.OLD_VALUE AS old_value,
+        rad.NEW_VALUE AS new_value,
+        rad.ENTRY_USERID AS entry_user_id,
+        TO_CHAR(rad.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
+      FROM RESULTS_AUDIT_DETAIL rad
+      WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId;
+      """;
+
 }
