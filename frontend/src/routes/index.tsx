@@ -23,7 +23,9 @@ const protectedRouteList: RouteObject[] = [
   OpeningDetailsRoute
 ] as const;
 
-export const validPaths = protectedRouteList.map((route) => route.path).filter((path): path is string => typeof path === "string");
+export const validPaths = protectedRouteList
+  .map((route) => route?.path)
+  .filter((path): path is string => typeof path === "string");
 
 export const protectedRoutes: RouteObject[] = [
   {
