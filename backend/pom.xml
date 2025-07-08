@@ -50,7 +50,7 @@
     <oracle-database.version>23.8.0.25.04</oracle-database.version>
     <tomcat.version>10.1.42</tomcat.version>
     <postgresql.version>42.7.7</postgresql.version>
-    <nimbus-jose-jwt.version>10.3</nimbus-jose-jwt.version>
+    <nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
     <spring-web.version>6.2.8</spring-web.version>
   </properties>
 
