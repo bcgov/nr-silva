@@ -60,7 +60,7 @@ const openingA: OpeningSearchResponseDto = {
   entryUserId: "IDIR\\MYDUDE",
   submittedToFrpa: false,
   forestFileId: null,
-  silvaReliefAppId: "0",
+  silvaReliefAppId: 0,
   favourite: false,
   clientName: "",
   earlyFreeGrowingDate: null,

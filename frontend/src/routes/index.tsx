@@ -15,7 +15,7 @@ export const publicRoutes: RouteObject[] = [
 const protectedRouteList: RouteObject[] = [
   {
     path: "/",
-    element: <Navigate to={DashboardRoute.path!} replace /> // Redirect `/` to `/dashboard` for logged-in users
+    element: <Navigate to={DashboardRoute?.path ?? "/dashboard"} replace /> // Redirect `/` to `/dashboard` for logged-in users
   },
   DashboardRoute,
   SilvicultureSearchRoute,
