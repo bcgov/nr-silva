@@ -32,3 +32,5 @@ export enum UNIQUE_CHARACTERS_UNICODE {
 };
 
 export const NOT_APPLICABLE = "N/A" as const;
+
+export const REDIRECT_KEY = "postLoginRedirect" as const;

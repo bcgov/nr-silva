@@ -15,9 +15,10 @@ import {
   parseToken,
   setAuthIdToken
 } from "@/services/AuthService";
-import { env } from "../env";
+import { env } from "@/env";
 import { JWT } from "@/types/amplify";
 import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
+import { REDIRECT_KEY } from "@/constants";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -74,6 +75,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider === 'IDIR'
         ? `${appEnv.toLocaleUpperCase()}-IDIR`
         : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
+
+    // Store current path to redirect after login
+    const currentPath = window.location.pathname + window.location.search;
+    if (currentPath && currentPath !== "/") {
+      localStorage.setItem(REDIRECT_KEY, currentPath);
+    }
 
     signInWithRedirect({
       provider: { custom: envProvider.toUpperCase() }
