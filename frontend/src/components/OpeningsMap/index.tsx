@@ -95,7 +95,11 @@ const OpeningsMap: React.FC<MapProps> = ({
         setOpeningPolygonNotFound(true, errorIds[0] ?? null);
       }
     }
-  }, [mapQueries.map((query) => query.status).join(","), kind, openingIds]);
+  }, [
+    mapQueries.map((query) => query.status).join(","),
+    kind?.join(","),
+    openingIds?.join(","),
+  ]);
 
   /**
    * This effect is used to get the user's location when the component mounts.
