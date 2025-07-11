@@ -888,4 +888,26 @@ public class SilvaOracleQueryConstants {
       WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId;
       """;
 
+  public static String GET_OPENING_STANDARD_UNIT_HISTORY_LIST = """
+      SELECT
+        ssua.STOCKING_EVENT_HISTORY_ID,
+        MAX(seh.OPENING_AMENDMENT_NUMBER) AS amendment_number,
+        TO_CHAR(MAX(seh.AMEND_EVENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS') AS amend_timestamp,
+        COUNT(ssua.STOCKING_EVENT_HISTORY_ID) AS su_count,
+        SUM(ssua.NET_AREA) AS total_nar,
+        MAX(seh.RESULTS_AUDIT_ACTION_CODE) AS audit_action_code,
+        MAX(seh.RESULTS_SUBMISSION_ID) AS esf_submission_id,
+        MAX(seh.ENTRY_USERID) AS submitted_by_user_id,
+        MAX(oah.APP_ENT_BY_USERID) AS approved_by_user_id
+      FROM STOCKING_EVENT_HISTORY seh
+      LEFT JOIN STOCKING_STANDARD_UNIT_ARCHIVE ssua
+        ON ssua.STOCKING_EVENT_HISTORY_ID = seh.STOCKING_EVENT_HISTORY_ID
+      LEFT JOIN OPENING_AMENDMENT_HISTORY oah
+        ON seh.OPENING_ID = oah.OPENING_ID
+        AND seh.OPENING_AMENDMENT_NUMBER = oah.OPENING_AMENDMENT_NUMBER
+      WHERE seh.OPENING_ID = :openingId
+      GROUP BY ssua.STOCKING_EVENT_HISTORY_ID
+      ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC;
+      """;
+
 }
