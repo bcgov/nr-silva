@@ -20,6 +20,7 @@ import ThemeToggle from "../ThemeToggle";
 import MyProfile from "../MyProfile";
 import { LeftMenuItem, mainActivitiesItems } from "./constants";
 import "./BCHeaderwSide.scss";
+import UserButton from "./UserButton";
 
 /**
  * Renders an BC Headerw Side component.
@@ -131,8 +132,8 @@ function BCHeaderwSide(): React.JSX.Element {
           <Link to="/" className="header-link" data-testid="header-name">
             Silva
           </Link>
-          <HeaderGlobalBar className="silva-header-bar align-items-center w-100">
-            <div className="mx-2">
+          <HeaderGlobalBar className="silva-header-bar align-items-center">
+            <div >
               <ThemeToggle />
             </div>
             <HeaderGlobalAction
@@ -143,7 +144,7 @@ function BCHeaderwSide(): React.JSX.Element {
               isActive={myProfile}
               className="profile-action-button"
             >
-              <Icons.UserAvatar className="profile-icon" size={20} />
+              <UserButton />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
           <HeaderPanel

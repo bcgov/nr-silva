@@ -59,24 +59,21 @@
     overflow-y: scroll;
   }
 
-  .overlay-element {
-    position: fixed;
-    top: 3rem;
-    left: 0;
-    width: 0;
-    height: 0;
-    background-color: transparent;
-    opacity: 0;
-    transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
+  .profile-action-button {
+    width: fit-content;
+    max-width: none;
+    color: colors.$white;
+    padding: 0.75rem;
+    margin: 0 0.5rem;
   }
 
-  .overlay-element.active {
-    z-index: 9000;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--#{vars.$bcgov-prefix}-overlay);
-    opacity: 1;
-    transition: opacity 300ms cubic-bezier(0.5, 0, 0.1, 1), background-color 300ms cubic-bezier(0.5, 0, 0.1, 1);
+  .#{vars.$bcgov-prefix}--header__action--active {
+    background: var(--#{vars.$bcgov-prefix}-layer-02);
+    border: 0;
+
+    .client-name {
+      color: var(--#{vars.$bcgov-prefix}-text-primary, colors.$gray-100);
+    }
   }
 
   /* This rule is specific for the right panel only, it should fill the whole viewport
@@ -101,16 +98,26 @@
       fill: var(--#{vars.$bcgov-prefix}-link-primary);
     }
   }
+}
 
-  .silva-header-bar {
-    .profile-action-button {
-      .profile-icon {
-        fill: var(--#{vars.$bcgov-prefix}-icon-on-color);
-      }
+.user-header-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-      &.#{vars.$bcgov-prefix}--header__action--active .profile-icon {
-        fill: var(--#{vars.$bcgov-prefix}-icon-primary);
-      }
+  .avatar-and-org-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .client-name {
+      max-width: 20vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      @include type.type-style('body-compact-01');
+      // color: var(--#{vars.$bcgov-prefix}-text-primary);
+      margin: 0 0.5rem;
     }
   }
 }

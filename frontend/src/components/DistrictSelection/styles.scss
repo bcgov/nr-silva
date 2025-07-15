@@ -87,8 +87,7 @@
 
   .selected-district {
     border: 2px solid var(--#{vars.$bcgov-prefix}-border-interactive);
-    background-color: #E0EFFF;
-
+    background-color: var(--#{vars.$bcgov-prefix}-tag-background-blue);
   }
 
 

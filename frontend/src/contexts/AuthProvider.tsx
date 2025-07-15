@@ -56,7 +56,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const idToken = await loadUserToken();
       if (idToken) {
-        setUser(parseToken(idToken));
+        const parsedUser = parseToken(idToken);
+        setUser(parsedUser);
+        if (parsedUser?.associatedClients.length === 1) {
+          setSelectedClient(parsedUser.associatedClients[0])
+        }
       } else {
         setUser(undefined);
       }
