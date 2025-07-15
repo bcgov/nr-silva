@@ -3,7 +3,7 @@ import { Button, Column, Grid, Search, SkeletonPlaceholder } from "@carbon/react
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-
+import { SELECTED_CLIENT_KEY } from "@/constants";
 import { filterClientByKeyword } from "./util";
 import DistrictItem from "./DistrictItem";
 import { ArrowRight } from "@carbon/icons-react";
@@ -26,8 +26,13 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
     enabled: !!user?.associatedClients.length
   });
 
+  const storeClient = (clientNumber: string) => {
+    localStorage.setItem(SELECTED_CLIENT_KEY, clientNumber)
+  }
+
   const handleListItemSelect = (clientNumber: string) => {
     if (simpleView) {
+      storeClient(clientNumber);
       setSelectedClient(clientNumber);
     }
     setPreSelectedClient(clientNumber);
@@ -35,6 +40,7 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
 
   const handleContinue = () => {
     if (preSelectedClient) {
+      storeClient(preSelectedClient);
       setSelectedClient(preSelectedClient);
     }
   }

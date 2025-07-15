@@ -229,7 +229,7 @@ const OpeningDetails = () => {
                     </Suspense>
                   ) : null}
                 </TabPanel>
-                : <div>nice try bro</div>
+                : null
             }
           </TabPanels>
         </Tabs>

@@ -116,7 +116,6 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       @include type.type-style('body-compact-01');
-      // color: var(--#{vars.$bcgov-prefix}-text-primary);
       margin: 0 0.5rem;
     }
   }

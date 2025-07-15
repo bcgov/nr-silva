@@ -1,15 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import { ChevronDown } from '@carbon/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/contexts/AuthProvider';
+import useBreakpoint from '@/hooks/UseBreakpoint';
+import API from '@/services/API';
+import Avatar from '@/components/Avatar';
 
-import Avatar from '../Avatar';
-
-import { useAuth } from '../../contexts/AuthProvider';
-import useBreakpoint from '../../hooks/UseBreakpoint';
-import API from '../../services/API';
 
 const UserButton = () => {
-
   const { user, selectedClient } = useAuth();
   const breakpoint = useBreakpoint();
 

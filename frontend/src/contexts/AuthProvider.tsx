@@ -18,7 +18,7 @@ import {
 import { env } from "@/env";
 import { JWT } from "@/types/amplify";
 import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
-import { REDIRECT_KEY } from "@/constants";
+import { REDIRECT_KEY, SELECTED_CLIENT_KEY } from "@/constants";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -57,10 +57,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const idToken = await loadUserToken();
       if (idToken) {
         const parsedUser = parseToken(idToken);
-        setUser(parsedUser);
-        if (parsedUser?.associatedClients.length === 1) {
-          setSelectedClient(parsedUser.associatedClients[0])
+        const storedClientId = localStorage.getItem(SELECTED_CLIENT_KEY);
+
+        // Attempt to restore previously selected client
+        if (storedClientId) {
+          // If stored client is still valid, restore it
+          if (parsedUser?.associatedClients.includes(storedClientId)) {
+            setSelectedClient(storedClientId);
+          } else {
+            // Remove invalid stored client ID
+            localStorage.removeItem(SELECTED_CLIENT_KEY);
+          }
         }
+        // If no stored client, auto-select if user has exactly one client
+        else if (parsedUser?.associatedClients.length === 1) {
+          setSelectedClient(parsedUser.associatedClients[0]);
+        }
+
+        setUser(parsedUser);
       } else {
         setUser(undefined);
       }
