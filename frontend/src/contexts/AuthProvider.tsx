@@ -27,6 +27,8 @@ interface AuthContextType {
   isLoading: boolean;
   login: (provider: IdpProviderType) => void;
   logout: () => void;
+  setSelectedClient: React.Dispatch<React.SetStateAction<string | undefined>>
+  selectedClient?: string;
 }
 
 // 2. Define an interface for the provider's props
@@ -41,6 +43,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedClient, setSelectedClient] = useState<string | undefined>();
 
   /**
    * Resolves the application environment.
@@ -98,9 +101,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoggedIn: !!user,
       isLoading,
       login,
-      logout
+      logout,
+      selectedClient,
+      setSelectedClient
     }),
-    [user, isLoading]
+    [user, isLoading, selectedClient]
   );
 
   return (
