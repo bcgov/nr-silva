@@ -27,9 +27,9 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   await page.goto(baseURL);
 
   // By passing the district selection screen by pre selecting a client.
-  await page.evaluate(() => {
-    localStorage.setItem(SELECTED_CLIENT_KEY, '00012797');
-  });
+  await page.evaluate(({ key, value }) => {
+    localStorage.setItem(key, value);
+  }, { key: SELECTED_CLIENT_KEY, value: '00012797' });
 
   await page.click('[data-testid="landing-button__bceid"]');
   await page.waitForSelector('#user');
