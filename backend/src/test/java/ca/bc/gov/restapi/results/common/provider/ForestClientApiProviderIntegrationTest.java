@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -153,6 +154,60 @@ class ForestClientApiProviderIntegrationTest {
     var locations = forestClientApiProvider.fetchLocationsByClientNumber("00012797");
 
     Assertions.assertEquals(2, locations.size());
+  }
+
+  @Test
+  @DisplayName("Search clients by IDs happy path should succeed")
+  void searchClientsByIds_happyPath_shouldSucceed() {
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/api/clients/search"))
+            .willReturn(
+                okJson(
+                    """
+                  [
+                    {
+                      "clientNumber": "00132184",
+                      "clientName": "Client A",
+                      "legalFirstName": "FirstA",
+                      "legalMiddleName": "MiddleA",
+                      "clientStatusCode": "ACT",
+                      "clientTypeCode": "F",
+                      "acronym": "A1"
+                    },
+                    {
+                      "clientNumber": "00012797",
+                      "clientName": "Client B",
+                      "legalFirstName": "FirstB",
+                      "legalMiddleName": "MiddleB",
+                      "clientStatusCode": "ACT",
+                      "clientTypeCode": "C",
+                      "acronym": "B1"
+                    }
+                  ]
+                  """)));
+
+    List<String> ids = List.of("00132184", "00012797");
+    var clients = forestClientApiProvider.searchClientsByIds(0, 10, ids);
+
+    Assertions.assertEquals(2, clients.size());
+
+    Assertions.assertEquals("00132184", clients.get(0).clientNumber());
+    Assertions.assertEquals("Client A", clients.get(0).clientName());
+
+    Assertions.assertEquals("00012797", clients.get(1).clientNumber());
+    Assertions.assertEquals("Client B", clients.get(1).clientName());
+  }
+
+  @Test
+  @DisplayName("Search clients by IDs service unavailable should return empty list")
+  void searchClientsByIds_serviceUnavailable_shouldReturnEmptyList() {
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/api/clients/search")).willReturn(serviceUnavailable()));
+
+    List<String> ids = List.of("00132184", "00012797");
+    var clients = forestClientApiProvider.searchClientsByIds(0, 10, ids);
+
+    Assertions.assertTrue(clients.isEmpty());
   }
 
   private static Stream<Arguments> searchByNameAcronymNumberOk() {

@@ -222,6 +222,52 @@ class ForestClientServiceTest {
     Assertions.assertEquals(2, locations.size());
   }
 
+  @Test
+  @DisplayName("Search clients by client numbers happy path should succeed")
+  void searchByClientNumbers_happyPath_shouldSucceed() {
+    List<String> clientNumbers = List.of("00123456", "00765432");
+
+    when(forestClientApiProvider.searchClientsByIds(0, 10, clientNumbers))
+        .thenReturn(
+            List.of(
+                new ForestClientDto(
+                    "00123456",
+                    "CLIENT A",
+                    "FirstA",
+                    "MiddleA",
+                    ForestClientStatusEnum.ACTIVE,
+                    ForestClientTypeEnum.ASSOCIATION,
+                    "A1",
+                    "CLIENT A"),
+                new ForestClientDto(
+                    "00765432",
+                    "CLIENT B",
+                    "FirstB",
+                    "MiddleB",
+                    ForestClientStatusEnum.ACTIVE,
+                    ForestClientTypeEnum.ASSOCIATION,
+                    "B1",
+                    "CLIENT B")));
+
+    var result = forestClientService.searchByClientNumbers(0, 10, clientNumbers);
+
+    Assertions.assertEquals(2, result.size());
+    Assertions.assertEquals("00123456", result.get(0).clientNumber());
+    Assertions.assertEquals("00765432", result.get(1).clientNumber());
+  }
+
+  @Test
+  @DisplayName("Search clients by client numbers returns empty when no matches found")
+  void searchByClientNumbers_noResult_shouldReturnEmptyList() {
+    List<String> clientNumbers = List.of("99999999", "88888888");
+
+    when(forestClientApiProvider.searchClientsByIds(0, 10, clientNumbers)).thenReturn(List.of());
+
+    var result = forestClientService.searchByClientNumbers(0, 10, clientNumbers);
+
+    Assertions.assertTrue(result.isEmpty());
+  }
+
   private static Stream<Arguments> searchByNameAcronymNumberOk() {
     return Stream.of(
         Arguments.of(1, "INDIA"),

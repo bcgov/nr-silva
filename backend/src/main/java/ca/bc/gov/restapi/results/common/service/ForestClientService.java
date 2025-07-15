@@ -79,6 +79,15 @@ public class ForestClientService {
         .toList();
   }
 
+  /**
+   * Retrieves the specific location details for a given client number and location code. This
+   * method also validates and fixes the client number format before querying.
+   *
+   * @param clientNumber The client number associated with the requested location.
+   * @param locationCode The specific location code within the client’s records.
+   * @return An {@link Optional} containing {@link ForestClientLocationDto} if found; otherwise, an
+   *     empty {@link Optional}.
+   */
   public Optional<ForestClientLocationDto> getClientLocation(
       String clientNumber, String locationCode) {
     String fixedNumber = checkClientNumber(clientNumber);
@@ -91,6 +100,15 @@ public class ForestClientService {
         fixedNumber, locationCode);
   }
 
+  /**
+   * Searches for multiple forest clients by their client numbers using paginated requests.
+   *
+   * @param page The page index for pagination (starting from 0).
+   * @param size The number of records per page.
+   * @param clientNumbers A list of client numbers to search for.
+   * @return A {@link List} of {@link ForestClientDto} representing the matching clients, or an
+   *     empty list if none found.
+   */
   public List<ForestClientDto> searchByClientNumbers(
       int page, int size, List<String> clientNumbers) {
     log.info("Searching forest client by ids {}, page: {}, size: {}", clientNumbers, page, size);

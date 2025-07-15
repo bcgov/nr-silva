@@ -62,6 +62,14 @@ public class ForestClientEndpoint {
     return forestClientService.getClientLocations(clientNumber);
   }
 
+  /**
+   * Search for multiple ForestClients by a list of client numbers.
+   *
+   * @param page The page number for pagination (optional, defaults to 0).
+   * @param size The number of records per page (optional, defaults to 10).
+   * @param clientNumbers List of client numbers to search for (required).
+   * @return List of {@link ForestClientDto} objects matching the given client numbers.
+   */
   @GetMapping("/search")
   public List<ForestClientDto> searchByClientNumbers(
       @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
