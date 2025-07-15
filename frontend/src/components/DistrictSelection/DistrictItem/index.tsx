@@ -1,11 +1,8 @@
 import React from 'react';
-import { AxiosError } from 'axios';
-import { Row, Column, ButtonSkeleton } from '@carbon/react';
+import { ButtonSkeleton } from '@carbon/react';
 import * as Icons from '@carbon/icons-react';
-
+import { ForestClientDto } from '@/services/OpenApi';
 import { ClientTypeIconMap } from '../constants';
-
-import { ForestClientDto } from '../../../services/OpenApi';
 
 type DistrictItemProps = {
   client: ForestClientDto,

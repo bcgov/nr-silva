@@ -18,9 +18,10 @@ import * as Icons from "@carbon/icons-react";
 import RightPanelTitle from "../RightPanelTitle";
 import ThemeToggle from "../ThemeToggle";
 import MyProfile from "../MyProfile";
-import { LeftMenuItem, mainActivitiesItems } from "./constants";
-import "./BCHeaderwSide.scss";
 import UserButton from "./UserButton";
+import { LeftMenuItem, mainActivitiesItems } from "./constants";
+
+import "./styles.scss";
 
 /**
  * Renders an BC Headerw Side component.

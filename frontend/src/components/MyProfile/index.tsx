@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { SideNavLink } from '@carbon/react';
 import { Asleep, Light, UserFollow } from '@carbon/icons-react';
-import { useThemePreference } from '../../utils/ThemePreference';
-import PanelSectionName from '../PanelSectionName';
-import './MyProfile.scss';
-import { useAuth } from '../../contexts/AuthProvider';
-import DistrictSelection from '../DistrictSelection';
-import Avatar from '../Avatar';
+import { useThemePreference } from '@/utils/ThemePreference';
+import PanelSectionName from '@/components/PanelSectionName';
+import DistrictSelection from '@/components/DistrictSelection';
+import Avatar from '@/components/Avatar';
+import { useAuth } from '@/contexts/AuthProvider';
+
+import './styles.scss';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();

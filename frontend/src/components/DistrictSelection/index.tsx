@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { SELECTED_CLIENT_KEY } from "@/constants";
-import { filterClientByKeyword } from "./util";
+import { filterClientByKeyword } from "./utils";
 import DistrictItem from "./DistrictItem";
 import { ArrowRight } from "@carbon/icons-react";
 import { MIN_CLIENTS_SHOW_SEARCH } from "./constants";
