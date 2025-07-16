@@ -35,11 +35,15 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   await page.waitForSelector('#user');
   await page.fill('#user', bceidUser);
   await page.fill('#password', bceidPassword);
+  console.log('Before submit ', page.url());
   await page.click('input[name="btnSubmit"]');
 
   await page.waitForURL('**/dashboard');
-  console.log(page.url());
-  console.log(page.content());
+
+  console.log('After submit ', page.url());
+
+  console.log(await page.content());
+
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   const authFile = path.join(__dirname, `./user.${browserTypeName}.json`);
