@@ -10,9 +10,8 @@ import RecentOpenings from "@/components/RecentOpenings";
 import OpeningSubmissionTrend from "@/components/OpeningSubmissionTrend";
 import FavouriteOpenings from "@/components/FavouriteOpenings";
 import { REDIRECT_KEY } from "@/constants";
-import { validPaths } from "@/routes";
-
 import { FavouriteCardsConfig } from "./constants";
+import { isValidRedirect } from "./utils";
 import './styles.scss'
 
 const Dashboard: React.FC = () => {
@@ -23,21 +22,13 @@ const Dashboard: React.FC = () => {
     const path = localStorage.getItem(REDIRECT_KEY);
     localStorage.removeItem(REDIRECT_KEY);
 
-    /**
-     * Checks if a given path is a valid in-app redirect target.
-     * Allows exact matches or paths that extend from known base routes.
-     */
-    const isValidRedirect = (pathToCheck: string | null): pathToCheck is string =>
-      !!pathToCheck &&
-      validPaths.some((valid) =>
-        pathToCheck === valid || pathToCheck.startsWith(valid + '/') || pathToCheck.startsWith(valid + '?')
-      );
-
-    if (isValidRedirect(path)) {
+    if (path && isValidRedirect(path)) {
+      // Redirect if a valid path was stored
       navigate(path, { replace: true });
-    } else {
-      setWillRedirect(false);
     }
+
+    // Mark redirect process complete (whether redirect happened or not)
+    setWillRedirect(false);
   }, []);
 
   if (willRedirect) {
