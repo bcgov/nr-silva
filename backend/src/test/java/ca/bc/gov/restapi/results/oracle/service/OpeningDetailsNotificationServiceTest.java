@@ -51,24 +51,33 @@ public class OpeningDetailsNotificationServiceTest {
         when(projection3.getSilvMilestoneTypeCode()).thenReturn("RG");
         when(projection3.getStandardsUnitId()).thenReturn("C");
 
+        OpeningStockingNotificationProjection projection4 = mock(OpeningStockingNotificationProjection.class);
+        when(projection4.getNotificationType()).thenReturn(OpeningDetailsNotificationStatusEnum.WARNING.toString());
+        when(projection4.getSilvMilestoneTypeCode()).thenReturn("RG");
+        when(projection4.getStandardsUnitId()).thenReturn("D");
+
         when(openingRepository.getOpeningStockingNotificationsByOpeningId(openingId))
-                .thenReturn(List.of(projection1, projection2, projection3));
+                .thenReturn(List.of(projection1, projection2, projection4, projection3));
 
         List<OpeningDetailsNotificationDto> result = openingDetailsNotificationService.getNotifications(openingId);
 
-        Assertions.assertEquals(3, result.size());
+        Assertions.assertEquals(4, result.size());
 
         Assertions.assertEquals("Free Growing milestone is overdue for standard unit \"A\"", result.get(0).title());
         Assertions.assertEquals("Please contact your ministry representative as soon as possible!", result.get(0).description());
         Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.ERROR, result.get(0).status());
 
-        Assertions.assertEquals("Upcoming milestone detected for standard unit \"B\"", result.get(1).title());
-        Assertions.assertEquals("Monitor progress closely to declare your Free Growing in time!", result.get(1).description());
+        Assertions.assertEquals("Upcoming Regeneration milestone detected for standard unit \"D\"", result.get(1).title());
+        Assertions.assertEquals("Monitor progress closely to update your forest cover!", result.get(1).description());
         Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.WARNING, result.get(1).status());
 
-        Assertions.assertEquals("Regeneration milestone reminder for standard unit \"C\"", result.get(2).title());
-        Assertions.assertEquals("Please update your forest cover.", result.get(2).description());
-        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.INFO, result.get(2).status());
+        Assertions.assertEquals("Upcoming milestone detected for standard unit \"B\"", result.get(2).title());
+        Assertions.assertEquals("Monitor progress closely to declare your Free Growing in time!", result.get(2).description());
+        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.WARNING, result.get(2).status());
+
+        Assertions.assertEquals("Regeneration milestone reminder for standard unit \"C\"", result.get(3).title());
+        Assertions.assertEquals("Please update your forest cover.", result.get(3).description());
+        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.INFO, result.get(3).status());
     }
 
     @Test
@@ -85,6 +94,16 @@ public class OpeningDetailsNotificationServiceTest {
         when(warningProjection2.getNotificationType()).thenReturn("WARNING");
         when(warningProjection2.getSilvMilestoneTypeCode()).thenReturn("FG");
         when(warningProjection2.getStandardsUnitId()).thenReturn("C");
+
+        OpeningStockingNotificationProjection warningProjection1Regen = mock(OpeningStockingNotificationProjection.class);
+        when(warningProjection1Regen.getNotificationType()).thenReturn("WARNING");
+        when(warningProjection1Regen.getSilvMilestoneTypeCode()).thenReturn("RG");
+        when(warningProjection1Regen.getStandardsUnitId()).thenReturn("H");
+
+        OpeningStockingNotificationProjection warningProjection2Regen = mock(OpeningStockingNotificationProjection.class);
+        when(warningProjection2Regen.getNotificationType()).thenReturn("WARNING");
+        when(warningProjection2Regen.getSilvMilestoneTypeCode()).thenReturn("RG");
+        when(warningProjection2Regen.getStandardsUnitId()).thenReturn("I");
 
         OpeningStockingNotificationProjection errorProjection1 = mock(OpeningStockingNotificationProjection.class);
         when(errorProjection1.getNotificationType()).thenReturn("ERROR");
@@ -107,23 +126,36 @@ public class OpeningDetailsNotificationServiceTest {
         when(infoProjection2.getStandardsUnitId()).thenReturn("F");
 
         when(openingRepository.getOpeningStockingNotificationsByOpeningId(openingId))
-                .thenReturn(List.of(warningProjection1, warningProjection2, errorProjection1, errorProjection2, infoProjection1, infoProjection2));
+                .thenReturn(List.of(
+                        warningProjection1,
+                        warningProjection2,
+                        warningProjection1Regen,
+                        warningProjection2Regen,
+                        errorProjection1,
+                        errorProjection2,
+                        infoProjection1,
+                        infoProjection2
+                ));
 
         List<OpeningDetailsNotificationDto> result = openingDetailsNotificationService.getNotifications(openingId);
 
-        Assertions.assertEquals(3, result.size());
+        Assertions.assertEquals(4, result.size());
 
         Assertions.assertEquals("Free Growing milestone is overdue for standard unit \"B, D\"", result.get(0).title());
         Assertions.assertEquals("Please contact your ministry representative as soon as possible!", result.get(0).description());
         Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.ERROR, result.get(0).status());
 
-        Assertions.assertEquals("Upcoming milestone detected for standard unit \"A, C\"", result.get(1).title());
-        Assertions.assertEquals("Monitor progress closely to declare your Free Growing in time!", result.get(1).description());
+        Assertions.assertEquals("Upcoming Regeneration milestone detected for standard unit \"H, I\"", result.get(1).title());
+        Assertions.assertEquals("Monitor progress closely to update your forest cover!", result.get(1).description());
         Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.WARNING, result.get(1).status());
 
-        Assertions.assertEquals("Regeneration milestone reminder for standard unit \"E, F\"", result.get(2).title());
-        Assertions.assertEquals("Please update your forest cover.", result.get(2).description());
-        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.INFO, result.get(2).status());
+        Assertions.assertEquals("Upcoming milestone detected for standard unit \"A, C\"", result.get(2).title());
+        Assertions.assertEquals("Monitor progress closely to declare your Free Growing in time!", result.get(2).description());
+        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.WARNING, result.get(2).status());
+
+        Assertions.assertEquals("Regeneration milestone reminder for standard unit \"E, F\"", result.get(3).title());
+        Assertions.assertEquals("Please update your forest cover.", result.get(3).description());
+        Assertions.assertEquals(OpeningDetailsNotificationStatusEnum.INFO, result.get(3).status());
     }
 
     @Test

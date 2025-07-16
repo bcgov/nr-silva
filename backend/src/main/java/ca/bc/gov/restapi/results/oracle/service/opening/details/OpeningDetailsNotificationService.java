@@ -83,8 +83,13 @@ public class OpeningDetailsNotificationService {
                         finalTitle = "Free Growing milestone is overdue for standard unit " + title;
                         finalDescription = "Please contact your ministry representative as soon as possible!";
                     } else if (OpeningDetailsNotificationStatusEnum.WARNING.toString().equalsIgnoreCase(notificationType)) {
-                        finalTitle = "Upcoming milestone detected for standard unit " + title;
-                        finalDescription = "Monitor progress closely to declare your " + milestoneDescription + " in time!";
+                        if (milestoneTypeCode.equalsIgnoreCase(StockingMilestoneTypeEnum.FG.getCode())) {
+                            finalTitle = "Upcoming milestone detected for standard unit " + title;
+                            finalDescription = "Monitor progress closely to declare your " + milestoneDescription + " in time!";
+                        } else {
+                            finalTitle = "Upcoming Regeneration milestone detected for standard unit " + title;
+                            finalDescription = "Monitor progress closely to update your forest cover!";
+                        }
                     } else if (OpeningDetailsNotificationStatusEnum.INFO.toString().equalsIgnoreCase(notificationType)) {
                         finalTitle = "Regeneration milestone reminder for standard unit " + title;
                         finalDescription = "Please update your forest cover.";
