@@ -21,7 +21,7 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
   const [preSelectedClient, setPreSelectedClient] = useState<string | undefined>(selectedClient);
 
   const userClientQuery = useQuery({
-    queryKey: ['forest-clients', 'search', { ids: user?.associatedClients }],
+    queryKey: ['forest-clients', 'search', user?.associatedClients],
     queryFn: () => API.ForestClientEndpointService.searchByClientNumbers(user!.associatedClients, 0, user!.associatedClients.length),
     enabled: !!user?.associatedClients.length
   });
@@ -78,14 +78,13 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
                 {
                   userClientQuery.data?.filter((client) => filterClientByKeyword(client, filterText))
                     .map((client) => (
-                      <li className="district-list-item">
+                      <li key={client.clientNumber} className="district-list-item">
                         <button
                           type="button"
                           className={`district-list-item-btn${preSelectedClient === client.clientNumber ? ' selected-district' : ''}`}
                           onClick={() => handleListItemSelect(client.clientNumber)}
                         >
                           <DistrictItem
-                            key={client.clientNumber}
                             client={client}
                             preSelected={preSelectedClient === client.clientNumber}
                           />

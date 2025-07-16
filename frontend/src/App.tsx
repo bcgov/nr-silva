@@ -14,7 +14,7 @@ const App: React.FC = () => {
     return <Loading withOverlay={true} />;
   }
 
-  const selecteRouter = (): RouteObject[] => {
+  const selectRouter = (): RouteObject[] => {
     if (auth.user?.associatedClients && auth.user?.associatedClients.length > 1 && !auth.selectedClient) {
       return [ClientSelectionRoute];
     }
@@ -24,7 +24,7 @@ const App: React.FC = () => {
     return publicRoutes;
   }
 
-  const browserRouter = createBrowserRouter(selecteRouter());
+  const browserRouter = createBrowserRouter(selectRouter());
 
   return (
     <>

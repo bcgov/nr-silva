@@ -71,7 +71,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         // If no stored client, auto-select if user has exactly one client
         else if (parsedUser?.associatedClients.length === 1) {
-          setSelectedClient(parsedUser.associatedClients[0]);
+          const singleClientId = parsedUser.associatedClients[0]!;
+          localStorage.setItem(SELECTED_CLIENT_KEY, singleClientId);
+          setSelectedClient(singleClientId);
         }
 
         setUser(parsedUser);

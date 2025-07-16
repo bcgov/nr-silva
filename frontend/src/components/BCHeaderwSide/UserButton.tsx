@@ -12,7 +12,7 @@ const UserButton = () => {
   const breakpoint = useBreakpoint();
 
   const userClientQuery = useQuery({
-    queryKey: ['forest-clients', 'search', { ids: user?.associatedClients }],
+    queryKey: ['forest-clients', 'search', user?.associatedClients],
     queryFn: () => API.ForestClientEndpointService.searchByClientNumbers(user!.associatedClients, 0, user!.associatedClients.length),
     enabled: !!user?.associatedClients.length,
     select: (data) => (
