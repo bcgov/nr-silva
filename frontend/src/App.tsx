@@ -1,10 +1,11 @@
 import { Loading } from "@carbon/react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, type RouteObject, RouterProvider } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useAuth } from "@/contexts/AuthProvider";
 import "./styles/theme.scss";
 import "./styles/default-components.scss";
 import { protectedRoutes, publicRoutes } from "./routes";
+import { ClientSelectionRoute } from "./routes/config";
 
 const App: React.FC = () => {
   const auth = useAuth();
@@ -13,9 +14,17 @@ const App: React.FC = () => {
     return <Loading withOverlay={true} />;
   }
 
-  const browserRouter = createBrowserRouter(
-    auth.isLoggedIn ? protectedRoutes : publicRoutes
-  );
+  const selectRouter = (): RouteObject[] => {
+    if (auth.user?.associatedClients && auth.user?.associatedClients.length > 1 && !auth.selectedClient) {
+      return [ClientSelectionRoute];
+    }
+    if (auth.isLoggedIn) {
+      return protectedRoutes;
+    }
+    return publicRoutes;
+  }
+
+  const browserRouter = createBrowserRouter(selectRouter());
 
   return (
     <>

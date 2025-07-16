@@ -24,7 +24,8 @@ describe('MyProfile Component', () => {
     userName: 'johndoe',
     email: 'john.doe@example.com',
     idpProvider: 'IDIR',
-    privileges: {}
+    privileges: {},
+    associatedClients: []
   };
 
   beforeEach(() => {

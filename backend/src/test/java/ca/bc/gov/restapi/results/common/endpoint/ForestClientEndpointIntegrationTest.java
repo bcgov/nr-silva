@@ -34,17 +34,16 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
   @Autowired private MockMvc mockMvc;
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10000)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Test
   @DisplayName("Get forest client happy path should succeed")
@@ -53,7 +52,9 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
 
     clientApiStub.stubFor(
         WireMock.get(urlPathEqualTo("/clients/findByClientNumber/00149081"))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 {
                   "clientNumber": 149081,
                   "clientName": "WESTERN FOREST PRODUCTS INC.",
@@ -62,9 +63,7 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
                   "clientStatusCode": "ACT",
                   "clientTypeCode": "C",
                   "acronym": "WFP"
-                }""")
-            )
-    );
+                }""")));
 
     mockMvc
         .perform(
@@ -89,9 +88,8 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
     String clientNumber = "111";
 
     clientApiStub.stubFor(
-        WireMock.get(urlPathEqualTo("/clients/findByClientNumber/"+clientNumber))
-            .willReturn(WireMock.notFound().withBody("Client not found"))
-    );
+        WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
+            .willReturn(WireMock.notFound().withBody("Client not found")));
 
     mockMvc
         .perform(
@@ -102,17 +100,16 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
         .andReturn();
   }
 
-
   @ParameterizedTest
   @DisplayName("Search clients by name, acronym, or number succeeded")
   @MethodSource("searchByNameAcronymNumberOk")
-  void fetchClientByName_happyPath_shouldSucceed(
-      String value
-  ) throws Exception {
+  void fetchClientByName_happyPath_shouldSucceed(String value) throws Exception {
 
     clientApiStub.stubFor(
         WireMock.get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 [
                   {
                     "clientNumber": "00012797",
@@ -124,9 +121,7 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
                     "acronym": "MOF"
                   }
                 ]
-                """)
-            )
-    );
+                """)));
 
     mockMvc
         .perform(
@@ -139,7 +134,6 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
         .andExpect(jsonPath("$[0].name").value("MINISTRY OF FORESTS"))
         .andExpect(jsonPath("$[0].acronym").value("MOF"))
         .andReturn();
-
   }
 
   @Test
@@ -147,9 +141,7 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
   void fetchClientByName_unavailable_shouldSucceed() throws Exception {
 
     clientApiStub.stubFor(
-        WireMock.get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(serviceUnavailable())
-    );
+        WireMock.get(urlPathEqualTo("/clients/search/by")).willReturn(serviceUnavailable()));
 
     mockMvc
         .perform(
@@ -159,7 +151,6 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andReturn();
-
   }
 
   @Test
@@ -168,7 +159,9 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
 
     clientApiStub.stubFor(
         WireMock.get(urlPathEqualTo("/clients/00012797/locations"))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 [
                   {
                     "locationCode": "00",
@@ -179,9 +172,7 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
                     "locationName": "Location 2"
                   }
                 ]
-                """)
-            )
-    );
+                """)));
 
     mockMvc
         .perform(
@@ -195,16 +186,83 @@ class ForestClientEndpointIntegrationTest extends AbstractTestContainerIntegrati
         .andExpect(jsonPath("$[1].code").value("01"))
         .andExpect(jsonPath("$[1].description").value("Location 2"))
         .andReturn();
-
   }
 
+  @Test
+  @DisplayName("Search forest clients by client numbers happy path should succeed")
+  void searchForestClientsByIds_happyPath_shouldSucceed() throws Exception {
+
+    clientApiStub.stubFor(
+        WireMock.get(urlPathEqualTo("/api/clients/search"))
+            .willReturn(
+                okJson(
+                    """
+              [
+                {
+                  "clientNumber": "00132184",
+                  "clientName": "Client A",
+                  "legalFirstName": "FirstA",
+                  "legalMiddleName": "MiddleA",
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "F",
+                  "acronym": "A1"
+                },
+                {
+                  "clientNumber": "00012797",
+                  "clientName": "Client B",
+                  "legalFirstName": "FirstB",
+                  "legalMiddleName": "MiddleB",
+                  "clientStatusCode": "ACT",
+                  "clientTypeCode": "C",
+                  "acronym": "B1"
+                }
+              ]
+              """)));
+
+    mockMvc
+        .perform(
+            get("/api/forest-clients/search")
+                .queryParam("id", "00132184")
+                .queryParam("id", "00012797")
+                .queryParam("page", "0")
+                .queryParam("size", "10")
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].clientNumber").value("00132184"))
+        .andExpect(jsonPath("$[1].clientNumber").value("00012797"))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("Search forest clients by client numbers not found should succeed with empty list")
+  void searchForestClientsByIds_notFound_shouldSucceed() throws Exception {
+
+    clientApiStub.stubFor(
+        WireMock.get(urlPathEqualTo("/clients/search"))
+            .withQueryParam("id", WireMock.matching("99999999"))
+            .willReturn(okJson("[]")));
+
+    mockMvc
+        .perform(
+            get("/api/forest-clients/search")
+                .queryParam("id", "99999999")
+                .queryParam("page", "0")
+                .queryParam("size", "10")
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(0))
+        .andReturn();
+  }
 
   private static Stream<Arguments> searchByNameAcronymNumberOk() {
     return Stream.of(
-        Arguments.of( "INDIA"),
-        Arguments.of( "SAMPLIBC"),
-        Arguments.of( "00000001"),
-        Arguments.of( "1")
-    );
+        Arguments.of("INDIA"),
+        Arguments.of("SAMPLIBC"),
+        Arguments.of("00000001"),
+        Arguments.of("1"));
   }
 }

@@ -67,7 +67,7 @@ export class SilvicultureSearchPage extends BasePage {
     this.advancedSearchLocationCodeComboxBox = this.advancedSearchModal.locator('.location-code-combobox');
     this.advancedSearchLocationCodeInput = this.advancedSearchModal.locator('#opening-advanced-location-code-input');
     this.advancedSearchDateFilterContainer = this.advancedSearchModal.locator('.date-filter-container');
-    this.advancedSearchDateTypeDropdownButton = this.advancedSearchModal.locator('.date-filter-container').locator('#downshift-«r1j»-toggle-button');
+    this.advancedSearchDateTypeDropdownButton = this.advancedSearchModal.locator('#date-type-combobox');
     this.advancedSearchStartDateInput = this.advancedSearchModal.getByRole('textbox', { name: 'Start Date' });
     this.advancedSearchEndDateInput = this.advancedSearchModal.getByRole('textbox', { name: 'End Date' });
     this.advancedSearchCutBlockInput = this.advancedSearchModal.locator('#cut-block-text-input');

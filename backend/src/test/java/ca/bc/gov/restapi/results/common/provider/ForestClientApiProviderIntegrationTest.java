@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -27,21 +28,19 @@ import org.springframework.web.client.RestClient;
 class ForestClientApiProviderIntegrationTest {
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10000)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
-  private final ForestClientApiProvider forestClientApiProvider = new ForestClientApiProvider(
-      RestClient.builder().baseUrl("http://localhost:10000").build()
-  );
+  private final ForestClientApiProvider forestClientApiProvider =
+      new ForestClientApiProvider(RestClient.builder().baseUrl("http://localhost:10000").build());
 
   @Test
   @DisplayName("Fetch client by number happy path should succeed")
@@ -50,7 +49,9 @@ class ForestClientApiProviderIntegrationTest {
     String clientNumber = "00012797";
     clientApiStub.stubFor(
         get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 {
                   "clientNumber": "00012797",
                   "clientName": "MINISTRY OF FORESTS",
@@ -60,9 +61,7 @@ class ForestClientApiProviderIntegrationTest {
                   "clientTypeCode": "F",
                   "acronym": "MOF"
                 }
-                """)
-            )
-    );
+                """)));
 
     Optional<ForestClientDto> clientDto = forestClientApiProvider.fetchClientByNumber(clientNumber);
 
@@ -84,9 +83,7 @@ class ForestClientApiProviderIntegrationTest {
   void fetchClientByNumber_clientNotFound_shouldSucceed() {
     String clientNumber = "00012797";
     clientApiStub.stubFor(
-        get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
-            .willReturn(notFound())
-    );
+        get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber)).willReturn(notFound()));
 
     Optional<ForestClientDto> clientDto = forestClientApiProvider.fetchClientByNumber(clientNumber);
 
@@ -96,14 +93,13 @@ class ForestClientApiProviderIntegrationTest {
   @ParameterizedTest
   @DisplayName("Search clients by name, acronym, or number succeeded")
   @MethodSource("searchByNameAcronymNumberOk")
-  void fetchClientByName_happyPath_shouldSucceed(
-      int resultSize,
-      String value
-  ){
+  void fetchClientByName_happyPath_shouldSucceed(int resultSize, String value) {
 
     clientApiStub.stubFor(
         get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 [
                   {
                     "clientNumber": "00012797",
@@ -115,38 +111,34 @@ class ForestClientApiProviderIntegrationTest {
                     "acronym": "MOF"
                   }
                 ]
-                """)
-            )
-    );
+                """)));
 
-    var clients = forestClientApiProvider.searchClients(1, 10, value);
+    var clients = forestClientApiProvider.searchByClients(1, 10, value);
 
     Assertions.assertEquals(resultSize, clients.size());
-
   }
 
   @Test
   @DisplayName("Search clients by name, acronym, or number not available should succeed")
-  void fetchClientByName_unavailable_shouldSucceed(){
+  void fetchClientByName_unavailable_shouldSucceed() {
 
     clientApiStub.stubFor(
-        get(urlPathEqualTo("/clients/search/by"))
-            .willReturn(serviceUnavailable())
-    );
+        get(urlPathEqualTo("/clients/search/by")).willReturn(serviceUnavailable()));
 
-    var clients = forestClientApiProvider.searchClients(1, 10, "COMPANY");
+    var clients = forestClientApiProvider.searchByClients(1, 10, "COMPANY");
 
     Assertions.assertEquals(0, clients.size());
-
   }
 
   @Test
   @DisplayName("Fetch client locations happy path should succeed")
-  void fetchClientLocations_happyPath_shouldSucceed(){
+  void fetchClientLocations_happyPath_shouldSucceed() {
 
     clientApiStub.stubFor(
         get(urlPathEqualTo("/clients/00012797/locations"))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 [
                   {
                     "locationCode": "00",
@@ -157,23 +149,72 @@ class ForestClientApiProviderIntegrationTest {
                     "locationName": "Location 2"
                   }
                 ]
-                """)
-            )
-    );
+                """)));
 
     var locations = forestClientApiProvider.fetchLocationsByClientNumber("00012797");
 
     Assertions.assertEquals(2, locations.size());
-
   }
 
+  @Test
+  @DisplayName("Search clients by IDs happy path should succeed")
+  void searchClientsByIds_happyPath_shouldSucceed() {
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/api/clients/search"))
+            .willReturn(
+                okJson(
+                    """
+                  [
+                    {
+                      "clientNumber": "00132184",
+                      "clientName": "Client A",
+                      "legalFirstName": "FirstA",
+                      "legalMiddleName": "MiddleA",
+                      "clientStatusCode": "ACT",
+                      "clientTypeCode": "F",
+                      "acronym": "A1"
+                    },
+                    {
+                      "clientNumber": "00012797",
+                      "clientName": "Client B",
+                      "legalFirstName": "FirstB",
+                      "legalMiddleName": "MiddleB",
+                      "clientStatusCode": "ACT",
+                      "clientTypeCode": "C",
+                      "acronym": "B1"
+                    }
+                  ]
+                  """)));
+
+    List<String> ids = List.of("00132184", "00012797");
+    var clients = forestClientApiProvider.searchClientsByIds(0, 10, ids);
+
+    Assertions.assertEquals(2, clients.size());
+
+    Assertions.assertEquals("00132184", clients.get(0).clientNumber());
+    Assertions.assertEquals("Client A", clients.get(0).clientName());
+
+    Assertions.assertEquals("00012797", clients.get(1).clientNumber());
+    Assertions.assertEquals("Client B", clients.get(1).clientName());
+  }
+
+  @Test
+  @DisplayName("Search clients by IDs service unavailable should return empty list")
+  void searchClientsByIds_serviceUnavailable_shouldReturnEmptyList() {
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/api/clients/search")).willReturn(serviceUnavailable()));
+
+    List<String> ids = List.of("00132184", "00012797");
+    var clients = forestClientApiProvider.searchClientsByIds(0, 10, ids);
+
+    Assertions.assertTrue(clients.isEmpty());
+  }
 
   private static Stream<Arguments> searchByNameAcronymNumberOk() {
     return Stream.of(
         Arguments.of(1, "INDIA"),
         Arguments.of(1, "SAMPLIBC"),
         Arguments.of(1, "00000001"),
-        Arguments.of(1, "1")
-    );
+        Arguments.of(1, "1"));
   }
 }

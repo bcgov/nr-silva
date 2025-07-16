@@ -24,6 +24,13 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   console.log(`Global setup - Browser: ${browserTypeName}, url: ${baseURL}`)
 
   await page.goto(baseURL);
+
+  // By passing the district selection screen by pre selecting a client.
+  await page.evaluate(({ key, value }) => {
+    localStorage.setItem(key, value);
+  }, { key: 'SELECTED_CLIENT', value: '00012797' });
+
+
   await page.click('[data-testid="landing-button__bceid"]');
   await page.waitForSelector('#user');
   await page.fill('#user', bceidUser);
@@ -33,7 +40,7 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   await page.waitForURL('**/dashboard');
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
-  const authFile = path.join(__dirname,'../auth', `user.${browserTypeName}.json`);
+  const authFile = path.join(__dirname, '../auth', `user.${browserTypeName}.json`);
   await page.context().storageState({ path: authFile });
 
   console.log(`[globalSetup] Created: ${authFile}`);

@@ -8,7 +8,7 @@ import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthProvider";
 import { ThemePreference } from "../../utils/ThemePreference";
 import { mainActivitiesItems } from "../../components/BCHeaderwSide/constants";
-import { PreferenceProvider } from "@/contexts/PreferenceProvider";
+import { PreferenceProvider } from "../../contexts/PreferenceProvider";
 
 vi.mock("../../services/TestService", () => ({
   getForestClientByNumberOrAcronym: vi.fn(() => [
