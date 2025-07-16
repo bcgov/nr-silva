@@ -209,9 +209,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         // Verify notifications section
         .andExpect(
             jsonPath("$.notifications[0].title")
-                .value("Overdue milestone detected for standard unit \"A, B\""))
-        .andExpect(jsonPath("$.notifications[0].description").value("Immediate action required!"))
-        .andExpect(jsonPath("$.notifications[0].status").value("ERROR"))
+                .value("Regeneration milestone reminder for standard unit \"A, B\""))
+        .andExpect(jsonPath("$.notifications[0].description").value("Please update your forest cover."))
+        .andExpect(jsonPath("$.notifications[0].status").value("INFO"))
         .andReturn();
   }
 
