@@ -2,12 +2,12 @@ import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
-import BCHeaderwSide from "../../components/BCHeaderwSide";
+import BCHeader from "../../components/BCHeader";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthProvider";
 import { ThemePreference } from "../../utils/ThemePreference";
-import { mainActivitiesItems } from "../../components/BCHeaderwSide/constants";
+import { mainActivitiesItems } from "../../components/BCHeader/constants";
 import { PreferenceProvider } from "../../contexts/PreferenceProvider";
 
 vi.mock("../../services/TestService", () => ({
@@ -37,7 +37,7 @@ const renderComponent = async () => {
           <PreferenceProvider>
             <ThemePreference>
               <BrowserRouter>
-                <BCHeaderwSide />
+                <BCHeader />
               </BrowserRouter>
             </ThemePreference>
           </PreferenceProvider>
@@ -47,7 +47,7 @@ const renderComponent = async () => {
   );
 };
 
-describe("BCHeaderwSide", async () => {
+describe("BCHeader", async () => {
   beforeAll(() => {
     Object.defineProperty(window, "matchMedia", {
       writable: true,

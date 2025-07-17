@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
+import BCHeader from "@/components/BCHeader";
 
-import './SideLayout.scss';
-import BCHeaderwSide from "../../components/BCHeaderwSide";
+import './styles.scss';
 
 interface SideLayoutProps {
   pageContent: ReactNode;
@@ -10,7 +10,7 @@ interface SideLayoutProps {
 const SideLayout: React.FC<SideLayoutProps> = ({ pageContent }) => {
   return (
     <>
-      <BCHeaderwSide />
+      <BCHeader />
 
       <div className="sidelayout-page-content">
         {pageContent}

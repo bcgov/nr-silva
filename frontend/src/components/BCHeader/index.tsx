@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   HeaderContainer,
@@ -28,9 +28,32 @@ import "./styles.scss";
  *
  * @returns {React.JSX.Element} The rendered BCHeaderwSide component.
  */
-function BCHeaderwSide(): React.JSX.Element {
+function BCHeader(): React.JSX.Element {
   const [myProfile, setMyProfile] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<boolean>(false);
+  const panelWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // Closes the MyProfile panel when user clicks outside of it.
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        panelWrapperRef.current &&
+        !panelWrapperRef.current.contains(event.target as Node)
+      ) {
+        setMyProfile(false);
+      }
+    };
+
+    if (myProfile) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [myProfile]);
 
   const handleMyProfilePanel = useCallback((): void => {
     setMyProfile(!myProfile);
@@ -148,14 +171,16 @@ function BCHeaderwSide(): React.JSX.Element {
               <UserButton />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
-          <HeaderPanel
-            aria-label="User Profile Tab"
-            expanded={myProfile}
-            className="notifications-panel"
-          >
-            <RightPanelTitle title="My Profile" closeFn={closeMyProfilePanel} />
-            <MyProfile />
-          </HeaderPanel>
+          <div ref={panelWrapperRef}>
+            <HeaderPanel
+              aria-label="User Profile Tab"
+              expanded={myProfile}
+              className="notifications-panel"
+            >
+              <RightPanelTitle title="My Profile" closeFn={closeMyProfilePanel} />
+              <MyProfile />
+            </HeaderPanel>
+          </div>
           <SideNav
             isChildOfHeader
             expanded={isSideNavExpanded}
@@ -177,4 +202,4 @@ function BCHeaderwSide(): React.JSX.Element {
   );
 }
 
-export default BCHeaderwSide;
+export default BCHeader;
