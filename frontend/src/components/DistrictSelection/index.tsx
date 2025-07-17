@@ -74,11 +74,11 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
               </div>
             )
             : (
-              <ul className="district-list">
+              <ul className="district-list" aria-label="District list">
                 {
                   userClientQuery.data?.filter((client) => filterClientByKeyword(client, filterText))
                     .map((client) => (
-                      <li key={client.clientNumber} className="district-list-item">
+                      <li key={client.clientNumber} className="district-list-item" aria-label={client.clientName} title={client.clientName}>
                         <button
                           type="button"
                           className={`district-list-item-btn${preSelectedClient === client.clientNumber ? ' selected-district' : ''}`}
