@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * This class holds resources for the Forest Client API interaction.
- */
+/** This class holds resources for the Forest Client API interaction. */
 @RestController
 @RequestMapping("/api/forest-clients")
 @AllArgsConstructor
@@ -40,8 +38,8 @@ public class ForestClientEndpoint {
   /**
    * Search for clients by name, acronym or number.
    *
-   * @param page  The page number to be fetched.
-   * @param size  The size of the page to be fetched.
+   * @param page The page number to be fetched.
+   * @param size The size of the page to be fetched.
    * @param value The value to be searched.
    * @return List of {@link ForestClientAutocompleteResultDto} with found clients.
    */
@@ -49,9 +47,8 @@ public class ForestClientEndpoint {
   public List<ForestClientAutocompleteResultDto> searchForestClients(
       @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
       @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
-      @RequestParam(value = "value") String value
-  ) {
-    return forestClientService.searchClients(page, size, value);
+      @RequestParam(value = "value") String value) {
+    return forestClientService.searchByClients(page, size, value);
   }
 
   /**
@@ -63,5 +60,21 @@ public class ForestClientEndpoint {
   @GetMapping("/{clientNumber}/locations")
   public List<CodeDescriptionDto> getForestClientLocations(@PathVariable String clientNumber) {
     return forestClientService.getClientLocations(clientNumber);
+  }
+
+  /**
+   * Search for multiple ForestClients by a list of client numbers.
+   *
+   * @param page The page number for pagination (optional, defaults to 0).
+   * @param size The number of records per page (optional, defaults to 10).
+   * @param clientNumbers List of client numbers to search for (required).
+   * @return List of {@link ForestClientDto} objects matching the given client numbers.
+   */
+  @GetMapping("/search")
+  public List<ForestClientDto> searchByClientNumbers(
+      @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+      @RequestParam(value = "id") List<String> clientNumbers) {
+    return forestClientService.searchByClientNumbers(page, size, clientNumbers);
   }
 }

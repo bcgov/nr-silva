@@ -42,6 +42,28 @@ export class ForestClientEndpointService {
         });
     }
     /**
+     * @param id
+     * @param page
+     * @param size
+     * @returns ForestClientDto OK
+     * @throws ApiError
+     */
+    public static searchByClientNumbers(
+        id: Array<string>,
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<Array<ForestClientDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/forest-clients/search',
+            query: {
+                'page': page,
+                'size': size,
+                'id': id,
+            },
+        });
+    }
+    /**
      * @param value
      * @param page
      * @param size

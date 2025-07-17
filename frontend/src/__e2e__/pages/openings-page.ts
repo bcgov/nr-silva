@@ -16,7 +16,7 @@ export class OpeningsPage extends BasePage {
     super(page, routes.openings());
 
     this.mapButton = page.locator('.title-section').locator('.map-button');
-    this.map = page.locator('.leaflet-container');
+    this.map = page.locator('.opening-map-container');
     this.mapZoomInButton = this.map.locator('.leaflet-control-zoom-in');
     this.mapZoomOutButton = this.map.locator('.leaflet-control-zoom-out');
     this.mapExpandButton = this.map.locator('.leaflet-control-fullscreen-button');
