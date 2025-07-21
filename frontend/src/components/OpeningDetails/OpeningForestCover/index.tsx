@@ -6,7 +6,7 @@ import {
   Button, Column, Grid,
   DefinitionTooltip
 } from "@carbon/react";
-import { Search } from "@carbon/icons-react";
+import { CropGrowth, DiamondOutline, Layers, Search } from "@carbon/icons-react";
 import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
@@ -16,7 +16,7 @@ import API from "@/services/API";
 import { OpeningForestCoverDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
-import { ForestCoverTableHeaders } from "./constants";
+import { EXPAND_PROMPT, ForestCoverTableHeaders } from "./constants";
 import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
@@ -96,6 +96,35 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             </span>
           </div>
         );
+      case "isSingleLayer":
+        return (
+          <div className="opening-forest-cover-cell-multiple-lines">
+            {
+              <span className="icon-text-line">
+                <span className="icon-in-line">
+                  {
+                    row.isSingleLayer ? <DiamondOutline /> : <Layers />
+                  }
+                </span>
+                <span className="text-in-line">
+                  {
+                    row.isSingleLayer ? "Single layer" : "Multi layer"
+                  }
+                </span>
+              </span>
+            }
+            {
+              row.hasReserve
+                ? (
+                  <span className="icon-text-line">
+                    <span className="icon-in-line"><CropGrowth /></span>
+                    <span className="text-in-line">Reserve</span>
+                  </span>
+                )
+                : null
+            }
+          </div>
+        );
       case "grossArea":
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
@@ -110,6 +139,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
       case "coverType":
         return codeDescriptionToDisplayText(row.coverType);
       case "inventoryLayer": {
+        if (!row.isSingleLayer) {
+          return EXPAND_PROMPT;
+        }
         const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.inventoryLayer.species)
         return (
           <div className="opening-forest-cover-cell-multiple-lines">
@@ -138,6 +170,9 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
         );
       }
       case "silvicultureLayer": {
+        if (!row.isSingleLayer) {
+          return EXPAND_PROMPT;
+        }
         const { tooltipDefinition, displayText } = formatForestCoverSpeciesArray(row.silvicultureLayer.species)
 
         return (
@@ -195,7 +230,7 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
             <TableToolbarSearch
               className="default-tab-search-bar"
               persistent
-              placeholder="Search by keyword"
+              placeholder="Search by numeric value"
               value={searchInput}
               onChange={handleSearchInputChange}
               onKeyDown={handleSearchKeyDown}

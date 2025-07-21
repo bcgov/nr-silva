@@ -362,7 +362,7 @@ public class SilvaOracleQueryConstants {
       ORDER BY sl.STOCKING_LAYER_CODE DESC""";
 
   public static final String GET_OPENING_SS_MILESTONES =
-          """
+      """
           SELECT
             sm.STOCKING_STANDARD_UNIT_ID AS ssid,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'PH' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS post_harvest_declared_date,
@@ -388,7 +388,7 @@ public class SilvaOracleQueryConstants {
           GROUP BY sm.STOCKING_STANDARD_UNIT_ID""";
 
   public static final String GET_OPENING_SS_NOTIFICATIONS =
-    """
+      """
     SELECT
       ssu.STOCKING_STANDARD_UNIT_ID,
       ssu.STANDARDS_UNIT_ID,
@@ -716,54 +716,90 @@ public class SilvaOracleQueryConstants {
            LEFT JOIN BLOCK_STATUS_CODE bsc ON bsc.BLOCK_STATUS_CODE = cb.BLOCK_STATUS_ST
            WHERE cboa.OPENING_ID = :openingId AND cboa.opening_prime_licence_ind = 'Y'""";
 
-  public static final String GET_OPENING_FOREST_COVER_LIST = """
-      SELECT
-      	fc.FOREST_COVER_ID AS cover_id,
-      	fc.SILV_POLYGON_NO AS polygon_id,
-      	ssu.STANDARDS_UNIT_ID AS standard_unit_id,
-      	fcnma.STOCKING_TYPE_CODE AS unmapped_code,
-      	stcnma.DESCRIPTION AS unmapped_name,
-      	fc.SILV_POLYGON_AREA AS gross_area,
-      	fc.SILV_POLYGON_NET_AREA AS net_area,
-      	fc.STOCKING_STATUS_CODE AS status_code,
-      	ssc.DESCRIPTION AS status_name,
-      	fc.STOCKING_TYPE_CODE AS type_code,
-      	stc.DESCRIPTION AS type_name,
-      	fcli.TOTAL_STEMS_PER_HA AS total, --Silviculture doesnt have
-      	fcli.TOTAL_WELL_SPACED_STEMS_PER_HA  AS inventory_total_well_spaced,
-      	fcli.WELL_SPACED_STEMS_PER_HA  AS inventory_well_spaced,
-      	fcli.FREE_GROWING_STEMS_PER_HA  AS inventory_free_growing,		
-      	fcls.TOTAL_WELL_SPACED_STEMS_PER_HA  AS silviculture_total_well_spaced,
-      	fcls.WELL_SPACED_STEMS_PER_HA  AS silviculture_well_spaced,
-      	fcls.FREE_GROWING_STEMS_PER_HA  AS silviculture_free_growing,
-      	fc.REFERENCE_YEAR
-      FROM FOREST_COVER fc
-      LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
-      LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
-      LEFT JOIN FOREST_COVER_NON_MAPPED_AREA fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
-      LEFT JOIN STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
-      LEFT JOIN FOREST_COVER_LAYER fcli ON (fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID)
-      LEFT JOIN FOREST_COVER_LAYER fcls ON (fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID)\s
-      LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
-      WHERE
-      	fc.OPENING_ID = :openingId
-        	AND (
-        		NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
-      		fc.SILV_POLYGON_NO like '%' || :mainSearchTerm || '%'
-      		OR ssu.STANDARDS_UNIT_ID like '%' || :mainSearchTerm || '%'
-      		OR UPPER(stcnma.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-      		OR fcnma.STOCKING_TYPE_CODE like '%' || :mainSearchTerm || '%'
-      		OR fc.STOCKING_STATUS_CODE like '%' || :mainSearchTerm || '%'
-      		OR UPPER(ssc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-      		OR fc.STOCKING_TYPE_CODE like '%' || :mainSearchTerm || '%'
-      		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-      		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND fc.SILV_POLYGON_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
-      		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND fc.SILV_POLYGON_NET_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
-      		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND fc.REFERENCE_YEAR = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
-      	)
-      )""";
+  public static final String GET_OPENING_FOREST_COVER_LIST =
+      """
+          SELECT
+              fc.FOREST_COVER_ID AS cover_id,
+              fc.SILV_POLYGON_NO AS polygon_id,
+              ssu.STANDARDS_UNIT_ID AS standard_unit_id,
+              fcnma.STOCKING_TYPE_CODE AS unmapped_code,
+              stcnma.DESCRIPTION AS unmapped_name,
+              fc.SILV_POLYGON_AREA AS gross_area,
+              fc.SILV_POLYGON_NET_AREA AS net_area,
+              fc.STOCKING_STATUS_CODE AS status_code,
+              ssc.DESCRIPTION AS status_name,
+              fc.STOCKING_TYPE_CODE AS type_code,
+              stc.DESCRIPTION AS type_name,
+              fcli.TOTAL_STEMS_PER_HA AS total,
+              fcli.TOTAL_WELL_SPACED_STEMS_PER_HA AS inventory_total_well_spaced,
+              fcli.WELL_SPACED_STEMS_PER_HA AS inventory_well_spaced,
+              fcli.FREE_GROWING_STEMS_PER_HA AS inventory_free_growing,
+              fcls.TOTAL_WELL_SPACED_STEMS_PER_HA AS silviculture_total_well_spaced,
+              fcls.WELL_SPACED_STEMS_PER_HA AS silviculture_well_spaced,
+              fcls.FREE_GROWING_STEMS_PER_HA AS silviculture_free_growing,
+              fc.REFERENCE_YEAR,
+              layer_summary.is_single_layer AS is_single_layer,
+              fc.SILV_RESERVE_CODE AS reserve_code,
+              fc.SILV_RESERVE_OBJECTIVE_CODE AS objective_code
 
-  public static final String GET_OPENING_FOREST_COVER_LIST_SPECIES = """
+          FROM FOREST_COVER fc
+
+          LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
+          LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
+          LEFT JOIN FOREST_COVER_NON_MAPPED_AREA fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
+          LEFT JOIN STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
+          LEFT JOIN FOREST_COVER_LAYER fcli
+              ON fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID
+          LEFT JOIN FOREST_COVER_LAYER fcls
+              ON fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID
+          LEFT JOIN STOCKING_STANDARD_UNIT ssu
+              ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+
+          LEFT JOIN (
+              SELECT
+                  fc.FOREST_COVER_ID,
+                  CASE
+                      WHEN layer.count_layers IS NULL OR layer.count_layers = 0 THEN 'Y'
+                      WHEN layer.count_SI > 0 THEN 'Y'
+                      ELSE 'N'
+                  END AS is_single_layer
+              FROM FOREST_COVER fc
+              LEFT JOIN (
+                  SELECT
+                      fcl.FOREST_COVER_ID,
+                      COUNT(*) AS count_layers,
+                      COUNT(CASE WHEN fcl.FOREST_COVER_LAYER_CODE IN ('S', 'I') THEN 1 END) AS count_SI
+                  FROM FOREST_COVER_LAYER fcl
+                  GROUP BY fcl.FOREST_COVER_ID
+              ) layer ON fc.FOREST_COVER_ID = layer.FOREST_COVER_ID
+          ) layer_summary
+              ON layer_summary.FOREST_COVER_ID = fc.FOREST_COVER_ID
+
+          WHERE
+              fc.OPENING_ID = :openingId
+              AND (
+                  NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE'
+                  OR (
+                      fc.SILV_POLYGON_NO LIKE '%' || :mainSearchTerm || '%'
+                      OR ssu.STANDARDS_UNIT_ID LIKE '%' || :mainSearchTerm || '%'
+                      OR UPPER(stcnma.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                      OR fcnma.STOCKING_TYPE_CODE LIKE '%' || :mainSearchTerm || '%'
+                      OR fc.STOCKING_STATUS_CODE LIKE '%' || :mainSearchTerm || '%'
+                      OR UPPER(ssc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                      OR fc.STOCKING_TYPE_CODE LIKE '%' || :mainSearchTerm || '%'
+                      OR UPPER(stc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                      OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                          AND fc.SILV_POLYGON_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+                      OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                          AND fc.SILV_POLYGON_NET_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+                      OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                          AND fc.REFERENCE_YEAR = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+                  )
+              )
+           """;
+
+  public static final String GET_OPENING_FOREST_COVER_LIST_SPECIES =
+      """
       SELECT
       	fcls.TREE_SPECIES_CODE AS species_code,
       	tsc.DESCRIPTION AS species_name
@@ -774,7 +810,8 @@ public class SilvaOracleQueryConstants {
       	fcl.FOREST_COVER_LAYER_CODE = :coverLayerCode AND fcl.FOREST_COVER_ID = :forestCoverId
       ORDER BY fcls.SPECIES_ORDER""";
 
-  public static final String GET_OPENING_FOREST_COVER_POLYGON = """
+  public static final String GET_OPENING_FOREST_COVER_POLYGON =
+      """
       SELECT
       	fc.FOREST_COVER_ID,
       	fc.SILV_RESERVE_CODE AS reserve_code,
@@ -798,7 +835,8 @@ public class SilvaOracleQueryConstants {
       WHERE
       	fc.FOREST_COVER_ID = :forestCoverId""";
 
-  public static final String GET_OPENING_FOREST_COVER_UNMAPPED = """
+  public static final String GET_OPENING_FOREST_COVER_UNMAPPED =
+      """
       SELECT
       	fcnma.NON_MAPPED_AREA_ID AS unmapped_area_id,
       	fcnma.NON_MAPPED_AREA AS area,
@@ -812,7 +850,8 @@ public class SilvaOracleQueryConstants {
       WHERE
       	fcnma.FOREST_COVER_ID = :forestCoverId""";
 
-  public static final String GET_OPENING_FOREST_COVER_LAYER = """
+  public static final String GET_OPENING_FOREST_COVER_LAYER =
+      """
       SELECT
       	fcl.FOREST_COVER_LAYER_ID AS layer_id,
         fcl.FOREST_COVER_LAYER_CODE AS layer_code,
@@ -828,7 +867,8 @@ public class SilvaOracleQueryConstants {
       WHERE
       	fcl.FOREST_COVER_ID = :forestCoverId""";
 
-  public static final String GET_OPENING_FOREST_COVER_DETAILS_SPECIES = """
+  public static final String GET_OPENING_FOREST_COVER_DETAILS_SPECIES =
+      """
       SELECT
       	fcls.TREE_SPECIES_CODE AS species_code,
       	tsc.DESCRIPTION AS species_name,
@@ -841,7 +881,8 @@ public class SilvaOracleQueryConstants {
       	fcls.FOREST_COVER_LAYER_ID = :forestCoverLayerId
       ORDER BY fcls.SPECIES_ORDER""";
 
-  public static final String GET_OPENING_FOREST_COVER_DAMAGE = """
+  public static final String GET_OPENING_FOREST_COVER_DAMAGE =
+      """
       SELECT
       	fr.SILV_DAMAGE_AGENT_CODE AS damage_agent_code,
       	sdac.DESCRIPTION AS damage_agent_name,
@@ -852,7 +893,8 @@ public class SilvaOracleQueryConstants {
       WHERE
       	fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId""";
 
-  public static final String GET_OPENING_ATTACHMENT_LIST = """
+  public static final String GET_OPENING_ATTACHMENT_LIST =
+      """
           SELECT
             OPENING_ATTACHMENT_FILE_ID AS openingAttachmentFileId,
             OPENING_ID AS openingId,
