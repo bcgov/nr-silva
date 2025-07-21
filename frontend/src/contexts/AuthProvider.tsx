@@ -18,7 +18,7 @@ import {
 import { env } from "@/env";
 import { JWT } from "@/types/amplify";
 import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
-import { REDIRECT_KEY } from "@/constants";
+import { REDIRECT_KEY, SELECTED_CLIENT_KEY } from "@/constants";
 
 // 1. Define an interface for the context value
 interface AuthContextType {
@@ -27,6 +27,8 @@ interface AuthContextType {
   isLoading: boolean;
   login: (provider: IdpProviderType) => void;
   logout: () => void;
+  setSelectedClient: React.Dispatch<React.SetStateAction<string | undefined>>
+  selectedClient?: string;
 }
 
 // 2. Define an interface for the provider's props
@@ -41,6 +43,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedClient, setSelectedClient] = useState<string | undefined>();
 
   /**
    * Resolves the application environment.
@@ -53,7 +56,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const idToken = await loadUserToken();
       if (idToken) {
-        setUser(parseToken(idToken));
+        const parsedUser = parseToken(idToken);
+        const storedClientId = localStorage.getItem(SELECTED_CLIENT_KEY);
+
+        // Attempt to restore previously selected client
+        if (storedClientId) {
+          // If stored client is still valid, restore it
+          if (parsedUser?.associatedClients.includes(storedClientId)) {
+            setSelectedClient(storedClientId);
+          } else {
+            // Remove invalid stored client ID
+            localStorage.removeItem(SELECTED_CLIENT_KEY);
+          }
+        }
+        // If no stored client, auto-select if user has exactly one client
+        else if (parsedUser?.associatedClients.length === 1) {
+          const singleClientId = parsedUser.associatedClients[0]!;
+          localStorage.setItem(SELECTED_CLIENT_KEY, singleClientId);
+          setSelectedClient(singleClientId);
+        }
+
+        setUser(parsedUser);
       } else {
         setUser(undefined);
       }
@@ -98,9 +121,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoggedIn: !!user,
       isLoading,
       login,
-      logout
+      logout,
+      selectedClient,
+      setSelectedClient
     }),
-    [user, isLoading]
+    [user, isLoading, selectedClient]
   );
 
   return (

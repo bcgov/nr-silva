@@ -13,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-/**
- * This service contains methods for interacting with Forest Client API.
- */
+/** This service contains methods for interacting with Forest Client API. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,27 +40,22 @@ public class ForestClientService {
   /**
    * Search for clients by name, acronym or number.
    *
-   * @param page  The page number to be fetched.
-   * @param size  The size of the page to be fetched.
+   * @param page The page number to be fetched.
+   * @param size The size of the page to be fetched.
    * @param value The value to be searched.
    * @return List of {@link ForestClientAutocompleteResultDto} with found clients.
    */
-  public List<ForestClientAutocompleteResultDto> searchClients(
-      int page,
-      int size,
-      String value
-  ) {
-    log.info("Searching forest client by {} as name, acronym or number with page {} and size {}",
-        value, page, size);
-    return forestClientApiProvider
-        .searchClients(page, size, value)
-        .stream()
-        .map(client -> new ForestClientAutocompleteResultDto(
-                client.clientNumber(),
-                client.name(),
-                client.acronym()
-            )
-        )
+  public List<ForestClientAutocompleteResultDto> searchByClients(int page, int size, String value) {
+    log.info(
+        "Searching forest client by {} as name, acronym or number with page {} and size {}",
+        value,
+        page,
+        size);
+    return forestClientApiProvider.searchByClients(page, size, value).stream()
+        .map(
+            client ->
+                new ForestClientAutocompleteResultDto(
+                    client.clientNumber(), client.name(), client.acronym()))
         .toList();
   }
 
@@ -77,28 +70,50 @@ public class ForestClientService {
 
     log.info("Fetching locations for client number {}", fixedNumber);
 
-    return
-        forestClientApiProvider
-            .fetchLocationsByClientNumber(fixedNumber)
-            .stream()
-            .map(location -> new CodeDescriptionDto(
-                location.locationCode(),
-                Objects.toString(location.locationName(), "No name provided")
-            ))
-            .toList();
+    return forestClientApiProvider.fetchLocationsByClientNumber(fixedNumber).stream()
+        .map(
+            location ->
+                new CodeDescriptionDto(
+                    location.locationCode(),
+                    Objects.toString(location.locationName(), "No name provided")))
+        .toList();
   }
 
-  public Optional<ForestClientLocationDto> getClientLocation(String clientNumber, String locationCode) {
+  /**
+   * Retrieves the specific location details for a given client number and location code. This
+   * method also validates and fixes the client number format before querying.
+   *
+   * @param clientNumber The client number associated with the requested location.
+   * @param locationCode The specific location code within the client’s records.
+   * @return An {@link Optional} containing {@link ForestClientLocationDto} if found; otherwise, an
+   *     empty {@link Optional}.
+   */
+  public Optional<ForestClientLocationDto> getClientLocation(
+      String clientNumber, String locationCode) {
     String fixedNumber = checkClientNumber(clientNumber);
     log.info("Fetching location {} for client number {}", locationCode, fixedNumber);
     if (!fixedNumber.equals(clientNumber)) {
       log.info("Fixed client number to fetch {}", fixedNumber);
     }
 
-    return forestClientApiProvider
-        .fetchLocationByClientNumberAndLocationCode(fixedNumber, locationCode);
+    return forestClientApiProvider.fetchLocationByClientNumberAndLocationCode(
+        fixedNumber, locationCode);
   }
 
+  /**
+   * Searches for multiple forest clients by their client numbers using paginated requests.
+   *
+   * @param page The page index for pagination (starting from 0).
+   * @param size The number of records per page.
+   * @param clientNumbers A list of client numbers to search for.
+   * @return A {@link List} of {@link ForestClientDto} representing the matching clients, or an
+   *     empty list if none found.
+   */
+  public List<ForestClientDto> searchByClientNumbers(
+      int page, int size, List<String> clientNumbers) {
+    log.info("Searching forest client by ids {}, page: {}, size: {}", clientNumbers, page, size);
+    return forestClientApiProvider.searchClientsByIds(page, size, clientNumbers);
+  }
 
   private String checkClientNumber(String clientNumber) {
     if (StringUtils.isEmpty(clientNumber)) {
@@ -112,5 +127,4 @@ public class ForestClientService {
       return "00000000";
     }
   }
-
 }

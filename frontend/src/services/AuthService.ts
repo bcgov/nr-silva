@@ -1,6 +1,6 @@
 import { JWT } from '@/types/amplify';
 import { FamLoginUser, IdpProviderType, validIdpProviders } from '@/types/AuthTypes';
-import { extractGroups, parsePrivileges } from '@/utils/famUtils';
+import { extractGroups, extractUniqueClients, parsePrivileges } from '@/utils/famUtils';
 
 // Define a global variable to store the ID token
 let authIdToken: string | null = null;
@@ -59,6 +59,7 @@ export const parseToken = (idToken: JWT | undefined): FamLoginUser | undefined =
     email,
     idpProvider,
     privileges: parsePrivileges(cognitoGroups),
+    associatedClients: extractUniqueClients(cognitoGroups),
     firstName: sanitizedFirstName,
     lastName,
     providerUsername: `${idpProvider}\\${userName}`

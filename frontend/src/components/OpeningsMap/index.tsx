@@ -7,16 +7,16 @@ import {
   WMSTileLayer,
 } from "react-leaflet";
 import { FeatureCollection } from "geojson";
-
 import { MapKindType, MapLayer } from "@/types/MapLayer";
-import { allLayers } from "./constants";
-import { getMapQueries, getUserLocation } from "./fetcher";
-import "./styles.scss";
-
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
 import OpeningsMapFullScreen from "@/components/OpeningsMapFullScreen";
+
+import { allLayers } from "./constants";
+import { getMapQueries, getUserLocation } from "./fetcher";
+
+import "./styles.scss";
 
 interface MapProps {
   openingIds: number[] | null;
@@ -130,7 +130,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   };
 
   return (
-    <div style={{ height: `${mapSize}px`, width: "100%" }}>
+    <div className="opening-map-container" style={{ height: `${mapSize}px`, width: "100%" }}>
       {/* Display the user's location if no openings are found */}
       <MapContainer
         center={position}

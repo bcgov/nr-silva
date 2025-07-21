@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { SideNavLink } from '@carbon/react';
 import { Asleep, Light, UserFollow } from '@carbon/icons-react';
-import AvatarImage from '../AvatarImage';
-import { useThemePreference } from '../../utils/ThemePreference';
-import PanelSectionName from '../PanelSectionName';
-import './MyProfile.scss';
-import { useAuth } from '../../contexts/AuthProvider';
+import { useThemePreference } from '@/utils/ThemePreference';
+import PanelSectionName from '@/components/PanelSectionName';
+import DistrictSelection from '@/components/DistrictSelection';
+import Avatar from '@/components/Avatar';
+import { useAuth } from '@/contexts/AuthProvider';
+
+import './styles.scss';
 
 const MyProfile = () => {
   const { theme, setTheme } = useThemePreference();
   const [goTo, setGoTo] = useState<boolean>(false);
-  const { logout, user: authUser } = useAuth();
+  const { logout, user } = useAuth();
 
   const changeTheme = () => {
     if (theme === 'g10') {
@@ -32,18 +34,33 @@ const MyProfile = () => {
   return (
     <div className="my-profile-container">
       <div className="user-info-section">
-        <div className="user-image">
-          <AvatarImage userName={`${authUser?.firstName} ${authUser?.lastName}`} size="large" />
+        <div className="user-avatar">
+          <Avatar
+            size="md"
+            initial={`${user?.firstName?.charAt(0).toUpperCase()}${user?.lastName?.charAt(0).toUpperCase()}`}
+          />
         </div>
         <div className="user-data">
-          <p className="user-name">{`${authUser?.firstName} ${authUser?.lastName}`}</p>
-          <p>{`${authUser?.idpProvider ? authUser?.idpProvider + ': ' : null}${authUser?.userName}`}</p>
-          <p>{`Email: ${authUser?.email}`}</p>
+          <p className="user-name">{`${user?.firstName} ${user?.lastName}`}</p>
+          <p>{`${user?.idpProvider ? user?.idpProvider + ': ' : null}${user?.userName}`}</p>
+          <p>{`Email: ${user?.email}`}</p>
 
         </div>
       </div>
       <nav className="account-nav">
         <ul>
+          {
+            user?.associatedClients.length
+              ? (
+                <li>
+                  <PanelSectionName title="Select district office" light />
+                  <div className="district-selection-container">
+                    <DistrictSelection simpleView />
+                  </div>
+                </li>
+              )
+              : null
+          }
           <li>
             <hr className="divisory" />
             <PanelSectionName title="Options" light />

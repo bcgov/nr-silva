@@ -73,6 +73,11 @@ describe('AuthService', () => {
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
+        associatedClients: [
+          "00012797",
+          "00001012",
+          "00002176",
+        ]
       });
     });
 
@@ -122,6 +127,11 @@ describe('AuthService', () => {
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
+        associatedClients: [
+          "00012797",
+          "00001012",
+          "00002176",
+        ]
       });
     });
 
@@ -149,6 +159,7 @@ describe('AuthService', () => {
         firstName: 'John',
         lastName: 'Doe',
         providerUsername: "undefined\\johndoe",
+        associatedClients: []
       });
     });
   });

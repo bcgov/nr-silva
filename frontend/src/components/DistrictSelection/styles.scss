@@ -1,0 +1,99 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+@use '@carbon/type';
+
+.district-selection-grid {
+  padding: 0;
+  gap: 1rem;
+
+  .full-width-col {
+    margin: 0 -0.2rem;
+  }
+
+  .district-list {
+    list-style: none;
+    gap: 0.2rem;
+    height: 40vh;
+    overflow-y: auto;
+  }
+
+  .skeleton-container {
+    width: 100%;
+    height: 25vh;
+
+    .#{vars.$bcgov-prefix}--skeleton__placeholder {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .action-btn {
+    max-width: unset;
+    width: 100%;
+  }
+}
+
+
+.district-list-item {
+
+  .district-list-item-btn {
+    border-radius: 0.25rem;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    background-color: transparent;
+    align-items: flex-start;
+    row-gap: 0.25rem;
+
+    .icon-and-name-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+
+      .org-item-icon,
+      .icon-error {
+        width: 1.5rem;
+        height: 1.5rem;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+        fill: var(--#{vars.$bcgov-prefix}-border-interactive, colors.$blue-60);
+      }
+
+      .icon-error {
+        fill: colors.$red-60;
+      }
+
+      .client-name {
+        @include type.type-style('body-01');
+        margin-left: 1.5rem;
+        vertical-align: middle;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .sub-info-row {
+      @include type.type-style('body-compact-02');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary, colors.$gray-70);
+      margin-left: 3rem;
+    }
+  }
+
+
+  .selected-district {
+    border: 2px solid var(--#{vars.$bcgov-prefix}-border-interactive);
+    background-color: var(--#{vars.$bcgov-prefix}-tag-background-blue);
+  }
+
+
+  &:hover {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-01);
+  }
+
+}
