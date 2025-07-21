@@ -731,7 +731,7 @@ public class SilvaOracleQueryConstants {
       	fcli.TOTAL_STEMS_PER_HA AS total, --Silviculture doesnt have
       	fcli.TOTAL_WELL_SPACED_STEMS_PER_HA  AS inventory_total_well_spaced,
       	fcli.WELL_SPACED_STEMS_PER_HA  AS inventory_well_spaced,
-      	fcli.FREE_GROWING_STEMS_PER_HA  AS inventory_free_growing,		
+      	fcli.FREE_GROWING_STEMS_PER_HA  AS inventory_free_growing,
       	fcls.TOTAL_WELL_SPACED_STEMS_PER_HA  AS silviculture_total_well_spaced,
       	fcls.WELL_SPACED_STEMS_PER_HA  AS silviculture_well_spaced,
       	fcls.FREE_GROWING_STEMS_PER_HA  AS silviculture_free_growing,
@@ -742,7 +742,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_COVER_NON_MAPPED_AREA fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
       LEFT JOIN STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
       LEFT JOIN FOREST_COVER_LAYER fcli ON (fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID)
-      LEFT JOIN FOREST_COVER_LAYER fcls ON (fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID)\s
+      LEFT JOIN FOREST_COVER_LAYER fcls ON (fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID)
       LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
       WHERE
       	fc.OPENING_ID = :openingId
