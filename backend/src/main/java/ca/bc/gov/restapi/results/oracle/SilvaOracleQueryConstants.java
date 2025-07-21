@@ -910,4 +910,211 @@ public class SilvaOracleQueryConstants {
       ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC;
       """;
 
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST = """
+      WITH ordered_seh AS (
+        SELECT
+          seh.STOCKING_EVENT_HISTORY_ID,
+          seh.ENTRY_TIMESTAMP,
+          ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+        FROM THE.STOCKING_EVENT_HISTORY seh
+        WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :currentHistoryId
+      ),
+      previous_event AS (
+        SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      -- current and previous SU
+      current_su AS (
+        SELECT * FROM THE.STOCKING_STANDARD_UNIT_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      previous_su AS (
+        SELECT * FROM THE.STOCKING_STANDARD_UNIT_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      -- current and previous ECO
+      current_ec AS (
+        SELECT * FROM THE.STOCKING_ECOLOGY_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      previous_ec AS (
+        SELECT * FROM THE.STOCKING_ECOLOGY_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      all_units AS (
+        SELECT
+            DISTINCT COALESCE(curr.STOCKING_STANDARD_UNIT_ID, prev.STOCKING_STANDARD_UNIT_ID) AS STOCKING_STANDARD_UNIT_ID,
+            curr.STOCKING_EVENT_HISTORY_ID
+        FROM current_su curr
+        FULL OUTER JOIN previous_su prev ON curr.STOCKING_STANDARD_UNIT_ID = prev.STOCKING_STANDARD_UNIT_ID
+      )
+      SELECT
+        a.STOCKING_EVENT_HISTORY_ID,
+        a.STOCKING_STANDARD_UNIT_ID,
+        -- SU diffs
+        prev_su.STANDARDS_REGIME_ID AS old_regime_id,
+        curr_su.STANDARDS_REGIME_ID AS new_regime_id,
+        prev_su.NET_AREA AS old_net_area,
+        curr_su.NET_AREA AS new_net_area,
+        prev_su.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS old_max_soil_disturbance,
+        curr_su.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS new_max_soil_disturbance,
+        CASE
+            WHEN prev_su.VARIANCE_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS old_variance_indicator,
+        CASE
+            WHEN curr_su.VARIANCE_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS new_variance_indicator,
+        CASE
+            WHEN prev_su.REGEN_OBLIGATION_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS old_regen_obligation_indicator,
+        CASE
+            WHEN curr_su.REGEN_OBLIGATION_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS new_regen_obligation_indicator,
+        prev_su.NO_REGEN_EARLY_OFFSET_YRS AS old_no_regen_early_offset_years,
+        curr_su.NO_REGEN_EARLY_OFFSET_YRS AS new_no_regen_early_offset_years,
+        prev_su.NO_REGEN_LATE_OFFSET_YRS AS old_no_regen_late_offset_years,
+        curr_su.NO_REGEN_LATE_OFFSET_YRS AS new_no_regen_late_offset_years,
+        prev_su.FREE_GROWING_EARLY_OFFSET_YRS AS old_free_growing_early_offset_years,
+        curr_su.FREE_GROWING_EARLY_OFFSET_YRS AS new_free_growing_early_offset_years,
+        prev_su.FREE_GROWING_LATE_OFFSET_YRS AS old_free_growing_late_offset_years,
+        curr_su.FREE_GROWING_LATE_OFFSET_YRS AS new_free_growing_late_offset_years,
+        -- ECOLOGY diffs
+        prev_ec.BGC_ZONE_CODE AS old_bgc_zone,
+        curr_ec.BGC_ZONE_CODE AS new_bgc_zone,
+        prev_ec.BGC_SUBZONE_CODE AS old_bgc_subzone,
+        curr_ec.BGC_SUBZONE_CODE AS new_bgc_subzone,
+        prev_ec.BGC_VARIANT AS old_bgc_variant,
+        curr_ec.BGC_VARIANT AS new_bgc_variant,
+        prev_ec.BGC_PHASE AS old_bgc_phase,
+        curr_ec.BGC_PHASE AS new_bgc_phase,
+        prev_ec.BEC_SITE_SERIES AS old_bec_site_series,
+        curr_ec.BEC_SITE_SERIES AS new_bec_site_series,
+        prev_ec.BEC_SITE_TYPE AS old_bec_site_type,
+        curr_ec.BEC_SITE_TYPE AS new_bec_site_type,
+        prev_ec.BEC_SERAL AS old_bec_seral,
+        curr_ec.BEC_SERAL AS new_bec_seral
+      FROM all_units a
+      LEFT JOIN current_su curr_su ON curr_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN previous_su prev_su ON prev_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN current_ec curr_ec ON curr_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID;
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS = """
+      WITH ordered_seh AS (
+        SELECT
+          seh.STOCKING_EVENT_HISTORY_ID,
+          seh.ENTRY_TIMESTAMP,
+          ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+        FROM THE.STOCKING_EVENT_HISTORY seh
+        WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :currentHistoryId
+      ),
+      previous_event AS (
+        SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      curr_layer AS (
+        SELECT * FROM THE.STOCKING_LAYER_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      prev_layer AS (
+        SELECT * FROM THE.STOCKING_LAYER_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      layer_keys AS (
+        SELECT DISTINCT
+          COALESCE(c.STOCKING_STANDARD_UNIT_ID, p.STOCKING_STANDARD_UNIT_ID) AS ssu_id,
+          COALESCE(c.STOCKING_LAYER_ID, p.STOCKING_LAYER_ID) AS stocking_layer_id
+        FROM curr_layer c
+        FULL OUTER JOIN prev_layer p ON
+          c.STOCKING_STANDARD_UNIT_ID = p.STOCKING_STANDARD_UNIT_ID AND
+          c.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+      )
+      SELECT
+        (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event) AS stocking_event_history_id,
+        k.ssu_id,
+        k.stocking_layer_id as,
+        p.STOCKING_LAYER_ID AS old_layer_id,
+        c.STOCKING_LAYER_ID AS new_layer_id,
+        p.STOCKING_LAYER_CODE AS old_stocking_layer_code,
+        c.STOCKING_LAYER_CODE AS new_stocking_layer_code,
+        p.MIN_HORIZONTAL_DISTANCE AS old_min_horizontal_distance,
+        c.MIN_HORIZONTAL_DISTANCE AS new_min_horizontal_distance,
+        p.MIN_PREF_STOCKING_STANDARD AS old_min_perf_stocking_standard,
+        c.MIN_PREF_STOCKING_STANDARD AS new_min_perf_stocking_standard,
+        p.MIN_STOCKING_STANDARD AS old_min_stocking_standard,
+        c.MIN_STOCKING_STANDARD AS new_min_stocking_standard,
+        p.MIN_POST_SPACING AS old_min_post_spacing,
+        c.MIN_POST_SPACING AS new_min_post_spacing,
+        p.RESIDUAL_BASAL_AREA AS old_residual_basal_area,
+        c.RESIDUAL_BASAL_AREA AS new_residual_basal_area,
+        p.TARGET_STOCKING AS old_target_stocking,
+        c.TARGET_STOCKING AS new_target_stocking,
+        p.HGHT_RELATIVE_TO_COMP AS old_height_relative_to_comp,
+        c.HGHT_RELATIVE_TO_COMP AS new_height_relative_to_comp,
+        p.MAX_CONIFER AS old_max_conifer,
+        c.MAX_CONIFER AS new_max_conifer,
+        p.MAX_POST_SPACING AS old_max_post_spacing,
+        c.MAX_POST_SPACING AS new_max_post_spacing
+      FROM layer_keys k
+      LEFT JOIN curr_layer c ON c.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND c.STOCKING_LAYER_ID = k.stocking_layer_id
+      LEFT JOIN prev_layer p ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND p.STOCKING_LAYER_ID = k.stocking_layer_id;
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES = """
+      WITH ordered_seh AS (
+          SELECT
+              seh.STOCKING_EVENT_HISTORY_ID AS seh_id,
+              seh.ENTRY_TIMESTAMP,
+              ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+          FROM THE.STOCKING_EVENT_HISTORY seh
+          WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+          SELECT * FROM ordered_seh WHERE seh_id = :currentHistoryId
+      ),
+      previous_event AS (
+          SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      curr_species AS (
+          SELECT * FROM THE.STOCKING_LAYER_SPECIES_ARCHIVE
+          WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM current_event)
+      ),
+      prev_species AS (
+          SELECT * FROM THE.STOCKING_LAYER_SPECIES_ARCHIVE
+          WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM previous_event)
+      ),
+      all_keys AS (
+          SELECT DISTINCT
+              COALESCE(c.STOCKING_STANDARD_UNIT_ID, p.STOCKING_STANDARD_UNIT_ID) AS ssu_id,
+              COALESCE(c.STOCKING_LAYER_ID, p.STOCKING_LAYER_ID) AS stocking_layer_id,
+              COALESCE(c.SILV_TREE_SPECIES_CODE, p.SILV_TREE_SPECIES_CODE) AS species_code
+          FROM curr_species c
+          FULL OUTER JOIN prev_species p
+            ON c.STOCKING_STANDARD_UNIT_ID = p.STOCKING_STANDARD_UNIT_ID
+           AND c.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+           AND c.SILV_TREE_SPECIES_CODE = p.SILV_TREE_SPECIES_CODE
+      )
+      SELECT
+          k.ssu_id,
+          k.stocking_layer_id,
+          k.species_code,
+          p.PREFERRED_IND AS old_preferred_ind,
+          c.PREFERRED_IND AS new_preferred_ind,
+          p.MIN_HEIGHT AS old_min_height,
+          c.MIN_HEIGHT AS new_min_height
+      FROM all_keys k
+      LEFT JOIN curr_species c
+        ON c.STOCKING_STANDARD_UNIT_ID = k.ssu_id
+       AND c.STOCKING_LAYER_ID = k.stocking_layer_id
+       AND c.SILV_TREE_SPECIES_CODE = k.species_code
+      LEFT JOIN prev_species p
+        ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id
+       AND p.STOCKING_LAYER_ID = k.stocking_layer_id
+       AND p.SILV_TREE_SPECIES_CODE = k.species_code;
+      """;
 }
