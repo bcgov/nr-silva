@@ -1117,4 +1117,63 @@ public class SilvaOracleQueryConstants {
        AND p.STOCKING_LAYER_ID = k.stocking_layer_id
        AND p.SILV_TREE_SPECIES_CODE = k.species_code;
       """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
+      WITH fca_deduped AS (
+          SELECT
+            MAX(OPENING_ID) AS opening_id,
+            TRUNC(UPDATE_TIMESTAMP) AS update_timestamp
+          FROM (
+              SELECT fca.*,
+                     ROW_NUMBER() OVER (
+                         PARTITION BY fca.OPENING_ID, TRUNC(fca.UPDATE_TIMESTAMP)
+                         ORDER BY TRUNC(fca.UPDATE_TIMESTAMP) DESC
+                     ) AS rn
+              FROM THE.FOREST_COVER_ARCHIVE fca
+              WHERE fca.OPENING_ID = :openingId
+          )
+          WHERE rn = 1
+          GROUP BY TRUNC(UPDATE_TIMESTAMP)
+      )
+      SELECT
+          ols.OPENING_ID,
+          ols.OPENING_LAND_STATUS_DATE AS fc_date,
+          (ols.NP_FOR_AREA + ols.NP_NAT_AREA + ols.NP_UNN_AREA) AS np,
+          (ols.NSR_NPL_AREA + ols.NSR_PL_AREA + ols.NSR_NAT_AREA) AS nsr,
+          (ols.SR_ART_AREA + ols.SR_NAT_AREA) AS imm,
+          (ols.MAT_AREA + ols.NP_NAT_AREA + ols.NC_BR_AREA) AS other,
+          (
+              ols.NP_FOR_AREA + ols.NP_NAT_AREA + ols.NP_UNN_AREA +
+              ols.NSR_NPL_AREA + ols.NSR_PL_AREA + ols.NSR_NAT_AREA +
+              ols.SR_ART_AREA + ols.SR_NAT_AREA +
+              ols.MAT_AREA + ols.NP_NAT_AREA + ols.NC_BR_AREA
+          ) AS TOTAL,
+        CASE
+            WHEN ols.OPENING_LAND_STATUS_DATE = (
+                SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
+                FROM THE.OPENING_LAND_STATUS ols2
+                WHERE ols2.OPENING_ID = ols.OPENING_ID
+            )
+            THEN 'true'
+            WHEN fca.OPENING_ID IS NOT NULL
+                 AND TRUNC(fca.UPDATE_TIMESTAMP) = TRUNC(ols.OPENING_LAND_STATUS_DATE)
+            THEN 'true'
+            ELSE 'false'
+        END AS HAS_DETAILS,
+          CASE
+              WHEN ols.OPENING_LAND_STATUS_DATE = (
+                  SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
+                  FROM THE.OPENING_LAND_STATUS ols2
+                  WHERE ols2.OPENING_ID = ols.OPENING_ID
+              )
+              THEN 'true'
+              ELSE 'false'
+          END AS CURRENT_HISTORY
+      FROM THE.OPENING_LAND_STATUS ols
+      LEFT JOIN fca_deduped fca
+          ON ols.OPENING_ID = fca.OPENING_ID
+          AND TRUNC(ols.OPENING_LAND_STATUS_DATE) = TRUNC(fca.UPDATE_TIMESTAMP)
+      WHERE ols.OPENING_ID = :openingId
+      ORDER BY ols.OPENING_LAND_STATUS_DATE DESC;
+      """;
 }
