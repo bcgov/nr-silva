@@ -1257,22 +1257,47 @@ public class SilvaOracleQueryConstants {
         ssc.DESCRIPTION AS status_name,
         fc.STOCKING_TYPE_CODE AS type_code,
         stc.DESCRIPTION AS type_name,
-        fcli.TOTAL_STEMS_PER_HA AS total, --Silviculture doesnt have
-        fcli.TOTAL_WELL_SPACED_STEMS_PER_HA  AS inventory_total_well_spaced,
-        fcli.WELL_SPACED_STEMS_PER_HA  AS inventory_well_spaced,
-        fcli.FREE_GROWING_STEMS_PER_HA  AS inventory_free_growing,		
-        fcls.TOTAL_WELL_SPACED_STEMS_PER_HA  AS silviculture_total_well_spaced,
-        fcls.WELL_SPACED_STEMS_PER_HA  AS silviculture_well_spaced,
-        fcls.FREE_GROWING_STEMS_PER_HA  AS silviculture_free_growing,
-        fc.REFERENCE_YEAR
-      FROM THE.FOREST_COVER_ARCHIVE fc
-      LEFT JOIN THE.STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
-      LEFT JOIN THE.STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
-      LEFT JOIN THE.FOREST_COVER_NON_MAPPED_ARC fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
-      LEFT JOIN THE.STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
-      LEFT JOIN THE.FOREST_COVER_LAYER_ARCHIVE fcli ON (fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID)
-      LEFT JOIN THE.FOREST_COVER_LAYER_ARCHIVE fcls ON (fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID)
-      LEFT JOIN THE.STOCKING_STANDARD_UNIT_ARCHIVE ssu ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+        fcli.TOTAL_STEMS_PER_HA AS total,
+        fcli.TOTAL_WELL_SPACED_STEMS_PER_HA AS inventory_total_well_spaced,
+        fcli.WELL_SPACED_STEMS_PER_HA AS inventory_well_spaced,
+        fcli.FREE_GROWING_STEMS_PER_HA AS inventory_free_growing,
+        fcls.TOTAL_WELL_SPACED_STEMS_PER_HA AS silviculture_total_well_spaced,
+        fcls.WELL_SPACED_STEMS_PER_HA AS silviculture_well_spaced,
+        fcls.FREE_GROWING_STEMS_PER_HA AS silviculture_free_growing,
+        fc.REFERENCE_YEAR,
+        layer_summary.is_single_layer AS is_single_layer,
+        fc.SILV_RESERVE_CODE AS reserve_code,
+        fc.SILV_RESERVE_OBJECTIVE_CODE AS objective_code
+      FROM FOREST_COVER_ARCHIVE fc
+      LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
+      LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
+      LEFT JOIN FOREST_COVER_NON_MAPPED_ARC fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
+      LEFT JOIN STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
+      LEFT JOIN FOREST_COVER_LAYER_ARCHIVE fcli
+        ON fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      LEFT JOIN FOREST_COVER_LAYER_ARCHIVE fcls
+        ON fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      LEFT JOIN STOCKING_STANDARD_UNIT_ARCHIVE ssu
+        ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN (
+        SELECT
+          fc.FOREST_COVER_ID,
+          CASE
+            WHEN layer.count_layers IS NULL OR layer.count_layers = 0 THEN 'Y'
+            WHEN layer.count_SI > 0 THEN 'Y'
+            ELSE 'N'
+          END AS is_single_layer
+        FROM FOREST_COVER_ARCHIVE fc
+        LEFT JOIN (
+          SELECT
+              fcl.FOREST_COVER_ID,
+              COUNT(*) AS count_layers,
+              COUNT(CASE WHEN fcl.FOREST_COVER_LAYER_CODE IN ('S', 'I') THEN 1 END) AS count_SI
+          FROM FOREST_COVER_LAYER_ARCHIVE fcl
+          GROUP BY fcl.FOREST_COVER_ID
+        ) layer ON fc.FOREST_COVER_ID = layer.FOREST_COVER_ID
+      ) layer_summary
+        ON layer_summary.FOREST_COVER_ID = fc.FOREST_COVER_ID
       WHERE
         fc.OPENING_ID = :openingId
         AND TRUNC(fc.UPDATE_TIMESTAMP) = TO_DATE(:updateDate, 'YYYY-MM-DD')
