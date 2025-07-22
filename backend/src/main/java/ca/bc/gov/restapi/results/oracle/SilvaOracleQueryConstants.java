@@ -963,6 +963,7 @@ public class SilvaOracleQueryConstants {
         COUNT(ssua.STOCKING_EVENT_HISTORY_ID) AS su_count,
         SUM(ssua.NET_AREA) AS total_nar,
         MAX(seh.RESULTS_AUDIT_ACTION_CODE) AS audit_action_code,
+        MAX(raac.DESCRIPTION) AS audit_action_description,
         MAX(seh.RESULTS_SUBMISSION_ID) AS esf_submission_id,
         MAX(seh.ENTRY_USERID) AS submitted_by_user_id,
         MAX(oah.APP_ENT_BY_USERID) AS approved_by_user_id
@@ -972,6 +973,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN OPENING_AMENDMENT_HISTORY oah
         ON seh.OPENING_ID = oah.OPENING_ID
         AND seh.OPENING_AMENDMENT_NUMBER = oah.OPENING_AMENDMENT_NUMBER
+      LEFT JOIN RESULTS_AUDIT_ACTION_CODE raac
+        ON seh.RESULTS_AUDIT_ACTION_CODE = raac.RESULTS_AUDIT_ACTION_CODE
       WHERE seh.OPENING_ID = :openingId
       GROUP BY ssua.STOCKING_EVENT_HISTORY_ID
       ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC
@@ -1108,6 +1111,8 @@ public class SilvaOracleQueryConstants {
         c.STOCKING_LAYER_ID AS new_layer_id,
         p.STOCKING_LAYER_CODE AS old_stocking_layer_code,
         c.STOCKING_LAYER_CODE AS new_stocking_layer_code,
+        slcp.DESCRIPTION AS old_stocking_layer_description,
+        slcc.DESCRIPTION AS new_stocking_layer_description,
         p.MIN_HORIZONTAL_DISTANCE AS old_min_horizontal_distance,
         c.MIN_HORIZONTAL_DISTANCE AS new_min_horizontal_distance,
         p.MIN_PREF_STOCKING_STANDARD AS old_min_perf_stocking_standard,
@@ -1128,7 +1133,9 @@ public class SilvaOracleQueryConstants {
         c.MAX_POST_SPACING AS new_max_post_spacing
       FROM layer_keys k
       LEFT JOIN curr_layer c ON c.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND c.STOCKING_LAYER_ID = k.stocking_layer_id
-      LEFT JOIN prev_layer p ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND p.STOCKING_LAYER_ID = k.stocking_layer_id;
+      LEFT JOIN prev_layer p ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND p.STOCKING_LAYER_ID = k.stocking_layer_id
+      LEFT JOIN STOCKING_LAYER_CODE slcc ON c.STOCKING_LAYER_CODE = slcc.STOCKING_LAYER_CODE
+      LEFT JOIN STOCKING_LAYER_CODE slcp ON p.STOCKING_LAYER_CODE = slcp.STOCKING_LAYER_CODE
       """;
 
   public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES = """
@@ -1168,9 +1175,16 @@ public class SilvaOracleQueryConstants {
       SELECT
           k.ssu_id,
           k.stocking_layer_id,
-          k.species_code,
-          p.PREFERRED_IND AS old_preferred_ind,
-          c.PREFERRED_IND AS new_preferred_ind,
+          p.SILV_TREE_SPECIES_CODE AS old_species_code,
+          c.SILV_TREE_SPECIES_CODE AS new_species_code,
+          stscp.DESCRIPTION AS old_species_description,
+          stscc.DESCRIPTION AS new_species_description,
+          CASE
+            WHEN p.PREFERRED_IND = 'Y' THEN 'true' ELSE 'false'
+          END AS old_preferred_ind,
+          CASE
+            WHEN c.PREFERRED_IND = 'Y' THEN 'true' ELSE 'false'
+          END AS new_preferred_ind,
           p.MIN_HEIGHT AS old_min_height,
           c.MIN_HEIGHT AS new_min_height
       FROM all_keys k
@@ -1181,7 +1195,9 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN prev_species p
         ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id
        AND p.STOCKING_LAYER_ID = k.stocking_layer_id
-       AND p.SILV_TREE_SPECIES_CODE = k.species_code;
+       AND p.SILV_TREE_SPECIES_CODE = k.species_code
+      LEFT JOIN SILV_TREE_SPECIES_CODE stscc ON stscc.SILV_TREE_SPECIES_CODE = c.SILV_TREE_SPECIES_CODE
+      LEFT JOIN SILV_TREE_SPECIES_CODE stscp ON stscp.SILV_TREE_SPECIES_CODE = p.SILV_TREE_SPECIES_CODE
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
