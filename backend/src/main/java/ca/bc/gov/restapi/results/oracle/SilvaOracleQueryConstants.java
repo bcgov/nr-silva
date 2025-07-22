@@ -959,7 +959,7 @@ public class SilvaOracleQueryConstants {
       SELECT
         ssua.STOCKING_EVENT_HISTORY_ID,
         MAX(seh.OPENING_AMENDMENT_NUMBER) AS amendment_number,
-        TO_CHAR(MAX(seh.AMEND_EVENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS') AS amend_timestamp,
+        TO_CHAR(MAX(seh.ENTRY_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS') AS event_timestamp,
         COUNT(ssua.STOCKING_EVENT_HISTORY_ID) AS su_count,
         SUM(ssua.NET_AREA) AS total_nar,
         MAX(seh.RESULTS_AUDIT_ACTION_CODE) AS audit_action_code,
