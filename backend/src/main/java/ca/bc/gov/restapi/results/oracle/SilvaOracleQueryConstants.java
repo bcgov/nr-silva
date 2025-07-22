@@ -987,7 +987,7 @@ public class SilvaOracleQueryConstants {
         WHERE seh.OPENING_ID = :openingId
       ),
       current_event AS (
-        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :currentHistoryId
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :historyId
       ),
       previous_event AS (
         SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
