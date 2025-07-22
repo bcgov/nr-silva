@@ -17,6 +17,7 @@ import {
   CropHealth,
   Certificate,
   VegetationAsset,
+  DocumentAttachment
 } from "@carbon/icons-react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -45,13 +46,19 @@ const OpeningActivities = lazy(
 const OpeningForestCover = lazy(
   () => import("@/components/OpeningDetails/OpeningForestCover")
 );
+const OpeningAttachment = lazy(
+  () => import("@/components/OpeningDetails/OpeningAttachment")
+);
 
 import "./styles.scss";
+import { useAuth } from "../../../contexts/AuthProvider";
 
 const OpeningDetails = () => {
   const param = useParams();
+  const auth = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const openingId = param.openingId;
+  const isIdirUser = auth.user?.idpProvider === 'IDIR';
 
   useEffect(() => {
     document.title = `Opening ${openingId} - Silva`;
@@ -164,6 +171,11 @@ const OpeningDetails = () => {
             </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
             <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest cover</Tab>
+            {
+              isIdirUser
+                ? <Tab renderIcon={() => <DocumentAttachment size={16} />}>Attachments</Tab>
+                : null
+            }
           </TabList>
           <TabPanels>
             <TabPanel className="tab-content full-width-col">
@@ -208,6 +220,17 @@ const OpeningDetails = () => {
                 </Suspense>
               ) : null}
             </TabPanel>
+            {
+              isIdirUser ?
+                <TabPanel className="tab-content full-width-col">
+                  {isActive(5) ? (
+                    <Suspense fallback={<TextAreaSkeleton />}>
+                      <OpeningAttachment openingId={Number(openingId)} />
+                    </Suspense>
+                  ) : null}
+                </TabPanel>
+                : null
+            }
           </TabPanels>
         </Tabs>
       </Column>

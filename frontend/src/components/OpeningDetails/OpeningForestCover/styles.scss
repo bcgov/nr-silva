@@ -56,4 +56,23 @@
       }
     }
   }
+
+  .icon-text-line {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
+    .icon-in-line {
+      svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      }
+    }
+
+    .text-in-line {
+      white-space: nowrap;
+    }
+  }
 }

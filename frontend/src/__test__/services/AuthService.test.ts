@@ -73,6 +73,11 @@ describe('AuthService', () => {
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
+        associatedClients: [
+          "00012797",
+          "00001012",
+          "00002176",
+        ]
       });
     });
 
@@ -122,6 +127,11 @@ describe('AuthService', () => {
         firstName: 'Jack',
         lastName: 'Ryan',
         providerUsername: 'IDIR\\JRYAN',
+        associatedClients: [
+          "00012797",
+          "00001012",
+          "00002176",
+        ]
       });
     });
 
@@ -144,11 +154,12 @@ describe('AuthService', () => {
         userName: 'johndoe',
         displayName: 'Doe, John',
         email: 'john.doe@example.com',
-        idpProvider: '',
+        idpProvider: undefined,
         privileges: {},
         firstName: 'John',
         lastName: 'Doe',
-        providerUsername: '\\johndoe',
+        providerUsername: "undefined\\johndoe",
+        associatedClients: []
       });
     });
   });

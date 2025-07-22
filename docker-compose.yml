@@ -27,7 +27,7 @@ x-db-vars: &db-vars
 services:
   frontend:
     container_name: frontend
-    entrypoint: sh -c "npm ci && npm run dev"
+    entrypoint: sh -c "npm ci && npm run start"
     image: node:20-bullseye
     ports: [ "3000:3000" ]
     volumes: [ "./frontend:/app", "/app/node_modules" ]

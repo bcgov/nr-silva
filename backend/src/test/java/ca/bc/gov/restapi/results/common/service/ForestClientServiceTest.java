@@ -50,8 +50,7 @@ class ForestClientServiceTest {
             ForestClientStatusEnum.ACTIVE,
             ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
             "TBA",
-            "TIMBER SALES MANAGER BABINE"
-            );
+            "TIMBER SALES MANAGER BABINE");
 
     when(forestClientApiProvider.fetchClientByNumber(clientNumber))
         .thenReturn(Optional.of(clientDto));
@@ -126,8 +125,7 @@ class ForestClientServiceTest {
   @DisplayName("No client number should return empty")
   void shouldGetEmptyWhenNoClientNumber(String clientNumber) {
 
-    when(forestClientApiProvider.fetchClientByNumber("00000000"))
-        .thenReturn(Optional.empty());
+    when(forestClientApiProvider.fetchClientByNumber("00000000")).thenReturn(Optional.empty());
 
     Optional<ForestClientDto> clientDtoOptional =
         forestClientService.getClientByNumber(clientNumber);
@@ -138,12 +136,9 @@ class ForestClientServiceTest {
   @ParameterizedTest
   @DisplayName("Search clients by name, acronym, or number succeeded")
   @MethodSource("searchByNameAcronymNumberOk")
-  void fetchClientByName_happyPath_shouldSucceed(
-      int resultSize,
-      String value
-  ){
+  void fetchClientByName_happyPath_shouldSucceed(int resultSize, String value) {
 
-    when(forestClientApiProvider.searchClients(1, 10, value))
+    when(forestClientApiProvider.searchByClients(1, 10, value))
         .thenReturn(
             List.of(
                 new ForestClientDto(
@@ -154,33 +149,27 @@ class ForestClientServiceTest {
                     ForestClientStatusEnum.ACTIVE,
                     ForestClientTypeEnum.MINISTRY_OF_FORESTS_AND_RANGE,
                     "MOF",
-                    "MINISTRY OF FORESTS"
-                )
-            )
-        );
+                    "MINISTRY OF FORESTS")));
 
-    var clients = forestClientService.searchClients(1, 10, value);
+    var clients = forestClientService.searchByClients(1, 10, value);
 
     Assertions.assertEquals(resultSize, clients.size());
-
   }
 
   @Test
   @DisplayName("Search clients by name, acronym, or number not available should succeed")
-  void fetchClientByName_unavailable_shouldSucceed(){
+  void fetchClientByName_unavailable_shouldSucceed() {
 
-    when(forestClientApiProvider.searchClients(1, 10, "COMPANY"))
-        .thenReturn(List.of());
+    when(forestClientApiProvider.searchByClients(1, 10, "COMPANY")).thenReturn(List.of());
 
-    var clients = forestClientService.searchClients(1, 10, "COMPANY");
+    var clients = forestClientService.searchByClients(1, 10, "COMPANY");
 
     Assertions.assertEquals(0, clients.size());
-
   }
 
   @Test
   @DisplayName("Fetch client locations happy path should succeed")
-  void fetchClientLocations_happyPath_shouldSucceed(){
+  void fetchClientLocations_happyPath_shouldSucceed() {
 
     when(forestClientApiProvider.fetchLocationsByClientNumber("00012797"))
         .thenReturn(
@@ -205,8 +194,7 @@ class ForestClientServiceTest {
                     null,
                     null,
                     null,
-                    null
-                ),
+                    null),
                 new ForestClientLocationDto(
                     null,
                     "01",
@@ -227,15 +215,57 @@ class ForestClientServiceTest {
                     null,
                     null,
                     null,
-                    null
-                )
-            )
-        );
+                    null)));
 
     var locations = forestClientService.getClientLocations("00012797");
 
     Assertions.assertEquals(2, locations.size());
+  }
 
+  @Test
+  @DisplayName("Search clients by client numbers happy path should succeed")
+  void searchByClientNumbers_happyPath_shouldSucceed() {
+    List<String> clientNumbers = List.of("00123456", "00765432");
+
+    when(forestClientApiProvider.searchClientsByIds(0, 10, clientNumbers))
+        .thenReturn(
+            List.of(
+                new ForestClientDto(
+                    "00123456",
+                    "CLIENT A",
+                    "FirstA",
+                    "MiddleA",
+                    ForestClientStatusEnum.ACTIVE,
+                    ForestClientTypeEnum.ASSOCIATION,
+                    "A1",
+                    "CLIENT A"),
+                new ForestClientDto(
+                    "00765432",
+                    "CLIENT B",
+                    "FirstB",
+                    "MiddleB",
+                    ForestClientStatusEnum.ACTIVE,
+                    ForestClientTypeEnum.ASSOCIATION,
+                    "B1",
+                    "CLIENT B")));
+
+    var result = forestClientService.searchByClientNumbers(0, 10, clientNumbers);
+
+    Assertions.assertEquals(2, result.size());
+    Assertions.assertEquals("00123456", result.get(0).clientNumber());
+    Assertions.assertEquals("00765432", result.get(1).clientNumber());
+  }
+
+  @Test
+  @DisplayName("Search clients by client numbers returns empty when no matches found")
+  void searchByClientNumbers_noResult_shouldReturnEmptyList() {
+    List<String> clientNumbers = List.of("99999999", "88888888");
+
+    when(forestClientApiProvider.searchClientsByIds(0, 10, clientNumbers)).thenReturn(List.of());
+
+    var result = forestClientService.searchByClientNumbers(0, 10, clientNumbers);
+
+    Assertions.assertTrue(result.isEmpty());
   }
 
   private static Stream<Arguments> searchByNameAcronymNumberOk() {
@@ -243,8 +273,6 @@ class ForestClientServiceTest {
         Arguments.of(1, "INDIA"),
         Arguments.of(1, "SAMPLIBC"),
         Arguments.of(1, "00000001"),
-        Arguments.of(1, "1")
-    );
+        Arguments.of(1, "1"));
   }
-
 }

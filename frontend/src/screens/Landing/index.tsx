@@ -59,13 +59,12 @@ const Landing: React.FC = () => {
 
             {/* Login buttons */}
             <div
-              className={`buttons-container ${
-                isBtnSingleRow ? "single-row" : "two-rows"
-              }`}
+              className={`buttons-container ${isBtnSingleRow ? "single-row" : "two-rows"
+                }`}
             >
               <Button
                 type="button"
-                onClick={() => login("idir")}
+                onClick={() => login("IDIR")}
                 renderIcon={Login}
                 data-testid="landing-button__idir"
                 className="login-btn"
@@ -76,7 +75,7 @@ const Landing: React.FC = () => {
               <Button
                 type="button"
                 kind="tertiary"
-                onClick={() => login("bceid")}
+                onClick={() => login("BCEIDBUSINESS")}
                 renderIcon={Login}
                 data-testid="landing-button__bceid"
                 className="login-btn"
