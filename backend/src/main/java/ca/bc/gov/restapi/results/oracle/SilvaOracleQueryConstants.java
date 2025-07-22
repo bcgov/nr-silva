@@ -955,7 +955,7 @@ public class SilvaOracleQueryConstants {
       WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId
       """;
 
-  public static String GET_OPENING_STANDARD_UNIT_HISTORY_LIST = """
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_LIST = """
       SELECT
         ssua.STOCKING_EVENT_HISTORY_ID,
         MAX(seh.OPENING_AMENDMENT_NUMBER) AS amendment_number,
