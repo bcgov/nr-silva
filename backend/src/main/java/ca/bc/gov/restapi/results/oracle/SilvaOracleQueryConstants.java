@@ -937,7 +937,7 @@ public class SilvaOracleQueryConstants {
         rae.ENTRY_USERID AS entry_user_id,
         TO_CHAR(rae.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
       FROM RESULTS_AUDIT_EVENT rae
-      WHERE rae.OPENING_ID = :openingId;
+      WHERE rae.OPENING_ID = :openingId
       """;
 
   public static final String GET_OPENING_HISTORY_AUDIT_DETAIL_LIST = """
@@ -952,7 +952,7 @@ public class SilvaOracleQueryConstants {
         rad.ENTRY_USERID AS entry_user_id,
         TO_CHAR(rad.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
       FROM RESULTS_AUDIT_DETAIL rad
-      WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId;
+      WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId
       """;
 
   public static String GET_OPENING_STANDARD_UNIT_HISTORY_LIST = """
@@ -974,7 +974,7 @@ public class SilvaOracleQueryConstants {
         AND seh.OPENING_AMENDMENT_NUMBER = oah.OPENING_AMENDMENT_NUMBER
       WHERE seh.OPENING_ID = :openingId
       GROUP BY ssua.STOCKING_EVENT_HISTORY_ID
-      ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC;
+      ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC
       """;
 
   public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST = """
@@ -983,7 +983,7 @@ public class SilvaOracleQueryConstants {
           seh.STOCKING_EVENT_HISTORY_ID,
           seh.ENTRY_TIMESTAMP,
           ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
-        FROM THE.STOCKING_EVENT_HISTORY seh
+        FROM STOCKING_EVENT_HISTORY seh
         WHERE seh.OPENING_ID = :openingId
       ),
       current_event AS (
@@ -994,20 +994,20 @@ public class SilvaOracleQueryConstants {
       ),
       -- current and previous SU
       current_su AS (
-        SELECT * FROM THE.STOCKING_STANDARD_UNIT_ARCHIVE
+        SELECT * FROM STOCKING_STANDARD_UNIT_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
       ),
       previous_su AS (
-        SELECT * FROM THE.STOCKING_STANDARD_UNIT_ARCHIVE
+        SELECT * FROM STOCKING_STANDARD_UNIT_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
       ),
       -- current and previous ECO
       current_ec AS (
-        SELECT * FROM THE.STOCKING_ECOLOGY_ARCHIVE
+        SELECT * FROM STOCKING_ECOLOGY_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
       ),
       previous_ec AS (
-        SELECT * FROM THE.STOCKING_ECOLOGY_ARCHIVE
+        SELECT * FROM STOCKING_ECOLOGY_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
       ),
       all_units AS (
@@ -1079,17 +1079,17 @@ public class SilvaOracleQueryConstants {
         WHERE seh.OPENING_ID = :openingId
       ),
       current_event AS (
-        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :currentHistoryId
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :historyId
       ),
       previous_event AS (
         SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
       ),
       curr_layer AS (
-        SELECT * FROM THE.STOCKING_LAYER_ARCHIVE
+        SELECT * FROM STOCKING_LAYER_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
       ),
       prev_layer AS (
-        SELECT * FROM THE.STOCKING_LAYER_ARCHIVE
+        SELECT * FROM STOCKING_LAYER_ARCHIVE
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
       ),
       layer_keys AS (
@@ -1104,7 +1104,6 @@ public class SilvaOracleQueryConstants {
       SELECT
         (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event) AS stocking_event_history_id,
         k.ssu_id,
-        k.stocking_layer_id as,
         p.STOCKING_LAYER_ID AS old_layer_id,
         c.STOCKING_LAYER_ID AS new_layer_id,
         p.STOCKING_LAYER_CODE AS old_stocking_layer_code,
@@ -1142,17 +1141,17 @@ public class SilvaOracleQueryConstants {
           WHERE seh.OPENING_ID = :openingId
       ),
       current_event AS (
-          SELECT * FROM ordered_seh WHERE seh_id = :currentHistoryId
+          SELECT * FROM ordered_seh WHERE seh_id = :historyId
       ),
       previous_event AS (
           SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
       ),
       curr_species AS (
-          SELECT * FROM THE.STOCKING_LAYER_SPECIES_ARCHIVE
+          SELECT * FROM STOCKING_LAYER_SPECIES_ARCHIVE
           WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM current_event)
       ),
       prev_species AS (
-          SELECT * FROM THE.STOCKING_LAYER_SPECIES_ARCHIVE
+          SELECT * FROM STOCKING_LAYER_SPECIES_ARCHIVE
           WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM previous_event)
       ),
       all_keys AS (
@@ -1241,7 +1240,7 @@ public class SilvaOracleQueryConstants {
           ON ols.OPENING_ID = fca.OPENING_ID
           AND TRUNC(ols.OPENING_LAND_STATUS_DATE) = TRUNC(fca.UPDATE_TIMESTAMP)
       WHERE ols.OPENING_ID = :openingId
-      ORDER BY ols.OPENING_LAND_STATUS_DATE DESC;
+      ORDER BY ols.OPENING_LAND_STATUS_DATE DESC
       """;
 
   public static final String GET_OPENING_FOREST_COVER_ARCHIVE_LIST = """
