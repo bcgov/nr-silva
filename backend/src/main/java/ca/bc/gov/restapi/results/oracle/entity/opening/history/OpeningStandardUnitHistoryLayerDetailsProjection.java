@@ -19,8 +19,8 @@ public interface OpeningStandardUnitHistoryLayerDetailsProjection {
     Integer getNewMinPostSpacing();
     Double getOldResidualBasalArea();
     Double getNewResidualBasalArea();
-    Integer getOldTargetStocking();
-    Integer getNewTargetStocking();
+    Integer getOldTargetWellSpacedTrees();
+    Integer getNewTargetWellSpacedTrees();
     Integer getOldHeightRelativeToComp();
     Integer getNewHeightRelativeToComp();
     Integer getOldMaxConifer();
