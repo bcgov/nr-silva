@@ -1014,15 +1014,17 @@ public class SilvaOracleQueryConstants {
         WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
       ),
       all_units AS (
-        SELECT
-            DISTINCT COALESCE(curr.STOCKING_STANDARD_UNIT_ID, prev.STOCKING_STANDARD_UNIT_ID) AS STOCKING_STANDARD_UNIT_ID,
-            curr.STOCKING_EVENT_HISTORY_ID
+        SELECT DISTINCT
+            COALESCE(curr.STOCKING_STANDARD_UNIT_ID, prev.STOCKING_STANDARD_UNIT_ID) AS stocking_standard_unit_id,
+            COALESCE(curr.STANDARDS_UNIT_ID, prev.STANDARDS_UNIT_ID) AS standards_unit_id,
+            curr.STOCKING_EVENT_HISTORY_ID AS stocking_event_history_id
         FROM current_su curr
         FULL OUTER JOIN previous_su prev ON curr.STOCKING_STANDARD_UNIT_ID = prev.STOCKING_STANDARD_UNIT_ID
       )
       SELECT
-        a.STOCKING_EVENT_HISTORY_ID,
-        a.STOCKING_STANDARD_UNIT_ID,
+        a.stocking_event_history_id,
+        a.stocking_standard_unit_id,
+        a.standards_unit_id,
         -- SU diffs
         prev_su.STANDARDS_REGIME_ID AS old_regime_id,
         curr_su.STANDARDS_REGIME_ID AS new_regime_id,

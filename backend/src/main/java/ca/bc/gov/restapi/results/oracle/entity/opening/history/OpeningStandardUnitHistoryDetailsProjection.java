@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.entity.opening.history;
 public interface OpeningStandardUnitHistoryDetailsProjection {
     Long getStockingEventHistoryId();
     Long getStockingStandardUnitId();
+    String getStandardsUnitId();
     Long getOldRegimeId();
     Long getNewRegimeId();
     Double getOldNetArea();
