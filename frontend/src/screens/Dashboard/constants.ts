@@ -1,4 +1,5 @@
 import { FavouriteCardProps } from "@/components/FavouriteCard/definitions";
+import { useModal } from "../../contexts/ModalContext";
 
 export const FavouriteCardsConfig: FavouriteCardProps[] = [
   {
@@ -11,6 +12,7 @@ export const FavouriteCardsConfig: FavouriteCardProps[] = [
     index: 1,
     title: 'Create opening',
     link: '/',
-    icon: 'MapBoundary'
+    icon: 'MapBoundary',
+    opensModal: true
   }
 ]

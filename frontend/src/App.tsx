@@ -6,6 +6,8 @@ import "./styles/theme.scss";
 import "./styles/default-components.scss";
 import { protectedRoutes, publicRoutes } from "./routes";
 import { ClientSelectionRoute } from "./routes/config";
+import { ModalProvider } from "./contexts/ModalContext";
+import ModalRenderer from "./components/Modals/ModalRenderer";
 
 const App: React.FC = () => {
   const auth = useAuth();
@@ -29,7 +31,10 @@ const App: React.FC = () => {
   return (
     <>
       <ReactQueryDevtools initialIsOpen={false} />
-      <RouterProvider router={browserRouter} />
+      <ModalProvider>
+        <ModalRenderer />
+        <RouterProvider router={browserRouter} />
+      </ModalProvider>
     </>
   );
 };

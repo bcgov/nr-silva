@@ -55,6 +55,7 @@ const Dashboard: React.FC = () => {
                   title={card.title}
                   link={card.link}
                   icon={card.icon}
+                  opensModal={card.opensModal}
                 />
               </Column>
             ))
