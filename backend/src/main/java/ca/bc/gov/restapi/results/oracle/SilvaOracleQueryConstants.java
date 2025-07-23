@@ -1046,10 +1046,14 @@ public class SilvaOracleQueryConstants {
         curr_su.NO_REGEN_EARLY_OFFSET_YRS AS new_no_regen_early_offset_years,
         prev_su.NO_REGEN_LATE_OFFSET_YRS AS old_no_regen_late_offset_years,
         curr_su.NO_REGEN_LATE_OFFSET_YRS AS new_no_regen_late_offset_years,
+        prev_su.REGEN_DELAY_OFFSET_YRS AS old_regen_offset_years,
+        curr_su.REGEN_DELAY_OFFSET_YRS AS new_regen_offset_years,
         prev_su.FREE_GROWING_EARLY_OFFSET_YRS AS old_free_growing_early_offset_years,
         curr_su.FREE_GROWING_EARLY_OFFSET_YRS AS new_free_growing_early_offset_years,
         prev_su.FREE_GROWING_LATE_OFFSET_YRS AS old_free_growing_late_offset_years,
         curr_su.FREE_GROWING_LATE_OFFSET_YRS AS new_free_growing_late_offset_years,
+        prev_su.AMENDMENT_RATIONALE_COMMENT AS old_ammendment_comment,
+        curr_su.AMENDMENT_RATIONALE_COMMENT AS new_ammendment_comment,
         -- ECOLOGY diffs
         prev_ec.BGC_ZONE_CODE AS old_bgc_zone,
         curr_ec.BGC_ZONE_CODE AS new_bgc_zone,
@@ -1069,7 +1073,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN current_su curr_su ON curr_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
       LEFT JOIN previous_su prev_su ON prev_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
       LEFT JOIN current_ec curr_ec ON curr_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
-      LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID;
+      LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
       """;
 
   public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS = """
