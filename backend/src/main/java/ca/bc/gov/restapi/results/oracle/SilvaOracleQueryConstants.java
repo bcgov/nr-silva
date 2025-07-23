@@ -1180,6 +1180,8 @@ public class SilvaOracleQueryConstants {
           k.ssu_id,
           p.STOCKING_LAYER_ID AS old_stocking_layer_id,
           c.STOCKING_LAYER_ID AS new_stocking_layer_id,
+          slap.STOCKING_LAYER_CODE AS old_layer_code,
+          slac.STOCKING_LAYER_CODE AS new_layer_code,
           p.SILV_TREE_SPECIES_CODE AS old_species_code,
           c.SILV_TREE_SPECIES_CODE AS new_species_code,
           stscp.DESCRIPTION AS old_species_description,
@@ -1203,6 +1205,12 @@ public class SilvaOracleQueryConstants {
        AND p.SILV_TREE_SPECIES_CODE = k.species_code
       LEFT JOIN SILV_TREE_SPECIES_CODE stscc ON stscc.SILV_TREE_SPECIES_CODE = c.SILV_TREE_SPECIES_CODE
       LEFT JOIN SILV_TREE_SPECIES_CODE stscp ON stscp.SILV_TREE_SPECIES_CODE = p.SILV_TREE_SPECIES_CODE
+      LEFT JOIN STOCKING_LAYER_ARCHIVE slac
+        ON slac.STOCKING_LAYER_ID = c.STOCKING_LAYER_ID
+        AND slac.STOCKING_EVENT_HISTORY_ID = c.STOCKING_EVENT_HISTORY_ID
+      LEFT JOIN STOCKING_LAYER_ARCHIVE slap
+        ON slap.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+        AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """

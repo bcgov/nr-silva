@@ -4,6 +4,8 @@ public interface OpeningStandardUnitHistoryLayerSpeciesDetailsProjection {
     Long getSsuId();
     Long getOldStockingLayerId();
     Long getNewStockingLayerId();
+    String getOldLayerCode();
+    String getNewLayerCode();
     String getOldSpeciesCode();
     String getNewSpeciesCode();
     String getOldSpeciesDescription();
