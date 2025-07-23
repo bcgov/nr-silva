@@ -1178,7 +1178,8 @@ public class SilvaOracleQueryConstants {
       )
       SELECT
           k.ssu_id,
-          k.stocking_layer_id,
+          p.STOCKING_LAYER_ID AS old_stocking_layer_id,
+          c.STOCKING_LAYER_ID AS new_stocking_layer_id,
           p.SILV_TREE_SPECIES_CODE AS old_species_code,
           c.SILV_TREE_SPECIES_CODE AS new_species_code,
           stscp.DESCRIPTION AS old_species_description,

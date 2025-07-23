@@ -2,7 +2,8 @@ package ca.bc.gov.restapi.results.oracle.entity.opening.history;
 
 public interface OpeningStandardUnitHistoryLayerSpeciesDetailsProjection {
     Long getSsuId();
-    Long getStockingLayerId();
+    Long getOldStockingLayerId();
+    Long getNewStockingLayerId();
     String getOldSpeciesCode();
     String getNewSpeciesCode();
     String getOldSpeciesDescription();
