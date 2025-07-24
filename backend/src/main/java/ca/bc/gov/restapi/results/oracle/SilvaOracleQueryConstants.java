@@ -1215,7 +1215,7 @@ public class SilvaOracleQueryConstants {
         AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST = """
       WITH fca_deduped AS (
           SELECT
             MAX(OPENING_ID) AS opening_id,
@@ -1274,7 +1274,7 @@ public class SilvaOracleQueryConstants {
       ORDER BY ols.OPENING_LAND_STATUS_DATE DESC
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_LIST = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
       SELECT
         fc.FOREST_COVER_ID AS cover_id,
         fc.SILV_POLYGON_NO AS polygon_id,
@@ -1333,7 +1333,7 @@ public class SilvaOracleQueryConstants {
         AND TRUNC(fc.UPDATE_TIMESTAMP) = TO_DATE(:updateDate, 'YYYY-MM-DD')
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_LIST_SPECIES = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES = """
       SELECT
         fcls.TREE_SPECIES_CODE AS species_code,
         tsc.DESCRIPTION AS species_name
@@ -1345,7 +1345,7 @@ public class SilvaOracleQueryConstants {
       ORDER BY fcls.SPECIES_ORDER
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_POLYGON = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_POLYGON = """
       SELECT
         fc.FOREST_COVER_ID,
         fc.SILV_RESERVE_CODE AS reserve_code,
@@ -1370,7 +1370,7 @@ public class SilvaOracleQueryConstants {
         fc.FOREST_COVER_ID = :forestCoverId
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_UNMAPPED = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED = """
       SELECT
         fcnma.NON_MAPPED_AREA_ID AS unmapped_area_id,
         fcnma.NON_MAPPED_AREA AS area,
@@ -1385,7 +1385,7 @@ public class SilvaOracleQueryConstants {
         fcnma.FOREST_COVER_ID = :forestCoverId
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_LAYER = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LAYER = """
       SELECT
         fcl.FOREST_COVER_LAYER_ID AS layer_id,
         fcl.FOREST_COVER_LAYER_CODE AS layer_code,
@@ -1402,7 +1402,7 @@ public class SilvaOracleQueryConstants {
         fcl.FOREST_COVER_ID = :forestCoverId
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_DETAILS_SPECIES = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES = """
       SELECT
         fcls.TREE_SPECIES_CODE AS species_code,
         tsc.DESCRIPTION AS species_name,
@@ -1416,7 +1416,7 @@ public class SilvaOracleQueryConstants {
       ORDER BY fcls.SPECIES_ORDER
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_ARCHIVE_DAMAGE = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DAMAGE = """
       SELECT
         fr.SILV_DAMAGE_AGENT_CODE AS damage_agent_code,
         sdac.DESCRIPTION AS damage_agent_name,
