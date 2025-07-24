@@ -1,0 +1,21 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.create-opening-modal {
+  .#{vars.$bcgov-prefix}--modal-header {
+    overflow-y: unset;
+  }
+
+  .tile-grid {
+    padding: 0;
+    gap: 1rem;
+
+    .#{vars.$bcgov-prefix}--css-grid-column {
+      margin-inline: 0
+    }
+
+    .modal-tile-button {
+      height: 12rem;
+    }
+  }
+
+}

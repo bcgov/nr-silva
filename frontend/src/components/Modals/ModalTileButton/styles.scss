@@ -1,0 +1,18 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.modal-tile-button {
+  border-radius: 0.5rem;
+  border: 2px solid var(--#{vars.$bcgov-prefix}-border-subtle-00, #DFDFE1);
+  background: var(--#{vars.$bcgov-prefix}-layer-02, #FFF);
+
+  &.selected {
+    border-color: #0f62fe;
+    background-color: #edf5ff;
+  }
+
+  &:hover {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
+    border-color: var(--#{vars.$bcgov-prefix}-border-subtle-selected-02);
+  }
+}
