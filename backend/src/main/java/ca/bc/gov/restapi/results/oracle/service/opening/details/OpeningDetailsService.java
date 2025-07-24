@@ -5,10 +5,14 @@ import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import ca.bc.gov.restapi.results.oracle.service.opening.OpeningStandardUnitHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,6 +30,7 @@ public class OpeningDetailsService {
   private final OpeningDetailsTenureService tenureService;
   private final OpeningDetailsForestCoverService forestCoverService;
   private final OpeningDetailsAttachmentService attachmentService;
+  private final OpeningStandardUnitHistoryService standardUnitHistoryService;
 
   public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(Long openingId) {
     log.info("Fetching tombstone for opening with id: {}", openingId);
@@ -126,4 +131,26 @@ public class OpeningDetailsService {
         .getAttachmentEntity(guid)
         .orElseThrow(() -> new NotFoundGenericException("Attachment"));
   }
+
+  public List<OpeningStandardUnitHistoryOverviewDto> getOpeningStandardUnitOverviewHistoryList(Long openingId) {
+    log.info("Fetching standard unit overview history list for opening ID: {}", openingId);
+
+    return standardUnitHistoryService.getStandardUnitOverviewHistoryList(openingId);
+  }
+
+  public List<OpeningStandardUnitHistoryDto> getOpeningStandardUnitHistoryDetails(
+          Long openingId,
+          Long stockingEventHistoryId) {
+    log.info("Fetching standard unit history details for opening ID: {} and stocking event history ID: {}", openingId, stockingEventHistoryId);
+
+    List<OpeningStandardUnitHistoryDto> historyDtos = standardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+
+    if (historyDtos.isEmpty()) {
+      log.warn("No standard unit history details found for openingId: {} and stockingEventHistoryId: {}", openingId, stockingEventHistoryId);
+      throw new NotFoundGenericException("Standard unit history details");
+    }
+
+    return historyDtos;
+  }
+
 }
