@@ -1218,8 +1218,8 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST = """
       WITH fca_deduped AS (
           SELECT
-            MAX(OPENING_ID) AS opening_id,
-            TRUNC(UPDATE_TIMESTAMP) AS update_timestamp
+              MAX(OPENING_ID) AS opening_id,
+              TRUNC(UPDATE_TIMESTAMP) AS update_timestamp
           FROM (
               SELECT fca.*,
                      ROW_NUMBER() OVER (
@@ -1234,7 +1234,7 @@ public class SilvaOracleQueryConstants {
       )
       SELECT
           ols.OPENING_ID,
-          ols.OPENING_LAND_STATUS_DATE AS fc_date,
+          TO_CHAR(ols.OPENING_LAND_STATUS_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS fc_date,
           (ols.NP_FOR_AREA + ols.NP_NAT_AREA + ols.NP_UNN_AREA) AS np,
           (ols.NSR_NPL_AREA + ols.NSR_PL_AREA + ols.NSR_NAT_AREA) AS nsr,
           (ols.SR_ART_AREA + ols.SR_NAT_AREA) AS imm,
@@ -1245,18 +1245,18 @@ public class SilvaOracleQueryConstants {
               ols.SR_ART_AREA + ols.SR_NAT_AREA +
               ols.MAT_AREA + ols.NP_NAT_AREA + ols.NC_BR_AREA
           ) AS TOTAL,
-        CASE
-            WHEN ols.OPENING_LAND_STATUS_DATE = (
-                SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
-                FROM THE.OPENING_LAND_STATUS ols2
-                WHERE ols2.OPENING_ID = ols.OPENING_ID
-            )
-            THEN 'true'
-            WHEN fca.OPENING_ID IS NOT NULL
-                 AND TRUNC(fca.UPDATE_TIMESTAMP) = TRUNC(ols.OPENING_LAND_STATUS_DATE)
-            THEN 'true'
-            ELSE 'false'
-        END AS HAS_DETAILS,
+          CASE
+              WHEN ols.OPENING_LAND_STATUS_DATE = (
+                  SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
+                  FROM THE.OPENING_LAND_STATUS ols2
+                  WHERE ols2.OPENING_ID = ols.OPENING_ID
+              )
+              THEN 'true'
+              WHEN fca.OPENING_ID IS NOT NULL
+                   AND TRUNC(fca.UPDATE_TIMESTAMP) = TRUNC(ols.OPENING_LAND_STATUS_DATE)
+              THEN 'true'
+              ELSE 'false'
+          END AS HAS_DETAILS,
           CASE
               WHEN ols.OPENING_LAND_STATUS_DATE = (
                   SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
@@ -1265,7 +1265,7 @@ public class SilvaOracleQueryConstants {
               )
               THEN 'true'
               ELSE 'false'
-          END AS CURRENT_HISTORY
+          END AS IS_CURRENT_HISTORY
       FROM THE.OPENING_LAND_STATUS ols
       LEFT JOIN fca_deduped fca
           ON ols.OPENING_ID = fca.OPENING_ID
