@@ -51,7 +51,7 @@
     <tomcat.version>10.1.42</tomcat.version>
     <postgresql.version>42.7.7</postgresql.version>
     <nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
-    <spring-web.version>6.2.8</spring-web.version>
+    <spring-web.version>6.2.9</spring-web.version>
   </properties>
 
   <profiles>
@@ -452,7 +452,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version>
         <executions>
           <execution>
             <id>default-cli</id>

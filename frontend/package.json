@@ -110,7 +110,7 @@
     "ws@8.17.0": "8.17.1",
     "@babel/runtime": "7.27.6",
     "@babel/helpers": "7.27.6",
-    "react-router": "7.6.3",
+    "react-router": "7.7.0",
     "minimist": "1.2.8",
     "uglify-js": "3.19.3"
   },
