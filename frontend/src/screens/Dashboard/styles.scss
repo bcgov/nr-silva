@@ -25,4 +25,10 @@
 
 .fav-cards-subgrid {
   gap: 1rem;
+  align-items: stretch;
+
+  .fav-card-column {
+    display: flex;
+    flex-direction: column;
+  }
 }

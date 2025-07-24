@@ -9,8 +9,8 @@ type ModalTileButtonProps = {
   id: string;
   title: string;
   subtitle?: string;
-  selected?: string;
-  onClick?: (key: string) => void;
+  selected?: boolean;
+  onClick?: () => void;
 }
 
 const ModalTileButton = (
@@ -23,19 +23,30 @@ const ModalTileButton = (
       id={id}
       type="button"
       className={`modal-tile-button${selected ? ' selected' : ''}`}
-      onClick={() => onClick?.(id)}
+      onClick={onClick}
     >
       <div className="tile-button-content">
         <div className="icon-row">
-          {icon}
-          {selected ? <CheckmarkFilled /> : null}
+          <span className="main-icon">
+            {icon}
+          </span>
+          {selected ? <span className="selected-icon"><CheckmarkFilled /></span> : null}
         </div>
-        <h5 className="tile-title">
-          {title}
-        </h5>
-        <p className="tile-subtitle">
-          {subtitle}
-        </p>
+
+        <div className="title-row">
+          <h5 className="tile-title">
+            {title}
+          </h5>
+          {
+            subtitle
+              ? (
+                <p className="tile-subtitle">
+                  {subtitle}
+                </p>
+              )
+              : null
+          }
+        </div>
       </div>
     </button>
   )
