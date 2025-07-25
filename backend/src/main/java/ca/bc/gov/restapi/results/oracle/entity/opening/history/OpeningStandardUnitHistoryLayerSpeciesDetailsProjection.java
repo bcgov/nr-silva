@@ -12,6 +12,6 @@ public interface OpeningStandardUnitHistoryLayerSpeciesDetailsProjection {
     String getNewSpeciesDescription();
     Boolean getOldPreferredInd();
     Boolean getNewPreferredInd();
-    Integer getOldMinHeight();
-    Integer getNewMinHeight();
+    Double getOldMinHeight();
+    Double getNewMinHeight();
 }

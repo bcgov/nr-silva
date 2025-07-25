@@ -22,8 +22,8 @@ public record OpeningStandardUnitHistorySpeciesDetailsDto(
     CodeDescriptionDto newSpecies,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer oldMinHeight,
+    Double oldMinHeight,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer newMinHeight
+    Double newMinHeight
 ) {}
