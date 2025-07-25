@@ -1277,6 +1277,7 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
       SELECT
         fc.FOREST_COVER_ID AS cover_id,
+        TO_CHAR(fc.ARCHIVE_DATE, 'YYYY-MM-DD') AS archive_date,
         fc.SILV_POLYGON_NO AS polygon_id,
         ssu.STANDARDS_UNIT_ID AS standard_unit_id,
         fcnma.STOCKING_TYPE_CODE AS unmapped_code,
@@ -1341,7 +1342,9 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_COVER_LAYER_SPECIES_ARC fcls ON (fcls.FOREST_COVER_ID = fcl.FOREST_COVER_ID AND fcls.FOREST_COVER_LAYER_ID = fcl.FOREST_COVER_LAYER_ID )
       LEFT JOIN TREE_SPECIES_CODE tsc ON tsc.TREE_SPECIES_CODE = fcls.TREE_SPECIES_CODE
       WHERE
-        fcl.FOREST_COVER_LAYER_CODE = :coverLayerCode AND fcl.FOREST_COVER_ID = :forestCoverId
+        fcl.FOREST_COVER_LAYER_CODE = :coverLayerCode
+        AND fcl.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcl.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       ORDER BY fcls.SPECIES_ORDER
       """;
 
@@ -1368,6 +1371,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN TREE_COVER_PATTERN_CODE tcpc ON tcpc.TREE_COVER_PATTERN_CODE = fc.TREE_COVER_PATTERN_CODE
       WHERE
         fc.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fc.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED = """
@@ -1383,6 +1387,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
       WHERE
         fcnma.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcnma.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_LAYER = """
@@ -1400,6 +1405,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_COVER_LAYER_CODE fclc ON fclc.FOREST_COVER_LAYER_CODE = fcl.FOREST_COVER_LAYER_CODE
       WHERE
         fcl.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcl.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES = """
@@ -1413,6 +1419,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN TREE_SPECIES_CODE tsc ON tsc.TREE_SPECIES_CODE = fcls.TREE_SPECIES_CODE
       WHERE
         fcls.FOREST_COVER_LAYER_ID = :forestCoverLayerId
+        AND TRUNC(fcls.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       ORDER BY fcls.SPECIES_ORDER
       """;
 
@@ -1426,5 +1433,6 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN SILV_DAMAGE_AGENT_CODE sdac ON sdac.SILV_DAMAGE_AGENT_CODE = fr.SILV_DAMAGE_AGENT_CODE
       WHERE
         fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId
+        AND TRUNC(fr.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 }
