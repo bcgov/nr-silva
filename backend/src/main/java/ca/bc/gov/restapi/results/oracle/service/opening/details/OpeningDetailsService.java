@@ -4,6 +4,9 @@ import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDetailsDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
@@ -12,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import ca.bc.gov.restapi.results.oracle.service.opening.OpeningStandardUnitHistoryService;
+import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningForestCoverHistoryService;
+import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +33,7 @@ public class OpeningDetailsService {
   private final OpeningDetailsActivitiesService activitiesService;
   private final OpeningDetailsTenureService tenureService;
   private final OpeningDetailsForestCoverService forestCoverService;
+  private final OpeningForestCoverHistoryService forestCoverHistoryService;
   private final OpeningDetailsAttachmentService attachmentService;
   private final OpeningStandardUnitHistoryService standardUnitHistoryService;
 
@@ -116,6 +121,33 @@ public class OpeningDetailsService {
         .getDetails(forestCoverId)
         .orElseThrow(
             () -> new NotFoundGenericException("Forest cover polygon with id " + forestCoverId));
+  }
+
+  public List<OpeningForestCoverHistoryOverviewDto> getOpeningForestCoverHistoryOverviewList(Long openingId) {
+    log.info("Fetching forest cover history overview list for opening ID: {}", openingId);
+    return forestCoverHistoryService.getOpeningForestCoverHistoryOverviewList(openingId);
+  }
+
+  public List<OpeningForestCoverHistoryDto> getOpeningForestCoverHistoryList(
+      Long openingId, String updateDate) {
+    log.info("Fetching forest cover history list for opening ID: {} and update date: {}", openingId, updateDate);
+    List<OpeningForestCoverHistoryDto> result = forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+
+    if (result.isEmpty()) {
+      throw new NotFoundGenericException("Forest cover history list for opening with id " + openingId +
+              " and update date " + updateDate);
+    }
+    return result;
+  }
+
+  public OpeningForestCoverHistoryDetailsDto getOpeningForestCoverHistoryDetails(Long forestCoverId, String archiveDate) {
+    log.info("Fetching forest cover history details for forest cover with id: {} and archive date: {}",
+            forestCoverId, archiveDate);
+    return forestCoverHistoryService
+            .getDetails(forestCoverId, archiveDate)
+            .orElseThrow(
+                    () -> new NotFoundGenericException("Forest cover history polygon with id " + forestCoverId +
+                            " and archive date " + archiveDate));
   }
 
   public List<OpeningDetailsAttachmentMetaDto> getOpeningAttachments(Long openingId) {
