@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.oracle.service.opening;
+package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
