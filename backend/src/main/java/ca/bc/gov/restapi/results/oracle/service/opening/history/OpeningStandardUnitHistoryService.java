@@ -89,6 +89,8 @@ public class OpeningStandardUnitHistoryService {
                     projection.getNewNoRegenEarlyOffsetYears(),
                     projection.getOldNoRegenLateOffsetYears(),
                     projection.getNewNoRegenLateOffsetYears(),
+                    projection.getOldRegenOffsetYears(),
+                    projection.getNewRegenOffsetYears(),
                     projection.getOldFreeGrowingEarlyOffsetYears(),
                     projection.getNewFreeGrowingEarlyOffsetYears(),
                     projection.getOldFreeGrowingLateOffsetYears(),

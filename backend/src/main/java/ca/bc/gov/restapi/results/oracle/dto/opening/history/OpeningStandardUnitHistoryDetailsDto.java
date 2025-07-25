@@ -54,6 +54,12 @@ public record OpeningStandardUnitHistoryDetailsDto(
     Integer newNoRegenLateOffsetYears,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    Integer oldRegenOffsetYears,
+
+    @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    Integer newRegenOffsetYears,
+
+    @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Integer oldFreeGrowingEarlyOffsetYears,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)

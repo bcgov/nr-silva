@@ -18,6 +18,8 @@ public interface OpeningStandardUnitHistoryDetailsProjection {
     Integer getNewNoRegenEarlyOffsetYears();
     Integer getOldNoRegenLateOffsetYears();
     Integer getNewNoRegenLateOffsetYears();
+    Integer getOldRegenOffsetYears();
+    Integer getNewRegenOffsetYears();
     Integer getOldFreeGrowingEarlyOffsetYears();
     Integer getNewFreeGrowingEarlyOffsetYears();
     Integer getOldFreeGrowingLateOffsetYears();
