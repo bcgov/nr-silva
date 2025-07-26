@@ -28,6 +28,7 @@ public class OpeningStandardUnitHistoryServiceTest {
 
     @Mock
     OpeningRepository openingRepository;
+
     private OpeningStandardUnitHistoryService openingStandardUnitHistoryService;
 
     @BeforeEach
