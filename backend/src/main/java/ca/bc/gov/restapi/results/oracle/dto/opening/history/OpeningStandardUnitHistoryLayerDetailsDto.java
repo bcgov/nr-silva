@@ -21,10 +21,10 @@ public record OpeningStandardUnitHistoryLayerDetailsDto(
     CodeDescriptionDto newStockingLayer,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer oldMinHorizontalDistance,
+    Double oldMinHorizontalDistance,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer newMinHorizontalDistance,
+    Double newMinHorizontalDistance,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Integer oldMinPerfStockingStandard,

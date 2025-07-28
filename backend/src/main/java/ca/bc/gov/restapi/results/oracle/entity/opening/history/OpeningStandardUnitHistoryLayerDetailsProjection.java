@@ -9,8 +9,8 @@ public interface OpeningStandardUnitHistoryLayerDetailsProjection {
     String getNewStockingLayerCode();
     String getOldStockingLayerDescription();
     String getNewStockingLayerDescription();
-    Integer getOldMinHorizontalDistance();
-    Integer getNewMinHorizontalDistance();
+    Double getOldMinHorizontalDistance();
+    Double getNewMinHorizontalDistance();
     Integer getOldMinPerfStockingStandard();
     Integer getNewMinPerfStockingStandard();
     Integer getOldMinStockingStandard();

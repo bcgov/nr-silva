@@ -182,7 +182,7 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection.getOldStockingLayerDescription()).thenReturn(null);
         when(layerProjection.getNewStockingLayerDescription()).thenReturn("Inventory Layer");
         when(layerProjection.getOldMinHorizontalDistance()).thenReturn(null);
-        when(layerProjection.getNewMinHorizontalDistance()).thenReturn(1);
+        when(layerProjection.getNewMinHorizontalDistance()).thenReturn(1.0);
         when(layerProjection.getOldMinPerfStockingStandard()).thenReturn(null);
         when(layerProjection.getNewMinPerfStockingStandard()).thenReturn(700);
         when(layerProjection.getOldMinStockingStandard()).thenReturn(null);
@@ -257,7 +257,7 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals(stockingLayerId, layer.newLayerId());
         Assertions.assertEquals("I", layer.newStockingLayer().code());
         Assertions.assertEquals("Inventory Layer", layer.newStockingLayer().description());
-        Assertions.assertEquals(Integer.valueOf(1), layer.newMinHorizontalDistance());
+        Assertions.assertEquals(Double.valueOf(1.0), layer.newMinHorizontalDistance());
         Assertions.assertEquals(Integer.valueOf(700), layer.newMinPerfStockingStandard());
         Assertions.assertEquals(Integer.valueOf(400), layer.newMinStockingStandard());
         Assertions.assertEquals(Integer.valueOf(1200), layer.newTargetWellSpacedTrees());
@@ -368,8 +368,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection1.getNewStockingLayerCode()).thenReturn("4");
         when(layerProjection1.getOldStockingLayerDescription()).thenReturn("Inventory Layer");
         when(layerProjection1.getNewStockingLayerDescription()).thenReturn("Regen");
-        when(layerProjection1.getOldMinHorizontalDistance()).thenReturn(1);
-        when(layerProjection1.getNewMinHorizontalDistance()).thenReturn(1);
+        when(layerProjection1.getOldMinHorizontalDistance()).thenReturn(1.5);
+        when(layerProjection1.getNewMinHorizontalDistance()).thenReturn(1.5);
         when(layerProjection1.getOldMinPerfStockingStandard()).thenReturn(700);
         when(layerProjection1.getNewMinPerfStockingStandard()).thenReturn(700);
         when(layerProjection1.getOldMinStockingStandard()).thenReturn(400);
@@ -389,8 +389,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection2.getNewStockingLayerCode()).thenReturn("I");
         when(layerProjection2.getOldStockingLayerDescription()).thenReturn("Inventory Layer");
         when(layerProjection2.getNewStockingLayerDescription()).thenReturn("Inventory Layer");
-        when(layerProjection2.getOldMinHorizontalDistance()).thenReturn(2);
-        when(layerProjection2.getNewMinHorizontalDistance()).thenReturn(2);
+        when(layerProjection2.getOldMinHorizontalDistance()).thenReturn(2.0);
+        when(layerProjection2.getNewMinHorizontalDistance()).thenReturn(2.0);
         when(layerProjection2.getOldMinPerfStockingStandard()).thenReturn(400);
         when(layerProjection2.getNewMinPerfStockingStandard()).thenReturn(400);
         when(layerProjection2.getOldMinStockingStandard()).thenReturn(500);
@@ -655,8 +655,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals("4", originalLayer.newStockingLayer().code());
         Assertions.assertEquals("Inventory Layer", originalLayer.oldStockingLayer().description());
         Assertions.assertEquals("Regen", originalLayer.newStockingLayer().description());
-        Assertions.assertEquals(Integer.valueOf(1), originalLayer.oldMinHorizontalDistance());
-        Assertions.assertEquals(Integer.valueOf(1), originalLayer.newMinHorizontalDistance());
+        Assertions.assertEquals(Double.valueOf(1.5), originalLayer.oldMinHorizontalDistance());
+        Assertions.assertEquals(Double.valueOf(1.5), originalLayer.newMinHorizontalDistance());
         Assertions.assertEquals(Integer.valueOf(700), originalLayer.oldMinPerfStockingStandard());
         Assertions.assertEquals(Integer.valueOf(700), originalLayer.newMinPerfStockingStandard());
         Assertions.assertEquals(Integer.valueOf(400), originalLayer.oldMinStockingStandard());
@@ -807,8 +807,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals("I", layer2.newStockingLayer().code());
         Assertions.assertEquals("Inventory Layer", layer2.oldStockingLayer().description());
         Assertions.assertEquals("Inventory Layer", layer2.newStockingLayer().description());
-        Assertions.assertEquals(Integer.valueOf(2), layer2.oldMinHorizontalDistance());
-        Assertions.assertEquals(Integer.valueOf(2), layer2.newMinHorizontalDistance());
+        Assertions.assertEquals(Double.valueOf(2.0), layer2.oldMinHorizontalDistance());
+        Assertions.assertEquals(Double.valueOf(2.0), layer2.newMinHorizontalDistance());
         Assertions.assertEquals(Integer.valueOf(400), layer2.oldMinPerfStockingStandard());
         Assertions.assertEquals(Integer.valueOf(400), layer2.newMinPerfStockingStandard());
         Assertions.assertEquals(Integer.valueOf(500), layer2.oldMinStockingStandard());
