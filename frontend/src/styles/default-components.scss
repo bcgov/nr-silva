@@ -245,3 +245,13 @@ ul.default-tab-accordion {
   align-content: start;
   padding: 1rem;
 }
+
+.fav-cards-subgrid {
+  gap: 1rem;
+  align-items: stretch;
+
+  .fav-card-column {
+    display: flex;
+    flex-direction: column;
+  }
+}

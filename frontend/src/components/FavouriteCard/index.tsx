@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ClickableTile } from "@carbon/react";
 import * as Icons from "@carbon/icons-react";
 import { FavouriteCardProps } from "./definitions";
+import { useModal } from "@/contexts/ModalContext";
 import "./styles.scss";
 
 /**
@@ -20,9 +21,19 @@ function FavouriteCard({
   title,
   link,
   icon,
+  opensModal
 }: FavouriteCardProps): React.JSX.Element {
   const navigate = useNavigate();
+  const { openModal } = useModal();
   const Icon = Icons[icon];
+
+  const handleClick = () => {
+    if (opensModal) {
+      openModal('CREATE_OPENING');
+    } else {
+      navigate(link);
+    }
+  };
 
   return (
     <ClickableTile
@@ -32,7 +43,7 @@ function FavouriteCard({
       id={`fav-card-${index}`}
       className="fav-card"
       tabIndex={index}
-      onClick={() => navigate(link)}
+      onClick={handleClick}
     >
       <div className="fav-card-content">
         <Icon className="fav-card-icon" />
