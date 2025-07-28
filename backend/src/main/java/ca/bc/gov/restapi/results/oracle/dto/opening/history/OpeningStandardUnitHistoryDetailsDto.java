@@ -8,7 +8,7 @@ public record OpeningStandardUnitHistoryDetailsDto(
     @Schema(types = {"number"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Long stockingStandardUnitId,
 
-    @Schema(types = {"String", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     String standardsUnitId,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)

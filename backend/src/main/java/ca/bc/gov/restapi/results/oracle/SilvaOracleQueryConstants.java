@@ -1054,8 +1054,8 @@ public class SilvaOracleQueryConstants {
         curr_su.FREE_GROWING_EARLY_OFFSET_YRS AS new_free_growing_early_offset_years,
         prev_su.FREE_GROWING_LATE_OFFSET_YRS AS old_free_growing_late_offset_years,
         curr_su.FREE_GROWING_LATE_OFFSET_YRS AS new_free_growing_late_offset_years,
-        prev_su.AMENDMENT_RATIONALE_COMMENT AS old_ammendment_comment,
-        curr_su.AMENDMENT_RATIONALE_COMMENT AS new_ammendment_comment,
+        prev_su.AMENDMENT_RATIONALE_COMMENT AS old_amendment_comment,
+        curr_su.AMENDMENT_RATIONALE_COMMENT AS new_amendment_comment,
         -- ECOLOGY diffs
         prev_ec.BGC_ZONE_CODE AS old_bgc_zone,
         curr_ec.BGC_ZONE_CODE AS new_bgc_zone,
