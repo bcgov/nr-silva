@@ -1,8 +1,7 @@
 import React from "react";
-
-import './styles.scss';
 import { CheckmarkFilled } from "@carbon/icons-react";
 
+import './styles.scss';
 
 type ModalTileButtonProps = {
   icon: React.ReactNode
@@ -15,41 +14,37 @@ type ModalTileButtonProps = {
 
 const ModalTileButton = (
   { icon, title, subtitle, selected, onClick, id }: ModalTileButtonProps
-) => {
-
-
-  return (
-    <button
-      id={id}
-      type="button"
-      className={`modal-tile-button${selected ? ' selected' : ''}`}
-      onClick={onClick}
-    >
-      <div className="tile-button-content">
-        <div className="icon-row">
-          <span className="main-icon">
-            {icon}
-          </span>
-          {selected ? <span className="selected-icon"><CheckmarkFilled /></span> : null}
-        </div>
-
-        <div className="title-row">
-          <h5 className="tile-title">
-            {title}
-          </h5>
-          {
-            subtitle
-              ? (
-                <p className="tile-subtitle">
-                  {subtitle}
-                </p>
-              )
-              : null
-          }
-        </div>
+) => (
+  <button
+    id={id}
+    type="button"
+    className={`modal-tile-button${selected ? ' selected' : ''}`}
+    onClick={onClick}
+  >
+    <div className="tile-button-content">
+      <div className="icon-row">
+        <span className="main-icon">
+          {icon}
+        </span>
+        {selected ? <span className="selected-icon"><CheckmarkFilled /></span> : null}
       </div>
-    </button>
-  )
-}
+
+      <div className="title-row">
+        <h5 className="tile-title">
+          {title}
+        </h5>
+        {
+          subtitle
+            ? (
+              <p className="tile-subtitle">
+                {subtitle}
+              </p>
+            )
+            : null
+        }
+      </div>
+    </div>
+  </button>
+);
 
 export default ModalTileButton;

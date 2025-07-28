@@ -6,4 +6,5 @@ export interface FavouriteCardProps {
   link: string,
   icon: keyof typeof Icons;
   opensModal?: boolean;
+  hidden?: boolean;
 }

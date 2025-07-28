@@ -48,17 +48,19 @@ const Dashboard: React.FC = () => {
         {/* Fav cards sub-grid */}
         <Grid className="fav-cards-subgrid">
           {
-            FavouriteCardsConfig.map((card) => (
-              <Column className="fav-card-column" key={card.index} sm={4} md={4} lg={4}>
-                <FavouriteCard
-                  index={card.index}
-                  title={card.title}
-                  link={card.link}
-                  icon={card.icon}
-                  opensModal={card.opensModal}
-                />
-              </Column>
-            ))
+            FavouriteCardsConfig
+              .filter((card) => !card.hidden)
+              .map((card) => (
+                <Column className="fav-card-column" key={card.index} sm={4} md={4} lg={4}>
+                  <FavouriteCard
+                    index={card.index}
+                    title={card.title}
+                    link={card.link}
+                    icon={card.icon}
+                    opensModal={card.opensModal}
+                  />
+                </Column>
+              ))
           }
         </Grid>
       </Column>

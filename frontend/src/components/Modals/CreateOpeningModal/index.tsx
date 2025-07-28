@@ -1,22 +1,36 @@
 import React, { useState } from "react";
 import { Button, Column, Grid, Modal } from "@carbon/react";
+import { useNavigate } from "react-router-dom";
 import { useModal } from "@/contexts/ModalContext";
-import ModalHead from "../ModalHead";
-import ModalTileButton from "../ModalTileButton";
 import SeedBoxIcon from '@/assets/icon/SeedBox.svg?react';
 import SeedingWithdrawalIcon from '@/assets/icon/SeedingWithdrawal.svg?react';
 import { GOV_FUNDED_OPENING, TENURED_OPENING } from "@/constants";
+import { CreateOpeningRoute } from "@/routes/config";
+
+import ModalHead from "../ModalHead";
+import ModalTileButton from "../ModalTileButton";
 
 import './styles.scss';
 
+
 const CreateOpeningModal = () => {
   const { isOpen, closeModal } = useModal();
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING | undefined>();
 
-  const handleClick = (openingType: typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING) => {
+  const handleTileClick = (openingType: typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING) => {
     setSelectedType(openingType);
   }
 
+  const handleCreateClick = () => {
+    if (!selectedType) return;
+
+    const searchParams = new URLSearchParams({ type: selectedType });
+
+    navigate(`${CreateOpeningRoute.path}?${searchParams.toString()}`);
+
+    closeModal();
+  };
 
   return (
     <Modal
@@ -40,7 +54,7 @@ const CreateOpeningModal = () => {
             title="Harvest associated with tenure"
             subtitle="Register an opening to cover licensee or ministry responsibilities"
             selected={selectedType === TENURED_OPENING}
-            onClick={() => handleClick(TENURED_OPENING)}
+            onClick={() => handleTileClick(TENURED_OPENING)}
           />
         </Column>
 
@@ -51,17 +65,17 @@ const CreateOpeningModal = () => {
             title="Government funded silviculture regime or investment"
             subtitle="Register an opening to cover ministry responsibilities"
             selected={selectedType === GOV_FUNDED_OPENING}
-            onClick={() => handleClick(GOV_FUNDED_OPENING)}
+            onClick={() => handleTileClick(GOV_FUNDED_OPENING)}
           />
         </Column>
 
         <Column sm={4} md={4} lg={8}>
-          <Button className="modal-button" kind="secondary">
+          <Button className="modal-button" kind="secondary" onClick={() => closeModal()}>
             Cancel
           </Button>
         </Column>
         <Column sm={4} md={4} lg={8}>
-          <Button className="modal-button" kind="primary">
+          <Button className="modal-button" kind="primary" onClick={handleCreateClick}>
             Create an opening
           </Button>
         </Column>
