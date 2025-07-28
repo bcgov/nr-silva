@@ -10,7 +10,7 @@ const CreateOpening = () => {
     type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
 
   if (!isValidType) {
-    console.warn("Invlaid opening type");
+    console.warn("Invalid opening type");
     navigate("/");
   }
 
