@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
-import { Location } from "@carbon/icons-react";
+import { Launch, Location } from "@carbon/icons-react";
 
 import { OpeningDetailsTombstoneDto } from "@/services/OpenApi";
 import { mapKinds, MapKindType } from "@/types/MapLayer";
@@ -9,6 +9,7 @@ import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { OpeningStatusTag } from "@/components/Tags";
 import OpeningsMap from "@/components/OpeningsMap";
+import { getJasperReportLink } from "@/utils/UrlUtils";
 
 import "./styles.scss";
 
@@ -57,7 +58,17 @@ const OpeningSummary = ({
     <Grid className="default-grid opening-summary-grid">
       <Column className="card-title-col" sm={4} md={8} lg={16}>
         <div className="card-title-container">
-          <h3>Opening summary</h3>
+          <div className="title-and-link">
+            <h3>Opening summary</h3>
+            <a
+              href={getJasperReportLink(openingId, tombstoneObj?.orgUnitNumber)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View report <Launch />
+            </a>
+          </div>
+
           {isLoading ? (
             <ButtonSkeleton size="sm" />
           ) : (
@@ -255,7 +266,7 @@ const OpeningSummary = ({
         <Column className="map-col" sm={4} md={8} lg={16}>
           <OpeningsMap
             openingIds={openingId ? [openingId] : null}
-            setOpeningPolygonNotFound={() => {}}
+            setOpeningPolygonNotFound={() => { }}
             mapHeight={280}
             layerFilter={true}
             kind={mapKind(currentTab)}

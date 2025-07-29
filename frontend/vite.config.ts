@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -29,7 +30,8 @@ export default defineConfig(({ mode }) => {
           }
         }
       },
-      react()
+      react(),
+      svgr()
     ],
     build: {
       chunkSizeWarningLimit: 1024,

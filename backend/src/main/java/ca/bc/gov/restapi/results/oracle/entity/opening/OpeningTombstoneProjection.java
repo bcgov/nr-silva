@@ -9,7 +9,10 @@ public interface OpeningTombstoneProjection {
   String getOpeningNumber();
 
   String getOpeningStatusCode();
+
   String getOpeningStatusName();
+
+  Long getOrgUnitNumber();
 
   String getOrgUnitCode();
 

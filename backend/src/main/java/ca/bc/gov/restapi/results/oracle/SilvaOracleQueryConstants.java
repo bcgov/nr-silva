@@ -212,6 +212,7 @@ public class SilvaOracleQueryConstants {
         (LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS opening_number,
         op.OPENING_STATUS_CODE,
         osc.DESCRIPTION AS opening_status_name,
+        ou.ORG_UNIT_NO AS org_unit_number,
         ou.ORG_UNIT_CODE,
         ou.ORG_UNIT_NAME,
         op.OPEN_CATEGORY_CODE,

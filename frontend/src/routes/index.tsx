@@ -3,7 +3,7 @@ import Landing from "@/screens/Landing";
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import ErrorHandling from '@/screens/ErrorHandling';
 import { Navigate, type RouteObject } from "react-router-dom";
-import { DashboardRoute, OpeningDetailsRoute, OpeningsRoute, SilvicultureSearchRoute } from "./config";
+import { CreateOpeningRoute, DashboardRoute, OpeningDetailsRoute, OpeningsRoute, SilvicultureSearchRoute } from "./config";
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -20,6 +20,7 @@ const protectedRouteList: RouteObject[] = [
   DashboardRoute,
   SilvicultureSearchRoute,
   OpeningsRoute,
+  CreateOpeningRoute,
   OpeningDetailsRoute
 ] as const;
 

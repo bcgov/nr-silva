@@ -5,6 +5,7 @@ import SilvicultureSearch from '@/screens/SilvicultureSearch';
 import Openings from '@/screens/Openings';
 import OpeningDetails from '@/screens/Openings/OpeningDetails';
 import LoginClientSelection from "@/screens/LoginClientSelection";
+import CreateOpening from "@/screens/CreateOpening";
 
 export const DashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -19,6 +20,11 @@ export const SilvicultureSearchRoute: RouteObject = {
 export const OpeningsRoute: RouteObject = {
   path: "/openings",
   element: <SideLayout pageContent={<Openings />} />,
+}
+
+export const CreateOpeningRoute: RouteObject = {
+  path: "/openings/create",
+  element: <SideLayout pageContent={<CreateOpening />} />,
 }
 
 export const OpeningDetailsRoute: RouteObject = {
