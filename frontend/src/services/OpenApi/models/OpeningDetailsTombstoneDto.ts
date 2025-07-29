@@ -7,6 +7,7 @@ import type { ForestClientDto } from './ForestClientDto';
 export type OpeningDetailsTombstoneDto = {
     openingNumber: string | null;
     openingStatus: CodeDescriptionDto;
+    orgUnitNumber: number | null;
     orgUnitCode: string | null;
     orgUnitName: string | null;
     openCategory: CodeDescriptionDto;
