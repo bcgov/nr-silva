@@ -14,9 +14,20 @@
       justify-content: space-between;
       align-items: center;
 
-      h3 {
-        @include type.type-style('heading-03');
+      .title-and-link {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        h3 {
+          @include type.type-style('heading-03');
+        }
+
+        a {
+          text-decoration: none;
+        }
       }
+
 
       .#{vars.$bcgov-prefix}--btn.#{vars.$bcgov-prefix}--skeleton {
         height: 2rem;
