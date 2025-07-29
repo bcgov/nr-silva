@@ -1,11 +1,18 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.util.MimeTypeResolver;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDetailsDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDetailsDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
@@ -60,6 +67,32 @@ public class OpeningEndpoint {
     return openingService.getOpeningStockingDetails(openingId);
   }
 
+  /**
+   * Get the history of Standard Stocking Unit (SSU) for a given Opening ID.
+   *
+   * @param openingId Opening ID
+   * @return List of {@link OpeningStandardUnitHistoryOverviewDto} containing SSU history.
+   */
+  @GetMapping("/{openingId}/ssu/history")
+  public List<OpeningStandardUnitHistoryOverviewDto> getOpeningSsuHistory(
+      @PathVariable Long openingId) {
+    return openingService.getOpeningStandardUnitOverviewHistoryList(openingId);
+  }
+
+    /**
+     * Get the details of a specific Standard Stocking Unit (SSU) history entry.
+     *
+     * @param openingId Opening ID
+     * @param historyId History ID of the SSU
+     * @return List of {@link OpeningStandardUnitHistoryDto} containing detailed information about the
+     *     SSU history entry.
+     */
+  @GetMapping("/{openingId}/ssu/history/{historyId}")
+  public List<OpeningStandardUnitHistoryDto> getOpeningSsuHistoryDetails(
+      @PathVariable Long openingId, @PathVariable Long historyId) {
+    return openingService.getOpeningStandardUnitHistoryDetails(openingId, historyId);
+  }
+
   @GetMapping("/{openingId}/disturbances")
   public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
       @PathVariable Long openingId, @ParameterObject Pageable pageable) {
@@ -99,6 +132,28 @@ public class OpeningEndpoint {
   public OpeningForestCoverDetailsDto getCoverDetails(
       @PathVariable Long openingId, @PathVariable Long forestCoverId) {
     return openingService.getOpeningForestCoverDetails(forestCoverId);
+  }
+
+  @GetMapping("/{openingId}/cover/history/overview")
+  public List<OpeningForestCoverHistoryOverviewDto> getCoverHistoryOverview(
+          @PathVariable Long openingId) {
+    return openingService.getOpeningForestCoverHistoryOverviewList(openingId);
+  }
+
+  @GetMapping("/{openingId}/cover/history")
+  public List<OpeningForestCoverHistoryDto> getCoverHistory(
+        @PathVariable Long openingId,
+        @RequestParam(name= "updateDate", required = true) String updateDate) {
+    return openingService.getOpeningForestCoverHistoryList(openingId, updateDate);
+  }
+
+  @GetMapping("/{openingId}/cover/history/{forestCoverId}")
+  public OpeningForestCoverHistoryDetailsDto getForestCoverHistoryDetails(
+        @PathVariable Long openingId,
+        @PathVariable Long forestCoverId,
+        @RequestParam(name = "archiveDate", required = true) String archiveDate
+  ) {
+    return openingService.getOpeningForestCoverHistoryDetails(forestCoverId, archiveDate);
   }
 
   /**
