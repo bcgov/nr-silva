@@ -36,3 +36,7 @@ export const buildQueryString = <T extends Record<string, any>>(params: T): stri
 
   return query.toString();
 };
+
+export const getJasperReportLink = (openingId?: number | null, orgUnitNumber?: number | null): string => (
+  `https://apps.nrs.gov.bc.ca/ext/jcrs/flow.html?_flowId=viewReportFlow&standAlone=true&reportUnit=/JCRS/RESULTS/Reports/opening_summary_4&p_opening_id=${openingId}&p_dist_num=${orgUnitNumber}`
+)

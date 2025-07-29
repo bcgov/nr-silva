@@ -18,32 +18,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpeningDetailsTombstoneConverter {
 
-  public static Function<OpeningTombstoneProjection, OpeningDetailsTombstoneOverviewDto> mapTombstoneOverview() {
+  public static Function<OpeningTombstoneProjection, OpeningDetailsTombstoneOverviewDto>
+      mapTombstoneOverview() {
     return tombstone ->
         new OpeningDetailsTombstoneOverviewDto(
             tombstone.getOpeningId(),
             new OpeningDetailsTombstoneDto(
                 tombstone.getOpeningNumber(),
                 new CodeDescriptionDto(
-                    tombstone.getOpeningStatusCode(),
-                    tombstone.getOpeningStatusName()
-                ),
+                    tombstone.getOpeningStatusCode(), tombstone.getOpeningStatusName()),
+                tombstone.getOrgUnitNumber(),
                 tombstone.getOrgUnitCode(),
                 tombstone.getOrgUnitName(),
                 new CodeDescriptionDto(
-                    tombstone.getOpenCategoryCode(),
-                    tombstone.getOpenCategoryName()
-                ),
+                    tombstone.getOpenCategoryCode(), tombstone.getOpenCategoryName()),
                 new ForestClientDto(
-                    tombstone.getClient(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ),
+                    tombstone.getClient(), null, null, null, null, null, null, null),
                 tombstone.getFileId(),
                 tombstone.getCutBlockID(),
                 tombstone.getCuttingPermitId(),
@@ -53,85 +43,50 @@ public class OpeningDetailsTombstoneConverter {
                 tombstone.getCreatedBy(),
                 tombstone.getCreatedOn(),
                 tombstone.getLastUpdatedOn(),
-                tombstone.getDisturbanceStartDate()
-            ),
+                tombstone.getDisturbanceStartDate()),
             new OpeningDetailsOverviewDto(
-                new OpeningDetailsOverviewOpeningDto(
-
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    List.of()
-                ),
-                new OpeningDetailsOverviewMilestoneDto(
-                    null,
-                    null,
-                    null,
-                    0,
-                    null,
-                    null,
-                    0,
-                    null
-                )
-            ),
-            List.of()
-        );
+                new OpeningDetailsOverviewOpeningDto(null, null, null, null, null, List.of()),
+                new OpeningDetailsOverviewMilestoneDto(null, null, null, 0, null, null, 0, null)),
+            List.of());
   }
 
-  public static Function<OpeningTombstoneOverviewOpeningProjection, OpeningDetailsTombstoneOverviewDto> mapTombstoneOpeningOverview(
-      OpeningDetailsTombstoneOverviewDto tombstone
-  ) {
+  public static Function<
+          OpeningTombstoneOverviewOpeningProjection, OpeningDetailsTombstoneOverviewDto>
+      mapTombstoneOpeningOverview(OpeningDetailsTombstoneOverviewDto tombstone) {
     return overview ->
-        tombstone
-            .withOverview(
-                tombstone
-                    .overview()
-                    .withOpening(
-                        new OpeningDetailsOverviewOpeningDto(
-                            overview.getLicenseeOpeningId(),
-                            new CodeDescriptionDto(
-                                overview.getTenureTypeCode(),
-                                overview.getTenureTypeName()
-                            ),
-                            new CodeDescriptionDto(
-                                overview.getManagementUnitTypeCode(),
-                                overview.getManagementUnitTypeName()
-                            ),
-                            overview.getManagementUnitId(),
-                            new CodeDescriptionDto(
-                                overview.getTimberSaleOfficeCode(),
-                                overview.getTimberSaleOfficeName()
-                            ),
-                            tombstone.overview().opening().comments()
-                        )
-                    )
-            );
+        tombstone.withOverview(
+            tombstone
+                .overview()
+                .withOpening(
+                    new OpeningDetailsOverviewOpeningDto(
+                        overview.getLicenseeOpeningId(),
+                        new CodeDescriptionDto(
+                            overview.getTenureTypeCode(), overview.getTenureTypeName()),
+                        new CodeDescriptionDto(
+                            overview.getManagementUnitTypeCode(),
+                            overview.getManagementUnitTypeName()),
+                        overview.getManagementUnitId(),
+                        new CodeDescriptionDto(
+                            overview.getTimberSaleOfficeCode(), overview.getTimberSaleOfficeName()),
+                        tombstone.overview().opening().comments())));
   }
 
-  public static Function<OpeningTombstoneOverviewMilestoneProjection, OpeningDetailsTombstoneOverviewDto> mapTombstoneMilestoneOverview(
-      OpeningDetailsTombstoneOverviewDto tombstone
-  ) {
+  public static Function<
+          OpeningTombstoneOverviewMilestoneProjection, OpeningDetailsTombstoneOverviewDto>
+      mapTombstoneMilestoneOverview(OpeningDetailsTombstoneOverviewDto tombstone) {
     return overview ->
-        tombstone
-            .withOverview(
-                tombstone
-                    .overview()
-                    .withMilestones(
-                        new OpeningDetailsOverviewMilestoneDto(
-                            overview.getStandardsUnitId(),
-                            overview.getPostHarvestDeclaredDate(),
-                            overview.getRegenDeclaredDate(),
-                            overview.getRegenOffsetYears(),
-                            overview.getRegenDueDate(),
-                            overview.getFreeGrowingDeclaredDate(),
-                            overview.getFreeGrowingOffsetYears(),
-                            overview.getFreeGrowingDueDate()
-                        )
-                    )
-            );
+        tombstone.withOverview(
+            tombstone
+                .overview()
+                .withMilestones(
+                    new OpeningDetailsOverviewMilestoneDto(
+                        overview.getStandardsUnitId(),
+                        overview.getPostHarvestDeclaredDate(),
+                        overview.getRegenDeclaredDate(),
+                        overview.getRegenOffsetYears(),
+                        overview.getRegenDueDate(),
+                        overview.getFreeGrowingDeclaredDate(),
+                        overview.getFreeGrowingOffsetYears(),
+                        overview.getFreeGrowingDueDate())));
   }
-
-
 }
