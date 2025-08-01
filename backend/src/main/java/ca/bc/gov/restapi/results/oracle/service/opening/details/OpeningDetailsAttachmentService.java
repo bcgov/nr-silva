@@ -1,22 +1,42 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsAttachmentMetaDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentMetaProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningAttachmentRepository;
+import java.net.URI;
+import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.api.OpenApiResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpeningDetailsAttachmentService {
+
   private final OpeningAttachmentRepository openingAttachmentRepository;
+
+  @Value("${ca.bc.gov.nrs.s3-bucket}")
+  String BUCKET;
+
+  @Value("${ca.bc.gov.nrs.s3-access-key}")
+  String ACCESS_KEY = "your-access-key";
+
+  @Value("${ca.bc.gov.nrs.s3-secret-key}")
+  String SECRET_KEY = "your-secret-key";
+
+  @Value("${ca.bc.gov.nrs.s3-endpoint}")
+  String ENDPOINT;
 
   /**
    * Retrieves a list of attachment metadata records for the specified opening ID.
@@ -41,19 +61,38 @@ public class OpeningDetailsAttachmentService {
                     p.getUpdateUserId(),
                     p.getUpdateTimestamp(),
                     p.getRevisionCount(),
-                    p.getAttachmentGuid(),
-                    p.getAttachmentSize()))
+                    p.getAttachmentGuid()))
         .toList();
   }
 
   /**
-   * Retrieves the binary content of an attachment by its GUID.
+   * Generates a pre-signed URL to download an attachment from Object Store using the GUID as key.
    *
-   * @param guid The unique identifier of the attachment.
-   * @return The attachment's file data as a byte array.
-   * @throws OpenApiResourceNotFoundException if no attachment is found for the given GUID.
+   * @param guid the attachment GUID
+   * @return pre-signed download URL
    */
-  public Optional<OpeningAttachmentEntity> getAttachmentEntity(UUID guid) {
-    return openingAttachmentRepository.findByAttachmentGuid(guid);
+  public String getS3PresignedUrl(String guid) {
+    try (S3Presigner presigner =
+        S3Presigner.builder()
+            .endpointOverride(URI.create(ENDPOINT))
+            .region(Region.US_EAST_1) // Region is required for the sdk, using a dummy region
+            .credentialsProvider(
+                StaticCredentialsProvider.create(
+                    AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY)))
+            .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
+            .build()) {
+
+      GetObjectRequest getObjectRequest =
+          GetObjectRequest.builder().bucket(BUCKET).key(guid).build();
+
+      GetObjectPresignRequest presignRequest =
+          GetObjectPresignRequest.builder()
+              .signatureDuration(Duration.ofMinutes(5))
+              .getObjectRequest(getObjectRequest)
+              .build();
+
+      PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+      return presignedRequest.url().toString();
+    }
   }
 }
