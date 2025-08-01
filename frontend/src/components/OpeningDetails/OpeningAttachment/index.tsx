@@ -8,7 +8,6 @@ import { Download } from "@carbon/icons-react";
 import { env } from "@/env";
 import axios from "axios";
 import { getAuthIdToken } from "@/services/AuthService";
-import { formatBytesDecimal } from "@/utils/FileUtils";
 import { useQuery } from "@tanstack/react-query";
 import { pluralize } from "@/utils/StringUtils";
 import { PLACE_HOLDER } from "@/constants";
@@ -37,14 +36,17 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
 
   const handleDownload = async (guid: string, fileName: string) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${getAuthIdToken()}`,
-        },
-      });
+      const { data: s3Url } = await axios.get<string>(
+        `${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthIdToken()}`,
+          },
+        }
+      );
 
-      const blob = new Blob([response.data]);
+      const response = await fetch(s3Url);
+      const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
 
       const link = document.createElement("a");
@@ -53,8 +55,6 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-
-      // Clean up
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("File download failed:", error);
@@ -79,9 +79,6 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
             Download
           </Button>
         );
-
-      case "attachmentSize":
-        return formatBytesDecimal(row.attachmentSize ?? 0);
 
       default:
         if (row[headerKey]) {
