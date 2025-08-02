@@ -82,8 +82,10 @@ public class OpeningDetailsAttachmentService {
             .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
             .build()) {
 
+      // S3 object keys are case-sensitive
+      String upperCaseGuid = guid.toUpperCase();
       GetObjectRequest getObjectRequest =
-          GetObjectRequest.builder().bucket(BUCKET).key(guid).build();
+          GetObjectRequest.builder().bucket(BUCKET).key(upperCaseGuid).build();
 
       GetObjectPresignRequest presignRequest =
           GetObjectPresignRequest.builder()
