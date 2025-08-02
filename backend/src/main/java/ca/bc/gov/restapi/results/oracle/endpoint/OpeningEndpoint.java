@@ -1,16 +1,13 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
-import ca.bc.gov.restapi.results.common.util.MimeTypeResolver;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -179,15 +176,10 @@ public class OpeningEndpoint {
 
   @GetMapping("/{openingId}/attachments/{guid}")
   @PreAuthorize("@auth.isIdirUser()")
-  public ResponseEntity<byte[]> getAttachmentByGuid(
-      @PathVariable("openingId") Long openingId, @PathVariable UUID guid) {
-    OpeningAttachmentEntity attachment = openingService.getOpeningAttachmentContent(guid);
+  public ResponseEntity<String> getAttachmentByGuid(
+      @PathVariable("openingId") Long openingId, @PathVariable String guid) {
 
-    return ResponseEntity.ok()
-        .header(
-            "Content-Disposition",
-            "attachment; filename=\"" + attachment.getAttachmentName() + "\"")
-        .header("Content-Type", MimeTypeResolver.resolve(attachment.getMimeTypeCode()))
-        .body(attachment.getAttachmentData());
+    String presignedUrl = openingService.generateAttachmentDownloadUrl(guid);
+    return ResponseEntity.ok(presignedUrl);
   }
 }

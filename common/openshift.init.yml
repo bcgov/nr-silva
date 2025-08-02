@@ -37,6 +37,15 @@ parameters:
   - name: VITE_USER_POOLS_ID
     description: Cognito user pools ID
     required: true
+  - name: S3_BUCKET
+    description: S3 bucket for RESULTS
+    required: true
+  - name: S3_ACCESS_KEY
+    description: S3 bucket access key
+    required: true
+  - name: S3_SECRET_KEY
+    description: S3 bucket secret key
+    required: true
 objects:
   - kind: Secret
     apiVersion: v1
@@ -51,6 +60,10 @@ objects:
       oracle-service: ${ORACLE_DB_SERVICE}
       oracle-host: ${ORACLE_DB_HOST}
       forest-client-api-key: ${FORESTCLIENTAPI_KEY}
+      s3-bucket: ${S3_BUCKET}
+      s3-access-key: ${S3_ACCESS_KEY}
+      s3-secret-key: ${S3_SECRET_KEY}
+
   - kind: Secret
     apiVersion: v1
     metadata:
