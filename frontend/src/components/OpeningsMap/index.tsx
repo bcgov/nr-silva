@@ -5,6 +5,7 @@ import {
   MapContainer,
   TileLayer,
   WMSTileLayer,
+  ZoomControl,
 } from "react-leaflet";
 import { FeatureCollection } from "geojson";
 import { MapKindType, MapLayer } from "@/types/MapLayer";
@@ -136,7 +137,10 @@ const OpeningsMap: React.FC<MapProps> = ({
         center={position}
         zoom={zoomLevel}
         style={{ height: "100%", minHeight: "100%" }}
+        zoomControl={false}
       >
+        <ZoomControl position="bottomright" />
+
         {/* Resizer to adjust the map height */}
         <OpeningsMapResizer height={mapSize} />
 

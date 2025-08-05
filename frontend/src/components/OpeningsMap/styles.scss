@@ -38,13 +38,13 @@
   height: 100%;
 }
 
-.leaflet-control-fullscreen-button:hover { 
+.leaflet-control-fullscreen-button:hover {
   svg {
     fill: var(--#{vars.$bcgov-prefix}-button-tertiary) !important;
   }
 }
 
-.leaflet-control-layers-toggle {  
+.leaflet-control-layers-toggle {
   mask: url('/map-layers.svg') no-repeat center;
   -webkit-mask: url('/map-layers.svg') no-repeat center;
   background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
@@ -54,4 +54,13 @@
   mask-size: 30px 30px;
   -webkit-mask-size: 30px 30px;
   background-image: none !important;
+}
+
+.leaflet-control-zoom {
+  transform: rotate(90deg);
+  right: 1rem;
+}
+
+.leaflet-control-zoom-out {
+  transform: rotate(-90deg);
 }
