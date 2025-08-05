@@ -40,9 +40,9 @@ public interface OpeningAttachmentRepository extends JpaRepository<OpeningAttach
             UPDATE_USERID AS updateUserId,
             UPDATE_TIMESTAMP AS updateTimestamp,
             REVISION_COUNT AS revisionCount,
-            LOWER(RAWTOHEX(OPENING_ATTACHMENT_GUID)) AS attachmentGuid
+            RAWTOHEX(OPENING_ATTACHMENT_GUID) AS attachmentGuid
           FROM THE.OPENING_ATTACHMENT
-          WHERE LOWER(RAWTOHEX(OPENING_ATTACHMENT_GUID)) = :attachmentGuidHex
+          WHERE RAWTOHEX(OPENING_ATTACHMENT_GUID) = :attachmentGuidHex
           """,
       nativeQuery = true)
   Optional<OpeningAttachmentMetaProjection> findByAttachmentGuid(

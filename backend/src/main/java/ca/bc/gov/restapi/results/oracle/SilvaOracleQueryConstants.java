@@ -907,7 +907,7 @@ public class SilvaOracleQueryConstants {
             UPDATE_USERID AS updateUserId,
             UPDATE_TIMESTAMP AS updateTimestamp,
             REVISION_COUNT AS revisionCount,
-            LOWER(RAWTOHEX(OPENING_ATTACHMENT_GUID)) AS attachmentGuid
+            RAWTOHEX(OPENING_ATTACHMENT_GUID) AS attachmentGuid
           FROM THE.OPENING_ATTACHMENT
           WHERE OPENING_ID = :openingId
           """;
