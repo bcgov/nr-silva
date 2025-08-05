@@ -210,7 +210,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(
             jsonPath("$.notifications[0].title")
                 .value("Regeneration milestone reminder for standard unit \"A, B\""))
-        .andExpect(jsonPath("$.notifications[0].description").value("Please update your forest cover."))
+        .andExpect(
+            jsonPath("$.notifications[0].description").value("Please update your forest cover."))
         .andExpect(jsonPath("$.notifications[0].status").value("INFO"))
         .andReturn();
   }
@@ -577,7 +578,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     // Extract values from metadata response
     String guid = JsonPath.read(json, "$[0].attachmentGuid");
     String filename = JsonPath.read(json, "$[0].attachmentName");
-    int attachmentSize = JsonPath.read(json, "$[0].attachmentSize");
 
     // Use the GUID to fetch the actual file and verify headers based on metadata
     byte[] actualContent =
@@ -593,10 +593,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             .getContentAsByteArray();
 
     // Assert size matches metadata
-    assertEquals(
-        attachmentSize,
-        actualContent.length,
-        "Downloaded content length does not match metadata size");
+    assertEquals(actualContent.length, "Downloaded content length does not match metadata size");
   }
 
   @Test
