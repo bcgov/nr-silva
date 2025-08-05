@@ -195,16 +195,6 @@ const OpeningsMap: React.FC<MapProps> = ({
             ))}
           </LayersControl>
         )}
-
-        {/* Fullscreen button */}
-        <OpeningsMapFullScreen
-          fullscreen={mapSize === 800}
-          onToggle={() => {
-            setMapSize((prevSize) =>
-              prevSize === mapHeight ? 800 : mapHeight
-            );
-          }}
-        />
       </MapContainer>
     </div>
   );

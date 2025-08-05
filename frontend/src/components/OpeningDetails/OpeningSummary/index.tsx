@@ -267,7 +267,7 @@ const OpeningSummary = ({
           <OpeningsMap
             openingIds={openingId ? [openingId] : null}
             setOpeningPolygonNotFound={() => { }}
-            mapHeight={280}
+            mapHeight={480}
             layerFilter={true}
             kind={mapKind(currentTab)}
           />
