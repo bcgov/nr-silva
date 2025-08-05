@@ -34,7 +34,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
     queryFn: () => API.OpeningEndpointService.getAttachments(openingId)
   });
 
-  const handleDownload = async (guid: string, fileName: string) => {
+  const handleDownload = async (guid: string) => {
     try {
       const { data: s3Url } = await axios.get<string>(
         `${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`,
@@ -45,17 +45,13 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
         }
       );
 
-      const response = await fetch(s3Url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
       const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = fileName;
+      link.href = s3Url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
       document.body.appendChild(link);
       link.click();
       link.remove();
-      URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("File download failed:", error);
     }
@@ -74,7 +70,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
             renderIcon={Download}
             iconDescription="Download file"
             aria-label={`Download ${row.attachmentName}`}
-            onClick={() => handleDownload(row.attachmentGuid, row.attachmentName)}
+            onClick={() => handleDownload(row.attachmentGuid)}
           >
             Download
           </Button>

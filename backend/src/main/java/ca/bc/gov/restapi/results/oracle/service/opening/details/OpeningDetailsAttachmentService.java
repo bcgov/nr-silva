@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsAttachmentMetaDto;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentMetaProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningAttachmentRepository;
@@ -84,8 +85,20 @@ public class OpeningDetailsAttachmentService {
 
       // S3 object keys are case-sensitive
       String upperCaseGuid = guid.toUpperCase();
+
+      // Query the DB for file name
+      OpeningAttachmentMetaProjection attachmentProj =
+          openingAttachmentRepository
+              .findByAttachmentGuid(guid)
+              .orElseThrow(() -> new NotFoundGenericException("Attachemnt"));
+
       GetObjectRequest getObjectRequest =
-          GetObjectRequest.builder().bucket(BUCKET).key(upperCaseGuid).build();
+          GetObjectRequest.builder()
+              .bucket(BUCKET)
+              .key(upperCaseGuid)
+              .responseContentDisposition(
+                  "attachment; filename=\"" + attachmentProj.getAttachmentName() + "\"")
+              .build();
 
       GetObjectPresignRequest presignRequest =
           GetObjectPresignRequest.builder()
