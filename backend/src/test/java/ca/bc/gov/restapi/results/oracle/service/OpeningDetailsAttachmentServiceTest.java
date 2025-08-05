@@ -45,7 +45,7 @@ class OpeningDetailsAttachmentServiceTest {
     when(projection.getUpdateUserId()).thenReturn("userB");
     when(projection.getUpdateTimestamp()).thenReturn(LocalDateTime.now());
     when(projection.getRevisionCount()).thenReturn(2);
-    when(projection.getAttachmentGuid()).thenReturn("f47ac10b58cc4372-a5670e02b2c3d479");
+    when(projection.getAttachmentGuid()).thenReturn("f47ac10b58cc4372a5670e02b2c3d479");
 
     when(openingAttachmentRepository.findByOpeningId(openingId)).thenReturn(List.of(projection));
 
@@ -57,7 +57,7 @@ class OpeningDetailsAttachmentServiceTest {
     assertEquals("file.pdf", dto.attachmentName());
     assertEquals("Test File", dto.attachmentDescription());
     assertEquals("PDF", dto.mimeTypeCode());
-    assertEquals("f47ac10b-58cc-4372-a567-0e02b2c3d479", dto.attachmentGuid());
+    assertEquals("f47ac10b58cc4372a5670e02b2c3d479", dto.attachmentGuid());
   }
 
   @Test
