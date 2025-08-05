@@ -5,10 +5,8 @@ import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -119,11 +117,9 @@ public class OpeningDetailsService {
     return attachmentService.getAttachmentList(openingId);
   }
 
-  public OpeningAttachmentEntity getOpeningAttachmentContent(UUID guid) {
-    log.info("Download attachment with guid: {}", guid);
+  public String generateAttachmentDownloadUrl(String guid) {
+    log.info("Requesting S3 presigned url for attachment with guid: {}", guid);
 
-    return attachmentService
-        .getAttachmentEntity(guid)
-        .orElseThrow(() -> new NotFoundGenericException("Attachment"));
+    return attachmentService.getS3PresignedUrl(guid);
   }
 }

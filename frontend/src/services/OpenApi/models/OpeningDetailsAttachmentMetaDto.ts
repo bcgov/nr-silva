@@ -46,9 +46,5 @@ export type OpeningDetailsAttachmentMetaDto = {
      * Globally unique identifier (GUID) used to securely reference the attachment.
      */
     attachmentGuid: string;
-    /**
-     * Size of the attachment file in bytes.
-     */
-    attachmentSize?: number;
 };
 
