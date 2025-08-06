@@ -66,3 +66,14 @@ export const getMonthAbbreviation = (monthNumber: number): string => (
   DateTime.fromObject({ month: monthNumber }).toFormat("MMM")
 );
 
+/**
+ * Extracts the year from a date string in the format "YYYY-MM-DDZ".
+ *
+ * @param {string} dateStr - The date string (e.g., "2005-05-02Z").
+ * @returns {number | null} The year as a number, or null if the input is invalid.
+ */
+export const extractYearFromDateString = (dateStr: string): number | null => {
+  if (!dateStr) return null;
+  const match = /^(\d{4})-\d{2}-\d{2}Z$/.exec(dateStr);
+  return match ? Number(match[1]) : null;
+};
