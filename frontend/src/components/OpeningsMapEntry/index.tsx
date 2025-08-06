@@ -39,6 +39,14 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     shadowSize: [41, 41],
   });
 
+  const markerHoveredIcon = new L.Icon({
+    iconUrl: "/marker-hovered.svg",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
   /**
    * Function to generate a unique key for each polygon
    * This is used to avoid duplicate keys in the map and allow React to
@@ -91,10 +99,10 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
     layer.on({
       mouseover: () => {
-        if (!selectedFeature) setHoveredFeature(feature);
+        setHoveredFeature(feature);
       },
       mouseout: () => {
-        if (!selectedFeature) setHoveredFeature(null);
+        setHoveredFeature(null);
       },
       click: () => {
         setSelectedFeature(feature);
@@ -115,32 +123,38 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
           />
         ))}
       {zoom <= 10 &&
-        features.filter(Boolean).map((featureCollection, index) => (
-          <Marker
-            icon={markerIcon}
-            data-testid="marker"
-            key={geoKey(featureCollection, index)}
-            position={getCenterOfFeatureCollection(featureCollection)}
-          >
-            {featureCollection?.features
-              ?.filter((feature) => feature.geometry)
-              .map((feature, index) => (
-                <Popup
-                  data-testid="popup"
-                  key={`popup-${geoKey(featureCollection, index)}-marker`}
-                  maxWidth={700}
-                  autoPan={false}
-                  position={getPopupCenter(feature.geometry)}
-                >
-                  <OpeningsMapEntryPopup
-                    openingId={getOpeningIdByCollection(featureCollection)}
-                    data={getPropertyForFeature(feature)}
-                    feature={featureCollection}
-                  />
-                </Popup>
-              ))}
-          </Marker>
-        ))}
+        features.filter(Boolean).map((featureCollection, index) =>
+          featureCollection?.features
+            ?.filter((feature) => feature.geometry)
+            .map((feature, fIndex) => (
+              <Marker
+                icon={
+                  hoveredFeature && hoveredFeature.id === feature.id
+                    ? markerHoveredIcon
+                    : markerIcon
+                }
+                data-testid="marker"
+                key={`marker-${geoKey(featureCollection, index)}-${fIndex}`}
+                position={getCenterOfFeatureCollection(featureCollection)}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedFeature(feature);
+
+                    const geoJsonLayer = L.geoJSON(feature);
+                    const bounds = geoJsonLayer.getBounds();
+                    map.flyToBounds(bounds, { maxZoom: 20, animate: true, duration: 1.0 });
+                  },
+                  mouseover: () => {
+                    setHoveredFeature(feature);
+                  },
+                  mouseout: () => {
+                    setHoveredFeature(null);
+                  },
+                }}
+              />
+            ))
+        )
+      }
     </>
   );
 };
