@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LatLngExpression } from "leaflet";
 import {
   LayersControl,
   MapContainer,
   TileLayer,
+  useMapEvents,
   WMSTileLayer,
   ZoomControl,
 } from "react-leaflet";
-import { FeatureCollection } from "geojson";
-import { MapKindType, MapLayer } from "@/types/MapLayer";
+import { Feature, FeatureCollection, Geometry } from "geojson";
+import { getPropertyForFeature, MapKindType, MapLayer } from "@/types/MapLayer";
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
 import OpeningsMapFullScreen from "@/components/OpeningsMapFullScreen";
+import OpeningsMapEntryPopup from "../OpeningsMapEntryPopup";
 
 import { allLayers } from "./constants";
 import { getMapQueries, getUserLocation } from "./fetcher";
@@ -42,6 +44,11 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(13);
   const [mapSize, setMapSize] = useState<number>(mapHeight);
 
+  const [hoveredFeature, setHoveredFeature] = useState<Feature<Geometry, any> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<Feature<Geometry, any> | null>(null);
+
+  const polygonClickedRef = useRef(false);
+
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
    * and the kind of map data.
@@ -70,6 +77,11 @@ const OpeningsMap: React.FC<MapProps> = ({
       (async () => await setUserLocation())();
     }
   }, [openingIds]);
+
+  useEffect(() => {
+    setHoveredFeature(null);
+    setSelectedFeature(null);
+  }, [kind]);
 
   /**
    * This effect is used to update the map with the fetched polygons.
@@ -130,8 +142,50 @@ const OpeningsMap: React.FC<MapProps> = ({
     return {};
   };
 
+  const MapClickHandler: React.FC<{
+    onMapClick: () => void;
+    polygonClickedRef: React.RefObject<boolean>; // updated type
+  }> = ({ onMapClick, polygonClickedRef }) => {
+    useMapEvents({
+      click: () => {
+        if (polygonClickedRef.current) {
+          polygonClickedRef.current = false; // reset for next click
+          return;
+        }
+        onMapClick();
+      },
+    });
+    return null;
+  };
   return (
     <div className="opening-map-container" style={{ height: `${mapSize}px`, width: "100%" }}>
+      {/* Popup info in top left */}
+
+      {selectedFeature || hoveredFeature ? (
+        <div className="map-popup-top-left">
+          {selectedFeature ? (
+            <OpeningsMapEntryPopup
+              openingId={selectedFeature.properties?.OPENING_ID}
+              data={getPropertyForFeature(selectedFeature)}
+              feature={{
+                type: "FeatureCollection",
+                features: [selectedFeature],
+              }}
+            />
+          ) : hoveredFeature ? (
+            <OpeningsMapEntryPopup
+              openingId={hoveredFeature.properties?.OPENING_ID}
+              data={getPropertyForFeature(hoveredFeature)}
+              feature={{
+                type: "FeatureCollection",
+                features: [hoveredFeature],
+              }}
+            />
+          ) : null}
+        </div>
+      ) : null}
+
+
       {/* Display the user's location if no openings are found */}
       <MapContainer
         center={position}
@@ -139,13 +193,30 @@ const OpeningsMap: React.FC<MapProps> = ({
         style={{ height: "100%", minHeight: "100%" }}
         zoomControl={false}
       >
+        <MapClickHandler
+          onMapClick={() => {
+            setSelectedFeature(null);
+            setHoveredFeature(null);
+          }}
+          polygonClickedRef={polygonClickedRef}
+        />
+
         <ZoomControl position="bottomright" />
 
         {/* Resizer to adjust the map height */}
         <OpeningsMapResizer height={mapSize} />
 
         {/* Display Opening polygons, if any */}
-        <OpeningsMapEntry polygons={openings} />
+        <OpeningsMapEntry
+          polygons={openings}
+          hoveredFeature={hoveredFeature}
+          setHoveredFeature={setHoveredFeature}
+          selectedFeature={selectedFeature}
+          setSelectedFeature={(feature) => {
+            polygonClickedRef.current = true;
+            setSelectedFeature(feature);
+          }}
+        />
         <OpeningsMapFitBound
           polygons={openings}
           defaultLocation={position}

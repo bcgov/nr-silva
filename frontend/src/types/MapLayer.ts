@@ -196,7 +196,9 @@ export type MapPositionType = {
 };
 
 export const getStyleForFeature = (
-  feature: Feature<Geometry, any> | undefined
+  feature: Feature<Geometry, any> | undefined,
+  selectedFeature?: Feature<Geometry, any> | null,
+  hoveredFeature?: Feature<Geometry, any> | null
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
@@ -207,6 +209,18 @@ export const getStyleForFeature = (
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
   const fillColor = colors![Math.floor(Math.random() * colors!.length)];
+
+  // Highlight if selected or hovered
+  if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
+    return {
+      ...defaultStyle,
+      ...kindEntry.style,
+      fillColor,
+      color: "#000000",
+      weight: 3,
+    };
+  }
+
   return {
     ...defaultStyle,
     ...kindEntry.style,

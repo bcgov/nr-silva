@@ -64,3 +64,20 @@
 .leaflet-control-zoom-out {
   transform: rotate(-90deg);
 }
+
+.opening-map-container {
+  position: relative;
+}
+
+.map-popup-top-left {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  min-width: 200px;
+  max-width: 350px;
+}

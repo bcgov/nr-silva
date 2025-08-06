@@ -14,9 +14,13 @@ import "./styles.scss";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
+  hoveredFeature: Feature<Geometry, any> | null;
+  setHoveredFeature: (feature: Feature<Geometry, any> | null) => void;
+  selectedFeature: Feature<Geometry, any> | null;
+  setSelectedFeature: (feature: Feature<Geometry, any> | null) => void;
 }
 
-const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
+const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature }) => {
   // State to hold the polygons
   // This is used to set the map view when the component mounts
   const [features, setFeatures] = useState<FeatureCollection[]>([]);
@@ -84,22 +88,19 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
     setFeatures([...polygons]);
   }, [polygons]);
 
-  const createPopup =
-    (featureCollection: FeatureCollection) =>
-    (feature: Feature<Geometry, any>, layer: L.Layer): void => {
-      const popupContent = renderToString(
-        <OpeningsMapEntryPopup
-          openingId={getOpeningIdByFeature(feature)}
-          data={getPropertyForFeature(feature)}
-          feature={featureCollection}
-        />
-      );
-
-      layer.bindPopup(popupContent, {
-        maxWidth: 700,
-        autoPan: false,
-      });
-    };
+  const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
+    layer.on({
+      mouseover: () => {
+        if (!selectedFeature) setHoveredFeature(feature);
+      },
+      mouseout: () => {
+        if (!selectedFeature) setHoveredFeature(null);
+      },
+      click: () => {
+        setSelectedFeature(feature);
+      },
+    });
+  };
 
   return (
     <>
@@ -109,8 +110,8 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
             data-testid="geojson"
             data={featureCollection} // This is the entire GeoJSON data
             key={geoKey(featureCollection, index)} // Unique key for each GeoJSON layer
-            style={getStyleForFeature} // Function to style the polygons
-            onEachFeature={createPopup(featureCollection)} // Function to create popups for each feature
+            style={(feature) => getStyleForFeature(feature, selectedFeature, hoveredFeature)}
+            onEachFeature={onEachFeature(featureCollection)} // Use the custom handler for each feature
           />
         ))}
       {zoom <= 10 &&
