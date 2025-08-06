@@ -4,7 +4,6 @@
 .map-popup-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
 
   .map-popup-header-container {
     h4 {
@@ -16,9 +15,11 @@
     display: flex;
     flex-direction: column;
     margin: 0.5rem 0;
+    gap: 0.5rem;
   }
 
   .map-popup-links-container {
+    margin-top: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 0.2rem
