@@ -196,6 +196,15 @@ export type MapPositionType = {
   zoom: number;
 };
 
+const getDeterministicColor = (colors: string[], featureId: string | number): string => {
+  const str = String(featureId);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+  return colors[hash % colors.length]!;
+}
+
 export const getStyleForFeature = (
   feature: Feature<Geometry, any> | undefined,
   selectedFeature?: Feature<Geometry, any> | null,
@@ -209,7 +218,8 @@ export const getStyleForFeature = (
 
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
-  const fillColor = colors![Math.floor(Math.random() * colors!.length)];
+  const fillColor = getDeterministicColor(colors!, feature.id);
+
 
   // Highlight if selected or hovered
   if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
