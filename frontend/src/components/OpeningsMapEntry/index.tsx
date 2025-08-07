@@ -96,6 +96,20 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     setFeatures([...polygons]);
   }, [polygons]);
 
+  useEffect(() => {
+    if (!hoveredFeature && selectedFeature) {
+      map.eachLayer((l: L.Layer) => {
+        if (
+          (l as any).feature &&
+          (l as any).feature.id === selectedFeature.id &&
+          (l as L.Path).bringToFront
+        ) {
+          (l as L.Path).bringToFront();
+        }
+      });
+    }
+  }, [hoveredFeature, selectedFeature, map]);
+
   const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
     layer.on({
       mouseover: () => {
