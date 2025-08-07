@@ -79,9 +79,24 @@ const OpeningsMap: React.FC<MapProps> = ({
   }, [openingIds]);
 
   useEffect(() => {
-    setHoveredFeature(null);
-    setSelectedFeature(null);
-  }, [kind]);
+    // Try to preserve selected/hovered feature if still present
+    if (openings.length > 0) {
+      setHoveredFeature((prev) => {
+        if (!prev) return null;
+        const found = openings
+          .flatMap((fc) => fc.features)
+          .find((f) => f.properties?.OPENING_ID === prev.properties?.OPENING_ID);
+        return found || null;
+      });
+      setSelectedFeature((prev) => {
+        if (!prev) return null;
+        const found = openings
+          .flatMap((fc) => fc.features)
+          .find((f) => f.properties?.OPENING_ID === prev.properties?.OPENING_ID);
+        return found || null;
+      });
+    }
+  }, [openings, kind]);
 
   /**
    * This effect is used to update the map with the fetched polygons.
