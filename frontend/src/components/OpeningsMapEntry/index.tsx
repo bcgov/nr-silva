@@ -158,7 +158,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
 
                     const geoJsonLayer = L.geoJSON(feature);
                     const bounds = geoJsonLayer.getBounds();
-                    map.flyToBounds(bounds, { maxZoom: 20, animate: true, duration: 1.0 });
+                    map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
                   },
                   mouseover: () => {
                     setHoveredFeature(feature);
