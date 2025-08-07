@@ -32,7 +32,7 @@ interface MapProps {
 const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
   setOpeningPolygonNotFound,
-  mapHeight = 400,
+  mapHeight = 480,
   layerFilter = false,
   kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
 }) => {
