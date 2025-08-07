@@ -1,4 +1,7 @@
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
+
 .link-content {
+  color: colors.$blue-70 !important;
   display: flex;
   flex-direction: row;
   gap: 0.2rem;
