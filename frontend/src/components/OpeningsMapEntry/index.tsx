@@ -100,12 +100,14 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     layer.on({
       mouseover: () => {
         setHoveredFeature(feature);
+        if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
       },
       mouseout: () => {
         setHoveredFeature(null);
       },
       click: () => {
         setSelectedFeature(feature);
+        if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
       },
     });
   };
