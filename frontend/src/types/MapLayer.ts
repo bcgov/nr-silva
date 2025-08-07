@@ -228,7 +228,7 @@ export const getStyleForFeature = (
       ...kindEntry.style,
       fillColor,
       color: "#000000",
-      weight: 3,
+      weight: 2,
     };
   }
 
