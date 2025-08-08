@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LatLngExpression } from "leaflet";
 import {
   LayersControl,
   MapContainer,
   TileLayer,
+  useMapEvents,
   WMSTileLayer,
+  ZoomControl,
 } from "react-leaflet";
-import { FeatureCollection } from "geojson";
-import { MapKindType, MapLayer } from "@/types/MapLayer";
+import { Feature, FeatureCollection, Geometry } from "geojson";
+import { getPropertyForFeature, MapKindType, MapLayer } from "@/types/MapLayer";
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
 import OpeningsMapFullScreen from "@/components/OpeningsMapFullScreen";
+import OpeningsMapEntryPopup from "../OpeningsMapEntryPopup";
 
 import { allLayers } from "./constants";
 import { getMapQueries, getUserLocation } from "./fetcher";
@@ -24,14 +27,16 @@ interface MapProps {
   mapHeight?: number;
   layerFilter?: boolean;
   kind?: MapKindType[];
+  isDetailsPage?: boolean;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
   openingIds,
   setOpeningPolygonNotFound,
-  mapHeight = 400,
+  mapHeight = 480,
   layerFilter = false,
   kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
+  isDetailsPage = false,
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<FeatureCollection[]>([]);
@@ -40,6 +45,13 @@ const OpeningsMap: React.FC<MapProps> = ({
   ]);
   const [zoomLevel, setZoomLevel] = useState<number>(13);
   const [mapSize, setMapSize] = useState<number>(mapHeight);
+
+  const [hoveredFeature, setHoveredFeature] = useState<Feature<Geometry, any> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<Feature<Geometry, any> | null>(null);
+  const [selectionByKind, setSelectionByKind] = useState<Record<string, string | null>>({});
+
+  const polygonClickedRef = useRef(false);
+  const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
 
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
@@ -69,6 +81,29 @@ const OpeningsMap: React.FC<MapProps> = ({
       (async () => await setUserLocation())();
     }
   }, [openingIds]);
+
+  const handleSelectFeature = (feature: Feature<Geometry, any> | null) => {
+    setSelectedFeature(feature);
+    setSelectionByKind((prev) => ({
+      ...prev,
+      [kindKey]: feature ? String(feature.id) : null,
+    }));
+  };
+
+  useEffect(() => {
+    const storedId = selectionByKind[kindKey];
+    if (isDetailsPage && storedId && openings.length > 0) {
+      const found = openings
+        .flatMap((fc) => fc.features)
+        .find((f) => String(f.id) === storedId);
+      if (found) {
+        setSelectedFeature(found);
+      }
+    } else {
+      setSelectedFeature(null);
+    }
+    setHoveredFeature(null);
+  }, [kindKey, openings]);
 
   /**
    * This effect is used to update the map with the fetched polygons.
@@ -129,19 +164,85 @@ const OpeningsMap: React.FC<MapProps> = ({
     return {};
   };
 
+  const MapClickHandler: React.FC<{
+    onMapClick: () => void;
+    polygonClickedRef: React.RefObject<boolean>; // updated type
+  }> = ({ onMapClick, polygonClickedRef }) => {
+    useMapEvents({
+      click: () => {
+        if (polygonClickedRef.current) {
+          polygonClickedRef.current = false; // reset for next click
+          return;
+        }
+        onMapClick();
+      },
+    });
+    return null;
+  };
   return (
     <div className="opening-map-container" style={{ height: `${mapSize}px`, width: "100%" }}>
+      {/* Popup info in top left */}
+
+      {selectedFeature || hoveredFeature ? (
+        <div className="map-popup-top-left">
+          {hoveredFeature ? (
+            <OpeningsMapEntryPopup
+              openingId={hoveredFeature.properties?.OPENING_ID}
+              data={getPropertyForFeature(hoveredFeature)}
+              feature={{
+                type: "FeatureCollection",
+                features: [hoveredFeature],
+              }}
+            />
+          ) : selectedFeature ? (
+            <OpeningsMapEntryPopup
+              openingId={selectedFeature.properties?.OPENING_ID}
+              data={getPropertyForFeature(selectedFeature)}
+              feature={{
+                type: "FeatureCollection",
+                features: [selectedFeature],
+              }}
+            />
+          ) : null}
+        </div>
+      ) : null}
+
+
       {/* Display the user's location if no openings are found */}
       <MapContainer
         center={position}
         zoom={zoomLevel}
         style={{ height: "100%", minHeight: "100%" }}
+        zoomControl={false}
       >
+        <MapClickHandler
+          onMapClick={() => {
+            setSelectedFeature(null);
+            setHoveredFeature(null);
+            setSelectionByKind((prev) => ({
+              ...prev,
+              [kindKey]: null,
+            }));
+          }}
+          polygonClickedRef={polygonClickedRef}
+        />
+
+        <ZoomControl position="bottomright" />
+
         {/* Resizer to adjust the map height */}
         <OpeningsMapResizer height={mapSize} />
 
         {/* Display Opening polygons, if any */}
-        <OpeningsMapEntry polygons={openings} />
+        <OpeningsMapEntry
+          polygons={openings}
+          hoveredFeature={hoveredFeature}
+          setHoveredFeature={setHoveredFeature}
+          selectedFeature={selectedFeature}
+          setSelectedFeature={(feature) => {
+            polygonClickedRef.current = true;
+            handleSelectFeature(feature);
+          }}
+        />
         <OpeningsMapFitBound
           polygons={openings}
           defaultLocation={position}
@@ -195,16 +296,6 @@ const OpeningsMap: React.FC<MapProps> = ({
             ))}
           </LayersControl>
         )}
-
-        {/* Fullscreen button */}
-        <OpeningsMapFullScreen
-          fullscreen={mapSize === 800}
-          onToggle={() => {
-            setMapSize((prevSize) =>
-              prevSize === mapHeight ? 800 : mapHeight
-            );
-          }}
-        />
       </MapContainer>
     </div>
   );
