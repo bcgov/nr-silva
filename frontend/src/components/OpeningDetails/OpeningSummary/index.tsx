@@ -270,6 +270,7 @@ const OpeningSummary = ({
             mapHeight={480}
             layerFilter={true}
             kind={mapKind(currentTab)}
+            isDetailsPage={true}
           />
         </Column>
       ) : null}

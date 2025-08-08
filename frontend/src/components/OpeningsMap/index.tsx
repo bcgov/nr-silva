@@ -27,6 +27,7 @@ interface MapProps {
   mapHeight?: number;
   layerFilter?: boolean;
   kind?: MapKindType[];
+  isDetailsPage?: boolean;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -35,6 +36,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   mapHeight = 480,
   layerFilter = false,
   kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
+  isDetailsPage = false,
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<FeatureCollection[]>([]);
@@ -46,8 +48,10 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   const [hoveredFeature, setHoveredFeature] = useState<Feature<Geometry, any> | null>(null);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Geometry, any> | null>(null);
+  const [selectionByKind, setSelectionByKind] = useState<Record<string, string | null>>({});
 
   const polygonClickedRef = useRef(false);
+  const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
 
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
@@ -78,25 +82,28 @@ const OpeningsMap: React.FC<MapProps> = ({
     }
   }, [openingIds]);
 
+  const handleSelectFeature = (feature: Feature<Geometry, any> | null) => {
+    setSelectedFeature(feature);
+    setSelectionByKind((prev) => ({
+      ...prev,
+      [kindKey]: feature ? String(feature.id) : null,
+    }));
+  };
+
   useEffect(() => {
-    // Try to preserve selected/hovered feature if still present
-    if (openings.length > 0) {
-      setHoveredFeature((prev) => {
-        if (!prev) return null;
-        const found = openings
-          .flatMap((fc) => fc.features)
-          .find((f) => f.properties?.OPENING_ID === prev.properties?.OPENING_ID);
-        return found || null;
-      });
-      setSelectedFeature((prev) => {
-        if (!prev) return null;
-        const found = openings
-          .flatMap((fc) => fc.features)
-          .find((f) => f.properties?.OPENING_ID === prev.properties?.OPENING_ID);
-        return found || null;
-      });
+    const storedId = selectionByKind[kindKey];
+    if (isDetailsPage && storedId && openings.length > 0) {
+      const found = openings
+        .flatMap((fc) => fc.features)
+        .find((f) => String(f.id) === storedId);
+      if (found) {
+        setSelectedFeature(found);
+      }
+    } else {
+      setSelectedFeature(null);
     }
-  }, [openings, kind]);
+    setHoveredFeature(null);
+  }, [kindKey, openings]);
 
   /**
    * This effect is used to update the map with the fetched polygons.
@@ -212,6 +219,10 @@ const OpeningsMap: React.FC<MapProps> = ({
           onMapClick={() => {
             setSelectedFeature(null);
             setHoveredFeature(null);
+            setSelectionByKind((prev) => ({
+              ...prev,
+              [kindKey]: null,
+            }));
           }}
           polygonClickedRef={polygonClickedRef}
         />
@@ -229,7 +240,7 @@ const OpeningsMap: React.FC<MapProps> = ({
           selectedFeature={selectedFeature}
           setSelectedFeature={(feature) => {
             polygonClickedRef.current = true;
-            setSelectedFeature(feature);
+            handleSelectFeature(feature);
           }}
         />
         <OpeningsMapFitBound
