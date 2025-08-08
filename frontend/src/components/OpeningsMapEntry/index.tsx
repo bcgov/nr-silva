@@ -147,7 +147,8 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
             .map((feature, fIndex) => (
               <Marker
                 icon={
-                  hoveredFeature && hoveredFeature.id === feature.id
+                  (hoveredFeature && hoveredFeature.id === feature.id) ||
+                    (selectedFeature && selectedFeature.id === feature.id)
                     ? markerHoveredIcon
                     : markerIcon
                 }
