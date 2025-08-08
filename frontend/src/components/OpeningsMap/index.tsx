@@ -178,22 +178,22 @@ const OpeningsMap: React.FC<MapProps> = ({
 
       {selectedFeature || hoveredFeature ? (
         <div className="map-popup-top-left">
-          {selectedFeature ? (
-            <OpeningsMapEntryPopup
-              openingId={selectedFeature.properties?.OPENING_ID}
-              data={getPropertyForFeature(selectedFeature)}
-              feature={{
-                type: "FeatureCollection",
-                features: [selectedFeature],
-              }}
-            />
-          ) : hoveredFeature ? (
+          {hoveredFeature ? (
             <OpeningsMapEntryPopup
               openingId={hoveredFeature.properties?.OPENING_ID}
               data={getPropertyForFeature(hoveredFeature)}
               feature={{
                 type: "FeatureCollection",
                 features: [hoveredFeature],
+              }}
+            />
+          ) : selectedFeature ? (
+            <OpeningsMapEntryPopup
+              openingId={selectedFeature.properties?.OPENING_ID}
+              data={getPropertyForFeature(selectedFeature)}
+              feature={{
+                type: "FeatureCollection",
+                features: [selectedFeature],
               }}
             />
           ) : null}
