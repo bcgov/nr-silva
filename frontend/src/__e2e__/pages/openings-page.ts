@@ -7,7 +7,6 @@ export class OpeningsPage extends BasePage {
   private readonly map: Locator;
   private readonly mapZoomInButton: Locator;
   private readonly mapZoomOutButton: Locator;
-  private readonly mapExpandButton: Locator;
 
   private readonly recentOpeningsTable: Locator;
   private readonly recentOpeningsTableRows: Locator;
@@ -19,7 +18,6 @@ export class OpeningsPage extends BasePage {
     this.map = page.locator('.leaflet-container');
     this.mapZoomInButton = this.map.locator('.leaflet-control-zoom-in');
     this.mapZoomOutButton = this.map.locator('.leaflet-control-zoom-out');
-    this.mapExpandButton = this.map.locator('.leaflet-control-fullscreen-button');
 
     this.recentOpeningsTable = page.getByRole('table', { name: 'Recent openings table' });
     this.recentOpeningsTableRows = this.recentOpeningsTable.locator('tbody tr');
@@ -39,10 +37,6 @@ export class OpeningsPage extends BasePage {
 
   async zoomOutMap() {
     await this.mapZoomOutButton.click();
-  }
-
-  async expandMap() {
-    await this.mapExpandButton.click();
   }
 
   async isRecentOpeningsTableVisible() {
