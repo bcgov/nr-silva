@@ -50,7 +50,7 @@ const projects = (isAllBrowsers ? browserProjects : [browserProjects[0]!]).map((
 
 export default defineConfig({
   timeout: THIRTY_SECONDS,
-  retries: 0,
+  retries: process.env.CI ? 2 : 0,
   testDir: './src/__e2e__',
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
