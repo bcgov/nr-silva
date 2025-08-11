@@ -1,5 +1,6 @@
 @use '@carbon/type';
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 
 .leaflet-control-fullscreen-button,
 .leaflet-control-zoom-in,
@@ -76,8 +77,13 @@
   z-index: 1000;
   background: white;
   border-radius: 0.5rem;
+  border: 2px solid transparent;
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.15);
   padding: 1.5rem;
   min-width: 240px;
   max-width: 360px;
+
+  &.pinned {
+    border: 2px solid colors.$gray-100;
+  }
 }

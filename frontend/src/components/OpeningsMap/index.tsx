@@ -184,7 +184,9 @@ const OpeningsMap: React.FC<MapProps> = ({
       {/* Popup info in top left */}
 
       {selectedFeature || hoveredFeature ? (
-        <div className="map-popup-top-left">
+        <div className={`map-popup-top-left${selectedFeature &&
+          (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
+          (!hoveredFeature) ? " pinned" : ""}`}>
           {hoveredFeature ? (
             <OpeningsMapEntryPopup
               openingId={hoveredFeature.properties?.OPENING_ID}
@@ -193,6 +195,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                 type: "FeatureCollection",
                 features: [hoveredFeature],
               }}
+              isSelected={selectedFeature?.id === hoveredFeature.id}
             />
           ) : selectedFeature ? (
             <OpeningsMapEntryPopup
@@ -202,6 +205,7 @@ const OpeningsMap: React.FC<MapProps> = ({
                 type: "FeatureCollection",
                 features: [selectedFeature],
               }}
+              isSelected={true}
             />
           ) : null}
         </div>

@@ -27,4 +27,10 @@
     flex-direction: column;
     gap: 0.2rem
   }
+
+  .map-popup-pin-hint {
+    margin-top: 1rem;
+    color: colors.$gray-70;
+    @include type.type-style('body-compact-02');
+  }
 }
