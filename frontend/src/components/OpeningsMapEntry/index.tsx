@@ -124,6 +124,13 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
       click: () => {
         setSelectedFeature(feature);
         if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
+
+        const currentZoom = map.getZoom();
+        if (currentZoom <= 14 || currentZoom >= 17) {
+          const geoJsonLayer = L.geoJSON(feature);
+          const bounds = geoJsonLayer.getBounds();
+          map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 0.5 });
+        }
       },
     });
   };
