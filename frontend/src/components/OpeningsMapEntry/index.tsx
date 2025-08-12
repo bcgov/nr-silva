@@ -119,7 +119,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     layer.on({
       mouseover: () => {
         setHoveredFeature(feature);
-        lastHoveredFeatureIdRef.current = feature.id;
+        lastHoveredFeatureIdRef.current = feature.id ?? null;
         if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
       },
       mouseout: () => {
