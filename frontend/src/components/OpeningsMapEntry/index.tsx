@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { renderToString } from "react-dom/server";
 import L from "leaflet";
 import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
@@ -18,13 +18,16 @@ interface OpeningsMapEntryProps {
   setHoveredFeature: (feature: Feature<Geometry, any> | null) => void;
   selectedFeature: Feature<Geometry, any> | null;
   setSelectedFeature: (feature: Feature<Geometry, any> | null) => void;
+  isPopupHoveredRef?: React.MutableRefObject<boolean>;
 }
 
-const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature }) => {
+const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
   // State to hold the polygons
   // This is used to set the map view when the component mounts
   const [features, setFeatures] = useState<FeatureCollection[]>([]);
   const [zoom, setZoom] = useState<number>(13);
+
+  const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
 
   // Get the map instance from react-leaflet
   const map = useMapEvents({
@@ -116,10 +119,19 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     layer.on({
       mouseover: () => {
         setHoveredFeature(feature);
+        lastHoveredFeatureIdRef.current = feature.id;
         if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
       },
       mouseout: () => {
-        setHoveredFeature(null);
+        const thisFeatureId = feature.id;
+        setTimeout(() => {
+          if (
+            lastHoveredFeatureIdRef.current === thisFeatureId &&
+            !isPopupHoveredRef?.current
+          ) {
+            setHoveredFeature(null);
+          }
+        }, 50);
       },
       click: () => {
         setSelectedFeature(feature);

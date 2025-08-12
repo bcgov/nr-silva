@@ -49,6 +49,8 @@ const OpeningsMap: React.FC<MapProps> = ({
   const [hoveredFeature, setHoveredFeature] = useState<Feature<Geometry, any> | null>(null);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Geometry, any> | null>(null);
   const [selectionByKind, setSelectionByKind] = useState<Record<string, string | null>>({});
+  const [isPopupHovered, setIsPopupHovered] = useState(false);
+  const isPopupHoveredRef = useRef(isPopupHovered);
 
   const polygonClickedRef = useRef(false);
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
@@ -144,6 +146,14 @@ const OpeningsMap: React.FC<MapProps> = ({
   }, []);
 
   /**
+   * This effect is used to update the isPopupHoveredRef when the isPopupHovered state changes.
+   * This is used to determine if the popup is hovered or not.
+   */
+  useEffect(() => {
+    isPopupHoveredRef.current = isPopupHovered;
+  }, [isPopupHovered]);
+
+  /**
    * This function returns extra parameters for the WMS layer, if the correct set of
    * parameters is provided. It checks if the layerFilter is true and if there are
    * openingIds available. If so, it constructs a CQL_FILTER string with the opening IDs
@@ -186,7 +196,13 @@ const OpeningsMap: React.FC<MapProps> = ({
       {selectedFeature || hoveredFeature ? (
         <div className={`map-popup-top-left${selectedFeature &&
           (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
-          (!hoveredFeature) ? " pinned" : ""}`}>
+          (!hoveredFeature) ? " pinned" : ""}`}
+          onMouseEnter={() => setIsPopupHovered(true)}
+          onMouseLeave={() => {
+            setIsPopupHovered(false);
+            setHoveredFeature(null);
+          }}
+        >
           {hoveredFeature ? (
             <OpeningsMapEntryPopup
               openingId={hoveredFeature.properties?.OPENING_ID}
@@ -246,6 +262,7 @@ const OpeningsMap: React.FC<MapProps> = ({
             polygonClickedRef.current = true;
             handleSelectFeature(feature);
           }}
+          isPopupHoveredRef={isPopupHoveredRef}
         />
         <OpeningsMapFitBound
           polygons={openings}
