@@ -6,12 +6,14 @@ interface OpeningsMapEntryPopupProps {
   openingId: number;
   data?: Record<string, any>;
   feature?: GeoJSON.FeatureCollection;
+  isSelected?: boolean;
 }
 
 const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
   openingId,
   data,
   feature,
+  isSelected = false,
 }) => {
   return (
     <div className="map-popup-container">
@@ -28,6 +30,13 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
       <div className="map-popup-links-container">
         {feature && <OpeningsMapDownloader feature={feature} />}
       </div>
+
+      {!isSelected ? (
+        <div className="map-popup-pin-hint">
+          Click polygon to pin
+        </div>
+      ) : null}
+
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { CodeDescriptionDto } from "@/services/OpenApi";
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { PathOptions } from 'leaflet';
+import { extractYearFromDateString } from "@/utils/DateUtils";
 
 export type MapLayer = {
   position: number;
@@ -55,9 +56,9 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-        'Polygon type': 'Opening',
         'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
-        'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`
+        'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`,
+        'Year Created': `${extractYearFromDateString(properties?.OPENING_WHEN_CREATED)}`,
       }
     }
   },
@@ -121,7 +122,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'orange',
       fillColor: '#F5A623', // A vibrant orange
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'Polygon type': 'Forest Cover Inventory',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
@@ -129,7 +130,7 @@ export const mapKinds: LayerConfiguration[] = [
         'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
         'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
         'Reference Year': properties?.REFERENCE_YEAR
-      } 
+      }
     }
   },
   {
@@ -140,12 +141,12 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'yellow',
       fillColor: '#F8E71C', // A vibrant yellow
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'Polygon type': 'Forest Cover Reserve',
         'Polygon': properties?.SILV_POLYGON_NO,
         'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
-      } 
+      }
     }
   },
   {
@@ -156,7 +157,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'pink',
       fillColor: '#D0021B', // A vibrant pink
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'Polygon type': 'Forest Cover Silviculture',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
@@ -176,7 +177,7 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'cyan',
       fillColor: '#50E3C2', // A vibrant cyan
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'Polygon type': 'Activity: Planting',
         'Activity Treatment Unit Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
@@ -195,8 +196,19 @@ export type MapPositionType = {
   zoom: number;
 };
 
+const getDeterministicColor = (colors: string[], featureId: string | number): string => {
+  const str = String(featureId);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+  return colors[hash % colors.length]!;
+}
+
 export const getStyleForFeature = (
-  feature: Feature<Geometry, any> | undefined
+  feature: Feature<Geometry, any> | undefined,
+  selectedFeature?: Feature<Geometry, any> | null,
+  hoveredFeature?: Feature<Geometry, any> | null
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
@@ -206,7 +218,20 @@ export const getStyleForFeature = (
 
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
-  const fillColor = colors![Math.floor(Math.random() * colors!.length)];
+  const fillColor = getDeterministicColor(colors!, feature.id);
+
+
+  // Highlight if selected or hovered
+  if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
+    return {
+      ...defaultStyle,
+      ...kindEntry.style,
+      fillColor,
+      color: "#000000",
+      weight: 2,
+    };
+  }
+
   return {
     ...defaultStyle,
     ...kindEntry.style,

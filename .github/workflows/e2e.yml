@@ -40,6 +40,7 @@ jobs:
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
       TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
       TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
+      CI: true
     steps:
       - uses: actions/checkout@v4
 

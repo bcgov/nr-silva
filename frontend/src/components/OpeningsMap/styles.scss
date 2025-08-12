@@ -1,5 +1,6 @@
 @use '@carbon/type';
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 
 .leaflet-control-fullscreen-button,
 .leaflet-control-zoom-in,
@@ -38,13 +39,13 @@
   height: 100%;
 }
 
-.leaflet-control-fullscreen-button:hover { 
+.leaflet-control-fullscreen-button:hover {
   svg {
     fill: var(--#{vars.$bcgov-prefix}-button-tertiary) !important;
   }
 }
 
-.leaflet-control-layers-toggle {  
+.leaflet-control-layers-toggle {
   mask: url('/map-layers.svg') no-repeat center;
   -webkit-mask: url('/map-layers.svg') no-repeat center;
   background-color: var(--#{vars.$bcgov-prefix}-button-primary) !important;
@@ -54,4 +55,35 @@
   mask-size: 30px 30px;
   -webkit-mask-size: 30px 30px;
   background-image: none !important;
+}
+
+.leaflet-control-zoom {
+  transform: rotate(90deg);
+  right: 1rem;
+}
+
+.leaflet-control-zoom-out {
+  transform: rotate(-90deg);
+}
+
+.opening-map-container {
+  position: relative;
+}
+
+.map-popup-top-left {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: white;
+  border-radius: 0.5rem;
+  border: 2px solid transparent;
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  min-width: 240px;
+  max-width: 360px;
+
+  &.pinned {
+    border: 2px solid colors.$gray-100;
+  }
 }
