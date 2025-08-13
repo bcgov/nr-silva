@@ -11,6 +11,8 @@ import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverSpeciesProjectio
 import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverUnmappedProjection;
 import java.util.List;
 import java.util.Optional;
+
+import ca.bc.gov.restapi.results.oracle.entity.cover.history.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -39,5 +41,34 @@ public interface ForestCoverEntityRepository extends JpaRepository<ForestCoverEn
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_DAMAGE)
   List<ForestCoverDetailsDamageProjection> findByOpeningDetailsDamage(Long forestCoverLayerId);
 
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST)
+  List<ForestCoverHistoryOverviewProjection> findHistoryOverviewByOpeningId(Long openingId);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_LIST)
+  List<ForestCoverHistoryProjection> findHistoryByOpeningDetails(Long openingId, String updateDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES)
+  List<ForestCoverHistorySpeciesProjection> findHistoryByOpeningDetailsSpecies(
+      Long forestCoverId, String coverLayerCode, String archiveDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_POLYGON)
+  Optional<ForestCoverHistoryPolygonProjection> findHistoryByOpeningDetailsPolygon(
+          Long forestCoverId, String archiveDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED)
+  List<ForestCoverHistoryUnmappedProjection> findHistoryByOpeningDetailsUnmapped(
+          Long forestCoverId, String archiveDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_LAYER)
+  List<ForestCoverHistoryDetailsLayerProjection> findHistoryByOpeningDetailsLayer(
+          Long forestCoverId, String archiveDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES)
+  List<ForestCoverHistoryDetailedSpeciesProjection> findHistoryByOpeningDetailsDetailedSpecies(
+          Long forestCoverLayerId, String archiveDate);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_DAMAGE)
+  List<ForestCoverHistoryDetailsDamageProjection> findHistoryByOpeningDetailsDamage(
+          Long forestCoverLayerId, String archiveDate);
 
 }

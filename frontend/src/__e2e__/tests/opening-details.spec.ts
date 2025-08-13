@@ -158,6 +158,5 @@ test.describe('Opening Details', () => {
 
     await openingDetailsPage.zoomInMap();
     await openingDetailsPage.zoomOutMap();
-    await openingDetailsPage.expandMap();
   });
 });

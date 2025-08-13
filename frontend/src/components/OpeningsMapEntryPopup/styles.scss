@@ -1,26 +1,36 @@
 @use '@carbon/type';
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 
 .map-popup-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
 
   .map-popup-header-container {
     h4 {
+      color: colors.$gray-100;
       @include type.type-style('heading-02');
     }
   }
 
   .map-popup-details-container {
+    color: colors.$gray-100;
     display: flex;
     flex-direction: column;
     margin: 0.5rem 0;
+    gap: 0.5rem;
   }
 
   .map-popup-links-container {
+    margin-top: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 0.2rem
+  }
+
+  .map-popup-pin-hint {
+    margin-top: 1rem;
+    color: colors.$gray-70;
+    @include type.type-style('body-compact-02');
   }
 }

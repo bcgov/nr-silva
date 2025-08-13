@@ -305,7 +305,8 @@ public class SilvaOracleQueryConstants {
       """
       SELECT
       	ssu.standards_unit_id AS stocking_standard_unit,
-      	ssu.STOCKING_STANDARD_UNIT_ID AS ssid,
+      	ssu.STOCKING_STANDARD_UNIT_ID AS ssuid,
+        ssu.STANDARDS_REGIME_ID as srid,
       	CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
       	CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
       	fsp.fsp_id,
@@ -365,7 +366,7 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_SS_MILESTONES =
       """
           SELECT
-            sm.STOCKING_STANDARD_UNIT_ID AS ssid,
+            sm.STOCKING_STANDARD_UNIT_ID AS ssuid,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'PH' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS post_harvest_declared_date,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS regen_declared_date,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN sm.LATE_OFFSET_YEARS END) AS regen_offset_years,
@@ -918,4 +919,536 @@ public class SilvaOracleQueryConstants {
           FROM THE.OPENING_ATTACHMENT
           WHERE OPENING_ID = :openingId
           """;
+
+  public static final String GET_OPENING_HISTORY_AUDIT_LIST =
+      """
+      SELECT
+        rae.OPENING_ID AS opening_id,
+        rae.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
+        rae.STANDARDS_REGIME_ID AS regime_id,
+        rae.SILVICULTURE_PROJECT_ID AS project_id,
+        rae.RESULTS_AUDIT_ACTION_CODE AS action_code,
+        TO_CHAR(rae.ACTION_DATE, 'YYYY-MM-DD HH24:MI:SS') AS action_timestamp,
+        rae.DESCRIPTION AS description,
+        rae.USER_ID AS user_id,
+        CASE
+            WHEN rae.EMAIL_SENT_IND = 'Y' THEN 'true'
+            ELSE 'false'
+        END AS is_email_sent,
+        rae.XML_SUBMISSION_ID AS xml_submission_id,
+        rae.OPENING_AMENDMENT_NUMBER AS opening_amendment_number,
+        rae.ENTRY_USERID AS entry_user_id,
+        TO_CHAR(rae.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
+      FROM RESULTS_AUDIT_EVENT rae
+      WHERE rae.OPENING_ID = :openingId
+      """;
+
+  public static final String GET_OPENING_HISTORY_AUDIT_DETAIL_LIST =
+      """
+      SELECT
+        rad.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
+        rad.RESULTS_AUDIT_DETAIL_ID AS audit_detail_id,
+        rad.BUSINESS_IDENTIFIER AS business_identifier,
+        rad.TABLE_NAME AS table_name,
+        rad.COLUMN_NAME AS column_name,
+        rad.OLD_VALUE AS old_value,
+        rad.NEW_VALUE AS new_value,
+        rad.ENTRY_USERID AS entry_user_id,
+        TO_CHAR(rad.ENTRY_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS entry_timestamp
+      FROM RESULTS_AUDIT_DETAIL rad
+      WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_LIST =
+      """
+      SELECT
+        ssua.STOCKING_EVENT_HISTORY_ID,
+        MAX(seh.OPENING_AMENDMENT_NUMBER) AS amendment_number,
+        TO_CHAR(MAX(seh.ENTRY_TIMESTAMP), 'YYYY-MM-DD"T"HH24:MI:SS') AS event_timestamp,
+        COUNT(ssua.STOCKING_EVENT_HISTORY_ID) AS su_count,
+        SUM(ssua.NET_AREA) AS total_nar,
+        MAX(seh.RESULTS_AUDIT_ACTION_CODE) AS audit_action_code,
+        MAX(raac.DESCRIPTION) AS audit_action_description,
+        MAX(seh.RESULTS_SUBMISSION_ID) AS esf_submission_id,
+        MAX(seh.ENTRY_USERID) AS submitted_by_user_id,
+        MAX(oah.APP_ENT_BY_USERID) AS approved_by_user_id
+      FROM STOCKING_EVENT_HISTORY seh
+      LEFT JOIN STOCKING_STANDARD_UNIT_ARCHIVE ssua
+        ON ssua.STOCKING_EVENT_HISTORY_ID = seh.STOCKING_EVENT_HISTORY_ID
+      LEFT JOIN OPENING_AMENDMENT_HISTORY oah
+        ON seh.OPENING_ID = oah.OPENING_ID
+        AND seh.OPENING_AMENDMENT_NUMBER = oah.OPENING_AMENDMENT_NUMBER
+      LEFT JOIN RESULTS_AUDIT_ACTION_CODE raac
+        ON seh.RESULTS_AUDIT_ACTION_CODE = raac.RESULTS_AUDIT_ACTION_CODE
+      WHERE seh.OPENING_ID = :openingId
+      GROUP BY ssua.STOCKING_EVENT_HISTORY_ID
+      ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST =
+      """
+      WITH ordered_seh AS (
+        SELECT
+          seh.STOCKING_EVENT_HISTORY_ID,
+          seh.ENTRY_TIMESTAMP,
+          ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+        FROM STOCKING_EVENT_HISTORY seh
+        WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :historyId
+      ),
+      previous_event AS (
+        SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      -- current and previous SU
+      current_su AS (
+        SELECT * FROM STOCKING_STANDARD_UNIT_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      previous_su AS (
+        SELECT * FROM STOCKING_STANDARD_UNIT_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      -- current and previous ECO
+      current_ec AS (
+        SELECT * FROM STOCKING_ECOLOGY_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      previous_ec AS (
+        SELECT * FROM STOCKING_ECOLOGY_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      all_units AS (
+        SELECT DISTINCT
+            COALESCE(curr.STOCKING_STANDARD_UNIT_ID, prev.STOCKING_STANDARD_UNIT_ID) AS stocking_standard_unit_id,
+            COALESCE(curr.STANDARDS_UNIT_ID, prev.STANDARDS_UNIT_ID) AS standards_unit_id,
+            curr.STOCKING_EVENT_HISTORY_ID AS stocking_event_history_id
+        FROM current_su curr
+        FULL OUTER JOIN previous_su prev ON curr.STOCKING_STANDARD_UNIT_ID = prev.STOCKING_STANDARD_UNIT_ID
+      )
+      SELECT
+        a.stocking_event_history_id,
+        a.stocking_standard_unit_id,
+        a.standards_unit_id,
+        -- SU diffs
+        prev_su.STANDARDS_REGIME_ID AS old_regime_id,
+        curr_su.STANDARDS_REGIME_ID AS new_regime_id,
+        prev_su.NET_AREA AS old_net_area,
+        curr_su.NET_AREA AS new_net_area,
+        prev_su.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS old_max_soil_disturbance,
+        curr_su.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS new_max_soil_disturbance,
+        CASE
+            WHEN prev_su.VARIANCE_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS old_variance_indicator,
+        CASE
+            WHEN curr_su.VARIANCE_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS new_variance_indicator,
+        CASE
+            WHEN prev_su.REGEN_OBLIGATION_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS old_regen_obligation_indicator,
+        CASE
+            WHEN curr_su.REGEN_OBLIGATION_IND = 'Y' THEN 'true' ELSE 'false'
+        END AS new_regen_obligation_indicator,
+        prev_su.NO_REGEN_EARLY_OFFSET_YRS AS old_no_regen_early_offset_years,
+        curr_su.NO_REGEN_EARLY_OFFSET_YRS AS new_no_regen_early_offset_years,
+        prev_su.NO_REGEN_LATE_OFFSET_YRS AS old_no_regen_late_offset_years,
+        curr_su.NO_REGEN_LATE_OFFSET_YRS AS new_no_regen_late_offset_years,
+        prev_su.REGEN_DELAY_OFFSET_YRS AS old_regen_offset_years,
+        curr_su.REGEN_DELAY_OFFSET_YRS AS new_regen_offset_years,
+        prev_su.FREE_GROWING_EARLY_OFFSET_YRS AS old_free_growing_early_offset_years,
+        curr_su.FREE_GROWING_EARLY_OFFSET_YRS AS new_free_growing_early_offset_years,
+        prev_su.FREE_GROWING_LATE_OFFSET_YRS AS old_free_growing_late_offset_years,
+        curr_su.FREE_GROWING_LATE_OFFSET_YRS AS new_free_growing_late_offset_years,
+        prev_su.AMENDMENT_RATIONALE_COMMENT AS old_amendment_comment,
+        curr_su.AMENDMENT_RATIONALE_COMMENT AS new_amendment_comment,
+        -- ECOLOGY diffs
+        prev_ec.BGC_ZONE_CODE AS old_bgc_zone,
+        curr_ec.BGC_ZONE_CODE AS new_bgc_zone,
+        prev_ec.BGC_SUBZONE_CODE AS old_bgc_subzone,
+        curr_ec.BGC_SUBZONE_CODE AS new_bgc_subzone,
+        prev_ec.BGC_VARIANT AS old_bgc_variant,
+        curr_ec.BGC_VARIANT AS new_bgc_variant,
+        prev_ec.BGC_PHASE AS old_bgc_phase,
+        curr_ec.BGC_PHASE AS new_bgc_phase,
+        prev_ec.BEC_SITE_SERIES AS old_bec_site_series,
+        curr_ec.BEC_SITE_SERIES AS new_bec_site_series,
+        prev_ec.BEC_SITE_TYPE AS old_bec_site_type,
+        curr_ec.BEC_SITE_TYPE AS new_bec_site_type,
+        prev_ec.BEC_SERAL AS old_bec_seral,
+        curr_ec.BEC_SERAL AS new_bec_seral
+      FROM all_units a
+      LEFT JOIN current_su curr_su ON curr_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN previous_su prev_su ON prev_su.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN current_ec curr_ec ON curr_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS =
+      """
+      WITH ordered_seh AS (
+        SELECT
+          seh.STOCKING_EVENT_HISTORY_ID,
+          seh.ENTRY_TIMESTAMP,
+          ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+        FROM THE.STOCKING_EVENT_HISTORY seh
+        WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+        SELECT * FROM ordered_seh WHERE STOCKING_EVENT_HISTORY_ID = :historyId
+      ),
+      previous_event AS (
+        SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      curr_layer AS (
+        SELECT * FROM STOCKING_LAYER_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event)
+      ),
+      prev_layer AS (
+        SELECT * FROM STOCKING_LAYER_ARCHIVE
+        WHERE STOCKING_EVENT_HISTORY_ID = (SELECT STOCKING_EVENT_HISTORY_ID FROM previous_event)
+      ),
+      layer_keys AS (
+        SELECT DISTINCT
+          COALESCE(c.STOCKING_STANDARD_UNIT_ID, p.STOCKING_STANDARD_UNIT_ID) AS ssu_id,
+          COALESCE(c.STOCKING_LAYER_ID, p.STOCKING_LAYER_ID) AS stocking_layer_id
+        FROM curr_layer c
+        FULL OUTER JOIN prev_layer p ON
+          c.STOCKING_STANDARD_UNIT_ID = p.STOCKING_STANDARD_UNIT_ID AND
+          c.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+      )
+      SELECT
+        (SELECT STOCKING_EVENT_HISTORY_ID FROM current_event) AS stocking_event_history_id,
+        k.ssu_id,
+        p.STOCKING_LAYER_ID AS old_layer_id,
+        c.STOCKING_LAYER_ID AS new_layer_id,
+        p.STOCKING_LAYER_CODE AS old_stocking_layer_code,
+        c.STOCKING_LAYER_CODE AS new_stocking_layer_code,
+        slcp.DESCRIPTION AS old_stocking_layer_description,
+        slcc.DESCRIPTION AS new_stocking_layer_description,
+        p.MIN_HORIZONTAL_DISTANCE AS old_min_horizontal_distance,
+        c.MIN_HORIZONTAL_DISTANCE AS new_min_horizontal_distance,
+        p.MIN_PREF_STOCKING_STANDARD AS old_min_perf_stocking_standard,
+        c.MIN_PREF_STOCKING_STANDARD AS new_min_perf_stocking_standard,
+        p.MIN_STOCKING_STANDARD AS old_min_stocking_standard,
+        c.MIN_STOCKING_STANDARD AS new_min_stocking_standard,
+        p.MIN_POST_SPACING AS old_min_post_spacing,
+        c.MIN_POST_SPACING AS new_min_post_spacing,
+        p.RESIDUAL_BASAL_AREA AS old_residual_basal_area,
+        c.RESIDUAL_BASAL_AREA AS new_residual_basal_area,
+        p.TARGET_STOCKING AS old_target_well_spaced_trees,
+        c.TARGET_STOCKING AS new_target_well_spaced_trees,
+        p.HGHT_RELATIVE_TO_COMP AS old_height_relative_to_comp,
+        c.HGHT_RELATIVE_TO_COMP AS new_height_relative_to_comp,
+        p.MAX_CONIFER AS old_max_conifer,
+        c.MAX_CONIFER AS new_max_conifer,
+        p.MAX_POST_SPACING AS old_max_post_spacing,
+        c.MAX_POST_SPACING AS new_max_post_spacing
+      FROM layer_keys k
+      LEFT JOIN curr_layer c ON c.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND c.STOCKING_LAYER_ID = k.stocking_layer_id
+      LEFT JOIN prev_layer p ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id AND p.STOCKING_LAYER_ID = k.stocking_layer_id
+      LEFT JOIN STOCKING_LAYER_CODE slcc ON c.STOCKING_LAYER_CODE = slcc.STOCKING_LAYER_CODE
+      LEFT JOIN STOCKING_LAYER_CODE slcp ON p.STOCKING_LAYER_CODE = slcp.STOCKING_LAYER_CODE
+      """;
+
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES =
+      """
+      WITH ordered_seh AS (
+          SELECT
+              seh.STOCKING_EVENT_HISTORY_ID AS seh_id,
+              seh.ENTRY_TIMESTAMP,
+              ROW_NUMBER() OVER (ORDER BY seh.ENTRY_TIMESTAMP DESC) AS rn
+          FROM THE.STOCKING_EVENT_HISTORY seh
+          WHERE seh.OPENING_ID = :openingId
+      ),
+      current_event AS (
+          SELECT * FROM ordered_seh WHERE seh_id = :historyId
+      ),
+      previous_event AS (
+          SELECT * FROM ordered_seh WHERE rn = (SELECT rn FROM current_event) + 1
+      ),
+      curr_species AS (
+          SELECT * FROM STOCKING_LAYER_SPECIES_ARCHIVE
+          WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM current_event)
+      ),
+      prev_species AS (
+          SELECT * FROM STOCKING_LAYER_SPECIES_ARCHIVE
+          WHERE STOCKING_EVENT_HISTORY_ID = (SELECT seh_id FROM previous_event)
+      ),
+      all_keys AS (
+          SELECT DISTINCT
+              COALESCE(c.STOCKING_STANDARD_UNIT_ID, p.STOCKING_STANDARD_UNIT_ID) AS ssu_id,
+              COALESCE(c.STOCKING_LAYER_ID, p.STOCKING_LAYER_ID) AS stocking_layer_id,
+              COALESCE(c.SILV_TREE_SPECIES_CODE, p.SILV_TREE_SPECIES_CODE) AS species_code
+          FROM curr_species c
+          FULL OUTER JOIN prev_species p
+            ON c.STOCKING_STANDARD_UNIT_ID = p.STOCKING_STANDARD_UNIT_ID
+           AND c.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+           AND c.SILV_TREE_SPECIES_CODE = p.SILV_TREE_SPECIES_CODE
+      )
+      SELECT
+          k.ssu_id,
+          p.STOCKING_LAYER_ID AS old_stocking_layer_id,
+          c.STOCKING_LAYER_ID AS new_stocking_layer_id,
+          slap.STOCKING_LAYER_CODE AS old_layer_code,
+          slac.STOCKING_LAYER_CODE AS new_layer_code,
+          p.SILV_TREE_SPECIES_CODE AS old_species_code,
+          c.SILV_TREE_SPECIES_CODE AS new_species_code,
+          stscp.DESCRIPTION AS old_species_description,
+          stscc.DESCRIPTION AS new_species_description,
+          CASE
+            WHEN p.PREFERRED_IND = 'Y' THEN 'true' ELSE 'false'
+          END AS old_preferred_ind,
+          CASE
+            WHEN c.PREFERRED_IND = 'Y' THEN 'true' ELSE 'false'
+          END AS new_preferred_ind,
+          p.MIN_HEIGHT AS old_min_height,
+          c.MIN_HEIGHT AS new_min_height
+      FROM all_keys k
+      LEFT JOIN curr_species c
+        ON c.STOCKING_STANDARD_UNIT_ID = k.ssu_id
+       AND c.STOCKING_LAYER_ID = k.stocking_layer_id
+       AND c.SILV_TREE_SPECIES_CODE = k.species_code
+      LEFT JOIN prev_species p
+        ON p.STOCKING_STANDARD_UNIT_ID = k.ssu_id
+       AND p.STOCKING_LAYER_ID = k.stocking_layer_id
+       AND p.SILV_TREE_SPECIES_CODE = k.species_code
+      LEFT JOIN SILV_TREE_SPECIES_CODE stscc ON stscc.SILV_TREE_SPECIES_CODE = c.SILV_TREE_SPECIES_CODE
+      LEFT JOIN SILV_TREE_SPECIES_CODE stscp ON stscp.SILV_TREE_SPECIES_CODE = p.SILV_TREE_SPECIES_CODE
+      LEFT JOIN STOCKING_LAYER_ARCHIVE slac
+        ON slac.STOCKING_LAYER_ID = c.STOCKING_LAYER_ID
+        AND slac.STOCKING_EVENT_HISTORY_ID = c.STOCKING_EVENT_HISTORY_ID
+      LEFT JOIN STOCKING_LAYER_ARCHIVE slap
+        ON slap.STOCKING_LAYER_ID = p.STOCKING_LAYER_ID
+        AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST =
+      """
+      WITH fca_deduped AS (
+          SELECT
+              MAX(OPENING_ID) AS opening_id,
+              TRUNC(UPDATE_TIMESTAMP) AS update_timestamp
+          FROM (
+              SELECT fca.*,
+                     ROW_NUMBER() OVER (
+                         PARTITION BY fca.OPENING_ID, TRUNC(fca.UPDATE_TIMESTAMP)
+                         ORDER BY TRUNC(fca.UPDATE_TIMESTAMP) DESC
+                     ) AS rn
+              FROM THE.FOREST_COVER_ARCHIVE fca
+              WHERE fca.OPENING_ID = :openingId
+          )
+          WHERE rn = 1
+          GROUP BY TRUNC(UPDATE_TIMESTAMP)
+      )
+      SELECT
+          ols.OPENING_ID,
+          TO_CHAR(ols.OPENING_LAND_STATUS_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS fc_date,
+          (ols.NP_FOR_AREA + ols.NP_NAT_AREA + ols.NP_UNN_AREA) AS np,
+          (ols.NSR_NPL_AREA + ols.NSR_PL_AREA + ols.NSR_NAT_AREA) AS nsr,
+          (ols.SR_ART_AREA + ols.SR_NAT_AREA) AS imm,
+          (ols.MAT_AREA + ols.NP_NAT_AREA + ols.NC_BR_AREA) AS other,
+          (
+              ols.NP_FOR_AREA + ols.NP_NAT_AREA + ols.NP_UNN_AREA +
+              ols.NSR_NPL_AREA + ols.NSR_PL_AREA + ols.NSR_NAT_AREA +
+              ols.SR_ART_AREA + ols.SR_NAT_AREA +
+              ols.MAT_AREA + ols.NP_NAT_AREA + ols.NC_BR_AREA
+          ) AS TOTAL,
+          CASE
+              WHEN ols.OPENING_LAND_STATUS_DATE = (
+                  SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
+                  FROM THE.OPENING_LAND_STATUS ols2
+                  WHERE ols2.OPENING_ID = ols.OPENING_ID
+              )
+              THEN 'true'
+              WHEN fca.OPENING_ID IS NOT NULL
+                   AND TRUNC(fca.UPDATE_TIMESTAMP) = TRUNC(ols.OPENING_LAND_STATUS_DATE)
+              THEN 'true'
+              ELSE 'false'
+          END AS HAS_DETAILS,
+          CASE
+              WHEN ols.OPENING_LAND_STATUS_DATE = (
+                  SELECT MAX(ols2.OPENING_LAND_STATUS_DATE)
+                  FROM THE.OPENING_LAND_STATUS ols2
+                  WHERE ols2.OPENING_ID = ols.OPENING_ID
+              )
+              THEN 'true'
+              ELSE 'false'
+          END AS IS_CURRENT_HISTORY
+      FROM THE.OPENING_LAND_STATUS ols
+      LEFT JOIN fca_deduped fca
+          ON ols.OPENING_ID = fca.OPENING_ID
+          AND TRUNC(ols.OPENING_LAND_STATUS_DATE) = TRUNC(fca.UPDATE_TIMESTAMP)
+      WHERE ols.OPENING_ID = :openingId
+      ORDER BY ols.OPENING_LAND_STATUS_DATE DESC
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST =
+      """
+      SELECT
+        fc.FOREST_COVER_ID AS cover_id,
+        TO_CHAR(fc.ARCHIVE_DATE, 'YYYY-MM-DD') AS archive_date,
+        fc.SILV_POLYGON_NO AS polygon_id,
+        ssu.STANDARDS_UNIT_ID AS standard_unit_id,
+        fcnma.STOCKING_TYPE_CODE AS unmapped_code,
+        stcnma.DESCRIPTION AS unmapped_name,
+        fc.SILV_POLYGON_AREA AS gross_area,
+        fc.SILV_POLYGON_NET_AREA AS net_area,
+        fc.STOCKING_STATUS_CODE AS status_code,
+        ssc.DESCRIPTION AS status_name,
+        fc.STOCKING_TYPE_CODE AS type_code,
+        stc.DESCRIPTION AS type_name,
+        fcli.TOTAL_STEMS_PER_HA AS total,
+        fcli.TOTAL_WELL_SPACED_STEMS_PER_HA AS inventory_total_well_spaced,
+        fcli.WELL_SPACED_STEMS_PER_HA AS inventory_well_spaced,
+        fcli.FREE_GROWING_STEMS_PER_HA AS inventory_free_growing,
+        fcls.TOTAL_WELL_SPACED_STEMS_PER_HA AS silviculture_total_well_spaced,
+        fcls.WELL_SPACED_STEMS_PER_HA AS silviculture_well_spaced,
+        fcls.FREE_GROWING_STEMS_PER_HA AS silviculture_free_growing,
+        fc.REFERENCE_YEAR,
+        layer_summary.is_single_layer AS is_single_layer,
+        fc.SILV_RESERVE_CODE AS reserve_code,
+        fc.SILV_RESERVE_OBJECTIVE_CODE AS objective_code
+      FROM FOREST_COVER_ARCHIVE fc
+      LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
+      LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
+      LEFT JOIN FOREST_COVER_NON_MAPPED_ARC fcnma ON fc.FOREST_COVER_ID = fcnma.FOREST_COVER_ID
+      LEFT JOIN STOCKING_TYPE_CODE stcnma ON stcnma.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
+      LEFT JOIN FOREST_COVER_LAYER_ARCHIVE fcli
+        ON fcli.FOREST_COVER_LAYER_CODE = 'I' AND fcli.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      LEFT JOIN FOREST_COVER_LAYER_ARCHIVE fcls
+        ON fcls.FOREST_COVER_LAYER_CODE = 'S' AND fcls.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      LEFT JOIN STOCKING_STANDARD_UNIT_ARCHIVE ssu
+        ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN (
+        SELECT
+          fc.FOREST_COVER_ID,
+          CASE
+            WHEN layer.count_layers IS NULL OR layer.count_layers = 0 THEN 'Y'
+            WHEN layer.count_SI > 0 THEN 'Y'
+            ELSE 'N'
+          END AS is_single_layer
+        FROM FOREST_COVER_ARCHIVE fc
+        LEFT JOIN (
+          SELECT
+              fcl.FOREST_COVER_ID,
+              COUNT(*) AS count_layers,
+              COUNT(CASE WHEN fcl.FOREST_COVER_LAYER_CODE IN ('S', 'I') THEN 1 END) AS count_SI
+          FROM FOREST_COVER_LAYER_ARCHIVE fcl
+          GROUP BY fcl.FOREST_COVER_ID
+        ) layer ON fc.FOREST_COVER_ID = layer.FOREST_COVER_ID
+      ) layer_summary
+        ON layer_summary.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      WHERE
+        fc.OPENING_ID = :openingId
+        AND TRUNC(fc.UPDATE_TIMESTAMP) = TO_DATE(:updateDate, 'YYYY-MM-DD')
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES =
+      """
+      SELECT
+        fcls.TREE_SPECIES_CODE AS species_code,
+        tsc.DESCRIPTION AS species_name
+      FROM FOREST_COVER_LAYER_ARCHIVE fcl
+      LEFT JOIN FOREST_COVER_LAYER_SPECIES_ARC fcls ON (fcls.FOREST_COVER_ID = fcl.FOREST_COVER_ID AND fcls.FOREST_COVER_LAYER_ID = fcl.FOREST_COVER_LAYER_ID )
+      LEFT JOIN TREE_SPECIES_CODE tsc ON tsc.TREE_SPECIES_CODE = fcls.TREE_SPECIES_CODE
+      WHERE
+        fcl.FOREST_COVER_LAYER_CODE = :coverLayerCode
+        AND fcl.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcl.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      ORDER BY fcls.SPECIES_ORDER
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_POLYGON =
+      """
+      SELECT
+        fc.FOREST_COVER_ID,
+        fc.SILV_RESERVE_CODE AS reserve_code,
+        src.DESCRIPTION AS reserve_name,
+        fc.SILV_RESERVE_OBJECTIVE_CODE AS objective_code,
+        sroc.DESCRIPTION AS objective_name,
+        fc.SITE_CLASS_CODE AS site_class_code,
+        scc.DESCRIPTION AS site_class_name,
+        fc.SITE_INDEX AS site_index,
+        fc.SITE_INDEX_SOURCE_CODE AS site_index_source_code,
+        sisc.DESCRIPTION AS site_index_source_name,
+        fc.TREE_COVER_PATTERN_CODE AS tree_cover_pattern_code,
+        tcpc.DESCRIPTION AS tree_cover_pattern_name,
+        fc.REENTRY_YEAR
+      FROM FOREST_COVER_ARCHIVE fc
+      LEFT JOIN SILV_RESERVE_CODE src ON src.SILV_RESERVE_CODE = fc.SILV_RESERVE_CODE
+      LEFT JOIN SILV_RESERVE_OBJECTIVE_CODE sroc ON sroc.SILV_RESERVE_OBJECTIVE_CODE = fc.SILV_RESERVE_OBJECTIVE_CODE
+      LEFT JOIN SITE_CLASS_CODE scc ON scc.SITE_CLASS_CODE = fc.SITE_CLASS_CODE
+      LEFT JOIN SITE_INDEX_SOURCE_CODE sisc ON sisc.SITE_INDEX_SOURCE_CODE = fc.SITE_INDEX_SOURCE_CODE
+      LEFT JOIN TREE_COVER_PATTERN_CODE tcpc ON tcpc.TREE_COVER_PATTERN_CODE = fc.TREE_COVER_PATTERN_CODE
+      WHERE
+        fc.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fc.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED =
+      """
+      SELECT
+        fcnma.NON_MAPPED_AREA_ID AS unmapped_area_id,
+        fcnma.NON_MAPPED_AREA AS area,
+        fcnma.STOCKING_STATUS_CODE AS stocking_status_code,
+        ssc.DESCRIPTION AS stocking_status_name,
+        fcnma.STOCKING_TYPE_CODE AS stocking_type_code,
+        stc.DESCRIPTION AS stocking_type_name
+      FROM FOREST_COVER_NON_MAPPED_ARC fcnma
+      LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fcnma.STOCKING_STATUS_CODE
+      LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fcnma.STOCKING_TYPE_CODE
+      WHERE
+        fcnma.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcnma.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LAYER =
+      """
+      SELECT
+        fcl.FOREST_COVER_LAYER_ID AS layer_id,
+        fcl.FOREST_COVER_LAYER_CODE AS layer_code,
+        fclc.DESCRIPTION AS layer_name,
+        fcl.CROWN_CLOSURE_PCT AS crown_closure,
+        fcl.BASAL_AREA AS basal_area_st,
+        fcl.TOTAL_STEMS_PER_HA AS total_stems,
+        fcl.TOTAL_WELL_SPACED_STEMS_PER_HA AS total_well_spaced,
+        fcl.WELL_SPACED_STEMS_PER_HA AS well_spaced,
+        fcl.FREE_GROWING_STEMS_PER_HA AS free_growing
+      FROM FOREST_COVER_LAYER_ARCHIVE fcl
+      LEFT JOIN FOREST_COVER_LAYER_CODE fclc ON fclc.FOREST_COVER_LAYER_CODE = fcl.FOREST_COVER_LAYER_CODE
+      WHERE
+        fcl.FOREST_COVER_ID = :forestCoverId
+        AND TRUNC(fcl.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES =
+      """
+      SELECT
+        fcls.TREE_SPECIES_CODE AS species_code,
+        tsc.DESCRIPTION AS species_name,
+        fcls.TREE_SPECIES_PCT AS species_percent,
+        fcls.AVG_AGE AS average_age,
+        fcls.AVG_HEIGHT AS average_height
+      FROM FOREST_COVER_LAYER_SPECIES_ARC fcls
+      LEFT JOIN TREE_SPECIES_CODE tsc ON tsc.TREE_SPECIES_CODE = fcls.TREE_SPECIES_CODE
+      WHERE
+        fcls.FOREST_COVER_LAYER_ID = :forestCoverLayerId
+        AND TRUNC(fcls.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      ORDER BY fcls.SPECIES_ORDER
+      """;
+
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DAMAGE =
+      """
+      SELECT
+        fr.SILV_DAMAGE_AGENT_CODE AS damage_agent_code,
+        sdac.DESCRIPTION AS damage_agent_name,
+        fr.INCIDENCE_PCT AS forest_health_incidence,
+        fr.INCIDENCE_AREA AS incidence_area
+      FROM FORHEALTH_RSLT_ARCHIVE fr
+      LEFT JOIN SILV_DAMAGE_AGENT_CODE sdac ON sdac.SILV_DAMAGE_AGENT_CODE = fr.SILV_DAMAGE_AGENT_CODE
+      WHERE
+        fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId
+        AND TRUNC(fr.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
+      """;
 }
