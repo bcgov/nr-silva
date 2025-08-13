@@ -305,7 +305,8 @@ public class SilvaOracleQueryConstants {
       """
       SELECT
       	ssu.standards_unit_id AS stocking_standard_unit,
-      	ssu.STOCKING_STANDARD_UNIT_ID AS ssid,
+      	ssu.STOCKING_STANDARD_UNIT_ID AS ssuid,
+        ssu.STANDARDS_REGIME_ID as srid,
       	CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
       	CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
       	fsp.fsp_id,
@@ -365,7 +366,7 @@ public class SilvaOracleQueryConstants {
   public static final String GET_OPENING_SS_MILESTONES =
       """
           SELECT
-            sm.STOCKING_STANDARD_UNIT_ID AS ssid,
+            sm.STOCKING_STANDARD_UNIT_ID AS ssuid,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'PH' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS post_harvest_declared_date,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN TO_CHAR(sm.DECLARED_DATE, 'YYYY-MM-DD') END) AS regen_declared_date,
             MAX(CASE WHEN sm.SILV_MILESTONE_TYPE_CODE = 'RG' THEN sm.LATE_OFFSET_YEARS END) AS regen_offset_years,
@@ -919,7 +920,8 @@ public class SilvaOracleQueryConstants {
           WHERE OPENING_ID = :openingId
           """;
 
-  public static final String GET_OPENING_HISTORY_AUDIT_LIST = """
+  public static final String GET_OPENING_HISTORY_AUDIT_LIST =
+      """
       SELECT
         rae.OPENING_ID AS opening_id,
         rae.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
@@ -941,7 +943,8 @@ public class SilvaOracleQueryConstants {
       WHERE rae.OPENING_ID = :openingId
       """;
 
-  public static final String GET_OPENING_HISTORY_AUDIT_DETAIL_LIST = """
+  public static final String GET_OPENING_HISTORY_AUDIT_DETAIL_LIST =
+      """
       SELECT
         rad.RESULTS_AUDIT_EVENT_ID AS audit_event_id,
         rad.RESULTS_AUDIT_DETAIL_ID AS audit_detail_id,
@@ -956,7 +959,8 @@ public class SilvaOracleQueryConstants {
       WHERE rad.RESULTS_AUDIT_EVENT_ID = :auditEventId
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_LIST = """
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_LIST =
+      """
       SELECT
         ssua.STOCKING_EVENT_HISTORY_ID,
         MAX(seh.OPENING_AMENDMENT_NUMBER) AS amendment_number,
@@ -981,7 +985,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST = """
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST =
+      """
       WITH ordered_seh AS (
         SELECT
           seh.STOCKING_EVENT_HISTORY_ID,
@@ -1079,7 +1084,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS = """
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS =
+      """
       WITH ordered_seh AS (
         SELECT
           seh.STOCKING_EVENT_HISTORY_ID,
@@ -1145,7 +1151,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN STOCKING_LAYER_CODE slcp ON p.STOCKING_LAYER_CODE = slcp.STOCKING_LAYER_CODE
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES = """
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES =
+      """
       WITH ordered_seh AS (
           SELECT
               seh.STOCKING_EVENT_HISTORY_ID AS seh_id,
@@ -1216,7 +1223,8 @@ public class SilvaOracleQueryConstants {
         AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST =
+      """
       WITH fca_deduped AS (
           SELECT
               MAX(OPENING_ID) AS opening_id,
@@ -1275,7 +1283,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY ols.OPENING_LAND_STATUS_DATE DESC
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST =
+      """
       SELECT
         fc.FOREST_COVER_ID AS cover_id,
         TO_CHAR(fc.ARCHIVE_DATE, 'YYYY-MM-DD') AS archive_date,
@@ -1335,7 +1344,8 @@ public class SilvaOracleQueryConstants {
         AND TRUNC(fc.UPDATE_TIMESTAMP) = TO_DATE(:updateDate, 'YYYY-MM-DD')
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES =
+      """
       SELECT
         fcls.TREE_SPECIES_CODE AS species_code,
         tsc.DESCRIPTION AS species_name
@@ -1349,7 +1359,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY fcls.SPECIES_ORDER
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_POLYGON = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_POLYGON =
+      """
       SELECT
         fc.FOREST_COVER_ID,
         fc.SILV_RESERVE_CODE AS reserve_code,
@@ -1375,7 +1386,8 @@ public class SilvaOracleQueryConstants {
         AND TRUNC(fc.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_UNMAPPED =
+      """
       SELECT
         fcnma.NON_MAPPED_AREA_ID AS unmapped_area_id,
         fcnma.NON_MAPPED_AREA AS area,
@@ -1391,7 +1403,8 @@ public class SilvaOracleQueryConstants {
         AND TRUNC(fcnma.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_LAYER = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_LAYER =
+      """
       SELECT
         fcl.FOREST_COVER_LAYER_ID AS layer_id,
         fcl.FOREST_COVER_LAYER_CODE AS layer_code,
@@ -1409,7 +1422,8 @@ public class SilvaOracleQueryConstants {
         AND TRUNC(fcl.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DETAILS_SPECIES =
+      """
       SELECT
         fcls.TREE_SPECIES_CODE AS species_code,
         tsc.DESCRIPTION AS species_name,
@@ -1424,7 +1438,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY fcls.SPECIES_ORDER
       """;
 
-  public static final String GET_OPENING_FOREST_COVER_HISTORY_DAMAGE = """
+  public static final String GET_OPENING_FOREST_COVER_HISTORY_DAMAGE =
+      """
       SELECT
         fr.SILV_DAMAGE_AGENT_CODE AS damage_agent_code,
         sdac.DESCRIPTION AS damage_agent_name,
