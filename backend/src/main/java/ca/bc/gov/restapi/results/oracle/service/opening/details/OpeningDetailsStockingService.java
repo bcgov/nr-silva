@@ -26,7 +26,7 @@ public class OpeningDetailsStockingService {
 
     return openingRepository.getOpeningStockingDetailsByOpeningId(openingId).stream()
         .map(getDetails())
-        .map(detailsDto -> getMilestones(detailsDto.stocking().ssid()).apply(detailsDto))
+        .map(detailsDto -> getMilestones(detailsDto.stocking().ssuId()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
         .map(getComments())
@@ -49,7 +49,8 @@ public class OpeningDetailsStockingService {
       OpeningDetailsStockingDetailsDto stockingDetails =
           new OpeningDetailsStockingDetailsDto(
               projection.getStockingStandardUnit(),
-              projection.getSsid(),
+              projection.getSsuid(),
+              projection.getSrid(),
               BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
               BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
               projection.getFspId(),
@@ -70,7 +71,7 @@ public class OpeningDetailsStockingService {
     return detailsDto ->
         detailsDto.withLayers(
             openingRepository
-                .getOpeningStockingLayerByOpeningId(openingId, detailsDto.stocking().ssid())
+                .getOpeningStockingLayerByOpeningId(openingId, detailsDto.stocking().ssuId())
                 .stream()
                 .map(
                     layer ->
@@ -101,7 +102,7 @@ public class OpeningDetailsStockingService {
       Long openingId, boolean preferred, OpeningDetailsStockingDto detailsDto) {
     return openingRepository
         .getOpeningStockingSpeciesByOpeningId(
-            openingId, BooleanUtils.toString(preferred, "Y", "N"), detailsDto.stocking().ssid())
+            openingId, BooleanUtils.toString(preferred, "Y", "N"), detailsDto.stocking().ssuId())
         .stream()
         .map(
             species ->
@@ -116,7 +117,7 @@ public class OpeningDetailsStockingService {
     return tombstone ->
         tombstone.withComments(
             commentRepository
-                .getCommentById(null, null, tombstone.stocking().ssid(), null, null)
+                .getCommentById(null, null, tombstone.stocking().ssuId(), null, null)
                 .stream()
                 .map(OpeningDetailsCommentConverter.mapComments())
                 .toList());
