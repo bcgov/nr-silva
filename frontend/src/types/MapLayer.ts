@@ -219,7 +219,7 @@ export const getStyleForFeature = (
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
   const fillColor = getDeterministicColor(colors!, feature.id);
-
+  const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
 
   // Highlight if selected or hovered
   if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
@@ -228,7 +228,7 @@ export const getStyleForFeature = (
       ...kindEntry.style,
       fillColor,
       color: "#000000",
-      weight: 2,
+      weight: kindWeightMap[kindEntry.code as MapKindType] || 2,
     };
   }
 
@@ -236,6 +236,7 @@ export const getStyleForFeature = (
     ...defaultStyle,
     ...kindEntry.style,
     fillColor,
+    color: outlineColor
   };
 }
 
@@ -250,6 +251,27 @@ const colorMap: Record<string, string[]> = {
   cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
   default: [defaultStyle.fillColor],
 }
+
+const outlineColorMap: Record<string, string> = {
+  blue: '#005CB8',
+  red: '#801701',
+  purple: '#6202C5',
+  orange: '#E64F02',
+  pink: '#B3035C',
+  grey: '#939395',
+};
+
+export const kindWeightMap: Record<MapKindType, number> = {
+  'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW': 2,
+  'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY': 2,
+  'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW': 2,
+};
 
 export const getPropertyForFeature = (feature: Feature<Geometry, GeoJsonProperties>): Record<string, any> => {
   const kindEntry = mapKinds.find(
