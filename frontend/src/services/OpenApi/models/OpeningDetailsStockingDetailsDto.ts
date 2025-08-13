@@ -6,7 +6,8 @@ import type { OpeningDetailsBecDto } from './OpeningDetailsBecDto';
 import type { OpeningDetailsStockingDetailsMilestoneDto } from './OpeningDetailsStockingDetailsMilestoneDto';
 export type OpeningDetailsStockingDetailsDto = {
     stockingStandardUnit: string | null;
-    ssid: number | null;
+    ssuId: number | null;
+    srid: number | null;
     defaultMof: boolean;
     manualEntry: boolean;
     fspId: number | null;

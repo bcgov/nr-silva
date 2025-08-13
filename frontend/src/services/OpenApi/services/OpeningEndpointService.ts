@@ -9,6 +9,11 @@ import type { OpeningDetailsTenuresDto } from '../models/OpeningDetailsTenuresDt
 import type { OpeningDetailsTombstoneOverviewDto } from '../models/OpeningDetailsTombstoneOverviewDto';
 import type { OpeningForestCoverDetailsDto } from '../models/OpeningForestCoverDetailsDto';
 import type { OpeningForestCoverDto } from '../models/OpeningForestCoverDto';
+import type { OpeningForestCoverHistoryDetailsDto } from '../models/OpeningForestCoverHistoryDetailsDto';
+import type { OpeningForestCoverHistoryDto } from '../models/OpeningForestCoverHistoryDto';
+import type { OpeningForestCoverHistoryOverviewDto } from '../models/OpeningForestCoverHistoryOverviewDto';
+import type { OpeningStandardUnitHistoryDto } from '../models/OpeningStandardUnitHistoryDto';
+import type { OpeningStandardUnitHistoryOverviewDto } from '../models/OpeningStandardUnitHistoryOverviewDto';
 import type { PagedModelOpeningDetailsActivitiesActivitiesDto } from '../models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 import type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from '../models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
@@ -80,6 +85,41 @@ export class OpeningEndpointService {
     }
     /**
      * @param openingId
+     * @returns OpeningStandardUnitHistoryOverviewDto OK
+     * @throws ApiError
+     */
+    public static getOpeningSsuHistory(
+        openingId: number,
+    ): CancelablePromise<Array<OpeningStandardUnitHistoryOverviewDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/ssu/history',
+            path: {
+                'openingId': openingId,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @param historyId
+     * @returns OpeningStandardUnitHistoryDto OK
+     * @throws ApiError
+     */
+    public static getOpeningSsuHistoryDetails(
+        openingId: number,
+        historyId: number,
+    ): CancelablePromise<Array<OpeningStandardUnitHistoryDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/ssu/history/{historyId}',
+            path: {
+                'openingId': openingId,
+                'historyId': historyId,
+            },
+        });
+    }
+    /**
+     * @param openingId
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -142,6 +182,67 @@ export class OpeningEndpointService {
             path: {
                 'openingId': openingId,
                 'forestCoverId': forestCoverId,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @param updateDate
+     * @returns OpeningForestCoverHistoryDto OK
+     * @throws ApiError
+     */
+    public static getCoverHistory(
+        openingId: number,
+        updateDate: string,
+    ): CancelablePromise<Array<OpeningForestCoverHistoryDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/cover/history',
+            path: {
+                'openingId': openingId,
+            },
+            query: {
+                'updateDate': updateDate,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @param forestCoverId
+     * @param archiveDate
+     * @returns OpeningForestCoverHistoryDetailsDto OK
+     * @throws ApiError
+     */
+    public static getForestCoverHistoryDetails(
+        openingId: number,
+        forestCoverId: number,
+        archiveDate: string,
+    ): CancelablePromise<OpeningForestCoverHistoryDetailsDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/cover/history/{forestCoverId}',
+            path: {
+                'openingId': openingId,
+                'forestCoverId': forestCoverId,
+            },
+            query: {
+                'archiveDate': archiveDate,
+            },
+        });
+    }
+    /**
+     * @param openingId
+     * @returns OpeningForestCoverHistoryOverviewDto OK
+     * @throws ApiError
+     */
+    public static getCoverHistoryOverview(
+        openingId: number,
+    ): CancelablePromise<Array<OpeningForestCoverHistoryOverviewDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/cover/history/overview',
+            path: {
+                'openingId': openingId,
             },
         });
     }
