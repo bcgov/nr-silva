@@ -50,16 +50,16 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
       <div className="accordion-title-bottom">
         {/* No standard unit id or FSP id */}
         {
-          (!standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
+          (!standardUnit.stocking.srid && !standardUnit.stocking.fspId)
             ? 'Manual stocking requirement'
             : null
         }
         {/* Has standard unit id but no FSP id */}
         {
-          (standardUnit.stocking.ssid && !standardUnit.stocking.fspId)
+          (standardUnit.stocking.srid && !standardUnit.stocking.fspId)
             ? (
               <>
-                {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
                 <VerticalDivider />
                 Ministry default
               </>
@@ -68,10 +68,10 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
         }
         {/* Has standard unit id AND FSP id */}
         {
-          (standardUnit.stocking.ssid && standardUnit.stocking.fspId)
+          (standardUnit.stocking.srid && standardUnit.stocking.fspId)
             ? (
               <>
-                {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
                 <VerticalDivider />
                 {`FSP ID ${standardUnit.stocking.fspId}`}
               </>

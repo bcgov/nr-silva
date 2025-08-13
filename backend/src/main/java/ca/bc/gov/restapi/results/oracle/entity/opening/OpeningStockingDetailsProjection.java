@@ -4,7 +4,9 @@ public interface OpeningStockingDetailsProjection {
 
   String getStockingStandardUnit();
 
-  Long getSsid();
+  Long getSsuid();
+
+  Long getSrid();
 
   Boolean getDefaultMof();
 

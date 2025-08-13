@@ -210,7 +210,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(
             jsonPath("$.notifications[0].title")
                 .value("Regeneration milestone reminder for standard unit \"A, B\""))
-        .andExpect(jsonPath("$.notifications[0].description").value("Please update your forest cover."))
+        .andExpect(
+            jsonPath("$.notifications[0].description").value("Please update your forest cover."))
         .andExpect(jsonPath("$.notifications[0].status").value("INFO"))
         .andReturn();
   }
@@ -244,7 +245,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(content().contentType("application/json"))
         // Verify stocking details
         .andExpect(jsonPath("$[0].stocking.stockingStandardUnit").value("A"))
-        .andExpect(jsonPath("$[0].stocking.ssid").value(1013720L))
+        .andExpect(jsonPath("$[0].stocking.ssuId").value(1013720L))
         .andExpect(jsonPath("$[0].stocking.defaultMof").value(false))
         .andExpect(jsonPath("$[0].stocking.manualEntry").value(false))
         .andExpect(jsonPath("$[0].stocking.netArea").value(25.5))

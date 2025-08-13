@@ -255,24 +255,24 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                   <Column sm={4} md={8} lg={16}>
                     <CardTitle title="Stocking standard" />
                     <div className="stocking-standard-links">
-                      {/* No standard unit id or FSP id */}
-                      {!standardUnit.stocking.ssid && !standardUnit.stocking.fspId
+                      {/* No standard regime id or FSP id */}
+                      {!standardUnit.stocking.srid && !standardUnit.stocking.fspId
                         ? "Manual stocking requirement"
                         : null}
-                      {/* Has standard unit id but no FSP id */}
-                      {standardUnit.stocking.ssid &&
+                      {/* Has standard regime id but no FSP id */}
+                      {standardUnit.stocking.srid &&
                         !standardUnit.stocking.fspId ? (
                         <>
-                          {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                          {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
                           <VerticalDivider />
                           <span>Ministry default</span>
                         </>
                       ) : null}
                       {/* Has standard unit id AND FSP id */}
-                      {standardUnit.stocking.ssid &&
+                      {standardUnit.stocking.srid &&
                         standardUnit.stocking.fspId ? (
                         <>
-                          {`SSID ${standardUnit.stocking.ssid}, Stocking objective`}
+                          {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
                           <VerticalDivider />
                           {
                             <a
