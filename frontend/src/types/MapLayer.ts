@@ -56,9 +56,10 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-        'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
-        'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`,
-        'Year Created': `${extractYearFromDateString(properties?.OPENING_WHEN_CREATED)}`,
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
+        'region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
+        'district': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`,
+        'yearCreated': `${extractYearFromDateString(properties?.OPENING_WHEN_CREATED)}`,
       }
     }
   },
@@ -72,6 +73,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW',
         'Polygon type': 'Tenure / Cut Block',
         'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
         'Cut Block': properties?.CUT_BLOCK_ID,
@@ -90,10 +92,11 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-        'Polygon type': 'Standard Unit',
-        'Stocking Standards Id': properties?.STOCKING_STANDARD_UNIT_ID,
-        'Standard Units Id': properties?.STANDARDS_UNIT_ID,
-        'Net Area (ha)': properties?.NET_AREA,
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
+        'polygonType': 'Standard Unit',
+        'ssid': properties?.STOCKING_STANDARD_UNIT_ID,
+        'standardUnitId': properties?.STANDARDS_UNIT_ID,
+        'netArea': properties?.NET_AREA,
       }
     }
   },
@@ -107,6 +110,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
         'Polygon type': 'Activity',
         'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
         'Silviculture base code': properties?.SILV_BASE_CODE,
@@ -124,6 +128,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
         'Polygon type': 'Forest Cover Inventory',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
         'Polygon': properties?.SILV_POLYGON_NUMBER,
@@ -143,6 +148,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
         'Polygon type': 'Forest Cover Reserve',
         'Polygon': properties?.SILV_POLYGON_NO,
         'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
@@ -159,6 +165,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
         'Polygon type': 'Forest Cover Silviculture',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
         'Polygon': properties?.SILV_POLYGON_NUMBER,
@@ -179,6 +186,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW',
         'Polygon type': 'Activity: Planting',
         'Activity Treatment Unit Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
         'Map Label': properties?.MAP_LABEL,
