@@ -150,15 +150,28 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   return (
     <>
       {zoom > 10 &&
-        features.filter(Boolean).map((featureCollection, index) => (
-          <GeoJSON
-            data-testid="geojson"
-            data={featureCollection} // This is the entire GeoJSON data
-            key={geoKey(featureCollection, index)} // Unique key for each GeoJSON layer
-            style={(feature) => getStyleForFeature(feature, selectedFeature, hoveredFeature)}
-            onEachFeature={onEachFeature(featureCollection)} // Use the custom handler for each feature
-          />
-        ))}
+        features.filter(Boolean).map((featureCollection, collectionIndex) =>
+          featureCollection.features
+            .filter((feature) => feature.geometry)
+            .map((feature, featureIndex) => (
+              <GeoJSON
+                data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                data={feature}
+                style={() =>
+                  getStyleForFeature(
+                    feature,
+                    selectedFeature,
+                    hoveredFeature,
+                    featureIndex,
+                    featureCollection.features.length
+                  )
+                }
+                onEachFeature={onEachFeature(featureCollection)}
+              />
+            ))
+        )
+      }
       {zoom <= 10 &&
         features.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features

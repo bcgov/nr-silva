@@ -213,10 +213,18 @@ const getDeterministicColor = (colors: string[], featureId: string | number): st
   return colors[hash % colors.length]!;
 }
 
+const getSpacedColor = (colors: string[], index: number, total: number): string => {
+  if (total <= 1) return colors[0]!;
+  const colorIdx = Math.round((index / (total - 1)) * (colors.length - 1));
+  return colors[colorIdx]!;
+};
+
 export const getStyleForFeature = (
   feature: Feature<Geometry, any> | undefined,
   selectedFeature?: Feature<Geometry, any> | null,
-  hoveredFeature?: Feature<Geometry, any> | null
+  hoveredFeature?: Feature<Geometry, any> | null,
+  featureIndex?: number,
+  totalFeatures?: number,
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
@@ -226,7 +234,7 @@ export const getStyleForFeature = (
 
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
-  const fillColor = getDeterministicColor(colors!, feature.id);
+  const fillColor = getSpacedColor(colors!, featureIndex ?? 0, totalFeatures ?? colors!.length);
   const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
 
   // Highlight if selected or hovered
@@ -252,7 +260,17 @@ const colorMap: Record<string, string[]> = {
   blue: ['#9FB3DF', '#9EC6F3', '#BDDDE4', '#FFF1D5'],
   red: ['#DE5B7B', '#ECCFD1', '#F0E3C4', '#98DED3'],
   green: ['#ACE1AF', '#B0EBB4', '#BFF6C3', '#E0FBE2'],
-  purple: ['#BEADFA', '#D0BFFF', '#DFCCFB', '#FFF8C9'],
+  purple: [
+    '#fcfbfd',
+    '#efedf5',
+    '#dadaeb',
+    '#bcbddc',
+    '#9e9ac8',
+    '#807dba',
+    '#6a51a3',
+    '#54278f',
+    '#3f007d'
+  ],
   orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
   pink: ['#8F87F1', '#C68EFD', '#E9A5F1', '#FED2E2'],
