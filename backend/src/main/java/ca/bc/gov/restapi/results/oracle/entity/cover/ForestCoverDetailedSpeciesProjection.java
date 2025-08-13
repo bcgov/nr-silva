@@ -6,6 +6,6 @@ public interface ForestCoverDetailedSpeciesProjection extends ForestCoverSpecies
 
   Long getAverageAge();
 
-  Long getAverageHeight();
+  Float getAverageHeight();
 
 }

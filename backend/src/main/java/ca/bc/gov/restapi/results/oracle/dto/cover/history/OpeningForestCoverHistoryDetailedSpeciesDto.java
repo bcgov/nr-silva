@@ -16,7 +16,7 @@ public record OpeningForestCoverHistoryDetailedSpeciesDto(
     Long averageAge,
 
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    Long averageHeight
+    Float averageHeight
 ) {
 
 }
