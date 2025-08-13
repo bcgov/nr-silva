@@ -85,8 +85,8 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Standards Units',
     style: {
       ...defaultStyle,
-      color: 'green',
-      fillColor: '#50E3C2', // A vibrant green
+      color: 'purple',
+      fillColor: '#9013FE',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
