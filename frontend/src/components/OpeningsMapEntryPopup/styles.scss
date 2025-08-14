@@ -33,4 +33,8 @@
     color: colors.$gray-70;
     @include type.type-style('body-compact-02');
   }
+
+  .popup-value {
+    font-weight: 700;
+  }
 }
