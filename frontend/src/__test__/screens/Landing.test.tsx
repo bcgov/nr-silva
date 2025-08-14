@@ -4,6 +4,8 @@ import { render, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import Landing from "../../screens/Landing";
 import { useAuth } from "../../contexts/AuthProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PreferenceProvider } from "../../contexts/PreferenceProvider";
 
 vi.mock("../../contexts/AuthProvider", () => ({
   useAuth: vi.fn(),
@@ -31,6 +33,14 @@ vi.mock("@carbon/react", () => ({
   Column: ({ children, ...props }) => <div {...props}>{children}</div>,
 }));
 
+const queryClient = new QueryClient();
+const renderWithPreferenceProvider = (component: React.JSX.Element) =>
+  render(
+    <QueryClientProvider client={queryClient}>
+      <PreferenceProvider>{component}</PreferenceProvider>
+    </QueryClientProvider>
+  );
+
 describe("Landing", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -39,7 +49,9 @@ describe("Landing", () => {
   it("should render the landing page with title and subtitle", () => {
     (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: vi.fn() });
 
-    const { getByTestId, getByAltText } = render(<Landing />);
+    const { getByTestId, getByAltText } = renderWithPreferenceProvider(
+      <Landing />
+    );
 
     expect(getByTestId("landing-title").textContent).toBe("Welcome to Silva");
     expect(getByTestId("landing-subtitle").textContent).toBe(
@@ -53,7 +65,7 @@ describe("Landing", () => {
     const mockLogin = vi.fn();
     (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
 
-    const { getByTestId } = render(<Landing />);
+    const { getByTestId } = renderWithPreferenceProvider(<Landing />);
 
     fireEvent.click(getByTestId("landing-button__idir"));
     expect(mockLogin).toHaveBeenCalledWith("IDIR");
@@ -63,7 +75,7 @@ describe("Landing", () => {
     const mockLogin = vi.fn();
     (useAuth as Mock).mockReturnValue({ isLoggedIn: false, login: mockLogin });
 
-    const { getByTestId } = render(<Landing />);
+    const { getByTestId } = renderWithPreferenceProvider(<Landing />);
 
     fireEvent.click(getByTestId("landing-button__bceid"));
     expect(mockLogin).toHaveBeenCalledWith("BCEIDBUSINESS");
