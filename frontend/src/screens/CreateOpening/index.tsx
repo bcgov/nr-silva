@@ -1,24 +1,51 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { OpeningTypes } from '@/types/OpeningTypes';
-import { Column, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
+import { Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
 import PageTitle from '../../components/PageTitle';
 import { TitleText } from './constants';
 
+import './styles.scss';
+import { CreateOpeningFileUpload } from '../../components/CreateOpeningSteps';
+import { useAuth } from '../../contexts/AuthProvider';
+
 const CreateOpening = () => {
+  const { selectedClient } = useAuth();
   const [searchParams] = useSearchParams();
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const navigate = useNavigate();
   const type = searchParams.get('type');
+
 
   const isValidType =
     type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
 
-  if (!isValidType) {
-    console.warn("Invalid opening type");
-    navigate("/");
-  }
+  useEffect(() => {
+    const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
+
+    if (!isValidType) {
+      console.warn("Invalid opening type");
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (!selectedClient) {
+      console.warn("No selected client");
+      navigate("/", { replace: true });
+    }
+  }, [type, selectedClient, navigate]);
+
+
 
   const openingType = type! as OpeningTypes;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+  };
+
+  const handleBack = () => setCurrentStep(s => Math.max(0, s - 1));
 
 
   return (
@@ -34,40 +61,45 @@ const CreateOpening = () => {
 
       <Column sm={4} md={8} lg={16}>
         <ProgressIndicator
-          currentIndex={0}
+          className='default-full-width-progress-indicator'
+          currentIndex={currentStep}
         >
           <ProgressStep
-            complete
-            description="Step 1: Getting started with Carbon Design System"
-            label="First step"
-            secondaryLabel="Optional label"
+            current={currentStep === 0}
+            description="File Upload"
+            label="File Upload"
+            secondaryLabel="Step 1"
           />
           <ProgressStep
-            current
-            description="Step 2: Getting started with Carbon Design System"
-            label="Second step with tooltip"
+            current={currentStep === 1}
+            description="Opening Details"
+            label="Opening Details"
+            secondaryLabel="Step 2"
           />
           <ProgressStep
-            description="Step 3: Getting started with Carbon Design System"
-            label="Third step with tooltip"
-          />
-          <ProgressStep
-            description="Step 4: Getting started with Carbon Design System"
-            invalid
-            label="Fourth step"
-            secondaryLabel="Example invalid step"
-          />
-          <ProgressStep
-            description="Step 5: Getting started with Carbon Design System"
-            disabled
-            label="Fifth step"
+            current={currentStep === 2}
+            description="Review & Create"
+            label="Review & Create"
+            secondaryLabel="Step 3"
           />
         </ProgressIndicator>
+      </Column>
+
+      <Column sm={4} md={8} lg={16} xlg={12} max={10}>
+
+        <Form noValidate onSubmit={handleSubmit}>
+          <Grid className="create-opening-form-grid">
+            {
+              currentStep === 0
+                ? <CreateOpeningFileUpload />
+                : null
+            }
+          </Grid>
+        </Form>
 
       </Column>
 
-
-    </Grid>
+    </Grid >
   );
 };
 

@@ -235,7 +235,7 @@ ul.default-tab-accordion {
 .default-cell-definition-tooltip {
   width: fit-content;
 
-  .bx--popover-content {
+  .#{vars.$bcgov-prefix}--popover-content {
     white-space: nowrap;
     min-width: fit-content;
   }
@@ -254,4 +254,33 @@ ul.default-tab-accordion {
     display: flex;
     flex-direction: column;
   }
+}
+
+.default-full-width-progress-indicator {
+  width: 100%;
+
+  .#{vars.$bcgov-prefix}--progress-step {
+    flex: 1;
+
+    button {
+      width: 100%;
+    }
+
+    .#{vars.$bcgov-prefix}--progress-text {
+      width: calc(100% - 1.5rem);
+
+      .#{vars.$bcgov-prefix}--progress-label {
+        max-inline-size: 100%
+      }
+    }
+
+
+    .#{vars.$bcgov-prefix}--progress-line {
+      inline-size: 100%;
+    }
+  }
+}
+
+.default-label {
+  @include type.type-style('label-02');
 }
