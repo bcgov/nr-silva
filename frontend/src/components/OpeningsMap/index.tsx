@@ -29,10 +29,10 @@ interface MapProps {
   kind?: MapKindType[];
   isDetailsPage?: boolean;
   isForestCoverMap?: boolean;
-  availableForestCoverIds: string[];
-  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
-  selectedForestCoverIds: string[];
-  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  availableForestCoverIds?: string[];
+  setAvailableForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedForestCoverIds?: string[];
+  setSelectedForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -149,7 +149,9 @@ const OpeningsMap: React.FC<MapProps> = ({
             (feature) =>
               `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
           );
-        setAvailableForestCoverIds(forestCoverIds);
+        if (setAvailableForestCoverIds) {
+          setAvailableForestCoverIds(forestCoverIds);
+        }
       }
     } else {
       // Check if there are any errors and extract their IDs
