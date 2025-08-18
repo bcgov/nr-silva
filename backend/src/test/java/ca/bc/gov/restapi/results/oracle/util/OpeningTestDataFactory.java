@@ -257,8 +257,13 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getSsid() {
+      public Long getSsuid() {
         return 1013720L;
+      }
+
+      @Override
+      public Long getSrid() {
+        return 138L;
       }
 
       @Override

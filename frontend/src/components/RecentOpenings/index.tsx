@@ -97,7 +97,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
             <OpeningsMap
               openingIds={selectedOpeningIds}
               setOpeningPolygonNotFound={handleMapError}
-              mapHeight={280}
+              mapHeight={480}
             />
           )
           : null

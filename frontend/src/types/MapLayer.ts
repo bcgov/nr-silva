@@ -1,6 +1,7 @@
 import { CodeDescriptionDto } from "@/services/OpenApi";
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { PathOptions } from 'leaflet';
+import { extractYearFromDateString } from "@/utils/DateUtils";
 
 export type MapLayer = {
   position: number;
@@ -55,9 +56,10 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-        'Polygon type': 'Opening',
-        'Region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
-        'District': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
+        'region': `${properties?.REGION_NAME} (${properties?.REGION_CODE})`,
+        'district': `${properties?.DISTRICT_NAME} (${properties?.DISTRICT_CODE})`,
+        'yearCreated': `${extractYearFromDateString(properties?.OPENING_WHEN_CREATED)}`,
       }
     }
   },
@@ -71,6 +73,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW',
         'Polygon type': 'Tenure / Cut Block',
         'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
         'Cut Block': properties?.CUT_BLOCK_ID,
@@ -84,15 +87,16 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Standards Units',
     style: {
       ...defaultStyle,
-      color: 'green',
-      fillColor: '#50E3C2', // A vibrant green
+      color: 'purple',
+      fillColor: '#9013FE',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
-        'Polygon type': 'Standard Unit',
-        'Stocking Standards Id': properties?.STOCKING_STANDARD_UNIT_ID,
-        'Standard Units Id': properties?.STANDARDS_UNIT_ID,
-        'Net Area (ha)': properties?.NET_AREA,
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
+        'polygonType': 'Standard Unit',
+        'ssid': properties?.STOCKING_STANDARD_UNIT_ID,
+        'standardUnitId': properties?.STANDARDS_UNIT_ID,
+        'netArea': properties?.NET_AREA,
       }
     }
   },
@@ -106,6 +110,7 @@ export const mapKinds: LayerConfiguration[] = [
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
         'Polygon type': 'Activity',
         'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
         'Silviculture base code': properties?.SILV_BASE_CODE,
@@ -121,15 +126,16 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'orange',
       fillColor: '#F5A623', // A vibrant orange
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
         'Polygon type': 'Forest Cover Inventory',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
         'Polygon': properties?.SILV_POLYGON_NUMBER,
         'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
         'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
         'Reference Year': properties?.REFERENCE_YEAR
-      } 
+      }
     }
   },
   {
@@ -140,12 +146,13 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'yellow',
       fillColor: '#F8E71C', // A vibrant yellow
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
         'Polygon type': 'Forest Cover Reserve',
         'Polygon': properties?.SILV_POLYGON_NO,
         'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
-      } 
+      }
     }
   },
   {
@@ -156,8 +163,9 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'pink',
       fillColor: '#D0021B', // A vibrant pink
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
         'Polygon type': 'Forest Cover Silviculture',
         'Forest Cover Id': properties?.FOREST_COVER_ID,
         'Polygon': properties?.SILV_POLYGON_NUMBER,
@@ -176,8 +184,9 @@ export const mapKinds: LayerConfiguration[] = [
       color: 'cyan',
       fillColor: '#50E3C2', // A vibrant cyan
     },
-    popup: (properties: GeoJsonProperties): Record<string, any> => { 
+    popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
+        'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW',
         'Polygon type': 'Activity: Planting',
         'Activity Treatment Unit Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
         'Map Label': properties?.MAP_LABEL,
@@ -195,8 +204,27 @@ export type MapPositionType = {
   zoom: number;
 };
 
+const getDeterministicColor = (colors: string[], featureId: string | number): string => {
+  const str = String(featureId);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+  return colors[hash % colors.length]!;
+}
+
+const getSpacedColor = (colors: string[], index: number, total: number): string => {
+  if (total <= 1) return colors[0]!;
+  const colorIdx = Math.round((index / (total - 1)) * (colors.length - 1));
+  return colors[colorIdx]!;
+};
+
 export const getStyleForFeature = (
-  feature: Feature<Geometry, any> | undefined
+  feature: Feature<Geometry, any> | undefined,
+  selectedFeature?: Feature<Geometry, any> | null,
+  hoveredFeature?: Feature<Geometry, any> | null,
+  featureIndex?: number,
+  totalFeatures?: number,
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
@@ -206,11 +234,25 @@ export const getStyleForFeature = (
 
   if (!kindEntry) return defaultStyle;
   const colors = colorMap[kindEntry.style.color] || colorMap.default;
-  const fillColor = colors![Math.floor(Math.random() * colors!.length)];
+  const fillColor = getSpacedColor(colors!, featureIndex ?? 0, totalFeatures ?? colors!.length);
+  const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
+
+  // Highlight if selected or hovered
+  if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
+    return {
+      ...defaultStyle,
+      ...kindEntry.style,
+      fillColor,
+      color: "#000000",
+      weight: kindWeightMap[kindEntry.code as MapKindType] || 2,
+    };
+  }
+
   return {
     ...defaultStyle,
     ...kindEntry.style,
     fillColor,
+    color: outlineColor
   };
 }
 
@@ -218,13 +260,44 @@ const colorMap: Record<string, string[]> = {
   blue: ['#9FB3DF', '#9EC6F3', '#BDDDE4', '#FFF1D5'],
   red: ['#DE5B7B', '#ECCFD1', '#F0E3C4', '#98DED3'],
   green: ['#ACE1AF', '#B0EBB4', '#BFF6C3', '#E0FBE2'],
-  purple: ['#BEADFA', '#D0BFFF', '#DFCCFB', '#FFF8C9'],
+  purple: [
+    '#fcfbfd',
+    '#efedf5',
+    '#dadaeb',
+    '#bcbddc',
+    '#9e9ac8',
+    '#807dba',
+    '#6a51a3',
+    '#54278f',
+    '#3f007d'
+  ],
   orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
   pink: ['#8F87F1', '#C68EFD', '#E9A5F1', '#FED2E2'],
   cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
   default: [defaultStyle.fillColor],
 }
+
+const outlineColorMap: Record<string, string> = {
+  blue: '#005CB8',
+  red: '#801701',
+  purple: '#6202C5',
+  orange: '#E64F02',
+  pink: '#B3035C',
+  grey: '#939395',
+};
+
+export const kindWeightMap: Record<MapKindType, number> = {
+  'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW': 2,
+  'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY': 2,
+  'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW': 2,
+};
 
 export const getPropertyForFeature = (feature: Feature<Geometry, GeoJsonProperties>): Record<string, any> => {
   const kindEntry = mapKinds.find(

@@ -10,7 +10,6 @@ export class OpeningDetailsPage extends BasePage {
   private readonly mapButton: Locator;
   private readonly mapZoomInButton: Locator;
   private readonly mapZoomOutButton: Locator;
-  private readonly mapExpandButton: Locator;
   private readonly mapLayersButton: Locator;
 
   private readonly overviewTabButton: Locator;
@@ -62,7 +61,6 @@ export class OpeningDetailsPage extends BasePage {
     this.mapButton = page.getByTestId('toggle-map-button');
     this.mapZoomInButton = this.map.locator('.leaflet-control-zoom-in');
     this.mapZoomOutButton = this.map.locator('.leaflet-control-zoom-out');
-    this.mapExpandButton = this.map.locator('.leaflet-control-fullscreen-button');
     this.mapLayersButton = page.locator('.leaflet-control-layers-toggle');
 
     this.overviewTabButton = page.getByRole('tab', { name: 'Overview' });
@@ -120,10 +118,6 @@ export class OpeningDetailsPage extends BasePage {
 
   async zoomOutMap() {
     await this.mapZoomOutButton.click();
-  }
-
-  async expandMap() {
-    await this.mapExpandButton.click();
   }
 
   async hoverMapLayersButton() {

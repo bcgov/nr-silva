@@ -277,7 +277,7 @@ const OpeningSearch: React.FC = () => {
           <OpeningsMap
             openingIds={selectedOpeningIds}
             setOpeningPolygonNotFound={setOpeningPolygonNotFound}
-            mapHeight={280}
+            mapHeight={480}
           />
         ) : null}
         {openingPolygonNotFound ? (

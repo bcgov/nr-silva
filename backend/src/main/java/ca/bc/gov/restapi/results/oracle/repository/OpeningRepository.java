@@ -4,6 +4,10 @@ import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerSpeciesDetailsProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.*;
 
 import java.util.List;
@@ -62,5 +66,26 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_NOTIFICATIONS)
   List<OpeningStockingNotificationProjection> getOpeningStockingNotificationsByOpeningId(Long openingId);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_LIST)
+  List<OpeningStandardUnitHistoryProjection> getOpeningStandardUnitHistoryByOpeningId(Long openingId);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST)
+  List<OpeningStandardUnitHistoryDetailsProjection> getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+      Long openingId,
+      Long historyId
+  );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS)
+  List<OpeningStandardUnitHistoryLayerDetailsProjection> getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+      Long openingId,
+      Long historyId
+  );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES)
+  List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+      Long openingId,
+      Long historyId
+  );
 
 }
