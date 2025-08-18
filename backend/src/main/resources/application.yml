@@ -107,6 +107,10 @@ ca:
         forest-client-api:
           address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
           key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
+        s3-endpoint: ${S3_ENDPOINT:https://nrs.objectstore.gov.bc.ca:443/}
+        s3-bucket: ${S3_BUCKET:placeholder-bucket}
+        s3-access-key: ${S3_ACCESS_KEY:placeholder-access-key}
+        s3-secret-key: ${S3_SECRET_KEY:placeholder-secret-key}
         open-maps:
           address: ${OPENMAPS_URL:https://openmaps.gov.bc.ca/geo/ows}
         oracle:

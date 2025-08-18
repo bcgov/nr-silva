@@ -60,8 +60,6 @@ public record OpeningDetailsAttachmentMetaDto(
     @Schema(
             description =
                 "Globally unique identifier (GUID) used to securely reference the attachment.",
-            example = "F47AC10B-58CC-4372-A567-0E02B2C3D479",
+            example = "0A6147F904F56F9EE0633A54228E33C0",
             requiredMode = Schema.RequiredMode.REQUIRED)
-        String attachmentGuid,
-    @Schema(description = "Size of the attachment file in bytes.", example = "204800")
-        Long attachmentSize) {}
+        String attachmentGuid) {}
