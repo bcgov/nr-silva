@@ -7,7 +7,7 @@ import PageTitle from '../../components/PageTitle';
 import { TitleText } from './constants';
 
 import './styles.scss';
-import { CreateOpeningFileUpload } from '../../components/CreateOpeningSteps';
+import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
 import { useAuth } from '../../contexts/AuthProvider';
 
 const CreateOpening = () => {
@@ -86,7 +86,6 @@ const CreateOpening = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16} xlg={12} max={10}>
-
         <Form noValidate onSubmit={handleSubmit}>
           <Grid className="create-opening-form-grid">
             {
@@ -94,9 +93,13 @@ const CreateOpening = () => {
                 ? <CreateOpeningFileUpload />
                 : null
             }
+            {
+              currentStep !== 0
+                ? <CreateOpeningForm isReview={currentStep === 2} />
+                : null
+            }
           </Grid>
         </Form>
-
       </Column>
 
     </Grid >
