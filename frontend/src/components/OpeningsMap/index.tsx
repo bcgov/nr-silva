@@ -230,6 +230,12 @@ const OpeningsMap: React.FC<MapProps> = ({
     <div className="opening-map-container" style={{ height: `${mapSize}px`, width: "100%" }}>
       {/* Popup info in top left */}
 
+      {isForestCoverMap && selectedForestCoverIds?.length === 0 && (
+        <div className="opening-map-empty-message">
+          No forest cover polygon is selected. Select from the table to show on map.
+        </div>
+      )}
+
       {selectedFeature || hoveredFeature ? (
         <div className={`map-popup-top-left${selectedFeature &&
           (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
