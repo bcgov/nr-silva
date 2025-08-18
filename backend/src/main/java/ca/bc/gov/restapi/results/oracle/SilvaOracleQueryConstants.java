@@ -410,6 +410,7 @@ public class SilvaOracleQueryConstants {
         sm.DUE_LATE_DATE < SYSDATE
         OR sm.DUE_LATE_DATE BETWEEN SYSDATE AND ADD_MONTHS(SYSDATE, 12)
       )
+      AND (sm.SILV_MILESTONE_TYPE_CODE = 'FG' OR sm.SILV_MILESTONE_TYPE_CODE = 'RG')
     """;
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
