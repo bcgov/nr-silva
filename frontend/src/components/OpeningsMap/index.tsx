@@ -28,6 +28,11 @@ interface MapProps {
   layerFilter?: boolean;
   kind?: MapKindType[];
   isDetailsPage?: boolean;
+  isForestCoverMap?: boolean;
+  availableForestCoverIds: string[];
+  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedForestCoverIds: string[];
+  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -37,6 +42,11 @@ const OpeningsMap: React.FC<MapProps> = ({
   layerFilter = false,
   kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
   isDetailsPage = false,
+  isForestCoverMap = false,
+  availableForestCoverIds,
+  setAvailableForestCoverIds,
+  selectedForestCoverIds,
+  setSelectedForestCoverIds
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<FeatureCollection[]>([]);
@@ -54,6 +64,20 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   const polygonClickedRef = useRef(false);
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
+
+  const polygonsToRender = React.useMemo(() => {
+    if (!isForestCoverMap) return openings;
+    const selectedSet = new Set(selectedForestCoverIds);
+    return openings.map(fc => ({
+      ...fc,
+      features: fc.features.filter(
+        feature =>
+          selectedSet.has(
+            `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
+          )
+      ),
+    }));
+  }, [isForestCoverMap, openings, selectedForestCoverIds]);
 
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
@@ -116,6 +140,17 @@ const OpeningsMap: React.FC<MapProps> = ({
     const allSuccess = mapQueries.every((query) => query.status === "success");
     if (allSuccess) {
       setOpenings(mapQueries.map((query) => query.data as FeatureCollection));
+
+      if (isForestCoverMap) {
+        const forestCoverIds: string[] = mapQueries
+          .flatMap((query) => (query.data as FeatureCollection).features)
+          .filter((feature) => feature.properties!.FOREST_COVER_ID && feature.properties!.SILV_POLYGON_NUMBER)
+          .map(
+            (feature) =>
+              `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
+          );
+        setAvailableForestCoverIds(forestCoverIds);
+      }
     } else {
       // Check if there are any errors and extract their IDs
       const errorIds = mapQueries
@@ -254,7 +289,7 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
-          polygons={openings}
+          polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}
           selectedFeature={selectedFeature}
