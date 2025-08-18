@@ -129,12 +129,12 @@ export const mapKinds: LayerConfiguration[] = [
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
-        'Polygon type': 'Forest Cover Inventory',
-        'Forest Cover Id': properties?.FOREST_COVER_ID,
-        'Polygon': properties?.SILV_POLYGON_NUMBER,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
-        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
-        'Reference Year': properties?.REFERENCE_YEAR
+        'polygonType': 'Forest Cover Inventory',
+        'forestCoverId': properties?.FOREST_COVER_ID,
+        'polygon': properties?.SILV_POLYGON_NUMBER,
+        'polygonArea': properties?.SILV_POLYGON_AREA,
+        'netArea': properties?.SILV_POLYGON_NET_AREA,
+        'referenceYear': properties?.REFERENCE_YEAR
       }
     }
   },
@@ -149,9 +149,9 @@ export const mapKinds: LayerConfiguration[] = [
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
-        'Polygon type': 'Forest Cover Reserve',
-        'Polygon': properties?.SILV_POLYGON_NO,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
+        'polygonType': 'Forest Cover Reserve',
+        'polygon': properties?.SILV_POLYGON_NO,
+        'polygonArea': properties?.SILV_POLYGON_AREA
       }
     }
   },
@@ -166,13 +166,13 @@ export const mapKinds: LayerConfiguration[] = [
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
-        'Polygon type': 'Forest Cover Silviculture',
-        'Forest Cover Id': properties?.FOREST_COVER_ID,
-        'Polygon': properties?.SILV_POLYGON_NUMBER,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
-        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
-        'Non Mapped Area (ha)': properties?.SILV_NON_MAPPED_AREA,
-        'Reference Year': properties?.REFERENCE_YEAR
+        'polygonType': 'Forest Cover Silviculture',
+        'forestCoverId': properties?.FOREST_COVER_ID,
+        'polygon': properties?.SILV_POLYGON_NUMBER,
+        'polygonArea': properties?.SILV_POLYGON_AREA,
+        'netArea': properties?.SILV_POLYGON_NET_AREA,
+        'nonMappedArea': properties?.SILV_NON_MAPPED_AREA,
+        'referenceYear': properties?.REFERENCE_YEAR
       }
     }
   },
