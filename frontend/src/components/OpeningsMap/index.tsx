@@ -72,12 +72,14 @@ const OpeningsMap: React.FC<MapProps> = ({
       ...fc,
       features: fc.features.filter(
         feature =>
+          feature.properties?.FOREST_COVER_ID &&
+          feature.properties?.SILV_POLYGON_NUMBER &&
           selectedSet.has(
-            `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
+            `${feature.properties.FOREST_COVER_ID}-${feature.properties.SILV_POLYGON_NUMBER}`
           )
       ),
     }));
-  }, [isForestCoverMap, openings, selectedForestCoverIds]);
+  }, [isForestCoverMap, selectedForestCoverIds, openings]);
 
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
@@ -297,6 +299,7 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
+          key={selectedForestCoverIds?.join(",")}
           polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}
