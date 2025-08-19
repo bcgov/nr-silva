@@ -305,7 +305,7 @@ const OpeningForestCover = ({
                     {forestCoverSearchQuery.data?.map((row, idx) => {
                       const isExpanded = expandedRows.includes(row.coverId);
                       return (
-                        <React.Fragment key={row.coverId + idx}>
+                        <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
                           <TableExpandRow
                             className="opening-forest-cover-table-row"
                             aria-label={`Expand row for Polygon ID ${row.coverId}`}
