@@ -11,6 +11,7 @@ import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
 import "../styles.scss";
 import "./styles.scss";
+import RequiredLabel from "../../RequiredLabel";
 
 
 type FileUploadProps = {
@@ -124,9 +125,9 @@ const FileUpload = ({
       <Column sm={4} md={8} lg={16}>
         <Stack gap={5} className="file-uploader-container">
           <div className="file-uploader-title">
-            <label id={labelId} className="default-label" htmlFor="opening-map-file-drop-container">
+            <RequiredLabel id={labelId} htmlFor="opening-map-file-drop-container">
               Upload opening map geometry
-            </label>
+            </RequiredLabel>
             <p id={helpId} className="file-type-p">
               Acceptable file types: GeoJSON, GML, XML(ESF)
             </p>
