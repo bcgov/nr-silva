@@ -21,7 +21,7 @@ type FileUploadProps = {
 const FileUpload = ({
   form, setForm
 }: FileUploadProps) => {
-  const { user, selectedClient } = useAuth();
+  const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
   const validate = (f: File) => {
@@ -42,7 +42,7 @@ const FileUpload = ({
         user!.associatedClients.length
       ),
     enabled: !!user?.associatedClients.length,
-    select: (data) => data.find((client) => client.clientNumber === selectedClient),
+    select: (data) => data.find((client) => client.clientNumber === form.client),
   });
 
   const handleAddFile = async (addedFiles: File[]) => {

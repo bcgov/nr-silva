@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, ProgressIndicator, ProgressStep } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
@@ -21,6 +21,7 @@ const CreateOpening = () => {
   const navigate = useNavigate();
   const type = searchParams.get('type');
   const [form, setForm] = useState<CreateOpeningFormType>({ client: selectedClient });
+  const [warnText, setWarnText] = useState<string | undefined>();
 
   useEffect(() => {
     const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
@@ -35,9 +36,11 @@ const CreateOpening = () => {
       console.warn("No selected client");
       navigate("/", { replace: true });
     }
+
+    if (form.client && form.client !== selectedClient) {
+      setWarnText("District office changed. The form will continue using the originally selected district.")
+    };
   }, [type, selectedClient, navigate]);
-
-
 
   const openingType = type! as OpeningTypes;
 
@@ -94,6 +97,16 @@ const CreateOpening = () => {
           />
         </ProgressIndicator>
       </Column>
+
+      {
+        warnText
+          ? (
+            <Column sm={4} md={8} lg={16}>
+              <InlineNotification lowContrast kind="warning" subtitle={warnText} onCloseButtonClick={() => setWarnText(undefined)} />
+            </Column>
+          )
+          : null
+      }
 
       <Column sm={4} md={8} lg={16} xlg={12} max={10}>
         <Form noValidate onSubmit={handleSubmit}>
