@@ -29,8 +29,9 @@ const detectGmlEpsg = (xmlText: string): string => {
       const srs = elWithSrs.getAttribute("srsName") || undefined;
       return normalizeEpsg(srs);
     }
-  } catch (_) {
+  } catch (err) {
     // ignore parsing errors and use default
+    console.warn("Failed to parse GML for EPSG detection:", err, { xmlText });
   }
   return DEFAULT_GML_EPSG;
 };
@@ -59,11 +60,14 @@ export const parsePosList = (text: string): [number, number][] => {
     .split(/\s+/)
     .map((n) => parseFloat(n))
     .filter((n) => Number.isFinite(n));
+
   const coords: [number, number][] = [];
   for (let i = 0; i + 1 < nums.length; i += 2) {
-    const x = nums[i]!;
-    const y = nums[i + 1]!;
-    coords.push([x, y]);
+    const x = nums[i];
+    const y = nums[i + 1];
+    if (x !== undefined && y !== undefined) {
+      coords.push([x, y]);
+    }
   }
   return coords;
 };

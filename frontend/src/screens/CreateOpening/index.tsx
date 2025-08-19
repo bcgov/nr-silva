@@ -19,7 +19,7 @@ const CreateOpening = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const navigate = useNavigate();
   const type = searchParams.get('type');
-  const [form, setForm] = useState<CreateOpeningFormType>({});
+  const [form, setForm] = useState<CreateOpeningFormType>({ client: selectedClient });
 
   useEffect(() => {
     const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
