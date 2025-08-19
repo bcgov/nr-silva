@@ -49,7 +49,6 @@ const CreateOpening = () => {
   const handleNext = () => {
     if (currentStep === 0) {
       if (!form.geojson) {
-        console.log('here')
         setForm((prev) => ({ ...prev, isGeoJsonMissing: true }))
         scrollToSection('opening-map-file-drop-container')
         return;
