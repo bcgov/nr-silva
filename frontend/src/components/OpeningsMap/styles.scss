@@ -75,7 +75,7 @@
     left: 50%;
     transform: translateX(-50%);
     background: colors.$white;
-    color: var(--#{vars.$bcgov-prefix}-text-primary);
+    color: colors.$gray-100;
     padding: 0.5rem;
     border-radius: 0.25rem;
     z-index: 1000;
