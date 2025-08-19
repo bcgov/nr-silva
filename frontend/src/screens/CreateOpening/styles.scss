@@ -1,3 +1,9 @@
-.create-opening-form-grid {
-  row-gap: 2.5rem;
+.create-opening-grid {
+  .create-opening-form-grid {
+    row-gap: 2.5rem;
+  }
+
+  .create-opening-button-grid {
+    gap: 0.5rem;
+  }
 }

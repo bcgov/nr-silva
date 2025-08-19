@@ -2,6 +2,7 @@ import proj4 from "proj4";
 import GeoJSONFormat from "ol/format/GeoJSON";
 import GML2 from "ol/format/GML2";
 import GML3 from "ol/format/GML3";
+import { LinearRing } from "ol/geom";
 
 /**
  * PROJ.4 definition for BC Albers (EPSG:3005).
@@ -52,14 +53,13 @@ export const normalizeEpsg = (srsRaw?: string): string => {
  * @param text Space-separated coordinate numbers.
  * @returns Array of coordinate pairs in source projection order.
  */
-export const parsePosList = (text: string): number[][] => {
-  // GML posList is a sequence of numbers: x1 y1 x2 y2 ...
+export const parsePosList = (text: string): [number, number][] => {
   const nums = text
     .trim()
     .split(/\s+/)
     .map((n) => parseFloat(n))
     .filter((n) => Number.isFinite(n));
-  const coords: number[][] = [];
+  const coords: [number, number][] = [];
   for (let i = 0; i + 1 < nums.length; i += 2) {
     const x = nums[i]!;
     const y = nums[i + 1]!;
@@ -73,10 +73,9 @@ export const parsePosList = (text: string): number[][] => {
  * @param text Whitespace-separated "x,y" tuples.
  * @returns Array of coordinate pairs in source projection order.
  */
-export const parseCoordinates = (text: string): number[][] => {
-  // GML2 coordinates: "x,y x,y x,y" (whitespace-separated pairs)
+export const parseCoordinates = (text: string): [number, number][] => {
   const pairs = text.trim().split(/\s+/);
-  const coords: number[][] = [];
+  const coords: [number, number][] = [];
   for (const p of pairs) {
     const [xs, ys] = p.split(",");
     const x = Number(xs);
@@ -87,18 +86,15 @@ export const parseCoordinates = (text: string): number[][] => {
 };
 
 /**
- * Ensure a linear ring is closed by repeating the first vertex at the end, if needed.
+ * Ensure a linear ring is closed using OpenLayers' geometry.
  * @param ring Coordinates of a ring as [[x,y], …].
- * @returns The same ring or a closed copy if the last vertex differs from the first.
+ * @returns A closed ring (OL guarantees first === last).
  */
-export const ensureClosedRing = (ring: number[][]): number[][] => {
-  if (ring.length === 0) return ring;
-  const first = ring[0] as number[];
-  const last = ring[ring.length - 1] as number[];
-  if (first[0] !== last[0] || first[1] !== last[1]) {
-    return [...ring, [...first]];
-  }
-  return ring;
+export const ensureClosedRing = (ring: [number, number][]): [number, number][] => {
+  if (!ring || ring.length === 0) return ring;
+  const lr = new LinearRing(ring);
+  // getCoordinates() returns a closed ring (first point repeated at the end)
+  return lr.getCoordinates() as [number, number][];
 };
 
 /**
@@ -145,12 +141,15 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
   );
 
   for (const poly of polygonElems) {
+    // Find the coordinate reference system (CRS) for this polygon by searching for srsName attribute,
+    // first on the polygon element itself, then on its closest MultiPolygon ancestor if any.
     const epsg = findSrs(poly) || findSrs(poly.closest("gml\\:MultiPolygon, MultiPolygon"));
 
-    // Prefer GML3-style posList, else GML2-style coordinates under outerBoundaryIs
+    // Attempt to find the outer boundary coordinates using GML3 posList elements inside exterior or outerBoundaryIs
     const posListEl = poly.querySelector(
       "gml\\:exterior gml\\:LinearRing gml\\:posList, gml\\:outerBoundaryIs gml\\:LinearRing gml\\:posList, exterior LinearRing posList, outerBoundaryIs LinearRing posList"
     );
+    // Alternatively, try to find GML2 coordinates elements inside outerBoundaryIs
     const coordsEl = poly.querySelector(
       "gml\\:outerBoundaryIs gml\\:LinearRing gml\\:coordinates, outerBoundaryIs LinearRing coordinates"
     );
@@ -158,11 +157,14 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
     let outer: number[][] = [];
 
     if (posListEl && posListEl.textContent && posListEl.textContent.trim().length) {
+      // If GML3 posList found, parse it into coordinate pairs and ensure the ring is closed.
       outer = ensureClosedRing(parsePosList(posListEl.textContent));
     } else if (coordsEl && coordsEl.textContent && coordsEl.textContent.trim().length) {
+      // Else if GML2 coordinates found, parse and close the ring similarly.
       outer = ensureClosedRing(parseCoordinates(coordsEl.textContent));
     } else {
-      // Try fallback: any LinearRing/coordinates inside this polygon
+      // Fallback: look for any LinearRing/coordinates or LinearRing/posList inside this polygon,
+      // in case the structure is different or missing the usual outerBoundaryIs/exterior wrappers.
       const anyCoords = poly.querySelector("gml\\:LinearRing gml\\:coordinates, LinearRing coordinates");
       const anyPos = poly.querySelector("gml\\:LinearRing gml\\:posList, LinearRing posList");
       if (anyPos?.textContent?.trim()) {
@@ -172,32 +174,44 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
       }
     }
 
+    // Skip this polygon if no valid outer ring coordinates were found.
     if (!outer.length) continue; // nothing usable in this polygon
 
-    // Transform to WGS84 for Leaflet
+    // Reproject the outer ring coordinates from source CRS to WGS84 (EPSG:4326) for Leaflet/GeoJSON.
     const outerWgs = transformRingToWgs84(outer, epsg);
 
-    // Holes: support both GML3 interior/posList and GML2 innerBoundaryIs/coordinates
+    // Now handle holes (interior rings) inside the polygon.
+    // Holes can be defined in GML3 as interior/LinearRing/posList or in GML2 as innerBoundaryIs/LinearRing/coordinates.
+    // We select all such hole elements to process them.
     const holeEls = Array.from(
       poly.querySelectorAll(
         "gml\\:interior gml\\:LinearRing gml\\:posList, interior LinearRing posList, gml\\:innerBoundaryIs gml\\:LinearRing gml\\:coordinates, innerBoundaryIs LinearRing coordinates"
       )
     );
 
+    // For each hole element:
+    // 1. Extract the text content (coordinate strings).
+    // 2. Determine if it's using GML2 (comma-separated) or GML3 (space-separated) format.
+    // 3. Parse the coordinates accordingly.
+    // 4. Ensure the hole ring is closed.
+    // 5. Reproject the hole coordinates to WGS84.
     const holesWgs: number[][][] = holeEls
       .map((el) => el.textContent?.trim() || "")
       .filter((t) => t.length > 0)
       .map((t) => (t.includes(",") ? parseCoordinates(t) : parsePosList(t)))
       .map((ring) => transformRingToWgs84(ensureClosedRing(ring), epsg));
 
+    // Construct a GeoJSON Polygon geometry with the outer ring and any holes.
     const geom: GeoJSON.Polygon = {
       type: "Polygon",
       coordinates: [outerWgs, ...holesWgs],
     };
 
+    // Add the polygon feature with empty properties to the output array.
     polygons.push({ type: "Feature", properties: {}, geometry: geom });
   }
 
+  // Return the complete FeatureCollection of all extracted polygons.
   return { type: "FeatureCollection", features: polygons };
 };
 
@@ -284,7 +298,7 @@ export const parseToGeoJSON = async (f: File): Promise<GeoJSON.FeatureCollection
     throw new Error("JSON is not valid GeoJSON.");
   }
 
-  if (name.endsWith(".gml") || /<\/?gml[:\-]?/i.test(text)) {
+  if (name.endsWith(".gml")) {
     return gmlToGeoJSON(text);
   }
 

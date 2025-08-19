@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowRight } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { OpeningTypes } from '@/types/OpeningTypes';
-import { Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
-import PageTitle from '../../components/PageTitle';
-import { TitleText } from './constants';
-
-import './styles.scss';
+import { useAuth } from '@/contexts/AuthProvider';
+import { Button, Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
+import PageTitle from '@/components/PageTitle';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
-import { useAuth } from '../../contexts/AuthProvider';
+
+import { TitleText } from './constants';
+import './styles.scss';
 
 const CreateOpening = () => {
   const { selectedClient } = useAuth();
@@ -16,10 +17,7 @@ const CreateOpening = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const navigate = useNavigate();
   const type = searchParams.get('type');
-
-
-  const isValidType =
-    type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
+  const [form, setForm] = useState<CreateOpeningFormType>({});
 
   useEffect(() => {
     const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
@@ -42,14 +40,14 @@ const CreateOpening = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
   };
 
   const handleBack = () => setCurrentStep(s => Math.max(0, s - 1));
 
+  const handleNext = () => setCurrentStep(s => Math.min(s + 1, 2));
 
   return (
-    <Grid className='default-grid'>
+    <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16}>
         <PageTitle
           title={
@@ -90,18 +88,32 @@ const CreateOpening = () => {
           <Grid className="create-opening-form-grid">
             {
               currentStep === 0
-                ? <CreateOpeningFileUpload />
+                ? <CreateOpeningFileUpload form={form} setForm={setForm} />
                 : null
             }
             {
               currentStep !== 0
-                ? <CreateOpeningForm isReview={currentStep === 2} />
+                ? <CreateOpeningForm isReview={currentStep === 2} form={form} setForm={setForm} />
                 : null
             }
           </Grid>
         </Form>
       </Column>
 
+      <Column sm={4} md={8} lg={16}>
+        <Grid className="create-opening-button-grid">
+          <Column sm={4} md={4}>
+            <Button className="default-button" kind="secondary" onClick={handleBack}>
+              Back
+            </Button>
+          </Column>
+          <Column sm={4} md={4}>
+            <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight}>
+              Next
+            </Button>
+          </Column>
+        </Grid>
+      </Column>
     </Grid >
   );
 };
