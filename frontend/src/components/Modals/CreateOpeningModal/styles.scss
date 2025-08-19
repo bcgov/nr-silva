@@ -23,7 +23,11 @@
     column-gap: 1rem;
 
     .#{vars.$bcgov-prefix}--css-grid-column {
-      margin-inline: 0
+      margin-inline: 0;
+
+      .modal-tile-button {
+        inline-size: 100%;
+      }
     }
   }
 

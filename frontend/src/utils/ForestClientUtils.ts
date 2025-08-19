@@ -1,5 +1,5 @@
 import { PLACE_HOLDER } from "@/constants";
-import { ForestClientAutocompleteResultDto } from "@/services/OpenApi";
+import { ForestClientAutocompleteResultDto, ForestClientDto } from "@/services/OpenApi";
 import { CodeDescriptionDto } from "@/services/OpenApi";
 
 
@@ -44,3 +44,22 @@ export const getClientLocationLabel = (location?: CodeDescriptionDto | null): st
     .filter(value => value && value.length > 0)
     .join(' - ');
 };
+
+/**
+ * Formats a ForestClientDto into a display string.
+ *
+ * @param {ForestClientDto | null | undefined} client - The client object to format.
+ * @returns {string}
+ * - `""` if the client is null or undefined.
+ * - `"ACRONYM - Client Name"` if both `acronym` and `clientName` exist.
+ * - Only the existing value if one is missing.
+ */
+export function formatForestClient(client?: ForestClientDto | null): string {
+  if (!client) return '';
+
+  const { acronym, clientName } = client;
+  if (acronym && clientName) {
+    return `${acronym} - ${clientName}`;
+  }
+  return acronym || clientName || '';
+}

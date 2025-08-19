@@ -1,4 +1,5 @@
 import { CodeDescriptionDto, OpeningActivityBaseDto } from "@/services/OpenApi";
+import { GOV_FUNDED_OPENING, TENURED_OPENING } from "@/constants";
 
 export type OpeningActivityJuvelineDto = {
   targetIntertreeDistance: number | null,
@@ -45,3 +46,5 @@ export type OpeningActivityDetail = OpeningActivityBaseDto &
   Partial<OpeningActivitySitePrepDto> &
   Partial<OpeningActivitySpeciesDto> &
   Partial<OpeningActivitySurveyDto>;
+
+export type OpeningTypes = typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING;
