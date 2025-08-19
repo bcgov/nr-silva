@@ -54,6 +54,12 @@
       .forest-cover-expanded-row[data-child-row="true"] td .child-table td {
         padding-inline: 1rem;
       }
+
+      .map-header-checkbox-container {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+      }
     }
   }
 
