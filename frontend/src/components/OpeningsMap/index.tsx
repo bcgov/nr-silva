@@ -232,7 +232,7 @@ const OpeningsMap: React.FC<MapProps> = ({
 
       {isForestCoverMap && selectedForestCoverIds?.length === 0 && (
         <div className="opening-map-empty-message">
-          No forest cover polygon is selected. Select from the table to show on map.
+          No forest cover polygon is selected and displayed. Select from the table to show on map.
         </div>
       )}
 
