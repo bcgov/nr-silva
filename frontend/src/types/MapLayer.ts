@@ -270,7 +270,6 @@ const colorMap: Record<string, string[]> = {
   ],
   orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
-  // pink: ['#8F87F1', '#C68EFD', '#E9A5F1', '#FED2E2'],
   pink: [
     '#FFFBFD',
     '#FFF6FA',
