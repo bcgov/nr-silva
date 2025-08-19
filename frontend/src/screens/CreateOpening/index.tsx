@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
+import { CreateOpeningFormType } from './definitions';
 
 import { TitleText } from './constants';
 import './styles.scss';

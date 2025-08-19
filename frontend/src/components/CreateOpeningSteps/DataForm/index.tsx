@@ -1,5 +1,6 @@
 import MapPreview from "@/components/MapPreview";
 import { Column } from "@carbon/react";
+import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
 
 type DataFormProps = {

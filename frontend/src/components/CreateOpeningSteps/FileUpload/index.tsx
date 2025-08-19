@@ -7,6 +7,7 @@ import { formatForestClient } from "@/utils/ForestClientUtils";
 import MapPreview from "@/components/MapPreview";
 import { parseToGeoJSON } from "@/utils/SpatialUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
+import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
 import "../styles.scss";
 import "./styles.scss";
