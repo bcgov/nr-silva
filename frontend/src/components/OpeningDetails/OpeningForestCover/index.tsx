@@ -277,7 +277,11 @@ const OpeningForestCover = ({
                     <TableRow >
                       <TableExpandHeader />
                       <TableHeader key="map-header">
-                        <Tooltip label="Select all" align="right" className="forest-cover-tooltip">
+                        <Tooltip
+                          label={allSelected ? "Unselect all" : "Select all"}
+                          align="right"
+                          className="forest-cover-map-tooltip"
+                        >
                           <span>
                             <Checkbox
                               id="forest-cover-select-all"
