@@ -75,14 +75,18 @@ const FileUpload = ({
         geojson: fc,
         isGeoJsonMissing: false
       }));
-    } catch (e: any) {
+    } catch (e: unknown) {
       setForm((prev) => ({
         ...prev,
         file: undefined,
         geojson: undefined,
         isGeoJsonMissing: undefined,
       }));
-      setError(e?.message || "Failed to parse file. Please upload a valid GeoJSON or GML/XML file.");
+      let errorMessage = "Failed to parse file. Please upload a valid GeoJSON or GML/XML file.";
+      if (typeof e === "object" && e !== null && "message" in e && typeof (e as any).message === "string") {
+        errorMessage = (e as any).message;
+      }
+      setError(errorMessage);
     }
   };
 
