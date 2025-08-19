@@ -6,7 +6,7 @@ import API from "@/services/API";
 import { formatForestClient } from "@/utils/ForestClientUtils";
 import MapPreview from "@/components/MapPreview";
 import { parseToGeoJSON } from "@/utils/SpatialUtils";
-import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES } from "./constants";
+import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 
 import "../styles.scss";
 import "./styles.scss";
@@ -24,7 +24,7 @@ const FileUpload = ({
   const [error, setError] = useState<string | null>(null);
 
   const validate = (f: File) => {
-    if (f.size > MAX_FILE_SIZE) return `"${f.name}" exceeds 25 MB.`;
+    if (f.size > MAX_FILE_SIZE) return `"${f.name}" exceeds ${MAX_FILE_MB} MB.`;
     const lc = f.name.toLowerCase();
     const byExt = [".geojson", ".gml", ".xml", ".json"].some((ext) => lc.endsWith(ext));
     if (!byExt)
@@ -48,6 +48,7 @@ const FileUpload = ({
     setError(null);
     setForm((prev) => ({
       ...prev,
+      isGeoJsonMissing: undefined,
       geojson: undefined
     }));
 
@@ -71,13 +72,15 @@ const FileUpload = ({
       setForm((prev) => ({
         ...prev,
         file: f,
-        geojson: fc
+        geojson: fc,
+        isGeoJsonMissing: false
       }));
     } catch (e: any) {
       setForm((prev) => ({
         ...prev,
         file: undefined,
-        geojson: undefined
+        geojson: undefined,
+        isGeoJsonMissing: undefined,
       }));
       setError(e?.message || "Failed to parse file. Please upload a valid GeoJSON or GML/XML file.");
     }
@@ -88,7 +91,8 @@ const FileUpload = ({
     setForm((prev) => ({
       ...prev,
       geojson: undefined,
-      file: undefined
+      file: undefined,
+      isGeoJsonMissing: undefined
     }));
   };
 
@@ -124,6 +128,7 @@ const FileUpload = ({
           </div>
 
           <FileUploaderDropContainer
+            className={form.isGeoJsonMissing ? 'file-uploader-with-error' : undefined}
             id="opening-map-file-drop-container"
             accept={ACCEPTED_FILE_TYPES}
             multiple={false}

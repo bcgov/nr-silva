@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
+import { Button, Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { OpeningTypes } from '@/types/OpeningTypes';
 import { useAuth } from '@/contexts/AuthProvider';
-import { Button, Column, Form, Grid, ProgressIndicator, ProgressStep } from '@carbon/react';
+import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
 
 import { TitleText } from './constants';
 import './styles.scss';
+
 
 const CreateOpening = () => {
   const { selectedClient } = useAuth();
@@ -44,8 +46,18 @@ const CreateOpening = () => {
 
   const handleBack = () => setCurrentStep(s => Math.max(0, s - 1));
 
-  const handleNext = () => setCurrentStep(s => Math.min(s + 1, 2));
+  const handleNext = () => {
+    if (currentStep === 0) {
+      if (!form.geojson) {
+        console.log('here')
+        setForm((prev) => ({ ...prev, isGeoJsonMissing: true }))
+        scrollToSection('opening-map-file-drop-container')
+        return;
+      }
+    }
 
+    setCurrentStep(s => Math.min(s + 1, 2));
+  }
   return (
     <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16}>
