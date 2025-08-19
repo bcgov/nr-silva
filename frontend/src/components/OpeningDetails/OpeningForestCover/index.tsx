@@ -277,24 +277,29 @@ const OpeningForestCover = ({
                     <TableRow >
                       <TableExpandHeader />
                       <TableHeader key="map-header">
-                        <Tooltip
-                          label={allSelected ? "Unselect all" : "Select all"}
-                          align="right"
-                          className="forest-cover-map-tooltip"
-                        >
-                          <span>
-                            <Checkbox
-                              id="forest-cover-select-all"
-                              checked={allSelected}
-                              indeterminate={!allSelected && someSelected}
-                              disabled={allAvailableIds.length === 0}
-                              labelText=""
-                              onChange={(_, { checked }) => {
-                                setSelectedForestCoverIds(checked ? allAvailableIds : []);
-                              }}
-                            />
-                          </span>
-                        </Tooltip>
+                        <div className="map-header-checkbox-container">
+                          <Tooltip
+                            label={allSelected ? "Unselect all" : "Select all"}
+                            align="right"
+                            className="forest-cover-map-tooltip"
+                          >
+                            <span>
+                              <Checkbox
+                                id="forest-cover-select-all"
+                                checked={allSelected}
+                                indeterminate={!allSelected && someSelected}
+                                disabled={allAvailableIds.length === 0}
+                                labelText=""
+                                onChange={(_, { checked }) => {
+                                  setSelectedForestCoverIds(checked ? allAvailableIds : []);
+                                }}
+                              />
+
+                            </span>
+                          </Tooltip>
+                          <span>Map</span>
+                        </div>
+
                       </TableHeader>
                       {ForestCoverTableHeaders.map((header) => (
                         <TableHeader key={String(header.key)}>{header.header}</TableHeader>
