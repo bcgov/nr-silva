@@ -4,7 +4,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableExpandHeader, TableExpandRow, TableExpandedRow, TableToolbar, TableToolbarSearch,
   Button, Column, Grid,
-  DefinitionTooltip
+  DefinitionTooltip,
+  Checkbox,
+  Tooltip
 } from "@carbon/react";
 import { CropGrowth, DiamondOutline, Layers, Search } from "@carbon/icons-react";
 import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
@@ -24,9 +26,18 @@ import "./styles.scss";
 
 type OpeningForestCoverProps = {
   openingId: number;
+  availableForestCoverIds: string[];
+  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedForestCoverIds: string[];
+  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
+const OpeningForestCover = ({
+  openingId,
+  availableForestCoverIds,
+  setAvailableForestCoverIds,
+  selectedForestCoverIds,
+  setSelectedForestCoverIds }: OpeningForestCoverProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
@@ -77,6 +88,12 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
         : [...prev, forestCoverId]
     );
   };
+
+  const allAvailableIds = forestCoverSearchQuery.data
+    ?.map(row => `${row.coverId}-${row.polygonId}`)
+    .filter(id => availableForestCoverIds.includes(id)) ?? [];
+  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedForestCoverIds.includes(id));
+  const someSelected = allAvailableIds.some(id => selectedForestCoverIds.includes(id));
 
   // Render cell content similar to ActivityAccordion
   const renderCellContent = (
@@ -255,10 +272,35 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                   rowCount={10}
                 />
               ) : (
-                <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
+                <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table" >
                   <TableHead>
-                    <TableRow>
+                    <TableRow >
                       <TableExpandHeader />
+                      <TableHeader key="map-header">
+                        <div className="map-header-checkbox-container">
+                          <Tooltip
+                            label={allSelected ? "Unselect all" : "Select all"}
+                            align="right"
+                            className="forest-cover-map-tooltip"
+                          >
+                            <span>
+                              <Checkbox
+                                id="forest-cover-select-all"
+                                checked={allSelected}
+                                indeterminate={!allSelected && someSelected}
+                                disabled={allAvailableIds.length === 0}
+                                labelText=""
+                                onChange={(_, { checked }) => {
+                                  setSelectedForestCoverIds(checked ? allAvailableIds : []);
+                                }}
+                              />
+
+                            </span>
+                          </Tooltip>
+                          <span>Map</span>
+                        </div>
+
+                      </TableHeader>
                       {ForestCoverTableHeaders.map((header) => (
                         <TableHeader key={String(header.key)}>{header.header}</TableHeader>
                       ))}
@@ -268,13 +310,44 @@ const OpeningForestCover = ({ openingId }: OpeningForestCoverProps) => {
                     {forestCoverSearchQuery.data?.map((row, idx) => {
                       const isExpanded = expandedRows.includes(row.coverId);
                       return (
-                        <React.Fragment key={row.coverId + idx}>
+                        <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
                           <TableExpandRow
                             className="opening-forest-cover-table-row"
                             aria-label={`Expand row for Polygon ID ${row.coverId}`}
                             isExpanded={isExpanded}
                             onExpand={() => handleRowExpand(row.coverId)}
                           >
+                            <TableCell key={"map-select" + row.coverId + row.polygonId}>
+                              <Tooltip
+                                label={
+                                  !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
+                                    ? "Polygon is not available"
+                                    : "Show on map"
+                                }
+                                align={
+                                  !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
+                                    ? "right"
+                                    : "top"
+                                }
+                              >
+                                <span>
+                                  <Checkbox
+                                    id={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                                    key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                                    checked={selectedForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
+                                    disabled={!availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
+                                    labelText=""
+                                    onChange={(_, { checked }) => {
+                                      setSelectedForestCoverIds(ids =>
+                                        checked
+                                          ? [...ids, `${row.coverId}-${row.polygonId}`]
+                                          : ids.filter(id => id !== `${row.coverId}-${row.polygonId}`)
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              </Tooltip>
+                            </TableCell>
                             {ForestCoverTableHeaders.map((header) => (
                               <TableCell key={String(header.key)} className="default-table-cell">
                                 {renderCellContent(row, header.key)}

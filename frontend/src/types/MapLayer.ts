@@ -123,18 +123,17 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Forest Cover Inventory',
     style: {
       ...defaultStyle,
-      color: 'orange',
-      fillColor: '#F5A623', // A vibrant orange
+      color: 'pink',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
-        'Polygon type': 'Forest Cover Inventory',
-        'Forest Cover Id': properties?.FOREST_COVER_ID,
-        'Polygon': properties?.SILV_POLYGON_NUMBER,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
-        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
-        'Reference Year': properties?.REFERENCE_YEAR
+        'polygonType': 'Forest Cover Inventory',
+        'forestCoverId': properties?.FOREST_COVER_ID,
+        'polygon': properties?.SILV_POLYGON_NUMBER,
+        'polygonArea': properties?.SILV_POLYGON_AREA,
+        'netArea': properties?.SILV_POLYGON_NET_AREA,
+        'referenceYear': properties?.REFERENCE_YEAR
       }
     }
   },
@@ -143,15 +142,14 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Forest Cover Reserve',
     style: {
       ...defaultStyle,
-      color: 'yellow',
-      fillColor: '#F8E71C', // A vibrant yellow
+      color: 'pink',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW',
-        'Polygon type': 'Forest Cover Reserve',
-        'Polygon': properties?.SILV_POLYGON_NO,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA
+        'polygonType': 'Forest Cover Reserve',
+        'polygon': properties?.SILV_POLYGON_NO,
+        'polygonArea': properties?.SILV_POLYGON_AREA
       }
     }
   },
@@ -161,18 +159,17 @@ export const mapKinds: LayerConfiguration[] = [
     style: {
       ...defaultStyle,
       color: 'pink',
-      fillColor: '#D0021B', // A vibrant pink
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW',
-        'Polygon type': 'Forest Cover Silviculture',
-        'Forest Cover Id': properties?.FOREST_COVER_ID,
-        'Polygon': properties?.SILV_POLYGON_NUMBER,
-        'Polygon Area (ha)': properties?.SILV_POLYGON_AREA,
-        'Net Area (ha)': properties?.SILV_POLYGON_NET_AREA,
-        'Non Mapped Area (ha)': properties?.SILV_NON_MAPPED_AREA,
-        'Reference Year': properties?.REFERENCE_YEAR
+        'polygonType': 'Forest Cover Silviculture',
+        'forestCoverId': properties?.FOREST_COVER_ID,
+        'polygon': properties?.SILV_POLYGON_NUMBER,
+        'polygonArea': properties?.SILV_POLYGON_AREA,
+        'netArea': properties?.SILV_POLYGON_NET_AREA,
+        'nonMappedArea': properties?.SILV_NON_MAPPED_AREA,
+        'referenceYear': properties?.REFERENCE_YEAR
       }
     }
   },
@@ -273,7 +270,18 @@ const colorMap: Record<string, string[]> = {
   ],
   orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
-  pink: ['#8F87F1', '#C68EFD', '#E9A5F1', '#FED2E2'],
+  pink: [
+    '#FFFBFD',
+    '#FFF6FA',
+    '#FFF1F8',
+    '#FFEBF5',
+    '#FFE5F2',
+    '#FF94CA',
+    '#FF44A1',
+    '#F20079',
+    '#A10051',
+    '#510028'
+  ],
   cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
   default: [defaultStyle.fillColor],
 }

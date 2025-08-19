@@ -60,6 +60,9 @@ const OpeningDetails = () => {
   const openingId = param.openingId;
   const isIdirUser = auth.user?.idpProvider === 'IDIR';
 
+  const [availableForestCoverIds, setAvailableForestCoverIds] = useState<string[]>([]);
+  const [selectedForestCoverIds, setSelectedForestCoverIds] = useState<string[]>([]);
+
   useEffect(() => {
     document.title = `Opening ${openingId} - Silva`;
     return () => {
@@ -147,6 +150,10 @@ const OpeningDetails = () => {
           tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
           isLoading={openingDetailsTombstoneQuery.isLoading}
           currentTab={activeTab}
+          availableForestCoverIds={availableForestCoverIds}
+          setAvailableForestCoverIds={setAvailableForestCoverIds}
+          selectedForestCoverIds={selectedForestCoverIds}
+          setSelectedForestCoverIds={setSelectedForestCoverIds}
         />
       </Column>
 
@@ -216,7 +223,13 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {isActive(4) ? (
                 <Suspense fallback={<TextAreaSkeleton />}>
-                  <OpeningForestCover openingId={Number(openingId)} />
+                  <OpeningForestCover
+                    openingId={Number(openingId)}
+                    availableForestCoverIds={availableForestCoverIds}
+                    setAvailableForestCoverIds={setAvailableForestCoverIds}
+                    selectedForestCoverIds={selectedForestCoverIds}
+                    setSelectedForestCoverIds={setSelectedForestCoverIds}
+                  />
                 </Suspense>
               ) : null}
             </TabPanel>
