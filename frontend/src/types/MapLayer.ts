@@ -74,11 +74,11 @@ export const mapKinds: LayerConfiguration[] = [
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW',
-        'Polygon type': 'Tenure / Cut Block',
-        'Forest File': properties?.CUT_BLOCK_FOREST_FILE_ID,
-        'Cut Block': properties?.CUT_BLOCK_ID,
-        'Client': `${properties?.CLIENT_NAME} (${properties?.CLIENT_NUMBER})`,
-        'Location': properties?.CLIENT_LOCATION_CODE,
+        'polygonType': 'Tenure / Cut Block',
+        'forestFileId': properties?.CUT_BLOCK_FOREST_FILE_ID,
+        'cutBlockId': properties?.CUT_BLOCK_ID,
+        'cuttingPermitId': properties?.HARVEST_AUTH_CUTTING_PERMIT_ID,
+        'client': `${properties?.CLIENT_NAME} (${properties?.CLIENT_NUMBER})`,
       }
     }
   },
