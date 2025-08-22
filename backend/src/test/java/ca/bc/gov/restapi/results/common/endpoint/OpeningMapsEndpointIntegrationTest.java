@@ -57,7 +57,7 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
             .withQueryParam("typeName", equalTo("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"))
             .withQueryParam("outputFormat", equalTo("application/json"))
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
-            .withQueryParam("PROPERTYNAME", equalTo("GEOMETRY,OPENING_ID"))
+            .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY"))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
             .willReturn(okJson("""
                 {
