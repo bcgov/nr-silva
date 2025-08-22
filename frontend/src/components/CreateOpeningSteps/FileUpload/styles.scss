@@ -1,0 +1,23 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.file-uploader-container {
+  .#{vars.$bcgov-prefix}--file-browse-btn {
+    max-inline-size: 100%;
+  }
+
+  .file-type-p {
+    margin-top: 0.5rem;
+    @include type.type-style('body-compact-01');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+  }
+
+  #opening-file-uploader-item {
+    max-inline-size: 100%;
+  }
+
+  .file-uploader-with-error {
+    border: 1px dashed var(--#{vars.$bcgov-prefix}-support-error);
+    color: var(--#{vars.$bcgov-prefix}-text-error);
+  }
+}

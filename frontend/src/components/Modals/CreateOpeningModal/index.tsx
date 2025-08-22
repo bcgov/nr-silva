@@ -6,6 +6,7 @@ import SeedBoxIcon from '@/assets/icon/SeedBox.svg?react';
 import SeedingWithdrawalIcon from '@/assets/icon/SeedingWithdrawal.svg?react';
 import { GOV_FUNDED_OPENING, TENURED_OPENING } from "@/constants";
 import { CreateOpeningRoute } from "@/routes/config";
+import { OpeningTypes } from "@/types/OpeningTypes";
 
 import ModalHead from "../ModalHead";
 import ModalTileButton from "../ModalTileButton";
@@ -16,9 +17,9 @@ import './styles.scss';
 const CreateOpeningModal = () => {
   const { isOpen, closeModal } = useModal();
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState<typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING | undefined>();
+  const [selectedType, setSelectedType] = useState<OpeningTypes | undefined>();
 
-  const handleTileClick = (openingType: typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING) => {
+  const handleTileClick = (openingType: OpeningTypes) => {
     setSelectedType(openingType);
   }
 

@@ -68,6 +68,19 @@
 
 .opening-map-container {
   position: relative;
+
+  .opening-map-empty-message {
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: colors.$white;
+    color: colors.$gray-100;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    z-index: 1000;
+    pointer-events: none;
+  }
 }
 
 .map-popup-top-left {

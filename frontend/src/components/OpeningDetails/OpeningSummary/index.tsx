@@ -18,6 +18,10 @@ type OpeningSummaryProps = {
   tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
   currentTab: number;
+  availableForestCoverIds: string[];
+  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedForestCoverIds: string[];
+  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const OpeningSummary = ({
@@ -25,6 +29,10 @@ const OpeningSummary = ({
   tombstoneObj,
   isLoading,
   currentTab,
+  availableForestCoverIds,
+  setAvailableForestCoverIds,
+  selectedForestCoverIds,
+  setSelectedForestCoverIds
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
@@ -52,6 +60,15 @@ const OpeningSummary = ({
       default:
         return [mapKinds[0]!.code] as MapKindType[];
     }
+  };
+
+  const isForestCoverMap = (mapKindTypes: MapKindType[]): boolean => {
+    return (
+      mapKindTypes.length === 3 &&
+      mapKindTypes.includes(mapKinds[4]?.code as MapKindType) &&
+      mapKindTypes.includes(mapKinds[5]?.code as MapKindType) &&
+      mapKindTypes.includes(mapKinds[6]?.code as MapKindType)
+    );
   };
 
   return (
@@ -271,6 +288,11 @@ const OpeningSummary = ({
             layerFilter={true}
             kind={mapKind(currentTab)}
             isDetailsPage={true}
+            isForestCoverMap={isForestCoverMap(mapKind(currentTab))}
+            availableForestCoverIds={availableForestCoverIds}
+            setAvailableForestCoverIds={setAvailableForestCoverIds}
+            selectedForestCoverIds={selectedForestCoverIds}
+            setSelectedForestCoverIds={setSelectedForestCoverIds}
           />
         </Column>
       ) : null}

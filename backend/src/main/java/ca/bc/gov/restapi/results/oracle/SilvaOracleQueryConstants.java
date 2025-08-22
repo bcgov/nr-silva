@@ -410,6 +410,7 @@ public class SilvaOracleQueryConstants {
         sm.DUE_LATE_DATE < SYSDATE
         OR sm.DUE_LATE_DATE BETWEEN SYSDATE AND ADD_MONTHS(SYSDATE, 12)
       )
+      AND (sm.SILV_MILESTONE_TYPE_CODE = 'FG' OR sm.SILV_MILESTONE_TYPE_CODE = 'RG')
     """;
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
@@ -908,14 +909,7 @@ public class SilvaOracleQueryConstants {
             UPDATE_USERID AS updateUserId,
             UPDATE_TIMESTAMP AS updateTimestamp,
             REVISION_COUNT AS revisionCount,
-            LOWER(
-              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 1, 8) || '-' ||
-              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 9, 4) || '-' ||
-              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 13, 4) || '-' ||
-              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 17, 4) || '-' ||
-              SUBSTR(RAWTOHEX(OPENING_ATTACHMENT_GUID), 21)
-            ) AS attachmentGuid,
-            DBMS_LOB.GETLENGTH(ATTACHMENT_DATA) AS attachmentSize
+            RAWTOHEX(OPENING_ATTACHMENT_GUID) AS attachmentGuid
           FROM THE.OPENING_ATTACHMENT
           WHERE OPENING_ID = :openingId
           """;

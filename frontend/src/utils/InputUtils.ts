@@ -11,3 +11,11 @@ export const createTextInputEvent = (value: string): TextInputEvent => {
     target: { value } as HTMLInputElement,
   } as TextInputEvent;
 };
+
+
+export const scrollToSection = (id: string) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};

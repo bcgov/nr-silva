@@ -14,6 +14,6 @@ export const FavouriteCardsConfig: FavouriteCardProps[] = [
     link: '/',
     icon: 'MapBoundary',
     opensModal: true,
-    hidden: env.VITE_ZONE?.toLowerCase() !== 'test' && env.VITE_ZONE?.toLowerCase() !== 'dev'
+    hidden: env.VITE_ZONE?.toLowerCase() !== 'test' && env.VITE_ZONE?.toLowerCase() !== 'dev' && !Number.isInteger(Number(env.VITE_ZONE))
   }
 ]
