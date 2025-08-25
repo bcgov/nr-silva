@@ -7,7 +7,6 @@ import { OpenAPI } from "./OpenApi/core/OpenAPI";
 import { CodesEndpointService } from "./OpenApi/services/CodesEndpointService";
 import { ForestClientEndpointService } from "./OpenApi/services/ForestClientEndpointService";
 import { OpeningEndpointService } from "./OpenApi/services/OpeningEndpointService";
-import { OpeningFavoriteEndpointService } from "./OpenApi/services/OpeningFavoriteEndpointService";
 import { OpeningMapsEndpointService } from "./OpenApi/services/OpeningMapsEndpointService";
 import { UserActionsEndpointService } from "./OpenApi/services/UserActionsEndpointService";
 import { UserRecentOpeningEndpointService } from "./OpenApi/services/UserRecentOpeningEndpointService";
@@ -39,7 +38,6 @@ const serviceConstructors = {
     CodesEndpointService,
     ForestClientEndpointService,
     OpeningEndpointService,
-    OpeningFavoriteEndpointService,
     OpeningMapsEndpointService,
     UserActionsEndpointService,
     UserRecentOpeningEndpointService,

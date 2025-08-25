@@ -16,7 +16,7 @@ import API from "../../services/API";
 vi.mock("../../services/API", () => {
   return {
     default: {
-      OpeningFavoriteEndpointService: {
+      OpeningEndpointService: {
         removeFromFavorites: vi.fn(),
         addToFavorites: vi.fn(),
       },
@@ -43,10 +43,10 @@ describe("ActionButtons", () => {
 
   it("renders the 'Favorite Opening' button", () => {
     (
-      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+      API.OpeningEndpointService.removeFromFavorites as vi.Mock
     ).mockResolvedValueOnce();
     (
-      API.OpeningFavoriteEndpointService.addToFavorites as vi.Mock
+      API.OpeningEndpointService.addToFavorites as vi.Mock
     ).mockResolvedValueOnce();
     renderWithProviders();
     expect(
@@ -56,10 +56,10 @@ describe("ActionButtons", () => {
 
   it("sets the 'Favorite Opening' as favorited when button is clicked", async () => {
     (
-      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+      API.OpeningEndpointService.removeFromFavorites as vi.Mock
     ).mockResolvedValueOnce();
     (
-      API.OpeningFavoriteEndpointService.addToFavorites as vi.Mock
+      API.OpeningEndpointService.addToFavorites as vi.Mock
     ).mockResolvedValueOnce();
     renderWithProviders();
 

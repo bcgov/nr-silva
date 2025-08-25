@@ -264,6 +264,14 @@
       <version>2.32.13</version>
       <scope>compile</scope>
     </dependency>
+
+    <!-- Spatial -->
+    <dependency>
+      <groupId>org.gdal</groupId>
+      <artifactId>gdal</artifactId>
+      <version>3.11.0</version>
+      <type>pom</type>
+    </dependency>
   </dependencies>
 
   <build>

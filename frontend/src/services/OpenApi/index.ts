@@ -76,7 +76,6 @@ export type { SimplePageDto } from './models/SimplePageDto';
 export { CodesEndpointService } from './services/CodesEndpointService';
 export { ForestClientEndpointService } from './services/ForestClientEndpointService';
 export { OpeningEndpointService } from './services/OpeningEndpointService';
-export { OpeningFavoriteEndpointService } from './services/OpeningFavoriteEndpointService';
 export { OpeningMapsEndpointService } from './services/OpeningMapsEndpointService';
 export { UserActionsEndpointService } from './services/UserActionsEndpointService';
 export { UserRecentOpeningEndpointService } from './services/UserRecentOpeningEndpointService';

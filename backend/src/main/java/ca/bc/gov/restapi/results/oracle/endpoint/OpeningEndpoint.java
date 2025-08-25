@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /** This class contains resources for the opening search api. */
-@RestController
+@RestController("oracleOpeningEndpoint")
 @RequestMapping("/api/openings")
 @RequiredArgsConstructor
 @Slf4j
