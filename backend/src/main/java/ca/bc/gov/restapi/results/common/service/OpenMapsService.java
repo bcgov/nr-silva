@@ -61,6 +61,10 @@ public class OpenMapsService {
   }
 
   private String getPropertyName(String kind) {
+    if (kind == null || kind.isEmpty()) {
+      return "OPENING_ID,GEOMETRY";
+    }
+
     Set<String> kindsSet = new HashSet<>(Arrays.asList(kind.split(",")));
     String propertyName = "OPENING_ID,GEOMETRY";
 
