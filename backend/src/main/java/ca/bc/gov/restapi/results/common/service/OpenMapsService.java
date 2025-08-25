@@ -48,7 +48,7 @@ public class OpenMapsService {
                   )
                   .queryParam("outputFormat", "application/json")
                   .queryParam("SrsName", "EPSG:4326")
-                  .queryParam("PROPERTYNAME", "GEOMETRY,OPENING_ID")
+                  .queryParam("PROPERTYNAME", getPropertyName(kind))
                   .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
                   .build(Map.of())
           )
@@ -58,5 +58,13 @@ public class OpenMapsService {
       log.error("Exception when fetching from WFS {}", e.getMessage());
     }
     return null;
+  }
+
+  private String getPropertyName(String kind) {
+    if ("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW".equals(kind)) {
+      return "OPENING_ID,GEOMETRY,HARVEST_AUTH_CUTTING_PERMIT_ID";
+    } else {
+      return "OPENING_ID,GEOMETRY";
+    }
   }
 }
