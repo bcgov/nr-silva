@@ -105,13 +105,13 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Activity Treatment Units',
     style: {
       ...defaultStyle,
-      color: 'purple',
-      fillColor: '#9013FE', // A vibrant purple
+      color: 'orange',
+      fillColor: '#FFBC99', // A vibrant orange
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
-        'Polygon type': 'Activity',
+        'polygonType': 'Activity and Disturbance',
         'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
         'Silviculture base code': properties?.SILV_BASE_CODE,
         'Map Label': properties?.MAP_LABEL
@@ -178,8 +178,8 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Planting',
     style: {
       ...defaultStyle,
-      color: 'cyan',
-      fillColor: '#50E3C2', // A vibrant cyan
+      color: 'orange',
+      fillColor: '#FFBC99', // A vibrant orange
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
@@ -279,7 +279,7 @@ const colorMap: Record<string, string[]> = {
     '#54278f',
     '#3f007d'
   ],
-  orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
+  orange: ['#FFBC99'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
   pink: [
     '#FFFBFD',
@@ -294,6 +294,7 @@ const colorMap: Record<string, string[]> = {
     '#510028'
   ],
   cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
+  grey: ['#D2D2D4'],
   default: [defaultStyle.fillColor],
 }
 
