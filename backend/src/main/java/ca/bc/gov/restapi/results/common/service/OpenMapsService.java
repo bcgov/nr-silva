@@ -72,7 +72,7 @@ public class OpenMapsService {
       return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
     } else if (kindsSet.size() == 1 &&
         kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
-      return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE";
+      return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
     } else {
       return propertyName;
     }
