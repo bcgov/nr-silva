@@ -18,10 +18,12 @@ type OpeningSummaryProps = {
   tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
   currentTab: number;
-  availableForestCoverIds: string[];
   setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds: string[];
-  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  setAvailableSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSilvicultureActivityIds: string[];
+  setAvailableDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedDisturbanceIds: string[];
 };
 
 const OpeningSummary = ({
@@ -29,10 +31,12 @@ const OpeningSummary = ({
   tombstoneObj,
   isLoading,
   currentTab,
-  availableForestCoverIds,
   setAvailableForestCoverIds,
   selectedForestCoverIds,
-  setSelectedForestCoverIds
+  setAvailableSilvicultureActivityIds,
+  selectedSilvicultureActivityIds,
+  setAvailableDisturbanceIds,
+  selectedDisturbanceIds,
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
@@ -70,6 +74,14 @@ const OpeningSummary = ({
       mapKindTypes.includes(mapKinds[6]?.code as MapKindType)
     );
   };
+
+  const isActivitiesMap = (mapKindTypes: MapKindType[]): boolean => {
+    return (
+      mapKindTypes.length === 2 &&
+      mapKindTypes.includes(mapKinds[3]?.code as MapKindType) &&
+      mapKindTypes.includes(mapKinds[7]?.code as MapKindType)
+    );
+  }
 
   return (
     <Grid className="default-grid opening-summary-grid">
@@ -289,10 +301,13 @@ const OpeningSummary = ({
             kind={mapKind(currentTab)}
             isDetailsPage={true}
             isForestCoverMap={isForestCoverMap(mapKind(currentTab))}
-            availableForestCoverIds={availableForestCoverIds}
+            isActivitiesMap={isActivitiesMap(mapKind(currentTab))}
             setAvailableForestCoverIds={setAvailableForestCoverIds}
             selectedForestCoverIds={selectedForestCoverIds}
-            setSelectedForestCoverIds={setSelectedForestCoverIds}
+            setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
+            selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+            setAvailableDisturbanceIds={setAvailableDisturbanceIds}
+            selectedDisturbanceIds={selectedDisturbanceIds}
           />
         </Column>
       ) : null}

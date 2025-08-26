@@ -4,6 +4,7 @@ import {
   Accordion,
   AccordionItem,
   Button,
+  Checkbox,
   DefinitionTooltip,
   Pagination,
   Table,
@@ -19,6 +20,7 @@ import {
   TableToolbar,
   TableToolbarSearch,
   Tag,
+  Tooltip,
 } from "@carbon/react";
 import { Activity, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
@@ -45,6 +47,9 @@ import "./styles.scss";
 type ActivityAccordionProps = {
   openingId: number;
   totalUnfiltered: number;
+  availableSilvicultureActivityIds: string[];
+  selectedSilvicultureActivityIds: string[];
+  setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -59,7 +64,13 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
-const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProps) => {
+const ActivityAccordion = ({
+  openingId,
+  totalUnfiltered,
+  availableSilvicultureActivityIds,
+  selectedSilvicultureActivityIds,
+  setSelectedSilvicultureActivityIds
+}: ActivityAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
@@ -85,6 +96,14 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
       );
     },
   });
+
+  const allAvailableIds = activityQuery.data?.content ?
+    activityQuery.data?.content
+      .map(row => `${row.atuId}-${row.base.code}`)
+      .filter(id => availableSilvicultureActivityIds.includes(id)) ?? []
+    : [];
+  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedSilvicultureActivityIds.includes(id));
+  const someSelected = allAvailableIds.some(id => selectedSilvicultureActivityIds.includes(id));
 
   const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
     let newDirection: SortDirectionType = 'NONE';
@@ -301,6 +320,30 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                     <TableRow>
                       <>
                         <TableExpandHeader />
+                        <TableHeader key="map-header">
+                          <div className="map-header-checkbox-container">
+                            <Tooltip
+                              label={allSelected ? "Unselect all" : "Select all"}
+                              align="right"
+                            >
+                              <span>
+                                <Checkbox
+                                  id="activities-map-select-all"
+                                  data-testid="activities-map-select-all"
+                                  checked={allSelected}
+                                  indeterminate={!allSelected && someSelected}
+                                  disabled={allAvailableIds.length === 0}
+                                  labelText=""
+                                  onChange={(_, { checked }) => {
+                                    setSelectedSilvicultureActivityIds(checked ? allAvailableIds : []);
+                                  }}
+                                />
+                              </span>
+                            </Tooltip>
+                            <span>Map</span>
+                          </div>
+
+                        </TableHeader>
                         {ActivityTableHeaders.map((header) => (
                           <TableHeader
                             key={header.key}
@@ -326,6 +369,39 @@ const ActivityAccordion = ({ openingId, totalUnfiltered }: ActivityAccordionProp
                             isExpanded={isExpanded}
                             onExpand={() => handleRowExpand(row.atuId)}
                           >
+                            <TableCell key={"map-select" + row.atuId}>
+                              <Tooltip
+                                label={
+                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
+                                    ? "Polygon is not available"
+                                    : "Show on map"
+                                }
+                                align={
+                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
+                                    ? "right"
+                                    : "top"
+                                }
+                              >
+                                <span>
+                                  <Checkbox
+                                    id={`activities-map-checkbox-${row.atuId}-${index}`}
+                                    data-testid={`activities-map-checkbox-${row.atuId}-${index}`}
+                                    key={`activities-map-checkbox-${row.atuId}-${index}`}
+                                    checked={selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
+                                    disabled={!availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
+                                    labelText=""
+                                    onChange={(_, { checked }) => {
+                                      setSelectedSilvicultureActivityIds(ids =>
+                                        checked
+                                          ? [...ids, `${row.atuId}-${row.base.code}`]
+                                          : ids.filter(id => id !== `${row.atuId}-${row.base.code}`)
+                                      );
+                                    }}
+                                  />
+                                </span>
+
+                              </Tooltip>
+                            </TableCell>
                             {ActivityTableHeaders.map((header) => (
                               <TableCell key={header.key}>
                                 {renderCellContent(
