@@ -225,6 +225,37 @@ export const getStyleForFeature = (
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
+  const isSelected = selectedFeature && feature.id === selectedFeature.id;
+  const isHovered = hoveredFeature && feature.id === hoveredFeature.id;
+  const hoveredOrSelectedColor = "#000000";
+
+  // Activity Treatment: DN (Disturbance)
+  if (
+    feature.properties?.SILV_BASE_CODE &&
+    feature.properties?.ACTIVITY_TREATMENT_UNIT_ID &&
+    feature.properties?.SILV_BASE_CODE === "DN"
+  ) {
+    return {
+      ...defaultStyle,
+      color: (isSelected || isHovered) ? hoveredOrSelectedColor : outlineColorMap.grey,
+      fillColor: colorMap.grey![0],
+      weight: kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'],
+    };
+  }
+
+  // Activity Treatment: Non-DN (Activity)
+  if (
+    feature.properties?.SILV_BASE_CODE &&
+    feature.properties?.ACTIVITY_TREATMENT_UNIT_ID
+  ) {
+    return {
+      ...defaultStyle,
+      color: (isHovered || isSelected) ? hoveredOrSelectedColor : outlineColorMap.orange,
+      fillColor: colorMap.orange![0],
+      weight: kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'],
+    };
+  }
+
   const kindEntry = mapKinds.find(
     (kind) => kind.code !== null && String(feature.id).startsWith(kind.code)
   );
@@ -235,12 +266,12 @@ export const getStyleForFeature = (
   const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
 
   // Highlight if selected or hovered
-  if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
+  if ((isSelected || isHovered)) {
     return {
       ...defaultStyle,
       ...kindEntry.style,
       fillColor,
-      color: "#000000",
+      color: hoveredOrSelectedColor,
       weight: kindWeightMap[kindEntry.code as MapKindType] || 2,
     };
   }
