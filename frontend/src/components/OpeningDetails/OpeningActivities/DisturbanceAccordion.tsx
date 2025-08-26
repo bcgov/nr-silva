@@ -212,7 +212,9 @@ const DisturbanceAccordion = ({
                               label={
                                 !availableDisturbanceIds.includes(`${row.atuId}-DN`)
                                   ? "Polygon is not available"
-                                  : "Show on map"
+                                  : selectedDisturbanceIds.includes(`${row.atuId}-DN`)
+                                    ? "Hide from map"
+                                    : "Show on map"
                               }
                               align={
                                 !availableDisturbanceIds.includes(`${row.atuId}-DN`)

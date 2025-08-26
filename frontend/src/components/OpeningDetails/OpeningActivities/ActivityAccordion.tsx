@@ -374,7 +374,9 @@ const ActivityAccordion = ({
                                 label={
                                   !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
                                     ? "Polygon is not available"
-                                    : "Show on map"
+                                    : selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
+                                      ? "Hide from map"
+                                      : "Show on map"
                                 }
                                 align={
                                   !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
