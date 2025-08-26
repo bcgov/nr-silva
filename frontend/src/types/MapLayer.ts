@@ -112,9 +112,11 @@ export const mapKinds: LayerConfiguration[] = [
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
         'polygonType': 'Activity and Disturbance',
-        'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
-        'Silviculture base code': properties?.SILV_BASE_CODE,
-        'Map Label': properties?.MAP_LABEL
+        'activityId': properties?.ACTIVITY_TREATMENT_UNIT_ID,
+        'silvBaseCode': properties?.SILV_BASE_CODE,
+        'disturbanceCode': properties?.DISTURBANCE_CODE,
+        'area': properties?.ACTUAL_TREATMENT_AREA,
+        'endDate': properties?.ATU_COMPLETION_DATE
       }
     }
   },
@@ -227,7 +229,9 @@ export const getStyleForFeature = (
 
   const isSelected = selectedFeature && feature.id === selectedFeature.id;
   const isHovered = hoveredFeature && feature.id === hoveredFeature.id;
+
   const hoveredOrSelectedColor = "#000000";
+  const defaultWeight = 1;
 
   // Activity Treatment: DN (Disturbance)
   if (
@@ -239,7 +243,7 @@ export const getStyleForFeature = (
       ...defaultStyle,
       color: (isSelected || isHovered) ? hoveredOrSelectedColor : outlineColorMap.grey,
       fillColor: colorMap.grey![0],
-      weight: kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'],
+      weight: (isSelected || isHovered) ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
     };
   }
 
@@ -252,7 +256,7 @@ export const getStyleForFeature = (
       ...defaultStyle,
       color: (isHovered || isSelected) ? hoveredOrSelectedColor : outlineColorMap.orange,
       fillColor: colorMap.orange![0],
-      weight: kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'],
+      weight: (isHovered || isSelected) ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
     };
   }
 
@@ -280,7 +284,8 @@ export const getStyleForFeature = (
     ...defaultStyle,
     ...kindEntry.style,
     fillColor,
-    color: outlineColor
+    color: outlineColor,
+    weight: defaultWeight,
   };
 }
 

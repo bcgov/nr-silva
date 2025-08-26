@@ -1,5 +1,8 @@
 import React from "react";
 import OpeningsMapDownloader from "@/components/OpeningsMapDownloader";
+import { silvicultureStatusCodes } from "@/constants/statucCodes";
+import { formatDate, formatLocalDate } from "@/utils/DateUtils";
+
 import "./styles.scss";
 
 interface OpeningsMapEntryPopupProps {
@@ -29,6 +32,8 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
         return <h4 className="map-popup-header">Polygon ID: {data["polygon"]}</h4>;
       case "WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW":
         return <h4 className="map-popup-header">Cut Block: {data["cutBlockId"]}</h4>;
+      case "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW":
+        return <h4 className="map-popup-header">{`${silvicultureStatusCodes[data["silvBaseCode"]]} (${data["silvBaseCode"]})`}</h4>;
       default:
         return <h4 className="map-popup-header">Opening ID: {openingId}</h4>;
     }
@@ -89,6 +94,17 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span>Forest File: <span className="popup-value">{data["forestFileId"]}</span></span>
             <span>Cutting Permit: <span className="popup-value">{data["cuttingPermitId"]}</span></span>
             <span>Client: <span className="popup-value">{data["client"]}</span></span>
+          </>
+        );
+      case "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW":
+        return (
+          <>
+            <span>Opening ID: <span className="popup-value">{openingId}</span></span>
+            <span>Activity ID: <span className="popup-value">{data["activityId"]}</span></span>
+            <span>{data["silvBaseCode"] === "DN" ? "Disturbance area (ha)" : "Treatment area (ha)"}:&nbsp;
+              <span className="popup-value">{data["area"]}</span>
+            </span>
+            <span>End Date: <span className="popup-value">{formatLocalDate(data["endDate"])}</span></span>
           </>
         );
       default:
