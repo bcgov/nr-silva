@@ -286,6 +286,7 @@ const OpeningForestCover = ({
                             <span>
                               <Checkbox
                                 id="forest-cover-select-all"
+                                data-testid="forest-cover-map-select-all"
                                 checked={allSelected}
                                 indeterminate={!allSelected && someSelected}
                                 disabled={allAvailableIds.length === 0}
