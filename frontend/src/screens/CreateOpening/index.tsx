@@ -12,6 +12,8 @@ import { CreateOpeningFormType } from './definitions';
 
 import { TitleText } from './constants';
 import './styles.scss';
+import { useMutation } from '@tanstack/react-query';
+import API from '../../services/API';
 
 
 const CreateOpening = () => {
@@ -48,15 +50,26 @@ const CreateOpening = () => {
     e.preventDefault();
   };
 
+  const fileMutation = useMutation({
+    mutationFn: (file: Blob) => API.OpeningEndpointService.uploadOpeningSpatialFile({ file }),
+    onSuccess: (res) => {
+      console.log("Upload success: ", res)
+    },
+    onError: (err) => {
+      console.warn("Upload failed: ", err)
+    }
+  });
+
   const handleBack = () => setCurrentStep(s => Math.max(0, s - 1));
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!form.geojson) {
+      if (!form.geojson || !form.file) {
         setForm((prev) => ({ ...prev, isGeoJsonMissing: true }))
         scrollToSection('opening-map-file-drop-container')
         return;
       }
+      fileMutation.mutate(form.file)
     }
 
     setCurrentStep(s => Math.min(s + 1, 2));

@@ -70,19 +70,20 @@ export class OpeningEndpointService {
         });
     }
     /**
-     * @param file
+     * @param formData
      * @returns any Accepted
      * @throws ApiError
      */
     public static uploadOpeningSpatialFile(
-        file: Blob,
+        formData?: {
+            file: Blob;
+        },
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/openings/create/upload',
-            query: {
-                'file': file,
-            },
+            formData: formData,
+            mediaType: 'multipart/form-data',
         });
     }
     /**
