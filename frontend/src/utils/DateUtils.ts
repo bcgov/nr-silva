@@ -39,7 +39,7 @@ export const formatLocalDate = (localDate?: string | null, usePlaceholder?: bool
     return usePlaceholder ? PLACE_HOLDER : ""
   }
 
-  const stringDate = String(localDate).replace(/Z$/, "");;
+  const stringDate = String(localDate).replace(/Z$/, "");
 
   return DateTime.fromISO(stringDate, { zone: "local" }).toFormat("MMM dd, yyyy");
 };
