@@ -53,7 +53,7 @@ const OpeningSummary = ({
         return [mapKinds[2]!.code] as MapKindType[];
       // Activities tab shows the activities and disturbances layers
       case 3:
-        return [mapKinds[3]!.code, mapKinds[7]!.code] as MapKindType[];
+        return [mapKinds[3]!.code] as MapKindType[];
       // Forest cover tab shows all the Forest Cover layers
       case 4:
         return [
@@ -77,9 +77,8 @@ const OpeningSummary = ({
 
   const isActivitiesMap = (mapKindTypes: MapKindType[]): boolean => {
     return (
-      mapKindTypes.length === 2 &&
-      mapKindTypes.includes(mapKinds[3]?.code as MapKindType) &&
-      mapKindTypes.includes(mapKinds[7]?.code as MapKindType)
+      mapKindTypes.length === 1 &&
+      mapKindTypes.includes(mapKinds[3]?.code as MapKindType)
     );
   }
 

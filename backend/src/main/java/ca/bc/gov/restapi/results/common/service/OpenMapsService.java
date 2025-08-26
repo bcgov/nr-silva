@@ -70,10 +70,9 @@ public class OpenMapsService {
 
     if (kindsSet.size() == 1 && kindsSet.contains("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW")) {
       return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
-    } else if (kindsSet.size() == 2 &&
-        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW") &&
-        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW")) {
-      return propertyName + ",ACTUAL_TREATMENT_AREA";
+    } else if (kindsSet.size() == 1 &&
+        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
+      return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE";
     } else {
       return propertyName;
     }
