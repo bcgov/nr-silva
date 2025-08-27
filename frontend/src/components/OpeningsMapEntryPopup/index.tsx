@@ -83,7 +83,6 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span>Forest Cover ID: <span className="popup-value">{data["forestCoverId"]}</span></span>
             <span>Reference Year: <span className="popup-value">{data["referenceYear"]}</span></span>
             <span>Net Area (ha): <span className="popup-value">{data["netArea"]}</span></span>
-            <span>Non Mapped Area (ha): <span className="popup-value">{data["nonMappedArea"]}</span></span>
             <span>Polygon Area (ha): <span className="popup-value">{data["polygonArea"]}</span></span>
           </>
         );

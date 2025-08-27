@@ -170,7 +170,6 @@ export const mapKinds: LayerConfiguration[] = [
         'polygon': properties?.SILV_POLYGON_NUMBER,
         'polygonArea': properties?.SILV_POLYGON_AREA,
         'netArea': properties?.SILV_POLYGON_NET_AREA,
-        'nonMappedArea': properties?.SILV_NON_MAPPED_AREA,
         'referenceYear': properties?.REFERENCE_YEAR
       }
     }
