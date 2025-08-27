@@ -332,9 +332,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       )}
 
       {selectedFeature || hoveredFeature ? (
-        <div className={`map-popup-top-left${selectedFeature &&
-          (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
-          (!hoveredFeature) ? " pinned" : ""}`}
+        <div className="map-popup-top-left"
           onMouseEnter={() => setIsPopupHovered(true)}
           onMouseLeave={() => {
             setIsPopupHovered(false);
