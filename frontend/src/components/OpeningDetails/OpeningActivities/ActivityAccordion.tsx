@@ -372,14 +372,14 @@ const ActivityAccordion = ({
                             <TableCell key={"map-select" + row.atuId}>
                               <Tooltip
                                 label={
-                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
+                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
                                     ? "Polygon is not available"
                                     : selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
                                       ? "Hide from map"
                                       : "Show on map"
                                 }
                                 align={
-                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-DN`)
+                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
                                     ? "right"
                                     : "top"
                                 }
