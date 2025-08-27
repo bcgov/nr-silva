@@ -45,9 +45,9 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
       case "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW":
         return (
           <>
-            <span>Region: {data["region"]}</span>
-            <span>District: {data["district"]}</span>
-            <span>Year created: {data["yearCreated"]}</span>
+            <span><span className="popup-value">Region:&nbsp;</span>{data["region"]}</span>
+            <span><span className="popup-value">District:&nbsp;</span>{data["district"]}</span>
+            <span><span className="popup-value">Year created:&nbsp;</span>{data["yearCreated"]}</span>
           </>
         );
       case "WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW":
