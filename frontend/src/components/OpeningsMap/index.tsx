@@ -370,6 +370,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         zoom={zoomLevel}
         style={{ height: "100%", minHeight: "100%" }}
         zoomControl={false}
+        scrollWheelZoom={false}
       >
         <MapClickHandler
           onMapClick={() => {
