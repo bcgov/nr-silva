@@ -69,7 +69,8 @@
 .opening-map-container {
   position: relative;
 
-  .opening-map-empty-message {
+  .opening-map-empty-message,
+  .opening-map-selected-message {
     position: absolute;
     top: 1.5rem;
     left: 50%;

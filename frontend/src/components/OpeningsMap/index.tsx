@@ -295,6 +295,42 @@ const OpeningsMap: React.FC<MapProps> = ({
         </div>
       )}
 
+      {isActivitiesMap && (
+        (() => {
+          const silvCount = selectedSilvicultureActivityIds?.length ?? 0;
+          const disturbanceCount = selectedDisturbanceIds?.length ?? 0;
+          if (silvCount === 0 && disturbanceCount === 0) {
+            return (
+              <div className="opening-map-empty-message">
+                No activities or disturbances are selected and displayed. Select from the table to show on map.
+              </div>
+            );
+          }
+          if (silvCount > 0 && disturbanceCount === 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected activities
+              </div>
+            );
+          }
+          if (silvCount === 0 && disturbanceCount > 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected disturbances
+              </div>
+            );
+          }
+          if (silvCount > 0 && disturbanceCount > 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected activities and disturbances
+              </div>
+            );
+          }
+          return null;
+        })()
+      )}
+
       {selectedFeature || hoveredFeature ? (
         <div className={`map-popup-top-left${selectedFeature &&
           (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
