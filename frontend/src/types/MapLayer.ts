@@ -228,7 +228,7 @@ export const getStyleForFeature = (
 
   const isSelected = selectedFeature && feature.id === selectedFeature.id;
   const isHovered = hoveredFeature && feature.id === hoveredFeature.id;
-
+  const showOutline = (isSelected && !hoveredFeature) || isHovered;
   const hoveredOrSelectedColor = "#000000";
   const defaultWeight = 1;
 
@@ -240,9 +240,9 @@ export const getStyleForFeature = (
   ) {
     return {
       ...defaultStyle,
-      color: (isSelected || isHovered) ? hoveredOrSelectedColor : outlineColorMap.grey,
+      color: showOutline ? hoveredOrSelectedColor : outlineColorMap.grey,
       fillColor: colorMap.grey![0],
-      weight: (isSelected || isHovered) ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
+      weight: showOutline ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
     };
   }
 
@@ -253,9 +253,9 @@ export const getStyleForFeature = (
   ) {
     return {
       ...defaultStyle,
-      color: (isHovered || isSelected) ? hoveredOrSelectedColor : outlineColorMap.orange,
+      color: showOutline ? hoveredOrSelectedColor : outlineColorMap.orange,
       fillColor: colorMap.orange![0],
-      weight: (isHovered || isSelected) ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
+      weight: showOutline ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
     };
   }
 
@@ -274,8 +274,8 @@ export const getStyleForFeature = (
       ...defaultStyle,
       ...kindEntry.style,
       fillColor,
-      color: hoveredOrSelectedColor,
-      weight: kindWeightMap[kindEntry.code as MapKindType] || 2,
+      color: showOutline ? hoveredOrSelectedColor : outlineColor,
+      weight: showOutline ? kindWeightMap[kindEntry.code as MapKindType] || 2 : defaultWeight,
     };
   }
 

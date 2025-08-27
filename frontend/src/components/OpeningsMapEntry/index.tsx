@@ -100,12 +100,12 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   }, [polygons]);
 
   useEffect(() => {
-    if (selectedFeature) {
+    if (hoveredFeature) {
       setTimeout(() => {
         map.eachLayer((l: L.Layer) => {
           if (
             (l as any).feature &&
-            (l as any).feature.id === selectedFeature.id &&
+            (l as any).feature.id === hoveredFeature.id &&
             (l as L.Path).bringToFront
           ) {
             (l as L.Path).bringToFront();
