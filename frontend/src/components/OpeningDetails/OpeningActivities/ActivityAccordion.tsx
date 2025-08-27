@@ -323,7 +323,12 @@ const ActivityAccordion = ({
                         <TableHeader key="map-header">
                           <div className="map-header-checkbox-container">
                             <Tooltip
-                              label={allSelected ? "Unselect all" : "Select all"}
+                              label=
+                              {
+                                availableSilvicultureActivityIds.length > 0 ?
+                                  allSelected ? "Unselect all" : "Select all"
+                                  : "No polygon is available"
+                              }
                               align="right"
                             >
                               <span>
