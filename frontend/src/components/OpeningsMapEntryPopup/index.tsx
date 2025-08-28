@@ -1,6 +1,6 @@
 import React from "react";
 import OpeningsMapDownloader from "@/components/OpeningsMapDownloader";
-import { silvicultureStatusCodes } from "@/constants/statucCodes";
+import { silvicultureStatusCodes } from "@/constants/statusCodes";
 import { formatDate, formatLocalDate } from "@/utils/DateUtils";
 
 import "./styles.scss";
