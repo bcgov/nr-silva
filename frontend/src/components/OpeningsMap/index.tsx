@@ -391,7 +391,13 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
-          key={selectedForestCoverIds?.join(",")}
+          key={
+            isForestCoverMap
+              ? selectedForestCoverIds?.join(",")
+              : isActivitiesMap
+                ? [...(selectedDisturbanceIds ?? []), ...(selectedSilvicultureActivityIds ?? [])].join(",")
+                : undefined
+          }
           polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}
