@@ -22,9 +22,12 @@ describe('OpeningsMapEntryPopup', () => {
       />
     );
     expect(screen.getByText('Opening ID: 456')).toBeInTheDocument();
-    expect(screen.getByText('Region: Cariboo')).toBeInTheDocument();
-    expect(screen.getByText('District: Williams Lake')).toBeInTheDocument();
-    expect(screen.getByText('Year created: 2020')).toBeInTheDocument();
+    expect(screen.getByText('Region:')).toBeInTheDocument();
+    expect(screen.getByText('Cariboo')).toBeInTheDocument();
+    expect(screen.getByText('District:')).toBeInTheDocument();
+    expect(screen.getByText('Williams Lake')).toBeInTheDocument();
+    expect(screen.getByText('Year created:')).toBeInTheDocument();
+    expect(screen.getByText('2020')).toBeInTheDocument();
   });
 
   it('renders WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW header and content', () => {
