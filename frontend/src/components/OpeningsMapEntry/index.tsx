@@ -142,6 +142,9 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
         const bounds = geoJsonLayer.getBounds();
         const mapBounds = map.getBounds();
 
+        // This condition checks if the current zoom level is outside the preferred range (between 15 and 16 inclusive)
+        // or if the polygon's bounds are not fully visible within the current map view.
+        // If either is true, the map view will animate to fit the polygon's bounds.
         if ((currentZoom <= 14 || currentZoom >= 17) || !mapBounds.contains(bounds)) {
           map.flyToBounds(bounds, { maxZoom: 16, animate: true, duration: 0.5 });
         }
