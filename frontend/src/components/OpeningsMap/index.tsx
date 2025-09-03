@@ -13,7 +13,6 @@ import { getPropertyForFeature, MapKindType, MapLayer } from "@/types/MapLayer";
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
-import OpeningsMapFullScreen from "@/components/OpeningsMapFullScreen";
 import OpeningsMapEntryPopup from "../OpeningsMapEntryPopup";
 
 import { allLayers } from "./constants";
@@ -29,10 +28,13 @@ interface MapProps {
   kind?: MapKindType[];
   isDetailsPage?: boolean;
   isForestCoverMap?: boolean;
-  availableForestCoverIds?: string[];
+  isActivitiesMap?: boolean;
   setAvailableForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds?: string[];
-  setSelectedForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  setAvailableSilvicultureActivityIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSilvicultureActivityIds?: string[];
+  setAvailableDisturbanceIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedDisturbanceIds?: string[];
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -43,10 +45,13 @@ const OpeningsMap: React.FC<MapProps> = ({
   kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
   isDetailsPage = false,
   isForestCoverMap = false,
-  availableForestCoverIds,
+  isActivitiesMap = false,
   setAvailableForestCoverIds,
   selectedForestCoverIds,
-  setSelectedForestCoverIds
+  setAvailableSilvicultureActivityIds,
+  selectedSilvicultureActivityIds,
+  setAvailableDisturbanceIds,
+  selectedDisturbanceIds,
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [openings, setOpenings] = useState<FeatureCollection[]>([]);
@@ -66,20 +71,44 @@ const OpeningsMap: React.FC<MapProps> = ({
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
 
   const polygonsToRender = React.useMemo(() => {
-    if (!isForestCoverMap) return openings;
-    const selectedSet = new Set(selectedForestCoverIds);
-    return openings.map(fc => ({
-      ...fc,
-      features: fc.features.filter(
-        feature =>
-          feature.properties?.FOREST_COVER_ID &&
-          feature.properties?.SILV_POLYGON_NUMBER &&
-          selectedSet.has(
-            `${feature.properties.FOREST_COVER_ID}-${feature.properties.SILV_POLYGON_NUMBER}`
-          )
-      ),
-    }));
-  }, [isForestCoverMap, selectedForestCoverIds, openings]);
+    // if (!isForestCoverMap && !isActivitiesMap) return openings;
+    if (isForestCoverMap) {
+      const selectedSet = new Set(selectedForestCoverIds);
+      return openings.map(fc => ({
+        ...fc,
+        features: fc.features.filter(
+          feature =>
+            feature.properties?.FOREST_COVER_ID &&
+            feature.properties?.SILV_POLYGON_NUMBER &&
+            selectedSet.has(
+              `${feature.properties.FOREST_COVER_ID}-${feature.properties.SILV_POLYGON_NUMBER}`
+            )
+        ),
+      }));
+    } else if (isActivitiesMap && selectedDisturbanceIds && selectedSilvicultureActivityIds) {
+      const selectedSet = new Set([...selectedDisturbanceIds, ...selectedSilvicultureActivityIds]);
+      return openings.map(fc => ({
+        ...fc,
+        features: fc.features.filter(
+          feature =>
+            feature.properties?.ACTIVITY_TREATMENT_UNIT_ID &&
+            feature.properties?.SILV_BASE_CODE &&
+            selectedSet.has(
+              `${feature.properties.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties.SILV_BASE_CODE}`
+            )
+        ),
+      }));
+    } else {
+      return openings;
+    }
+  }, [
+    isForestCoverMap,
+    isActivitiesMap,
+    selectedForestCoverIds,
+    selectedSilvicultureActivityIds,
+    selectedDisturbanceIds,
+    openings
+  ]);
 
   /**
    * This function is used to fetch the map queries based on the selected opening IDs
@@ -154,6 +183,28 @@ const OpeningsMap: React.FC<MapProps> = ({
         if (setAvailableForestCoverIds) {
           setAvailableForestCoverIds(forestCoverIds);
         }
+      }
+      else if (isActivitiesMap) {
+        const { activityIds, disturbanceIds } = mapQueries
+          .flatMap((query) => (query.data as FeatureCollection).features)
+          .filter((feature) => feature.geometry &&
+            feature.properties!.ACTIVITY_TREATMENT_UNIT_ID &&
+            feature.properties!.SILV_BASE_CODE)
+          .reduce(
+            (acc, feature) => {
+              const id = `${feature.properties!.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties!.SILV_BASE_CODE}`;
+              if (feature.properties!.SILV_BASE_CODE === "DN") {
+                acc.disturbanceIds.push(id);
+              } else {
+                acc.activityIds.push(id);
+              }
+              return acc;
+            },
+            { activityIds: [] as string[], disturbanceIds: [] as string[] }
+          );
+
+        if (setAvailableDisturbanceIds) setAvailableDisturbanceIds(disturbanceIds);
+        if (setAvailableSilvicultureActivityIds) setAvailableSilvicultureActivityIds(activityIds);
       }
     } else {
       // Check if there are any errors and extract their IDs
@@ -238,10 +289,50 @@ const OpeningsMap: React.FC<MapProps> = ({
         </div>
       )}
 
+      {isForestCoverMap && selectedForestCoverIds && selectedForestCoverIds?.length > 0 && (
+        <div className="opening-map-selected-message">
+          Showing selected forest cover polygons
+        </div>
+      )}
+
+      {isActivitiesMap && (
+        (() => {
+          const silvCount = selectedSilvicultureActivityIds?.length ?? 0;
+          const disturbanceCount = selectedDisturbanceIds?.length ?? 0;
+          if (silvCount === 0 && disturbanceCount === 0) {
+            return (
+              <div className="opening-map-empty-message">
+                No activities or disturbances are selected and displayed. Select from the table to show on map.
+              </div>
+            );
+          }
+          if (silvCount > 0 && disturbanceCount === 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected activities
+              </div>
+            );
+          }
+          if (silvCount === 0 && disturbanceCount > 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected disturbances
+              </div>
+            );
+          }
+          if (silvCount > 0 && disturbanceCount > 0) {
+            return (
+              <div className="opening-map-selected-message">
+                Showing selected activities and disturbances
+              </div>
+            );
+          }
+          return null;
+        })()
+      )}
+
       {selectedFeature || hoveredFeature ? (
-        <div className={`map-popup-top-left${selectedFeature &&
-          (hoveredFeature && selectedFeature.id === hoveredFeature.id) ||
-          (!hoveredFeature) ? " pinned" : ""}`}
+        <div className="map-popup-top-left"
           onMouseEnter={() => setIsPopupHovered(true)}
           onMouseLeave={() => {
             setIsPopupHovered(false);
@@ -279,6 +370,7 @@ const OpeningsMap: React.FC<MapProps> = ({
         zoom={zoomLevel}
         style={{ height: "100%", minHeight: "100%" }}
         zoomControl={false}
+        scrollWheelZoom={false}
       >
         <MapClickHandler
           onMapClick={() => {
@@ -299,7 +391,13 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
-          key={selectedForestCoverIds?.join(",")}
+          key={
+            isForestCoverMap
+              ? selectedForestCoverIds?.join(",")
+              : isActivitiesMap
+                ? [...(selectedDisturbanceIds ?? []), ...(selectedSilvicultureActivityIds ?? [])].join(",")
+                : undefined
+          }
           polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}

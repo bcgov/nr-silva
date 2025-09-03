@@ -105,16 +105,18 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Activity Treatment Units',
     style: {
       ...defaultStyle,
-      color: 'purple',
-      fillColor: '#9013FE', // A vibrant purple
+      color: 'orange',
+      fillColor: '#FFBC99', // A vibrant orange
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
-        'Polygon type': 'Activity',
-        'Activity Id': properties?.ACTIVITY_TREATMENT_UNIT_ID,
-        'Silviculture base code': properties?.SILV_BASE_CODE,
-        'Map Label': properties?.MAP_LABEL
+        'polygonType': 'Activity and Disturbance',
+        'activityId': properties?.ACTIVITY_TREATMENT_UNIT_ID,
+        'silvBaseCode': properties?.SILV_BASE_CODE,
+        'disturbanceCode': properties?.DISTURBANCE_CODE,
+        'area': properties?.ACTUAL_TREATMENT_AREA,
+        'endDate': properties?.ATU_COMPLETION_DATE
       }
     }
   },
@@ -168,7 +170,6 @@ export const mapKinds: LayerConfiguration[] = [
         'polygon': properties?.SILV_POLYGON_NUMBER,
         'polygonArea': properties?.SILV_POLYGON_AREA,
         'netArea': properties?.SILV_POLYGON_NET_AREA,
-        'nonMappedArea': properties?.SILV_NON_MAPPED_AREA,
         'referenceYear': properties?.REFERENCE_YEAR
       }
     }
@@ -178,8 +179,8 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Planting',
     style: {
       ...defaultStyle,
-      color: 'cyan',
-      fillColor: '#50E3C2', // A vibrant cyan
+      color: 'orange',
+      fillColor: '#FFBC99', // A vibrant orange
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
@@ -225,6 +226,39 @@ export const getStyleForFeature = (
 ): PathOptions => {
   if (!feature?.id) return defaultStyle;
 
+  const isSelected = selectedFeature && feature.id === selectedFeature.id;
+  const isHovered = hoveredFeature && feature.id === hoveredFeature.id;
+  const showOutline = (isSelected && !hoveredFeature) || isHovered;
+  const hoveredOrSelectedColor = "#000000";
+  const defaultWeight = 1;
+
+  // Activity Treatment: DN (Disturbance)
+  if (
+    feature.properties?.SILV_BASE_CODE &&
+    feature.properties?.ACTIVITY_TREATMENT_UNIT_ID &&
+    feature.properties?.SILV_BASE_CODE === "DN"
+  ) {
+    return {
+      ...defaultStyle,
+      color: showOutline ? hoveredOrSelectedColor : outlineColorMap.grey,
+      fillColor: colorMap.grey![0],
+      weight: showOutline ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
+    };
+  }
+
+  // Activity Treatment: Non-DN (Activity)
+  if (
+    feature.properties?.SILV_BASE_CODE &&
+    feature.properties?.ACTIVITY_TREATMENT_UNIT_ID
+  ) {
+    return {
+      ...defaultStyle,
+      color: showOutline ? hoveredOrSelectedColor : outlineColorMap.orange,
+      fillColor: colorMap.orange![0],
+      weight: showOutline ? kindWeightMap['WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'] : defaultWeight,
+    };
+  }
+
   const kindEntry = mapKinds.find(
     (kind) => kind.code !== null && String(feature.id).startsWith(kind.code)
   );
@@ -235,13 +269,13 @@ export const getStyleForFeature = (
   const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
 
   // Highlight if selected or hovered
-  if ((selectedFeature && feature.id === selectedFeature.id) || (hoveredFeature && feature.id === hoveredFeature.id)) {
+  if ((isSelected || isHovered)) {
     return {
       ...defaultStyle,
       ...kindEntry.style,
       fillColor,
-      color: "#000000",
-      weight: kindWeightMap[kindEntry.code as MapKindType] || 2,
+      color: showOutline ? hoveredOrSelectedColor : outlineColor,
+      weight: showOutline ? kindWeightMap[kindEntry.code as MapKindType] || 2 : defaultWeight,
     };
   }
 
@@ -249,7 +283,8 @@ export const getStyleForFeature = (
     ...defaultStyle,
     ...kindEntry.style,
     fillColor,
-    color: outlineColor
+    color: outlineColor,
+    weight: defaultWeight,
   };
 }
 
@@ -279,7 +314,7 @@ const colorMap: Record<string, string[]> = {
     '#54278f',
     '#3f007d'
   ],
-  orange: ['#FFB38E', '#FFCF9D', '#FFB26F', '#DE8F5F'],
+  orange: ['#FFBC99'],
   yellow: ['#FFF085', '#FCB454', '#FF9B17', '#F16767'],
   pink: [
     '#FFFBFD',
@@ -294,6 +329,7 @@ const colorMap: Record<string, string[]> = {
     '#510028'
   ],
   cyan: ['#F5F0BB', '#DBDFAA', '#B3C890', '#73A9AD'],
+  grey: ['#D2D2D4'],
   default: [defaultStyle.fillColor],
 }
 
@@ -307,15 +343,15 @@ const outlineColorMap: Record<string, string> = {
 };
 
 export const kindWeightMap: Record<MapKindType, number> = {
-  'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW': 2,
-  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW': 2,
-  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW': 2,
-  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW': 3,
   'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW': 3,
-  'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW': 2,
-  'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW': 2,
-  'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY': 2,
-  'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW': 2,
+  'WHSE_FOREST_VEGETATION.RSLT_PLANTING_SVW': 3,
+  'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW': 3,
+  'WHSE_FOREST_VEGETATION.VEG_COMP_LYR_R1_POLY': 3,
+  'WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW': 3,
 };
 
 export const getPropertyForFeature = (feature: Feature<Geometry, GeoJsonProperties>): Record<string, any> => {

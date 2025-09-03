@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.common.service;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,10 +61,20 @@ public class OpenMapsService {
   }
 
   private String getPropertyName(String kind) {
-    if ("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW".equals(kind)) {
-      return "OPENING_ID,GEOMETRY,HARVEST_AUTH_CUTTING_PERMIT_ID";
-    } else {
+    if (kind == null || kind.isEmpty()) {
       return "OPENING_ID,GEOMETRY";
+    }
+
+    Set<String> kindsSet = new HashSet<>(Arrays.asList(kind.split(",")));
+    String propertyName = "OPENING_ID,GEOMETRY";
+
+    if (kindsSet.size() == 1 && kindsSet.contains("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW")) {
+      return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
+    } else if (kindsSet.size() == 1 &&
+        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
+      return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
+    } else {
+      return propertyName;
     }
   }
 }
