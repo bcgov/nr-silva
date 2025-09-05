@@ -8,8 +8,8 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
@@ -66,10 +66,10 @@ public class OpeningEndpoint {
    * Get the history of Standard Stocking Unit (SSU) for a given Opening ID.
    *
    * @param openingId Opening ID
-   * @return List of {@link OpeningStandardUnitHistoryOverviewDto} containing SSU history.
+   * @return List of {@link OpeningStockingHistoryOverviewDto} containing SSU history.
    */
   @GetMapping("/{openingId}/ssu/history")
-  public List<OpeningStandardUnitHistoryOverviewDto> getOpeningSsuHistory(
+  public List<OpeningStockingHistoryOverviewDto> getOpeningSsuHistory(
       @PathVariable Long openingId) {
     return openingService.getOpeningStandardUnitOverviewHistoryList(openingId);
   }
@@ -79,13 +79,13 @@ public class OpeningEndpoint {
    *
    * @param openingId Opening ID
    * @param historyId History ID of the SSU
-   * @return List of {@link OpeningStandardUnitHistoryDto} containing detailed information about the
+   * @return List of {@link OpeningStockingHistoryWithComparisonDto} containing detailed information about the
    *     SSU history entry.
    */
   @GetMapping("/{openingId}/ssu/history/{historyId}")
-  public List<OpeningStandardUnitHistoryDto> getOpeningSsuHistoryDetails(
+  public List<OpeningStockingHistoryWithComparisonDto> getOpeningSsuHistoryDetails(
       @PathVariable Long openingId, @PathVariable Long historyId) {
-    return openingService.getOpeningStandardUnitHistoryDetails(openingId, historyId);
+    return openingService.getOpeningStandardUnitHistoryDetailsWithComparison(openingId, historyId);
   }
 
   @GetMapping("/{openingId}/disturbances")

@@ -7,7 +7,7 @@ import lombok.With;
 import java.time.LocalDateTime;
 
 @With
-public record OpeningStandardUnitHistoryOverviewDto(
+public record OpeningStockingHistoryOverviewDto(
     @Schema(types = {"number"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Long stockingEventHistoryId,
 

@@ -4,10 +4,10 @@ import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerSpeciesDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.*;
 
 import java.util.List;
@@ -68,24 +68,23 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
   List<OpeningStockingNotificationProjection> getOpeningStockingNotificationsByOpeningId(Long openingId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_LIST)
-  List<OpeningStandardUnitHistoryProjection> getOpeningStandardUnitHistoryByOpeningId(Long openingId);
+  List<OpeningStockingHistoryProjection> getOpeningStandardUnitHistoryByOpeningId(Long openingId);
 
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST)
-  List<OpeningStandardUnitHistoryDetailsProjection> getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_WITH_COMPARISON_LIST)
+  List<OpeningStockingHistoryDetailsWithComparisonProjection> getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
       Long openingId,
       Long historyId
   );
 
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS)
-  List<OpeningStandardUnitHistoryLayerDetailsProjection> getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS_WITH_COMPARISON)
+  List<OpeningStockingHistoryLayerWithComparisonProjection> getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
       Long openingId,
       Long historyId
   );
 
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES)
-  List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES_WITH_COMPARISON)
+  List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
       Long openingId,
       Long historyId
   );
-
 }

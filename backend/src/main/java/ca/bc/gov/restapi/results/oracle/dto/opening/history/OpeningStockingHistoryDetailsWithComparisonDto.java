@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 
 @With
-public record OpeningStandardUnitHistoryDetailsDto(
+public record OpeningStockingHistoryDetailsWithComparisonDto(
     @Schema(types = {"number"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Long stockingStandardUnitId,
 

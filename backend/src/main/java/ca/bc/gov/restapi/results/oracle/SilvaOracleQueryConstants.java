@@ -979,7 +979,7 @@ public class SilvaOracleQueryConstants {
       ORDER BY MAX(seh.AMEND_EVENT_TIMESTAMP) DESC
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LIST =
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_WITH_COMPARISON_LIST =
       """
       WITH ordered_seh AS (
         SELECT
@@ -1078,7 +1078,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN previous_ec prev_ec ON prev_ec.STOCKING_STANDARD_UNIT_ID = a.STOCKING_STANDARD_UNIT_ID
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS =
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS_WITH_COMPARISON =
       """
       WITH ordered_seh AS (
         SELECT
@@ -1145,7 +1145,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN STOCKING_LAYER_CODE slcp ON p.STOCKING_LAYER_CODE = slcp.STOCKING_LAYER_CODE
       """;
 
-  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES =
+  public static final String GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES_WITH_COMPARISON =
       """
       WITH ordered_seh AS (
           SELECT

@@ -1,11 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerSpeciesDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +38,7 @@ public class OpeningStandardUnitHistoryServiceTest {
 
     @Test
     @DisplayName("getStandardUnitHistoryDetails returns empty list when no details are found")
-    void getStandardUnitHistoryDetails_noDetails_shouldReturnEmptyList() {
+    void getStandardUnitHistoryDetails_noDetails_WithComparison_shouldReturnEmptyList() {
         // Given
         Long openingId = 1L;
         Long stockingEventHistoryId = 101L;
@@ -47,8 +47,8 @@ public class OpeningStandardUnitHistoryServiceTest {
                 openingId, stockingEventHistoryId)).thenReturn(List.of());
 
         // When
-        List<OpeningStandardUnitHistoryDto> result =
-                openingStandardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+        List<OpeningStockingHistoryWithComparisonDto> result =
+                openingStandardUnitHistoryService.getStandardUnitHistoryDetailsWithComparison(openingId, stockingEventHistoryId);
 
         // Then
         Assertions.assertNotNull(result);
@@ -69,7 +69,7 @@ public class OpeningStandardUnitHistoryServiceTest {
         Long openingId = 1L;
 
         // Create mock projections
-        OpeningStandardUnitHistoryProjection amendedProjection = mock(OpeningStandardUnitHistoryProjection.class);
+        OpeningStockingHistoryProjection amendedProjection = mock(OpeningStockingHistoryProjection.class);
         when(amendedProjection.getStockingEventHistoryId()).thenReturn(2L);
         when(amendedProjection.getAmendmentNumber()).thenReturn(1);
         when(amendedProjection.getEventTimestamp()).thenReturn(LocalDateTime.of(2025, 7, 3, 11, 50));
@@ -81,7 +81,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(amendedProjection.getSubmittedByUserId()).thenReturn("IDIR\\TEST");
         when(amendedProjection.getApprovedByUserId()).thenReturn("IDIR\\TEST");
 
-        OpeningStandardUnitHistoryProjection correctionProjection = mock(OpeningStandardUnitHistoryProjection.class);
+        OpeningStockingHistoryProjection
+            correctionProjection = mock(OpeningStockingHistoryProjection.class);
         when(correctionProjection.getStockingEventHistoryId()).thenReturn(1L);
         when(correctionProjection.getAmendmentNumber()).thenReturn(null);
         when(correctionProjection.getEventTimestamp()).thenReturn(LocalDateTime.of(2025, 7, 3, 11, 25));
@@ -97,14 +98,14 @@ public class OpeningStandardUnitHistoryServiceTest {
                 .thenReturn(List.of(amendedProjection, correctionProjection));
 
         // When
-        List<OpeningStandardUnitHistoryOverviewDto> result =
+        List<OpeningStockingHistoryOverviewDto> result =
                 openingStandardUnitHistoryService.getStandardUnitOverviewHistoryList(openingId);
 
         // Then
         Assertions.assertEquals(2, result.size());
 
         // Verify Amended projection (first in result)
-        OpeningStandardUnitHistoryOverviewDto amendedDto = result.get(0);
+        OpeningStockingHistoryOverviewDto amendedDto = result.get(0);
         Assertions.assertEquals(2L, amendedDto.stockingEventHistoryId());
         Assertions.assertEquals(1, amendedDto.amendmentNumber());
         Assertions.assertTrue(amendedDto.eventTimestamp().isAfter(LocalDateTime.of(2025, 7, 3, 11, 45)));
@@ -117,7 +118,7 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals("IDIR\\TEST", amendedDto.approvedByUserId());
 
         // Verify Correction projection (second in result)
-        OpeningStandardUnitHistoryOverviewDto correctionDto = result.get(1);
+        OpeningStockingHistoryOverviewDto correctionDto = result.get(1);
         Assertions.assertEquals(1L, correctionDto.stockingEventHistoryId());
         Assertions.assertNull(correctionDto.amendmentNumber());
         Assertions.assertTrue(correctionDto.eventTimestamp().isBefore(LocalDateTime.of(2025, 7, 3, 11, 30)));
@@ -134,7 +135,7 @@ public class OpeningStandardUnitHistoryServiceTest {
 
     @Test
     @DisplayName("getStandardUnitHistoryDetails returns details for creating new stocking standard unit layers")
-    void getStandardUnitHistoryDetails_creatingLayers_shouldReturnCorrectDetails() {
+    void getStandardUnitHistoryDetails_creatingLayers_shouldReturnCorrectDetailsWithComparison() {
         // Given
         Long openingId = 123L;
         Long stockingEventHistoryId = 1L;
@@ -142,7 +143,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Long stockingLayerId = 2193916L;
 
         // Create standard unit projection
-        OpeningStandardUnitHistoryDetailsProjection suDetailsProjection = mock(OpeningStandardUnitHistoryDetailsProjection.class);
+        OpeningStockingHistoryDetailsWithComparisonProjection
+            suDetailsProjection = mock(OpeningStockingHistoryDetailsWithComparisonProjection.class);
         when(suDetailsProjection.getStockingStandardUnitId()).thenReturn(stockingStandardUnitId);
         when(suDetailsProjection.getStandardsUnitId()).thenReturn("1");
         when(suDetailsProjection.getOldNetArea()).thenReturn(null);
@@ -173,7 +175,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(suDetailsProjection.getNewBecSiteSeries()).thenReturn("06");
 
         // Create layer projection
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         when(layerProjection.getSsuId()).thenReturn(stockingStandardUnitId);
         when(layerProjection.getOldLayerId()).thenReturn(null);
         when(layerProjection.getNewLayerId()).thenReturn(stockingLayerId);
@@ -193,7 +196,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection.getNewHeightRelativeToComp()).thenReturn(30);
 
         // Create species projection
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection
+            speciesProjection = mock(OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         when(speciesProjection.getNewStockingLayerId()).thenReturn(stockingLayerId);
         when(speciesProjection.getOldLayerCode()).thenReturn(null);
         when(speciesProjection.getNewLayerCode()).thenReturn("I");
@@ -214,8 +218,8 @@ public class OpeningStandardUnitHistoryServiceTest {
                 openingId, stockingEventHistoryId)).thenReturn(List.of(speciesProjection));
 
         // When
-        List<OpeningStandardUnitHistoryDto> result =
-                openingStandardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+        List<OpeningStockingHistoryWithComparisonDto> result =
+                openingStandardUnitHistoryService.getStandardUnitHistoryDetailsWithComparison(openingId, stockingEventHistoryId);
 
         // Then
         Assertions.assertEquals(1, result.size());
@@ -290,7 +294,7 @@ public class OpeningStandardUnitHistoryServiceTest {
 
     @Test
     @DisplayName("getStandardUnitHistoryDetails returns details for multi-layer conversion scenario")
-    void getStandardUnitHistoryDetails_multiLayerConversion_shouldReturnCorrectDetails() {
+    void getStandardUnitHistoryDetails_multiLayerConversion_shouldReturnCorrectDetailsWithComparison() {
         // Given
         Long openingId = 123L;
         Long stockingEventHistoryId = 1L;
@@ -303,7 +307,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Long newLayerId5 = 5L;
 
         // Create standard unit projections
-        OpeningStandardUnitHistoryDetailsProjection suDetailsProjection1 = mock(OpeningStandardUnitHistoryDetailsProjection.class);
+        OpeningStockingHistoryDetailsWithComparisonProjection
+            suDetailsProjection1 = mock(OpeningStockingHistoryDetailsWithComparisonProjection.class);
         //when(suDetailsProjection1.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(suDetailsProjection1.getStockingStandardUnitId()).thenReturn(standardUnitId1);
         when(suDetailsProjection1.getStandardsUnitId()).thenReturn("1");
@@ -328,7 +333,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(suDetailsProjection1.getOldBecSiteSeries()).thenReturn("03");
         when(suDetailsProjection1.getNewBecSiteSeries()).thenReturn("03");
 
-        OpeningStandardUnitHistoryDetailsProjection suDetailsProjection2 = mock(OpeningStandardUnitHistoryDetailsProjection.class);
+        OpeningStockingHistoryDetailsWithComparisonProjection
+            suDetailsProjection2 = mock(OpeningStockingHistoryDetailsWithComparisonProjection.class);
         //when(suDetailsProjection2.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(suDetailsProjection2.getStockingStandardUnitId()).thenReturn(standardUnitId2);
         when(suDetailsProjection2.getStandardsUnitId()).thenReturn("2");
@@ -359,7 +365,8 @@ public class OpeningStandardUnitHistoryServiceTest {
 
         // Create layer projections
         // SU1: Original layer converted to new layer code
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection1 = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection1 = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         //when(layerProjection1.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(layerProjection1.getSsuId()).thenReturn(standardUnitId1);
         when(layerProjection1.getOldLayerId()).thenReturn(originalLayerId1);
@@ -380,7 +387,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection1.getNewHeightRelativeToComp()).thenReturn(30);
 
         // SU2: Unchanged layer
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection2 = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection2 = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         //when(layerProjection2.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(layerProjection2.getSsuId()).thenReturn(standardUnitId2);
         when(layerProjection2.getOldLayerId()).thenReturn(originalLayerId2);
@@ -401,7 +409,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection2.getNewHeightRelativeToComp()).thenReturn(150);
 
         // SU1: New layer 1 - Mature
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection3 = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection3 = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         //when(layerProjection3.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(layerProjection3.getSsuId()).thenReturn(standardUnitId1);
         when(layerProjection3.getOldLayerId()).thenReturn(null);
@@ -413,7 +422,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection3.getNewResidualBasalArea()).thenReturn(20.0);
 
         // SU1: New layer 2 - Pole
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection4 = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection4 = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         //when(layerProjection4.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(layerProjection4.getSsuId()).thenReturn(standardUnitId1);
         when(layerProjection4.getOldLayerId()).thenReturn(null);
@@ -425,7 +435,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(layerProjection4.getNewResidualBasalArea()).thenReturn(15.0);
 
         // SU1: New layer 3 - Sapling
-        OpeningStandardUnitHistoryLayerDetailsProjection layerProjection5 = mock(OpeningStandardUnitHistoryLayerDetailsProjection.class);
+        OpeningStockingHistoryLayerWithComparisonProjection
+            layerProjection5 = mock(OpeningStockingHistoryLayerWithComparisonProjection.class);
         //when(layerProjection5.getStockingEventHistoryId()).thenReturn(stockingEventHistoryId);
         when(layerProjection5.getSsuId()).thenReturn(standardUnitId1);
         when(layerProjection5.getOldLayerId()).thenReturn(null);
@@ -440,7 +451,8 @@ public class OpeningStandardUnitHistoryServiceTest {
 
         // Create species projections
         // SU1: Layer 1 - Updated species
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection1 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection1 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection1.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection1.getOldStockingLayerId()).thenReturn(originalLayerId1);
         when(speciesProjection1.getNewStockingLayerId()).thenReturn(originalLayerId1);
@@ -455,7 +467,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection1.getOldMinHeight()).thenReturn(2.0);
         when(speciesProjection1.getNewMinHeight()).thenReturn(2.0);
 
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection2 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection2 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection2.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection2.getOldStockingLayerId()).thenReturn(originalLayerId1);
         when(speciesProjection2.getNewStockingLayerId()).thenReturn(originalLayerId1);
@@ -470,7 +483,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection2.getOldMinHeight()).thenReturn(1.5);
         when(speciesProjection2.getNewMinHeight()).thenReturn(1.5);
 
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection3 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection3 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection3.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection3.getOldStockingLayerId()).thenReturn(originalLayerId1);
         when(speciesProjection3.getNewStockingLayerId()).thenReturn(originalLayerId1);
@@ -486,7 +500,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection3.getNewMinHeight()).thenReturn(1.8);
 
         // SU1: New Layer 5 - New species
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection4 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection4 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection4.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection4.getOldStockingLayerId()).thenReturn(null);
         when(speciesProjection4.getNewStockingLayerId()).thenReturn(newLayerId5);
@@ -502,7 +517,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection4.getNewMinHeight()).thenReturn(null);
 
         // SU1: New Layer 4 - New species
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection5 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection5 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection5.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection5.getOldStockingLayerId()).thenReturn(null);
         when(speciesProjection5.getNewStockingLayerId()).thenReturn(newLayerId4);
@@ -518,7 +534,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection5.getNewMinHeight()).thenReturn(null);
 
         // SU1: New Layer 3 - New species
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection6 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection6 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection6.getSsuId()).thenReturn(standardUnitId1);
         //when(speciesProjection6.getOldStockingLayerId()).thenReturn(null);
         when(speciesProjection6.getNewStockingLayerId()).thenReturn(newLayerId3);
@@ -534,7 +551,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection6.getNewMinHeight()).thenReturn(null);
 
         // SU2: Unchanged species
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection7 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection7 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         //when(speciesProjection7.getSsuId()).thenReturn(standardUnitId2);
         //when(speciesProjection7.getOldStockingLayerId()).thenReturn(originalLayerId2);
         when(speciesProjection7.getNewStockingLayerId()).thenReturn(originalLayerId2);
@@ -549,7 +567,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection7.getOldMinHeight()).thenReturn(1.4);
         when(speciesProjection7.getNewMinHeight()).thenReturn(1.4);
 
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection8 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection8 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         // when(speciesProjection8.getSsuId()).thenReturn(standardUnitId2);
         // when(speciesProjection8.getOldStockingLayerId()).thenReturn(originalLayerId2);
         when(speciesProjection8.getNewStockingLayerId()).thenReturn(originalLayerId2);
@@ -564,7 +583,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection8.getOldMinHeight()).thenReturn(1.5);
         when(speciesProjection8.getNewMinHeight()).thenReturn(1.5);
 
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection9 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection9 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         // when(speciesProjection9.getSsuId()).thenReturn(standardUnitId2);
         // when(speciesProjection9.getOldStockingLayerId()).thenReturn(originalLayerId2);
         when(speciesProjection9.getNewStockingLayerId()).thenReturn(originalLayerId2);
@@ -579,7 +599,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection9.getOldMinHeight()).thenReturn(2.0);
         when(speciesProjection9.getNewMinHeight()).thenReturn(2.0);
 
-        OpeningStandardUnitHistoryLayerSpeciesDetailsProjection speciesProjection10 = mock(OpeningStandardUnitHistoryLayerSpeciesDetailsProjection.class);
+        OpeningStockingHistoryLayerSpeciesWithComaprisonProjection speciesProjection10 = mock(
+            OpeningStockingHistoryLayerSpeciesWithComaprisonProjection.class);
         // when(speciesProjection10.getSsuId()).thenReturn(standardUnitId2);
         // when(speciesProjection10.getOldStockingLayerId()).thenReturn(originalLayerId2);
         when(speciesProjection10.getNewStockingLayerId()).thenReturn(originalLayerId2);
@@ -607,8 +628,8 @@ public class OpeningStandardUnitHistoryServiceTest {
                 speciesProjection9, speciesProjection10));
 
         // When
-        List<OpeningStandardUnitHistoryDto> result =
-                openingStandardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+        List<OpeningStockingHistoryWithComparisonDto> result =
+                openingStandardUnitHistoryService.getStandardUnitHistoryDetailsWithComparison(openingId, stockingEventHistoryId);
 
         // Then
         Assertions.assertEquals(2, result.size());

@@ -2,10 +2,10 @@ package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryLayerSpeciesDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStandardUnitHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +21,8 @@ public class OpeningStandardUnitHistoryService {
 
     private final OpeningRepository openingRepository;
 
-    public List<OpeningStandardUnitHistoryOverviewDto> getStandardUnitOverviewHistoryList(Long openingId) {
-        List<OpeningStandardUnitHistoryProjection> projections = openingRepository
+    public List<OpeningStockingHistoryOverviewDto> getStandardUnitOverviewHistoryList(Long openingId) {
+        List<OpeningStockingHistoryProjection> projections = openingRepository
                 .getOpeningStandardUnitHistoryByOpeningId(openingId);
 
         return projections
@@ -31,30 +31,30 @@ public class OpeningStandardUnitHistoryService {
                 .toList();
     }
 
-    public List<OpeningStandardUnitHistoryDto> getStandardUnitHistoryDetails(Long openingId, Long stockingEventHistoryId) {
-        List<OpeningStandardUnitHistoryDetailsProjection> suDetailProjections = openingRepository
+    public List<OpeningStockingHistoryWithComparisonDto> getStandardUnitHistoryDetailsWithComparison(Long openingId, Long stockingEventHistoryId) {
+        List<OpeningStockingHistoryDetailsWithComparisonProjection> suDetailProjections = openingRepository
                 .getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         if (suDetailProjections.isEmpty()) {
             return List.of();
         }
 
-        List<OpeningStandardUnitHistoryLayerDetailsProjection> layerDetailProjections = openingRepository
+        List<OpeningStockingHistoryLayerWithComparisonProjection> layerDetailProjections = openingRepository
                 .getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
-        List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> layerSpeciesProjections = openingRepository
+        List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> layerSpeciesProjections = openingRepository
                 .getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         return suDetailProjections
                 .stream()
-                .map(addDetails())
-                .map(addLayers(layerDetailProjections, layerSpeciesProjections))
+                .map(addDetailsWithComparison())
+                .map(addLayersWithComparison(layerDetailProjections, layerSpeciesProjections))
                 .toList();
 
     }
 
-    private Function<OpeningStandardUnitHistoryProjection, OpeningStandardUnitHistoryOverviewDto> toOverviewDto() {
-        return projection -> new OpeningStandardUnitHistoryOverviewDto(
+    private Function<OpeningStockingHistoryProjection, OpeningStockingHistoryOverviewDto> toOverviewDto() {
+        return projection -> new OpeningStockingHistoryOverviewDto(
                 projection.getStockingEventHistoryId(),
                 projection.getAmendmentNumber(),
                 projection.getEventTimestamp(),
@@ -70,9 +70,10 @@ public class OpeningStandardUnitHistoryService {
         );
     }
 
-    private Function<OpeningStandardUnitHistoryDetailsProjection, OpeningStandardUnitHistoryDto> addDetails() {
+    private Function<OpeningStockingHistoryDetailsWithComparisonProjection, OpeningStockingHistoryWithComparisonDto> addDetailsWithComparison() {
         return projection -> {
-            OpeningStandardUnitHistoryDetailsDto detailsDto = new OpeningStandardUnitHistoryDetailsDto(
+            OpeningStockingHistoryDetailsWithComparisonDto
+                detailsDto = new OpeningStockingHistoryDetailsWithComparisonDto(
                     projection.getStockingStandardUnitId(),
                     projection.getStandardsUnitId(),
                     projection.getOldRegimeId(),
@@ -111,30 +112,31 @@ public class OpeningStandardUnitHistoryService {
                     projection.getNewBecSeral()
             );
 
-            return new OpeningStandardUnitHistoryDto(
+            return new OpeningStockingHistoryWithComparisonDto(
                     detailsDto,
                     List.of()
             );
         };
     }
 
-    private Function<OpeningStandardUnitHistoryDto, OpeningStandardUnitHistoryDto> addLayers(
-            List<OpeningStandardUnitHistoryLayerDetailsProjection> allLayers,
-            List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> allSpecies
+    private Function<OpeningStockingHistoryWithComparisonDto, OpeningStockingHistoryWithComparisonDto> addLayersWithComparison(
+            List<OpeningStockingHistoryLayerWithComparisonProjection> allLayers,
+            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies
     ) {
         return dto -> dto.withLayers(
                 allLayers.stream()
                         .filter(layer -> layer.getSsuId().equals(dto.standardUnit().stockingStandardUnitId()))
-                        .map(createLayerDto(allSpecies))
+                        .map(createLayerWithComparisonDto(allSpecies))
                         .toList()
         );
     }
 
-    private Function<OpeningStandardUnitHistoryLayerDetailsProjection, OpeningStandardUnitHistoryLayerDetailsDto> createLayerDto(
-            List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> allSpecies
+    private Function<OpeningStockingHistoryLayerWithComparisonProjection, OpeningStockingHistoryLayerWithComparisonDto> createLayerWithComparisonDto(
+            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies
     ) {
         return layer -> {
-            OpeningStandardUnitHistoryLayerDetailsDto layerDto = new OpeningStandardUnitHistoryLayerDetailsDto(
+            OpeningStockingHistoryLayerWithComparisonDto
+                layerDto = new OpeningStockingHistoryLayerWithComparisonDto(
                     layer.getOldLayerId(),
                     layer.getNewLayerId(),
                     new CodeDescriptionDto(
@@ -168,20 +170,22 @@ public class OpeningStandardUnitHistoryService {
             );
 
             return layerDto
-                    .withPreferredSpecies(createSpeciesList(layer.getNewLayerId(), true, allSpecies))
-                    .withAcceptableSpecies(createSpeciesList(layer.getNewLayerId(), false, allSpecies));
+                    .withPreferredSpecies(
+                        createSpeciesWithComparisonList(layer.getNewLayerId(), true, allSpecies))
+                    .withAcceptableSpecies(
+                        createSpeciesWithComparisonList(layer.getNewLayerId(), false, allSpecies));
         };
     }
 
-    private List<OpeningStandardUnitHistorySpeciesDetailsDto> createSpeciesList(
+    private List<OpeningStockingHistorySpeciesWithComparisonDto> createSpeciesWithComparisonList(
             Long stockingLayerId,
             Boolean isPreferred,
-            List<OpeningStandardUnitHistoryLayerSpeciesDetailsProjection> allSpecies) {
+            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies) {
         return allSpecies
                 .stream()
                 .filter(species ->
                         stockingLayerId.equals(species.getNewStockingLayerId()) && isPreferred.equals(species.getNewPreferredInd()))
-                .map(species -> new OpeningStandardUnitHistorySpeciesDetailsDto(
+                .map(species -> new OpeningStockingHistorySpeciesWithComparisonDto(
                         species.getOldLayerCode(),
                         species.getNewLayerCode(),
                         new CodeDescriptionDto(
