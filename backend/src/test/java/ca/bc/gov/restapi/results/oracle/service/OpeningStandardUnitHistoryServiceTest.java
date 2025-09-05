@@ -43,7 +43,7 @@ public class OpeningStandardUnitHistoryServiceTest {
         Long openingId = 1L;
         Long stockingEventHistoryId = 101L;
 
-        when(openingRepository.getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of());
 
         // When
@@ -55,11 +55,11 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertTrue(result.isEmpty());
 
         verify(openingRepository, times(1))
-                .getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+                .getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
         verify(openingRepository, never())
-                .getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(any(), any());
+                .getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(any(), any());
         verify(openingRepository, never())
-                .getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(any(), any());
+                .getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(any(), any());
     }
 
     @Test
@@ -210,11 +210,11 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection.getNewMinHeight()).thenReturn(1.5);
 
         // Setup repository mocks
-        when(openingRepository.getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(suDetailsProjection));
-        when(openingRepository.getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(layerProjection));
-        when(openingRepository.getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(speciesProjection));
 
         // When
@@ -284,11 +284,11 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals(1.5, species.newMinHeight());
 
         // Verify repository calls
-        verify(openingRepository).getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
-        verify(openingRepository).getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
-        verify(openingRepository).getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
     }
 
@@ -616,12 +616,12 @@ public class OpeningStandardUnitHistoryServiceTest {
         when(speciesProjection10.getNewMinHeight()).thenReturn(2.0);
 
         // Setup repository mocks
-        when(openingRepository.getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(suDetailsProjection1, suDetailsProjection2));
-        when(openingRepository.getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(
                 layerProjection1, layerProjection2, layerProjection3, layerProjection4, layerProjection5));
-        when(openingRepository.getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+        when(openingRepository.getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId)).thenReturn(List.of(
                 speciesProjection1, speciesProjection2, speciesProjection3, speciesProjection4,
                 speciesProjection5, speciesProjection6, speciesProjection7, speciesProjection8,
@@ -844,11 +844,11 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertEquals(1, layer2.acceptableSpecies().size());
 
         // Verify repository calls
-        verify(openingRepository).getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
-        verify(openingRepository).getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
-        verify(openingRepository).getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(
+        verify(openingRepository).getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
     }
 }

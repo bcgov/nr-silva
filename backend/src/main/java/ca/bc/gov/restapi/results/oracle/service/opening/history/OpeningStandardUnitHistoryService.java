@@ -33,17 +33,17 @@ public class OpeningStandardUnitHistoryService {
 
     public List<OpeningStockingHistoryWithComparisonDto> getStandardUnitHistoryDetailsWithComparison(Long openingId, Long stockingEventHistoryId) {
         List<OpeningStockingHistoryDetailsWithComparisonProjection> suDetailProjections = openingRepository
-                .getOpeningStandardUnitHistoryDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+                .getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         if (suDetailProjections.isEmpty()) {
             return List.of();
         }
 
         List<OpeningStockingHistoryLayerWithComparisonProjection> layerDetailProjections = openingRepository
-                .getOpeningStandardUnitHistoryLayerDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+                .getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> layerSpeciesProjections = openingRepository
-                .getOpeningStandardUnitHistoryLayerSpeciesDetailsByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+                .getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         return suDetailProjections
                 .stream()
