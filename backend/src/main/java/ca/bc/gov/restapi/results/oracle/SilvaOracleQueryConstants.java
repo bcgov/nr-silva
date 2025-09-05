@@ -1217,6 +1217,69 @@ public class SilvaOracleQueryConstants {
         AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
       """;
 
+  public static final String GET_OPENING_SS_ARCHIVE = """
+      SELECT
+          ssu.standards_unit_id AS stocking_standard_unit,
+          ssu.STOCKING_STANDARD_UNIT_ID AS ssuid,
+        ssu.STANDARDS_REGIME_ID as srid,
+          CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
+          CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
+          fsp.fsp_id,
+          ssu.net_area,
+          ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
+          se.BGC_ZONE_CODE AS bec_zone_code,
+          se.BGC_SUBZONE_CODE AS bec_subzone_code,
+          se.BGC_VARIANT AS bec_variant,
+          se.BGC_PHASE AS bec_phase,
+          se.BEC_SITE_SERIES AS bec_site_series,
+          se.BEC_SITE_TYPE AS bec_site_type,
+          se.BEC_SERAL AS bec_seral,
+          ssu.REGEN_DELAY_OFFSET_YRS AS regen_delay,
+          ssu.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
+          ssu.FREE_GROWING_EARLY_OFFSET_YRS AS free_growing_early,
+          sr.ADDITIONAL_STANDARDS,
+          ssu.AMENDMENT_RATIONALE_COMMENT AS amendment_comment
+      FROM STOCKING_STANDARD_UNIT_ARCHIVE ssu
+      LEFT JOIN STOCKING_ECOLOGY_ARCHIVE se ON (se.OPENING_ID = ssu.OPENING_ID AND se.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND se.STOCKING_EVENT_HISTORY_ID = ssu.STOCKING_EVENT_HISTORY_ID)
+      LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
+      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
+      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
+      WHERE ssu.OPENING_ID = :openingId
+      AND ssu.STOCKING_EVENT_HISTORY_ID = :eventHistoryId
+      ORDER BY ssu.standards_unit_id
+      """;
+
+  public static final String GET_OPENING_SS_SPECIES_ARCHIVE = """
+      SELECT
+        sl.STOCKING_LAYER_CODE as layer_code,
+          sls.SILV_TREE_SPECIES_CODE AS species_code,
+          stsc.DESCRIPTION AS species_name,
+          sls.MIN_HEIGHT AS min_height
+      FROM STOCKING_LAYER_ARCHIVE sl
+      LEFT JOIN STOCKING_LAYER_SPECIES_ARCHIVE sls ON (sls.STOCKING_LAYER_ID = sl.STOCKING_LAYER_ID)
+      LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON (stsc.SILV_TREE_SPECIES_CODE = sls.SILV_TREE_SPECIES_CODE)
+      WHERE sl.OPENING_ID = :openingId AND sls.PREFERRED_IND = :preferred AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId AND sl.STOCKING_EVENT_HISTORY_ID = :eventHistoryId
+      ORDER BY sls.SPECIES_ORDER
+      """;
+
+  public static final String GET_OPENING_SS_LAYER_ARCHIVE = """
+      SELECT
+        sl.STOCKING_LAYER_CODE AS layer_code,
+        slc.DESCRIPTION AS layer_name,
+        sl.MIN_STOCKING_STANDARD AS min_wellspaced_trees,
+        sl.MIN_PREF_STOCKING_STANDARD AS min_preferred_wellspaced_trees,
+        sl.MIN_HORIZONTAL_DISTANCE AS min_horizontal_distance_wellspaced_trees,
+        sl.TARGET_STOCKING AS target_wellspaced_trees,
+        sl.RESIDUAL_BASAL_AREA AS min_residual_basal_area,
+        sl.MIN_POST_SPACING AS min_postspacing_density,
+        sl.MAX_POST_SPACING AS max_postspacing_density,
+        sl.MAX_CONIFER AS max_coniferous,
+        sl.HGHT_RELATIVE_TO_COMP AS height_relative_to_comp
+      FROM STOCKING_LAYER_ARCHIVE sl
+      LEFT JOIN STOCKING_LAYER_CODE slc ON sl.STOCKING_LAYER_CODE = slc.STOCKING_LAYER_CODE
+      WHERE sl.OPENING_ID = :openingId AND sl.STOCKING_STANDARD_UNIT_ID = :ssuId AND sl.STOCKING_EVENT_HISTORY_ID = :eventHistoryId
+      """;
+
   public static final String GET_OPENING_FOREST_COVER_HISTORY_OVERVIEW_LIST =
       """
       WITH fca_deduped AS (
