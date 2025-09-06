@@ -62,6 +62,10 @@ const OpeningDetails = () => {
 
   const [availableForestCoverIds, setAvailableForestCoverIds] = useState<string[]>([]);
   const [selectedForestCoverIds, setSelectedForestCoverIds] = useState<string[]>([]);
+  const [availableSilvicultureActivityIds, setAvailableSilvicultureActivityIds] = useState<string[]>([]);
+  const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
+  const [availableDisturbanceIds, setAvailableDisturbanceIds] = useState<string[]>([]);
+  const [selectedDisturbanceIds, setSelectedDisturbanceIds] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = `Opening ${openingId} - Silva`;
@@ -150,10 +154,12 @@ const OpeningDetails = () => {
           tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
           isLoading={openingDetailsTombstoneQuery.isLoading}
           currentTab={activeTab}
-          availableForestCoverIds={availableForestCoverIds}
           setAvailableForestCoverIds={setAvailableForestCoverIds}
           selectedForestCoverIds={selectedForestCoverIds}
-          setSelectedForestCoverIds={setSelectedForestCoverIds}
+          setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
+          selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+          setAvailableDisturbanceIds={setAvailableDisturbanceIds}
+          selectedDisturbanceIds={selectedDisturbanceIds}
         />
       </Column>
 
@@ -215,7 +221,15 @@ const OpeningDetails = () => {
             <TabPanel className="tab-content full-width-col">
               {isActive(3) ? (
                 <Suspense fallback={<AccordionSkeleton />}>
-                  <OpeningActivities openingId={Number(openingId)} />
+                  <OpeningActivities
+                    openingId={Number(openingId)}
+                    availableSilvicultureActivityIds={availableSilvicultureActivityIds}
+                    selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                    setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                    availableDisturbanceIds={availableDisturbanceIds}
+                    selectedDisturbanceIds={selectedDisturbanceIds}
+                    setSelectedDisturbanceIds={setSelectedDisturbanceIds}
+                  />
                 </Suspense>
               ) : null}
             </TabPanel>

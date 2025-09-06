@@ -279,13 +279,18 @@ const OpeningForestCover = ({
                       <TableHeader key="map-header">
                         <div className="map-header-checkbox-container">
                           <Tooltip
-                            label={allSelected ? "Unselect all" : "Select all"}
+                            label={
+                              availableForestCoverIds.length > 0 ?
+                                allSelected ? "Unselect all" : "Select all"
+                                : "No polygon is available"
+                            }
                             align="right"
                             className="forest-cover-map-tooltip"
                           >
                             <span>
                               <Checkbox
                                 id="forest-cover-select-all"
+                                data-testid="forest-cover-map-select-all"
                                 checked={allSelected}
                                 indeterminate={!allSelected && someSelected}
                                 disabled={allAvailableIds.length === 0}

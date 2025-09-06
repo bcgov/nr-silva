@@ -14,9 +14,23 @@ import "./styles.scss";
 
 type OpeningActivitiesProps = {
   openingId: number;
+  availableSilvicultureActivityIds: string[];
+  selectedSilvicultureActivityIds: string[];
+  setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
+  availableDisturbanceIds: string[];
+  selectedDisturbanceIds: string[];
+  setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
+const OpeningActivities = ({
+  openingId,
+  availableSilvicultureActivityIds,
+  selectedSilvicultureActivityIds,
+  setSelectedSilvicultureActivityIds,
+  availableDisturbanceIds,
+  selectedDisturbanceIds,
+  setSelectedDisturbanceIds
+}: OpeningActivitiesProps) => {
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
@@ -37,7 +51,6 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
       );
     },
   });
-
 
   // Loading case
   if (disturbanceQuery.isLoading || activityQuery.isLoading) {
@@ -76,7 +89,12 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
         (disturbanceQuery.data?.content?.length ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <DisturbanceAccordion data={disturbanceQuery.data!.content!} />
+              <DisturbanceAccordion
+                data={disturbanceQuery.data!.content!}
+                availableDisturbanceIds={availableDisturbanceIds}
+                selectedDisturbanceIds={selectedDisturbanceIds}
+                setSelectedDisturbanceIds={setSelectedDisturbanceIds}
+              />
             </Column>
           )
           : null
@@ -89,6 +107,9 @@ const OpeningActivities = ({ openingId }: OpeningActivitiesProps) => {
               <ActivityAccordion
                 openingId={openingId}
                 totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
+                availableSilvicultureActivityIds={availableSilvicultureActivityIds}
+                selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
               />
             </Column>
           )
