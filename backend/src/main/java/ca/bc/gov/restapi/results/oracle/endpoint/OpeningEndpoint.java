@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
@@ -78,14 +79,14 @@ public class OpeningEndpoint {
    * Get the details of a specific Standard Stocking Unit (SSU) history entry.
    *
    * @param openingId Opening ID
-   * @param historyId History ID of the SSU
-   * @return List of {@link OpeningStockingHistoryWithComparisonDto} containing detailed information about the
+   * @param eventHistoryId History ID of the SSU
+   * @return List of {@link OpeningStockingHistoryDto} containing detailed information about the
    *     SSU history entry.
    */
-  @GetMapping("/{openingId}/ssu/history/{historyId}")
-  public List<OpeningStockingHistoryWithComparisonDto> getOpeningSsuHistoryDetails(
-      @PathVariable Long openingId, @PathVariable Long historyId) {
-    return openingService.getOpeningStandardUnitHistoryDetailsWithComparison(openingId, historyId);
+  @GetMapping("/{openingId}/ssu/history/{eventHistoryId}")
+  public List<OpeningStockingHistoryDto> getOpeningSsuHistoryDetails(
+      @PathVariable Long openingId, @PathVariable Long eventHistoryId) {
+    return openingService.getOpeningStockingHistoryDetails(openingId, eventHistoryId);
   }
 
   @GetMapping("/{openingId}/disturbances")
