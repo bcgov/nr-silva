@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.entity.opening.history;
 
 import java.time.LocalDateTime;
 
-public interface OpeningStandardUnitHistoryProjection {
+public interface OpeningStockingHistoryProjection {
     Long getStockingEventHistoryId();
     Integer getAmendmentNumber();
     LocalDateTime getEventTimestamp();

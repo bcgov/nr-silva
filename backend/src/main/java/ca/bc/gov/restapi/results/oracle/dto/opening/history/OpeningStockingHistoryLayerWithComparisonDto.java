@@ -7,7 +7,7 @@ import lombok.With;
 import java.util.List;
 
 @With
-public record OpeningStandardUnitHistoryLayerDetailsDto(
+public record OpeningStockingHistoryLayerWithComparisonDto(
     @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Long oldLayerId,
 
@@ -75,8 +75,8 @@ public record OpeningStandardUnitHistoryLayerDetailsDto(
     Integer newMaxPostSpacing,
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    List<OpeningStandardUnitHistorySpeciesDetailsDto> preferredSpecies,
+    List<OpeningStockingHistorySpeciesWithComparisonDto> preferredSpecies,
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    List<OpeningStandardUnitHistorySpeciesDetailsDto> acceptableSpecies
+    List<OpeningStockingHistorySpeciesWithComparisonDto> acceptableSpecies
 ) {}

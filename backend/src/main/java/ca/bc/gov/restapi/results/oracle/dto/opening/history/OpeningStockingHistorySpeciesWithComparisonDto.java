@@ -4,10 +4,8 @@ import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 
-import java.util.List;
-
 @With
-public record OpeningStandardUnitHistorySpeciesDetailsDto(
+public record OpeningStockingHistorySpeciesWithComparisonDto(
     @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
     String oldLayerCode,
 
