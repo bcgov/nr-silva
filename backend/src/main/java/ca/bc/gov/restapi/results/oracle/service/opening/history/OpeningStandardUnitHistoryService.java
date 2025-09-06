@@ -1,14 +1,17 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingSpeciesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
+import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.function.Function;
 public class OpeningStandardUnitHistoryService {
 
     private final OpeningRepository openingRepository;
+    private final SilvicultureCommentRepository commentRepository;
 
     public List<OpeningStockingHistoryOverviewDto> getStandardUnitOverviewHistoryList(Long openingId) {
         List<OpeningStockingHistoryProjection> projections = openingRepository
@@ -29,6 +33,19 @@ public class OpeningStandardUnitHistoryService {
                 .stream()
                 .map(toOverviewDto())
                 .toList();
+    }
+
+    public List<OpeningStockingHistoryDto> getOpeningStockingHistoryList(
+        Long openingId,
+        Long eventHistoryId) {
+        return openingRepository.getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId
+            (openingId, eventHistoryId)
+            .stream()
+            .map(getDetails())
+            .map(getSpecies(openingId, eventHistoryId))
+            .map(getLayer(openingId, eventHistoryId))
+            .map(getComments())
+            .toList();
     }
 
     public List<OpeningStockingHistoryWithComparisonDto> getStandardUnitHistoryDetailsWithComparison(Long openingId, Long stockingEventHistoryId) {
@@ -200,5 +217,97 @@ public class OpeningStandardUnitHistoryService {
                         species.getNewMinHeight()
                 ))
                 .toList();
+    }
+
+    private static Function<OpeningStockingHistoryDetailsProjection, OpeningStockingHistoryDto> getDetails() {
+        return projection -> {
+            OpeningDetailsBecDto bec =
+                new OpeningDetailsBecDto(
+                    projection.getBecZoneCode(),
+                    projection.getBecSubzoneCode(),
+                    projection.getBecVariant(),
+                    projection.getBecPhase(),
+                    projection.getBecSiteSeries(),
+                    projection.getBecSiteType(),
+                    projection.getBecSeral());
+
+            OpeningStockingHistoryDetailsDto detailsDto =
+                new OpeningStockingHistoryDetailsDto(
+                    projection.getStockingStandardUnit(),
+                    projection.getSsuid(),
+                    projection.getSrid(),
+                    BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
+                    BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
+                    projection.getFspId(),
+                    projection.getNetArea(),
+                    projection.getSoilDisturbancePercent(),
+                    bec,
+                    projection.getRegenDelay(),
+                    projection.getFreeGrowingLate(),
+                    projection.getFreeGrowingEarly(),
+                    projection.getAdditionalStandards(),
+                    projection.getAmendmentComment()
+                );
+
+            return new OpeningStockingHistoryDto(detailsDto, List.of(), List.of(), null, List.of());
+        };
+    }
+
+    private Function<OpeningStockingHistoryDto, OpeningStockingHistoryDto> getLayer(
+        Long openingId,
+        Long eventHistoryId) {
+        return detailsDto ->
+            detailsDto.withLayers(
+                openingRepository.getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(
+                        openingId, eventHistoryId, detailsDto.stocking().ssuId())
+                    .stream()
+                    .map(layer ->
+                        new OpeningStockingHistoryLayerDto(
+                            new CodeDescriptionDto(layer.getLayerCode(), layer.getLayerName()),
+                            layer.getMinWellspacedTrees(),
+                            layer.getMinPreferredWellspacedTrees(),
+                            layer.getMinHorizontalDistanceWellspacedTrees(),
+                            layer.getTargetWellspacedTrees(),
+                            layer.getMinResidualBasalArea(),
+                            layer.getMinPostspacingDensity(),
+                            layer.getMaxPostspacingDensity(),
+                            layer.getMaxConiferous(),
+                            layer.getHeightRelativeToComp()))
+                    .toList()
+            );
+    }
+
+    private Function<OpeningStockingHistoryDto, OpeningStockingHistoryDto> getSpecies(
+        Long openingId,
+        Long eventHistoryId) {
+        return detailsDto ->
+            detailsDto
+                .withAcceptableSpecies(getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, false, detailsDto))
+                .withPreferredSpecies(getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, true, detailsDto));
+    }
+
+    private List<OpeningStockingHistorySpeciesDto> getOpeningStockingSpeciesHistoryDto(
+        Long openingId, Long eventHistoryId, boolean preferred, OpeningStockingHistoryDto detailsDto) {
+        return openingRepository
+            .getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(
+                openingId, eventHistoryId, BooleanUtils.toString(preferred, "Y", "N"), detailsDto.stocking().ssuId())
+            .stream()
+            .map(
+                species ->
+                    new OpeningStockingHistorySpeciesDto(
+                        species.getLayerCode(),
+                        new CodeDescriptionDto(species.getSpeciesCode(), species.getSpeciesName()),
+                        species.getMinHeight()))
+            .toList();
+    }
+
+    private Function<OpeningStockingHistoryDto, OpeningStockingHistoryDto> getComments() {
+        return tombstone ->
+            tombstone.withComments(
+                commentRepository
+                    .getCommentById(null, null, tombstone.stocking().ssuId(), null, null)
+                    .stream()
+                    .map(OpeningDetailsCommentConverter.mapComments())
+                    .toList());
     }
 }

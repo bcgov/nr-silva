@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHi
 import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,14 @@ public class OpeningStandardUnitHistoryServiceTest {
     @Mock
     OpeningRepository openingRepository;
 
+    @Mock
+    SilvicultureCommentRepository commentRepository;
+
     private OpeningStandardUnitHistoryService openingStandardUnitHistoryService;
 
     @BeforeEach
     void setUp() {
-        openingStandardUnitHistoryService = new OpeningStandardUnitHistoryService(openingRepository);
+        openingStandardUnitHistoryService = new OpeningStandardUnitHistoryService(openingRepository, commentRepository);
     }
 
     @Test

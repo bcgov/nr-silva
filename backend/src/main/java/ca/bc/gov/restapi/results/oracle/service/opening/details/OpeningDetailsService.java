@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningForestCoverHistoryService;
@@ -201,5 +202,20 @@ public class OpeningDetailsService {
     }
 
     return historyDtos;
+  }
+
+  public List<OpeningStockingHistoryDto> getOpeningStockingHistoryDetails(
+      Long openingId,
+      Long eventHistoryId
+  ) {
+    log.info("Fetching stocking standards history details for opening with id: {} and event history id: {}",
+        openingId, eventHistoryId);
+    var stockingDetails = standardUnitHistoryService.getOpeningStockingHistoryList(openingId, eventHistoryId);
+    log.info(
+        "Fetched {} stocking standards history details for opening with id: {} and event history id: {}",
+        stockingDetails.size(),
+        openingId,
+        eventHistoryId);
+    return stockingDetails;
   }
 }
