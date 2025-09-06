@@ -4,10 +4,7 @@ import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.entity.opening.*;
 
 import java.util.List;
@@ -86,5 +83,26 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
   List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
       Long openingId,
       Long historyId
+  );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_ARCHIVE)
+  List<OpeningStockingHistoryDetailsProjection> getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(
+      Long openingId,
+      Long eventHistoryId
+  );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_SPECIES_ARCHIVE)
+  List<OpeningStockingSpeciesHistoryProjection> getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(
+      Long openingId,
+      Long eventHistoryId,
+      String preferred,
+      Long ssuId
+  );
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_LAYER_ARCHIVE)
+  List<OpeningStockingLayerHistoryProjection> getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(
+      Long openingId,
+      Long eventHistoryId,
+      Long ssuId
   );
 }
