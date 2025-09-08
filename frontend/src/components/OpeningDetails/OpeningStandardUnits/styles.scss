@@ -1,9 +1,38 @@
 @use '@carbon/type';
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 
+.opening-standard-units-history-modal {
+  padding: 1rem;
+
+  .opening-standard-units-history-modal-content {}
+}
+
 .opening-standard-units-grid {
   padding: 0;
   row-gap: 1.5rem;
+
+  .opening-standard-units-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .opening-standard-units-header-title-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opening-standard-unit-header-dropdown-container {
+      width: 20%;
+
+      .bx--dropdown,
+      .bx--list-box__menu {
+        background: var(--#{vars.$bcgov-prefix}-layer-02);
+      }
+    }
+  }
+
 
   .accordion-col {
 
