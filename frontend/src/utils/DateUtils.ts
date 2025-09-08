@@ -80,3 +80,9 @@ export const extractYearFromDateString = (dateStr: string): number | null => {
   }
   return dt.isValid ? dt.year : null;
 };
+
+export const formatDateTime = (dateTimeStr: string, format: string = "dd/MM/yyyy (hh:mm a)"): string => {
+  if (!dateTimeStr) return '--';
+  const dt = DateTime.fromISO(dateTimeStr);
+  return dt.isValid ? dt.toFormat(format) : '--';
+};
