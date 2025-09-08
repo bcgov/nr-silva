@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 
@@ -29,9 +30,23 @@ public class OpeningStandardUnitHistoryService {
         List<OpeningStockingHistoryProjection> projections = openingRepository
                 .getOpeningStandardUnitHistoryByOpeningId(openingId);
 
+        if (projections.isEmpty()) {
+            return List.of();
+        }
+
+        LocalDateTime maxTimestamp = projections.stream()
+            .map(OpeningStockingHistoryProjection::getEventTimestamp)
+            .max(LocalDateTime::compareTo)
+            .orElse(null);
+
+        LocalDateTime minTimestamp = projections.stream()
+            .map(OpeningStockingHistoryProjection::getEventTimestamp)
+            .min(LocalDateTime::compareTo)
+            .orElse(null);
+
         return projections
                 .stream()
-                .map(toOverviewDto())
+                .map(toOverviewDto(maxTimestamp, minTimestamp))
                 .toList();
     }
 
@@ -70,7 +85,7 @@ public class OpeningStandardUnitHistoryService {
 
     }
 
-    private Function<OpeningStockingHistoryProjection, OpeningStockingHistoryOverviewDto> toOverviewDto() {
+    private Function<OpeningStockingHistoryProjection, OpeningStockingHistoryOverviewDto> toOverviewDto(LocalDateTime maxTimestamp, LocalDateTime minTimestamp) {
         return projection -> new OpeningStockingHistoryOverviewDto(
                 projection.getStockingEventHistoryId(),
                 projection.getAmendmentNumber(),
@@ -83,7 +98,9 @@ public class OpeningStandardUnitHistoryService {
                 ),
                 projection.getEsfSubmissionId(),
                 projection.getSubmittedByUserId(),
-                projection.getApprovedByUserId()
+                projection.getApprovedByUserId(),
+                projection.getEventTimestamp().equals(maxTimestamp),
+                projection.getEventTimestamp().equals(minTimestamp)
         );
     }
 

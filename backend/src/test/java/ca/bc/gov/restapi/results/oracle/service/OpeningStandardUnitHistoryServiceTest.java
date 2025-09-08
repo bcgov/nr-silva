@@ -120,6 +120,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertNull(amendedDto.esfSubmissionId());
         Assertions.assertEquals("IDIR\\TEST", amendedDto.submittedByUserId());
         Assertions.assertEquals("IDIR\\TEST", amendedDto.approvedByUserId());
+        Assertions.assertTrue(amendedDto.isLatest());
+        Assertions.assertFalse(amendedDto.isOldest());
 
         // Verify Correction projection (second in result)
         OpeningStockingHistoryOverviewDto correctionDto = result.get(1);
@@ -133,6 +135,8 @@ public class OpeningStandardUnitHistoryServiceTest {
         Assertions.assertNull(correctionDto.esfSubmissionId());
         Assertions.assertEquals("IDIR\\TEST", correctionDto.submittedByUserId());
         Assertions.assertNull(correctionDto.approvedByUserId());
+        Assertions.assertFalse(correctionDto.isLatest());
+        Assertions.assertTrue(correctionDto.isOldest());
 
         verify(openingRepository).getOpeningStandardUnitHistoryByOpeningId(openingId);
     }
