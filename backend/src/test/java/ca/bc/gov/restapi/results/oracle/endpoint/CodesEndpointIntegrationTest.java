@@ -34,7 +34,7 @@ class CodesEndpointIntegrationTest  extends AbstractTestContainerIntegrationTest
 
     mockMvc
         .perform(
-            get("/api/codes/categories")
+            get("/api/codes/opening-categories")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

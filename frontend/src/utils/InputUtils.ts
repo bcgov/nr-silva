@@ -13,7 +13,8 @@ export const createTextInputEvent = (value: string): TextInputEvent => {
 };
 
 
-export const scrollToSection = (id: string) => {
+export const scrollToSection = (id?: string) => {
+  if (!id) return;
   const el = document.getElementById(id);
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "start" });

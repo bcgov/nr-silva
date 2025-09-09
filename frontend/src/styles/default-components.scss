@@ -289,3 +289,32 @@ ul.default-tab-accordion {
 .default-label {
   @include type.type-style('label-01');
 }
+
+.default-file-uploader-item {
+  max-inline-size: 100%;
+}
+
+.default-heading-28px {
+  @include type.type-style('heading-04');
+}
+
+.default-heading-20px {
+  @include type.type-style('heading-03');
+}
+
+/* WebKit */
+.default-number-input input[type="number"]::-webkit-outer-spin-button,
+.default-number-input input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.default-number-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.default-number-input input[type="number"] {
+  appearance: textfield;
+  -webkit-appearance: textfield;
+}

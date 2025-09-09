@@ -10,7 +10,7 @@ import PageTitle from '@/components/PageTitle';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
 import { CreateOpeningFormType } from './definitions';
 
-import { TitleText } from './constants';
+import { DefaultOpeningForm, TitleText } from './constants';
 import './styles.scss';
 
 
@@ -20,7 +20,16 @@ const CreateOpening = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const navigate = useNavigate();
   const type = searchParams.get('type');
-  const [form, setForm] = useState<CreateOpeningFormType>({ client: selectedClient });
+  const [form, setForm] = useState<CreateOpeningFormType>(() => {
+    const defaultForm = structuredClone(DefaultOpeningForm);
+    return {
+      ...defaultForm,
+      client: {
+        ...defaultForm.client,
+        value: selectedClient,
+      }
+    }
+  });
   const [warnText, setWarnText] = useState<string | undefined>();
 
   useEffect(() => {
@@ -37,7 +46,7 @@ const CreateOpening = () => {
       navigate("/", { replace: true });
     }
 
-    if (form.client && form.client !== selectedClient) {
+    if (form.client?.value && form.client.value !== selectedClient) {
       setWarnText("District office changed. The form will continue using the originally selected district.")
     };
   }, [type, selectedClient, navigate]);
@@ -52,15 +61,33 @@ const CreateOpening = () => {
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!form.geojson) {
-        setForm((prev) => ({ ...prev, isGeoJsonMissing: true }))
-        scrollToSection('opening-map-file-drop-container')
+      if (!form.geojson?.value) {
+        setForm(
+          (prev) => (
+            { ...prev, isGeoJsonMissing: { ...prev.isGeoJsonMissing, value: true } }
+          )
+        )
+        scrollToSection(form.client?.id)
         return;
       }
+
+      setCurrentStep(1);
+      return;
     }
 
-    setCurrentStep(s => Math.min(s + 1, 2));
+    if (currentStep === 1 && validateForm()) {
+      setCurrentStep(2);
+    }
+
   }
+
+  function validateForm(): boolean {
+    if (form) return false;
+
+    return true;
+  }
+
+
   return (
     <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16}>
