@@ -176,7 +176,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
   ) => {
     switch (rowKey) {
       case 'auditAction':
-        return codeDescriptionToDisplayText(history.auditAction);
+        return history.auditAction.description ?? PLACE_HOLDER
       case 'eventTimestamp':
         return history.eventTimestamp ? formatDateTime(history.eventTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
       default:
