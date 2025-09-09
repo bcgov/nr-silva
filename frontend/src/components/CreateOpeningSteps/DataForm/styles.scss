@@ -11,3 +11,36 @@
     color: var(--#{vars.$bcgov-prefix}-text-secondary);
   }
 }
+
+
+.tenure-table-container {
+
+  .#{vars.$bcgov-prefix}--table-toolbar {
+    background: var(--#{vars.$bcgov-prefix}-layer-00);
+  }
+
+  .table-toolbar-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1.5rem;
+
+    p {
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+  }
+}
+
+
+.add-tenure-licence-modal {
+  .#{vars.$bcgov-prefix}--modal-header {
+    overflow-y: hidden;
+  }
+
+  .tenure-licence-grid {
+    gap: 1.5rem;
+  }
+}

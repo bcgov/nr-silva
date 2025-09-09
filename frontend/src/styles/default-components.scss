@@ -318,3 +318,12 @@ ul.default-tab-accordion {
   appearance: textfield;
   -webkit-appearance: textfield;
 }
+
+.default-equal-split-stack {
+  display: flex;
+
+  /* Every direct child takes equal width */
+  &>* {
+    flex: 1 1 0;
+  }
+}
