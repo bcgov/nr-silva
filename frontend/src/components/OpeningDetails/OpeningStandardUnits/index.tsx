@@ -192,6 +192,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
     <>
       <Modal
         className="opening-standard-units-history-modal"
+        data-testid="opening-standard-units-history-modal"
         open={isHistoryModalOpen}
         modalHeading="Standard units history overview"
         onRequestClose={() => setIsHistoryModalOpen(false)}
@@ -213,10 +214,16 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
               <TableBody>
                 {
                   openingSsuHistoryListQuery.data?.map(history => (
-                    <TableRow key={history.stockingEventHistoryId}>
+                    <TableRow
+                      key={history.stockingEventHistoryId}
+                      data-testid={`ssu-history-row-${history.stockingEventHistoryId}`}
+                    >
                       {
                         HistoryOverviewTableHeaders.map(header => (
-                          <TableCell key={`${history.stockingEventHistoryId}-${header.key}`}>
+                          <TableCell
+                            key={`${history.stockingEventHistoryId}-${header.key}`}
+                            data-testid={`ssu-history-${header.key}-${history.stockingEventHistoryId}`}
+                          >
                             {renderModalCellContant(header.key, history)}
                           </TableCell>
                         ))
@@ -250,6 +257,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                 }
               </h3>
               <Link
+                data-testid="view-history-overview-link"
                 href="#"
                 renderIcon={() => <Popup />}
                 onClick={e => {
