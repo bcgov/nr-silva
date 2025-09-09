@@ -1,11 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryLayerSpeciesWithComaprisonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.OpeningStockingHistoryProjection;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
+import ca.bc.gov.restapi.results.oracle.entity.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
@@ -858,5 +854,140 @@ public class OpeningStandardUnitHistoryServiceTest {
                 openingId, stockingEventHistoryId);
         verify(openingRepository).getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
                 openingId, stockingEventHistoryId);
+    }
+
+    @Test
+    @DisplayName("getOpeningStockingHistoryList returns correct stocking history list")
+    void getOpeningStockingHistoryList_returnsCorrectStockingHistoryList() {
+        // Given
+        Long openingId = 10L;
+        Long eventHistoryId = 100L;
+        Long ssuId = 200L;
+
+        OpeningStockingHistoryDetailsProjection detailsProjection = mock(OpeningStockingHistoryDetailsProjection.class);
+        when(detailsProjection.getStockingStandardUnit()).thenReturn("SU1");
+        when(detailsProjection.getSsuid()).thenReturn(ssuId);
+        when(detailsProjection.getSrid()).thenReturn(300L);
+        when(detailsProjection.getDefaultMof()).thenReturn(true);
+        when(detailsProjection.getManualEntry()).thenReturn(false);
+        when(detailsProjection.getFspId()).thenReturn(400L);
+        when(detailsProjection.getNetArea()).thenReturn(50.0f);
+        when(detailsProjection.getSoilDisturbancePercent()).thenReturn(5.0f);
+        when(detailsProjection.getBecZoneCode()).thenReturn("CWH");
+        when(detailsProjection.getBecSubzoneCode()).thenReturn("vm");
+        when(detailsProjection.getBecVariant()).thenReturn("1");
+        when(detailsProjection.getBecPhase()).thenReturn("a");
+        when(detailsProjection.getBecSiteSeries()).thenReturn("06");
+        when(detailsProjection.getBecSiteType()).thenReturn("typeA");
+        when(detailsProjection.getBecSeral()).thenReturn("seralA");
+        when(detailsProjection.getRegenDelay()).thenReturn(10L);
+        when(detailsProjection.getFreeGrowingLate()).thenReturn(20L);
+        when(detailsProjection.getFreeGrowingEarly()).thenReturn(5L);
+        when(detailsProjection.getAdditionalStandards()).thenReturn("Additional");
+        when(detailsProjection.getAmendmentComment()).thenReturn("Comment");
+
+        OpeningStockingLayerHistoryProjection layerProjection = mock(OpeningStockingLayerHistoryProjection.class);
+        when(layerProjection.getLayerCode()).thenReturn("I");
+        when(layerProjection.getLayerName()).thenReturn("Inventory Layer");
+        when(layerProjection.getMinWellspacedTrees()).thenReturn(100L);
+        when(layerProjection.getMinPreferredWellspacedTrees()).thenReturn(80L);
+        when(layerProjection.getMinHorizontalDistanceWellspacedTrees()).thenReturn(1L);
+        when(layerProjection.getTargetWellspacedTrees()).thenReturn(120L);
+        when(layerProjection.getMinResidualBasalArea()).thenReturn(2L);
+        when(layerProjection.getMinPostspacingDensity()).thenReturn(400L);
+        when(layerProjection.getMaxPostspacingDensity()).thenReturn(800L);
+        when(layerProjection.getMaxConiferous()).thenReturn(90L);
+        when(layerProjection.getHeightRelativeToComp()).thenReturn(30L);
+
+        OpeningStockingSpeciesHistoryProjection preferredSpeciesProjection = mock(OpeningStockingSpeciesHistoryProjection.class);
+        when(preferredSpeciesProjection.getLayerCode()).thenReturn("I");
+        when(preferredSpeciesProjection.getSpeciesCode()).thenReturn("BA");
+        when(preferredSpeciesProjection.getSpeciesName()).thenReturn("amabilis fir");
+        when(preferredSpeciesProjection.getMinHeight()).thenReturn(1.5f);
+
+        OpeningStockingSpeciesHistoryProjection acceptableSpeciesProjection = mock(OpeningStockingSpeciesHistoryProjection.class);
+        when(acceptableSpeciesProjection.getLayerCode()).thenReturn("I");
+        when(acceptableSpeciesProjection.getSpeciesCode()).thenReturn("BG");
+        when(acceptableSpeciesProjection.getSpeciesName()).thenReturn("grand fir");
+        when(acceptableSpeciesProjection.getMinHeight()).thenReturn(1.2f);
+
+        when(openingRepository.getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(openingId, eventHistoryId))
+            .thenReturn(List.of(detailsProjection));
+
+        when(openingRepository.getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, ssuId))
+            .thenReturn(List.of(layerProjection));
+
+        when(openingRepository.getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, "Y", ssuId))
+            .thenReturn(List.of(preferredSpeciesProjection));
+        when(openingRepository.getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, "N", ssuId))
+            .thenReturn(List.of(acceptableSpeciesProjection));
+
+        when(commentRepository.getCommentById(null, null, ssuId, null, null)).thenReturn(List.of());
+
+        // When
+        List<OpeningStockingHistoryDto> result =
+            openingStandardUnitHistoryService.getOpeningStockingHistoryList(openingId, eventHistoryId);
+
+        // Then
+        Assertions.assertEquals(1, result.size());
+        OpeningStockingHistoryDto dto = result.get(0);
+
+        OpeningStockingHistoryDetailsDto details = dto.stocking();
+        Assertions.assertEquals("SU1", details.stockingStandardUnit());
+        Assertions.assertEquals(ssuId, details.ssuId());
+        Assertions.assertEquals(300L, details.srid());
+        Assertions.assertTrue(details.defaultMof());
+        Assertions.assertFalse(details.manualEntry());
+        Assertions.assertEquals(400L, details.fspId());
+        Assertions.assertEquals(50.0f, details.netArea());
+        Assertions.assertEquals(5.0f, details.soilDisturbancePercent());
+        Assertions.assertEquals("CWH", details.bec().becZoneCode());
+        Assertions.assertEquals("vm", details.bec().becSubzoneCode());
+        Assertions.assertEquals("1", details.bec().becVariant());
+        Assertions.assertEquals("a", details.bec().becPhase());
+        Assertions.assertEquals("06", details.bec().becSiteSeries());
+        Assertions.assertEquals("typeA", details.bec().becSiteType());
+        Assertions.assertEquals("seralA", details.bec().becSeral());
+        Assertions.assertEquals(10, details.regenDelay());
+        Assertions.assertEquals(20, details.freeGrowingLate());
+        Assertions.assertEquals(5, details.freeGrowingEarly());
+        Assertions.assertEquals("Additional", details.additionalStandards());
+        Assertions.assertEquals("Comment", details.amendmentComment());
+
+        Assertions.assertEquals(1, dto.layers().size());
+        OpeningStockingHistoryLayerDto layer = dto.layers().get(0);
+        Assertions.assertEquals("I", layer.layer().code());
+        Assertions.assertEquals("Inventory Layer", layer.layer().description());
+        Assertions.assertEquals(100, layer.minWellspacedTrees());
+        Assertions.assertEquals(80, layer.minPreferredWellspacedTrees());
+        Assertions.assertEquals(1L, layer.minHorizontalDistanceWellspacedTrees());
+        Assertions.assertEquals(120, layer.targetWellspacedTrees());
+        Assertions.assertEquals(2L, layer.minResidualBasalArea());
+        Assertions.assertEquals(400, layer.minPostspacingDensity());
+        Assertions.assertEquals(800, layer.maxPostspacingDensity());
+        Assertions.assertEquals(90, layer.maxConiferous());
+        Assertions.assertEquals(30, layer.heightRelativeToComp());
+
+        Assertions.assertEquals(1, dto.preferredSpecies().size());
+        OpeningStockingHistorySpeciesDto preferredSpecies = dto.preferredSpecies().get(0);
+        Assertions.assertEquals("I", preferredSpecies.layer());
+        Assertions.assertEquals("BA", preferredSpecies.species().code());
+        Assertions.assertEquals("amabilis fir", preferredSpecies.species().description());
+        Assertions.assertEquals(1.5f, preferredSpecies.minHeight());
+
+        Assertions.assertEquals(1, dto.acceptableSpecies().size());
+        OpeningStockingHistorySpeciesDto acceptableSpecies = dto.acceptableSpecies().get(0);
+        Assertions.assertEquals("I", acceptableSpecies.layer());
+        Assertions.assertEquals("BG", acceptableSpecies.species().code());
+        Assertions.assertEquals("grand fir", acceptableSpecies.species().description());
+        Assertions.assertEquals(1.2f, acceptableSpecies.minHeight());
+
+        Assertions.assertTrue(dto.comments().isEmpty());
+
+        verify(openingRepository).getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(openingId, eventHistoryId);
+        verify(openingRepository).getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, ssuId);
+        verify(openingRepository).getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, "Y", ssuId);
+        verify(openingRepository).getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(openingId, eventHistoryId, "N", ssuId);
+        verify(commentRepository).getCommentById(null, null, ssuId, null, null);
     }
 }
