@@ -1,6 +1,6 @@
 type FormInputType<T> = {
   id?: string;
-  value?: T | null;
+  value?: T;
   isInvalid?: boolean;
 }
 

@@ -14,9 +14,14 @@
 
 
 .tenure-table-container {
-
   .#{vars.$bcgov-prefix}--table-toolbar {
     background: var(--#{vars.$bcgov-prefix}-layer-00);
+  }
+
+  .edit-tenure-button {
+    svg {
+      fill: var(--#{vars.$bcgov-prefix}-button-primary);
+    }
   }
 
   .table-toolbar-container {
@@ -32,6 +37,12 @@
       color: var(--#{vars.$bcgov-prefix}-text-secondary);
     }
   }
+
+  .primary-ind-cell {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
 }
 
 
@@ -41,6 +52,14 @@
   }
 
   .tenure-licence-grid {
-    gap: 1.5rem;
+    row-gap: 1.5rem;
+  }
+
+  .modal-button {
+    max-inline-size: unset;
+  }
+
+  .#{vars.$bcgov-prefix}--modal-content {
+    padding-bottom: 1rem;
   }
 }
