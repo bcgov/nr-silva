@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, InlineNotification, ProgressIndicator, ProgressStep } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight } from '@carbon/icons-react';
+import { ArrowRight, Checkmark, TrashCan } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { OpeningTypes } from '@/types/OpeningTypes';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -13,12 +13,15 @@ import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm, TitleText } from './constants';
 import './styles.scss';
 import { isRealNumber } from '../../utils/ValidationUtils';
+import ModalHead from '../../components/Modals/ModalHead';
+import { OpeningsRoute } from '../../routes/config';
 
 
 const CreateOpening = () => {
   const { selectedClient } = useAuth();
   const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const type = searchParams.get('type');
   const [form, setForm] = useState<CreateOpeningFormType>(() => {
@@ -58,7 +61,12 @@ const CreateOpening = () => {
     e.preventDefault();
   };
 
-  const handleBack = () => setCurrentStep(s => Math.max(0, s - 1));
+  const handleBack = () => {
+    if (currentStep === 0) {
+      navigate(OpeningsRoute.path!)
+    }
+    setCurrentStep(s => Math.max(0, s - 1));
+  }
 
   const handleNext = () => {
     if (currentStep === 0) {
@@ -79,7 +87,14 @@ const CreateOpening = () => {
     if (currentStep === 1 && validateForm()) {
       setCurrentStep(2);
     }
+  }
 
+  const handleCancel = () => {
+    setIsCancelModalOpen(true);
+  }
+
+  const handleCreate = () => {
+    console.log(form);
   }
 
   function validateForm(): boolean {
@@ -178,7 +193,7 @@ const CreateOpening = () => {
             }
             {
               currentStep !== 0
-                ? <CreateOpeningForm isReview={currentStep === 2} form={form} setForm={setForm} />
+                ? <CreateOpeningForm isReview={currentStep === 2} form={form} setForm={setForm} handleBack={handleBack} />
                 : null
             }
           </Grid>
@@ -188,17 +203,68 @@ const CreateOpening = () => {
       <Column sm={4} md={8} lg={16}>
         <Grid className="create-opening-button-grid">
           <Column sm={4} md={4}>
-            <Button className="default-button" kind="secondary" onClick={handleBack}>
-              Back
-            </Button>
+            {
+              currentStep === 2
+                ? (
+                  <Button className="default-button" kind="secondary" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                ) :
+                (
+                  <Button className="default-button" kind="secondary" onClick={handleBack}>
+                    Back
+                  </Button>
+                )
+            }
+
           </Column>
           <Column sm={4} md={4}>
-            <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight}>
-              Next
-            </Button>
+            {
+              currentStep === 2
+                ? (
+                  <Button className="default-button" kind="primary" onClick={handleCreate} renderIcon={Checkmark}>
+                    Create
+                  </Button>
+                ) :
+                (
+                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight}>
+                    Next
+                  </Button>
+                )
+            }
           </Column>
         </Grid>
       </Column>
+
+      <Modal
+        passiveModal
+        danger
+        open={isCancelModalOpen}
+        modalHeading={<ModalHead title="Are you sure you want to cancel?" helperTop={`Create an opening: ${TitleText[openingType]}`} />}
+        onRequestClose={() => setIsCancelModalOpen(false)}
+        className="default-modal"
+        preventCloseOnClickOutside
+        size="sm"
+      >
+        <Grid>
+          <Column sm={4} md={8} lg={16}>
+            <p className='cancel-content'>
+              If you leave this page, all the information you've entered will be lost.
+            </p>
+          </Column>
+          <Column sm={4} md={8} lg={16}>
+            <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
+              <Button className="modal-button" kind="secondary" onClick={() => setIsCancelModalOpen(false)}>
+                Continue reviewing
+              </Button>
+
+              <Button className="modal-button" kind="danger" renderIcon={TrashCan} onClick={() => navigate(OpeningsRoute.path!)}>
+                Leave without saving
+              </Button>
+            </Stack>
+          </Column>
+        </Grid>
+      </Modal>
     </Grid >
   );
 };

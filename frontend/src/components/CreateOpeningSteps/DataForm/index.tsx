@@ -26,9 +26,10 @@ type DataFormProps = {
   isReview: boolean;
   form: CreateOpeningFormType;
   setForm: React.Dispatch<React.SetStateAction<CreateOpeningFormType>>;
+  handleBack: () => void;
 }
 
-const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
+const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
   const [isEditTenure, setIsEditTenure] = useState<boolean>(false);
   const [isTenureModalOpen, setIsTenureModalOpen] = useState<boolean>(false);
   const [tenureForm, setTenureForm] = useState<TenureInfoDto>(() => getNewTenureForm());
@@ -434,9 +435,20 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
               }
             </TableContainer>
           </Column>
+
+          {
+            isReview
+              ? (
+                <Column sm={4} md={8} lg={6}>
+                  <Button className="default-button" kind="tertiary" onClick={handleBack} renderIcon={Edit}>
+                    Edit opening information
+                  </Button>
+                </Column>
+              )
+              : null
+          }
         </Grid>
       </Column>
-
 
       <Modal
         passiveModal
