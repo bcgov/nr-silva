@@ -2,7 +2,7 @@ import { useState } from "react";
 import MapPreview from "@/components/MapPreview";
 import {
   Button, Column, ComboBox, FileUploaderItem,
-  Grid, Modal, RadioButton, Stack, Table, TableBody,
+  Grid, InlineNotification, Modal, RadioButton, Stack, Table, TableBody,
   TableCell, TableContainer, TableHead, TableHeader,
   TableRow, TableToolbar, TextInput,
   Toggle
@@ -93,7 +93,7 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
       return (
         <div className="primary-ind-cell">
           <RadioButton
-            readOnly={isReview}
+            disabled={isReview}
             labelText=""
             checked={tenure.isPrimary}
             onChange={() => handlePrimaryChange(tenure.displayId)}
@@ -138,6 +138,40 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
     setIsTenureModalOpen(false);
   }
 
+  const normalizeTenures = (
+    tenures: TenureInfoDto[],
+    edited: TenureInfoDto,
+    isEdit: boolean
+  ): TenureInfoDto[] => {
+    if (!tenures.length) return tenures;
+
+    if (edited.isPrimary) {
+      // edited set to primary, all others false
+      return tenures.map(t => ({ ...t, isPrimary: t.displayId === edited.displayId }));
+    } else if (isEdit) {
+      // edited switched from primary to not primary
+      const wasPrimaryBefore = form.tenureInfo?.value?.find(
+        t => t.displayId === edited.displayId
+      )?.isPrimary;
+
+      if (wasPrimaryBefore) {
+        const hasOtherPrimary = tenures.some(t => t.isPrimary);
+
+        if (!hasOtherPrimary) {
+          // keep it primary if it was the only one
+          return tenures.map(t =>
+            t.displayId === edited.displayId ? { ...t, isPrimary: true } : t
+          );
+        }
+
+        // otherwise assign first as primary
+        return tenures.map((t, idx) => ({ ...t, isPrimary: idx === 0 }));
+      }
+    }
+
+    return tenures;
+  };
+
   /**
    * Attempts to add a new tenure entry to the form state.
    *
@@ -167,23 +201,23 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
     }
 
     if (isTenureValid) {
-      setForm((prev) => {
+      setForm(prev => {
         let updatedTenures = [...(prev.tenureInfo?.value ?? [])];
 
         if (updatedTenures.length === 0) {
           tempTenure.isPrimary = true;
-        } else if (tempTenure.isPrimary) {
-          updatedTenures = updatedTenures.map(t => ({ ...t, isPrimary: false }));
         }
 
         updatedTenures = [...updatedTenures, tempTenure];
+        updatedTenures = normalizeTenures(updatedTenures, tempTenure, false);
 
         return {
           ...prev,
           tenureInfo: {
             ...prev.tenureInfo,
-            value: updatedTenures
-          }
+            value: updatedTenures,
+            isInvalid: false
+          },
         };
       });
       handleTenureModalClose();
@@ -191,170 +225,218 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
       setTenureForm(tempTenure);
     }
   }
+  const saveEditedTenure = () => {
+    const tempTenure = structuredClone(tenureForm);
+    setForm(prev => {
+      let updatedTenures =
+        prev.tenureInfo?.value?.map(t =>
+          t.displayId === tempTenure.displayId ? tempTenure : t
+        ) ?? [];
+
+      updatedTenures = normalizeTenures(updatedTenures, tempTenure, true);
+
+      return {
+        ...prev,
+        tenureInfo: {
+          ...prev.tenureInfo,
+          value: updatedTenures,
+          isInvalid: false
+        },
+      };
+    });
+    handleTenureModalClose();
+  };
 
   return (
     <>
       <Column sm={4} md={8} lg={16} className="opening-detail-title">
-        <h2 className="default-heading-28px">Opening Details</h2>
-        <p>Refine the opening's information. Review extracted details or complete/edit the manual entry form to ensure accuracy.</p>
+        <h2 className="default-heading-28px">
+          {isReview ? 'Review & Create' : 'Opening Details'}
+        </h2>
+        <p>Please confirm all the information below is correct before creating the opening or make any changes by using the "Edit" button.</p>
       </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <h3 className="default-heading-20px">Preview</h3>
-      </Column>
+      <Column sm={4} md={8} lg={16} className={isReview ? 'review-form-wrapper' : undefined}>
+        <Grid className="create-opening-subgrid">
+          <Column sm={4} md={8} lg={16}>
+            <h3 className="default-heading-20px">Preview</h3>
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        {
-          form.geojson
-            ? (
-              <Stack className="spatial-file-stack">
-                <MapPreview geojson={form.geojson.value} />
-                <FileUploaderItem
-                  className="default-file-uploader-item"
-                  name={form.file?.value?.name ?? "Invalid file"}
-                  size="lg"
-                  status="complete"
-                />
-              </Stack>
-            )
-            : null
-        }
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            {
+              form.geojson
+                ? (
+                  <Stack className="spatial-file-stack">
+                    <MapPreview geojson={form.geojson.value} />
+                    <FileUploaderItem
+                      className="default-file-uploader-item"
+                      name={form.file?.value?.name ?? "Invalid file"}
+                      size="lg"
+                      status="complete"
+                    />
+                  </Stack>
+                )
+                : null
+            }
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <h3 className="default-heading-20px">Opening information</h3>
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            <h3 className="default-heading-20px">Opening information</h3>
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <ComboBox
-          id={form.orgUnit?.id!}
-          helperText="Select which organization you're representing"
-          items={orgUnitQuery.data ?? []}
-          titleText={<RequiredLabel htmlFor={form.orgUnit?.id!}>Org unit</RequiredLabel>}
-          onChange={() => { }}
-          onInputChange={() => { }}
-          itemToString={codeDescriptionToDisplayText}
-          readOnly={isReview}
-          invalid={form.orgUnit?.isInvalid}
-        />
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            <ComboBox
+              id={form.orgUnit?.id!}
+              helperText="Select which organization you're representing"
+              items={orgUnitQuery.data ?? []}
+              titleText={<RequiredLabel htmlFor={form.orgUnit?.id!}>Org unit</RequiredLabel>}
+              onChange={(data) => setForm((prev) => ({ ...prev, orgUnit: { ...prev.orgUnit, value: data.selectedItem ?? undefined, isInvalid: false } }))}
+              itemToString={codeDescriptionToDisplayText}
+              readOnly={isReview}
+              invalid={form.orgUnit?.isInvalid}
+            />
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <ComboBox
-          id={form.category?.id!}
-          helperText="Use the code to identify specific program area and silviculture responsibility"
-          items={categoryQuery.data ?? []}
-          titleText={<RequiredLabel htmlFor={form.category?.id!}>Opening category</RequiredLabel>}
-          onChange={() => { }}
-          onInputChange={() => { }}
-          itemToString={codeDescriptionToDisplayText}
-          readOnly={isReview}
-          invalid={form.category?.isInvalid}
-        />
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            <ComboBox
+              id={form.category?.id!}
+              helperText="Use the code to identify specific program area and silviculture responsibility"
+              items={categoryQuery.data ?? []}
+              titleText={<RequiredLabel htmlFor={form.category?.id!}>Opening category</RequiredLabel>}
+              onChange={(data) => setForm((prev) => ({ ...prev, category: { ...prev.category, value: data.selectedItem ?? undefined, isInvalid: false } }))}
+              itemToString={codeDescriptionToDisplayText}
+              readOnly={isReview}
+              invalid={form.category?.isInvalid}
+            />
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <h3 className="default-heading-20px">General information</h3>
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            <h3 className="default-heading-20px">General information</h3>
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
-          <TextInput
-            type="number"
-            className="default-number-input"
-            labelText={<RequiredLabel htmlFor={form.openingGrossArea?.id!}>Opening gross area (ha)</RequiredLabel>}
-            id={form.openingGrossArea?.id!}
-            helperText="Operating area including all SUs"
-            maxLength={13}
-            readOnly={isReview}
-            invalid={form.openingGrossArea?.isInvalid}
-          />
+          <Column sm={4} md={8} lg={16}>
+            <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
+              <TextInput
+                type="number"
+                className="default-number-input"
+                labelText={<RequiredLabel htmlFor={form.openingGrossArea?.id!}>Opening gross area (ha)</RequiredLabel>}
+                id={form.openingGrossArea?.id!}
+                helperText="Operating area including all SUs"
+                maxLength={13}
+                readOnly={isReview}
+                invalid={form.openingGrossArea?.isInvalid}
+                onBlur={(e) => setForm((prev) => ({ ...prev, openingGrossArea: { ...prev.openingGrossArea, value: e.target.value, isInvalid: false } }))}
+              />
 
-          <TextInput
-            type="number"
-            className="default-number-input"
-            labelText={<RequiredLabel htmlFor={form.maxAllowablePermAccess?.id!}>Maximum allowable permanent access (%)</RequiredLabel>}
-            id={form.maxAllowablePermAccess?.id!}
-            helperText="Gross percentage area a permanent access structure can occupy in an opening"
-            maxLength={5}
-            readOnly={isReview}
-            invalid={form.maxAllowablePermAccess?.isInvalid}
-          />
-        </Stack>
-      </Column>
+              <TextInput
+                type="number"
+                className="default-number-input"
+                labelText={<RequiredLabel htmlFor={form.maxAllowablePermAccess?.id!}>Maximum allowable permanent access (%)</RequiredLabel>}
+                id={form.maxAllowablePermAccess?.id!}
+                helperText="Gross percentage area a permanent access structure can occupy in an opening"
+                maxLength={5}
+                readOnly={isReview}
+                invalid={form.maxAllowablePermAccess?.isInvalid}
+                onBlur={(e) => setForm((prev) => ({ ...prev, maxAllowablePermAccess: { ...prev.maxAllowablePermAccess, value: e.target.value, isInvalid: false } }))}
+              />
+            </Stack>
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <h3 className="default-heading-20px">Tenure information</h3>
-      </Column>
+          <Column sm={4} md={8} lg={16}>
+            <h3 className="default-heading-20px">Tenure information</h3>
+          </Column>
 
-      <Column sm={4} md={8} lg={16}>
-        <TableContainer className="default-table-container tenure-table-container">
-          <TableToolbar>
-            <div className="table-toolbar-container">
-              <p>Total licenses: {form.tenureInfo?.value?.length ?? 0}</p>
+          {
+            form.tenureInfo.isInvalid
+              ? (
+                <Column sm={4} md={8} lg={16}>
+                  <InlineNotification
+                    title="At least one tenure licence is required"
+                    kind="error"
+                    lowContrast
+                    className="inline-notification"
+                    hideCloseButton
+                    role="alert"
+                  />
+                </Column>
+
+              )
+              : null
+          }
+
+          <Column sm={4} md={8} lg={16}>
+            <TableContainer className="default-table-container tenure-table-container">
+              <TableToolbar>
+                <div className="table-toolbar-container">
+                  <p>Total licenses: {form.tenureInfo?.value?.length ?? 0}</p>
+                  {
+                    isReview
+                      ? null
+                      : (
+                        <Button
+                          iconDescription="Document Download"
+                          kind="ghost"
+                          renderIcon={Add}
+                          onClick={() => setIsTenureModalOpen(true)}
+                          size="lg"
+                        >
+                          Add licence
+                        </Button>
+                      )
+                  }
+                </div>
+              </TableToolbar>
+
+              <Table
+                className="species-table-container default-zebra-table"
+                aria-label="Species and layer table"
+                useZebraStyles
+              >
+                <TableHead>
+                  <TableRow>
+                    {
+                      TenureHeaderConfig
+                        .filter(header => !(isReview && header.key === 'action'))
+                        .map(header => (
+                          <TableHeader key={header.key}>{header.header}</TableHeader>
+                        ))
+                    }
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {form.tenureInfo?.value?.map((row) => (
+                    <TableRow key={`tenure-info-table-row-${row.displayId}`}>
+                      {
+                        TenureHeaderConfig
+                          .filter(header => !(isReview && header.key === 'action'))
+                          .map((header) => {
+                            return (
+                              <TableCell className="tenure-table-cell" key={header.key}>
+                                {renderCellContent(row, header.key)}
+                              </TableCell>
+                            )
+                          })
+                      }
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
               {
-                isReview
+                form.tenureInfo?.value?.length ?? 0 > 1
                   ? null
                   : (
-                    <Button
-                      iconDescription="Document Download"
-                      kind="ghost"
-                      renderIcon={Add}
-                      onClick={() => setIsTenureModalOpen(true)}
-                      size="lg"
-                    >
-                      Add licence
-                    </Button>
+                    <EmptySection
+                      pictogram="UserSearch"
+                      title="Tenure information required"
+                      description="No tenures have been added to this opening yet."
+                    />
                   )
               }
-            </div>
-          </TableToolbar>
-
-          <Table
-            className="species-table-container default-zebra-table"
-            aria-label="Species and layer table"
-            useZebraStyles
-          >
-            <TableHead>
-              <TableRow>
-                {
-                  TenureHeaderConfig
-                    .filter(header => !(isReview && header.key === 'action'))
-                    .map(header => (
-                      <TableHeader key={header.key}>{header.header}</TableHeader>
-                    ))
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {form.tenureInfo?.value?.map((row) => (
-                <TableRow key={`tenure-info-table-row-${row.displayId}`}>
-                  {
-                    TenureHeaderConfig.map((header) => {
-                      return (
-                        <TableCell className="tenure-table-cell" key={header.key}>
-                          {renderCellContent(row, header.key)}
-                        </TableCell>
-                      )
-                    })
-                  }
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {
-            form.tenureInfo?.value?.length ?? 0 > 1
-              ? null
-              : (
-                <EmptySection
-                  pictogram="UserSearch"
-                  title="Tenure information required"
-                  description="No tenures have been added to this opening yet."
-                />
-              )
-          }
-        </TableContainer>
+            </TableContainer>
+          </Column>
+        </Grid>
       </Column>
+
 
       <Modal
         passiveModal
@@ -426,7 +508,7 @@ const DataForm = ({ isReview, form, setForm }: DataFormProps) => {
                 Cancel
               </Button>
 
-              <Button className="modal-button" kind="primary" onClick={addTenure} renderIcon={isEditTenure ? Save : Add}>
+              <Button className="modal-button" kind="primary" onClick={isEditTenure ? saveEditedTenure : addTenure} renderIcon={isEditTenure ? Save : Add}>
                 {
                   isEditTenure ? 'Save changes' : ' Create an opening'
                 }

@@ -22,4 +22,5 @@ export const DefaultOpeningForm: CreateOpeningFormType = {
   maxAllowablePermAccess: {
     id: 'opening-max-allowalbe-perm-access-input',
   },
+  tenureInfo: {}
 }

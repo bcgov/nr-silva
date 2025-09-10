@@ -12,6 +12,7 @@ import { CreateOpeningFormType } from './definitions';
 
 import { DefaultOpeningForm, TitleText } from './constants';
 import './styles.scss';
+import { isRealNumber } from '../../utils/ValidationUtils';
 
 
 const CreateOpening = () => {
@@ -82,9 +83,41 @@ const CreateOpening = () => {
   }
 
   function validateForm(): boolean {
-    if (form) return false;
+    let isValid = true;
+    const validatedForm = structuredClone(form);
 
-    return true;
+    if (!validatedForm.orgUnit.value?.code) {
+      isValid = false;
+      validatedForm.orgUnit.isInvalid = true;
+    }
+    if (!validatedForm.category.value?.code) {
+      isValid = false;
+      validatedForm.category.isInvalid = true;
+    }
+
+    const openingGrossArea = validatedForm.openingGrossArea.value;
+    if (!isRealNumber(openingGrossArea)) {
+      isValid = false;
+      validatedForm.openingGrossArea.isInvalid = true;
+    }
+
+    const maxAllowablePermAccess = validatedForm.maxAllowablePermAccess.value;
+    if (!isRealNumber(maxAllowablePermAccess)) {
+      isValid = false;
+      validatedForm.maxAllowablePermAccess.isInvalid = true;
+    }
+
+    if (!validatedForm.tenureInfo.value || !validatedForm.tenureInfo.value.length) {
+      isValid = false;
+      validatedForm.tenureInfo.isInvalid = true;
+    }
+
+    if (!isValid) {
+      console.log(validatedForm);
+      setForm(validatedForm);
+    }
+
+    return isValid;
   }
 
 

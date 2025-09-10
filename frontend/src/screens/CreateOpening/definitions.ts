@@ -15,9 +15,9 @@ export type CreateOpeningFormType = {
   file?: FormInputType<File>;
   geojson?: FormInputType<GeoJSON.FeatureCollection>;
   isGeoJsonMissing?: FormInputType<boolean>;
-  orgUnit?: FormInputType<CodeDescriptionDto>;
-  category?: FormInputType<CodeDescriptionDto>;
-  openingGrossArea?: FormInputType<number>;
-  maxAllowablePermAccess?: FormInputType<number>;
-  tenureInfo?: FormInputType<TenureInfoDto[]>;
+  orgUnit: FormInputType<CodeDescriptionDto>;
+  category: FormInputType<CodeDescriptionDto>;
+  openingGrossArea: FormInputType<string>;
+  maxAllowablePermAccess: FormInputType<string>;
+  tenureInfo: FormInputType<TenureInfoDto[]>;
 }
