@@ -522,7 +522,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
 
               <Button className="modal-button" kind="primary" onClick={isEditTenure ? saveEditedTenure : addTenure} renderIcon={isEditTenure ? Save : Add}>
                 {
-                  isEditTenure ? 'Save changes' : ' Create an opening'
+                  isEditTenure ? 'Save changes' : 'Create an opening'
                 }
               </Button>
             </Stack>
