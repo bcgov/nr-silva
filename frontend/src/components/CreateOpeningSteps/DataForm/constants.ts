@@ -28,22 +28,17 @@ export const TenureHeaderConfig: TableHeaderType<keyof TenureInfoDto | 'action'>
   },
 ];
 
-export const forestFileId = 'tenure-forest-file-id-input' as const;
-export const cutBlockId = 'tenure-cut-block-input' as const;
-export const cuttingPermitId = 'tenure-cutting-permit-input' as const;
-
-
 export const getNewTenureForm = (): TenureInfoDto => ({
   displayId: crypto.randomUUID(),
   isPrimary: false,
   forestFileId: {
-    id: forestFileId
+    id: 'tenure-forest-file-id-input'
   },
   cutBlock: {
-    id: cutBlockId
+    id: 'tenure-cut-block-input'
   },
   cuttingPermit: {
-    id: cuttingPermitId
+    id: 'tenure-cutting-permit-input'
   },
   timberMark: {
     id: 'tenure-form-timber-input'

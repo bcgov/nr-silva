@@ -18,7 +18,7 @@ import ModalHead from "../../Modals/ModalHead";
 import EmptySection from "../../EmptySection";
 import RequiredLabel from "../../RequiredLabel";
 
-import { cutBlockId, cuttingPermitId, forestFileId, getNewTenureForm, TenureHeaderConfig } from "./constants";
+import { getNewTenureForm, TenureHeaderConfig } from "./constants";
 
 import './styles.scss';
 
@@ -465,7 +465,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
           <Column sm={4} md={8} lg={16}>
             <TextInput
               defaultValue={tenureForm.forestFileId.value}
-              labelText={<RequiredLabel htmlFor={forestFileId}>Forest file ID</RequiredLabel>}
+              labelText={<RequiredLabel htmlFor={tenureForm.forestFileId.id}>Forest file ID</RequiredLabel>}
               id={tenureForm.forestFileId.id!}
               helperText="Apply the unique ID to identify the opening or cross reference program records. It will be set as the primary licence"
               placeholder="Ex. A20913"
@@ -479,7 +479,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
           <Column sm={4} md={8} lg={16}>
             <TextInput
               defaultValue={tenureForm.cutBlock.value}
-              labelText={<RequiredLabel htmlFor={cutBlockId}>Cut block</RequiredLabel>}
+              labelText={<RequiredLabel htmlFor={tenureForm.cutBlock.id}>Cut block</RequiredLabel>}
               id={tenureForm.cutBlock.id!}
               helperText="The approved cut block identifier for the opening"
               placeholder="Ex. 20-98"
@@ -493,7 +493,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
           <Column sm={4} md={8} lg={16}>
             <TextInput
               defaultValue={tenureForm.cuttingPermit.value}
-              labelText={<RequiredLabel htmlFor={cuttingPermitId}>Cutting permit</RequiredLabel>}
+              labelText={<RequiredLabel htmlFor={tenureForm.cuttingPermit.id}>Cutting permit</RequiredLabel>}
               id={tenureForm.cuttingPermit.id!}
               helperText="Corresponds to licence in cutting permit document"
               placeholder="Ex. 16"

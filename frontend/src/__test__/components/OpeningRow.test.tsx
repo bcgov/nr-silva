@@ -64,6 +64,9 @@ const openingA: OpeningSearchResponseDto = {
   favourite: false,
   clientName: "",
   earlyFreeGrowingDate: null,
+  clientLocation: null,
+  lateFreeGrowingDate: null,
+  lastViewDate: null
 };
 
 // Test setup
