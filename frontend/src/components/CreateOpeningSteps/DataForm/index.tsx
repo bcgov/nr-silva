@@ -10,17 +10,17 @@ import {
 import { CreateOpeningFormType, TenureInfoDto } from "@/screens/CreateOpening/definitions";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
+import { PLACE_HOLDER } from "@/constants";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { Add, Edit, Save, TrashCan } from "@carbon/icons-react";
+import FormInputType from "@/types/FormInputType";
+import ModalHead from "../../Modals/ModalHead";
+import EmptySection from "../../EmptySection";
+import RequiredLabel from "../../RequiredLabel";
+
+import { cutBlockId, cuttingPermitId, forestFileId, getNewTenureForm, TenureHeaderConfig } from "./constants";
 
 import './styles.scss';
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import RequiredLabel from "../../RequiredLabel";
-import { cutBlockId, cuttingPermitId, forestFileId, getNewTenureForm, TenureHeaderConfig } from "./constants";
-import { Add, Edit, Save, TrashCan } from "@carbon/icons-react";
-import ModalHead from "../../Modals/ModalHead";
-
-import FormInputType from "@/types/FormInputType";
-import { PLACE_HOLDER } from "@/constants";
-import EmptySection from "../../EmptySection";
 
 type DataFormProps = {
   isReview: boolean;

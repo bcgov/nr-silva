@@ -302,14 +302,14 @@ ul.default-tab-accordion {
   @include type.type-style('heading-03');
 }
 
-/* WebKit */
+/* WebKit hide stepper */
 .default-number-input input[type="number"]::-webkit-outer-spin-button,
 .default-number-input input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
+/* Firefox hide stepper */
 .default-number-input input[type="number"] {
   -moz-appearance: textfield;
 }

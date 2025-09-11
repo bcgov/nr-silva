@@ -8,14 +8,13 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
-import { CreateOpeningFormType } from './definitions';
+import { isRealNumber } from '@/utils/ValidationUtils';
+import ModalHead from '@/components/Modals/ModalHead';
+import { OpeningsRoute } from '@/routes/config';
 
+import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm, TitleText } from './constants';
 import './styles.scss';
-import { isRealNumber } from '../../utils/ValidationUtils';
-import ModalHead from '../../components/Modals/ModalHead';
-import { OpeningsRoute } from '../../routes/config';
-
 
 const CreateOpening = () => {
   const { selectedClient } = useAuth();

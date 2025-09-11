@@ -9,10 +9,9 @@ import { parseToGeoJSON } from "@/utils/SpatialUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
-import "../styles.scss";
-import "./styles.scss";
 import RequiredLabel from "../../RequiredLabel";
 
+import "./styles.scss";
 
 type FileUploadProps = {
   form: CreateOpeningFormType;
@@ -145,7 +144,7 @@ const FileUpload = ({
   return (
     <>
       <Column sm={4} md={8} lg={16}>
-        <h2 className="create-opening-step-title">File Upload</h2>
+        <h2 className="default-heading-28px">File Upload</h2>
       </Column>
 
       <Column sm={4} md={8} lg={16}>
