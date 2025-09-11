@@ -85,6 +85,7 @@ const CreateOpening = () => {
 
     if (currentStep === 1 && validateForm()) {
       setCurrentStep(2);
+      scrollToSection('title-col');
     }
   }
 
@@ -137,7 +138,7 @@ const CreateOpening = () => {
 
   return (
     <Grid className='create-opening-grid default-grid'>
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={16} id="title-col">
         <PageTitle
           title={
             `Create an opening: ${TitleText[openingType]}`
