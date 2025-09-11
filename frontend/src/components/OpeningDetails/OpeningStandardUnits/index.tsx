@@ -77,7 +77,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
     refetchOnMount: "always",
   });
 
-  const stockingUnitsQuery = isLatestHistory ? openingDetailSsuQuery : openingSsuHistoryDetailsQuery
+  const stockingUnitsQuery = isLatestHistory ? openingDetailSsuQuery : openingSsuHistoryDetailsQuery;
 
   useEffect(() => {
     if (
