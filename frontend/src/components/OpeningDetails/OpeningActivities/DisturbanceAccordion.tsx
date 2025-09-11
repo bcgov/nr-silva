@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import {
   Accordion,
   AccordionItem,
+  Checkbox,
   DefinitionTooltip,
   Search,
   Table,
@@ -14,6 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tooltip,
 } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
 
@@ -30,7 +32,10 @@ import { PLACE_HOLDER } from "@/constants";
 import "./styles.scss";
 
 type DisturbanceAccordionProps = {
-  data: OpeningDetailsActivitiesDisturbanceDto[]
+  data: OpeningDetailsActivitiesDisturbanceDto[],
+  availableDisturbanceIds: string[];
+  selectedDisturbanceIds: string[];
+  setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -47,7 +52,12 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 )
 
-const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
+const DisturbanceAccordion = ({
+  data,
+  availableDisturbanceIds,
+  selectedDisturbanceIds,
+  setSelectedDisturbanceIds
+}: DisturbanceAccordionProps) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -77,6 +87,12 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
       })
     );
   }, [data, searchTerm]);
+
+  const allAvailableIds = filteredData
+    .map(row => `${row.atuId}-DN`)
+    .filter(id => availableDisturbanceIds.includes(id)) ?? [];
+  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedDisturbanceIds.includes(id));
+  const someSelected = allAvailableIds.some(id => selectedDisturbanceIds.includes(id));
 
   const handleRowExpand = (activityId: number) => {
     setExpandedRows((prev) =>
@@ -145,6 +161,34 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                 {
                   <>
                     <TableExpandHeader />
+                    <TableHeader key="map-header">
+                      <div className="map-header-checkbox-container">
+                        <Tooltip
+                          label={
+                            availableDisturbanceIds.length > 0 ?
+                              allSelected ? "Unselect all" : "Select all"
+                              : "No polygon is available"
+                          }
+                          align="right"
+                        >
+                          <span>
+                            <Checkbox
+                              id="disturbance-map-select-all"
+                              data-testid="disturbance-map-select-all"
+                              checked={allSelected}
+                              indeterminate={!allSelected && someSelected}
+                              disabled={allAvailableIds.length === 0}
+                              labelText=""
+                              onChange={(_, { checked }) => {
+                                setSelectedDisturbanceIds(checked ? allAvailableIds : []);
+                              }}
+                            />
+                          </span>
+                        </Tooltip>
+                        <span>Map</span>
+                      </div>
+
+                    </TableHeader>
                     {
                       DisturbanceTableHeaders.map((header) => (
 
@@ -167,6 +211,41 @@ const DisturbanceAccordion = ({ data }: DisturbanceAccordionProps) => {
                           isExpanded={isExpanded}
                           onExpand={() => handleRowExpand(row.atuId)}
                         >
+                          <TableCell key={"map-select" + row.atuId}>
+                            <Tooltip
+                              label={
+                                !availableDisturbanceIds.includes(`${row.atuId}-DN`)
+                                  ? "Polygon is not available"
+                                  : selectedDisturbanceIds.includes(`${row.atuId}-DN`)
+                                    ? "Hide from map"
+                                    : "Show on map"
+                              }
+                              align={
+                                !availableDisturbanceIds.includes(`${row.atuId}-DN`)
+                                  ? "right"
+                                  : "top"
+                              }
+                            >
+                              <span>
+                                <Checkbox
+                                  id={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                                  data-testid={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                                  key={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                                  checked={selectedDisturbanceIds.includes(`${row.atuId}-DN`)}
+                                  disabled={!availableDisturbanceIds.includes(`${row.atuId}-DN`)}
+                                  labelText=""
+                                  onChange={(_, { checked }) => {
+                                    setSelectedDisturbanceIds(ids =>
+                                      checked
+                                        ? [...ids, `${row.atuId}-DN`]
+                                        : ids.filter(id => id !== `${row.atuId}-DN`)
+                                    );
+                                  }}
+                                />
+                              </span>
+
+                            </Tooltip>
+                          </TableCell>
                           {
                             DisturbanceTableHeaders.map(header => (
                               <TableCell key={header.key}>

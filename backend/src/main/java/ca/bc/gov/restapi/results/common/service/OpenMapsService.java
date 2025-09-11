@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.common.service;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,7 +48,7 @@ public class OpenMapsService {
                   )
                   .queryParam("outputFormat", "application/json")
                   .queryParam("SrsName", "EPSG:4326")
-                  .queryParam("PROPERTYNAME", "GEOMETRY,OPENING_ID")
+                  .queryParam("PROPERTYNAME", getPropertyName(kind))
                   .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
                   .build(Map.of())
           )
@@ -58,5 +58,23 @@ public class OpenMapsService {
       log.error("Exception when fetching from WFS {}", e.getMessage());
     }
     return null;
+  }
+
+  private String getPropertyName(String kind) {
+    if (kind == null || kind.isEmpty()) {
+      return "OPENING_ID,GEOMETRY";
+    }
+
+    Set<String> kindsSet = new HashSet<>(Arrays.asList(kind.split(",")));
+    String propertyName = "OPENING_ID,GEOMETRY";
+
+    if (kindsSet.size() == 1 && kindsSet.contains("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW")) {
+      return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
+    } else if (kindsSet.size() == 1 &&
+        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
+      return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
+    } else {
+      return propertyName;
+    }
   }
 }

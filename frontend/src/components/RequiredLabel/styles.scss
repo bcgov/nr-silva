@@ -1,0 +1,10 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.required-label {
+  .label-stack {
+    .rhcp {
+      color: var(--#{vars.$bcgov-prefix}-text-error);
+    }
+  }
+}

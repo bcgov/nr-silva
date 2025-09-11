@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, ButtonSkeleton, Column, Grid } from "@carbon/react";
-import { Location } from "@carbon/icons-react";
+import { Launch, Location } from "@carbon/icons-react";
 
 import { OpeningDetailsTombstoneDto } from "@/services/OpenApi";
 import { mapKinds, MapKindType } from "@/types/MapLayer";
@@ -9,6 +9,7 @@ import { getClientLabel } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { OpeningStatusTag } from "@/components/Tags";
 import OpeningsMap from "@/components/OpeningsMap";
+import { getJasperReportLink } from "@/utils/UrlUtils";
 
 import "./styles.scss";
 
@@ -17,6 +18,12 @@ type OpeningSummaryProps = {
   tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
   currentTab: number;
+  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedForestCoverIds: string[];
+  setAvailableSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSilvicultureActivityIds: string[];
+  setAvailableDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedDisturbanceIds: string[];
 };
 
 const OpeningSummary = ({
@@ -24,6 +31,12 @@ const OpeningSummary = ({
   tombstoneObj,
   isLoading,
   currentTab,
+  setAvailableForestCoverIds,
+  selectedForestCoverIds,
+  setAvailableSilvicultureActivityIds,
+  selectedSilvicultureActivityIds,
+  setAvailableDisturbanceIds,
+  selectedDisturbanceIds,
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
 
@@ -40,7 +53,7 @@ const OpeningSummary = ({
         return [mapKinds[2]!.code] as MapKindType[];
       // Activities tab shows the activities and disturbances layers
       case 3:
-        return [mapKinds[3]!.code, mapKinds[7]!.code] as MapKindType[];
+        return [mapKinds[3]!.code] as MapKindType[];
       // Forest cover tab shows all the Forest Cover layers
       case 4:
         return [
@@ -53,11 +66,37 @@ const OpeningSummary = ({
     }
   };
 
+  const isForestCoverMap = (mapKindTypes: MapKindType[]): boolean => {
+    return (
+      mapKindTypes.length === 3 &&
+      mapKindTypes.includes(mapKinds[4]?.code as MapKindType) &&
+      mapKindTypes.includes(mapKinds[5]?.code as MapKindType) &&
+      mapKindTypes.includes(mapKinds[6]?.code as MapKindType)
+    );
+  };
+
+  const isActivitiesMap = (mapKindTypes: MapKindType[]): boolean => {
+    return (
+      mapKindTypes.length === 1 &&
+      mapKindTypes.includes(mapKinds[3]?.code as MapKindType)
+    );
+  }
+
   return (
     <Grid className="default-grid opening-summary-grid">
       <Column className="card-title-col" sm={4} md={8} lg={16}>
         <div className="card-title-container">
-          <h3>Opening summary</h3>
+          <div className="title-and-link">
+            <h3>Opening summary</h3>
+            <a
+              href={getJasperReportLink(openingId, tombstoneObj?.orgUnitNumber)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View report <Launch />
+            </a>
+          </div>
+
           {isLoading ? (
             <ButtonSkeleton size="sm" />
           ) : (
@@ -255,10 +294,19 @@ const OpeningSummary = ({
         <Column className="map-col" sm={4} md={8} lg={16}>
           <OpeningsMap
             openingIds={openingId ? [openingId] : null}
-            setOpeningPolygonNotFound={() => {}}
-            mapHeight={280}
+            setOpeningPolygonNotFound={() => { }}
+            mapHeight={480}
             layerFilter={true}
             kind={mapKind(currentTab)}
+            isDetailsPage={true}
+            isForestCoverMap={isForestCoverMap(mapKind(currentTab))}
+            isActivitiesMap={isActivitiesMap(mapKind(currentTab))}
+            setAvailableForestCoverIds={setAvailableForestCoverIds}
+            selectedForestCoverIds={selectedForestCoverIds}
+            setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
+            selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+            setAvailableDisturbanceIds={setAvailableDisturbanceIds}
+            selectedDisturbanceIds={selectedDisturbanceIds}
           />
         </Column>
       ) : null}

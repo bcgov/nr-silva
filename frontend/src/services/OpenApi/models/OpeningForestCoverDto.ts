@@ -16,5 +16,7 @@ export type OpeningForestCoverDto = {
     inventoryLayer: OpeningForestCoverLayerListDescriptionDto;
     silvicultureLayer: OpeningForestCoverLayerListDescriptionDto;
     referenceYear: number;
+    isSingleLayer: boolean;
+    hasReserve: boolean;
 };
 

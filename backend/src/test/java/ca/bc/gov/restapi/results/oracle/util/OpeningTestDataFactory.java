@@ -39,6 +39,11 @@ public class OpeningTestDataFactory {
       }
 
       @Override
+      public Long getOrgUnitNumber() {
+        return 1826L;
+      }
+
+      @Override
       public String getOrgUnitCode() {
         return "DCC";
       }
@@ -115,7 +120,8 @@ public class OpeningTestDataFactory {
     };
   }
 
-  public static OpeningTombstoneOverviewOpeningProjection createTombstoneOverviewOpeningProjection() {
+  public static OpeningTombstoneOverviewOpeningProjection
+      createTombstoneOverviewOpeningProjection() {
     return new OpeningTombstoneOverviewOpeningProjection() {
       @Override
       public String getLicenseeOpeningId() {
@@ -159,7 +165,8 @@ public class OpeningTestDataFactory {
     };
   }
 
-  public static OpeningTombstoneOverviewMilestoneProjection createTombstoneOverviewMilestoneProjection() {
+  public static OpeningTombstoneOverviewMilestoneProjection
+      createTombstoneOverviewMilestoneProjection() {
     return new OpeningTombstoneOverviewMilestoneProjection() {
       @Override
       public String getStandardsUnitId() {
@@ -250,8 +257,13 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getSsid() {
+      public Long getSsuid() {
         return 1013720L;
+      }
+
+      @Override
+      public Long getSrid() {
+        return 138L;
       }
 
       @Override
@@ -331,21 +343,16 @@ public class OpeningTestDataFactory {
 
       @Override
       public String getAdditionalStandards() {
-        return
-            "(ALL625) ; ALL SPECIES - minimum inter-tree spacing within the net area to be reforested "
-            +
-            "may be reduced to 1.5 metres to allow the selection of the most productive microsites in "
-            +
-            "areas of poor plantability due to hygric conditions and bedrock areas.; (ALL626) ; " +
-            "ALL SPECIES - minimum inter-tree spacing within 20 metres of either site of road centreline "
-            +
-            "may be reduced to 1 metre where road construction or harvesting activities have created s "
-            +
-            "oil disturbance and reduced plantability.; (FDC628) ; FDC - is a preferred species on steep "
-            +
-            "southerly aspects (SE to SW) or on southerly, westerly and easterly slopes where pre-harvest "
-            +
-            "stand composition of Fd is >20% by merchantable volume.";
+        return "(ALL625) ; ALL SPECIES - minimum inter-tree spacing within the net area to be"
+            + " reforested may be reduced to 1.5 metres to allow the selection of the most"
+            + " productive microsites in areas of poor plantability due to hygric conditions"
+            + " and bedrock areas.; (ALL626) ; ALL SPECIES - minimum inter-tree spacing"
+            + " within 20 metres of either site of road centreline may be reduced to 1 metre"
+            + " where road construction or harvesting activities have created s oil"
+            + " disturbance and reduced plantability.; (FDC628) ; FDC - is a preferred"
+            + " species on steep southerly aspects (SE to SW) or on southerly, westerly and"
+            + " easterly slopes where pre-harvest stand composition of Fd is >20% by"
+            + " merchantable volume.";
       }
     };
   }

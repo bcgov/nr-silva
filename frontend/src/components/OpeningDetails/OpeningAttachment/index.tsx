@@ -8,7 +8,6 @@ import { Download } from "@carbon/icons-react";
 import { env } from "@/env";
 import axios from "axios";
 import { getAuthIdToken } from "@/services/AuthService";
-import { formatBytesDecimal } from "@/utils/FileUtils";
 import { useQuery } from "@tanstack/react-query";
 import { pluralize } from "@/utils/StringUtils";
 import { PLACE_HOLDER } from "@/constants";
@@ -35,27 +34,24 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
     queryFn: () => API.OpeningEndpointService.getAttachments(openingId)
   });
 
-  const handleDownload = async (guid: string, fileName: string) => {
+  const handleDownload = async (guid: string) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${getAuthIdToken()}`,
-        },
-      });
-
-      const blob = new Blob([response.data]);
-      const blobUrl = URL.createObjectURL(blob);
+      const { data: s3Url } = await axios.get<string>(
+        `${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthIdToken()}`,
+          },
+        }
+      );
 
       const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = fileName;
+      link.href = s3Url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
       document.body.appendChild(link);
       link.click();
       link.remove();
-
-      // Clean up
-      URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("File download failed:", error);
     }
@@ -74,14 +70,11 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
             renderIcon={Download}
             iconDescription="Download file"
             aria-label={`Download ${row.attachmentName}`}
-            onClick={() => handleDownload(row.attachmentGuid, row.attachmentName)}
+            onClick={() => handleDownload(row.attachmentGuid)}
           >
             Download
           </Button>
         );
-
-      case "attachmentSize":
-        return formatBytesDecimal(row.attachmentSize ?? 0);
 
       default:
         if (row[headerKey]) {

@@ -39,4 +39,10 @@ public interface ForestCoverProjection {
   Float getSilvicultureFreeGrowing();
 
   Integer getReferenceYear();
+
+  String getIsSingleLayer();
+
+  String getReserveCode();
+
+  String getObjectiveCode();
 }

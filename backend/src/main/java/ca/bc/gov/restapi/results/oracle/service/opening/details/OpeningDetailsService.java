@@ -4,11 +4,16 @@ import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDetailsDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
+import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningForestCoverHistoryService;
+import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +30,9 @@ public class OpeningDetailsService {
   private final OpeningDetailsActivitiesService activitiesService;
   private final OpeningDetailsTenureService tenureService;
   private final OpeningDetailsForestCoverService forestCoverService;
+  private final OpeningForestCoverHistoryService forestCoverHistoryService;
   private final OpeningDetailsAttachmentService attachmentService;
+  private final OpeningStandardUnitHistoryService standardUnitHistoryService;
 
   public Optional<OpeningDetailsTombstoneOverviewDto> getOpeningTombstone(Long openingId) {
     log.info("Fetching tombstone for opening with id: {}", openingId);
@@ -113,17 +120,86 @@ public class OpeningDetailsService {
             () -> new NotFoundGenericException("Forest cover polygon with id " + forestCoverId));
   }
 
+  public List<OpeningForestCoverHistoryOverviewDto> getOpeningForestCoverHistoryOverviewList(
+      Long openingId) {
+    log.info("Fetching forest cover history overview list for opening ID: {}", openingId);
+    return forestCoverHistoryService.getOpeningForestCoverHistoryOverviewList(openingId);
+  }
+
+  public List<OpeningForestCoverHistoryDto> getOpeningForestCoverHistoryList(
+      Long openingId, String updateDate) {
+    log.info(
+        "Fetching forest cover history list for opening ID: {} and update date: {}",
+        openingId,
+        updateDate);
+    List<OpeningForestCoverHistoryDto> result =
+        forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+
+    if (result.isEmpty()) {
+      throw new NotFoundGenericException(
+          "Forest cover history list for opening with id "
+              + openingId
+              + " and update date "
+              + updateDate);
+    }
+    return result;
+  }
+
+  public OpeningForestCoverHistoryDetailsDto getOpeningForestCoverHistoryDetails(
+      Long forestCoverId, String archiveDate) {
+    log.info(
+        "Fetching forest cover history details for forest cover with id: {} and archive date: {}",
+        forestCoverId,
+        archiveDate);
+    return forestCoverHistoryService
+        .getDetails(forestCoverId, archiveDate)
+        .orElseThrow(
+            () ->
+                new NotFoundGenericException(
+                    "Forest cover history polygon with id "
+                        + forestCoverId
+                        + " and archive date "
+                        + archiveDate));
+  }
+
   public List<OpeningDetailsAttachmentMetaDto> getOpeningAttachments(Long openingId) {
     log.info("Fetching attachment list for opening with id: {}", openingId);
 
     return attachmentService.getAttachmentList(openingId);
   }
 
-  public OpeningAttachmentEntity getOpeningAttachmentContent(UUID guid) {
-    log.info("Download attachment with guid: {}", guid);
+  public String generateAttachmentDownloadUrl(String guid) {
+    log.info("Requesting S3 presigned url for attachment with guid: {}", guid);
 
-    return attachmentService
-        .getAttachmentEntity(guid)
-        .orElseThrow(() -> new NotFoundGenericException("Attachment"));
+    return attachmentService.getS3PresignedUrl(guid);
+  }
+
+  public List<OpeningStandardUnitHistoryOverviewDto> getOpeningStandardUnitOverviewHistoryList(
+      Long openingId) {
+    log.info("Fetching standard unit overview history list for opening ID: {}", openingId);
+
+    return standardUnitHistoryService.getStandardUnitOverviewHistoryList(openingId);
+  }
+
+  public List<OpeningStandardUnitHistoryDto> getOpeningStandardUnitHistoryDetails(
+      Long openingId, Long stockingEventHistoryId) {
+    log.info(
+        "Fetching standard unit history details for opening ID: {} and stocking event history ID:"
+            + " {}",
+        openingId,
+        stockingEventHistoryId);
+
+    List<OpeningStandardUnitHistoryDto> historyDtos =
+        standardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+
+    if (historyDtos.isEmpty()) {
+      log.warn(
+          "No standard unit history details found for openingId: {} and stockingEventHistoryId: {}",
+          openingId,
+          stockingEventHistoryId);
+      throw new NotFoundGenericException("Standard unit history details");
+    }
+
+    return historyDtos;
   }
 }

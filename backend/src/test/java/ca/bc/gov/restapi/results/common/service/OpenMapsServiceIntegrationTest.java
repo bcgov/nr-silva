@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
+
 @DisplayName("Integrated Test | OpenMapsService")
 class OpenMapsServiceIntegrationTest {
 
@@ -50,7 +52,7 @@ class OpenMapsServiceIntegrationTest {
             .withQueryParam("typeName", equalTo("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"))
             .withQueryParam("outputFormat", equalTo("application/json"))
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
-            .withQueryParam("PROPERTYNAME", equalTo("GEOMETRY,OPENING_ID"))
+            .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY"))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
             .willReturn(okJson(TestConstants.WFS_OPENING))
     );
@@ -91,5 +93,31 @@ class OpenMapsServiceIntegrationTest {
     Object response = openMapsService.getOpeningPolygonAndProperties(openingId, null);
 
     Assertions.assertNull(response);
+  }
+
+  @Test
+  @DisplayName("Get cut block polygon and properties happy path should succeed")
+  void getCutBlockPolygonAndProperties_happyPath_shouldSucceed() {
+
+    String openingId = "123";
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/"))
+            .withQueryParam("service", equalTo("WFS"))
+            .withQueryParam("version", equalTo("2.0.0"))
+            .withQueryParam("request", equalTo("GetFeature"))
+            .withQueryParam("typeName", equalTo("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW"))
+            .withQueryParam("outputFormat", equalTo("application/json"))
+            .withQueryParam("SrsName", equalTo("EPSG:4326"))
+            .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY,HARVEST_AUTH_CUTTING_PERMIT_ID"))
+            .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
+            .willReturn(okJson(TestConstants.FTEN_CUT_BLOCK_POLY_SVW))
+    );
+
+    FeatureCollection response = openMapsService.getOpeningPolygonAndProperties(openingId, "WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW");
+
+    Assertions.assertNotNull(response);
+    Assertions.assertFalse(response.getFeatures().isEmpty());
+    Map<String, Object> properties = response.getFeatures().get(0).getProperties();
+    Assertions.assertTrue(properties.containsKey("HARVEST_AUTH_CUTTING_PERMIT_ID"));
   }
 }

@@ -22,6 +22,4 @@ public interface OpeningAttachmentMetaProjection {
   int getRevisionCount();
 
   String getAttachmentGuid();
-
-  Long getAttachmentSize();
 }

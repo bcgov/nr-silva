@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { renderToString } from "react-dom/server";
 import L from "leaflet";
 import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
@@ -14,13 +14,20 @@ import "./styles.scss";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
+  hoveredFeature: Feature<Geometry, any> | null;
+  setHoveredFeature: (feature: Feature<Geometry, any> | null) => void;
+  selectedFeature: Feature<Geometry, any> | null;
+  setSelectedFeature: (feature: Feature<Geometry, any> | null) => void;
+  isPopupHoveredRef?: React.MutableRefObject<boolean>;
 }
 
-const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
+const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
   // State to hold the polygons
   // This is used to set the map view when the component mounts
   const [features, setFeatures] = useState<FeatureCollection[]>([]);
   const [zoom, setZoom] = useState<number>(13);
+
+  const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
 
   // Get the map instance from react-leaflet
   const map = useMapEvents({
@@ -29,6 +36,14 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
 
   const markerIcon = new L.Icon({
     iconUrl: "/marker.svg",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  const markerHoveredIcon = new L.Icon({
+    iconUrl: "/marker-hovered.svg",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -84,62 +99,118 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons }) => {
     setFeatures([...polygons]);
   }, [polygons]);
 
-  const createPopup =
-    (featureCollection: FeatureCollection) =>
-    (feature: Feature<Geometry, any>, layer: L.Layer): void => {
-      const popupContent = renderToString(
-        <OpeningsMapEntryPopup
-          openingId={getOpeningIdByFeature(feature)}
-          data={getPropertyForFeature(feature)}
-          feature={featureCollection}
-        />
-      );
+  useEffect(() => {
+    if (hoveredFeature) {
+      setTimeout(() => {
+        map.eachLayer((l: L.Layer) => {
+          if (
+            (l as any).feature &&
+            (l as any).feature.id === hoveredFeature.id &&
+            (l as L.Path).bringToFront
+          ) {
+            (l as L.Path).bringToFront();
+          }
+        });
+      }, 0);
+    }
+  }, [hoveredFeature, selectedFeature, map]);
 
-      layer.bindPopup(popupContent, {
-        maxWidth: 700,
-        autoPan: false,
-      });
-    };
+  const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
+    layer.on({
+      mouseover: () => {
+        setHoveredFeature(feature);
+        lastHoveredFeatureIdRef.current = feature.id ?? null;
+        if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
+      },
+      mouseout: () => {
+        const thisFeatureId = feature.id;
+        setTimeout(() => {
+          if (
+            lastHoveredFeatureIdRef.current === thisFeatureId &&
+            !isPopupHoveredRef?.current
+          ) {
+            setHoveredFeature(null);
+          }
+        }, 50);
+      },
+      click: () => {
+        setSelectedFeature(feature);
+        if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
+
+        const currentZoom = map.getZoom();
+        const geoJsonLayer = L.geoJSON(feature);
+        const bounds = geoJsonLayer.getBounds();
+        const mapBounds = map.getBounds();
+
+        // This condition checks if the current zoom level is outside the preferred range (between 15 and 16 inclusive)
+        // or if the polygon's bounds are not fully visible within the current map view.
+        // If either is true, the map view will animate to fit the polygon's bounds.
+        if ((currentZoom <= 14 || currentZoom >= 17) || !mapBounds.contains(bounds)) {
+          map.flyToBounds(bounds, { maxZoom: 16, animate: true, duration: 0.5 });
+        }
+      },
+    });
+  };
 
   return (
     <>
       {zoom > 10 &&
-        features.filter(Boolean).map((featureCollection, index) => (
-          <GeoJSON
-            data-testid="geojson"
-            data={featureCollection} // This is the entire GeoJSON data
-            key={geoKey(featureCollection, index)} // Unique key for each GeoJSON layer
-            style={getStyleForFeature} // Function to style the polygons
-            onEachFeature={createPopup(featureCollection)} // Function to create popups for each feature
-          />
-        ))}
+        features.filter(Boolean).map((featureCollection, collectionIndex) =>
+          featureCollection.features
+            .filter((feature) => feature.geometry)
+            .map((feature, featureIndex) => (
+              <GeoJSON
+                data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                data={feature}
+                style={() =>
+                  getStyleForFeature(
+                    feature,
+                    selectedFeature,
+                    hoveredFeature,
+                    featureIndex,
+                    featureCollection.features.length
+                  )
+                }
+                onEachFeature={onEachFeature(featureCollection)}
+              />
+            ))
+        )
+      }
       {zoom <= 10 &&
-        features.filter(Boolean).map((featureCollection, index) => (
-          <Marker
-            icon={markerIcon}
-            data-testid="marker"
-            key={geoKey(featureCollection, index)}
-            position={getCenterOfFeatureCollection(featureCollection)}
-          >
-            {featureCollection?.features
-              ?.filter((feature) => feature.geometry)
-              .map((feature, index) => (
-                <Popup
-                  data-testid="popup"
-                  key={`popup-${geoKey(featureCollection, index)}-marker`}
-                  maxWidth={700}
-                  autoPan={false}
-                  position={getPopupCenter(feature.geometry)}
-                >
-                  <OpeningsMapEntryPopup
-                    openingId={getOpeningIdByCollection(featureCollection)}
-                    data={getPropertyForFeature(feature)}
-                    feature={featureCollection}
-                  />
-                </Popup>
-              ))}
-          </Marker>
-        ))}
+        features.filter(Boolean).map((featureCollection, index) =>
+          featureCollection?.features
+            ?.filter((feature) => feature.geometry)
+            .map((feature, fIndex) => (
+              <Marker
+                icon={
+                  (hoveredFeature && hoveredFeature.id === feature.id) ||
+                    (selectedFeature && selectedFeature.id === feature.id)
+                    ? markerHoveredIcon
+                    : markerIcon
+                }
+                data-testid="marker"
+                key={`marker-${geoKey(featureCollection, index)}-${fIndex}`}
+                position={getCenterOfFeatureCollection(featureCollection)}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedFeature(feature);
+
+                    const geoJsonLayer = L.geoJSON(feature);
+                    const bounds = geoJsonLayer.getBounds();
+                    map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
+                  },
+                  mouseover: () => {
+                    setHoveredFeature(feature);
+                  },
+                  mouseout: () => {
+                    setHoveredFeature(null);
+                  },
+                }}
+              />
+            ))
+        )
+      }
     </>
   );
 };

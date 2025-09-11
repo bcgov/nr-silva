@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @AutoConfigureMockMvc
 @WithMockJwt
@@ -210,7 +210,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(
             jsonPath("$.notifications[0].title")
                 .value("Regeneration milestone reminder for standard unit \"A, B\""))
-        .andExpect(jsonPath("$.notifications[0].description").value("Please update your forest cover."))
+        .andExpect(
+            jsonPath("$.notifications[0].description").value("Please update your forest cover."))
         .andExpect(jsonPath("$.notifications[0].status").value("INFO"))
         .andReturn();
   }
@@ -244,7 +245,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(content().contentType("application/json"))
         // Verify stocking details
         .andExpect(jsonPath("$[0].stocking.stockingStandardUnit").value("A"))
-        .andExpect(jsonPath("$[0].stocking.ssid").value(1013720L))
+        .andExpect(jsonPath("$[0].stocking.ssuId").value(1013720L))
         .andExpect(jsonPath("$[0].stocking.defaultMof").value(false))
         .andExpect(jsonPath("$[0].stocking.manualEntry").value(false))
         .andExpect(jsonPath("$[0].stocking.netArea").value(25.5))
@@ -558,45 +559,28 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
-  @DisplayName("Get attachment by GUID should return file")
-  void getAttachmentByGuid_shouldReturnFile() throws Exception {
+  @DisplayName("Get attachment by GUID should return presigned URL")
+  void getAttachmentByGuid_shouldReturnPresignedUrl() throws Exception {
     Long openingId = 1589595L;
 
-    // First call to get the GUID from metadata
-    String json =
+    MvcResult result =
         mockMvc
             .perform(
                 get("/api/openings/" + openingId + "/attachments")
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].attachmentGuid").isNotEmpty())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+            .andReturn();
 
-    // Extract values from metadata response
+    String json = result.getResponse().getContentAsString();
     String guid = JsonPath.read(json, "$[0].attachmentGuid");
-    String filename = JsonPath.read(json, "$[0].attachmentName");
-    int attachmentSize = JsonPath.read(json, "$[0].attachmentSize");
 
-    // Use the GUID to fetch the actual file and verify headers based on metadata
-    byte[] actualContent =
-        mockMvc
-            .perform(
-                get("/api/openings/" + openingId + "/attachments/" + guid)
-                    .accept(MediaType.APPLICATION_OCTET_STREAM))
-            .andExpect(status().isOk())
-            .andExpect(
-                header().string("Content-Disposition", "attachment; filename=\"" + filename + "\""))
-            .andReturn()
-            .getResponse()
-            .getContentAsByteArray();
-
-    // Assert size matches metadata
-    assertEquals(
-        attachmentSize,
-        actualContent.length,
-        "Downloaded content length does not match metadata size");
+    mockMvc
+        .perform(
+            get("/api/openings/" + openingId + "/attachments/" + guid)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().string(Matchers.startsWith("http")));
   }
 
   @Test
@@ -607,7 +591,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
     mockMvc
         .perform(
             get("/api/openings/1589595/attachments/" + nonExistentGuid)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
 }
