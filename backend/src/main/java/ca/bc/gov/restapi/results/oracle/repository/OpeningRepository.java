@@ -80,7 +80,7 @@ public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
   );
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES_WITH_COMPARISON)
-  List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
+  List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
       Long openingId,
       Long historyId
   );

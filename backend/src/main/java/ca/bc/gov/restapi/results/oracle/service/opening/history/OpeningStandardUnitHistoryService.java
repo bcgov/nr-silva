@@ -2,8 +2,6 @@ package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingSpeciesDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.entity.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
@@ -74,7 +72,7 @@ public class OpeningStandardUnitHistoryService {
         List<OpeningStockingHistoryLayerWithComparisonProjection> layerDetailProjections = openingRepository
                 .getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
-        List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> layerSpeciesProjections = openingRepository
+        List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> layerSpeciesProjections = openingRepository
                 .getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
 
         return suDetailProjections
@@ -155,7 +153,7 @@ public class OpeningStandardUnitHistoryService {
 
     private Function<OpeningStockingHistoryWithComparisonDto, OpeningStockingHistoryWithComparisonDto> addLayersWithComparison(
             List<OpeningStockingHistoryLayerWithComparisonProjection> allLayers,
-            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies
+            List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies
     ) {
         return dto -> dto.withLayers(
                 allLayers.stream()
@@ -166,7 +164,7 @@ public class OpeningStandardUnitHistoryService {
     }
 
     private Function<OpeningStockingHistoryLayerWithComparisonProjection, OpeningStockingHistoryLayerWithComparisonDto> createLayerWithComparisonDto(
-            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies
+            List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies
     ) {
         return layer -> {
             OpeningStockingHistoryLayerWithComparisonDto
@@ -214,7 +212,7 @@ public class OpeningStandardUnitHistoryService {
     private List<OpeningStockingHistorySpeciesWithComparisonDto> createSpeciesWithComparisonList(
             Long stockingLayerId,
             Boolean isPreferred,
-            List<OpeningStockingHistoryLayerSpeciesWithComaprisonProjection> allSpecies) {
+            List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies) {
         return allSpecies
                 .stream()
                 .filter(species ->
