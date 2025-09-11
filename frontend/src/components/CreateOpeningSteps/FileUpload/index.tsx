@@ -180,7 +180,7 @@ const FileUpload = ({
           />
 
           {
-            (form.file || error)
+            (form.file?.value || error)
               ? (
                 <FileUploaderItem
                   className="default-file-uploader-item"
