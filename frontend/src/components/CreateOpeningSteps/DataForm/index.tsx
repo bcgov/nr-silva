@@ -505,16 +505,6 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
           </Column>
 
           <Column sm={4} md={8} lg={16}>
-            <Toggle
-              defaultToggled={tenureForm.isPrimary}
-              id="tenure-primary-toggle"
-              hideLabel
-              labelText="Set as primary"
-              onToggle={(checked) => setTenureForm((prev) => ({ ...prev, isPrimary: checked }))}
-            />
-          </Column>
-
-          <Column sm={4} md={8} lg={16}>
             <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
               <Button className="modal-button" kind="ghost" onClick={handleTenureModalClose}>
                 Cancel
