@@ -27,7 +27,7 @@ export class CodesEndpointService {
     ): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/codes/categories',
+            url: '/api/codes/opening-categories',
             query: {
                 'includeExpired': includeExpired,
             },
