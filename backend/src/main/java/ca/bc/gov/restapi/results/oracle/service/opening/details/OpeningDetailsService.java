@@ -8,8 +8,9 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStandardUnitHistoryOverviewDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningForestCoverHistoryService;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import java.util.List;
@@ -174,23 +175,23 @@ public class OpeningDetailsService {
     return attachmentService.getS3PresignedUrl(guid);
   }
 
-  public List<OpeningStandardUnitHistoryOverviewDto> getOpeningStandardUnitOverviewHistoryList(
+  public List<OpeningStockingHistoryOverviewDto> getOpeningStandardUnitOverviewHistoryList(
       Long openingId) {
     log.info("Fetching standard unit overview history list for opening ID: {}", openingId);
 
     return standardUnitHistoryService.getStandardUnitOverviewHistoryList(openingId);
   }
 
-  public List<OpeningStandardUnitHistoryDto> getOpeningStandardUnitHistoryDetails(
+  public List<OpeningStockingHistoryWithComparisonDto> getOpeningStandardUnitHistoryDetailsWithComparison(
       Long openingId, Long stockingEventHistoryId) {
     log.info(
-        "Fetching standard unit history details for opening ID: {} and stocking event history ID:"
+        "Fetching standard unit history details with comparison for opening ID: {} and stocking event history ID:"
             + " {}",
         openingId,
         stockingEventHistoryId);
 
-    List<OpeningStandardUnitHistoryDto> historyDtos =
-        standardUnitHistoryService.getStandardUnitHistoryDetails(openingId, stockingEventHistoryId);
+    List<OpeningStockingHistoryWithComparisonDto> historyDtos =
+        standardUnitHistoryService.getStandardUnitHistoryDetailsWithComparison(openingId, stockingEventHistoryId);
 
     if (historyDtos.isEmpty()) {
       log.warn(
@@ -201,5 +202,20 @@ public class OpeningDetailsService {
     }
 
     return historyDtos;
+  }
+
+  public List<OpeningStockingHistoryDto> getOpeningStockingHistoryDetails(
+      Long openingId,
+      Long eventHistoryId
+  ) {
+    log.info("Fetching stocking standards history details for opening with id: {} and event history id: {}",
+        openingId, eventHistoryId);
+    var stockingDetails = standardUnitHistoryService.getOpeningStockingHistoryList(openingId, eventHistoryId);
+    log.info(
+        "Fetched {} stocking standards history details for opening with id: {} and event history id: {}",
+        stockingDetails.size(),
+        openingId,
+        eventHistoryId);
+    return stockingDetails;
   }
 }

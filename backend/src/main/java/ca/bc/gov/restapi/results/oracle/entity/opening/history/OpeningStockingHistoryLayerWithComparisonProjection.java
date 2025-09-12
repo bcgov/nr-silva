@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.entity.opening.history;
 
-public interface OpeningStandardUnitHistoryLayerDetailsProjection {
+public interface OpeningStockingHistoryLayerWithComparisonProjection {
     Long getStockingEventHistoryId();
     Long getSsuId();
     Long getOldLayerId();
