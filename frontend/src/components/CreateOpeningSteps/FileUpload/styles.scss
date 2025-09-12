@@ -12,10 +12,6 @@
     color: var(--#{vars.$bcgov-prefix}-text-secondary);
   }
 
-  #opening-file-uploader-item {
-    max-inline-size: 100%;
-  }
-
   .file-uploader-with-error {
     border: 1px dashed var(--#{vars.$bcgov-prefix}-support-error);
     color: var(--#{vars.$bcgov-prefix}-text-error);

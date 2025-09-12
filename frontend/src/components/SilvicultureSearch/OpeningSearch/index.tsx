@@ -87,7 +87,7 @@ const OpeningSearch: React.FC = () => {
    * Data Queries
    */
   const categoryQuery = useQuery({
-    queryKey: ["codes", "categories"],
+    queryKey: ["codes", "opening-categories"],
     queryFn: () => API.CodesEndpointService.getOpeningCategories(),
   });
 

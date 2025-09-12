@@ -32,10 +32,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/dark-notifications.scss' as dark-notification-overrides;
 
 @use '@carbon/react';
-@use '@carbon/grid';
-
-// Emit the flex-grid styles
-@include grid.flex-grid();
 
 :root {
   @include theme.theme();
