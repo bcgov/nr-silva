@@ -7,6 +7,6 @@ export type OpeningForestCoverHistoryDetailedSpeciesDto = {
     species: CodeDescriptionDto;
     percentage: number | number | null;
     averageAge: number | number | null;
-    averageHeight: number | number | null;
+    averageHeight: number | null;
 };
 

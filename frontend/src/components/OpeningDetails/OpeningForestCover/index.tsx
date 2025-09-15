@@ -274,7 +274,7 @@ const OpeningForestCover = ({
               ) : (
                 <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table" >
                   <TableHead>
-                    <TableRow >
+                    <TableRow>
                       <TableExpandHeader />
                       <TableHeader key="map-header">
                         <div className="map-header-checkbox-container">

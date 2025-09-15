@@ -31,6 +31,9 @@ export class OpeningDetailsPage extends BasePage {
   // Stanrdard Units Section
   private readonly standardUnitsSection: Locator;
   private readonly standaardUnitsAccordions: Locator;
+  private readonly standardUnitsHistoryModalLink: Locator;
+  private readonly standardUnitsHistoryModal: Locator;
+  private readonly standardUnitsActionDropdown: Locator;
 
   // Activities Section
   private readonly activitiesSection: Locator;
@@ -82,6 +85,9 @@ export class OpeningDetailsPage extends BasePage {
     // Standard Units Section
     this.standardUnitsSection = page.getByRole('tabpanel', { name: 'Standard units' });
     this.standaardUnitsAccordions = this.standardUnitsSection.locator('.opening-standard-units-grid');
+    this.standardUnitsHistoryModalLink = this.standardUnitsSection.getByTestId('view-history-overview-link');
+    this.standardUnitsHistoryModal = this.standardUnitsSection.getByTestId('opening-standard-units-history-modal');
+    this.standardUnitsActionDropdown = this.standardUnitsSection.getByTestId('ssu-history-action-dropdown');
 
     // Activities Section
     this.activitiesSection = page.getByRole('tabpanel', { name: 'Activities' });

@@ -7,7 +7,7 @@ import lombok.With;
 import java.time.LocalDateTime;
 
 @With
-public record OpeningStandardUnitHistoryOverviewDto(
+public record OpeningStockingHistoryOverviewDto(
     @Schema(types = {"number"}, requiredMode = Schema.RequiredMode.REQUIRED)
     Long stockingEventHistoryId,
 
@@ -33,6 +33,12 @@ public record OpeningStandardUnitHistoryOverviewDto(
     String submittedByUserId,
 
     @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
-    String approvedByUserId
+    String approvedByUserId,
+
+    @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    boolean isLatest,
+
+    @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
+    boolean isOldest
 ) {
 }

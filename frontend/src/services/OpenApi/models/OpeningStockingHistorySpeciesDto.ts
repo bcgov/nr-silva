@@ -3,10 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
-export type OpeningForestCoverDetailedSpeciesDto = {
+export type OpeningStockingHistorySpeciesDto = {
+    layer: string | null;
     species: CodeDescriptionDto;
-    percentage: number | number | null;
-    averageAge: number | number | null;
-    averageHeight: number | null;
+    minHeight: number | null;
 };
 
