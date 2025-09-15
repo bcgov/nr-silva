@@ -14,9 +14,9 @@ import { OpeningsRoute } from '@/routes/config';
 
 import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm, TitleText } from './constants';
-import './styles.scss';
 import { useMutation } from '@tanstack/react-query';
-import API from '../../services/API';
+import API from '@/services/API';
+import './styles.scss';
 
 
 const CreateOpening = () => {
