@@ -1,0 +1,76 @@
+@use '@carbon/type';
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-detail-title {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+
+  p {
+    @include type.type-style('body-02');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+  }
+}
+
+.review-form-wrapper {
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
+  border-radius: 0.5rem;
+  padding: 2rem;
+}
+
+.create-opening-subgrid {
+  row-gap: 2.5rem;
+}
+
+
+.tenure-table-container {
+  .#{vars.$bcgov-prefix}--table-toolbar {
+    background: var(--#{vars.$bcgov-prefix}-layer-00);
+  }
+
+  .edit-tenure-button {
+    svg {
+      fill: var(--#{vars.$bcgov-prefix}-button-primary);
+    }
+  }
+
+  .table-toolbar-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1.5rem;
+
+    p {
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+  }
+
+  .primary-ind-cell {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+}
+
+
+
+.add-tenure-licence-modal {
+  .#{vars.$bcgov-prefix}--modal-header {
+    overflow-y: hidden;
+  }
+
+  .tenure-licence-grid {
+    row-gap: 1.5rem;
+  }
+
+  .modal-button {
+    max-inline-size: unset;
+  }
+
+  .#{vars.$bcgov-prefix}--modal-content {
+    padding-bottom: 1rem;
+  }
+}

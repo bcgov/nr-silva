@@ -12,8 +12,8 @@ import type { OpeningForestCoverDto } from '../models/OpeningForestCoverDto';
 import type { OpeningForestCoverHistoryDetailsDto } from '../models/OpeningForestCoverHistoryDetailsDto';
 import type { OpeningForestCoverHistoryDto } from '../models/OpeningForestCoverHistoryDto';
 import type { OpeningForestCoverHistoryOverviewDto } from '../models/OpeningForestCoverHistoryOverviewDto';
-import type { OpeningStandardUnitHistoryDto } from '../models/OpeningStandardUnitHistoryDto';
-import type { OpeningStandardUnitHistoryOverviewDto } from '../models/OpeningStandardUnitHistoryOverviewDto';
+import type { OpeningStockingHistoryDto } from '../models/OpeningStockingHistoryDto';
+import type { OpeningStockingHistoryOverviewDto } from '../models/OpeningStockingHistoryOverviewDto';
 import type { PagedModelOpeningDetailsActivitiesActivitiesDto } from '../models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 import type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from '../models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
@@ -150,12 +150,12 @@ export class OpeningEndpointService {
     }
     /**
      * @param openingId
-     * @returns OpeningStandardUnitHistoryOverviewDto OK
+     * @returns OpeningStockingHistoryOverviewDto OK
      * @throws ApiError
      */
     public static getOpeningSsuHistory(
         openingId: number,
-    ): CancelablePromise<Array<OpeningStandardUnitHistoryOverviewDto>> {
+    ): CancelablePromise<Array<OpeningStockingHistoryOverviewDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/openings/{openingId}/ssu/history',
@@ -166,20 +166,20 @@ export class OpeningEndpointService {
     }
     /**
      * @param openingId
-     * @param historyId
-     * @returns OpeningStandardUnitHistoryDto OK
+     * @param eventHistoryId
+     * @returns OpeningStockingHistoryDto OK
      * @throws ApiError
      */
     public static getOpeningSsuHistoryDetails(
         openingId: number,
-        historyId: number,
-    ): CancelablePromise<Array<OpeningStandardUnitHistoryDto>> {
+        eventHistoryId: number,
+    ): CancelablePromise<Array<OpeningStockingHistoryDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/openings/{openingId}/ssu/history/{historyId}',
+            url: '/api/openings/{openingId}/ssu/history/{eventHistoryId}',
             path: {
                 'openingId': openingId,
-                'historyId': historyId,
+                'eventHistoryId': eventHistoryId,
             },
         });
     }

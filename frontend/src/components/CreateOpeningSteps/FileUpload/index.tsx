@@ -9,10 +9,9 @@ import { parseToGeoJSON } from "@/utils/SpatialUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
-import "../styles.scss";
-import "./styles.scss";
 import RequiredLabel from "../../RequiredLabel";
 
+import "./styles.scss";
 
 type FileUploadProps = {
   form: CreateOpeningFormType;
@@ -43,15 +42,21 @@ const FileUpload = ({
         user!.associatedClients.length
       ),
     enabled: !!user?.associatedClients.length,
-    select: (data) => data.find((client) => client.clientNumber === form.client),
+    select: (data) => data.find((client) => client.clientNumber === form.client?.value),
   });
 
   const handleAddFile = async (addedFiles: File[]) => {
     setError(null);
     setForm((prev) => ({
       ...prev,
-      isGeoJsonMissing: undefined,
-      geojson: undefined
+      isGeoJsonMissing: {
+        ...prev.isGeoJsonMissing,
+        value: undefined
+      },
+      geojson: {
+        ...prev.geojson,
+        value: undefined
+      }
     }));
 
     if (!addedFiles?.length) return;
@@ -63,7 +68,10 @@ const FileUpload = ({
     if (err) {
       setForm((prev) => ({
         ...prev,
-        file: undefined
+        file: {
+          ...prev.file,
+          value: undefined
+        }
       }));
       setError(err);
       return;
@@ -73,16 +81,34 @@ const FileUpload = ({
       const fc = await parseToGeoJSON(f);
       setForm((prev) => ({
         ...prev,
-        file: f,
-        geojson: fc,
-        isGeoJsonMissing: false
+        file: {
+          ...prev.file,
+          value: f,
+        },
+        geojson: {
+          ...prev.geojson,
+          value: fc
+        },
+        isGeoJsonMissing: {
+          ...prev.isGeoJsonMissing,
+          value: false
+        }
       }));
     } catch (e: unknown) {
       setForm((prev) => ({
         ...prev,
-        file: undefined,
-        geojson: undefined,
-        isGeoJsonMissing: undefined,
+        file: {
+          ...prev.file,
+          value: undefined,
+        },
+        geojson: {
+          ...prev.geojson,
+          value: undefined
+        },
+        isGeoJsonMissing: {
+          ...prev.isGeoJsonMissing,
+          value: undefined
+        }
       }));
       let errorMessage = "Failed to parse file. Please upload a valid GeoJSON or GML/XML file.";
       if (typeof e === "object" && e !== null && "message" in e && typeof (e as any).message === "string") {
@@ -96,9 +122,18 @@ const FileUpload = ({
     setError(null);
     setForm((prev) => ({
       ...prev,
-      geojson: undefined,
-      file: undefined,
-      isGeoJsonMissing: undefined
+      file: {
+        ...prev.file,
+        value: undefined,
+      },
+      geojson: {
+        ...prev.geojson,
+        value: undefined
+      },
+      isGeoJsonMissing: {
+        ...prev.isGeoJsonMissing,
+        value: undefined
+      }
     }));
   };
 
@@ -109,7 +144,7 @@ const FileUpload = ({
   return (
     <>
       <Column sm={4} md={8} lg={16}>
-        <h2 className="create-opening-step-title">File Upload</h2>
+        <h2 className="default-heading-28px">File Upload</h2>
       </Column>
 
       <Column sm={4} md={8} lg={16}>
@@ -134,7 +169,7 @@ const FileUpload = ({
           </div>
 
           <FileUploaderDropContainer
-            className={form.isGeoJsonMissing ? 'file-uploader-with-error' : undefined}
+            className={form.isGeoJsonMissing?.value ? 'file-uploader-with-error' : undefined}
             id="opening-map-file-drop-container"
             accept={ACCEPTED_FILE_TYPES}
             multiple={false}
@@ -145,11 +180,11 @@ const FileUpload = ({
           />
 
           {
-            (form.file || error)
+            (form.file?.value || error)
               ? (
                 <FileUploaderItem
-                  id="opening-file-uploader-item"
-                  name={form.file?.name ?? "Invalid file"}
+                  className="default-file-uploader-item"
+                  name={form.file?.value?.name ?? "Invalid file"}
                   status="edit"
                   onDelete={handleFileDelete}
                   invalid={!!error}
@@ -161,7 +196,7 @@ const FileUpload = ({
 
           {/* Map preview */}
           {
-            form.geojson ? <MapPreview geojson={form.geojson} /> : null
+            form.geojson ? <MapPreview geojson={form.geojson.value} /> : null
           }
         </Stack>
       </Column>

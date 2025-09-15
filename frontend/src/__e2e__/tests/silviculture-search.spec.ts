@@ -61,7 +61,7 @@ test.describe('Silviculture Search', () => {
     });
 
     //Intercept the categories API call and return a stubbed response
-    await page.route('**/api/codes/categories**', async route => {
+    await page.route('**/api/codes/opening-categories**', async route => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',

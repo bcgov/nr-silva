@@ -100,12 +100,12 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   }, [polygons]);
 
   useEffect(() => {
-    if (selectedFeature) {
+    if (hoveredFeature) {
       setTimeout(() => {
         map.eachLayer((l: L.Layer) => {
           if (
             (l as any).feature &&
-            (l as any).feature.id === selectedFeature.id &&
+            (l as any).feature.id === hoveredFeature.id &&
             (l as L.Path).bringToFront
           ) {
             (l as L.Path).bringToFront();
@@ -138,10 +138,15 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
         if ((layer as L.Path).bringToFront) (layer as L.Path).bringToFront();
 
         const currentZoom = map.getZoom();
-        if (currentZoom <= 14 || currentZoom >= 17) {
-          const geoJsonLayer = L.geoJSON(feature);
-          const bounds = geoJsonLayer.getBounds();
-          map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 0.5 });
+        const geoJsonLayer = L.geoJSON(feature);
+        const bounds = geoJsonLayer.getBounds();
+        const mapBounds = map.getBounds();
+
+        // This condition checks if the current zoom level is outside the preferred range (between 15 and 16 inclusive)
+        // or if the polygon's bounds are not fully visible within the current map view.
+        // If either is true, the map view will animate to fit the polygon's bounds.
+        if ((currentZoom <= 14 || currentZoom >= 17) || !mapBounds.contains(bounds)) {
+          map.flyToBounds(bounds, { maxZoom: 16, animate: true, duration: 0.5 });
         }
       },
     });

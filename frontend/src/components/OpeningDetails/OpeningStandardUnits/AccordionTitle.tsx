@@ -2,13 +2,13 @@ import React from "react";
 import { Location as LocationIcon } from "@carbon/icons-react";
 
 import { PLACE_HOLDER } from "@/constants";
-import { OpeningDetailsStockingDetailsMilestoneDto, OpeningDetailsStockingDto } from "@/services/OpenApi";
+import { OpeningDetailsStockingDetailsMilestoneDto, OpeningDetailsStockingDto, OpeningStockingHistoryDto } from "@/services/OpenApi";
 
 import VerticalDivider from "../../VerticalDivider";
 import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTag";
 
 type AcoordionTitleProp = {
-  standardUnit: OpeningDetailsStockingDto;
+  standardUnit: OpeningDetailsStockingDto | OpeningStockingHistoryDto;
 };
 
 const getCurrentMilestoneStatus = (milestones: OpeningDetailsStockingDetailsMilestoneDto) => {
@@ -45,7 +45,11 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
             standardUnit.stocking.stockingStandardUnit ?? PLACE_HOLDER
           }
         </h4>
-        {renderMilestoneStatusTag(standardUnit.stocking.milestones)}
+        {
+          "milestones" in standardUnit.stocking && standardUnit.stocking.milestones
+            ? renderMilestoneStatusTag(standardUnit.stocking.milestones)
+            : null
+        }
       </div>
       <div className="accordion-title-bottom">
         {/* No standard unit id or FSP id */}

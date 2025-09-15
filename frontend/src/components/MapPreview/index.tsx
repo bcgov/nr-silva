@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, GeoJSON as RLGeoJSON } from "react-leaflet";
 import * as L from "leaflet";
 
 type MapPreviewProps = {
-  geojson: GeoJSON.FeatureCollection
+  geojson?: GeoJSON.FeatureCollection | null
 }
 
 const MapPreview = ({ geojson }: MapPreviewProps) => {
@@ -21,6 +21,8 @@ const MapPreview = ({ geojson }: MapPreviewProps) => {
     }
     temp.remove();
   }, [geojson, mapReady]);
+
+  if (!geojson) return null;
 
   return (
     <div className="map-preview" style={{ height: 294 }}>

@@ -59,11 +59,11 @@ export type { OpeningForestCoverPolygonDto } from './models/OpeningForestCoverPo
 export type { OpeningForestCoverUnmappedDto } from './models/OpeningForestCoverUnmappedDto';
 export type { OpeningSearchResponseDto } from './models/OpeningSearchResponseDto';
 export type { OpeningsPerYearDto } from './models/OpeningsPerYearDto';
-export type { OpeningStandardUnitHistoryDetailsDto } from './models/OpeningStandardUnitHistoryDetailsDto';
-export type { OpeningStandardUnitHistoryDto } from './models/OpeningStandardUnitHistoryDto';
-export type { OpeningStandardUnitHistoryLayerDetailsDto } from './models/OpeningStandardUnitHistoryLayerDetailsDto';
-export type { OpeningStandardUnitHistoryOverviewDto } from './models/OpeningStandardUnitHistoryOverviewDto';
-export type { OpeningStandardUnitHistorySpeciesDetailsDto } from './models/OpeningStandardUnitHistorySpeciesDetailsDto';
+export type { OpeningStockingHistoryDetailsDto } from './models/OpeningStockingHistoryDetailsDto';
+export type { OpeningStockingHistoryDto } from './models/OpeningStockingHistoryDto';
+export type { OpeningStockingHistoryLayerDto } from './models/OpeningStockingHistoryLayerDto';
+export type { OpeningStockingHistoryOverviewDto } from './models/OpeningStockingHistoryOverviewDto';
+export type { OpeningStockingHistorySpeciesDto } from './models/OpeningStockingHistorySpeciesDto';
 export type { Pageable } from './models/Pageable';
 export type { PagedModelOpeningDetailsActivitiesActivitiesDto } from './models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 export type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from './models/PagedModelOpeningDetailsActivitiesDisturbanceDto';

@@ -28,7 +28,7 @@ public class CodesEndpoint {
    * @param includeExpired Query param to include expired categories.
    * @return List of {@link CodeDescriptionDto} with found categories.
    */
-  @GetMapping("/categories")
+  @GetMapping("/opening-categories")
   public List<CodeDescriptionDto> getOpeningCategories(
       @RequestParam(value = "includeExpired", required = false, defaultValue = "true")
       Boolean includeExpired) {

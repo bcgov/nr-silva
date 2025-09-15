@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
-export type OpeningStandardUnitHistoryOverviewDto = {
+export type OpeningStockingHistoryOverviewDto = {
     stockingEventHistoryId: number | number;
     amendmentNumber: number | number | null;
     eventTimestamp: string | null;
@@ -13,5 +13,7 @@ export type OpeningStandardUnitHistoryOverviewDto = {
     esfSubmissionId: string | null;
     submittedByUserId: string | null;
     approvedByUserId: string | null;
+    isLatest: boolean;
+    isOldest: boolean;
 };
 

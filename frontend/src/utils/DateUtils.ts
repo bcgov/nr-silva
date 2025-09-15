@@ -39,7 +39,7 @@ export const formatLocalDate = (localDate?: string | null, usePlaceholder?: bool
     return usePlaceholder ? PLACE_HOLDER : ""
   }
 
-  const stringDate = String(localDate);
+  const stringDate = String(localDate).replace(/Z$/, "");
 
   return DateTime.fromISO(stringDate, { zone: "local" }).toFormat("MMM dd, yyyy");
 };
@@ -79,4 +79,10 @@ export const extractYearFromDateString = (dateStr: string): number | null => {
     dt = DateTime.fromFormat(dateStr, "yyyy-MM-dd'Z'");
   }
   return dt.isValid ? dt.year : null;
+};
+
+export const formatDateTime = (dateTimeStr: string, format: string = "dd/MM/yyyy (hh:mm a)"): string => {
+  if (!dateTimeStr) return '--';
+  const dt = DateTime.fromISO(dateTimeStr);
+  return dt.isValid ? dt.toFormat(format) : '--';
 };

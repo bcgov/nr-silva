@@ -40,6 +40,7 @@ describe("OpeningSummary", () => {
     createdOn: "2001-06-07",
     lastUpdatedOn: "2014-04-02",
     disturbanceStartDate: "2001-09-18",
+    orgUnitNumber: null
   };
 
   test("renders all opening summary information correctly", async () => {
@@ -181,6 +182,7 @@ describe("OpeningSummary", () => {
       createdOn: null,
       lastUpdatedOn: null,
       disturbanceStartDate: null,
+      orgUnitNumber: null
     };
 
     render(<OpeningSummary tombstoneObj={emptyTombstone} />);
