@@ -50,7 +50,7 @@ public class OpeningForestCoverHistoryServiceTest {
         when(projection1.getOther()).thenReturn(0.0);
         when(projection1.getTotal()).thenReturn(16.7);
         when(projection1.getHasDetails()).thenReturn(true);
-        when(projection1.getIsCurrentHistory()).thenReturn(true);
+        when(projection1.getIsCurrent()).thenReturn(true);
 
         ForestCoverHistoryOverviewProjection projection2 = mock(ForestCoverHistoryOverviewProjection.class);
         when(projection2.getFcDate()).thenReturn(LocalDateTime.of(2004, 11, 29, 10, 8));
@@ -60,7 +60,7 @@ public class OpeningForestCoverHistoryServiceTest {
         when(projection2.getOther()).thenReturn(0.0);
         when(projection2.getTotal()).thenReturn(16.6);
         when(projection2.getHasDetails()).thenReturn(true);
-        when(projection2.getIsCurrentHistory()).thenReturn(false);
+        when(projection2.getIsCurrent()).thenReturn(false);
 
         when(forestCoverEntityRepository.findHistoryOverviewByOpeningId(openingId))
                 .thenReturn(List.of(projection1, projection2));

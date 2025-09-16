@@ -1,13 +1,10 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.*;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryOverviewProjection;
 import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -105,7 +102,7 @@ public class OpeningForestCoverHistoryService {
                 projection.getOther(),
                 projection.getTotal(),
                 projection.getHasDetails(),
-                projection.getIsCurrentHistory()
+                projection.getIsCurrent()
         );
     }
 
