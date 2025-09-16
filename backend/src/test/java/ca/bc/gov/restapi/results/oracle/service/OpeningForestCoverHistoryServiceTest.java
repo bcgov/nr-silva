@@ -51,6 +51,7 @@ public class OpeningForestCoverHistoryServiceTest {
         when(projection1.getTotal()).thenReturn(16.7);
         when(projection1.getHasDetails()).thenReturn(true);
         when(projection1.getIsCurrent()).thenReturn(true);
+        when(projection1.getIsOldest()).thenReturn(false);
 
         ForestCoverHistoryOverviewProjection projection2 = mock(ForestCoverHistoryOverviewProjection.class);
         when(projection2.getFcDate()).thenReturn(LocalDateTime.of(2004, 11, 29, 10, 8));
@@ -61,6 +62,7 @@ public class OpeningForestCoverHistoryServiceTest {
         when(projection2.getTotal()).thenReturn(16.6);
         when(projection2.getHasDetails()).thenReturn(true);
         when(projection2.getIsCurrent()).thenReturn(false);
+        when(projection2.getIsOldest()).thenReturn(true);
 
         when(forestCoverEntityRepository.findHistoryOverviewByOpeningId(openingId))
                 .thenReturn(List.of(projection1, projection2));
@@ -80,7 +82,8 @@ public class OpeningForestCoverHistoryServiceTest {
         assertEquals(0.0, dto1.other());
         assertEquals(16.7, dto1.total());
         assertTrue(dto1.hasDetails());
-        assertTrue(dto1.isCurrentHistory());
+        assertTrue(dto1.isCurrent());
+        assertFalse(dto1.isOldest());
 
         OpeningForestCoverHistoryOverviewDto dto2 = result.get(1);
         assertEquals(LocalDateTime.of(2004, 11, 29, 10, 8), dto2.updateTimestamp());
@@ -90,7 +93,8 @@ public class OpeningForestCoverHistoryServiceTest {
         assertEquals(0.0, dto2.other());
         assertEquals(16.6, dto2.total());
         assertTrue(dto2.hasDetails());
-        assertFalse(dto2.isCurrentHistory());
+        assertFalse(dto2.isCurrent());
+        assertTrue(dto2.isOldest());
 
         verify(forestCoverEntityRepository).findHistoryOverviewByOpeningId(openingId);
     }

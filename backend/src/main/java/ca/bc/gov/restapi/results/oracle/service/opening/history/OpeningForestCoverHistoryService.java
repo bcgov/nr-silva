@@ -102,7 +102,8 @@ public class OpeningForestCoverHistoryService {
                 projection.getOther(),
                 projection.getTotal(),
                 projection.getHasDetails(),
-                projection.getIsCurrent()
+                projection.getIsCurrent(),
+                projection.getIsOldest()
         );
     }
 
