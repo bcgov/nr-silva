@@ -291,15 +291,39 @@ export const parseToGeoJSON = async (f: File): Promise<GeoJSON.FeatureCollection
   const text = await f.text();
   const name = f.name.toLowerCase();
 
+  // Helper: validate geometry type is a simple feature
+  const isSimpleGeometryType = (type: string) => [
+    "Point",
+    "MultiPoint",
+    "LineString",
+    "MultiLineString",
+    "Polygon",
+    "MultiPolygon"
+  ].includes(type);
+
   // Already GeoJSON / JSON
   if (name.endsWith(".geojson") || name.endsWith(".json")) {
     const obj = JSON.parse(text);
-    if (obj.type === "FeatureCollection") return obj as GeoJSON.FeatureCollection;
-    if (obj.type === "Feature") return { type: "FeatureCollection", features: [obj] } as GeoJSON.FeatureCollection;
-    if (obj.type && obj.coordinates) {
-      return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: obj }] } as GeoJSON.FeatureCollection;
+    let fc: GeoJSON.FeatureCollection;
+    if (obj.type === "FeatureCollection") {
+      fc = obj as GeoJSON.FeatureCollection;
+    } else if (obj.type === "Feature") {
+      fc = { type: "FeatureCollection", features: [obj] } as GeoJSON.FeatureCollection;
+    } else if (obj.type && obj.coordinates) {
+      fc = { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: obj }] } as GeoJSON.FeatureCollection;
+    } else {
+      throw new Error("JSON is not valid GeoJSON.");
     }
-    throw new Error("JSON is not valid GeoJSON.");
+    // Validate all geometry types
+    for (const [i, feature] of fc.features.entries()) {
+      if (!feature.geometry || !feature.geometry.type) {
+        throw new Error(`Feature ${i + 1} missing geometry or geometry type.`);
+      }
+      if (!isSimpleGeometryType(feature.geometry.type)) {
+        throw new Error(`Feature ${i + 1} geometry type '${feature.geometry.type}' is not a simple feature (no curves allowed).`);
+      }
+    }
+    return fc;
   }
 
   if (name.endsWith(".gml")) {

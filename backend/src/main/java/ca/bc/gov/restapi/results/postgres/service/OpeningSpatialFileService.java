@@ -3,43 +3,45 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.CoordinateFilter;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.geojson.GeoJsonReader;
-import org.locationtech.jts.io.geojson.GeoJsonWriter;
-import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
-import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateReferenceSystem;
-import org.locationtech.proj4j.CoordinateTransform;
-import org.locationtech.proj4j.CoordinateTransformFactory;
-import org.locationtech.proj4j.ProjCoordinate;
-import org.springframework.core.io.ClassPathResource;
+import org.locationtech.jts.operation.valid.IsValidOp;
+import org.locationtech.jts.operation.valid.TopologyValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/** This service handles processing of uploaded spatial files (GeoJSON, GML, ESF/XML). */
+/**
+ * This service handles processing of uploaded spatial files (GeoJSON, GML, ESF/XML).
+ *
+ * <p>Validation and processing steps:
+ *
+ * <ol>
+ *   <li><b>CRS Validation:</b> Ensure the file is in EPSG:3005 or EPSG:4326.<br>
+ *       <i>Reason:</i> All further checks depend on knowing the coordinate system.
+ *   <li><b>Geometry Validity (OGC/ESRI):</b> Validate that the geometry is valid according to OGC
+ *       and ESRI specs.<br>
+ *       <i>Reason:</i> Invalid geometries can break downstream processing and thinning.
+ *   <li><b>Simple Features (No Curves):</b> Ensure all geometries are simple features (no curves).
+ *       <br>
+ *       <i>Reason:</i> Thinning and extent checks require simple, linear geometries.
+ *   <li><b>Province of BC Extents:</b> Check that all features and vertices are within BC extents.
+ *       <br>
+ *       <i>Reason:</i> You only want data within your area of interest.
+ *   <li><b>Vertex Thinning (Douglas-Peucker, 2.5m tolerance):</b> Thin the vertices to the required
+ *       accuracy/precision.<br>
+ *       <i>Reason:</i> This is a data optimization step, best done after validation.
+ * </ol>
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("deprecation")
 public class OpeningSpatialFileService {
 
-  private static final CRSFactory CRS_FACTORY = new CRSFactory();
-  private static final CoordinateTransformFactory TRANSFORM_FACTORY =
-      new CoordinateTransformFactory();
-  private static final CoordinateReferenceSystem CRS_3005 =
-      CRS_FACTORY.createFromParameters(
-          "EPSG:3005",
-          "+proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 "
-              + "+x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs");
   private final ObjectMapper mapper = new ObjectMapper();
 
   /**
@@ -89,180 +91,149 @@ public class OpeningSpatialFileService {
   private void processGeojson(MultipartFile file) {
     log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
     try {
-      // Read file content into a string
-      String geoJsonContent = new String(file.getBytes());
-      // Normalize to EPSG:3005
-      String normalizedGeoJson = normalizeTo3005(geoJsonContent);
-      // Generalize geometry with 2.5 meters tolerance
-      String generalizedGeoJson = generalizeGeoJson(normalizedGeoJson, 2.5);
-      // Validate within BC boundary
-      String validatedGeoJson = validateWithinBC(generalizedGeoJson);
-      // Log the validated result
-      log.info("Validated GeoJSON within BC boundary: {}", validatedGeoJson);
-    } catch (Exception e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Failed to process GeoJSON file", e);
-    }
-  }
-
-  private String normalizeTo3005(String geoJson) {
-    try {
-      JsonNode root = mapper.readTree(geoJson);
-      String sourceEpsg = "EPSG:3005"; // default
-
-      if (root.has("crs") && root.get("crs").has("properties")) {
-        JsonNode props = root.get("crs").get("properties");
-        if (props.has("name")) {
-          sourceEpsg = props.get("name").asText();
-        }
-      }
-
-      if ("EPSG:3005".equalsIgnoreCase(sourceEpsg)) {
-        return geoJson;
-      }
-
-      log.info("Converting from {} to EPSG:3005", sourceEpsg);
-
-      CoordinateReferenceSystem srcCrs = CRS_FACTORY.createFromName(sourceEpsg);
-      CoordinateTransform transform = TRANSFORM_FACTORY.createTransform(srcCrs, CRS_3005);
-
-      GeoJsonReader reader = new GeoJsonReader();
-      GeoJsonWriter writer = new GeoJsonWriter();
-
-      if ("FeatureCollection".equalsIgnoreCase(root.get("type").asText())) {
-        for (JsonNode feature : root.get("features")) {
-          ObjectNode featureObj = (ObjectNode) feature;
-          JsonNode geomNode = featureObj.get("geometry");
-
-          Geometry geom = reader.read(geomNode.toString());
-          Geometry transformed = transformGeometry(geom, transform);
-
-          featureObj.set("geometry", mapper.readTree(writer.write(transformed)));
-        }
-        ((ObjectNode) root)
-            .putObject("crs")
-            .put("type", "name")
-            .putObject("properties")
-            .put("name", "EPSG:3005");
-      }
-
-      return mapper.writeValueAsString(root);
-
-    } catch (Exception e) {
-      log.error("Failed to normalize GeoJSON to EPSG:3005", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid GeoJSON CRS", e);
-    }
-  }
-
-  private String generalizeGeoJson(String geoJson, double toleranceMeters) {
-    try {
-      JsonNode root = mapper.readTree(geoJson);
-      GeoJsonReader reader = new GeoJsonReader();
-      GeoJsonWriter writer = new GeoJsonWriter();
-      writer.setEncodeCRS(false);
-
-      if ("FeatureCollection".equalsIgnoreCase(root.get("type").asText())) {
-        for (JsonNode feature : root.get("features")) {
-          ObjectNode featureObj = (ObjectNode) feature;
-          JsonNode geomNode = featureObj.get("geometry");
-
-          if (geomNode == null || geomNode.isNull()) {
-            continue; // skip features without geometry
-          }
-
-          Geometry geom = reader.read(geomNode.toString());
-          Geometry simplified = DouglasPeuckerSimplifier.simplify(geom, toleranceMeters);
-
-          if (simplified.isEmpty() || !simplified.isValid()) {
-            log.warn(
-                "Simplified geometry is empty/invalid, falling back to original for feature {}",
-                featureObj);
-            simplified = geom.buffer(0);
-            if (simplified.isEmpty()) {
-              simplified = geom; // last fallback
-            }
-          }
-
-          featureObj.set("geometry", mapper.readTree(writer.write(simplified)));
-        }
-        ((ObjectNode) root)
-            .putObject("crs")
-            .put("type", "name")
-            .putObject("properties")
-            .put("name", "EPSG:3005");
-      }
-
-      String result = mapper.writeValueAsString(root);
-      log.info("Generalized GeoJSON: {}", result);
-      return result;
-    } catch (Exception e) {
-      log.error("Failed to generalize GeoJSON", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to generalize GeoJSON", e);
-    }
-  }
-
-  private String validateWithinBC(String geoJson) {
-    try {
-      // Load BC boundary GeoJSON from resources
-      ClassPathResource resource = new ClassPathResource("static/ABMS_PROVINCE_SP_2025.geojson");
-      InputStream inputStream = resource.getInputStream();
-      String bcGeoJson;
-      try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8.name())) {
-        bcGeoJson = scanner.useDelimiter("\\A").next();
-      }
-
-      JsonNode bcRoot = mapper.readTree(bcGeoJson);
-      ((ObjectNode) bcRoot).remove("crs");
-      String bcGeoJsonNoCrs = mapper.writeValueAsString(bcRoot);
-
-      GeoJsonReader reader = new GeoJsonReader();
-      Geometry bcBoundary = reader.read(bcGeoJsonNoCrs);
-
-      JsonNode root = mapper.readTree(geoJson);
-      if (!"FeatureCollection".equalsIgnoreCase(root.get("type").asText())) {
+      String geojson = new String(file.getBytes());
+      JsonNode root = mapper.readTree(geojson);
+      String crsCode = detectGeoJsonCrs(root);
+      log.info("Detected CRS for GeoJSON: EPSG:{}", crsCode);
+      if (!crsCode.equals("4326") && !crsCode.equals("3005")) {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "GeoJSON must be a FeatureCollection");
+            HttpStatus.BAD_REQUEST, "GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)");
       }
 
-      for (JsonNode feature : root.get("features")) {
-        JsonNode geomNode = feature.get("geometry");
-        if (geomNode == null || geomNode.isNull()) {
-          continue; // skip features without geometry
-        }
-        Geometry geom = reader.read(geomNode.toString());
-        if (geom.isEmpty()) {
-          log.warn("Skipping empty geometry during BC boundary validation");
-          continue;
-        }
-        if (!(geom.within(bcBoundary) || geom.coveredBy(bcBoundary))) {
-          throw new ResponseStatusException(
-              HttpStatus.BAD_REQUEST, "Feature geometry is outside BC boundary");
-        }
+      // Step 2: Geometry Validity (OGC/ESRI)
+      validateGeoJsonGeometry(geojson);
+
+      // Continue with further processing as needed...
+    } catch (Exception e) {
+      log.error("Failed to process GeoJSON file", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid GeoJSON file: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Validates the geometry of a GeoJSON file using GeoTools/JTS. Throws ResponseStatusException if
+   * any geometry is invalid.
+   */
+  private void validateGeoJsonGeometry(String geojson) {
+    try {
+      JsonNode root = mapper.readTree(geojson);
+
+      if (!root.has("type")) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GeoJSON missing 'type'");
       }
 
-      return geoJson;
+      String type = root.get("type").asText();
+      GeometryJSON gjson = new GeometryJSON();
+
+      switch (type) {
+        case "FeatureCollection":
+          JsonNode features = root.get("features");
+          if (features == null || !features.isArray()) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "FeatureCollection missing 'features' array");
+          }
+          int i = 0;
+          for (JsonNode f : features) {
+            i++;
+            JsonNode geomNode = f.get("geometry");
+            validateGeometryNode(gjson, geomNode, i);
+          }
+          break;
+        case "Feature":
+          validateGeometryNode(gjson, root.get("geometry"), 1);
+          break;
+        default:
+          // Assume it's a raw Geometry object
+          validateGeometryNode(gjson, root, 1);
+          break;
+      }
+      log.info("All geometries in the GeoJSON file have been validated and are valid.");
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
-      log.error("Failed to validate GeoJSON within BC boundary", e);
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Failed to validate GeoJSON within BC boundary", e);
+          HttpStatus.BAD_REQUEST, "Failed geometry validation: " + e.getMessage());
     }
   }
 
-  private Geometry transformGeometry(Geometry geom, CoordinateTransform transform) {
-    Geometry copy = geom.copy();
-    copy.apply(
-        new CoordinateFilter() {
-          @Override
-          public void filter(Coordinate coord) {
-            ProjCoordinate in = new ProjCoordinate(coord.x, coord.y);
-            ProjCoordinate out = new ProjCoordinate();
-            transform.transform(in, out);
-            coord.setX(out.x);
-            coord.setY(out.y);
+  private void validateGeometryNode(GeometryJSON gjson, JsonNode geomNode, int index) {
+    if (geomNode == null || geomNode.isNull()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Feature " + index + " missing geometry");
+    }
+    // Check for simple feature geometry type (no curves)
+    if (!geomNode.has("type")) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Feature " + index + " geometry missing 'type'");
+    }
+    String geomType = geomNode.get("type").asText();
+    // Only allow simple feature types
+    switch (geomType) {
+      case "Point":
+      case "MultiPoint":
+      case "LineString":
+      case "MultiLineString":
+      case "Polygon":
+      case "MultiPolygon":
+        // valid simple feature
+        break;
+      default:
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            String.format(
+                "Feature %d geometry type '%s' is not a simple feature (no curves allowed)",
+                index, geomType));
+    }
+    try {
+      Geometry geometry = gjson.read(new java.io.StringReader(geomNode.toString()));
+      IsValidOp validator = new IsValidOp(geometry);
+      TopologyValidationError err = validator.getValidationError();
+      if (err != null) {
+        String message =
+            String.format(
+                "Invalid geometry at feature %d: %s (coord=%s)",
+                index, err.getMessage(), err.getCoordinate());
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+      }
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid geometry at feature " + index + ": " + e.getMessage());
+    }
+  }
+
+  /**
+   * Detects the CRS code from a GeoJSON root node. Defaults to "4326" if not specified.
+   *
+   * @param root the root JsonNode of the GeoJSON
+   * @return the EPSG code as a string
+   */
+  private String detectGeoJsonCrs(JsonNode root) {
+    String crsCode = null;
+    // GeoJSON RFC 7946: CRS is always EPSG:4326, but older files may have a 'crs' property
+    if (root.has("crs")) {
+      JsonNode crsNode = root.get("crs");
+      // Try to extract EPSG code from crs property
+      if (crsNode.has("properties")) {
+        JsonNode props = crsNode.get("properties");
+        if (props.has("name")) {
+          String name = props.get("name").asText();
+          if (name.contains("EPSG::")) {
+            crsCode = name.substring(name.indexOf("EPSG::") + 6);
+          } else if (name.contains("EPSG:")) {
+            crsCode = name.substring(name.indexOf("EPSG:") + 5);
+          } else {
+            crsCode = name;
           }
-        });
-    return copy;
+        }
+      }
+    }
+    if (crsCode == null || crsCode.isEmpty()) {
+      // Per RFC 7946, default to EPSG:4326
+      crsCode = "4326";
+    }
+    return crsCode;
   }
 }

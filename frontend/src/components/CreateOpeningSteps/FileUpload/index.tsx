@@ -196,7 +196,7 @@ const FileUpload = ({
 
           {/* Map preview */}
           {
-            form.geojson ? <MapPreview geojson={form.geojson.value} /> : null
+            form.geojson?.value && !error ? <MapPreview geojson={form.geojson.value} /> : null
           }
         </Stack>
       </Column>
