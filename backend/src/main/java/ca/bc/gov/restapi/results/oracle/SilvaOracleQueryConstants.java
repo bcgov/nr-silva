@@ -1331,7 +1331,7 @@ public class SilvaOracleQueryConstants {
               )
               THEN 'true'
               ELSE 'false'
-          END AS IS_CURRENT_HISTORY,
+          END AS IS_CURRENT,
           CASE
               WHEN ols.OPENING_LAND_STATUS_DATE = (
                   SELECT MIN(ols2.OPENING_LAND_STATUS_DATE)
@@ -1340,7 +1340,7 @@ public class SilvaOracleQueryConstants {
               )
               THEN 'true'
               ELSE 'false'
-          END AS IS_LATEST_HISTORY
+          END AS IS_OLDEST
       FROM THE.OPENING_LAND_STATUS ols
       LEFT JOIN fca_deduped fca
           ON ols.OPENING_ID = fca.OPENING_ID
