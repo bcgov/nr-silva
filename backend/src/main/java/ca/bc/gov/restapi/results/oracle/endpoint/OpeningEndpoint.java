@@ -139,8 +139,9 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/cover/history")
   public List<OpeningForestCoverHistoryDto> getCoverHistory(
       @PathVariable Long openingId,
-      @RequestParam(name = "updateDate", required = true) String updateDate) {
-    return openingService.getOpeningForestCoverHistoryList(openingId, updateDate);
+      @RequestParam(name = "updateDate", required = true) String updateDate,
+      @RequestParam(name = "mainSearchTerm", required = false) String mainSearchTerm) {
+    return openingService.getOpeningForestCoverHistoryList(openingId, updateDate, mainSearchTerm);
   }
 
   @GetMapping("/{openingId}/cover/history/{forestCoverId}")

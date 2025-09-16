@@ -128,13 +128,13 @@ public class OpeningDetailsService {
   }
 
   public List<OpeningForestCoverHistoryDto> getOpeningForestCoverHistoryList(
-      Long openingId, String updateDate) {
+      Long openingId, String updateDate, String mainSearchTerm) {
     log.info(
         "Fetching forest cover history list for opening ID: {} and update date: {}",
         openingId,
         updateDate);
     List<OpeningForestCoverHistoryDto> result =
-        forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+        forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate, mainSearchTerm);
 
     if (result.isEmpty()) {
       throw new NotFoundGenericException(

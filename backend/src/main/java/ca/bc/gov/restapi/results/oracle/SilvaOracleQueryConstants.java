@@ -1408,6 +1408,25 @@ public class SilvaOracleQueryConstants {
       WHERE
         fc.OPENING_ID = :openingId
         AND TRUNC(fc.UPDATE_TIMESTAMP) = TO_DATE(:updateDate, 'YYYY-MM-DD')
+        AND (
+              NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE'
+              OR (
+                  fc.SILV_POLYGON_NO LIKE '%' || :mainSearchTerm || '%'
+                  OR ssu.STANDARDS_UNIT_ID LIKE '%' || :mainSearchTerm || '%'
+                  OR UPPER(stcnma.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                  OR fcnma.STOCKING_TYPE_CODE LIKE '%' || :mainSearchTerm || '%'
+                  OR fc.STOCKING_STATUS_CODE LIKE '%' || :mainSearchTerm || '%'
+                  OR UPPER(ssc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                  OR fc.STOCKING_TYPE_CODE LIKE '%' || :mainSearchTerm || '%'
+                  OR UPPER(stc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+                  OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                      AND fc.SILV_POLYGON_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+                  OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                      AND fc.SILV_POLYGON_NET_AREA = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+                  OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                      AND fc.REFERENCE_YEAR = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR, '999999.999999'))
+              )
+        )
       """;
 
   public static final String GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES =

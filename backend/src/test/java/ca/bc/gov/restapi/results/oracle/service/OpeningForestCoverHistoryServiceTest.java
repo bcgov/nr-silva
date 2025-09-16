@@ -130,7 +130,7 @@ public class OpeningForestCoverHistoryServiceTest {
         when(projection.getIsSingleLayer()).thenReturn("Y");
         when(projection.getReserveCode()).thenReturn("R");
 
-        when(forestCoverEntityRepository.findHistoryByOpeningDetails(openingId, updateDate))
+        when(forestCoverEntityRepository.findHistoryByOpeningDetails(openingId, updateDate, null))
                 .thenReturn(List.of(projection));
         when(forestCoverEntityRepository.findHistoryByOpeningDetailsSpecies(10L, "S", archiveDate))
                 .thenReturn(List.of());
@@ -138,7 +138,7 @@ public class OpeningForestCoverHistoryServiceTest {
                 .thenReturn(List.of());
 
         List<OpeningForestCoverHistoryDto> result =
-                openingForestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+                openingForestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate, null);
 
         assertEquals(1, result.size());
         OpeningForestCoverHistoryDto dto = result.get(0);
@@ -159,7 +159,7 @@ public class OpeningForestCoverHistoryServiceTest {
         assertTrue(dto.isSingleLayer());
         assertTrue(dto.hasReserve());
 
-        verify(forestCoverEntityRepository).findHistoryByOpeningDetails(openingId, updateDate);
+        verify(forestCoverEntityRepository).findHistoryByOpeningDetails(openingId, updateDate, null);
         verify(forestCoverEntityRepository).findHistoryByOpeningDetailsSpecies(10L, "S", archiveDate);
         verify(forestCoverEntityRepository).findHistoryByOpeningDetailsSpecies(10L, "I", archiveDate);
     }
@@ -169,14 +169,14 @@ public class OpeningForestCoverHistoryServiceTest {
     void getOpeningForestCoverList_returnsEmptyList() {
         Long openingId = 2L;
         String updateDate = "2021-01-01T00:00:00";
-        when(forestCoverEntityRepository.findHistoryByOpeningDetails(openingId, updateDate)).thenReturn(List.of());
+        when(forestCoverEntityRepository.findHistoryByOpeningDetails(openingId, updateDate, null)).thenReturn(List.of());
 
         List<OpeningForestCoverHistoryDto> result =
-                openingForestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+                openingForestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate, null);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(forestCoverEntityRepository).findHistoryByOpeningDetails(openingId, updateDate);
+        verify(forestCoverEntityRepository).findHistoryByOpeningDetails(openingId, updateDate, null);
     }
 
     @Test

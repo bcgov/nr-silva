@@ -31,9 +31,9 @@ public class OpeningForestCoverHistoryService {
     }
 
     public List<OpeningForestCoverHistoryDto> getOpeningForestCoverList(
-            Long openingId, String updateDate) {
+            Long openingId, String updateDate, String mainSearchTerm) {
 
-        return coverRepository.findHistoryByOpeningDetails(openingId, updateDate).stream()
+        return coverRepository.findHistoryByOpeningDetails(openingId, updateDate, mainSearchTerm).stream()
                 .map(
                         projection -> {
                             boolean isSingleLayer =

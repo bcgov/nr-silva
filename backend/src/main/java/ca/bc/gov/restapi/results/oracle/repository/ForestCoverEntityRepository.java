@@ -45,7 +45,7 @@ public interface ForestCoverEntityRepository extends JpaRepository<ForestCoverEn
   List<ForestCoverHistoryOverviewProjection> findHistoryOverviewByOpeningId(Long openingId);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_LIST)
-  List<ForestCoverHistoryProjection> findHistoryByOpeningDetails(Long openingId, String updateDate);
+  List<ForestCoverHistoryProjection> findHistoryByOpeningDetails(Long openingId, String updateDate, String mainSearchTerm);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_LIST_SPECIES)
   List<ForestCoverHistorySpeciesProjection> findHistoryByOpeningDetailsSpecies(
