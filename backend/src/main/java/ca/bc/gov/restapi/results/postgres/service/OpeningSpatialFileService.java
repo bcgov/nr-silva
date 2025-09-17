@@ -3,6 +3,9 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.InputStream;
+import java.io.StringReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.geojson.geom.GeometryJSON;
@@ -50,7 +53,7 @@ public class OpeningSpatialFileService {
    *
    * @param file the uploaded spatial file
    */
-  public void processOpeningSpatialFile(MultipartFile file) {
+  public String processOpeningSpatialFile(MultipartFile file) {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
@@ -71,11 +74,13 @@ public class OpeningSpatialFileService {
     } else if (lowerName.endsWith(".gml")) {
       processGml(file);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
-      processGeojson(file);
+      return processGeojson(file);
     } else {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
+
+    return "";
   }
 
   private void processEsf(MultipartFile file) {
@@ -88,11 +93,13 @@ public class OpeningSpatialFileService {
     log.info("Processing GML file: {}", file.getOriginalFilename());
   }
 
-  private void processGeojson(MultipartFile file) {
+  private String processGeojson(MultipartFile file) {
     log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
     try {
       String geojson = new String(file.getBytes());
       JsonNode root = mapper.readTree(geojson);
+
+      // Step 1: CRS Validation
       String crsCode = detectGeoJsonCrs(root);
       log.info("Detected CRS for GeoJSON: EPSG:{}", crsCode);
       if (!crsCode.equals("4326") && !crsCode.equals("3005")) {
@@ -100,14 +107,163 @@ public class OpeningSpatialFileService {
             HttpStatus.BAD_REQUEST, "GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)");
       }
 
-      // Step 2: Geometry Validity (OGC/ESRI)
+      // Step 2, 3: Geometry Validity (OGC/ESRI), Simple Features (No Curves)
       validateGeoJsonGeometry(geojson);
 
-      // Continue with further processing as needed...
+      // Step 4: Province of BC Extents
+      validateGeoJsonWithinBcBoundary(geojson, crsCode);
+
+      // Step 5: Vertex Thinning
+      String thinnedGeojson = geoJsonThinning(geojson, crsCode);
+
+      return thinnedGeojson;
     } catch (Exception e) {
       log.error("Failed to process GeoJSON file", e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid GeoJSON file: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Applies Douglas-Peucker vertex thinning to all features in the GeoJSON using the appropriate
+   * tolerance.
+   *
+   * <p>Tolerance values:
+   *
+   * <ul>
+   *   <li>EPSG:3005 (meters): {@link SilvaConstants#THINNING_TOLERANCE_METERS}
+   *   <li>EPSG:4326 (degrees): {@link SilvaConstants#THINNING_TOLERANCE_DEGREES}
+   * </ul>
+   *
+   * @param geojson the input GeoJSON string
+   * @param crsCode the EPSG code as a string ("3005" or "4326")
+   * @return the thinned GeoJSON as a string
+   */
+  private String geoJsonThinning(String geojson, String crsCode) {
+    try {
+      GeometryJSON gjson = new GeometryJSON();
+      JsonNode root = mapper.readTree(geojson);
+      double tolerance;
+      if ("3005".equals(crsCode)) {
+        tolerance = SilvaConstants.THINNING_TOLERANCE_METERS;
+      } else {
+        tolerance = SilvaConstants.THINNING_TOLERANCE_DEGREES;
+      }
+
+      if (!root.has("features") || !root.get("features").isArray()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "GeoJSON missing 'features' array");
+      }
+
+      int featureIdx = 0;
+      for (JsonNode feature : root.get("features")) {
+        featureIdx++;
+        JsonNode geomNode = feature.get("geometry");
+        if (geomNode == null || geomNode.isNull()) continue;
+        Geometry geom = gjson.read(new java.io.StringReader(geomNode.toString()));
+
+        // Count original coordinates (only for Polygon/MultiPolygon)
+        int originalCoords = countCoordinates(geom);
+
+        Geometry simplified =
+            org.locationtech.jts.simplify.DouglasPeuckerSimplifier.simplify(geom, tolerance);
+
+        int thinnedCoords = countCoordinates(simplified);
+
+        int removed = originalCoords - thinnedCoords;
+        log.info(
+            "Feature {}: Thinning removed {} of {} coordinates ({} remain)",
+            featureIdx,
+            removed,
+            originalCoords,
+            thinnedCoords);
+
+        // Replace geometry in feature
+        ((ObjectNode) feature).set("geometry", mapper.readTree(gjson.toString(simplified)));
+      }
+      // Return the updated GeoJSON as a string
+      log.info("GeoJSON thinning complete");
+      return mapper.writeValueAsString(root);
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "GeoJSON thinning failed: " + e.getMessage());
+    }
+  }
+
+  /** Counts the number of coordinates in a Geometry (Polygon, MultiPolygon, LineString, etc.) */
+  private int countCoordinates(Geometry geometry) {
+    if (geometry == null) return 0;
+    int count = 0;
+    for (int i = 0; i < geometry.getNumGeometries(); i++) {
+      Geometry g = geometry.getGeometryN(i);
+      count += g.getNumPoints();
+    }
+    return count;
+  }
+
+  /**
+   * Validates that all features in the uploaded GeoJSON are within the BC boundary. Loads the
+   * ABMS_PROVINCE_SP_2025.geojson from resources/static. Throws ResponseStatusException if any
+   * feature is outside the BC boundary.
+   */
+  private void validateGeoJsonWithinBcBoundary(String geojson, String crsCode) {
+    try {
+      // Select BC boundary file based on CRS
+      String boundaryFile;
+      if ("4326".equals(crsCode)) {
+        boundaryFile = "static/BC_BOUNDARY_EPSG4326.geojson";
+      } else if ("3005".equals(crsCode)) {
+        boundaryFile = "static/BC_BOUNDARY_EPSG3005.geojson";
+      } else {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Unsupported CRS for BC boundary validation: EPSG:" + crsCode);
+      }
+
+      InputStream is = getClass().getClassLoader().getResourceAsStream(boundaryFile);
+      if (is == null) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "BC boundary file not found: " + boundaryFile);
+      }
+      String bcGeojson = new String(is.readAllBytes());
+      JsonNode bcRoot = mapper.readTree(bcGeojson);
+      JsonNode bcFeatures = bcRoot.get("features");
+      if (bcFeatures == null || !bcFeatures.isArray() || bcFeatures.size() == 0) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "BC boundary file is invalid: " + boundaryFile);
+      }
+      // Assume first feature is the BC boundary polygon
+      JsonNode bcGeomNode = bcFeatures.get(0).get("geometry");
+      GeometryJSON gjson = new GeometryJSON();
+      Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
+
+      // Parse uploaded geojson
+      JsonNode root = mapper.readTree(geojson);
+      JsonNode features = root.get("features");
+      if (features == null || !features.isArray()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "GeoJSON missing 'features' array");
+      }
+      int i = 0;
+      for (JsonNode f : features) {
+        i++;
+        JsonNode geomNode = f.get("geometry");
+        if (geomNode == null || geomNode.isNull()) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "Feature " + i + " missing geometry");
+        }
+        Geometry featureGeom = gjson.read(new StringReader(geomNode.toString()));
+        if (!bcBoundary.contains(featureGeom)) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              String.format("Feature %d is not fully within the Province of BC boundary.", i));
+        }
+      }
+      log.info("All features are within the Province of BC boundary.");
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "BC boundary validation failed: " + e.getMessage());
     }
   }
 
@@ -137,15 +293,15 @@ public class OpeningSpatialFileService {
           for (JsonNode f : features) {
             i++;
             JsonNode geomNode = f.get("geometry");
-            validateGeometryNode(gjson, geomNode, i);
+            validateGeoJsonGeometryNode(gjson, geomNode, i);
           }
           break;
         case "Feature":
-          validateGeometryNode(gjson, root.get("geometry"), 1);
+          validateGeoJsonGeometryNode(gjson, root.get("geometry"), 1);
           break;
         default:
           // Assume it's a raw Geometry object
-          validateGeometryNode(gjson, root, 1);
+          validateGeoJsonGeometryNode(gjson, root, 1);
           break;
       }
       log.info("All geometries in the GeoJSON file have been validated and are valid.");
@@ -157,7 +313,7 @@ public class OpeningSpatialFileService {
     }
   }
 
-  private void validateGeometryNode(GeometryJSON gjson, JsonNode geomNode, int index) {
+  private void validateGeoJsonGeometryNode(GeometryJSON gjson, JsonNode geomNode, int index) {
     if (geomNode == null || geomNode.isNull()) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Feature " + index + " missing geometry");
@@ -186,7 +342,7 @@ public class OpeningSpatialFileService {
                 index, geomType));
     }
     try {
-      Geometry geometry = gjson.read(new java.io.StringReader(geomNode.toString()));
+      Geometry geometry = gjson.read(new StringReader(geomNode.toString()));
       IsValidOp validator = new IsValidOp(geometry);
       TopologyValidationError err = validator.getValidationError();
       if (err != null) {
