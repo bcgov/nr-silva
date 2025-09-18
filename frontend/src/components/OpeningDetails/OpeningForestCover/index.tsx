@@ -21,7 +21,7 @@ import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 import API from "@/services/API";
 import { OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { formatDateTime } from "@/utils/DateUtils";
+import { formatDateTime, isMidnight } from "@/utils/DateUtils";
 
 import { EXPAND_PROMPT, ForestCoverTableHeaders, HistoryOverviewTableHeaders } from "./constants";
 import { formatForestCoverSpeciesArray } from "./utils";
@@ -278,7 +278,7 @@ const OpeningForestCover = ({
   ) => {
     switch (rowKey) {
       case 'updateTimestamp':
-        return history.updateTimestamp ? formatDateTime(history.updateTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
+        return history.updateTimestamp ? isMidnight(history.updateTimestamp) ? formatDateTime(history.updateTimestamp, "yyyy-MM-dd") : formatDateTime(history.updateTimestamp, "yyyy-MM-dd (hh:mm:ss a)") : PLACE_HOLDER;
       default:
         return history[rowKey] ?? PLACE_HOLDER;
     }
@@ -372,7 +372,7 @@ const OpeningForestCover = ({
                   className="forest-cover-dropdown"
                   items={dropdownItems}
                   itemToString={(item) => item?.updateTimestamp ?
-                    `${formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm a)")}
+                    `${isMidnight(item.updateTimestamp) ? formatDateTime(item.updateTimestamp, "dd/MM/yyyy") : formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm:ss a)")}
                     ${item.isCurrent ? ' - Latest' : item.isOldest ? ' - Oldest' : ''}`
                     : ''}
 

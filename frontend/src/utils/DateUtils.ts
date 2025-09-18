@@ -86,3 +86,10 @@ export const formatDateTime = (dateTimeStr: string, format: string = "dd/MM/yyyy
   const dt = DateTime.fromISO(dateTimeStr);
   return dt.isValid ? dt.toFormat(format) : '--';
 };
+
+export const isMidnight = (dateTimeStr: string): boolean => {
+  if (!dateTimeStr) return false;
+  const dt = DateTime.fromISO(dateTimeStr);
+  if (!dt.isValid) return false;
+  return dt.hour === 0 && dt.minute === 0 && dt.second === 0;
+};
