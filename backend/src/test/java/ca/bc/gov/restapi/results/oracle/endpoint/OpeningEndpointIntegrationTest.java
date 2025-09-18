@@ -829,7 +829,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Not Found"))
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.detail").value("Forest cover history list for opening with id 1 and update date 2004-11-29 record(s) not found!"))
+        .andExpect(jsonPath("$.detail").value("Forest cover history list for opening with id 1 and update date 2020-01-01 record(s) not found!"))
         .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history"));
   }
 
