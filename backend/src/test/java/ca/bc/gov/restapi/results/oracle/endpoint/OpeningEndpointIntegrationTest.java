@@ -736,8 +736,11 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType("application/problem+json"))
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$").isEmpty());
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.detail").value("Forest cover history overview list for opening with id 1 record(s) not found!"))
+        .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/overview"));
   }
 
   @Test
@@ -823,8 +826,11 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType("application/problem+json"))
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$").isEmpty());
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.detail").value("Forest cover history list for opening with id 1 and update date 2004-11-29 record(s) not found!"))
+        .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history"));
   }
 
   @Test
@@ -835,7 +841,13 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             get("/api/openings/101017/cover/history")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType("application/problem+json"))
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Bad Request"))
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.detail").value("Required parameter 'updateDate' is not present."))
+        .andExpect(jsonPath("$.instance").value("/api/openings/101017/cover/history"));
   }
 
   @Test
@@ -967,7 +979,12 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().contentType("application/problem+json"));
+        .andExpect(content().contentType("application/problem+json"))
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.detail").value("Forest cover history polygon with id 1 and archive date 2000-01-01 record(s) not found!"))
+        .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/1"));;
   }
 
   @Test
@@ -978,7 +995,13 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             get("/api/openings/101017/cover/history/1021182")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType("application/problem+json"))
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Bad Request"))
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.detail").value("Required parameter 'archiveDate' is not present."))
+        .andExpect(jsonPath("$.instance").value("/api/openings/101017/cover/history/1021182"));
   }
 
   @Test
