@@ -733,9 +733,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .perform(
             get("/api/openings/1/cover/history/overview")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().contentType("application/json"))
+        .andExpect(content().contentType("application/problem+json"))
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$").isEmpty());
   }
@@ -820,9 +820,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             get("/api/openings/1/cover/history")
                 .param("updateDate", "2020-01-01")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().contentType("application/json"))
+        .andExpect(content().contentType("application/problem+json"))
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$").isEmpty());
   }
@@ -834,7 +834,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .perform(
             get("/api/openings/101017/cover/history")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isBadRequest());
   }
 
@@ -965,9 +965,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
             get("/api/openings/1/cover/history/1")
                 .param("archiveDate", "2000-01-01")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isNotFound())
-        .andExpect(content().contentType("application/json"));
+        .andExpect(content().contentType("application/problem+json"));
   }
 
   @Test
@@ -977,7 +977,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .perform(
             get("/api/openings/101017/cover/history/1021182")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(status().isBadRequest());
   }
 
