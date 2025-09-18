@@ -178,7 +178,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
       case 'auditAction':
         return history.auditAction.description ?? PLACE_HOLDER
       case 'eventTimestamp':
-        return history.eventTimestamp ? formatDateTime(history.eventTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
+        return history.eventTimestamp ? formatDateTime(history.eventTimestamp, "yyyy-MM-dd (hh:mm a)") : PLACE_HOLDER;
       default:
         return history[rowKey] ?? PLACE_HOLDER;
     }
