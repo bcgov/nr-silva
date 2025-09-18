@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -6,19 +6,24 @@ import {
   Button, Column, Grid,
   DefinitionTooltip,
   Checkbox,
-  Tooltip
+  Tooltip,
+  Link,
+  DropdownSkeleton,
+  Dropdown,
+  Modal
 } from "@carbon/react";
-import { CropGrowth, DiamondOutline, Layers, Search } from "@carbon/icons-react";
+import { CropGrowth, DiamondOutline, Layers, Popup, Search } from "@carbon/icons-react";
 import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 import API from "@/services/API";
-import { OpeningForestCoverDto } from "@/services/OpenApi";
+import { OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { formatDateTime } from "@/utils/DateUtils";
 
-import { EXPAND_PROMPT, ForestCoverTableHeaders } from "./constants";
+import { EXPAND_PROMPT, ForestCoverTableHeaders, HistoryOverviewTableHeaders } from "./constants";
 import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
@@ -42,15 +47,70 @@ const OpeningForestCover = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
+  const [selectedHistory, setSelectedHistory] = useState<OpeningForestCoverHistoryOverviewDto | null>(null);
+  const [isLatestHistory, setIsLatestHistory] = useState<boolean>(true);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
+
   const forestCoverDefaultQuery = useQuery({
     queryKey: ["opening", openingId, "cover"],
-    queryFn: () => API.OpeningEndpointService.getCover(openingId)
+    queryFn: () => API.OpeningEndpointService.getCover(openingId),
+    enabled: !!openingId,
   });
 
   const forestCoverSearchQuery = useQuery({
     queryKey: ["opening", openingId, "cover", { mainSearchTerm: searchTerm }],
     queryFn: () => API.OpeningEndpointService.getCover(openingId, searchTerm),
+    enabled: !!openingId && isLatestHistory,
   });
+
+  const forestCoverHistoryOverviewQuery = useQuery({
+    queryKey: ["opening", openingId, "cover", "history", "overview"],
+    queryFn: () => API.OpeningEndpointService.getCoverHistoryOverview(openingId),
+    enabled: !!openingId
+  });
+
+  const forestCoverHistoryDefaultQuery = useQuery({
+    queryKey: ["opening", openingId, "cover", "history", { updateDate: formatDateTime(selectedHistory?.updateTimestamp!, 'yyyy-MM-dd') }],
+    queryFn: () => API.OpeningEndpointService.getCoverHistory(openingId, formatDateTime(selectedHistory?.updateTimestamp!, 'yyyy-MM-dd')),
+    enabled: !!openingId && !isLatestHistory && !!selectedHistory
+  });
+
+  const forestCoverHistorySearchQuery = useQuery({
+    queryKey: ["opening", openingId, "cover", "history", { updateDate: formatDateTime(selectedHistory?.updateTimestamp!, 'yyyy-MM-dd'), mainSearchTerm: searchTerm }],
+    queryFn: () => API.OpeningEndpointService.getCoverHistory(openingId, formatDateTime(selectedHistory?.updateTimestamp!, 'yyyy-MM-dd'), searchTerm),
+    enabled: !!openingId && !isLatestHistory && !!selectedHistory
+  });
+
+  const forestCoverQueryToUse = isLatestHistory ? forestCoverDefaultQuery : forestCoverHistoryDefaultQuery;
+  const forestCoverSearchQueryToUse = isLatestHistory ? forestCoverSearchQuery : forestCoverHistorySearchQuery;
+  const dropdownItems = (forestCoverHistoryOverviewQuery.data ?? []).map(item => ({
+    ...item,
+    disabled: !item.hasDetails // disable if hasDetails is not true
+  }));
+
+  useEffect(() => {
+    if (
+      forestCoverHistoryOverviewQuery.isSuccess &&
+      forestCoverHistoryOverviewQuery.data &&
+      forestCoverHistoryOverviewQuery.data.length > 0
+    ) {
+      const latestHistory = forestCoverHistoryOverviewQuery.data.find(item => item.isCurrent);
+      setSelectedHistory(latestHistory || null);
+    }
+
+  }, [forestCoverHistoryOverviewQuery.isSuccess, forestCoverHistoryOverviewQuery.data]);
+
+  const renderModalCellContant = (
+    rowKey: keyof OpeningForestCoverHistoryOverviewDto,
+    history: OpeningForestCoverHistoryOverviewDto,
+  ) => {
+    switch (rowKey) {
+      case 'updateTimestamp':
+        return history.updateTimestamp ? formatDateTime(history.updateTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
+      default:
+        return history[rowKey] ?? PLACE_HOLDER;
+    }
+  };
 
   const handleSearchInputChange = (
     event: "" | React.ChangeEvent<HTMLInputElement>,
@@ -224,7 +284,7 @@ const OpeningForestCover = ({
     }
   };
 
-  if (forestCoverDefaultQuery.data?.length === 0) {
+  if (forestCoverQueryToUse.data?.length === 0) {
     return (
       <EmptySection
         pictogram="Summit"
@@ -235,154 +295,258 @@ const OpeningForestCover = ({
   }
 
   return (
-    <Grid className="opening-forest-cover-grid default-grid">
-      <Column sm={4} md={8} lg={16}>
-        <h3 className="default-tab-content-title">
-          {forestCoverDefaultQuery.isLoading ? '...' : `${forestCoverDefaultQuery.data?.length ?? 0}`} forest cover polygons in this opening
-        </h3>
-      </Column>
-      <Column sm={4} md={8} lg={16}>
-        <TableContainer className="default-table-container opening-forest-cover-table-container">
-          <TableToolbar>
-            <TableToolbarSearch
-              className="default-tab-search-bar"
-              persistent
-              placeholder="Search by numeric value"
-              value={searchInput}
-              onChange={handleSearchInputChange}
-              onKeyDown={handleSearchKeyDown}
-              onClear={handleSearchClear}
-            />
-            <Button
-              kind="primary"
-              className="default-button-with-loading"
-              renderIcon={Search}
-              onClick={applySearchFilter}
-            >
-              Search
-            </Button>
-          </TableToolbar>
-          {
-            (forestCoverDefaultQuery.isLoading || forestCoverSearchQuery.isLoading)
-              ? (
-                <TableSkeleton
-                  headers={ForestCoverTableHeaders}
-                  showToolbar={false}
-                  showHeader={false}
-                  rowCount={10}
-                />
-              ) : (
-                <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table" >
-                  <TableHead>
-                    <TableRow>
-                      <TableExpandHeader />
-                      <TableHeader key="map-header">
-                        <div className="map-header-checkbox-container">
-                          <Tooltip
-                            label={
-                              availableForestCoverIds.length > 0 ?
-                                allSelected ? "Unselect all" : "Select all"
-                                : "No polygon is available"
-                            }
-                            align="right"
-                            className="forest-cover-map-tooltip"
+    <>
+      <Modal
+        className="opening-forest-cover-history-modal"
+        data-testid="opening-forest-cover-history-modal"
+        open={isHistoryModalOpen}
+        modalHeading="Forest cover history overview"
+        onRequestClose={() => setIsHistoryModalOpen(false)}
+        passiveModal={true}
+        size="lg"
+      >
+        <div className="opening-forest-cover-history-modal-content">
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {
+                    HistoryOverviewTableHeaders.map(header => (
+                      <TableHeader key={header.key}>{header.header}</TableHeader>
+                    ))
+                  }
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  forestCoverHistoryOverviewQuery.data?.map(history => (
+                    <TableRow
+                      key={history.updateTimestamp}
+                      data-testid={`fc-history-row-${history.updateTimestamp}`}
+                    >
+                      {
+                        HistoryOverviewTableHeaders.map(header => (
+                          <TableCell
+                            key={`${history.updateTimestamp}-${header.key}`}
+                            data-testid={`fc-history-${header.key}-${history.updateTimestamp}`}
                           >
-                            <span>
-                              <Checkbox
-                                id="forest-cover-select-all"
-                                data-testid="forest-cover-map-select-all"
-                                checked={allSelected}
-                                indeterminate={!allSelected && someSelected}
-                                disabled={allAvailableIds.length === 0}
-                                labelText=""
-                                onChange={(_, { checked }) => {
-                                  setSelectedForestCoverIds(checked ? allAvailableIds : []);
-                                }}
-                              />
-
-                            </span>
-                          </Tooltip>
-                          <span>Map</span>
-                        </div>
-
-                      </TableHeader>
-                      {ForestCoverTableHeaders.map((header) => (
-                        <TableHeader key={String(header.key)}>{header.header}</TableHeader>
-                      ))}
+                            {renderModalCellContant(header.key, history)}
+                          </TableCell>
+                        ))
+                      }
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {forestCoverSearchQuery.data?.map((row, idx) => {
-                      const isExpanded = expandedRows.includes(row.coverId);
-                      return (
-                        <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
-                          <TableExpandRow
-                            className="opening-forest-cover-table-row"
-                            aria-label={`Expand row for Polygon ID ${row.coverId}`}
-                            isExpanded={isExpanded}
-                            onExpand={() => handleRowExpand(row.coverId)}
-                          >
-                            <TableCell key={"map-select" + row.coverId + row.polygonId}>
-                              <Tooltip
-                                label={
-                                  !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
-                                    ? "Polygon is not available"
-                                    : "Show on map"
-                                }
-                                align={
-                                  !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
-                                    ? "right"
-                                    : "top"
-                                }
-                              >
-                                <span>
-                                  <Checkbox
-                                    id={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
-                                    key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
-                                    checked={selectedForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
-                                    disabled={!availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
-                                    labelText=""
-                                    onChange={(_, { checked }) => {
-                                      setSelectedForestCoverIds(ids =>
-                                        checked
-                                          ? [...ids, `${row.coverId}-${row.polygonId}`]
-                                          : ids.filter(id => id !== `${row.coverId}-${row.polygonId}`)
-                                      );
-                                    }}
-                                  />
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                            {ForestCoverTableHeaders.map((header) => (
-                              <TableCell key={String(header.key)} className="default-table-cell">
-                                {renderCellContent(row, header.key)}
-                              </TableCell>
-                            ))}
-                          </TableExpandRow>
-                          <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
-                            {isExpanded ? <ForestCoverExpandedRow forestCoverId={row.coverId} openingId={openingId} /> : null}
-                          </TableExpandedRow>
-                        </React.Fragment>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              )
-          }
-          {
-            forestCoverSearchQuery.data?.length === 0
-              ? (
-                <EmptySection
-                  pictogram="UserSearch"
-                  title="No results found"
-                  description="No results found with the current filters. Try adjusting them to refine your search."
+                  ))
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </Modal>
+      <Grid className="opening-forest-cover-grid default-grid">
+        <Column sm={4} md={8} lg={16}>
+          <div className="opening-forest-cover-header-container">
+            <div className="opening-forest-cover-header-title-container">
+              <h3 className="default-tab-content-title">
+                {forestCoverQueryToUse.isLoading ? '...' : `${forestCoverQueryToUse.data?.length ?? 0}`} forest cover polygons in this opening
+              </h3>
+
+              <Link
+                data-testid="view-history-overview-link"
+                href="#"
+                renderIcon={() => <Popup />}
+                onClick={e => {
+                  e.preventDefault();
+                  setIsHistoryModalOpen(true);
+                }}
+              >
+                View history overview
+              </Link>
+            </div>
+
+            <div className="opening-forest-cover-header-dropdown-container">
+              {forestCoverHistoryOverviewQuery.isLoading ? <
+                DropdownSkeleton /> :
+                <Dropdown
+                  id="forest-cover-action-dropdown"
+                  data-testid="forest-cover-action-dropdown"
+                  className="forest-cover-dropdown"
+                  items={dropdownItems}
+                  itemToElement={(item) => item?.updateTimestamp ?
+                    (<div>
+                      {formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm a)")}
+                      {item.isCurrent ? " - Latest" : item.isOldest ? " - Oldest" : ""}
+                    </div>)
+                    : ''}
+                  itemToString={(item) => item?.updateTimestamp ?
+                    `${formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm a)")}
+                    ${item.isCurrent ? ' - Latest' : item.isOldest ? ' - Oldest' : ''}`
+                    : ''}
+
+                  helperText="Select a date to view historical data"
+                  titleText="Action date"
+                  label="Select an action date"
+                  selectedItem={selectedHistory}
+                  onChange={({ selectedItem }) => {
+                    setSelectedHistory(selectedItem);
+                    setIsLatestHistory(selectedItem?.isCurrent ?? false);
+                  }}
                 />
-              )
-              : null
-          }
-        </TableContainer>
-      </Column>
-    </Grid>
+              }
+            </div>
+          </div>
+        </Column>
+        <Column sm={4} md={8} lg={16}>
+          <TableContainer className="default-table-container opening-forest-cover-table-container">
+            <TableToolbar>
+              <TableToolbarSearch
+                className="default-tab-search-bar"
+                persistent
+                placeholder="Search by numeric value"
+                value={searchInput}
+                onChange={handleSearchInputChange}
+                onKeyDown={handleSearchKeyDown}
+                onClear={handleSearchClear}
+              />
+              <Button
+                kind="primary"
+                className="default-button-with-loading"
+                renderIcon={Search}
+                onClick={applySearchFilter}
+              >
+                Search
+              </Button>
+            </TableToolbar>
+            {
+              (forestCoverQueryToUse.isLoading || forestCoverSearchQueryToUse.isLoading)
+                ? (
+                  <TableSkeleton
+                    headers={ForestCoverTableHeaders}
+                    showToolbar={false}
+                    showHeader={false}
+                    rowCount={10}
+                  />
+                ) : (
+                  <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table" >
+                    <TableHead>
+                      <TableRow>
+                        <TableExpandHeader />
+                        <TableHeader key="map-header">
+                          <div className="map-header-checkbox-container">
+                            <Tooltip
+                              label={
+                                isLatestHistory
+                                  ? (
+                                    availableForestCoverIds.length > 0
+                                      ? allSelected ? "Unselect all" : "Select all"
+                                      : "No polygon is available"
+                                  )
+                                  : "Polygons not available on history"
+                              }
+                              align="right"
+                              className="forest-cover-map-tooltip"
+                            >
+                              <span>
+                                <Checkbox
+                                  id="forest-cover-select-all"
+                                  data-testid="forest-cover-map-select-all"
+                                  checked={allSelected}
+                                  indeterminate={!allSelected && someSelected}
+                                  disabled={allAvailableIds.length === 0 || !isLatestHistory}
+                                  labelText=""
+                                  onChange={(_, { checked }) => {
+                                    setSelectedForestCoverIds(checked ? allAvailableIds : []);
+                                  }}
+                                />
+
+                              </span>
+                            </Tooltip>
+                            <span>Map</span>
+                          </div>
+
+                        </TableHeader>
+                        {ForestCoverTableHeaders.map((header) => (
+                          <TableHeader key={String(header.key)}>{header.header}</TableHeader>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {forestCoverSearchQueryToUse.data?.map((row, idx) => {
+                        const isExpanded = expandedRows.includes(row.coverId);
+                        return (
+                          <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
+                            <TableExpandRow
+                              className="opening-forest-cover-table-row"
+                              aria-label={`Expand row for Polygon ID ${row.coverId}`}
+                              isExpanded={isExpanded}
+                              onExpand={() => handleRowExpand(row.coverId)}
+                            >
+                              <TableCell key={"map-select" + row.coverId + row.polygonId}>
+                                <Tooltip
+                                  label={
+                                    isLatestHistory
+                                      ? (
+                                        !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
+                                          ? "Polygon is not available"
+                                          : "Show on map"
+                                      )
+                                      : "Polygon is not available on historical data"
+                                  }
+                                  align={
+                                    !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
+                                      ? "right"
+                                      : "top"
+                                  }
+                                >
+                                  <span>
+                                    <Checkbox
+                                      id={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                                      key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                                      checked={selectedForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
+                                      disabled={!availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
+                                      labelText=""
+                                      onChange={(_, { checked }) => {
+                                        setSelectedForestCoverIds(ids =>
+                                          checked
+                                            ? [...ids, `${row.coverId}-${row.polygonId}`]
+                                            : ids.filter(id => id !== `${row.coverId}-${row.polygonId}`)
+                                        );
+                                      }}
+                                    />
+                                  </span>
+                                </Tooltip>
+                              </TableCell>
+                              {ForestCoverTableHeaders.map((header) => (
+                                <TableCell key={String(header.key)} className="default-table-cell">
+                                  {renderCellContent(row, header.key)}
+                                </TableCell>
+                              ))}
+                            </TableExpandRow>
+                            <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
+                              {isExpanded ? <ForestCoverExpandedRow forestCoverId={row.coverId} openingId={openingId} /> : null}
+                            </TableExpandedRow>
+                          </React.Fragment>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )
+            }
+            {
+              forestCoverSearchQueryToUse.data?.length === 0
+                ? (
+                  <EmptySection
+                    pictogram="UserSearch"
+                    title="No results found"
+                    description="No results found with the current filters. Try adjusting them to refine your search."
+                  />
+                )
+                : null
+            }
+          </TableContainer>
+        </Column>
+      </Grid>
+    </>
+
   );
 };
 
