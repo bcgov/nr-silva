@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
+import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -53,11 +54,12 @@ public class OpeningSpatialFileService {
    *
    * @param file the uploaded spatial file
    */
-  public String processOpeningSpatialFile(MultipartFile file) {
+  public ExtractedGeoDataDto processOpeningSpatialFile(MultipartFile file) {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
 
+    // This is enforced at the spring boot level, but we double-check here
     if (file.getSize() > SilvaConstants.MAX_OPENING_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
     }
@@ -71,16 +73,15 @@ public class OpeningSpatialFileService {
 
     if (lowerName.endsWith(".xml")) {
       processEsf(file);
+      return null;
     } else if (lowerName.endsWith(".gml")) {
-      processGml(file);
+      return processGml(file);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
       return processGeojson(file);
     } else {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
-
-    return "";
   }
 
   private void processEsf(MultipartFile file) {
@@ -88,12 +89,133 @@ public class OpeningSpatialFileService {
     log.info("Processing ESF/XML file: {}", file.getOriginalFilename());
   }
 
-  private void processGml(MultipartFile file) {
-    // TODO implement GML processing
+  private ExtractedGeoDataDto processGml(MultipartFile file) {
     log.info("Processing GML file: {}", file.getOriginalFilename());
+    try {
+      // Step 1: Detect CRS
+      String crsCode = detectGmlCrs(file);
+      log.info("Detected CRS for GML: EPSG:{}", crsCode);
+
+      // Step 2: Parse GML to JTS Geometry
+      Geometry gmlGeometry = parseGmlToGeometry(file);
+
+      // Step 3, 4: Validate geometry (no curves) and within BC boundary
+      validateGmlGeometryAndBoundary(gmlGeometry, crsCode);
+
+      // Step 5: Vertex Thinning (Douglas-Peucker)
+      int originalCoords = countCoordinates(gmlGeometry);
+      Geometry thinned = thinGeometry(gmlGeometry, crsCode);
+      int thinnedCoords = countCoordinates(thinned);
+      int removed = originalCoords - thinnedCoords;
+      log.info(
+          "Thinning removed {} of {} coordinates ({} remain)",
+          removed,
+          originalCoords,
+          thinnedCoords);
+
+      // Convert thinned geometry to GeoJSON
+      GeometryJSON gjson = new GeometryJSON();
+      String geojson = gjson.toString(thinned);
+      JsonNode geoJsonNode = mapper.readTree(geojson);
+
+      // Return ExtractedGeoDataDto with metaData as null
+      return ExtractedGeoDataDto.builder().metaData(null).geoJson(geoJsonNode).build();
+    } catch (Exception e) {
+      log.error("Failed to process GML file", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid GML file: " + e.getMessage());
+    }
   }
 
-  private String processGeojson(MultipartFile file) {
+  /** Parses the GML file into a JTS Geometry using GeoTools GML parser. */
+  private Geometry parseGmlToGeometry(MultipartFile file) throws Exception {
+    org.geotools.xsd.Parser parser =
+        new org.geotools.xsd.Parser(new org.geotools.gml3.GMLConfiguration());
+    try (InputStream is = file.getInputStream()) {
+      Object parsed = parser.parse(is);
+      if (parsed instanceof Geometry) {
+        return (Geometry) parsed;
+      } else {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "GML file does not contain a valid geometry.");
+      }
+    }
+  }
+
+  /**
+   * Validates that the GML geometry is a simple feature (no curves) and is fully within the BC
+   * boundary (GeoJSON, CRS-dependent).
+   */
+  private void validateGmlGeometryAndBoundary(Geometry geometry, String crsCode) {
+    // Check for simple feature type (no curves)
+    String geomType = geometry.getGeometryType();
+    if (!isSimpleFeatureType(geomType)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          String.format(
+              "GML geometry type '%s' is not a simple feature (no curves allowed)", geomType));
+    }
+
+    // Validate geometry is within BC boundary
+    try {
+      String boundaryFile;
+      if ("4326".equals(crsCode)) {
+        boundaryFile = "static/BC_BOUNDARY_EPSG4326.geojson";
+      } else if ("3005".equals(crsCode)) {
+        boundaryFile = "static/BC_BOUNDARY_EPSG3005.geojson";
+      } else {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Unsupported CRS for BC boundary validation: EPSG:" + crsCode);
+      }
+      InputStream is = getClass().getClassLoader().getResourceAsStream(boundaryFile);
+      if (is == null) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "BC boundary file not found: " + boundaryFile);
+      }
+      String bcGeojson = new String(is.readAllBytes());
+      JsonNode bcRoot = mapper.readTree(bcGeojson);
+      JsonNode bcFeatures = bcRoot.get("features");
+      if (bcFeatures == null || !bcFeatures.isArray() || bcFeatures.size() == 0) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "BC boundary file is invalid: " + boundaryFile);
+      }
+      // Assume first feature is the BC boundary polygon
+      JsonNode bcGeomNode = bcFeatures.get(0).get("geometry");
+      GeometryJSON gjson = new GeometryJSON();
+      Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
+      if (!bcBoundary.contains(geometry)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "GML geometry is not fully within the Province of BC boundary.");
+      }
+      log.info("GML geometry is within the Province of BC boundary.");
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "BC boundary validation failed: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Detects the CRS code from a GML file by searching for srsName attributes. Defaults to "4326" if
+   * not found.
+   *
+   * @param file the uploaded GML file
+   * @return the EPSG code as a string
+   */
+  private String detectGmlCrs(MultipartFile file) throws Exception {
+    String gmlText = new String(file.getBytes());
+    if (gmlText.contains("srsName=\"EPSG:3005\"")) {
+      return "3005";
+    } else if (gmlText.contains("srsName=\"EPSG:4326\"")) {
+      return "4326";
+    }
+    // Default to 4326 if not specified
+    return "4326";
+  }
+
+  private ExtractedGeoDataDto processGeojson(MultipartFile file) {
     log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
     try {
       String geojson = new String(file.getBytes());
@@ -115,8 +237,10 @@ public class OpeningSpatialFileService {
 
       // Step 5: Vertex Thinning
       String thinnedGeojson = geoJsonThinning(geojson, crsCode);
+      JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
 
-      return thinnedGeojson;
+      // Return ExtractedGeoDataDto with metaData as null
+      return ExtractedGeoDataDto.builder().metaData(null).geoJson(thinnedNode).build();
     } catch (Exception e) {
       log.error("Failed to process GeoJSON file", e);
       throw new ResponseStatusException(
@@ -324,22 +448,12 @@ public class OpeningSpatialFileService {
           HttpStatus.BAD_REQUEST, "Feature " + index + " geometry missing 'type'");
     }
     String geomType = geomNode.get("type").asText();
-    // Only allow simple feature types
-    switch (geomType) {
-      case "Point":
-      case "MultiPoint":
-      case "LineString":
-      case "MultiLineString":
-      case "Polygon":
-      case "MultiPolygon":
-        // valid simple feature
-        break;
-      default:
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            String.format(
-                "Feature %d geometry type '%s' is not a simple feature (no curves allowed)",
-                index, geomType));
+    if (!isSimpleFeatureType(geomType)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          String.format(
+              "Feature %d geometry type '%s' is not a simple feature (no curves allowed)",
+              index, geomType));
     }
     try {
       Geometry geometry = gjson.read(new StringReader(geomNode.toString()));
@@ -391,5 +505,35 @@ public class OpeningSpatialFileService {
       crsCode = "4326";
     }
     return crsCode;
+  }
+
+  /** Returns true if the geometry type is a simple feature (no curves). */
+  private static boolean isSimpleFeatureType(String geomType) {
+    switch (geomType) {
+      case "Point":
+      case "MultiPoint":
+      case "LineString":
+      case "MultiLineString":
+      case "Polygon":
+      case "MultiPolygon":
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Applies Douglas-Peucker vertex thinning to a geometry using the appropriate tolerance.
+   *
+   * @param geometry The input JTS geometry.
+   * @param crsCode The EPSG code as a string ("3005" or "4326").
+   * @return The thinned geometry.
+   */
+  private Geometry thinGeometry(Geometry geometry, String crsCode) {
+    double tolerance =
+        crsCode.equals("3005")
+            ? SilvaConstants.THINNING_TOLERANCE_METERS
+            : SilvaConstants.THINNING_TOLERANCE_DEGREES;
+    return org.locationtech.jts.simplify.DouglasPeuckerSimplifier.simplify(geometry, tolerance);
   }
 }

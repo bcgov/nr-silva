@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
+import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import java.util.List;
@@ -76,7 +77,7 @@ public class OpeningEndpoint {
    */
   @PostMapping(value = "/create/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public void uploadOpeningSpatialFile(@RequestPart("file") MultipartFile file) {
-    openingSpatialFileService.processOpeningSpatialFile(file);
+  public ExtractedGeoDataDto uploadOpeningSpatialFile(@RequestPart("file") MultipartFile file) {
+    return openingSpatialFileService.processOpeningSpatialFile(file);
   }
 }

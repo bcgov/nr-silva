@@ -228,6 +228,34 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
  * @returns A GeoJSON FeatureCollection representing the parsed geometries.
  */
 export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
+  // Detect GML curves using DOMParser and querySelector
+  const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+  const curveTags = [
+    "Curve",
+    "Arc",
+    "ArcString",
+    "Circle",
+    "CircleByCenterPoint",
+    "CubicSpline",
+    "CompositeCurve",
+    "OffsetCurve",
+    "OrientableCurve",
+    "Ring",
+    "LineStringSegment"
+  ];
+  for (const tag of curveTags) {
+    if (
+      doc.querySelector(tag) ||
+      doc.querySelector(`gml\\:${tag}`) ||
+      doc.getElementsByTagName(tag).length > 0 ||
+      doc.getElementsByTagName(`gml:${tag}`).length > 0
+    ) {
+      throw new Error(
+        `GML contains curve geometry (<${tag}>), which is not supported. Only simple features (Point, LineString, Polygon, etc.) are allowed.`
+      );
+    }
+  }
+
   const dataProjection = detectGmlEpsg(xmlText);
   const featureProjection = "EPSG:4326"; // Leaflet/GeoJSON expects WGS84 lon/lat
 
@@ -250,7 +278,7 @@ export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
   }
 
   if (!features || features.length === 0) {
-    throw new Error("No features found in the uploaded GML.");
+    throw new Error("No features found in the uploaded GML. (If your file contains curve geometry, it is not supported.)");
   }
 
   const geojsonFormat = new GeoJSONFormat();
