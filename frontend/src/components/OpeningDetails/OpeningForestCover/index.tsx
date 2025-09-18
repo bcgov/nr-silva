@@ -371,12 +371,6 @@ const OpeningForestCover = ({
                   data-testid="forest-cover-action-dropdown"
                   className="forest-cover-dropdown"
                   items={dropdownItems}
-                  itemToElement={(item) => item?.updateTimestamp ?
-                    (<div>
-                      {formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm a)")}
-                      {item.isCurrent ? " - Latest" : item.isOldest ? " - Oldest" : ""}
-                    </div>)
-                    : ''}
                   itemToString={(item) => item?.updateTimestamp ?
                     `${formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm a)")}
                     ${item.isCurrent ? ' - Latest' : item.isOldest ? ' - Oldest' : ''}`
