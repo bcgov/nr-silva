@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import EmptySection from "@/components/EmptySection";
 import { Column, Grid } from "@carbon/react";
@@ -11,15 +11,26 @@ import './styles.scss';
 type ForestCoverDetailProps = {
   forestCoverId: number;
   openingId: number;
+  isHistory?: boolean;
+  archiveDate?: string;
 };
 
-const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailProps) => {
-  const { data, isLoading } = useQuery({
+const ForestCoverExpandedRow = ({ forestCoverId, openingId, isHistory = false, archiveDate }: ForestCoverDetailProps) => {
+  const query = useQuery({
     queryKey: ["openings", openingId, "cover", forestCoverId],
     queryFn: () => API.OpeningEndpointService.getCoverDetails(openingId, forestCoverId),
+    enabled: !isHistory,
   });
 
-  if (!data && !isLoading) {
+  const historyQuery = useQuery({
+    queryKey: ["openings", openingId, "cover", "history", forestCoverId, { archiveDate: archiveDate }],
+    queryFn: () => API.OpeningEndpointService.getForestCoverHistoryDetails(openingId, forestCoverId, archiveDate!),
+    enabled: isHistory && !!archiveDate,
+  });
+
+  const queryToUse = isHistory ? historyQuery : query;
+
+  if (!queryToUse.data && !queryToUse.isLoading) {
     return (
       <EmptySection
         pictogram="UserSearch"
@@ -31,10 +42,10 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailP
 
   return (
     <Grid className="opening-forest-cover-details-grid">
-      <PolygonDetail polygon={data?.polygon} isLoading={isLoading} />
+      <PolygonDetail polygon={queryToUse.data?.polygon} isLoading={queryToUse.isLoading} />
 
       {
-        data?.layers.length
+        queryToUse.data?.layers.length
           ? (
             <>
               <Column sm={4} md={8} lg={16}>
@@ -42,10 +53,10 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId }: ForestCoverDetailP
               </Column>
 
               <ForestManagement
-                isSingleLayer={data?.isSingleLayer}
-                layersData={data?.layers}
-                unmappedAreaData={data?.unmapped}
-                isLoading={isLoading}
+                isSingleLayer={queryToUse.data?.isSingleLayer}
+                layersData={queryToUse.data?.layers}
+                unmappedAreaData={queryToUse.data?.unmapped}
+                isLoading={queryToUse.isLoading}
               />
             </>
           )

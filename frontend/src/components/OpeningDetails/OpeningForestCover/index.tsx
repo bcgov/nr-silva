@@ -470,7 +470,7 @@ const OpeningForestCover = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {forestCoverSearchQueryToUse.data?.map((row, idx) => {
+                      {forestCoverSearchQueryToUse.data?.map((row: OpeningForestCoverDto | OpeningForestCoverHistoryDto, idx) => {
                         const isExpanded = expandedRows.includes(row.coverId);
                         return (
                           <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
@@ -522,7 +522,11 @@ const OpeningForestCover = ({
                               ))}
                             </TableExpandRow>
                             <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
-                              {isExpanded ? <ForestCoverExpandedRow forestCoverId={row.coverId} openingId={openingId} /> : null}
+                              {isExpanded ? <ForestCoverExpandedRow
+                                forestCoverId={row.coverId}
+                                openingId={openingId}
+                                isHistory={!isLatestHistory}
+                                archiveDate={!isLatestHistory && "archiveDate" in row ? formatDateTime(row.archiveDate!, 'yyyy-MM-dd') : undefined} /> : null}
                             </TableExpandedRow>
                           </React.Fragment>
                         );
