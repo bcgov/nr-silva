@@ -544,6 +544,299 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
+  @DisplayName("Get Opening Forest Cover History Overview - empty list should return empty array")
+  void getOpeningForestCoverHistoryOverview_empty_shouldReturnEmpty() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1/cover/history/overview")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$").isEmpty());
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover History Overview - non-empty should return expected list")
+  void getOpeningForestCoverHistoryOverview_nonEmpty_shouldReturnList() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history/overview")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        // Entry 0
+        .andExpect(jsonPath("$[0].updateTimestamp").value("2012-05-02T00:00:00"))
+        .andExpect(jsonPath("$[0].np").value(1.0))
+        .andExpect(jsonPath("$[0].nsr").value(0.0))
+        .andExpect(jsonPath("$[0].imm").value(15.7))
+        .andExpect(jsonPath("$[0].other").value(0.0))
+        .andExpect(jsonPath("$[0].total").value(16.7))
+        .andExpect(jsonPath("$[0].hasDetails").value(true))
+        .andExpect(jsonPath("$[0].isCurrent").value(true))
+        .andExpect(jsonPath("$[0].isOldest").value(false))
+        // Entry 1
+        .andExpect(jsonPath("$[1].updateTimestamp").value("2004-11-29T10:08:00"))
+        .andExpect(jsonPath("$[1].np").value(1.0))
+        .andExpect(jsonPath("$[1].nsr").value(0.0))
+        .andExpect(jsonPath("$[1].imm").value(15.6))
+        .andExpect(jsonPath("$[1].other").value(0.0))
+        .andExpect(jsonPath("$[1].total").value(16.6))
+        .andExpect(jsonPath("$[1].hasDetails").value(true))
+        .andExpect(jsonPath("$[1].isCurrent").value(false))
+        .andExpect(jsonPath("$[1].isOldest").value(false))
+        // Entry 2
+        .andExpect(jsonPath("$[2].updateTimestamp").value("2004-10-01T00:00:01"))
+        .andExpect(jsonPath("$[2].np").value(1.0))
+        .andExpect(jsonPath("$[2].nsr").value(0.0))
+        .andExpect(jsonPath("$[2].imm").value(15.6))
+        .andExpect(jsonPath("$[2].other").value(0.0))
+        .andExpect(jsonPath("$[2].total").value(16.6))
+        .andExpect(jsonPath("$[2].hasDetails").value(false))
+        .andExpect(jsonPath("$[2].isCurrent").value(false))
+        .andExpect(jsonPath("$[2].isOldest").value(false))
+        // Entry 3
+        .andExpect(jsonPath("$[3].updateTimestamp").value("2002-06-11T00:00:00"))
+        .andExpect(jsonPath("$[3].np").value(1.3))
+        .andExpect(jsonPath("$[3].nsr").value(7.9))
+        .andExpect(jsonPath("$[3].imm").value(7.4))
+        .andExpect(jsonPath("$[3].other").value(0.0))
+        .andExpect(jsonPath("$[3].total").value(16.6))
+        .andExpect(jsonPath("$[3].hasDetails").value(true))
+        .andExpect(jsonPath("$[3].isCurrent").value(false))
+        .andExpect(jsonPath("$[3].isOldest").value(false))
+        // Entry 4
+        .andExpect(jsonPath("$[4].updateTimestamp").value("2002-06-04T00:00:00"))
+        .andExpect(jsonPath("$[4].np").value(1.3))
+        .andExpect(jsonPath("$[4].nsr").value(7.9))
+        .andExpect(jsonPath("$[4].imm").value(7.4))
+        .andExpect(jsonPath("$[4].other").value(0.0))
+        .andExpect(jsonPath("$[4].total").value(16.6))
+        .andExpect(jsonPath("$[4].hasDetails").value(false))
+        .andExpect(jsonPath("$[4].isCurrent").value(false))
+        .andExpect(jsonPath("$[4].isOldest").value(false))
+        // Entry 5
+        .andExpect(jsonPath("$[5].updateTimestamp").value("2002-06-03T00:00:00"))
+        .andExpect(jsonPath("$[5].np").value(1.3))
+        .andExpect(jsonPath("$[5].nsr").value(7.9))
+        .andExpect(jsonPath("$[5].imm").value(7.4))
+        .andExpect(jsonPath("$[5].other").value(0.0))
+        .andExpect(jsonPath("$[5].total").value(16.6))
+        .andExpect(jsonPath("$[5].hasDetails").value(false))
+        .andExpect(jsonPath("$[5].isCurrent").value(false))
+        .andExpect(jsonPath("$[5].isOldest").value(true));
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover History - empty list should return 404 and empty array")
+  void getOpeningForestCoverHistory_empty_shouldReturn404() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1/cover/history")
+                .param("updateDate", "2020-01-01")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$").isEmpty());
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover History - missing updateDate should return 400")
+  void getOpeningForestCoverHistory_missingUpdateDate_shouldReturn400() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover History - non-empty for opening 101017 and updateDate 2004-11-29")
+  void getOpeningForestCoverHistory_nonEmpty_shouldReturnList() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history")
+                .param("updateDate", "2004-11-29")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        // Entry 0
+        .andExpect(jsonPath("$[0].coverId").value(1021182))
+        .andExpect(jsonPath("$[0].archiveDate").value("2012-05-02"))
+        .andExpect(jsonPath("$[0].polygonId").value("A"))
+        .andExpect(jsonPath("$[0].standardUnitId").value("A"))
+        .andExpect(jsonPath("$[0].grossArea").value(8.1))
+        .andExpect(jsonPath("$[0].netArea").value(8.1))
+        .andExpect(jsonPath("$[0].status.code").value("IMM"))
+        .andExpect(jsonPath("$[0].coverType.code").value("ART"))
+        .andExpect(jsonPath("$[0].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[0].inventoryLayer.total").value(1136.0))
+        .andExpect(jsonPath("$[0].referenceYear").value(2004))
+        .andExpect(jsonPath("$[0].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[0].hasReserve").value(true))
+        // Entry 1
+        .andExpect(jsonPath("$[1].coverId").value(1021183))
+        .andExpect(jsonPath("$[1].polygonId").value("B"))
+        .andExpect(jsonPath("$[1].standardUnitId").value("B"))
+        .andExpect(jsonPath("$[1].grossArea").value(1.1))
+        .andExpect(jsonPath("$[1].netArea").value(1.1))
+        .andExpect(jsonPath("$[1].status.code").value("IMM"))
+        .andExpect(jsonPath("$[1].coverType.code").value("NAT"))
+        .andExpect(jsonPath("$[1].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[1].inventoryLayer.total").value(500.0))
+        .andExpect(jsonPath("$[1].referenceYear").value(2000))
+        .andExpect(jsonPath("$[1].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[1].hasReserve").value(true))
+        // Entry 2
+        .andExpect(jsonPath("$[2].coverId").value(1021184))
+        .andExpect(jsonPath("$[2].polygonId").value("C"))
+        .andExpect(jsonPath("$[2].standardUnitId").doesNotExist())
+        .andExpect(jsonPath("$[2].grossArea").value(1.4))
+        .andExpect(jsonPath("$[2].netArea").value(1.4))
+        .andExpect(jsonPath("$[2].status.code").value("IMM"))
+        .andExpect(jsonPath("$[2].coverType.code").value("NAT"))
+        .andExpect(jsonPath("$[2].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[2].inventoryLayer.total").value(500.0))
+        .andExpect(jsonPath("$[2].referenceYear").value(2000))
+        .andExpect(jsonPath("$[2].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[2].hasReserve").value(true))
+        // Entry 3
+        .andExpect(jsonPath("$[3].coverId").value(1021185))
+        .andExpect(jsonPath("$[3].polygonId").value("D"))
+        .andExpect(jsonPath("$[3].standardUnitId").doesNotExist())
+        .andExpect(jsonPath("$[3].grossArea").value(1.3))
+        .andExpect(jsonPath("$[3].netArea").value(1.3))
+        .andExpect(jsonPath("$[3].status.code").value("IMM"))
+        .andExpect(jsonPath("$[3].coverType.code").value("NAT"))
+        .andExpect(jsonPath("$[3].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[3].referenceYear").value(2000))
+        .andExpect(jsonPath("$[3].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[3].hasReserve").value(true))
+        // Entry 4
+        .andExpect(jsonPath("$[4].coverId").value(1021186))
+        .andExpect(jsonPath("$[4].polygonId").value("E"))
+        .andExpect(jsonPath("$[4].standardUnitId").doesNotExist())
+        .andExpect(jsonPath("$[4].grossArea").value(3.7))
+        .andExpect(jsonPath("$[4].netArea").value(3.7))
+        .andExpect(jsonPath("$[4].status.code").value("IMM"))
+        .andExpect(jsonPath("$[4].coverType.code").value("NAT"))
+        .andExpect(jsonPath("$[4].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[4].inventoryLayer.total").value(500.0))
+        .andExpect(jsonPath("$[4].referenceYear").value(2000))
+        .andExpect(jsonPath("$[4].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[4].hasReserve").value(true))
+        // Entry 5
+        .andExpect(jsonPath("$[5].coverId").value(1021187))
+        .andExpect(jsonPath("$[5].polygonId").value("F"))
+        .andExpect(jsonPath("$[5].standardUnitId").doesNotExist())
+        .andExpect(jsonPath("$[5].grossArea").value(1.0))
+        .andExpect(jsonPath("$[5].netArea").value(1.0))
+        .andExpect(jsonPath("$[5].status.code").value("NP"))
+        .andExpect(jsonPath("$[5].coverType.code").value("UNN"))
+        .andExpect(jsonPath("$[5].inventoryLayer.species[0].code").doesNotExist())
+        .andExpect(jsonPath("$[5].referenceYear").value(2001))
+        .andExpect(jsonPath("$[5].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[5].hasReserve").value(true));
+  }
+
+  @Test
+  @DisplayName("Get Opening Forest Cover History - filtered by mainSearchTerm for opening 101017 and updateDate 2004-11-29")
+  void getOpeningForestCoverHistory_filtered_shouldReturnFilteredList() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history")
+                .param("updateDate", "2004-11-29")
+                .param("mainSearchTerm", "1.4")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].coverId").value(1021184))
+        .andExpect(jsonPath("$[0].archiveDate").value("2012-05-02"))
+        .andExpect(jsonPath("$[0].polygonId").value("C"))
+        .andExpect(jsonPath("$[0].standardUnitId").doesNotExist())
+        .andExpect(jsonPath("$[0].grossArea").value(1.4))
+        .andExpect(jsonPath("$[0].netArea").value(1.4))
+        .andExpect(jsonPath("$[0].status.code").value("IMM"))
+        .andExpect(jsonPath("$[0].coverType.code").value("NAT"))
+        .andExpect(jsonPath("$[0].inventoryLayer.species[0].code").value("FDC"))
+        .andExpect(jsonPath("$[0].inventoryLayer.total").value(500.0))
+        .andExpect(jsonPath("$[0].referenceYear").value(2000))
+        .andExpect(jsonPath("$[0].isSingleLayer").value(true))
+        .andExpect(jsonPath("$[0].hasReserve").value(true));
+  }
+
+  @Test
+  @DisplayName("Get Forest Cover History Details - not found should return 404")
+  void getForestCoverHistoryDetails_notFound_shouldReturn404() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1/cover/history/1")
+                .param("archiveDate", "2000-01-01")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType("application/json"));
+  }
+
+  @Test
+  @DisplayName("Get Forest Cover History Details - missing archiveDate should return 400")
+  void getForestCoverHistoryDetails_missingArchiveDate_shouldReturn400() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history/1021182")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Get Forest Cover History Details - valid request should return details")
+  void getForestCoverHistoryDetails_valid_shouldReturnDetails() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/101017/cover/history/1021182")
+                .param("archiveDate", "2012-05-02")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.polygon.forestCoverId").value(1021182))
+        .andExpect(jsonPath("$.polygon.reserve.code").value("N"))
+        .andExpect(jsonPath("$.polygon.reserve.description").value("No Reserve"))
+        .andExpect(jsonPath("$.polygon.siteIndex").value(32))
+        .andExpect(jsonPath("$.polygon.siteIndexSource.code").value("H"))
+        .andExpect(jsonPath("$.polygon.siteIndexSource.description").value("SI from stand before harvest"))
+        .andExpect(jsonPath("$.isSingleLayer").value(true))
+        .andExpect(jsonPath("$.unmapped").isArray())
+        .andExpect(jsonPath("$.layers[0].layerId").value(1032926))
+        .andExpect(jsonPath("$.layers[0].layer.code").value("I"))
+        .andExpect(jsonPath("$.layers[0].layer.description").value("Inventory Layer"))
+        .andExpect(jsonPath("$.layers[0].totalStems").value(1136))
+        .andExpect(jsonPath("$.layers[0].species[0].species.code").value("FDC"))
+        .andExpect(jsonPath("$.layers[0].species[0].percentage").value(49))
+        .andExpect(jsonPath("$.layers[0].species[0].averageAge").value(3))
+        .andExpect(jsonPath("$.layers[0].species[0].averageHeight").value(0.2))
+        .andExpect(jsonPath("$.layers[1].layerId").value(1032927))
+        .andExpect(jsonPath("$.layers[1].layer.code").value("S"))
+        .andExpect(jsonPath("$.layers[1].layer.description").value("Silviculture Layer - even aged"))
+        .andExpect(jsonPath("$.layers[1].wellSpaced").value(582))
+        .andExpect(jsonPath("$.layers[1].species[0].species.code").value("FDC"))
+        .andExpect(jsonPath("$.layers[1].species[0].percentage").value(76))
+        .andExpect(jsonPath("$.layers[1].species[0].averageAge").value(3))
+        .andExpect(jsonPath("$.layers[1].species[0].averageHeight").value(0.3));
+  }
+
+
+  @Test
   @DisplayName("Get attachments metadata by openingId should return list")
   void getAttachmentsMetadata_shouldReturnList() throws Exception {
     Long openingId = 1589595L;
