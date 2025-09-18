@@ -100,18 +100,6 @@ const OpeningForestCover = ({
 
   }, [forestCoverHistoryOverviewQuery.isSuccess, forestCoverHistoryOverviewQuery.data]);
 
-  const renderModalCellContant = (
-    rowKey: keyof OpeningForestCoverHistoryOverviewDto,
-    history: OpeningForestCoverHistoryOverviewDto,
-  ) => {
-    switch (rowKey) {
-      case 'updateTimestamp':
-        return history.updateTimestamp ? formatDateTime(history.updateTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
-      default:
-        return history[rowKey] ?? PLACE_HOLDER;
-    }
-  };
-
   const handleSearchInputChange = (
     event: "" | React.ChangeEvent<HTMLInputElement>,
     _value?: string
@@ -281,6 +269,18 @@ const OpeningForestCover = ({
         return row.referenceYear;
       default:
         return PLACE_HOLDER;
+    }
+  };
+
+  const renderModalCellContant = (
+    rowKey: keyof OpeningForestCoverHistoryOverviewDto,
+    history: OpeningForestCoverHistoryOverviewDto,
+  ) => {
+    switch (rowKey) {
+      case 'updateTimestamp':
+        return history.updateTimestamp ? formatDateTime(history.updateTimestamp, "dd/MM/yyyy (hh:mm a)") : PLACE_HOLDER;
+      default:
+        return history[rowKey] ?? PLACE_HOLDER;
     }
   };
 
