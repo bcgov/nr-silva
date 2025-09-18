@@ -124,7 +124,15 @@ public class OpeningDetailsService {
   public List<OpeningForestCoverHistoryOverviewDto> getOpeningForestCoverHistoryOverviewList(
       Long openingId) {
     log.info("Fetching forest cover history overview list for opening ID: {}", openingId);
-    return forestCoverHistoryService.getOpeningForestCoverHistoryOverviewList(openingId);
+
+    List<OpeningForestCoverHistoryOverviewDto> result = forestCoverHistoryService
+        .getOpeningForestCoverHistoryOverviewList(openingId);
+
+    if (result.isEmpty()) {
+      throw new NotFoundGenericException("Forest cover history overview list for opening with id " + openingId);
+    }
+
+    return result;
   }
 
   public List<OpeningForestCoverHistoryDto> getOpeningForestCoverHistoryList(
