@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -80,6 +81,7 @@ public class OpeningForestCoverHistoryService {
                                     .withInventoryLayer(
                                             dto.inventoryLayer().withSpecies(getLayerSpecies(dto.coverId(), "I", projection.getArchiveDate().toString())));
                         })
+                .sorted(Comparator.comparingLong(OpeningForestCoverHistoryDto::coverId))
                 .toList();
     }
 
