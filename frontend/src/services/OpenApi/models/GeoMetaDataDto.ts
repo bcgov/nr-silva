@@ -8,7 +8,7 @@ export type GeoMetaDataDto = {
     /**
      * Opening gross area (NUMBER(11,4))
      */
-    openingGrossArea?: string;
+    openingGrossArea?: number;
     /**
      * Maximum allowable permanent access percentage (NUMBER(3,1))
      */

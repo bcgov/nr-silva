@@ -139,16 +139,33 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
     return DEFAULT_GML_EPSG; // default BC Albers
   };
 
-  const polygons: GeoJSON.Feature[] = [];
-  const polygonElems = Array.from(
-    doc.querySelectorAll("gml\\:Polygon, Polygon")
+  // Find the first general area MultiPolygon under OpeningDefinition/extentOf
+  const multiPoly = doc.querySelector(
+    "rst\\:OpeningDefinition > rst\\:extentOf > gml\\:MultiPolygon, OpeningDefinition > extentOf > MultiPolygon"
   );
+  if (!multiPoly) {
+    // fallback: try to find a Polygon under OpeningDefinition/extentOf
+    const poly = doc.querySelector(
+      "rst\\:OpeningDefinition > rst\\:extentOf > gml\\:Polygon, OpeningDefinition > extentOf > Polygon"
+    );
+    if (!poly) {
+      return { type: "FeatureCollection", features: [] };
+    }
+    // treat as single polygon
+    return extractPolygonsFromParent(poly, findSrs(poly));
+  }
+  return extractPolygonsFromParent(multiPoly, findSrs(multiPoly));
+};
+
+// Helper: extract polygons from a MultiPolygon or Polygon parent element
+function extractPolygonsFromParent(parent: Element, epsg: string): GeoJSON.FeatureCollection {
+  const polygons: GeoJSON.Feature[] = [];
+  // If parent is MultiPolygon, get all polygonMember children
+  const polygonElems = parent.tagName.endsWith("MultiPolygon")
+    ? Array.from(parent.querySelectorAll("gml\\:Polygon, Polygon"))
+    : [parent];
 
   for (const poly of polygonElems) {
-    // Find the coordinate reference system (CRS) for this polygon by searching for srsName attribute,
-    // first on the polygon element itself, then on its closest MultiPolygon ancestor if any.
-    const epsg = findSrs(poly) || findSrs(poly.closest("gml\\:MultiPolygon, MultiPolygon"));
-
     // Attempt to find the outer boundary coordinates using GML3 posList elements inside exterior or outerBoundaryIs
     const posListEl = poly.querySelector(
       "gml\\:exterior gml\\:LinearRing gml\\:posList, gml\\:outerBoundaryIs gml\\:LinearRing gml\\:posList, exterior LinearRing posList, outerBoundaryIs LinearRing posList"
@@ -217,8 +234,7 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
 
   // Return the complete FeatureCollection of all extracted polygons.
   return { type: "FeatureCollection", features: polygons };
-};
-
+}
 
 /**
  * Converts a GML string to a GeoJSON FeatureCollection.
@@ -370,4 +386,4 @@ export const parseToGeoJSON = async (f: File): Promise<GeoJSON.FeatureCollection
     throw new Error("No features found in the uploaded GML/XML.");
   }
   return fc as GeoJSON.FeatureCollection;
-};
+}

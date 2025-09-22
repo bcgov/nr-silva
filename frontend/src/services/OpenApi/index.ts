@@ -75,6 +75,7 @@ export type { PageMetadata } from './models/PageMetadata';
 export type { Point } from './models/Point';
 export type { Polygon } from './models/Polygon';
 export type { SimplePageDto } from './models/SimplePageDto';
+export type { TenureDto } from './models/TenureDto';
 
 export { CodesEndpointService } from './services/CodesEndpointService';
 export { ForestClientEndpointService } from './services/ForestClientEndpointService';
