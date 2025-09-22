@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ExtractedGeoDataDto } from '../models/ExtractedGeoDataDto';
 import type { OpeningActivityBaseDto } from '../models/OpeningActivityBaseDto';
 import type { OpeningDetailsAttachmentMetaDto } from '../models/OpeningDetailsAttachmentMetaDto';
 import type { OpeningDetailsStockingDto } from '../models/OpeningDetailsStockingDto';
@@ -71,14 +72,14 @@ export class OpeningEndpointService {
     }
     /**
      * @param formData
-     * @returns any Accepted
+     * @returns ExtractedGeoDataDto Accepted
      * @throws ApiError
      */
     public static uploadOpeningSpatialFile(
         formData?: {
             file: Blob;
         },
-    ): CancelablePromise<any> {
+    ): CancelablePromise<ExtractedGeoDataDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/openings/create/upload',

@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
+import ca.bc.gov.restapi.results.postgres.dto.GeoMetaDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -72,8 +73,7 @@ public class OpeningSpatialFileService {
     String lowerName = fileName.toLowerCase();
 
     if (lowerName.endsWith(".xml")) {
-      processEsf(file);
-      return null;
+      return processEsf(file);
     } else if (lowerName.endsWith(".gml")) {
       return processGml(file);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
@@ -84,76 +84,36 @@ public class OpeningSpatialFileService {
     }
   }
 
-  private void processEsf(MultipartFile file) {
+  private ExtractedGeoDataDto processEsf(MultipartFile file) {
     log.info("Processing ESF/XML file: {}", file.getOriginalFilename());
     try {
       // Step 1: Detect CRS from embedded GML using detectGmlCrs
       String crsCode = detectGmlCrs(file);
       log.info("Detected CRS for ESF: EPSG:{}", crsCode);
 
-      // Step 2: Extract GML geometry and parse to JTS Geometry
       String xmlText = new String(file.getBytes());
-      // Try to extract the first GML geometry element (MultiPolygon, Polygon, LineString, etc.)
-      String gmlRegex =
-          "(<gml:(MultiPolygon|Polygon|LineString|MultiLineString|Point|MultiPoint)[^>]*>.*?</gml:\\2>)";
-      java.util.regex.Pattern pattern =
-          java.util.regex.Pattern.compile(gmlRegex, java.util.regex.Pattern.DOTALL);
-      java.util.regex.Matcher matcher = pattern.matcher(xmlText);
-      if (!matcher.find()) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "No GML geometry found in ESF/XML file");
-      }
-      String gmlFragment = matcher.group(1);
+
+      GeoMetaDataDto metaData = extractEsfMetaData(xmlText);
+      java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> tenureList =
+          extractEsfTenureList(xmlText);
+
+      String gmlFragment = extractGeneralAreaGmlFragment(xmlText);
       Geometry gmlGeometry = parseGmlToGeometry(gmlFragment);
-      log.info("Parsed GML geometry from ESF: {}", gmlGeometry.getGeometryType());
-      // ... further ESF processing ...
-    } catch (Exception e) {
-      log.error("Failed to process ESF/XML file", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Invalid ESF/XML file: " + e.getMessage());
-    }
-  }
+      log.info("Parsed general area GML geometry from ESF: {}", gmlGeometry.getGeometryType());
 
-  private ExtractedGeoDataDto processGml(MultipartFile file) {
-    log.info("Processing GML file: {}", file.getOriginalFilename());
-    try {
-      String gmlText = new String(file.getBytes());
-      String crsCode = detectGmlCrs(file);
-      log.info("Detected CRS for GML: EPSG:{}", crsCode);
-
-      // Use XML parsing to extract all geometry elements
-      java.util.List<String> geomXmls = extractGmlGeometriesXml(gmlText);
-      java.util.List<Geometry> geometries = new java.util.ArrayList<>();
-      for (String geomXml : geomXmls) {
-        log.info("[DEBUG] Raw GML geometry XML being parsed:\n{}", geomXml);
-        Geometry geom = parseGmlToGeometry(geomXml);
-        geometries.add(geom);
-      }
-
-      // If no geometry elements found, try parsing the whole file as a naked geometry
-      if (geometries.isEmpty()) {
-        try {
-          log.info("[DEBUG] Raw GML geometry XML being parsed (fallback):\n{}", gmlText);
-          Geometry geom = parseGmlToGeometry(gmlText);
-          geometries.add(geom);
-        } catch (Exception e) {
-          // If still fails, throw error
-          throw new ResponseStatusException(
-              HttpStatus.BAD_REQUEST, "No valid GML geometry found in file");
-        }
-      }
-
-      // Validate, thin, and convert all geometries to GeoJSON features
+      int numGeoms = gmlGeometry.getNumGeometries();
       GeometryJSON gjson = new GeometryJSON();
       com.fasterxml.jackson.databind.node.ArrayNode features = mapper.createArrayNode();
-      for (Geometry geom : geometries) {
-        validateGmlGeometryAndBoundary(geom, crsCode);
-        int originalCoords = countCoordinates(geom);
-        Geometry thinned = thinGeometry(geom, crsCode);
+      for (int i = 0; i < numGeoms; i++) {
+        Geometry subGeom = gmlGeometry.getGeometryN(i);
+        validateGmlGeometryAndBoundary(subGeom, crsCode);
+        int originalCoords = countCoordinates(subGeom);
+        Geometry thinned = thinGeometry(subGeom, crsCode);
         int thinnedCoords = countCoordinates(thinned);
         int removed = originalCoords - thinnedCoords;
         log.info(
-            "Thinning removed {} of {} coordinates ({} remain)",
+            "ESF sub-geometry {}: Thinning removed {} of {} coordinates ({} remain)",
+            i + 1,
             removed,
             originalCoords,
             thinnedCoords);
@@ -165,6 +125,76 @@ public class OpeningSpatialFileService {
         feature.set("properties", mapper.createObjectNode());
         features.add(feature);
       }
+      com.fasterxml.jackson.databind.node.ObjectNode fc = mapper.createObjectNode();
+      fc.put("type", "FeatureCollection");
+      fc.set("features", features);
+
+      return ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto.builder()
+          .metaData(metaData)
+          .geoJson(fc)
+          .tenureList(tenureList)
+          .build();
+    } catch (Exception e) {
+      log.error("Failed to process ESF/XML file", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid ESF/XML file: " + e.getMessage());
+    }
+  }
+
+  private ExtractedGeoDataDto processGml(MultipartFile file) {
+    log.info("Processing GML file: {}", file.getOriginalFilename());
+    try {
+      // Step 1: Detect CRS
+      String gmlText = new String(file.getBytes());
+      String crsCode = detectGmlCrs(file);
+      log.info("Detected CRS for GML: EPSG:{}", crsCode);
+
+      // Step 2, 3: Parse GML to JTS Geometry (extract all geometry elements)
+      java.util.List<String> geomXmls = extractGmlGeometriesXml(gmlText);
+      java.util.List<Geometry> geometries = new java.util.ArrayList<>();
+      for (String geomXml : geomXmls) {
+        Geometry geom = parseGmlToGeometry(geomXml);
+        geometries.add(geom);
+      }
+
+      // If no geometry elements found, try parsing the whole file as a naked geometry
+      if (geometries.isEmpty()) {
+        try {
+          Geometry geom = parseGmlToGeometry(gmlText);
+          geometries.add(geom);
+        } catch (Exception e) {
+          // If still fails, throw error
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "No valid GML geometry found in file");
+        }
+      }
+
+      // Step 4, 5: Validate, thin, and convert all geometries to GeoJSON features
+      GeometryJSON gjson = new GeometryJSON();
+      com.fasterxml.jackson.databind.node.ArrayNode features = mapper.createArrayNode();
+      for (Geometry geom : geometries) {
+        // 4: Validate geometry (no curves) and within BC boundary
+        validateGmlGeometryAndBoundary(geom, crsCode);
+        // 5: Vertex Thinning (Douglas-Peucker)
+        int originalCoords = countCoordinates(geom);
+        Geometry thinned = thinGeometry(geom, crsCode);
+        int thinnedCoords = countCoordinates(thinned);
+        int removed = originalCoords - thinnedCoords;
+        log.info(
+            "Thinning removed {} of {} coordinates ({} remain)",
+            removed,
+            originalCoords,
+            thinnedCoords);
+        // Convert thinned geometry to GeoJSON
+        String geojson = gjson.toString(thinned);
+        JsonNode geomNode = mapper.readTree(geojson);
+        com.fasterxml.jackson.databind.node.ObjectNode feature = mapper.createObjectNode();
+        feature.put("type", "Feature");
+        feature.set("geometry", geomNode);
+        feature.set("properties", mapper.createObjectNode());
+        features.add(feature);
+      }
+      // Step 5: Return ExtractedGeoDataDto with metaData as null
       com.fasterxml.jackson.databind.node.ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
       fc.set("features", features);
@@ -185,10 +215,8 @@ public class OpeningSpatialFileService {
       org.geotools.xsd.Parser parser;
       if (isGml2 && !isGml3) {
         parser = new org.geotools.xsd.Parser(new org.geotools.gml2.GMLConfiguration());
-        log.info("[DEBUG] Using GeoTools GML2 parser for this geometry.");
       } else {
         parser = new org.geotools.xsd.Parser(new org.geotools.gml3.GMLConfiguration());
-        log.info("[DEBUG] Using GeoTools GML3 parser for this geometry.");
       }
       Object parsed = parser.parse(is);
       if (parsed instanceof Geometry) {
@@ -242,20 +270,7 @@ public class OpeningSpatialFileService {
       GeometryJSON gjson = new GeometryJSON();
       Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
 
-      // Debug logging: CRS, geometry, and BC boundary
-      log.info("[DEBUG] CRS for validation: EPSG:{}", crsCode);
-      log.info(
-          "[DEBUG] Input geometry type: {} | Envelope: {}",
-          geometry.getGeometryType(),
-          geometry.getEnvelopeInternal());
-      log.info("[DEBUG] Input geometry WKT: {}", geometry.toText());
-      log.info(
-          "[DEBUG] BC boundary geometry type: {} | Envelope: {}",
-          bcBoundary.getGeometryType(),
-          bcBoundary.getEnvelopeInternal());
-
       if (!bcBoundary.contains(geometry)) {
-        log.warn("[DEBUG] Geometry is NOT contained in BC boundary. Returning 400.");
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
             "GML geometry is not fully within the Province of BC boundary.");
@@ -278,12 +293,39 @@ public class OpeningSpatialFileService {
    */
   private String detectGmlCrs(MultipartFile file) throws Exception {
     String gmlText = new String(file.getBytes());
-    if (gmlText.contains("srsName=\"EPSG:3005\"")) {
-      return "3005";
-    } else if (gmlText.contains("srsName=\"EPSG:4326\"")) {
-      return "4326";
+    javax.xml.parsers.DocumentBuilderFactory dbf =
+        javax.xml.parsers.DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+    org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(gmlText.getBytes()));
+    String[] geomTags = {
+      "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
+    };
+    for (String tag : geomTags) {
+      org.w3c.dom.NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
+      for (int i = 0; i < nodes.getLength(); i++) {
+        org.w3c.dom.Node node = nodes.item(i);
+        org.w3c.dom.NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+          org.w3c.dom.Node srsAttr = attrs.getNamedItem("srsName");
+          if (srsAttr != null) {
+            String srsName = srsAttr.getNodeValue();
+            if (srsName.endsWith("EPSG:3005")) {
+              return "3005";
+            } else if (srsName.endsWith("EPSG:4326")) {
+              return "4326";
+            } else {
+              throw new org.springframework.web.server.ResponseStatusException(
+                  org.springframework.http.HttpStatus.BAD_REQUEST,
+                  "Unsupported or invalid CRS in GML: "
+                      + srsName
+                      + ". Only EPSG:3005 and EPSG:4326 are supported.");
+            }
+          }
+        }
+      }
     }
-    // Default to 4326 if not specified
+    // If no srsName attribute found, default to 4326
     return "4326";
   }
 
@@ -644,5 +686,259 @@ public class OpeningSpatialFileService {
       }
     }
     return geometries;
+  }
+
+  /**
+   * Extracts the GML fragment for the general area definition geometry (OpeningDefinition/extentOf)
+   * from ESF/XML. Throws ResponseStatusException if not found.
+   */
+  private String extractGeneralAreaGmlFragment(String xmlText) {
+    try {
+      javax.xml.parsers.DocumentBuilderFactory dbf =
+          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
+      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
+      javax.xml.xpath.XPath xpath = xpf.newXPath();
+      javax.xml.namespace.NamespaceContext nsContext =
+          new javax.xml.namespace.NamespaceContext() {
+            public String getNamespaceURI(String prefix) {
+              switch (prefix) {
+                case "rst":
+                  return "http://www.for.gov.bc.ca/schema/results";
+                case "gml":
+                  return "http://www.opengis.net/gml";
+                case "esf":
+                  return "http://www.for.gov.bc.ca/schema/esf";
+                default:
+                  return javax.xml.XMLConstants.NULL_NS_URI;
+              }
+            }
+
+            public String getPrefix(String uri) {
+              return null;
+            }
+
+            public java.util.Iterator<String> getPrefixes(String uri) {
+              return null;
+            }
+          };
+      xpath.setNamespaceContext(nsContext);
+      String expr =
+          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:extentOf/*";
+      org.w3c.dom.Node geomNode =
+          (org.w3c.dom.Node) xpath.evaluate(expr, doc, javax.xml.xpath.XPathConstants.NODE);
+      if (geomNode == null) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
+      }
+      javax.xml.transform.TransformerFactory tf =
+          javax.xml.transform.TransformerFactory.newInstance();
+      javax.xml.transform.Transformer transformer = tf.newTransformer();
+      java.io.StringWriter writer = new java.io.StringWriter();
+      transformer.transform(
+          new javax.xml.transform.dom.DOMSource(geomNode),
+          new javax.xml.transform.stream.StreamResult(writer));
+      return writer.toString();
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Failed to extract general area GML: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Extracts orgUnit, openingGrossArea, maxAllowablePermAccessPerc, and openingCategory from ESF
+   * XML text.
+   */
+  private GeoMetaDataDto extractEsfMetaData(String xmlText) {
+    try {
+      javax.xml.parsers.DocumentBuilderFactory dbf =
+          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
+      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
+      javax.xml.xpath.XPath xpath = xpf.newXPath();
+      javax.xml.namespace.NamespaceContext nsContext =
+          new javax.xml.namespace.NamespaceContext() {
+            public String getNamespaceURI(String prefix) {
+              switch (prefix) {
+                case "rst":
+                  return "http://www.for.gov.bc.ca/schema/results";
+                case "gml":
+                  return "http://www.opengis.net/gml";
+                case "esf":
+                  return "http://www.for.gov.bc.ca/schema/esf";
+                case "mof":
+                  return "http://www.for.gov.bc.ca/schema/base";
+                default:
+                  return javax.xml.XMLConstants.NULL_NS_URI;
+              }
+            }
+
+            public String getPrefix(String uri) {
+              return null;
+            }
+
+            public java.util.Iterator<String> getPrefixes(String uri) {
+              return null;
+            }
+          };
+      xpath.setNamespaceContext(nsContext);
+
+      String orgUnit =
+          (String)
+              xpath.evaluate(
+                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionMetadataProperty/rst:SubmissionMetadata/rst:districtCode",
+                  doc,
+                  javax.xml.xpath.XPathConstants.STRING);
+      String openingGrossAreaStr =
+          (String)
+              xpath.evaluate(
+                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:openingGrossArea",
+                  doc,
+                  javax.xml.xpath.XPathConstants.STRING);
+      String maxAllowablePermAccessPerc =
+          (String)
+              xpath.evaluate(
+                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:maximumAllowableSoilDisturbancePercentage",
+                  doc,
+                  javax.xml.xpath.XPathConstants.STRING);
+
+      java.math.BigDecimal openingGrossAreaVal = null;
+      try {
+        if (openingGrossAreaStr != null && !openingGrossAreaStr.isBlank()) {
+          openingGrossAreaVal = new java.math.BigDecimal(openingGrossAreaStr);
+        }
+      } catch (Exception e) {
+        log.info("Failed to parse openingGrossArea as BigDecimal: {}", e.getMessage());
+      }
+
+      java.math.BigDecimal maxPermAccessPercVal = null;
+      try {
+        if (maxAllowablePermAccessPerc != null && !maxAllowablePermAccessPerc.isBlank()) {
+          maxPermAccessPercVal = new java.math.BigDecimal(maxAllowablePermAccessPerc);
+        }
+      } catch (Exception e) {
+        log.info("Failed to parse maxAllowablePermAccessPerc as BigDecimal: {}", e.getMessage());
+      }
+
+      return new GeoMetaDataDto(
+          orgUnit,
+          null, // openingCategory
+          openingGrossAreaVal,
+          maxPermAccessPercVal);
+    } catch (Exception e) {
+      log.info("Failed to extract ESF metadata: {}", e.getMessage());
+      return new GeoMetaDataDto(null, null, null, null);
+    }
+  }
+
+  /** Extracts tenure information from ESF XML and returns a list of TenureDto. */
+  private java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> extractEsfTenureList(
+      String xmlText) {
+    java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> result =
+        new java.util.ArrayList<>();
+    try {
+      javax.xml.parsers.DocumentBuilderFactory dbf =
+          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
+      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
+      javax.xml.xpath.XPath xpath = xpf.newXPath();
+      javax.xml.namespace.NamespaceContext nsContext =
+          new javax.xml.namespace.NamespaceContext() {
+            public String getNamespaceURI(String prefix) {
+              switch (prefix) {
+                case "rst":
+                  return "http://www.for.gov.bc.ca/schema/results";
+                case "gml":
+                  return "http://www.opengis.net/gml";
+                case "esf":
+                  return "http://www.for.gov.bc.ca/schema/esf";
+                case "mof":
+                  return "http://www.for.gov.bc.ca/schema/base";
+                default:
+                  return javax.xml.XMLConstants.NULL_NS_URI;
+              }
+            }
+
+            public String getPrefix(String uri) {
+              return null;
+            }
+
+            public java.util.Iterator<String> getPrefixes(String uri) {
+              return null;
+            }
+          };
+      xpath.setNamespaceContext(nsContext);
+
+      // Find all rst:Tenure nodes under rst:tenureProperty
+      String tenureExpr =
+          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:tenureProperty/rst:Tenure";
+      org.w3c.dom.NodeList tenureNodes =
+          (org.w3c.dom.NodeList)
+              xpath.evaluate(tenureExpr, doc, javax.xml.xpath.XPathConstants.NODESET);
+      boolean foundPrimary = false;
+      for (int i = 0; i < tenureNodes.getLength(); i++) {
+        org.w3c.dom.Node tenureNode = tenureNodes.item(i);
+        // Extract fields
+        String forestFileId = null;
+        String cutBlock = null;
+        String cuttingPermit = null;
+        boolean isPrimary = false;
+
+        // licenceNumber
+        org.w3c.dom.NodeList licenceNodes =
+            ((org.w3c.dom.Element) tenureNode)
+                .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "licenceNumber");
+        if (licenceNodes.getLength() > 0) {
+          forestFileId = licenceNodes.item(0).getTextContent();
+        }
+        // cutblock
+        org.w3c.dom.NodeList cutBlockNodes =
+            ((org.w3c.dom.Element) tenureNode)
+                .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "cutblock");
+        if (cutBlockNodes.getLength() > 0) {
+          cutBlock = cutBlockNodes.item(0).getTextContent();
+        }
+        // cuttingPermitID
+        org.w3c.dom.NodeList cuttingPermitNodes =
+            ((org.w3c.dom.Element) tenureNode)
+                .getElementsByTagNameNS(
+                    "http://www.for.gov.bc.ca/schema/results", "cuttingPermitID");
+        if (cuttingPermitNodes.getLength() > 0) {
+          cuttingPermit = cuttingPermitNodes.item(0).getTextContent();
+        }
+        // primeLicenceIndicator
+        org.w3c.dom.NodeList primeNodes =
+            ((org.w3c.dom.Element) tenureNode)
+                .getElementsByTagNameNS(
+                    "http://www.for.gov.bc.ca/schema/results", "primeLicenceIndicator");
+        if (primeNodes.getLength() > 0) {
+          String primeText = primeNodes.item(0).getTextContent();
+          isPrimary = "true".equalsIgnoreCase(primeText.trim());
+          if (isPrimary) foundPrimary = true;
+        }
+
+        result.add(
+            new ca.bc.gov.restapi.results.postgres.dto.TenureDto(
+                isPrimary, forestFileId, cutBlock, cuttingPermit, null // timberMark ignored for now
+                ));
+      }
+      // If no primary found, set first as primary if exists
+      if (!foundPrimary && result.size() > 0) {
+        ca.bc.gov.restapi.results.postgres.dto.TenureDto first = result.get(0);
+        result.set(
+            0,
+            new ca.bc.gov.restapi.results.postgres.dto.TenureDto(
+                true, first.forestFileId(), first.cutBlock(), first.cuttingPermit(), null));
+      }
+    } catch (Exception e) {
+      log.info("Failed to extract tenure list from ESF: {}", e.getMessage());
+    }
+    return result;
   }
 }

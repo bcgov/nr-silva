@@ -66,6 +66,14 @@ const CreateOpening = () => {
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.OpeningEndpointService.uploadOpeningSpatialFile({ file }),
     onSuccess: (res) => {
+      setForm(prev => ({
+        ...prev,
+        geojson: {
+          ...prev.geojson,
+          value: res.geoJson as GeoJSON.FeatureCollection
+        }
+      }));
+      setCurrentStep(1);
       console.log("Upload success: ", res)
     },
     onError: (err) => {
@@ -94,7 +102,6 @@ const CreateOpening = () => {
 
       fileMutation.mutate(form.file.value)
 
-      setCurrentStep(1);
       return;
     }
 
