@@ -50,10 +50,12 @@ public class OpeningSpatialFileService {
   private final ObjectMapper mapper = new ObjectMapper();
 
   /**
-   * Process an uploaded spatial file. Depending on the file extension, delegates to the appropriate
-   * handler.
+   * Processes an uploaded spatial file (GeoJSON, GML, or ESF/XML) and delegates to the appropriate
+   * handler based on file extension. Performs file size and type validation before processing.
    *
    * @param file the uploaded spatial file
+   * @return ExtractedGeoDataDto containing parsed geometry, metadata, and tenure information
+   * @throws ResponseStatusException if the file is invalid, unsupported, or exceeds size limits
    */
   public ExtractedGeoDataDto processOpeningSpatialFile(MultipartFile file) {
     if (file == null || file.isEmpty()) {
@@ -84,6 +86,53 @@ public class OpeningSpatialFileService {
     }
   }
 
+  /**
+   * Processes a GeoJSON file
+   *
+   * @param file the uploaded GeoJSON file
+   * @return ExtractedGeoDataDto with geometry and metadata (null)
+   * @throws ResponseStatusException if the file is invalid or fails validation
+   */
+  private ExtractedGeoDataDto processGeojson(MultipartFile file) {
+    log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
+    try {
+      String geojson = new String(file.getBytes());
+      JsonNode root = mapper.readTree(geojson);
+
+      // Step 1: CRS Validation
+      String crsCode = detectGeoJsonCrs(root);
+      log.info("Detected CRS for GeoJSON: EPSG:{}", crsCode);
+      if (!crsCode.equals("4326") && !crsCode.equals("3005")) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)");
+      }
+
+      // Step 2, 3: Geometry Validity (OGC/ESRI), Simple Features (No Curves)
+      validateGeoJsonGeometry(geojson);
+
+      // Step 4: Province of BC Extents
+      validateGeoJsonWithinBcBoundary(geojson, crsCode);
+
+      // Step 5: Vertex Thinning
+      String thinnedGeojson = geoJsonThinning(geojson, crsCode);
+      JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
+
+      // Return ExtractedGeoDataDto with metaData as null
+      return ExtractedGeoDataDto.builder().metaData(null).geoJson(thinnedNode).build();
+    } catch (Exception e) {
+      log.error("Failed to process GeoJSON file", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid GeoJSON file: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Processes an ESF/XML file
+   *
+   * @param file the uploaded ESF/XML file
+   * @return ExtractedGeoDataDto with geometry, metadata, and tenure list
+   * @throws ResponseStatusException if the file is invalid or fails validation
+   */
   private ExtractedGeoDataDto processEsf(MultipartFile file) {
     log.info("Processing ESF/XML file: {}", file.getOriginalFilename());
     try {
@@ -141,6 +190,13 @@ public class OpeningSpatialFileService {
     }
   }
 
+  /**
+   * Processes a GML file
+   *
+   * @param file the uploaded GML file
+   * @return ExtractedGeoDataDto with geometry and metadata (null)
+   * @throws ResponseStatusException if the file is invalid or contains no valid geometry
+   */
   private ExtractedGeoDataDto processGml(MultipartFile file) {
     log.info("Processing GML file: {}", file.getOriginalFilename());
     try {
@@ -206,7 +262,14 @@ public class OpeningSpatialFileService {
     }
   }
 
-  /** Parses a GML string into a JTS Geometry using GeoTools GML2 or GML3 parser. */
+  /**
+   * Parses a GML string into a JTS Geometry using GeoTools GML2 or GML3 parser. Auto-detects GML2
+   * vs GML3 based on XML content.
+   *
+   * @param gml the GML geometry string
+   * @return parsed JTS Geometry
+   * @throws Exception if parsing fails or geometry is invalid
+   */
   private Geometry parseGmlToGeometry(String gml) throws Exception {
     try (InputStream is = new java.io.ByteArrayInputStream(gml.getBytes())) {
       // Auto-detect GML2 vs GML3
@@ -229,8 +292,12 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Validates that the GML geometry is a simple feature (no curves) and is fully within the BC
-   * boundary (GeoJSON, CRS-dependent).
+   * Validates that the GML geometry is a simple feature (no curves) and is fully within the
+   * Province of BC boundary. Throws ResponseStatusException if validation fails.
+   *
+   * @param geometry the JTS Geometry to validate
+   * @param crsCode the EPSG code as a string ("3005" or "4326")
+   * @throws ResponseStatusException if geometry is not simple or not within BC boundary
    */
   private void validateGmlGeometryAndBoundary(Geometry geometry, String crsCode) {
     // Check for simple feature type (no curves)
@@ -285,11 +352,12 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Detects the CRS code from a GML file by searching for srsName attributes. Defaults to "4326" if
-   * not found.
+   * Detects the CRS code from a GML or ESF/XML file by searching for srsName attributes in geometry
+   * elements. Only EPSG:3005 and EPSG:4326 are supported. Defaults to "4326" if not found.
    *
-   * @param file the uploaded GML file
-   * @return the EPSG code as a string
+   * @param file the uploaded GML or ESF/XML file
+   * @return the EPSG code as a string ("3005" or "4326")
+   * @throws ResponseStatusException if an unsupported CRS is found
    */
   private String detectGmlCrs(MultipartFile file) throws Exception {
     String gmlText = new String(file.getBytes());
@@ -329,53 +397,14 @@ public class OpeningSpatialFileService {
     return "4326";
   }
 
-  private ExtractedGeoDataDto processGeojson(MultipartFile file) {
-    log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
-    try {
-      String geojson = new String(file.getBytes());
-      JsonNode root = mapper.readTree(geojson);
-
-      // Step 1: CRS Validation
-      String crsCode = detectGeoJsonCrs(root);
-      log.info("Detected CRS for GeoJSON: EPSG:{}", crsCode);
-      if (!crsCode.equals("4326") && !crsCode.equals("3005")) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)");
-      }
-
-      // Step 2, 3: Geometry Validity (OGC/ESRI), Simple Features (No Curves)
-      validateGeoJsonGeometry(geojson);
-
-      // Step 4: Province of BC Extents
-      validateGeoJsonWithinBcBoundary(geojson, crsCode);
-
-      // Step 5: Vertex Thinning
-      String thinnedGeojson = geoJsonThinning(geojson, crsCode);
-      JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
-
-      // Return ExtractedGeoDataDto with metaData as null
-      return ExtractedGeoDataDto.builder().metaData(null).geoJson(thinnedNode).build();
-    } catch (Exception e) {
-      log.error("Failed to process GeoJSON file", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Invalid GeoJSON file: " + e.getMessage());
-    }
-  }
-
   /**
    * Applies Douglas-Peucker vertex thinning to all features in the GeoJSON using the appropriate
-   * tolerance.
-   *
-   * <p>Tolerance values:
-   *
-   * <ul>
-   *   <li>EPSG:3005 (meters): {@link SilvaConstants#THINNING_TOLERANCE_METERS}
-   *   <li>EPSG:4326 (degrees): {@link SilvaConstants#THINNING_TOLERANCE_DEGREES}
-   * </ul>
+   * tolerance. Tolerance is determined by CRS: meters for EPSG:3005, degrees for EPSG:4326.
    *
    * @param geojson the input GeoJSON string
    * @param crsCode the EPSG code as a string ("3005" or "4326")
    * @return the thinned GeoJSON as a string
+   * @throws ResponseStatusException if thinning fails or input is invalid
    */
   private String geoJsonThinning(String geojson, String crsCode) {
     try {
@@ -428,7 +457,12 @@ public class OpeningSpatialFileService {
     }
   }
 
-  /** Counts the number of coordinates in a Geometry (Polygon, MultiPolygon, LineString, etc.) */
+  /**
+   * Counts the number of coordinates in a JTS Geometry (Polygon, MultiPolygon, LineString, etc.).
+   *
+   * @param geometry the JTS Geometry
+   * @return total number of coordinates in all sub-geometries
+   */
   private int countCoordinates(Geometry geometry) {
     if (geometry == null) return 0;
     int count = 0;
@@ -440,9 +474,13 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Validates that all features in the uploaded GeoJSON are within the BC boundary. Loads the
-   * ABMS_PROVINCE_SP_2025.geojson from resources/static. Throws ResponseStatusException if any
-   * feature is outside the BC boundary.
+   * Validates that all features in the uploaded GeoJSON are within the Province of BC boundary.
+   * Loads the boundary GeoJSON from resources/static and checks containment for each feature.
+   * Throws ResponseStatusException if any feature is outside the boundary.
+   *
+   * @param geojson the input GeoJSON string
+   * @param crsCode the EPSG code as a string ("3005" or "4326")
+   * @throws ResponseStatusException if any feature is outside the BC boundary
    */
   private void validateGeoJsonWithinBcBoundary(String geojson, String crsCode) {
     try {
@@ -506,8 +544,11 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Validates the geometry of a GeoJSON file using GeoTools/JTS. Throws ResponseStatusException if
-   * any geometry is invalid.
+   * Validates the geometry of a GeoJSON file using GeoTools/JTS. Checks for valid geometry type and
+   * topology for all features. Throws ResponseStatusException if any geometry is invalid.
+   *
+   * @param geojson the input GeoJSON string
+   * @throws ResponseStatusException if any geometry is invalid or not a simple feature
    */
   private void validateGeoJsonGeometry(String geojson) {
     try {
@@ -551,6 +592,15 @@ public class OpeningSpatialFileService {
     }
   }
 
+  /**
+   * Validates a single GeoJSON geometry node for type and topology. Throws ResponseStatusException
+   * if invalid or not a simple feature.
+   *
+   * @param gjson GeometryJSON instance
+   * @param geomNode the geometry node to validate
+   * @param index feature index (for error reporting)
+   * @throws ResponseStatusException if geometry is invalid or not a simple feature
+   */
   private void validateGeoJsonGeometryNode(GeometryJSON gjson, JsonNode geomNode, int index) {
     if (geomNode == null || geomNode.isNull()) {
       throw new ResponseStatusException(
@@ -589,10 +639,11 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Detects the CRS code from a GeoJSON root node. Defaults to "4326" if not specified.
+   * Detects the CRS code from a GeoJSON root node. Defaults to "4326" if not specified. Supports
+   * legacy 'crs' property and RFC 7946 default.
    *
    * @param root the root JsonNode of the GeoJSON
-   * @return the EPSG code as a string
+   * @return the EPSG code as a string ("3005" or "4326")
    */
   private String detectGeoJsonCrs(JsonNode root) {
     String crsCode = null;
@@ -621,7 +672,13 @@ public class OpeningSpatialFileService {
     return crsCode;
   }
 
-  /** Returns true if the geometry type is a simple feature (no curves). */
+  /**
+   * Returns true if the geometry type is a simple feature (no curves). Accepts Point, MultiPoint,
+   * LineString, MultiLineString, Polygon, MultiPolygon.
+   *
+   * @param geomType the geometry type string
+   * @return true if simple feature, false otherwise
+   */
   private static boolean isSimpleFeatureType(String geomType) {
     switch (geomType) {
       case "Point":
@@ -638,10 +695,11 @@ public class OpeningSpatialFileService {
 
   /**
    * Applies Douglas-Peucker vertex thinning to a geometry using the appropriate tolerance.
+   * Tolerance is determined by CRS: meters for EPSG:3005, degrees for EPSG:4326.
    *
-   * @param geometry The input JTS geometry.
-   * @param crsCode The EPSG code as a string ("3005" or "4326").
-   * @return The thinned geometry.
+   * @param geometry the input JTS geometry
+   * @param crsCode the EPSG code as a string ("3005" or "4326")
+   * @return the thinned geometry
    */
   private Geometry thinGeometry(Geometry geometry, String crsCode) {
     double tolerance =
@@ -653,7 +711,12 @@ public class OpeningSpatialFileService {
 
   /**
    * Extracts all GML geometry elements (Polygon, MultiPolygon, etc.) from a GML/XML string using
-   * XML parsing, preserving namespaces. Returns a list of geometry XML strings.
+   * XML parsing. Preserves namespaces and returns a list of geometry XML strings for further
+   * parsing.
+   *
+   * @param gmlText the GML/XML string
+   * @return list of geometry XML strings
+   * @throws Exception if XML parsing fails
    */
   private java.util.List<String> extractGmlGeometriesXml(String gmlText) throws Exception {
     java.util.List<String> geometries = new java.util.ArrayList<>();
@@ -690,7 +753,12 @@ public class OpeningSpatialFileService {
 
   /**
    * Extracts the GML fragment for the general area definition geometry (OpeningDefinition/extentOf)
-   * from ESF/XML. Throws ResponseStatusException if not found.
+   * from ESF/XML. Uses XPath to locate the geometry node and serializes it to a string. Throws
+   * ResponseStatusException if not found.
+   *
+   * @param xmlText the ESF/XML string
+   * @return GML fragment as a string
+   * @throws ResponseStatusException if geometry is not found or extraction fails
    */
   private String extractGeneralAreaGmlFragment(String xmlText) {
     try {
@@ -749,7 +817,10 @@ public class OpeningSpatialFileService {
 
   /**
    * Extracts orgUnit, openingGrossArea, maxAllowablePermAccessPerc, and openingCategory from ESF
-   * XML text.
+   * XML text. Uses XPath to locate and parse metadata fields.
+   *
+   * @param xmlText the ESF/XML string
+   * @return GeoMetaDataDto with extracted metadata fields
    */
   private GeoMetaDataDto extractEsfMetaData(String xmlText) {
     try {
@@ -835,7 +906,13 @@ public class OpeningSpatialFileService {
     }
   }
 
-  /** Extracts tenure information from ESF XML and returns a list of TenureDto. */
+  /**
+   * Extracts tenure information from ESF XML and returns a list of TenureDto objects. Uses XPath to
+   * locate Tenure nodes and parses relevant fields.
+   *
+   * @param xmlText the ESF/XML string
+   * @return list of TenureDto objects
+   */
   private java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> extractEsfTenureList(
       String xmlText) {
     java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> result =
