@@ -85,41 +85,90 @@ public class OpeningSpatialFileService {
   }
 
   private void processEsf(MultipartFile file) {
-    // TODO implement ESF processing
     log.info("Processing ESF/XML file: {}", file.getOriginalFilename());
+    try {
+      // Step 1: Detect CRS from embedded GML using detectGmlCrs
+      String crsCode = detectGmlCrs(file);
+      log.info("Detected CRS for ESF: EPSG:{}", crsCode);
+
+      // Step 2: Extract GML geometry and parse to JTS Geometry
+      String xmlText = new String(file.getBytes());
+      // Try to extract the first GML geometry element (MultiPolygon, Polygon, LineString, etc.)
+      String gmlRegex =
+          "(<gml:(MultiPolygon|Polygon|LineString|MultiLineString|Point|MultiPoint)[^>]*>.*?</gml:\\2>)";
+      java.util.regex.Pattern pattern =
+          java.util.regex.Pattern.compile(gmlRegex, java.util.regex.Pattern.DOTALL);
+      java.util.regex.Matcher matcher = pattern.matcher(xmlText);
+      if (!matcher.find()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "No GML geometry found in ESF/XML file");
+      }
+      String gmlFragment = matcher.group(1);
+      Geometry gmlGeometry = parseGmlToGeometry(gmlFragment);
+      log.info("Parsed GML geometry from ESF: {}", gmlGeometry.getGeometryType());
+      // ... further ESF processing ...
+    } catch (Exception e) {
+      log.error("Failed to process ESF/XML file", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid ESF/XML file: " + e.getMessage());
+    }
   }
 
   private ExtractedGeoDataDto processGml(MultipartFile file) {
     log.info("Processing GML file: {}", file.getOriginalFilename());
     try {
-      // Step 1: Detect CRS
+      String gmlText = new String(file.getBytes());
       String crsCode = detectGmlCrs(file);
       log.info("Detected CRS for GML: EPSG:{}", crsCode);
 
-      // Step 2: Parse GML to JTS Geometry
-      Geometry gmlGeometry = parseGmlToGeometry(file);
+      // Use XML parsing to extract all geometry elements
+      java.util.List<String> geomXmls = extractGmlGeometriesXml(gmlText);
+      java.util.List<Geometry> geometries = new java.util.ArrayList<>();
+      for (String geomXml : geomXmls) {
+        log.info("[DEBUG] Raw GML geometry XML being parsed:\n{}", geomXml);
+        Geometry geom = parseGmlToGeometry(geomXml);
+        geometries.add(geom);
+      }
 
-      // Step 3, 4: Validate geometry (no curves) and within BC boundary
-      validateGmlGeometryAndBoundary(gmlGeometry, crsCode);
+      // If no geometry elements found, try parsing the whole file as a naked geometry
+      if (geometries.isEmpty()) {
+        try {
+          log.info("[DEBUG] Raw GML geometry XML being parsed (fallback):\n{}", gmlText);
+          Geometry geom = parseGmlToGeometry(gmlText);
+          geometries.add(geom);
+        } catch (Exception e) {
+          // If still fails, throw error
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "No valid GML geometry found in file");
+        }
+      }
 
-      // Step 5: Vertex Thinning (Douglas-Peucker)
-      int originalCoords = countCoordinates(gmlGeometry);
-      Geometry thinned = thinGeometry(gmlGeometry, crsCode);
-      int thinnedCoords = countCoordinates(thinned);
-      int removed = originalCoords - thinnedCoords;
-      log.info(
-          "Thinning removed {} of {} coordinates ({} remain)",
-          removed,
-          originalCoords,
-          thinnedCoords);
-
-      // Convert thinned geometry to GeoJSON
+      // Validate, thin, and convert all geometries to GeoJSON features
       GeometryJSON gjson = new GeometryJSON();
-      String geojson = gjson.toString(thinned);
-      JsonNode geoJsonNode = mapper.readTree(geojson);
-
-      // Return ExtractedGeoDataDto with metaData as null
-      return ExtractedGeoDataDto.builder().metaData(null).geoJson(geoJsonNode).build();
+      com.fasterxml.jackson.databind.node.ArrayNode features = mapper.createArrayNode();
+      for (Geometry geom : geometries) {
+        validateGmlGeometryAndBoundary(geom, crsCode);
+        int originalCoords = countCoordinates(geom);
+        Geometry thinned = thinGeometry(geom, crsCode);
+        int thinnedCoords = countCoordinates(thinned);
+        int removed = originalCoords - thinnedCoords;
+        log.info(
+            "Thinning removed {} of {} coordinates ({} remain)",
+            removed,
+            originalCoords,
+            thinnedCoords);
+        String geojson = gjson.toString(thinned);
+        JsonNode geomNode = mapper.readTree(geojson);
+        com.fasterxml.jackson.databind.node.ObjectNode feature = mapper.createObjectNode();
+        feature.put("type", "Feature");
+        feature.set("geometry", geomNode);
+        feature.set("properties", mapper.createObjectNode());
+        features.add(feature);
+      }
+      com.fasterxml.jackson.databind.node.ObjectNode fc = mapper.createObjectNode();
+      fc.put("type", "FeatureCollection");
+      fc.set("features", features);
+      return ExtractedGeoDataDto.builder().metaData(null).geoJson(fc).build();
     } catch (Exception e) {
       log.error("Failed to process GML file", e);
       throw new ResponseStatusException(
@@ -127,17 +176,26 @@ public class OpeningSpatialFileService {
     }
   }
 
-  /** Parses the GML file into a JTS Geometry using GeoTools GML parser. */
-  private Geometry parseGmlToGeometry(MultipartFile file) throws Exception {
-    org.geotools.xsd.Parser parser =
-        new org.geotools.xsd.Parser(new org.geotools.gml3.GMLConfiguration());
-    try (InputStream is = file.getInputStream()) {
+  /** Parses a GML string into a JTS Geometry using GeoTools GML2 or GML3 parser. */
+  private Geometry parseGmlToGeometry(String gml) throws Exception {
+    try (InputStream is = new java.io.ByteArrayInputStream(gml.getBytes())) {
+      // Auto-detect GML2 vs GML3
+      boolean isGml2 = gml.contains("<gml:coordinates") || gml.contains("<coordinates");
+      boolean isGml3 = gml.contains("<gml:posList") || gml.contains("<posList");
+      org.geotools.xsd.Parser parser;
+      if (isGml2 && !isGml3) {
+        parser = new org.geotools.xsd.Parser(new org.geotools.gml2.GMLConfiguration());
+        log.info("[DEBUG] Using GeoTools GML2 parser for this geometry.");
+      } else {
+        parser = new org.geotools.xsd.Parser(new org.geotools.gml3.GMLConfiguration());
+        log.info("[DEBUG] Using GeoTools GML3 parser for this geometry.");
+      }
       Object parsed = parser.parse(is);
       if (parsed instanceof Geometry) {
         return (Geometry) parsed;
       } else {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "GML file does not contain a valid geometry.");
+            HttpStatus.BAD_REQUEST, "GML does not contain a valid geometry.");
       }
     }
   }
@@ -183,7 +241,21 @@ public class OpeningSpatialFileService {
       JsonNode bcGeomNode = bcFeatures.get(0).get("geometry");
       GeometryJSON gjson = new GeometryJSON();
       Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
+
+      // Debug logging: CRS, geometry, and BC boundary
+      log.info("[DEBUG] CRS for validation: EPSG:{}", crsCode);
+      log.info(
+          "[DEBUG] Input geometry type: {} | Envelope: {}",
+          geometry.getGeometryType(),
+          geometry.getEnvelopeInternal());
+      log.info("[DEBUG] Input geometry WKT: {}", geometry.toText());
+      log.info(
+          "[DEBUG] BC boundary geometry type: {} | Envelope: {}",
+          bcBoundary.getGeometryType(),
+          bcBoundary.getEnvelopeInternal());
+
       if (!bcBoundary.contains(geometry)) {
+        log.warn("[DEBUG] Geometry is NOT contained in BC boundary. Returning 400.");
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
             "GML geometry is not fully within the Province of BC boundary.");
@@ -535,5 +607,42 @@ public class OpeningSpatialFileService {
             ? SilvaConstants.THINNING_TOLERANCE_METERS
             : SilvaConstants.THINNING_TOLERANCE_DEGREES;
     return org.locationtech.jts.simplify.DouglasPeuckerSimplifier.simplify(geometry, tolerance);
+  }
+
+  /**
+   * Extracts all GML geometry elements (Polygon, MultiPolygon, etc.) from a GML/XML string using
+   * XML parsing, preserving namespaces. Returns a list of geometry XML strings.
+   */
+  private java.util.List<String> extractGmlGeometriesXml(String gmlText) throws Exception {
+    java.util.List<String> geometries = new java.util.ArrayList<>();
+    javax.xml.parsers.DocumentBuilderFactory dbf =
+        javax.xml.parsers.DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+    org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(gmlText.getBytes()));
+    String[] geomTags = {
+      "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
+    };
+    for (String tag : geomTags) {
+      org.w3c.dom.NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
+      for (int i = 0; i < nodes.getLength(); i++) {
+        org.w3c.dom.Node node = nodes.item(i);
+        // Serialize node back to string, including namespace context
+        javax.xml.transform.TransformerFactory tf =
+            javax.xml.transform.TransformerFactory.newInstance();
+        javax.xml.transform.Transformer transformer = tf.newTransformer();
+        java.io.StringWriter writer = new java.io.StringWriter();
+        transformer.transform(
+            new javax.xml.transform.dom.DOMSource(node),
+            new javax.xml.transform.stream.StreamResult(writer));
+        String geomXml = writer.toString();
+        // Add xmlns:gml if not present (for fragments)
+        if (!geomXml.contains("xmlns:gml")) {
+          geomXml = geomXml.replaceFirst(">", " xmlns:gml=\"http://www.opengis.net/gml\">");
+        }
+        geometries.add(geomXml);
+      }
+    }
+    return geometries;
   }
 }

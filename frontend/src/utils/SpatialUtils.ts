@@ -277,7 +277,13 @@ export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
     }
   }
 
+  // If still no features, try to extract naked Polygon/MultiPolygon directly
   if (!features || features.length === 0) {
+    // Try to extract Polygon/MultiPolygon using esfXmlToGeoJSON logic
+    const fc = esfXmlToGeoJSON(xmlText);
+    if (fc.features.length > 0) {
+      return fc;
+    }
     throw new Error("No features found in the uploaded GML. (If your file contains curve geometry, it is not supported.)");
   }
 
