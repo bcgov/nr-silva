@@ -3,21 +3,47 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.GeoMetaDataDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.xsd.Parser;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.valid.IsValidOp;
 import org.locationtech.jts.operation.valid.TopologyValidationError;
+import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This service handles processing of uploaded spatial files (GeoJSON, GML, ESF/XML).
@@ -143,8 +169,7 @@ public class OpeningSpatialFileService {
       String xmlText = new String(file.getBytes());
 
       GeoMetaDataDto metaData = extractEsfMetaData(xmlText);
-      java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> tenureList =
-          extractEsfTenureList(xmlText);
+      List<TenureDto> tenureList = extractEsfTenureList(xmlText);
 
       String gmlFragment = extractGeneralAreaGmlFragment(xmlText);
       Geometry gmlGeometry = parseGmlToGeometry(gmlFragment);
@@ -152,7 +177,7 @@ public class OpeningSpatialFileService {
 
       int numGeoms = gmlGeometry.getNumGeometries();
       GeometryJSON gjson = new GeometryJSON();
-      com.fasterxml.jackson.databind.node.ArrayNode features = mapper.createArrayNode();
+      ArrayNode features = mapper.createArrayNode();
       for (int i = 0; i < numGeoms; i++) {
         Geometry subGeom = gmlGeometry.getGeometryN(i);
         validateGmlGeometryAndBoundary(subGeom, crsCode);
@@ -168,17 +193,17 @@ public class OpeningSpatialFileService {
             thinnedCoords);
         String geojson = gjson.toString(thinned);
         JsonNode geomNode = mapper.readTree(geojson);
-        com.fasterxml.jackson.databind.node.ObjectNode feature = mapper.createObjectNode();
+        ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
         feature.set("geometry", geomNode);
         feature.set("properties", mapper.createObjectNode());
         features.add(feature);
       }
-      com.fasterxml.jackson.databind.node.ObjectNode fc = mapper.createObjectNode();
+      ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
       fc.set("features", features);
 
-      return ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto.builder()
+      return ExtractedGeoDataDto.builder()
           .metaData(metaData)
           .geoJson(fc)
           .tenureList(tenureList)
@@ -206,8 +231,8 @@ public class OpeningSpatialFileService {
       log.info("Detected CRS for GML: EPSG:{}", crsCode);
 
       // Step 2, 3: Parse GML to JTS Geometry (extract all geometry elements)
-      java.util.List<String> geomXmls = extractGmlGeometriesXml(gmlText);
-      java.util.List<Geometry> geometries = new java.util.ArrayList<>();
+      List<String> geomXmls = extractGmlGeometriesXml(gmlText);
+      List<Geometry> geometries = new ArrayList<>();
       for (String geomXml : geomXmls) {
         Geometry geom = parseGmlToGeometry(geomXml);
         geometries.add(geom);
@@ -227,7 +252,7 @@ public class OpeningSpatialFileService {
 
       // Step 4, 5: Validate, thin, and convert all geometries to GeoJSON features
       GeometryJSON gjson = new GeometryJSON();
-      com.fasterxml.jackson.databind.node.ArrayNode features = mapper.createArrayNode();
+      ArrayNode features = mapper.createArrayNode();
       for (Geometry geom : geometries) {
         // 4: Validate geometry (no curves) and within BC boundary
         validateGmlGeometryAndBoundary(geom, crsCode);
@@ -244,14 +269,14 @@ public class OpeningSpatialFileService {
         // Convert thinned geometry to GeoJSON
         String geojson = gjson.toString(thinned);
         JsonNode geomNode = mapper.readTree(geojson);
-        com.fasterxml.jackson.databind.node.ObjectNode feature = mapper.createObjectNode();
+        ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
         feature.set("geometry", geomNode);
         feature.set("properties", mapper.createObjectNode());
         features.add(feature);
       }
       // Step 5: Return ExtractedGeoDataDto with metaData as null
-      com.fasterxml.jackson.databind.node.ObjectNode fc = mapper.createObjectNode();
+      ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
       fc.set("features", features);
       return ExtractedGeoDataDto.builder().metaData(null).geoJson(fc).build();
@@ -271,15 +296,15 @@ public class OpeningSpatialFileService {
    * @throws Exception if parsing fails or geometry is invalid
    */
   private Geometry parseGmlToGeometry(String gml) throws Exception {
-    try (InputStream is = new java.io.ByteArrayInputStream(gml.getBytes())) {
+    try (InputStream is = new ByteArrayInputStream(gml.getBytes())) {
       // Auto-detect GML2 vs GML3
       boolean isGml2 = gml.contains("<gml:coordinates") || gml.contains("<coordinates");
       boolean isGml3 = gml.contains("<gml:posList") || gml.contains("<posList");
-      org.geotools.xsd.Parser parser;
+      Parser parser;
       if (isGml2 && !isGml3) {
-        parser = new org.geotools.xsd.Parser(new org.geotools.gml2.GMLConfiguration());
+        parser = new Parser(new org.geotools.gml2.GMLConfiguration());
       } else {
-        parser = new org.geotools.xsd.Parser(new org.geotools.gml3.GMLConfiguration());
+        parser = new Parser(new org.geotools.gml3.GMLConfiguration());
       }
       Object parsed = parser.parse(is);
       if (parsed instanceof Geometry) {
@@ -361,21 +386,20 @@ public class OpeningSpatialFileService {
    */
   private String detectGmlCrs(MultipartFile file) throws Exception {
     String gmlText = new String(file.getBytes());
-    javax.xml.parsers.DocumentBuilderFactory dbf =
-        javax.xml.parsers.DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
-    javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-    org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(gmlText.getBytes()));
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes()));
     String[] geomTags = {
       "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
     };
     for (String tag : geomTags) {
-      org.w3c.dom.NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
+      NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
       for (int i = 0; i < nodes.getLength(); i++) {
-        org.w3c.dom.Node node = nodes.item(i);
-        org.w3c.dom.NamedNodeMap attrs = node.getAttributes();
+        Node node = nodes.item(i);
+        NamedNodeMap attrs = node.getAttributes();
         if (attrs != null) {
-          org.w3c.dom.Node srsAttr = attrs.getNamedItem("srsName");
+          Node srsAttr = attrs.getNamedItem("srsName");
           if (srsAttr != null) {
             String srsName = srsAttr.getNodeValue();
             if (srsName.endsWith("EPSG:3005")) {
@@ -383,8 +407,8 @@ public class OpeningSpatialFileService {
             } else if (srsName.endsWith("EPSG:4326")) {
               return "4326";
             } else {
-              throw new org.springframework.web.server.ResponseStatusException(
-                  org.springframework.http.HttpStatus.BAD_REQUEST,
+              throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST,
                   "Unsupported or invalid CRS in GML: "
                       + srsName
                       + ". Only EPSG:3005 and EPSG:4326 are supported.");
@@ -427,13 +451,12 @@ public class OpeningSpatialFileService {
         featureIdx++;
         JsonNode geomNode = feature.get("geometry");
         if (geomNode == null || geomNode.isNull()) continue;
-        Geometry geom = gjson.read(new java.io.StringReader(geomNode.toString()));
+        Geometry geom = gjson.read(new StringReader(geomNode.toString()));
 
         // Count original coordinates (only for Polygon/MultiPolygon)
         int originalCoords = countCoordinates(geom);
 
-        Geometry simplified =
-            org.locationtech.jts.simplify.DouglasPeuckerSimplifier.simplify(geom, tolerance);
+        Geometry simplified = DouglasPeuckerSimplifier.simplify(geom, tolerance);
 
         int thinnedCoords = countCoordinates(simplified);
 
@@ -706,7 +729,7 @@ public class OpeningSpatialFileService {
         crsCode.equals("3005")
             ? SilvaConstants.THINNING_TOLERANCE_METERS
             : SilvaConstants.THINNING_TOLERANCE_DEGREES;
-    return org.locationtech.jts.simplify.DouglasPeuckerSimplifier.simplify(geometry, tolerance);
+    return DouglasPeuckerSimplifier.simplify(geometry, tolerance);
   }
 
   /**
@@ -718,28 +741,24 @@ public class OpeningSpatialFileService {
    * @return list of geometry XML strings
    * @throws Exception if XML parsing fails
    */
-  private java.util.List<String> extractGmlGeometriesXml(String gmlText) throws Exception {
-    java.util.List<String> geometries = new java.util.ArrayList<>();
-    javax.xml.parsers.DocumentBuilderFactory dbf =
-        javax.xml.parsers.DocumentBuilderFactory.newInstance();
+  private List<String> extractGmlGeometriesXml(String gmlText) throws Exception {
+    List<String> geometries = new ArrayList<>();
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
-    javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-    org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(gmlText.getBytes()));
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes()));
     String[] geomTags = {
       "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
     };
     for (String tag : geomTags) {
-      org.w3c.dom.NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
+      NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
       for (int i = 0; i < nodes.getLength(); i++) {
-        org.w3c.dom.Node node = nodes.item(i);
+        Node node = nodes.item(i);
         // Serialize node back to string, including namespace context
-        javax.xml.transform.TransformerFactory tf =
-            javax.xml.transform.TransformerFactory.newInstance();
-        javax.xml.transform.Transformer transformer = tf.newTransformer();
-        java.io.StringWriter writer = new java.io.StringWriter();
-        transformer.transform(
-            new javax.xml.transform.dom.DOMSource(node),
-            new javax.xml.transform.stream.StreamResult(writer));
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(node), new StreamResult(writer));
         String geomXml = writer.toString();
         // Add xmlns:gml if not present (for fragments)
         if (!geomXml.contains("xmlns:gml")) {
@@ -762,15 +781,14 @@ public class OpeningSpatialFileService {
    */
   private String extractGeneralAreaGmlFragment(String xmlText) {
     try {
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
-      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
-      javax.xml.xpath.XPath xpath = xpf.newXPath();
-      javax.xml.namespace.NamespaceContext nsContext =
-          new javax.xml.namespace.NamespaceContext() {
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      NamespaceContext nsContext =
+          new NamespaceContext() {
             public String getNamespaceURI(String prefix) {
               switch (prefix) {
                 case "rst":
@@ -795,19 +813,15 @@ public class OpeningSpatialFileService {
       xpath.setNamespaceContext(nsContext);
       String expr =
           "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:extentOf/*";
-      org.w3c.dom.Node geomNode =
-          (org.w3c.dom.Node) xpath.evaluate(expr, doc, javax.xml.xpath.XPathConstants.NODE);
+      Node geomNode = (Node) xpath.evaluate(expr, doc, XPathConstants.NODE);
       if (geomNode == null) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
       }
-      javax.xml.transform.TransformerFactory tf =
-          javax.xml.transform.TransformerFactory.newInstance();
-      javax.xml.transform.Transformer transformer = tf.newTransformer();
-      java.io.StringWriter writer = new java.io.StringWriter();
-      transformer.transform(
-          new javax.xml.transform.dom.DOMSource(geomNode),
-          new javax.xml.transform.stream.StreamResult(writer));
+      TransformerFactory tf = TransformerFactory.newInstance();
+      Transformer transformer = tf.newTransformer();
+      StringWriter writer = new StringWriter();
+      transformer.transform(new DOMSource(geomNode), new StreamResult(writer));
       return writer.toString();
     } catch (Exception e) {
       throw new ResponseStatusException(
@@ -824,15 +838,14 @@ public class OpeningSpatialFileService {
    */
   private GeoMetaDataDto extractEsfMetaData(String xmlText) {
     try {
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
-      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
-      javax.xml.xpath.XPath xpath = xpf.newXPath();
-      javax.xml.namespace.NamespaceContext nsContext =
-          new javax.xml.namespace.NamespaceContext() {
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      NamespaceContext nsContext =
+          new NamespaceContext() {
             public String getNamespaceURI(String prefix) {
               switch (prefix) {
                 case "rst":
@@ -844,7 +857,7 @@ public class OpeningSpatialFileService {
                 case "mof":
                   return "http://www.for.gov.bc.ca/schema/base";
                 default:
-                  return javax.xml.XMLConstants.NULL_NS_URI;
+                  return XMLConstants.NULL_NS_URI;
               }
             }
 
@@ -852,7 +865,7 @@ public class OpeningSpatialFileService {
               return null;
             }
 
-            public java.util.Iterator<String> getPrefixes(String uri) {
+            public Iterator<String> getPrefixes(String uri) {
               return null;
             }
           };
@@ -863,33 +876,33 @@ public class OpeningSpatialFileService {
               xpath.evaluate(
                   "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionMetadataProperty/rst:SubmissionMetadata/rst:districtCode",
                   doc,
-                  javax.xml.xpath.XPathConstants.STRING);
+                  XPathConstants.STRING);
       String openingGrossAreaStr =
           (String)
               xpath.evaluate(
                   "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:openingGrossArea",
                   doc,
-                  javax.xml.xpath.XPathConstants.STRING);
+                  XPathConstants.STRING);
       String maxAllowablePermAccessPerc =
           (String)
               xpath.evaluate(
                   "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:maximumAllowableSoilDisturbancePercentage",
                   doc,
-                  javax.xml.xpath.XPathConstants.STRING);
+                  XPathConstants.STRING);
 
-      java.math.BigDecimal openingGrossAreaVal = null;
+      BigDecimal openingGrossAreaVal = null;
       try {
         if (openingGrossAreaStr != null && !openingGrossAreaStr.isBlank()) {
-          openingGrossAreaVal = new java.math.BigDecimal(openingGrossAreaStr);
+          openingGrossAreaVal = new BigDecimal(openingGrossAreaStr);
         }
       } catch (Exception e) {
         log.info("Failed to parse openingGrossArea as BigDecimal: {}", e.getMessage());
       }
 
-      java.math.BigDecimal maxPermAccessPercVal = null;
+      BigDecimal maxPermAccessPercVal = null;
       try {
         if (maxAllowablePermAccessPerc != null && !maxAllowablePermAccessPerc.isBlank()) {
-          maxPermAccessPercVal = new java.math.BigDecimal(maxAllowablePermAccessPerc);
+          maxPermAccessPercVal = new BigDecimal(maxAllowablePermAccessPerc);
         }
       } catch (Exception e) {
         log.info("Failed to parse maxAllowablePermAccessPerc as BigDecimal: {}", e.getMessage());
@@ -913,20 +926,17 @@ public class OpeningSpatialFileService {
    * @param xmlText the ESF/XML string
    * @return list of TenureDto objects
    */
-  private java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> extractEsfTenureList(
-      String xmlText) {
-    java.util.List<ca.bc.gov.restapi.results.postgres.dto.TenureDto> result =
-        new java.util.ArrayList<>();
+  private List<TenureDto> extractEsfTenureList(String xmlText) {
+    List<TenureDto> result = new ArrayList<>();
     try {
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.parse(new java.io.ByteArrayInputStream(xmlText.getBytes()));
-      javax.xml.xpath.XPathFactory xpf = javax.xml.xpath.XPathFactory.newInstance();
-      javax.xml.xpath.XPath xpath = xpf.newXPath();
-      javax.xml.namespace.NamespaceContext nsContext =
-          new javax.xml.namespace.NamespaceContext() {
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      NamespaceContext nsContext =
+          new NamespaceContext() {
             public String getNamespaceURI(String prefix) {
               switch (prefix) {
                 case "rst":
@@ -946,7 +956,7 @@ public class OpeningSpatialFileService {
               return null;
             }
 
-            public java.util.Iterator<String> getPrefixes(String uri) {
+            public Iterator<String> getPrefixes(String uri) {
               return null;
             }
           };
@@ -955,12 +965,10 @@ public class OpeningSpatialFileService {
       // Find all rst:Tenure nodes under rst:tenureProperty
       String tenureExpr =
           "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:tenureProperty/rst:Tenure";
-      org.w3c.dom.NodeList tenureNodes =
-          (org.w3c.dom.NodeList)
-              xpath.evaluate(tenureExpr, doc, javax.xml.xpath.XPathConstants.NODESET);
+      NodeList tenureNodes = (NodeList) xpath.evaluate(tenureExpr, doc, XPathConstants.NODESET);
       boolean foundPrimary = false;
       for (int i = 0; i < tenureNodes.getLength(); i++) {
-        org.w3c.dom.Node tenureNode = tenureNodes.item(i);
+        Node tenureNode = tenureNodes.item(i);
         // Extract fields
         String forestFileId = null;
         String cutBlock = null;
@@ -968,30 +976,30 @@ public class OpeningSpatialFileService {
         boolean isPrimary = false;
 
         // licenceNumber
-        org.w3c.dom.NodeList licenceNodes =
-            ((org.w3c.dom.Element) tenureNode)
+        NodeList licenceNodes =
+            ((Element) tenureNode)
                 .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "licenceNumber");
         if (licenceNodes.getLength() > 0) {
           forestFileId = licenceNodes.item(0).getTextContent();
         }
         // cutblock
-        org.w3c.dom.NodeList cutBlockNodes =
-            ((org.w3c.dom.Element) tenureNode)
+        NodeList cutBlockNodes =
+            ((Element) tenureNode)
                 .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "cutblock");
         if (cutBlockNodes.getLength() > 0) {
           cutBlock = cutBlockNodes.item(0).getTextContent();
         }
         // cuttingPermitID
-        org.w3c.dom.NodeList cuttingPermitNodes =
-            ((org.w3c.dom.Element) tenureNode)
+        NodeList cuttingPermitNodes =
+            ((Element) tenureNode)
                 .getElementsByTagNameNS(
                     "http://www.for.gov.bc.ca/schema/results", "cuttingPermitID");
         if (cuttingPermitNodes.getLength() > 0) {
           cuttingPermit = cuttingPermitNodes.item(0).getTextContent();
         }
         // primeLicenceIndicator
-        org.w3c.dom.NodeList primeNodes =
-            ((org.w3c.dom.Element) tenureNode)
+        NodeList primeNodes =
+            ((Element) tenureNode)
                 .getElementsByTagNameNS(
                     "http://www.for.gov.bc.ca/schema/results", "primeLicenceIndicator");
         if (primeNodes.getLength() > 0) {
@@ -1001,16 +1009,16 @@ public class OpeningSpatialFileService {
         }
 
         result.add(
-            new ca.bc.gov.restapi.results.postgres.dto.TenureDto(
+            new TenureDto(
                 isPrimary, forestFileId, cutBlock, cuttingPermit, null // timberMark ignored for now
                 ));
       }
       // If no primary found, set first as primary if exists
       if (!foundPrimary && result.size() > 0) {
-        ca.bc.gov.restapi.results.postgres.dto.TenureDto first = result.get(0);
+        TenureDto first = result.get(0);
         result.set(
             0,
-            new ca.bc.gov.restapi.results.postgres.dto.TenureDto(
+            new TenureDto(
                 true, first.forestFileId(), first.cutBlock(), first.cuttingPermit(), null));
       }
     } catch (Exception e) {
