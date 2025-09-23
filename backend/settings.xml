@@ -1,0 +1,17 @@
+<settings>
+  <profiles>
+    <profile>
+      <id>osgeo</id>
+      <repositories>
+        <repository>
+          <id>osgeo</id>
+          <name>OSGeo Release Repository</name>
+          <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>osgeo</activeProfile>
+  </activeProfiles>
+</settings>
