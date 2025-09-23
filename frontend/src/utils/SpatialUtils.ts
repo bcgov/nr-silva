@@ -10,9 +10,8 @@ import { LinearRing } from "ol/geom";
 const BC_ALBERS_DEF =
   "+proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs";
 
-/** Register EPSG:3005 and EPSG:42102 as BC Albers so proj4 can reproject. */
+/** Register EPSG:3005 as BC Albers so proj4 can reproject. */
 proj4.defs("EPSG:3005", BC_ALBERS_DEF);
-proj4.defs("EPSG:42102", BC_ALBERS_DEF);
 
 /** Default CRS to assume when a GML geometry has no srsName. */
 const DEFAULT_GML_EPSG = "EPSG:3005";
@@ -295,10 +294,19 @@ export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
 
   // If still no features, try to extract naked Polygon/MultiPolygon directly
   if (!features || features.length === 0) {
-    // Try to extract Polygon/MultiPolygon using esfXmlToGeoJSON logic
-    const fc = esfXmlToGeoJSON(xmlText);
-    if (fc.features.length > 0) {
-      return fc;
+    // Try to extract naked Polygon/MultiPolygon elements
+    const doc2 = new DOMParser().parseFromString(xmlText, "application/xml");
+    const epsg = detectGmlEpsg(xmlText);
+    // Try MultiPolygon first
+    let parent = doc2.querySelector("gml\\:MultiPolygon, MultiPolygon");
+    if (!parent) {
+      parent = doc2.querySelector("gml\\:Polygon, Polygon");
+    }
+    if (parent) {
+      const fc = extractPolygonsFromParent(parent, epsg);
+      if (fc.features.length > 0) {
+        return fc;
+      }
     }
     throw new Error("No features found in the uploaded GML. (If your file contains curve geometry, it is not supported.)");
   }

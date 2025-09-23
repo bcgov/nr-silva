@@ -29,7 +29,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.geotools.xsd.Parser;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.valid.IsValidOp;
@@ -100,16 +104,20 @@ public class OpeningSpatialFileService {
 
     String lowerName = fileName.toLowerCase();
 
+    ExtractedGeoDataDto result;
     if (lowerName.endsWith(".xml")) {
-      return processEsf(file);
+      result = processEsf(file);
     } else if (lowerName.endsWith(".gml")) {
-      return processGml(file);
+      result = processGml(file);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
-      return processGeojson(file);
+      result = processGeojson(file);
     } else {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
+
+    // Just return the result from the handler; reprojection is handled in each process* method
+    return result;
   }
 
   /**
@@ -142,6 +150,26 @@ public class OpeningSpatialFileService {
       // Step 5: Vertex Thinning
       String thinnedGeojson = geoJsonThinning(geojson, crsCode);
       JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
+
+      // Step 6: Reproject to EPSG:4326 if needed
+      if (!crsCode.equals("4326")) {
+        GeometryJSON gjson = new GeometryJSON();
+        ArrayNode features = (ArrayNode) thinnedNode.get("features");
+        for (int i = 0; i < features.size(); i++) {
+          ObjectNode feature = (ObjectNode) features.get(i);
+          ObjectNode geometryNode = (ObjectNode) feature.get("geometry");
+          String type = geometryNode.get("type").asText();
+          if ("Polygon".equals(type) || "MultiPolygon".equals(type)) {
+            try {
+              Geometry geom = gjson.read(new StringReader(geometryNode.toString()));
+              Geometry transformed = reprojectTo4326(geom, crsCode);
+              feature.set("geometry", mapper.readTree(gjson.toString(transformed)));
+            } catch (Exception e) {
+              log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
+            }
+          }
+        }
+      }
 
       // Return ExtractedGeoDataDto with metaData as null
       return ExtractedGeoDataDto.builder().metaData(null).geoJson(thinnedNode).build();
@@ -191,7 +219,9 @@ public class OpeningSpatialFileService {
             removed,
             originalCoords,
             thinnedCoords);
-        String geojson = gjson.toString(thinned);
+        // Reproject to EPSG:4326 if needed
+        Geometry finalGeom = reprojectTo4326(thinned, crsCode);
+        String geojson = gjson.toString(finalGeom);
         JsonNode geomNode = mapper.readTree(geojson);
         ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
@@ -266,8 +296,10 @@ public class OpeningSpatialFileService {
             removed,
             originalCoords,
             thinnedCoords);
-        // Convert thinned geometry to GeoJSON
-        String geojson = gjson.toString(thinned);
+        // Reproject to EPSG:4326 if needed
+        Geometry finalGeom = reprojectTo4326(thinned, crsCode);
+        // Convert thinned/reprojected geometry to GeoJSON
+        String geojson = gjson.toString(finalGeom);
         JsonNode geomNode = mapper.readTree(geojson);
         ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
@@ -275,6 +307,7 @@ public class OpeningSpatialFileService {
         feature.set("properties", mapper.createObjectNode());
         features.add(feature);
       }
+
       // Step 5: Return ExtractedGeoDataDto with metaData as null
       ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
@@ -1059,5 +1092,28 @@ public class OpeningSpatialFileService {
       log.info("Failed to extract tenure list from ESF: {}", e.getMessage());
     }
     return result;
+  }
+
+  /**
+   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326.
+   * Uses axis order hint for correct GeoJSON output.
+   *
+   * @param geometry the input JTS geometry
+   * @param sourceCrsCode the EPSG code as a string ("3005" or "4326")
+   * @return reprojected geometry if needed, otherwise original geometry
+   */
+  private Geometry reprojectTo4326(Geometry geometry, String sourceCrsCode) {
+    if ("4326".equals(sourceCrsCode)) {
+      return geometry;
+    }
+    try {
+      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:" + sourceCrsCode);
+      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
+      MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+      return JTS.transform(geometry, transform);
+    } catch (Exception e) {
+      log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
+      return geometry;
+    }
   }
 }
