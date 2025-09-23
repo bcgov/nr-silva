@@ -9,8 +9,7 @@ COPY .mvn/ ./.mvn
 COPY settings.xml ./settings.xml
 
 # Build
-RUN cat settings.xml
-RUN ./mvnw -s settings.xml -Pnative package -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
+RUN ./mvnw -s settings.xml clean install -Pnative package -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
 
 ### Deployer
 FROM gcr.io/distroless/java-base:nonroot
