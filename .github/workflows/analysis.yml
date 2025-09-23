@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         with:
-          commands: mvn --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
+          commands: mvn -s settings.xml --no-transfer-progress clean compile verify package checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
           java-distribution: temurin
