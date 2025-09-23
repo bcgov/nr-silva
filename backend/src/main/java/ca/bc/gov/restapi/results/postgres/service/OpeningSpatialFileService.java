@@ -387,6 +387,12 @@ public class OpeningSpatialFileService {
     String gmlText = new String(file.getBytes());
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
+    // Secure XML parsing configuration to prevent XXE
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
     DocumentBuilder db = dbf.newDocumentBuilder();
     Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes()));
     String[] geomTags = {
@@ -744,6 +750,15 @@ public class OpeningSpatialFileService {
     List<String> geometries = new ArrayList<>();
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
+    // Secure XML parser configuration: disable DTD, XXE
+    dbf.setNamespaceAware(true);
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    dbf.setXIncludeAware(false);
+    dbf.setExpandEntityReferences(false);
+
     DocumentBuilder db = dbf.newDocumentBuilder();
     Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes()));
     String[] geomTags = {
@@ -782,6 +797,14 @@ public class OpeningSpatialFileService {
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
+      // Prevent XXE by disabling DTDs and external entities
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      dbf.setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "");
+      dbf.setAttribute("http://javax.xml.XMLConstants/property/accessExternalSchema", "");
+
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
       XPathFactory xpf = XPathFactory.newInstance();
@@ -839,6 +862,13 @@ public class OpeningSpatialFileService {
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
+      // Prevent XXE and DTD attacks
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
       XPathFactory xpf = XPathFactory.newInstance();
@@ -930,6 +960,11 @@ public class OpeningSpatialFileService {
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
+      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
       XPathFactory xpf = XPathFactory.newInstance();
