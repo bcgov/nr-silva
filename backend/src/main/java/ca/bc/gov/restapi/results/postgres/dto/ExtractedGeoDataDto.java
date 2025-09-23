@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.With;
 import org.springframework.lang.Nullable;
 
-/** This record contains all possible filters for the dashboard openings per years api. */
+/**
+ * DTO representing extracted geographical data, including metadata, geoJson, and tenure
+ * information.
+ */
 @Builder
 @With
 public record ExtractedGeoDataDto(

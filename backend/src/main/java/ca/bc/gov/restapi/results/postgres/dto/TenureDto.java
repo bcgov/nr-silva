@@ -3,7 +3,10 @@ package ca.bc.gov.restapi.results.postgres.dto;
 import lombok.Builder;
 import lombok.With;
 
-/** This record contains all possible filters for the dashboard openings per years api. */
+/**
+ * This record represents tenure information, including primary status, forest file ID, cut block,
+ * cutting permit, and timber mark.
+ */
 @Builder
 @With
 public record TenureDto(

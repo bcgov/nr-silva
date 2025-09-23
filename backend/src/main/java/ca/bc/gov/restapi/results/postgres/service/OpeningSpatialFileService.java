@@ -282,8 +282,7 @@ public class OpeningSpatialFileService {
       return ExtractedGeoDataDto.builder().metaData(null).geoJson(fc).build();
     } catch (Exception e) {
       log.error("Failed to process GML file", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Invalid GML file: " + e.getMessage());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process GML file.");
     }
   }
 
