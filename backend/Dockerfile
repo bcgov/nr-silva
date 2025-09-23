@@ -9,6 +9,7 @@ COPY .mvn/ ./.mvn
 COPY settings.xml ./settings.xml
 
 # Build
+RUN cat settings.xml
 RUN ./mvnw -s settings.xml -Pnative package -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
 
 ### Deployer
