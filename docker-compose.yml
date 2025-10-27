@@ -46,7 +46,7 @@ services:
     container_name: backend
     entrypoint: sh -c './startup.sh'
     #image: maven:3.9.6-amazoncorretto-21
-    image: maven:3.9.10-eclipse-temurin-17
+    image: maven:3.9.11-eclipse-temurin-17
     network_mode: host
     volumes:
       - ./backend:/app
@@ -104,7 +104,7 @@ services:
       APP_USER: THE
       ORACLE_RANDOM_PASSWORD: yes
     platform: "linux/amd64"
-    image: gvenzl/oracle-free:23.8-full-faststart
+    image: gvenzl/oracle-free:23.9-full-faststart
     ports: [ 1521:1521 ]
     volumes: [ /opt/oracle/oradata ]
     healthcheck:
