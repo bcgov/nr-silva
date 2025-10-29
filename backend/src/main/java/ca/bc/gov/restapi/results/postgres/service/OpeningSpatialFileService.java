@@ -339,8 +339,8 @@ public class OpeningSpatialFileService {
         parser = new Parser(new org.geotools.gml3.GMLConfiguration());
       }
       Object parsed = parser.parse(is);
-      if (parsed instanceof Geometry) {
-        return (Geometry) parsed;
+      if (parsed instanceof Geometry geometry) {
+        return geometry;
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "GML does not contain a valid geometry.");
@@ -803,6 +803,19 @@ public class OpeningSpatialFileService {
         Node node = nodes.item(i);
         // Serialize node back to string, including namespace context
         TransformerFactory tf = TransformerFactory.newInstance();
+        // Harden TransformerFactory against XXE / external resource access
+        try {
+          tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (Exception ignore) {
+        }
+        try {
+          tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (Exception ignore) {
+        }
+        try {
+          tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        } catch (Exception ignore) {
+        }
         Transformer transformer = tf.newTransformer();
         StringWriter writer = new StringWriter();
         transformer.transform(new DOMSource(node), new StreamResult(writer));
@@ -874,6 +887,19 @@ public class OpeningSpatialFileService {
             HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
       }
       TransformerFactory tf = TransformerFactory.newInstance();
+      // Harden TransformerFactory against XXE / external resource access
+      try {
+        tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      } catch (Exception ignore) {
+      }
+      try {
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      } catch (Exception ignore) {
+      }
+      try {
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      } catch (Exception ignore) {
+      }
       Transformer transformer = tf.newTransformer();
       StringWriter writer = new StringWriter();
       transformer.transform(new DOMSource(geomNode), new StreamResult(writer));
@@ -1081,7 +1107,7 @@ public class OpeningSpatialFileService {
                 ));
       }
       // If no primary found, set first as primary if exists
-      if (!foundPrimary && result.size() > 0) {
+      if (!foundPrimary && !result.isEmpty()) {
         TenureDto first = result.get(0);
         result.set(
             0,
@@ -1095,8 +1121,8 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326.
-   * Uses axis order hint for correct GeoJSON output.
+   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326. Uses axis order
+   * hint for correct GeoJSON output.
    *
    * @param geometry the input JTS geometry
    * @param sourceCrsCode the EPSG code as a string ("3005" or "4326")
