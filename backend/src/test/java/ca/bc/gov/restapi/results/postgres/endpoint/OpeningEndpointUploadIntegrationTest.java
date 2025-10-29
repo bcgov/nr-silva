@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,7 +56,9 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
         .perform(
             multipart("/api/openings/create/upload")
                 .file(file)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .with(csrf().asHeader())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
   }
 }
