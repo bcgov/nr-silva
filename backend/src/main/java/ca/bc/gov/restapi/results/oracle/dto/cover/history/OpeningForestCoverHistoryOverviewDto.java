@@ -27,5 +27,8 @@ public record OpeningForestCoverHistoryOverviewDto(
         boolean hasDetails,
 
         @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
-        boolean isCurrentHistory) {
-}
+        boolean isCurrent,
+
+        @Schema(types = {"boolean"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        boolean isOldest)
+{}

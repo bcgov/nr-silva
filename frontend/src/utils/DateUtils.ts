@@ -81,8 +81,15 @@ export const extractYearFromDateString = (dateStr: string): number | null => {
   return dt.isValid ? dt.year : null;
 };
 
-export const formatDateTime = (dateTimeStr: string, format: string = "dd/MM/yyyy (hh:mm a)"): string => {
+export const formatDateTime = (dateTimeStr: string, format: string = "dd/MM/yyyy (hh:mm:ss a)"): string => {
   if (!dateTimeStr) return '--';
   const dt = DateTime.fromISO(dateTimeStr);
   return dt.isValid ? dt.toFormat(format) : '--';
+};
+
+export const isMidnight = (dateTimeStr: string): boolean => {
+  if (!dateTimeStr) return false;
+  const dt = DateTime.fromISO(dateTimeStr);
+  if (!dt.isValid) return false;
+  return dt.hour === 0 && dt.minute === 0 && dt.second === 0;
 };

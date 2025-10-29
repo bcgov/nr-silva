@@ -10,6 +10,7 @@ export type OpeningForestCoverHistoryOverviewDto = {
     other: number | null;
     total: number | null;
     hasDetails: boolean;
-    isCurrentHistory: boolean;
+    isCurrent: boolean;
+    isOldest: boolean;
 };
 

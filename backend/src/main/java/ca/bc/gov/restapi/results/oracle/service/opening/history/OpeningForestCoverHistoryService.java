@@ -1,18 +1,16 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.*;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryOverviewProjection;
 import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,9 +32,9 @@ public class OpeningForestCoverHistoryService {
     }
 
     public List<OpeningForestCoverHistoryDto> getOpeningForestCoverList(
-            Long openingId, String updateDate) {
+            Long openingId, String updateDate, String mainSearchTerm) {
 
-        return coverRepository.findHistoryByOpeningDetails(openingId, updateDate).stream()
+        return coverRepository.findHistoryByOpeningDetails(openingId, updateDate, mainSearchTerm).stream()
                 .map(
                         projection -> {
                             boolean isSingleLayer =
@@ -83,6 +81,7 @@ public class OpeningForestCoverHistoryService {
                                     .withInventoryLayer(
                                             dto.inventoryLayer().withSpecies(getLayerSpecies(dto.coverId(), "I", projection.getArchiveDate().toString())));
                         })
+                .sorted(Comparator.comparingLong(OpeningForestCoverHistoryDto::coverId))
                 .toList();
     }
 
@@ -105,7 +104,8 @@ public class OpeningForestCoverHistoryService {
                 projection.getOther(),
                 projection.getTotal(),
                 projection.getHasDetails(),
-                projection.getIsCurrentHistory()
+                projection.getIsCurrent(),
+                projection.getIsOldest()
         );
     }
 
