@@ -7,13 +7,9 @@ import { OpenAPI } from "./OpenApi/core/OpenAPI";
 import { CodesEndpointService } from "./OpenApi/services/CodesEndpointService";
 import { ForestClientEndpointService } from "./OpenApi/services/ForestClientEndpointService";
 import { OpeningEndpointService } from "./OpenApi/services/OpeningEndpointService";
-import { OpeningFavoriteEndpointService } from "./OpenApi/services/OpeningFavoriteEndpointService";
 import { OpeningMapsEndpointService } from "./OpenApi/services/OpeningMapsEndpointService";
 import { UserActionsEndpointService } from "./OpenApi/services/UserActionsEndpointService";
 import { UserRecentOpeningEndpointService } from "./OpenApi/services/UserRecentOpeningEndpointService";
-
-// Setup global axios defaults
-axios.defaults.headers.common["Content-Type"] = "application/json";
 
 // Clean baseURL
 let API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
@@ -24,10 +20,6 @@ if (API_BASE_URL.endsWith("/api")) {
 // Configure global OpenAPI settings
 OpenAPI.BASE = API_BASE_URL;
 OpenAPI.WITH_CREDENTIALS = false;
-OpenAPI.HEADERS = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": window.location.origin,
-};
 
 // Provide token dynamically before each request
 OpenAPI.TOKEN = async () => {
@@ -39,7 +31,6 @@ const serviceConstructors = {
     CodesEndpointService,
     ForestClientEndpointService,
     OpeningEndpointService,
-    OpeningFavoriteEndpointService,
     OpeningMapsEndpointService,
     UserActionsEndpointService,
     UserRecentOpeningEndpointService,

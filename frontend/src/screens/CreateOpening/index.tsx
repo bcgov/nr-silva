@@ -14,7 +14,10 @@ import { OpeningsRoute } from '@/routes/config';
 
 import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm, TitleText } from './constants';
+import { useMutation } from '@tanstack/react-query';
+import API from '@/services/API';
 import './styles.scss';
+
 
 const CreateOpening = () => {
   const { selectedClient } = useAuth();
@@ -60,6 +63,24 @@ const CreateOpening = () => {
     e.preventDefault();
   };
 
+  const fileMutation = useMutation({
+    mutationFn: (file: Blob) => API.OpeningEndpointService.uploadOpeningSpatialFile({ file }),
+    onSuccess: (res) => {
+      setForm(prev => ({
+        ...prev,
+        geojson: {
+          ...prev.geojson,
+          value: res.geoJson as GeoJSON.FeatureCollection
+        }
+      }));
+      setCurrentStep(1);
+      console.log("Upload success: ", res)
+    },
+    onError: (err) => {
+      console.warn("Upload failed: ", err)
+    }
+  });
+
   const handleBack = () => {
     if (currentStep === 0) {
       navigate(OpeningsRoute.path!)
@@ -69,7 +90,7 @@ const CreateOpening = () => {
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!form.geojson?.value) {
+      if (!form.geojson?.value || !form.file?.value) {
         setForm(
           (prev) => (
             { ...prev, isGeoJsonMissing: { ...prev.isGeoJsonMissing, value: true } }
@@ -79,7 +100,8 @@ const CreateOpening = () => {
         return;
       }
 
-      setCurrentStep(1);
+      fileMutation.mutate(form.file.value)
+
       return;
     }
 

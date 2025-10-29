@@ -16,7 +16,7 @@ import API from "../../services/API";
 vi.mock("../../services/API", () => {
   return {
     default: {
-      OpeningFavoriteEndpointService: {
+      OpeningEndpointService: {
         getFavorites: vi.fn(),
         removeFromFavorites: vi.fn(),
       },
@@ -44,7 +44,7 @@ const renderWithProviders = async () => {
 describe("FavouriteOpenings Component", () => {
   it("renders correctly with given histories", async () => {
     (
-      API.OpeningFavoriteEndpointService.getFavorites as vi.Mock
+      API.OpeningEndpointService.getFavorites as vi.Mock
     ).mockResolvedValueOnce([1, 2]);
 
     const { container } = await renderWithProviders();
@@ -61,7 +61,7 @@ describe("FavouriteOpenings Component", () => {
 
   it("renders correctly with empty histories", async () => {
     (
-      API.OpeningFavoriteEndpointService.getFavorites as vi.Mock
+      API.OpeningEndpointService.getFavorites as vi.Mock
     ).mockResolvedValueOnce([]); // Simulate empty data
 
     await renderWithProviders();
@@ -83,10 +83,10 @@ describe("FavouriteOpenings Component", () => {
 
   it("should call deleteOpeningFavorite when FavoriteButton is clicked", async () => {
     (
-      API.OpeningFavoriteEndpointService.getFavorites as vi.Mock
+      API.OpeningEndpointService.getFavorites as vi.Mock
     ).mockResolvedValueOnce([1, 2]);
     (
-      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+      API.OpeningEndpointService.removeFromFavorites as vi.Mock
     ).mockRejectedValueOnce();
     const { container } = await renderWithProviders();
 
@@ -94,17 +94,17 @@ describe("FavouriteOpenings Component", () => {
     if (favoriteButton) {
       await act(async () => fireEvent.click(favoriteButton));
       expect(
-        API.OpeningFavoriteEndpointService.removeFromFavorites
+        API.OpeningEndpointService.removeFromFavorites
       ).toHaveBeenCalled();
     }
   });
 
   it("should call deleteOpeningFavorite and handle error when FavoriteButton is clicked", async () => {
     (
-      API.OpeningFavoriteEndpointService.getFavorites as vi.Mock
+      API.OpeningEndpointService.getFavorites as vi.Mock
     ).mockResolvedValueOnce([1, 2]);
     (
-      API.OpeningFavoriteEndpointService.removeFromFavorites as vi.Mock
+      API.OpeningEndpointService.removeFromFavorites as vi.Mock
     ).mockRejectedValueOnce(new Error("Failed to delete favorite"));
     const { container } = await renderWithProviders();
 
@@ -112,7 +112,7 @@ describe("FavouriteOpenings Component", () => {
     if (favoriteButton) {
       await act(async () => fireEvent.click(favoriteButton));
       expect(
-        API.OpeningFavoriteEndpointService.removeFromFavorites
+        API.OpeningEndpointService.removeFromFavorites
       ).toHaveBeenCalled();
     }
   });

@@ -9,6 +9,10 @@ server:
 spring:
   application:
     name: results-api
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
   mvc:
     problemdetails:
       enabled: true

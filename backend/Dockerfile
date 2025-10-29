@@ -6,9 +6,10 @@ WORKDIR /app
 COPY pom.xml mvnw ./
 COPY src ./src
 COPY .mvn/ ./.mvn
+COPY settings.xml ./settings.xml
 
 # Build
-RUN ./mvnw -Pnative package -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
+RUN ./mvnw -s settings.xml clean package -Pnative -DskipTests -Dskip.unit.tests=true -Dspring-boot.run.profiles=prod
 
 ### Deployer
 FROM gcr.io/distroless/java-base:nonroot

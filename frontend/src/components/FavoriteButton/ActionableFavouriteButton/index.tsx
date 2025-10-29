@@ -27,7 +27,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
 
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites", openingId],
-    queryFn: () => API.OpeningFavoriteEndpointService.checkFavorite(openingId!),
+    queryFn: () => API.OpeningEndpointService.checkFavorite(openingId!),
     refetchOnMount: 'always',
     enabled: !!openingId,
   })
@@ -58,7 +58,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
   };
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: () => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId!),
+    mutationFn: () => API.OpeningEndpointService.removeFromFavorites(openingId!),
     onSuccess: (_, openingId) => {
       displayFavSuccessToast(false);
       // Invalidate favourite data for this component
@@ -68,7 +68,7 @@ const ActionableFavouriteButton = ({ openingId }: ActionableFavouriteButtonProps
   });
 
   const putFavOpenMutation = useMutation({
-    mutationFn: () => API.OpeningFavoriteEndpointService.addToFavorites(openingId!),
+    mutationFn: () => API.OpeningEndpointService.addToFavorites(openingId!),
     onSuccess: () => {
       displayFavSuccessToast(true);
       // Invalidate favourite data for this component

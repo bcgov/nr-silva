@@ -57,7 +57,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId),
+    mutationFn: (openingId: number) => API.OpeningEndpointService.removeFromFavorites(openingId),
     onSuccess: (_, openingId) => {
       if (showToast) {
         displayFavSuccessToast(openingId, false);
@@ -75,7 +75,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   });
 
   const putFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.addToFavorites(openingId),
+    mutationFn: (openingId: number) => API.OpeningEndpointService.addToFavorites(openingId),
     onSuccess: (_, openingId) => {
       if (showToast) {
         displayFavSuccessToast(openingId, true);

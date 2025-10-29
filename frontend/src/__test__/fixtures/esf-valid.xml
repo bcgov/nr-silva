@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type='text/xsl' href='http://esf.cengea.com/RESULTS_V4/RESULTSviewer.xsl'?>
+<esf:ESFSubmission xsi:schemaLocation="http://www.for.gov.bc.ca/schema/esf http://www.for.gov.bc.ca/schema/esf/1/xsd/MOF/esf-submission.xsd http://www.for.gov.bc.ca/schema/results http://www.for.gov.bc.ca/schema/results/4/xsd/MOF/mof-results.xsd" xmlns:esf="http://www.for.gov.bc.ca/schema/esf" xmlns:gml="http://www.opengis.net/gml" xmlns:mof="http://www.for.gov.bc.ca/schema/base" xmlns:rst="http://www.for.gov.bc.ca/schema/results" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <esf:submissionMetadata>
+    <esf:emailAddress>mailto:Alexandra.Vallee@mosaicforests.com</esf:emailAddress>
+    <esf:telephoneNumber>2502685065</esf:telephoneNumber>
+  </esf:submissionMetadata>
+  <esf:submissionContent>
+    <rst:ResultsSubmission>
+      <gml:boundedBy>
+        <gml:null>inapplicable</gml:null>
+      </gml:boundedBy>
+      <rst:submissionMetadataProperty>
+        <rst:SubmissionMetadata>
+          <rst:districtCode>DCR</rst:districtCode>
+          <rst:clientCode>00164633</rst:clientCode>
+          <rst:clientLocationCode>00</rst:clientLocationCode>
+          <rst:licenseeContact>Alexandra Vallee</rst:licenseeContact>
+          <rst:telephoneNumber>2502685065</rst:telephoneNumber>
+          <rst:emailAddress>mailto:Alexandra.Vallee@mosaicforests.com</rst:emailAddress>
+          <rst:batchReferenceDate>2025-05-21</rst:batchReferenceDate>
+          <rst:validationIndicator>0</rst:validationIndicator>
+        </rst:SubmissionMetadata>
+      </rst:submissionMetadataProperty>
+      <rst:submissionItem>
+        <rst:Opening>
+          <gml:boundedBy>
+            <gml:null>inapplicable</gml:null>
+          </gml:boundedBy>
+          <rst:tenureKey>
+            <rst:licenceNumber>TFL47</rst:licenceNumber>
+            <rst:cuttingPermitID>149</rst:cuttingPermitID>
+            <rst:cutblock>12-119</rst:cutblock>
+          </rst:tenureKey>
+          <rst:definedBy>
+            <rst:OpeningDefinition>
+              <mof:spatialMetaData />
+              <rst:extentOf>
+                <gml:MultiPolygon srsName="EPSG:4326">
+                  <gml:polygonMember>
+                    <gml:Polygon>
+                      <gml:outerBoundaryIs>
+                        <gml:LinearRing>
+                          <gml:coordinates>-123.3656,48.4284 -123.3640,48.4287 -123.3635,48.4279 -123.3642,48.4272 -123.3656,48.4284</gml:coordinates>
+                        </gml:LinearRing>
+                      </gml:outerBoundaryIs>
+                    </gml:Polygon>
+                  </gml:polygonMember>
+                  <gml:polygonMember>
+                    <gml:Polygon>
+                      <gml:outerBoundaryIs>
+                        <gml:LinearRing>
+                          <gml:coordinates>-123.3620,48.4300 -123.3605,48.4303 -123.3600,48.4295 -123.3607,48.4288 -123.3620,48.4300</gml:coordinates>
+                        </gml:LinearRing>
+                      </gml:outerBoundaryIs>
+                    </gml:Polygon>
+                  </gml:polygonMember>
+                </gml:MultiPolygon>
+              </rst:extentOf>
+              <rst:openingGrossArea>6.3</rst:openingGrossArea>
+              <rst:maximumAllowableSoilDisturbancePercentage>25.0</rst:maximumAllowableSoilDisturbancePercentage>
+              <rst:tenureProperty>
+                <rst:Tenure>
+                  <rst:tenureKey>
+                    <rst:licenceNumber>TFL47</rst:licenceNumber>
+                    <rst:cuttingPermitID>149</rst:cuttingPermitID>
+                    <rst:cutblock>12-119</rst:cutblock>
+                  </rst:tenureKey>
+                  <rst:primeLicenceIndicator>true</rst:primeLicenceIndicator>
+                </rst:Tenure>
+              </rst:tenureProperty>
+            </rst:OpeningDefinition>
+          </rst:definedBy>
+        </rst:Opening>
+      </rst:submissionItem>
+    </rst:ResultsSubmission>
+  </esf:submissionContent>
+</esf:ESFSubmission>

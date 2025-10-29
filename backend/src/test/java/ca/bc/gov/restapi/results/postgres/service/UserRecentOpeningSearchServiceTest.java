@@ -15,7 +15,6 @@ import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
-import ca.bc.gov.restapi.results.postgres.repository.UserRecentOpeningRepository;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.DisplayName;
@@ -36,31 +35,26 @@ class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegratio
   public static final Long OPENING_ID = 101017L;
   public static final String IDIR_TEST = "IDIR\\JAKETHEDOG";
 
-  @Autowired
-  private UserRecentOpeningRepository userRecentOpeningRepository;
-
-  @Autowired
-  private UserRecentOpeningService userRecentOpeningService;
+  @Autowired private UserRecentOpeningService userRecentOpeningService;
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10000)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Test
   @Order(1)
   @DisplayName("1 | storeViewedOpening | list openings | empty list")
   void getAllRecentOpeningsForUser_noRecentOpenings_returnsEmptyResult() {
-    Page<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(
-        PageRequest.of(0, 10));
+    Page<OpeningSearchResponseDto> result =
+        userRecentOpeningService.getAllRecentOpeningsForUser(PageRequest.of(0, 10));
     assertNotNull(result);
     assertThat(result.getContent()).isNotNull().isEmpty();
   }
@@ -89,20 +83,26 @@ class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegratio
   void storeViewedOpening_invalidOpeningId_throwsException() {
     Long invalidOpeningId = null;
 
-    Exception exception = assertThrows(InvalidOpeningIdException.class, () -> {
-      userRecentOpeningService.storeViewedOpening(invalidOpeningId);
-    });
+    Exception exception =
+        assertThrows(
+            InvalidOpeningIdException.class,
+            () -> {
+              userRecentOpeningService.storeViewedOpening(invalidOpeningId);
+            });
 
-    assertEquals("417 EXPECTATION_FAILED \"Opening ID must contain numbers only!\"", exception.getMessage());
+    assertEquals(
+        "417 EXPECTATION_FAILED \"Opening ID must contain numbers only!\"", exception.getMessage());
   }
 
   @Test
   @DisplayName("5 | storeViewedOpening | opening not found | throws exception")
   @Order(5)
   void storeViewedOpening_openingIdNotFound_throwsException() {
-    assertThrows(OpeningNotFoundException.class, () -> {
-      userRecentOpeningService.storeViewedOpening(7745L);
-    });
+    assertThrows(
+        OpeningNotFoundException.class,
+        () -> {
+          userRecentOpeningService.storeViewedOpening(7745L);
+        });
   }
 
   @Test
@@ -112,7 +112,9 @@ class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegratio
     String clientNumber = "00000003";
     clientApiStub.stubFor(
         WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 {
                   "clientNumber": "00000003",
                   "clientName": "MINISTRY OF FORESTS",
@@ -122,13 +124,11 @@ class UserRecentOpeningSearchServiceTest extends AbstractTestContainerIntegratio
                   "clientTypeCode": "F",
                   "acronym": "MOF"
                 }
-                """)
-            )
-    );
+                """)));
 
-    Page<OpeningSearchResponseDto> result = userRecentOpeningService.getAllRecentOpeningsForUser(PageRequest.of(0,10));
+    Page<OpeningSearchResponseDto> result =
+        userRecentOpeningService.getAllRecentOpeningsForUser(PageRequest.of(0, 10));
     assertNotNull(result);
     assertThat(result.getContent()).isNotNull().isNotEmpty();
   }
-
 }

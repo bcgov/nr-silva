@@ -10,9 +10,8 @@ import { LinearRing } from "ol/geom";
 const BC_ALBERS_DEF =
   "+proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs";
 
-/** Register EPSG:3005 and EPSG:42102 as BC Albers so proj4 can reproject. */
+/** Register EPSG:3005 as BC Albers so proj4 can reproject. */
 proj4.defs("EPSG:3005", BC_ALBERS_DEF);
-proj4.defs("EPSG:42102", BC_ALBERS_DEF);
 
 /** Default CRS to assume when a GML geometry has no srsName. */
 const DEFAULT_GML_EPSG = "EPSG:3005";
@@ -139,16 +138,33 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
     return DEFAULT_GML_EPSG; // default BC Albers
   };
 
-  const polygons: GeoJSON.Feature[] = [];
-  const polygonElems = Array.from(
-    doc.querySelectorAll("gml\\:Polygon, Polygon")
+  // Find the first general area MultiPolygon under OpeningDefinition/extentOf
+  const multiPoly = doc.querySelector(
+    "rst\\:OpeningDefinition > rst\\:extentOf > gml\\:MultiPolygon, OpeningDefinition > extentOf > MultiPolygon"
   );
+  if (!multiPoly) {
+    // fallback: try to find a Polygon under OpeningDefinition/extentOf
+    const poly = doc.querySelector(
+      "rst\\:OpeningDefinition > rst\\:extentOf > gml\\:Polygon, OpeningDefinition > extentOf > Polygon"
+    );
+    if (!poly) {
+      return { type: "FeatureCollection", features: [] };
+    }
+    // treat as single polygon
+    return extractPolygonsFromParent(poly, findSrs(poly));
+  }
+  return extractPolygonsFromParent(multiPoly, findSrs(multiPoly));
+};
+
+// Helper: extract polygons from a MultiPolygon or Polygon parent element
+function extractPolygonsFromParent(parent: Element, epsg: string): GeoJSON.FeatureCollection {
+  const polygons: GeoJSON.Feature[] = [];
+  // If parent is MultiPolygon, get all polygonMember children
+  const polygonElems = parent.tagName.endsWith("MultiPolygon")
+    ? Array.from(parent.querySelectorAll("gml\\:Polygon, Polygon"))
+    : [parent];
 
   for (const poly of polygonElems) {
-    // Find the coordinate reference system (CRS) for this polygon by searching for srsName attribute,
-    // first on the polygon element itself, then on its closest MultiPolygon ancestor if any.
-    const epsg = findSrs(poly) || findSrs(poly.closest("gml\\:MultiPolygon, MultiPolygon"));
-
     // Attempt to find the outer boundary coordinates using GML3 posList elements inside exterior or outerBoundaryIs
     const posListEl = poly.querySelector(
       "gml\\:exterior gml\\:LinearRing gml\\:posList, gml\\:outerBoundaryIs gml\\:LinearRing gml\\:posList, exterior LinearRing posList, outerBoundaryIs LinearRing posList"
@@ -217,8 +233,7 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
 
   // Return the complete FeatureCollection of all extracted polygons.
   return { type: "FeatureCollection", features: polygons };
-};
-
+}
 
 /**
  * Converts a GML string to a GeoJSON FeatureCollection.
@@ -228,6 +243,34 @@ export const esfXmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
  * @returns A GeoJSON FeatureCollection representing the parsed geometries.
  */
 export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
+  // Detect GML curves using DOMParser and querySelector
+  const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+  const curveTags = [
+    "Curve",
+    "Arc",
+    "ArcString",
+    "Circle",
+    "CircleByCenterPoint",
+    "CubicSpline",
+    "CompositeCurve",
+    "OffsetCurve",
+    "OrientableCurve",
+    "Ring",
+    "LineStringSegment"
+  ];
+  for (const tag of curveTags) {
+    if (
+      doc.querySelector(tag) ||
+      doc.querySelector(`gml\\:${tag}`) ||
+      doc.getElementsByTagName(tag).length > 0 ||
+      doc.getElementsByTagName(`gml:${tag}`).length > 0
+    ) {
+      throw new Error(
+        `GML contains curve geometry (<${tag}>), which is not supported. Only simple features (Point, LineString, Polygon, etc.) are allowed.`
+      );
+    }
+  }
+
   const dataProjection = detectGmlEpsg(xmlText);
   const featureProjection = "EPSG:4326"; // Leaflet/GeoJSON expects WGS84 lon/lat
 
@@ -249,8 +292,23 @@ export const gmlToGeoJSON = (xmlText: string): GeoJSON.FeatureCollection => {
     }
   }
 
+  // If still no features, try to extract naked Polygon/MultiPolygon directly
   if (!features || features.length === 0) {
-    throw new Error("No features found in the uploaded GML.");
+    // Try to extract naked Polygon/MultiPolygon elements
+    const doc2 = new DOMParser().parseFromString(xmlText, "application/xml");
+    const epsg = detectGmlEpsg(xmlText);
+    // Try MultiPolygon first
+    let parent = doc2.querySelector("gml\\:MultiPolygon, MultiPolygon");
+    if (!parent) {
+      parent = doc2.querySelector("gml\\:Polygon, Polygon");
+    }
+    if (parent) {
+      const fc = extractPolygonsFromParent(parent, epsg);
+      if (fc.features.length > 0) {
+        return fc;
+      }
+    }
+    throw new Error("No features found in the uploaded GML. (If your file contains curve geometry, it is not supported.)");
   }
 
   const geojsonFormat = new GeoJSONFormat();
@@ -291,15 +349,39 @@ export const parseToGeoJSON = async (f: File): Promise<GeoJSON.FeatureCollection
   const text = await f.text();
   const name = f.name.toLowerCase();
 
+  // Helper: validate geometry type is a simple feature
+  const isSimpleGeometryType = (type: string) => [
+    "Point",
+    "MultiPoint",
+    "LineString",
+    "MultiLineString",
+    "Polygon",
+    "MultiPolygon"
+  ].includes(type);
+
   // Already GeoJSON / JSON
   if (name.endsWith(".geojson") || name.endsWith(".json")) {
     const obj = JSON.parse(text);
-    if (obj.type === "FeatureCollection") return obj as GeoJSON.FeatureCollection;
-    if (obj.type === "Feature") return { type: "FeatureCollection", features: [obj] } as GeoJSON.FeatureCollection;
-    if (obj.type && obj.coordinates) {
-      return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: obj }] } as GeoJSON.FeatureCollection;
+    let fc: GeoJSON.FeatureCollection;
+    if (obj.type === "FeatureCollection") {
+      fc = obj as GeoJSON.FeatureCollection;
+    } else if (obj.type === "Feature") {
+      fc = { type: "FeatureCollection", features: [obj] } as GeoJSON.FeatureCollection;
+    } else if (obj.type && obj.coordinates) {
+      fc = { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: obj }] } as GeoJSON.FeatureCollection;
+    } else {
+      throw new Error("JSON is not valid GeoJSON.");
     }
-    throw new Error("JSON is not valid GeoJSON.");
+    // Validate all geometry types
+    for (const [i, feature] of fc.features.entries()) {
+      if (!feature.geometry || !feature.geometry.type) {
+        throw new Error(`Feature ${i + 1} missing geometry or geometry type.`);
+      }
+      if (!isSimpleGeometryType(feature.geometry.type)) {
+        throw new Error(`Feature ${i + 1} geometry type '${feature.geometry.type}' is not a simple feature (no curves allowed).`);
+      }
+    }
+    return fc;
   }
 
   if (name.endsWith(".gml")) {
@@ -312,4 +394,4 @@ export const parseToGeoJSON = async (f: File): Promise<GeoJSON.FeatureCollection
     throw new Error("No features found in the uploaded GML/XML.");
   }
   return fc as GeoJSON.FeatureCollection;
-};
+}

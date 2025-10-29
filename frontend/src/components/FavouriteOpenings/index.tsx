@@ -19,12 +19,12 @@ const FavouriteOpenings: React.FC = () => {
 
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
-    queryFn: () => API.OpeningFavoriteEndpointService.getFavorites(),
+    queryFn: () => API.OpeningEndpointService.getFavorites(),
     refetchOnMount: 'always'
   });
 
   const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => API.OpeningFavoriteEndpointService.removeFromFavorites(openingId),
+    mutationFn: (openingId: number) => API.OpeningEndpointService.removeFromFavorites(openingId),
     onSuccess: (_, openingId) => {
       displayNotification({
         title: `Opening Id ${openingId} unfavourited`,
