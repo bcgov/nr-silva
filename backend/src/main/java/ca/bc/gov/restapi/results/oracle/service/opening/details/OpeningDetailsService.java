@@ -124,17 +124,25 @@ public class OpeningDetailsService {
   public List<OpeningForestCoverHistoryOverviewDto> getOpeningForestCoverHistoryOverviewList(
       Long openingId) {
     log.info("Fetching forest cover history overview list for opening ID: {}", openingId);
-    return forestCoverHistoryService.getOpeningForestCoverHistoryOverviewList(openingId);
+
+    List<OpeningForestCoverHistoryOverviewDto> result = forestCoverHistoryService
+        .getOpeningForestCoverHistoryOverviewList(openingId);
+
+    if (result.isEmpty()) {
+      throw new NotFoundGenericException("Forest cover history overview list for opening with id " + openingId);
+    }
+
+    return result;
   }
 
   public List<OpeningForestCoverHistoryDto> getOpeningForestCoverHistoryList(
-      Long openingId, String updateDate) {
+      Long openingId, String updateDate, String mainSearchTerm) {
     log.info(
         "Fetching forest cover history list for opening ID: {} and update date: {}",
         openingId,
         updateDate);
     List<OpeningForestCoverHistoryDto> result =
-        forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate);
+        forestCoverHistoryService.getOpeningForestCoverList(openingId, updateDate, mainSearchTerm);
 
     if (result.isEmpty()) {
       throw new NotFoundGenericException(

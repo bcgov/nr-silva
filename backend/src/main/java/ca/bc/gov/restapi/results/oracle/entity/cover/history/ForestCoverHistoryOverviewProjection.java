@@ -11,5 +11,6 @@ public interface ForestCoverHistoryOverviewProjection {
     Double getOther();
     Double getTotal();
     Boolean getHasDetails();
-    Boolean getIsCurrentHistory();
+    Boolean getIsCurrent();
+    Boolean getIsOldest();
 }
