@@ -54,6 +54,9 @@ export class OpeningDetailsPage extends BasePage {
   private readonly forestCoverTableRows: Locator;
   private readonly forestCoverTableSearchInput: Locator;
   private readonly forestCoverSearchButton: Locator;
+  private readonly forestCoverHistoryModalLink: Locator;
+  private readonly forestCoverHistoryModal: Locator;
+  private readonly forestCoverActionDropdown: Locator;
 
   constructor(page: Page, openingId: string) {
     super(page, routes.openingDetails(openingId));
@@ -108,6 +111,9 @@ export class OpeningDetailsPage extends BasePage {
     this.forestCoverSearchButton = this.forestCoverSection.getByRole('button', { name: 'Search' });
     this.forestCoverTable = this.forestCoverSection.getByRole('table', { name: 'Forest cover table' });
     this.forestCoverTableRows = this.forestCoverTable.locator('tbody tr');
+    this.forestCoverHistoryModalLink = this.forestCoverSection.getByTestId('view-history-overview-link');
+    this.forestCoverHistoryModal = this.forestCoverSection.getByTestId('opening-forest-cover-history-modal');
+    this.forestCoverActionDropdown = this.forestCoverSection.getByTestId('forest-cover-action-dropdown');
   }
 
   async toggleMapButton() {

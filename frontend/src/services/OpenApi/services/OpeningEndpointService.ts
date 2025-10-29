@@ -254,12 +254,14 @@ export class OpeningEndpointService {
     /**
      * @param openingId
      * @param updateDate
+     * @param mainSearchTerm
      * @returns OpeningForestCoverHistoryDto OK
      * @throws ApiError
      */
     public static getCoverHistory(
         openingId: number,
         updateDate: string,
+        mainSearchTerm?: string,
     ): CancelablePromise<Array<OpeningForestCoverHistoryDto>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -269,6 +271,7 @@ export class OpeningEndpointService {
             },
             query: {
                 'updateDate': updateDate,
+                'mainSearchTerm': mainSearchTerm,
             },
         });
     }

@@ -1,5 +1,5 @@
 import { TableHeaderType } from "@/types/TableHeader";
-import { OpeningForestCoverDto } from "@/services/OpenApi";
+import { OpeningForestCoverDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 
 export const ForestCoverTableHeaders: TableHeaderType<keyof OpeningForestCoverDto>[] = [
   { key: "coverId", header: "Forest cover" },
@@ -10,6 +10,33 @@ export const ForestCoverTableHeaders: TableHeaderType<keyof OpeningForestCoverDt
   { key: "inventoryLayer", header: "Inventory layer" },
   { key: "silvicultureLayer", header: "Silviculture layer" },
   { key: "referenceYear", header: "Reference year" },
+];
+
+export const HistoryOverviewTableHeaders: TableHeaderType<keyof OpeningForestCoverHistoryOverviewDto>[] = [
+  {
+    key: 'updateTimestamp',
+    header: 'Date',
+  },
+  {
+    key: 'np',
+    header: 'NP (ha)',
+  },
+  {
+    key: 'nsr',
+    header: 'NSR (ha)',
+  },
+  {
+    key: 'imm',
+    header: 'Total IMM (ha)',
+  },
+  {
+    key: 'other',
+    header: 'Other (ha)',
+  },
+  {
+    key: 'total',
+    header: 'Total (ha)',
+  }
 ];
 
 export const EXPAND_PROMPT = "Expand row for details"
