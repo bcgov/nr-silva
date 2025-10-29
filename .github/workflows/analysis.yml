@@ -22,29 +22,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy backend settings.xml to Maven settings
-        run: |
-          mkdir -p ~/.m2
-          if [ -f backend/settings.xml ]; then
-            cp backend/settings.xml ~/.m2/settings.xml
-          fi
-
-      - name: Diagnostic show effective Maven settings
-        run: |
-          echo '--- effective settings ---'
-          mvn -s ~/.m2/settings.xml help:effective-settings || true
-
-      - name: Diagnostic check OSGeo repo connectivity
-        run: |
-          echo '--- curl OSGeo repo headers ---'
-          curl -I https://repo.osgeo.org/repository/release/org/geotools/gt-geojson/33.0/ || true
-
-      - name: Print effective Maven settings
-        run: mvn help:effective-settings
-
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         with:
-          commands: ./mvnw -s ~/.m2/settings.xml clean install --no-transfer-progress checkstyle:checkstyle -P all-tests
+          commands: |
+            mkdir -p ~/.m2
+            if [ -f settings.xml ]; then
+              cp settings.xml ~/.m2/settings.xml
+            fi
+            ./mvnw -s ~/.m2/settings.xml clean install --no-transfer-progress checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
           java-distribution: temurin
