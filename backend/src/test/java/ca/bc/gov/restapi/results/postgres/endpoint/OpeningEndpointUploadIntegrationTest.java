@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,6 +34,11 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   @Autowired private OpeningSpatialFileService openingSpatialFileService;
 
   @Autowired private ObjectMapper mapper;
+
+  @BeforeEach
+  void resetMocks() {
+    Mockito.reset(openingSpatialFileService);
+  }
 
   @Test
   @DisplayName("Should accept upload and return accepted")
@@ -60,6 +66,49 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
+  }
+
+  @Test
+  @DisplayName("Should be forbidden without CSRF")
+  void shouldBeForbiddenWithoutCsrf() throws Exception {
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file",
+            "test.geojson",
+            MediaType.APPLICATION_JSON_VALUE,
+            "{\"type\":\"FeatureCollection\",\"features\":[]}".getBytes(StandardCharsets.UTF_8));
+
+    mockMvc
+        .perform(
+            multipart("/api/openings/create/upload")
+                .file(file)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Should return bad request when service throws")
+  void shouldReturnBadRequestWhenServiceThrows() throws Exception {
+    when(openingSpatialFileService.processOpeningSpatialFile(any()))
+        .thenThrow(
+            new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
+
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file",
+            "test.geojson",
+            MediaType.APPLICATION_JSON_VALUE,
+            "{\"type\":\"FeatureCollection\",\"features\":[]}".getBytes(StandardCharsets.UTF_8));
+
+    mockMvc
+        .perform(
+            multipart("/api/openings/create/upload")
+                .file(file)
+                .with(csrf().asHeader())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
   }
 }
 
