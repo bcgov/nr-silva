@@ -29,6 +29,9 @@ jobs:
             cp backend/settings.xml ~/.m2/settings.xml
           fi
 
+      - name: Print effective Maven settings
+        run: ./mvnw help:effective-settings
+
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         with:
           commands: ./mvnw -s settings.xml clean install --no-transfer-progress checkstyle:checkstyle -P all-tests
