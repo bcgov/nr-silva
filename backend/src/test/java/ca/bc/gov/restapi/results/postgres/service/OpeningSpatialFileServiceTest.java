@@ -61,7 +61,7 @@ class OpeningSpatialFileServiceTest {
 
   @Test
   @DisplayName("Should process simple GeoJSON feature collection")
-  void shouldProcessSimpleGeojson() throws Exception {
+  void shouldProcessSimpleGeojson() {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
             + " -123.0,49.0 ],[ -123.0,49.1 ],[ -122.9,49.1 ],[ -123.0,49.0 ]]]}}]}";
