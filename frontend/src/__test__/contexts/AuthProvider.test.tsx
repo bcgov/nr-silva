@@ -1,32 +1,42 @@
 import React from "react";
+import { AuthProvider, useAuth } from "../../contexts/AuthProvider";
 import { render, act, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { AuthProvider, useAuth } from "../../contexts/AuthProvider";
-import { signInWithRedirect, signOut } from "aws-amplify/auth";
 import { env } from "../../env";
 
-vi.mock("aws-amplify/auth", () => ({
-  signInWithRedirect: vi.fn(),
-  signOut: vi.fn(),
-}));
-
-// Mock fetchAuthSession to read idToken from cookie set by test helper
+// Provide spies and a fetchAuthSession mock for tests
 vi.mock("aws-amplify/auth", async () => {
   const original = await vi.importActual<any>("aws-amplify/auth");
+  const spySignIn = vi.fn();
+  const spySignOut = vi.fn();
   return {
     ...original,
+    signInWithRedirect: spySignIn,
+    signOut: spySignOut,
     fetchAuthSession: async () => {
       const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
       const idToken = document.cookie
         .split(";")
         .find((c) => c.trim().startsWith(`${cookieName}.abci21.idToken=`))?.split("=")[1];
       if (idToken) {
-        return { tokens: { idToken } };
+        try {
+          const parts = idToken.split(".");
+          const body = parts[1] ?? "";
+          const jwtBody = body ? JSON.parse(atob(body)) : {};
+          const jwtObj = {
+            payload: jwtBody,
+            toString: () => idToken,
+          };
+          return { tokens: { idToken: jwtObj } };
+        } catch (e) {
+          return { tokens: { idToken } };
+        }
       }
       return { tokens: {} };
     },
   };
 });
+
 
 function setAuthCookies(value: string | null) {
   const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
@@ -126,7 +136,9 @@ describe("AuthProvider", () => {
       getByText("Login").click();
     });
 
-    expect(signInWithRedirect).toHaveBeenCalledWith({
+    // signInWithRedirect is mocked above; verify the spy was called
+    const authModule = await import("aws-amplify/auth");
+    expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
       provider: { custom: envProvider.toUpperCase() },
     });
   });
@@ -152,7 +164,8 @@ describe("AuthProvider", () => {
       getByText("Logout").click();
     });
 
-    await waitFor(() => expect(signOut).toHaveBeenCalled());
+    const authModule = await import("aws-amplify/auth");
+    await waitFor(() => expect(authModule.signOut).toHaveBeenCalled());
   });
 
   it("should handle userDetails correctly", async () => {
