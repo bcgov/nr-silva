@@ -1,7 +1,7 @@
-import axios from "axios";
 import { env } from "@/env";
-import { getAuthIdToken } from "@/services/AuthService";
 import { OpenAPI } from "./OpenApi/core/OpenAPI";
+import { getCookie } from "@/utils/CookieUtils";
+import { ACCESS_TOKEN_KEY } from "@/constants";
 
 // All service imports (static classes)
 import { CodesEndpointService } from "./OpenApi/services/CodesEndpointService";
@@ -23,7 +23,8 @@ OpenAPI.WITH_CREDENTIALS = false;
 
 // Provide token dynamically before each request
 OpenAPI.TOKEN = async () => {
-    return getAuthIdToken() ?? '';
+    const storedToken = getCookie(ACCESS_TOKEN_KEY);
+    return storedToken ?? '';
 };
 
 // Static service class map (no instantiation)
