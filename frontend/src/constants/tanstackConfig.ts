@@ -9,7 +9,7 @@ import {
 import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
 import { env } from "@/env";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from ".";
+import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { JWT } from "@/types/amplify";
 import { SELECTED_CLIENT_KEY } from "@/constants";
@@ -128,7 +128,23 @@ function errorHandler(
     maybeAxiosError?.response?.statusCode ??
     0;
 
-  if (statusCode === 401 || statusCode === 403) {
+  if (statusCode === 401) {
+    // Prevent the query from remaining in errored state while we attempt token refresh.
+    try {
+      if (query) {
+        // clear query error and mark as loading/fetching so UI shows a retry in-progress
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (query as any).setState?.((oldState: any) => ({
+          ...oldState,
+          error: null,
+          status: 'loading',
+          fetchStatus: 'fetching'
+        }));
+      }
+    } catch (e) {
+      // ignore if we can't touch internal state
+    }
+
     refreshTokenAndRetry(query, mutation, variables);
   }
 }
