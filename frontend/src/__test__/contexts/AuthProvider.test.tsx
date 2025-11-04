@@ -10,6 +10,24 @@ vi.mock("aws-amplify/auth", () => ({
   signOut: vi.fn(),
 }));
 
+// Mock fetchAuthSession to read idToken from cookie set by test helper
+vi.mock("aws-amplify/auth", async () => {
+  const original = await vi.importActual<any>("aws-amplify/auth");
+  return {
+    ...original,
+    fetchAuthSession: async () => {
+      const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
+      const idToken = document.cookie
+        .split(";")
+        .find((c) => c.trim().startsWith(`${cookieName}.abci21.idToken=`))?.split("=")[1];
+      if (idToken) {
+        return { tokens: { idToken } };
+      }
+      return { tokens: {} };
+    },
+  };
+});
+
 function setAuthCookies(value: string | null) {
   const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
   document.cookie = `${cookieName}.LastAuthUser=; path=/; max-age=0`;
