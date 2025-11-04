@@ -807,14 +807,22 @@ public class OpeningSpatialFileService {
         try {
           tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } catch (Exception ignore) {
+          // Some TransformerFactory implementations (or older JDKs) may not support
+          // setting this feature. This is non-fatal; if we cannot enforce the feature
+          // we continue without it and rely on other XXE protections configured above.
         }
         try {
           tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         } catch (Exception ignore) {
+          // Ignore: not all TransformerFactory implementations support this attribute.
+          // Leaving it unset is acceptable; external DTD access should already be
+          // restricted by parser configuration.
         }
         try {
           tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         } catch (Exception ignore) {
+          // Ignore: best-effort to block external stylesheet access. If unsupported,
+          // proceed as other parser-level protections are in place.
         }
         Transformer transformer = tf.newTransformer();
         StringWriter writer = new StringWriter();
@@ -891,14 +899,22 @@ public class OpeningSpatialFileService {
       try {
         tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       } catch (Exception ignore) {
+        // Some TransformerFactory implementations (or older JDKs) may not support
+        // setting this feature. This is non-fatal; we continue without it and rely
+        // on parser-level protections (configured earlier) to mitigate XXE risks.
       }
       try {
         tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       } catch (Exception ignore) {
+        // Ignore: not all TransformerFactory implementations support this attribute.
+        // It's a best-effort hardening to block external DTD access; parser-level
+        // configuration already disables DTDs and external entities.
       }
       try {
         tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
       } catch (Exception ignore) {
+        // Ignore: best-effort to block external stylesheet access. If unsupported by
+        // the TransformerFactory, we proceed since other XXE protections are in place.
       }
       Transformer transformer = tf.newTransformer();
       StringWriter writer = new StringWriter();
