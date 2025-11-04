@@ -44,7 +44,25 @@ async function refreshAccessToken(): Promise<string | null> {
       // Attempt to restore selected client using parseToken (same logic as AuthProvider)
       try {
         // Prefer idToken for parsing, else derive JWT-like object from access token
-        const idTokenObj = tokens.idToken ?? (newAccess ? { payload: JSON.parse(atob(newAccess.split('.')[1] || '')) } : undefined) as unknown as JWT | undefined;
+        let idTokenObj: JWT | undefined;
+        if (tokens.idToken) {
+          idTokenObj = tokens.idToken as unknown as JWT;
+        } else if (newAccess) {
+          try {
+            const payloadBase64 = newAccess.split('.')[1];
+            if (payloadBase64) {
+              const payloadJson = atob(payloadBase64);
+              idTokenObj = { payload: JSON.parse(payloadJson) } as unknown as JWT;
+            } else {
+              idTokenObj = undefined;
+            }
+          } catch (parseErr) {
+            console.warn("Failed to manually parse JWT payload from access token", parseErr);
+            idTokenObj = undefined;
+          }
+        } else {
+          idTokenObj = undefined;
+        }
         const parsed = parseToken(idTokenObj as JWT | undefined);
         const associatedClients: string[] = parsed?.associatedClients ?? [];
         const storedClientId = localStorage.getItem(SELECTED_CLIENT_KEY);
