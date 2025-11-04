@@ -1,7 +1,7 @@
 
 export function setCookie(name: string, value: string, days = 1) {
   const expires = new Date(Date.now() + days * 86400000).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; Secure; SameSite=Strict`;
 }
 
 export function getCookie(name: string): string | null {
