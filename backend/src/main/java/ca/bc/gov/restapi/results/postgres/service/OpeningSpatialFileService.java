@@ -806,23 +806,24 @@ public class OpeningSpatialFileService {
         // Harden TransformerFactory against XXE / external resource access
         try {
           tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        } catch (Exception ignore) {
+        } catch (Exception e) {
           // Some TransformerFactory implementations (or older JDKs) may not support
-          // setting this feature. This is non-fatal; if we cannot enforce the feature
-          // we continue without it and rely on other XXE protections configured above.
+          // setting this feature. This is non-fatal; rely on parser-level protections.
+          log.debug("Could not set TransformerFactory FEATURE_SECURE_PROCESSING", e);
         }
         try {
           tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        } catch (Exception ignore) {
-          // Ignore: not all TransformerFactory implementations support this attribute.
-          // Leaving it unset is acceptable; external DTD access should already be
-          // restricted by parser configuration.
+        } catch (Exception e) {
+          // Best-effort hardening; if unsupported we proceed. Log at debug level
+          // so issues can be diagnosed in environments with incompatible factories.
+          log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_DTD", e);
         }
         try {
           tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-        } catch (Exception ignore) {
-          // Ignore: best-effort to block external stylesheet access. If unsupported,
-          // proceed as other parser-level protections are in place.
+        } catch (Exception e) {
+          // Best-effort hardening; if unsupported we proceed. Log at debug level
+          // so issues can be diagnosed in environments with incompatible factories.
+          log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_STYLESHEET", e);
         }
         Transformer transformer = tf.newTransformer();
         StringWriter writer = new StringWriter();
@@ -898,23 +899,24 @@ public class OpeningSpatialFileService {
       // Harden TransformerFactory against XXE / external resource access
       try {
         tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      } catch (Exception ignore) {
+      } catch (Exception e) {
         // Some TransformerFactory implementations (or older JDKs) may not support
-        // setting this feature. This is non-fatal; we continue without it and rely
-        // on parser-level protections (configured earlier) to mitigate XXE risks.
+        // setting this feature. This is non-fatal; rely on parser-level protections.
+        log.debug("Could not set TransformerFactory FEATURE_SECURE_PROCESSING", e);
       }
       try {
         tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      } catch (Exception ignore) {
-        // Ignore: not all TransformerFactory implementations support this attribute.
-        // It's a best-effort hardening to block external DTD access; parser-level
-        // configuration already disables DTDs and external entities.
+      } catch (Exception e) {
+        // Best-effort hardening; if unsupported we proceed. Log at debug level
+        // so issues can be diagnosed in environments with incompatible factories.
+        log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_DTD", e);
       }
       try {
         tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-      } catch (Exception ignore) {
-        // Ignore: best-effort to block external stylesheet access. If unsupported by
-        // the TransformerFactory, we proceed since other XXE protections are in place.
+      } catch (Exception e) {
+        // Best-effort hardening; if unsupported we proceed. Log at debug level
+        // so issues can be diagnosed in environments with incompatible factories.
+        log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_STYLESHEET", e);
       }
       Transformer transformer = tf.newTransformer();
       StringWriter writer = new StringWriter();

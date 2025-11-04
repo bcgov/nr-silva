@@ -15,11 +15,6 @@ import { JWT } from "@/types/amplify";
 import { SELECTED_CLIENT_KEY } from "@/constants";
 import { parseToken } from "@/services/AuthService";
 
-
-let API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
-if (API_BASE_URL.endsWith("/api")) {
-  API_BASE_URL = API_BASE_URL.slice(0, -4);
-}
 // === Refresh Token Management ===
 
 let isRefreshing = false;
@@ -185,7 +180,7 @@ function mutationErrorHandler(
 
 // === Query Client Configuration ===
 
-const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404, 409];
+const HTTP_STATUS_TO_NOT_RETRY = [400, 403, 404, 409];
 const MAX_RETRIES = 3;
 
 export const queryClientConfig: QueryClientConfig = {
