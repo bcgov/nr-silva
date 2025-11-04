@@ -7,7 +7,7 @@ export function setCookie(name: string, value: string, days = 1) {
 export function getCookie(name: string): string | null {
   const cookie = document.cookie
     .split('; ')
-    .find((row) => row.startsWith(name + '='));
+    .find((row) => row.split('=')[0] === name);
   if (!cookie) return null;
   const idx = cookie.indexOf('=');
   if (idx === -1) return null;
