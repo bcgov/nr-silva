@@ -28,7 +28,7 @@ jobs:
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v4
-      - uses: bcgov/action-builder-ghcr@fd17bc1cbb16a60514e0df3966d42dff9fc232bc # v4.0.0
+      - uses: bcgov/action-builder-ghcr@1e4295b9766963ca36612b78560db6235120b80f # 4.1.1
         with:
           package: ${{ matrix.name }}
           tag_fallback: latest
