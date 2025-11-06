@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   PreferenceProvider,
   usePreference,
-} from "@/contexts/PreferenceProvider";
+} from "../../contexts/PreferenceProvider";
 
 // Mock localStorageUtils
 vi.mock("@/utils/localStorageUtils", () => {
@@ -64,7 +64,7 @@ describe("PreferenceProvider", () => {
 
   it("throws error if usePreference is used outside provider", () => {
     // Suppress error output for this test
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(console, "error").mockImplementation(() => { });
     function BadComponent() {
       usePreference();
       return null;
