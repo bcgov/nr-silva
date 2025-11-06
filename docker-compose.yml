@@ -1,8 +1,8 @@
 x-frontend: &frontend
   environment:
     VITE_ZONE: TEST
-    VITE_USER_POOLS_ID: ca-central-1_t2HSZBHur
-    VITE_USER_POOLS_WEB_CLIENT_ID: 1uhcp67qtfl3jra6b595e9f6jn
+    VITE_USER_POOLS_ID: ca-central-1_UpeAqsYt4
+    VITE_USER_POOLS_WEB_CLIENT_ID: 4e7gnonatuf3q7pfcpv7d8gfiv
     VITE_BACKEND_URL: http://localhost:8080
   healthcheck:
     test: curl http://localhost:3000"
@@ -60,7 +60,7 @@ services:
       SERVICE_NAME: ${SERVICE_NAME}
       ORACLEDB_KEYSTORE: /app/jssecacerts
       ORACLEDB_SECRET: changeit
-      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_t2HSZBHur
+      AWS_COGNITO_ISSUER_URI: https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_UpeAqsYt4
       POSTGRES_HOST: localhost
       DASHBOARD_JOB_IDIR_USERS: ${DASHBOARD_JOB_IDIR_USERS}
       <<: *db-vars
