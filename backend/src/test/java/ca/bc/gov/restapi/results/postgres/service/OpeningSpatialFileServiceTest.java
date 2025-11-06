@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -259,5 +261,72 @@ class OpeningSpatialFileServiceTest {
     assertThat((Object) out).isNotNull();
     // coordinates should not be identical
     assertThat(out.getCoordinates()[0].x).isNotEqualTo(pt.getCoordinates()[0].x);
+  }
+
+  @Test
+  @DisplayName("Should throw for unsupported CRS")
+  void shouldThrowForUnsupportedCrs() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Geometry pt = gf.createPoint(new Coordinate(-125, 52));
+
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+    m.setAccessible(true);
+
+    assertThatThrownBy(
+            () -> {
+              try {
+                m.invoke(service, pt, "9999");
+              } catch (InvocationTargetException ite) {
+                throw ite.getCause();
+              }
+            })
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should validate geometry within BC boundary (4326)")
+  void shouldValidateWithinBoundary4326() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Coordinate[] coords =
+        new Coordinate[] {
+          new Coordinate(-120.5, 49.2),
+          new Coordinate(-120.4, 49.2),
+          new Coordinate(-120.4, 49.3),
+          new Coordinate(-120.5, 49.3),
+          new Coordinate(-120.5, 49.2)
+        };
+    Polygon poly = gf.createPolygon(coords);
+
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+    m.setAccessible(true);
+
+    // Should not throw
+    m.invoke(service, poly, "4326");
+  }
+
+  @Test
+  @DisplayName("Should throw when geometry outside BC boundary (4326)")
+  void shouldThrowWhenOutsideBoundary4326() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Geometry pt = gf.createPoint(new Coordinate(-10, 10));
+
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+    m.setAccessible(true);
+
+    assertThatThrownBy(
+            () -> {
+              try {
+                m.invoke(service, pt, "4326");
+              } catch (InvocationTargetException ite) {
+                throw ite.getCause();
+              }
+            })
+        .isInstanceOf(ResponseStatusException.class);
   }
 }
