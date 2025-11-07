@@ -11,7 +11,7 @@ const logoutDomain = isProd
 
 const returnUrlHost = isProd
   ? 'loginproxy'
-  : 'dev.loginproxy.gov';
+  : 'dev.loginproxy';
 
 const retUrl = `https://${returnUrlHost}.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
 
