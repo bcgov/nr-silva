@@ -456,9 +456,7 @@ public class SilvaOracleQueryConstants {
       	atu.ACTIVITY_TREATMENT_UNIT_ID AS atu_id,
       	CASE
               WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 'CPT'
-              WHEN atu.PLANNED_DATE IS NOT NULL AND atu.ATU_COMPLETION_DATE IS NULL AND atu.PLANNED_DATE >= trunc(SYSDATE) THEN 'PLN'
-              WHEN atu.PLANNED_DATE IS NOT NULL AND atu.ATU_COMPLETION_DATE IS NULL AND atu.PLANNED_DATE < trunc(SYSDATE) THEN 'OVD'
-              ELSE 'INV'
+              ELSE 'PLN'
           END AS status_code,
       	atu.SILV_BASE_CODE AS base_code,
       	sbc.DESCRIPTION AS base_name,
@@ -1217,7 +1215,8 @@ public class SilvaOracleQueryConstants {
         AND slap.STOCKING_EVENT_HISTORY_ID = p.STOCKING_EVENT_HISTORY_ID
       """;
 
-  public static final String GET_OPENING_SS_ARCHIVE = """
+  public static final String GET_OPENING_SS_ARCHIVE =
+      """
       SELECT
           ssu.standards_unit_id AS stocking_standard_unit,
           ssu.STOCKING_STANDARD_UNIT_ID AS ssuid,
@@ -1249,7 +1248,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY ssu.standards_unit_id
       """;
 
-  public static final String GET_OPENING_SS_SPECIES_ARCHIVE = """
+  public static final String GET_OPENING_SS_SPECIES_ARCHIVE =
+      """
       SELECT
         sl.STOCKING_LAYER_CODE as layer_code,
           sls.SILV_TREE_SPECIES_CODE AS species_code,
@@ -1262,7 +1262,8 @@ public class SilvaOracleQueryConstants {
       ORDER BY sls.SPECIES_ORDER
       """;
 
-  public static final String GET_OPENING_SS_LAYER_ARCHIVE = """
+  public static final String GET_OPENING_SS_LAYER_ARCHIVE =
+      """
       SELECT
         sl.STOCKING_LAYER_CODE AS layer_code,
         slc.DESCRIPTION AS layer_name,
