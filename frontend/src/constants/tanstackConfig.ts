@@ -179,8 +179,8 @@ function mutationErrorHandler(
 }
 
 // === Query Client Configuration ===
-
-const HTTP_STATUS_TO_NOT_RETRY = [400, 403, 404, 409];
+// 401 needs to be included here to prevent multiple retries on auth failure
+const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404, 409];
 const MAX_RETRIES = 3;
 
 export const queryClientConfig: QueryClientConfig = {
