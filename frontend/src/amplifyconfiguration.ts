@@ -11,7 +11,7 @@ const logoutDomain = isProd
 
 const returnUrlHost = isProd
   ? 'loginproxy'
-  : 'test.loginproxy';
+  : 'dev.loginproxy';
 
 const retUrl = `https://${returnUrlHost}.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
 
@@ -29,7 +29,7 @@ const amplifyconfig = {
       signUpVerificationMethod: verificationMethods,
       loginWith: {
         oauth: {
-          domain: 'prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com',
+          domain: 'lza-prod-fam-user-pool-domain.auth.ca-central-1.amazoncognito.com',
           scopes: ['openid'],
           redirectSignIn: [`${redirectUri}/dashboard`],
           redirectSignOut: [redirectSignOut],

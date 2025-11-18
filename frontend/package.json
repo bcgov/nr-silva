@@ -37,7 +37,7 @@
     "start": "vite --host",
     "prebuild": "tsc",
     "build": "vite build",
-    "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_t2HSZBHur\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"1uhcp67qtfl3jra6b595e9f6jn\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
+    "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_UpeAqsYt4\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"4e7gnonatuf3q7pfcpv7d8gfiv\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
     "preview": "vite preview --port 4173",
     "generate:openapi": "rm -rf ./src/services/OpenApi && npx bcgov-typescript-codegen --input http://localhost:8080/v3/api-docs --output ./src/services/OpenApi --client axios",
     "lint": "eslint src --ext .ts",

@@ -1,5 +1,7 @@
 import { CodeDescriptionDto } from "@/services/OpenApi";
 
+export const ACCESS_TOKEN_KEY = "ACCESS_TOKEN" as const;
+
 export const PLACE_HOLDER = "--" as const;
 
 export const OPENING_STATUS_LIST: CodeDescriptionDto[] = [

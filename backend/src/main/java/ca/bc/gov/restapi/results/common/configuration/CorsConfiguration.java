@@ -11,9 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * This class holds the configuration for CORS handling.
- */
+/** This class holds the configuration for CORS handling. */
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -45,7 +43,8 @@ public class CorsConfiguration implements WebMvcConfigurer {
         .maxAge(cors.getAge().getSeconds())
         .allowCredentials(true);
 
-    registry.addMapping("/actuator/**")
+    registry
+        .addMapping("/actuator/**")
         .allowedOrigins("*")
         .allowedMethods("GET")
         .allowedHeaders("*")

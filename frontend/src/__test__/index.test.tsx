@@ -21,6 +21,8 @@ vi.mock('@tanstack/react-query', () => ({
     },
   })),
   QueryClientProvider: ({ children }) => <div>{children}</div>,
+  QueryCache: class QueryCache { constructor(_opts?: any) { /* noop */ } },
+  MutationCache: class MutationCache { constructor(_opts?: any) { /* noop */ } },
 }));
 vi.mock('react-dom/client', () => ({
   createRoot: vi.fn(() => ({

@@ -34,7 +34,7 @@ jobs:
     with:
       backend_min_replicas: "1"
       backend_max_replicas: "1"
-      allowed_origins: https://silva-test.nrs.gov.bc.ca/
+      allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
       environment: test
       tag: ${{ needs.init.outputs.pr }}
       target: test
