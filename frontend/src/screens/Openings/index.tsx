@@ -23,7 +23,9 @@ const Openings = () => {
   const cards = FavouriteCardsConfig.filter((card) => !card.hidden);
 
   const handleNavById = () => {
-    navigate(`/openings/${openingId}`)
+    if (openingId.trim().length !== 0) {
+      navigate(`/openings/${openingId}`)
+    }
   }
 
   return (
