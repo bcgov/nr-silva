@@ -1,13 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import './styles.scss';
-import { Column, Grid } from "@carbon/react";
+import { Button, Column, Grid, TextInput } from "@carbon/react";
 import PageTitle from "@/components/PageTitle";
 import RecentOpenings from "@/components/RecentOpenings";
 import FavouriteCard from "@/components/FavouriteCard";
 import { FavouriteCardsConfig } from "./constants";
+import { useNavigate } from "react-router-dom";
+
+import './styles.scss';
 
 const Openings = () => {
+  const navigate = useNavigate();
+  const [openingId, setOpeningId] = useState<string>("");
+
   useEffect(() => {
     document.title = `Openings - Silva`;
     return () => {
@@ -16,6 +21,10 @@ const Openings = () => {
   }, []);
 
   const cards = FavouriteCardsConfig.filter((card) => !card.hidden);
+
+  const handleNavById = () => {
+    navigate(`/openings/${openingId}`)
+  }
 
   return (
     <Grid className="default-grid">
@@ -47,6 +56,25 @@ const Openings = () => {
           )
           : null
       }
+
+      <Column sm={4} md={8} lg={16}>
+        <div className="opening-id-nav-container">
+          <TextInput
+            id="opening-id-input"
+            name="opening-id"
+            labelText=""
+            placeholder="View Opening by ID"
+            value={openingId}
+            onChange={(e) => setOpeningId(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleNavById();
+              }
+            }}
+          />
+          <Button onClick={handleNavById} size="md">Go</Button>
+        </div>
+      </Column>
 
       <Column sm={4} md={8} lg={16}>
         <RecentOpenings defaultMapOpen />
