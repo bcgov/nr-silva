@@ -12,6 +12,7 @@ import EmptySection from '../EmptySection';
 import OpeningTableRow from '../OpeningTableRow';
 
 import './styles.scss';
+import { isAuthRefreshInProgress } from '../../constants/tanstackConfig';
 
 type RecentOpeningsProps = {
   defaultMapOpen?: boolean;
@@ -105,7 +106,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
 
       {/* Table skeleton */}
       {
-        recentOpeningsQuery.isLoading ? (
+        (recentOpeningsQuery.isLoading || isAuthRefreshInProgress()) ? (
           <TableSkeleton
             headers={recentOpeningsHeaders}
             showToolbar={false}
@@ -115,14 +116,18 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       }
       {/* Empty Table */}
       {
-        !recentOpeningsQuery.isLoading &&
-          !recentOpeningsQuery.data?.content?.length ? (
-          <EmptySection
-            pictogram="Magnify"
-            title="There are no openings to show yet"
-            description="Your recent openings will appear here once you generate one"
-          />
-        ) : null
+        (
+          !recentOpeningsQuery.isLoading &&
+          !isAuthRefreshInProgress() &&
+          !recentOpeningsQuery.data?.content?.length
+        )
+          ? (
+            <EmptySection
+              pictogram="Magnify"
+              title="There are no openings to show yet"
+              description="Your recent openings will appear here once you generate one"
+            />
+          ) : null
       }
       {/* Loaded table content */}
       {

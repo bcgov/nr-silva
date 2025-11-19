@@ -17,6 +17,7 @@ import { PLACE_HOLDER } from "@/constants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import API from "@/services/API";
 import { OpeningDetailsTenureDto } from "@/services/OpenApi";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
@@ -253,7 +254,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
 
           {/* Table skeleton */}
           {
-            tenureQuery.isLoading
+            tenureQuery.isLoading || isAuthRefreshInProgress()
               ? <TableSkeleton
                 headers={TenureTableHeaders}
                 showToolbar={false}

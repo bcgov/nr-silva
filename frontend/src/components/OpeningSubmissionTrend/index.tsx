@@ -27,6 +27,7 @@ import { buildQueryString } from "@/utils/UrlUtils";
 import { Chart } from "@carbon/charts";
 import { CodeDescriptionDto } from "@/services/OpenApi";
 import { OPENING_STATUS_LIST } from "@/constants";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 // Local components
 import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
@@ -182,56 +183,57 @@ const OpeningSubmissionTrend = () => {
       <Column sm={4} md={8} lg={16}>
         <div className="submission-trend-input-container">
           {
-            orgUnitQuery.isLoading ? (
-              <>
-                <DropdownSkeleton />
-                <DropdownSkeleton />
-                <DropdownSkeleton />
-              </>
-            ) : (
-              <>
-                <FilterableMultiSelect
-                  id="district-dropdown"
-                  data-testid="district-dropdown"
-                  titleText="District"
-                  items={orgUnitQuery.data ?? []}
-                  itemToString={codeDescriptionToDisplayText}
-                  selectionFeedback="top-after-reopen"
-                  onChange={handleOrgUnitChange}
-                  disabled={submissionTrendQuery.isFetching}
-                />
+            (orgUnitQuery.isLoading || isAuthRefreshInProgress())
+              ? (
+                <>
+                  <DropdownSkeleton />
+                  <DropdownSkeleton />
+                  <DropdownSkeleton />
+                </>
+              ) : (
+                <>
+                  <FilterableMultiSelect
+                    id="district-dropdown"
+                    data-testid="district-dropdown"
+                    titleText="District"
+                    items={orgUnitQuery.data ?? []}
+                    itemToString={codeDescriptionToDisplayText}
+                    selectionFeedback="top-after-reopen"
+                    onChange={handleOrgUnitChange}
+                    disabled={submissionTrendQuery.isFetching}
+                  />
 
-                <FilterableMultiSelect
-                  id="status-dropdown"
-                  data-testid="status-dropdown"
-                  titleText="Status"
-                  items={OPENING_STATUS_LIST}
-                  itemToString={codeDescriptionToDisplayText}
-                  selectionFeedback="top-after-reopen"
-                  onChange={handleStatusChange}
-                  disabled={submissionTrendQuery.isFetching}
-                />
+                  <FilterableMultiSelect
+                    id="status-dropdown"
+                    data-testid="status-dropdown"
+                    titleText="Status"
+                    items={OPENING_STATUS_LIST}
+                    itemToString={codeDescriptionToDisplayText}
+                    selectionFeedback="top-after-reopen"
+                    onChange={handleStatusChange}
+                    disabled={submissionTrendQuery.isFetching}
+                  />
 
-                <ComboBox
-                  className="trend-year-selection-combobox"
-                  id="trend-year-selection"
-                  data-testid="trend-year-selection"
-                  onChange={handleYearSelection}
-                  items={yearOptions}
-                  titleText="Opening submission year"
-                  disabled={submissionTrendQuery.isFetching}
-                  selectedItem={selectedYear}
-                />
-              </>
-            )}
+                  <ComboBox
+                    className="trend-year-selection-combobox"
+                    id="trend-year-selection"
+                    data-testid="trend-year-selection"
+                    onChange={handleYearSelection}
+                    items={yearOptions}
+                    titleText="Opening submission year"
+                    disabled={submissionTrendQuery.isFetching}
+                    selectedItem={selectedYear}
+                  />
+                </>
+              )}
         </div>
       </Column>
 
       <Column className="trend-loading-col" sm={4} md={8} lg={16} xlg={16}>
-        {submissionTrendQuery.isFetching ? (
+        {submissionTrendQuery.isFetching || isAuthRefreshInProgress() ? (
           <Loading className="trend-loading-spinner" withOverlay={false} />
         ) : null}
-        {!submissionTrendQuery.isFetching && !submissionTrendQuery.data ? (
+        {!submissionTrendQuery.isFetching && !isAuthRefreshInProgress() && !submissionTrendQuery.data ? (
           <EmptySection
             pictogram="UserSearch"
             title="No results found"

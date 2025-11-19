@@ -43,6 +43,7 @@ import { formatActivityObjective } from "./utils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
 import "./styles.scss";
+import { isAuthRefreshInProgress } from "../../../constants/tanstackConfig";
 
 type ActivityAccordionProps = {
   openingId: number;
@@ -304,7 +305,7 @@ const ActivityAccordion = ({
 
           {/* Table skeleton */}
           {
-            activityQuery.isLoading
+            activityQuery.isLoading || isAuthRefreshInProgress()
               ? <TableSkeleton
                 headers={ActivityTableHeaders}
                 showToolbar={false}

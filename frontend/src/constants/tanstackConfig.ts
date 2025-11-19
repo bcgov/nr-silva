@@ -140,7 +140,6 @@ function errorHandler(
     maybeAxiosError?.response?.status ??
     maybeAxiosError?.response?.statusCode ??
     0;
-
   if (statusCode === 401) {
     // Prevent the query from remaining in errored state while we attempt token refresh.
     try {
@@ -210,3 +209,9 @@ export const queryClientConfig: QueryClientConfig = {
     onError: mutationErrorHandler
   })
 };
+
+// Export a read-only accessor so UI code can detect when an auth refresh is in
+// progress and suppress transient 401 error UI.
+export function isAuthRefreshInProgress(): boolean {
+  return isRefreshing;
+}

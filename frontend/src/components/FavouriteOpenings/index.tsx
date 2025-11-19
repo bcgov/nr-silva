@@ -12,6 +12,7 @@ import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
 
 import './styles.scss';
+import { isAuthRefreshInProgress } from "../../constants/tanstackConfig";
 
 const FavouriteOpenings: React.FC = () => {
   const { displayNotification } = useNotification();
@@ -62,7 +63,7 @@ const FavouriteOpenings: React.FC = () => {
     >
       <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
-          favouriteOpeningsQuery.isLoading
+          favouriteOpeningsQuery.isLoading || isAuthRefreshInProgress()
             ? (
               <div className="trend-loading-container">
                 <Loading withOverlay={false} />
@@ -71,7 +72,7 @@ const FavouriteOpenings: React.FC = () => {
             : null
         }
         {
-          !favouriteOpeningsQuery.isLoading && !favouriteOpeningsQuery.data?.length
+          !favouriteOpeningsQuery.isLoading && !isAuthRefreshInProgress() && !favouriteOpeningsQuery.data?.length
             ? (
               <EmptySection
                 pictogram="UserInsights"

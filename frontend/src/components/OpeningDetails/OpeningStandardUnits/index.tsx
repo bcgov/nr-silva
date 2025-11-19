@@ -33,6 +33,7 @@ import { PLACE_HOLDER } from "@/constants";
 import { formatDateTime, formatLocalDate } from "@/utils/DateUtils";
 import API from "@/services/API";
 import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto, OpeningStockingHistoryDto, OpeningStockingHistoryOverviewDto } from "@/services/OpenApi";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
@@ -45,6 +46,7 @@ import SpeciesTooltipList from "./SpeciesTooltipList";
 import { HistoryOverviewTableHeaders, LayerHeaderConfig } from "./constants";
 import { countUniqueSpeciesByCode, isSingleLayer } from "./utils";
 import "./styles.scss";
+
 
 
 type OpeningStandardUnitsProps = {
@@ -184,7 +186,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
     }
   };
 
-  if (openingDetailSsuQuery.isLoading) {
+  if (openingDetailSsuQuery.isLoading || isAuthRefreshInProgress()) {
     return <TextAreaSkeleton />;
   }
 
@@ -244,7 +246,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
               <h3 className="default-tab-content-title">
                 {
-                  stockingUnitsQuery.isLoading ? (
+                  stockingUnitsQuery.isLoading || isAuthRefreshInProgress() ? (
                     <SkeletonText />
                   ) :
                     <>
@@ -271,7 +273,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
             <div className="opening-standard-unit-header-dropdown-container">
 
-              {openingSsuHistoryListQuery.isLoading ? (
+              {openingSsuHistoryListQuery.isLoading || isAuthRefreshInProgress() ? (
                 <DropdownSkeleton />
               ) : (
                 <Dropdown
@@ -300,7 +302,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
         </Column>
 
         {
-          stockingUnitsQuery.isLoading ? (
+          stockingUnitsQuery.isLoading || isAuthRefreshInProgress() ? (
             <Column sm={4} md={8} lg={16} className="accordion-col">
               <AccordionSkeleton open={false} />
             </Column>
@@ -325,7 +327,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                             <CardItem
                               label="Net area to be reforested (ha)"
                               isNumber
-                              showSkeleton={openingDetailSsuQuery.isLoading}
+                              showSkeleton={openingDetailSsuQuery.isLoading || isAuthRefreshInProgress()}
                             >
                               {standardUnit.stocking.netArea}
                             </CardItem>

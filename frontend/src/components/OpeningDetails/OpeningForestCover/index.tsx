@@ -22,6 +22,7 @@ import API from "@/services/API";
 import { OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { formatDateTime, isMidnight } from "@/utils/DateUtils";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 import { EXPAND_PROMPT, ForestCoverTableHeaders, HistoryOverviewTableHeaders } from "./constants";
 import { formatForestCoverSpeciesArray } from "./utils";
@@ -347,7 +348,7 @@ const OpeningForestCover = ({
           <div className="opening-forest-cover-header-container">
             <div className="opening-forest-cover-header-title-container">
               <h3 className="default-tab-content-title">
-                {forestCoverQueryToUse.isLoading ? '...' : `${forestCoverQueryToUse.data?.length ?? 0}`} forest cover polygons in this opening
+                {forestCoverQueryToUse.isLoading || isAuthRefreshInProgress() ? '...' : `${forestCoverQueryToUse.data?.length ?? 0}`} forest cover polygons in this opening
               </h3>
 
               <Link
@@ -364,27 +365,30 @@ const OpeningForestCover = ({
             </div>
 
             <div className="opening-forest-cover-header-dropdown-container">
-              {forestCoverHistoryOverviewQuery.isLoading ? <
-                DropdownSkeleton /> :
-                <Dropdown
-                  id="forest-cover-action-dropdown"
-                  data-testid="forest-cover-action-dropdown"
-                  className="forest-cover-dropdown"
-                  items={dropdownItems}
-                  itemToString={(item) => item?.updateTimestamp ?
-                    `${isMidnight(item.updateTimestamp) ? formatDateTime(item.updateTimestamp, "dd/MM/yyyy") : formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm:ss a)")}
+              {
+                forestCoverHistoryOverviewQuery.isLoading || isAuthRefreshInProgress()
+                  ? <DropdownSkeleton />
+                  : (
+                    <Dropdown
+                      id="forest-cover-action-dropdown"
+                      data-testid="forest-cover-action-dropdown"
+                      className="forest-cover-dropdown"
+                      items={dropdownItems}
+                      itemToString={(item) => item?.updateTimestamp ?
+                        `${isMidnight(item.updateTimestamp) ? formatDateTime(item.updateTimestamp, "dd/MM/yyyy") : formatDateTime(item.updateTimestamp, "dd/MM/yyyy (hh:mm:ss a)")}
                     ${item.isCurrent ? ' - Latest' : item.isOldest ? ' - Oldest' : ''}`
-                    : ''}
+                        : ''}
 
-                  helperText="Select a date to view historical data"
-                  titleText="Action date"
-                  label="Select an action date"
-                  selectedItem={selectedHistory}
-                  onChange={({ selectedItem }) => {
-                    setSelectedHistory(selectedItem);
-                    setIsLatestHistory(selectedItem?.isCurrent ?? false);
-                  }}
-                />
+                      helperText="Select a date to view historical data"
+                      titleText="Action date"
+                      label="Select an action date"
+                      selectedItem={selectedHistory}
+                      onChange={({ selectedItem }) => {
+                        setSelectedHistory(selectedItem);
+                        setIsLatestHistory(selectedItem?.isCurrent ?? false);
+                      }}
+                    />
+                  )
               }
             </div>
           </div>
@@ -411,7 +415,7 @@ const OpeningForestCover = ({
               </Button>
             </TableToolbar>
             {
-              (forestCoverQueryToUse.isLoading || forestCoverSearchQueryToUse.isLoading)
+              (forestCoverQueryToUse.isLoading || forestCoverSearchQueryToUse.isLoading || isAuthRefreshInProgress())
                 ? (
                   <TableSkeleton
                     headers={ForestCoverTableHeaders}
