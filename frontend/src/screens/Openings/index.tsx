@@ -24,7 +24,7 @@ const Openings = () => {
   const cards = FavouriteCardsConfig.filter((card) => !card.hidden);
 
   const handleNavById = () => {
-    if (openingId.trim().length !== 0) {
+    if (openingId.length > 0) {
       navigate(`/openings/${openingId}`)
     }
   }
@@ -35,7 +35,7 @@ const Openings = () => {
 
   const handleOpeningIdPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const paste = (e.clipboardData || (window as any).clipboardData).getData('text') ?? '';
+    const paste = e.clipboardData.getData('text') ?? '';
     const digitsOnly = sanitizeDigits(paste);
     if (digitsOnly.length) {
       setOpeningId(digitsOnly);
