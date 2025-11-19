@@ -27,6 +27,7 @@ import { SilvicultureSearchParams } from "../definitions";
 import { DATE_TYPE_LIST, OPENING_STATUS_LIST } from "@/constants";
 import { extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
 import { hasAnyActiveFilters } from "./utils";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { usePreference } from "@/contexts/PreferenceProvider";
 
 import "./styles.scss";
@@ -297,12 +298,12 @@ const OpeningSearch: React.FC = () => {
             className="initial-empty-section"
             pictogram="Summit"
             title={
-              searchQuery.isError
+              searchQuery.isError && !isAuthRefreshInProgress()
                 ? "Something went wrong!"
                 : "Nothing to show yet!"
             }
             description={
-              searchQuery.isError
+              searchQuery.isError && !isAuthRefreshInProgress()
                 ? "Error occured while searching for results."
                 : "Enter at least one criteria to start the search. The list will display here."
             }
@@ -310,13 +311,17 @@ const OpeningSearch: React.FC = () => {
         ) : null}
 
         {/* Table skeleton */}
-        {searchQuery.isLoading ? (
-          <TableSkeleton
-            headers={searchTableHeaders}
-            showToolbar={false}
-            showHeader={false}
-          />
-        ) : null}
+        {
+          (searchQuery.isLoading || isAuthRefreshInProgress())
+            ? (
+              <TableSkeleton
+                headers={searchTableHeaders}
+                showToolbar={false}
+                showHeader={false}
+              />
+            )
+            : null
+        }
 
         {/* Loaded Table section */}
         {searchQuery.isFetched ? (

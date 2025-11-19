@@ -5,6 +5,7 @@ import { Column, Grid } from "@carbon/react";
 import API from "@/services/API";
 import ForestManagement from "./ForestManagement";
 import PolygonDetail from "./PolygonDetail";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 import './styles.scss';
 
@@ -30,7 +31,7 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId, isHistory = false, a
 
   const queryToUse = isHistory ? historyQuery : query;
 
-  if (!queryToUse.data && !queryToUse.isLoading) {
+  if (!queryToUse.data && !queryToUse.isLoading && !isAuthRefreshInProgress()) {
     return (
       <EmptySection
         pictogram="UserSearch"
@@ -42,7 +43,7 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId, isHistory = false, a
 
   return (
     <Grid className="opening-forest-cover-details-grid">
-      <PolygonDetail polygon={queryToUse.data?.polygon} isLoading={queryToUse.isLoading} />
+      <PolygonDetail polygon={queryToUse.data?.polygon} isLoading={queryToUse.isLoading || isAuthRefreshInProgress()} />
 
       {
         queryToUse.data?.layers.length
@@ -56,7 +57,7 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId, isHistory = false, a
                 isSingleLayer={queryToUse.data?.isSingleLayer}
                 layersData={queryToUse.data?.layers}
                 unmappedAreaData={queryToUse.data?.unmapped}
-                isLoading={queryToUse.isLoading}
+                isLoading={queryToUse.isLoading || isAuthRefreshInProgress()}
               />
             </>
           )

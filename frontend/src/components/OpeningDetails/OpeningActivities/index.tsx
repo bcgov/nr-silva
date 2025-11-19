@@ -3,11 +3,11 @@ import qs from 'qs';
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 import EmptySection from "../../EmptySection";
 import DisturbanceAccordion from "./DisturbanceAccordion";
 import ActivityAccordion from "./ActivityAccordion";
-
 import { DefaultFilter } from "./constants";
 
 import "./styles.scss";
@@ -53,7 +53,7 @@ const OpeningActivities = ({
   });
 
   // Loading case
-  if (disturbanceQuery.isLoading || activityQuery.isLoading) {
+  if (disturbanceQuery.isLoading || activityQuery.isLoading || isAuthRefreshInProgress()) {
     return (
       <AccordionSkeleton />
     )

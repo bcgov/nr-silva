@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { SELECTED_CLIENT_KEY } from "@/constants";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { filterClientByKeyword } from "./utils";
 import DistrictItem from "./DistrictItem";
 import { ArrowRight } from "@carbon/icons-react";
@@ -67,7 +68,7 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
 
       <Column className="full-width-col" sm={4} md={8} lg={16} max={16}>
         {
-          userClientQuery.isLoading
+          userClientQuery.isLoading || isAuthRefreshInProgress()
             ? (
               <div className="skeleton-container">
                 <SkeletonPlaceholder />

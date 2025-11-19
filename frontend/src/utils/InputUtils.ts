@@ -20,3 +20,19 @@ export const scrollToSection = (id?: string) => {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 };
+
+/**
+ * Sanitize a string to digits only.
+ */
+export const sanitizeDigits = (value: string): string => {
+  const input = value ?? '';
+  const out: string[] = [];
+  for (let i = 0; i < input.length; i++) {
+    const code = input.charCodeAt(i);
+    // '0'..'9' => 48..57
+    if (code >= 48 && code <= 57) {
+      out.push(String.fromCharCode(code));
+    }
+  }
+  return out.join('');
+};
