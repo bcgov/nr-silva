@@ -6,6 +6,7 @@ import RecentOpenings from "@/components/RecentOpenings";
 import FavouriteCard from "@/components/FavouriteCard";
 import { FavouriteCardsConfig } from "./constants";
 import { useNavigate } from "react-router-dom";
+import { sanitizeDigits } from "@/utils/InputUtils";
 
 import './styles.scss';
 
@@ -27,6 +28,19 @@ const Openings = () => {
       navigate(`/openings/${openingId}`)
     }
   }
+
+  const handleOpeningIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOpeningId(sanitizeDigits(e.target.value ?? ''));
+  };
+
+  const handleOpeningIdPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || (window as any).clipboardData).getData('text') ?? '';
+    const digitsOnly = sanitizeDigits(paste);
+    if (digitsOnly.length) {
+      setOpeningId(digitsOnly);
+    }
+  };
 
   return (
     <Grid className="default-grid">
@@ -67,14 +81,21 @@ const Openings = () => {
             labelText=""
             placeholder="View Opening by ID"
             value={openingId}
-            onChange={(e) => setOpeningId(e.target.value)}
+            onChange={handleOpeningIdChange}
+            onPaste={handleOpeningIdPaste}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleNavById();
               }
             }}
           />
-          <Button onClick={handleNavById} size="md">Go</Button>
+          <Button
+            onClick={handleNavById}
+            size="md"
+            aria-label="Navigate to opening"
+          >
+            Go
+          </Button>
         </div>
       </Column>
 

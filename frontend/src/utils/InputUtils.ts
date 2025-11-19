@@ -20,3 +20,16 @@ export const scrollToSection = (id?: string) => {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 };
+
+/**
+ * sanitize a string to digits only
+ */
+export const sanitizeDigits = (value: string): string => {
+  const input = value ?? '';
+  let digitsOnly = '';
+  for (let i = 0; i < input.length; i++) {
+    const ch = input.charAt(i);
+    if (ch >= '0' && ch <= '9') digitsOnly += ch;
+  }
+  return digitsOnly;
+};
