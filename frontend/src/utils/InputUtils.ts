@@ -22,14 +22,17 @@ export const scrollToSection = (id?: string) => {
 };
 
 /**
- * sanitize a string to digits only
+ * Sanitize a string to digits only.
  */
 export const sanitizeDigits = (value: string): string => {
   const input = value ?? '';
-  let digitsOnly = '';
+  const out: string[] = [];
   for (let i = 0; i < input.length; i++) {
-    const ch = input.charAt(i);
-    if (ch >= '0' && ch <= '9') digitsOnly += ch;
+    const code = input.charCodeAt(i);
+    // '0'..'9' => 48..57
+    if (code >= 48 && code <= 57) {
+      out.push(String.fromCharCode(code));
+    }
   }
-  return digitsOnly;
+  return out.join('');
 };
