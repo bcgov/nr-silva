@@ -460,15 +460,15 @@ public class SilvaOracleQueryConstants {
           END AS status_code,
       	atu.SILV_BASE_CODE AS base_code,
       	sbc.DESCRIPTION AS base_name,
-    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END AS tech_code,
+        CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END AS tech_code,
       	stc.DESCRIPTION AS tech_name,
-    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END AS method_code,
+        CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END AS method_code,
       	smc.DESCRIPTION AS method_name,
-    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END AS objective1_code,
+        CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END AS objective1_code,
       	soc1.DESCRIPTION AS objective1_name,
-    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END AS objective2_code,
+        CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END AS objective2_code,
       	soc2.DESCRIPTION AS objective2_name,
-    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END AS objective3_code,
+        CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END AS objective3_code,
       	soc3.DESCRIPTION AS objective3_name,
       	atu.TREATMENT_AMOUNT AS area,
       	atu.SILV_FUND_SRCE_CODE AS funding_code,
@@ -479,11 +479,11 @@ public class SilvaOracleQueryConstants {
       	to_char(atu.ATU_COMPLETION_DATE,'YYYY-MM-DD') AS end_date
       FROM ACTIVITY_TREATMENT_UNIT atu
       LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
-    LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END
-    LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END
-    LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END
-    LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END
-    LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END
+      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END
+      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END
+      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END
+      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END
+      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END
       LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
       WHERE
         atu.SILV_BASE_CODE != 'DN'
@@ -491,22 +491,22 @@ public class SilvaOracleQueryConstants {
         AND (
         	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
         		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
-                OR TO_CHAR(atu.ACTIVITY_TREATMENT_UNIT_ID) LIKE '%' || :mainSearchTerm || '%'
+            OR TO_CHAR(atu.ACTIVITY_TREATMENT_UNIT_ID) LIKE '%' || :mainSearchTerm || '%'
         		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
-      OR atu.PLAN_SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
-      OR atu.PLAN_SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
-      OR atu.PLAN_SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
-      OR atu.PLAN_SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
-      OR atu.PLAN_SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
@@ -562,6 +562,7 @@ public class SilvaOracleQueryConstants {
             atu.SILV_BASE_CODE LIKE '%' || :mainSearchTerm || '%'
             OR UPPER(sbc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
             OR atu.SILV_TECHNIQUE_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR TO_CHAR(atu.ACTIVITY_TREATMENT_UNIT_ID) LIKE '%' || :mainSearchTerm || '%'
             OR atu.PLAN_SILV_TECHNIQUE_CODE LIKE '%' || :mainSearchTerm || '%'
             OR UPPER(stc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
             OR atu.SILV_METHOD_CODE LIKE '%' || :mainSearchTerm || '%'
