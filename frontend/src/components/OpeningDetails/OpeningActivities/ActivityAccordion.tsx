@@ -420,7 +420,7 @@ const ActivityAccordion = ({
                               </TableCell>
                             ))}
                           </TableExpandRow>
-                          <TableExpandedRow colSpan={ActivityTableHeaders.length + 1}>
+                          <TableExpandedRow colSpan={ActivityTableHeaders.length + 2}>
                             {isExpanded ? (
                               <ActivityDetail
                                 activity={row}

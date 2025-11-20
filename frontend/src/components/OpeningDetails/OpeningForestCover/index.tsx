@@ -519,7 +519,7 @@ const OpeningForestCover = ({
                                 </TableCell>
                               ))}
                             </TableExpandRow>
-                            <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 1}>
+                            <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 2}>
                               {isExpanded ? <ForestCoverExpandedRow
                                 forestCoverId={row.coverId}
                                 openingId={openingId}
