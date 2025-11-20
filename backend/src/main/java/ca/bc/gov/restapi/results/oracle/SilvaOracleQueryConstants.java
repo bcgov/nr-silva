@@ -460,30 +460,30 @@ public class SilvaOracleQueryConstants {
           END AS status_code,
       	atu.SILV_BASE_CODE AS base_code,
       	sbc.DESCRIPTION AS base_name,
-      	atu.SILV_TECHNIQUE_CODE AS tech_code,
+    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END AS tech_code,
       	stc.DESCRIPTION AS tech_name,
-      	ATU.SILV_METHOD_CODE AS method_code,
+    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END AS method_code,
       	smc.DESCRIPTION AS method_name,
-      	atu.SILV_OBJECTIVE_CODE_1 AS objective1_code,
+    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END AS objective1_code,
       	soc1.DESCRIPTION AS objective1_name,
-      	atu.SILV_OBJECTIVE_CODE_2 AS objective2_code,
+    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END AS objective2_code,
       	soc2.DESCRIPTION AS objective2_name,
-      	atu.SILV_OBJECTIVE_CODE_3 AS objective3_code,
+    CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END AS objective3_code,
       	soc3.DESCRIPTION AS objective3_name,
       	atu.TREATMENT_AMOUNT AS area,
-      	ATU.SILV_FUND_SRCE_CODE AS funding_code,
+      	atu.SILV_FUND_SRCE_CODE AS funding_code,
       	sfsc.DESCRIPTION AS funding_name,
-      	ATU.SILVICULTURE_PROJECT_ID AS project_id,
+      	atu.SILVICULTURE_PROJECT_ID AS project_id,
       	to_char(atu.UPDATE_TIMESTAMP,'YYYY-MM-DD') AS last_update,
       	to_char(atu.PLANNED_DATE,'YYYY-MM-DD') AS planned_date,
       	to_char(atu.ATU_COMPLETION_DATE,'YYYY-MM-DD') AS end_date
       FROM ACTIVITY_TREATMENT_UNIT atu
       LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
-      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.SILV_TECHNIQUE_CODE
-      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.SILV_METHOD_CODE
-      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_1
-      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
-      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
+    LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_TECHNIQUE_CODE ELSE atu.PLAN_SILV_TECHNIQUE_CODE END
+    LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_METHOD_CODE ELSE atu.PLAN_SILV_METHOD_CODE END
+    LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_1 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_1 END
+    LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_2 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_2 END
+    LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN atu.SILV_OBJECTIVE_CODE_3 ELSE atu.PLAN_SILV_OBJECTIVE_CODE_3 END
       LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
       WHERE
         atu.SILV_BASE_CODE != 'DN'
@@ -494,55 +494,94 @@ public class SilvaOracleQueryConstants {
                 OR TO_CHAR(atu.ACTIVITY_TREATMENT_UNIT_ID) LIKE '%' || :mainSearchTerm || '%'
         		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
+      OR atu.PLAN_SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
+      OR atu.PLAN_SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
+      OR atu.PLAN_SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
+      OR atu.PLAN_SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
         		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
+      OR atu.PLAN_SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
         		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
+        		OR atu.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
         		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
+        		OR UPPER(atu.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
         		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
         	)
         )""";
 
   public static final String GET_OPENING_ACTIVITIES_ACTIVITIES_COUNT =
       """
-      SELECT count(atu.ACTIVITY_TREATMENT_UNIT_ID)
-      FROM ACTIVITY_TREATMENT_UNIT atu
+      SELECT COUNT(atu.ACTIVITY_TREATMENT_UNIT_ID)
+      FROM (
+        SELECT
+          ACTIVITY_TREATMENT_UNIT_ID,
+          OPENING_ID,
+          SILV_BASE_CODE,
+          ATU_COMPLETION_DATE,
+          -- derive status once
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN 'CPT' ELSE 'PLN' END AS status_code,
+          -- unified codes per status for join use
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN SILV_TECHNIQUE_CODE ELSE PLAN_SILV_TECHNIQUE_CODE END AS tech_code_unified,
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN SILV_METHOD_CODE ELSE PLAN_SILV_METHOD_CODE END AS method_code_unified,
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN SILV_OBJECTIVE_CODE_1 ELSE PLAN_SILV_OBJECTIVE_CODE_1 END AS objective1_code_unified,
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN SILV_OBJECTIVE_CODE_2 ELSE PLAN_SILV_OBJECTIVE_CODE_2 END AS objective2_code_unified,
+          CASE WHEN ATU_COMPLETION_DATE IS NOT NULL THEN SILV_OBJECTIVE_CODE_3 ELSE PLAN_SILV_OBJECTIVE_CODE_3 END AS objective3_code_unified,
+          SILV_TECHNIQUE_CODE,
+          PLAN_SILV_TECHNIQUE_CODE,
+          SILV_METHOD_CODE,
+          PLAN_SILV_METHOD_CODE,
+          SILV_OBJECTIVE_CODE_1,
+          PLAN_SILV_OBJECTIVE_CODE_1,
+          SILV_OBJECTIVE_CODE_2,
+          PLAN_SILV_OBJECTIVE_CODE_2,
+          SILV_OBJECTIVE_CODE_3,
+          PLAN_SILV_OBJECTIVE_CODE_3,
+          SILV_FUND_SRCE_CODE,
+          SILVICULTURE_PROJECT_ID,
+          TREATMENT_AMOUNT
+        FROM ACTIVITY_TREATMENT_UNIT
+      ) atu
       LEFT JOIN SILV_BASE_CODE sbc ON sbc.SILV_BASE_CODE = atu.SILV_BASE_CODE
-      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.SILV_TECHNIQUE_CODE
-      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.SILV_METHOD_CODE
-      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_1
-      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_2
-      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.SILV_OBJECTIVE_CODE_3
+      LEFT JOIN SILV_TECHNIQUE_CODE stc ON stc.SILV_TECHNIQUE_CODE = atu.tech_code_unified
+      LEFT JOIN SILV_METHOD_CODE smc ON smc.SILV_METHOD_CODE = atu.method_code_unified
+      LEFT JOIN SILV_OBJECTIVE_CODE soc1 ON soc1.SILV_OBJECTIVE_CODE = atu.objective1_code_unified
+      LEFT JOIN SILV_OBJECTIVE_CODE soc2 ON soc2.SILV_OBJECTIVE_CODE = atu.objective2_code_unified
+      LEFT JOIN SILV_OBJECTIVE_CODE soc3 ON soc3.SILV_OBJECTIVE_CODE = atu.objective3_code_unified
       LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON sfsc.SILV_FUND_SRCE_CODE = atu.SILV_FUND_SRCE_CODE
       WHERE
         atu.SILV_BASE_CODE != 'DN'
         AND atu.OPENING_ID = :openingId
         AND (
-        	NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
-        		atu.SILV_BASE_CODE like '%' || :mainSearchTerm || '%'
-        		OR UPPER(sbc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR atu.SILV_TECHNIQUE_CODE like '%' || :mainSearchTerm || '%'
-        		OR UPPER(stc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR ATU.SILV_METHOD_CODE like '%' || :mainSearchTerm || '%'
-        		OR UPPER(smc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR atu.SILV_OBJECTIVE_CODE_1 like '%' || :mainSearchTerm || '%'
-        		OR UPPER(soc1.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR atu.SILV_OBJECTIVE_CODE_2 like '%' || :mainSearchTerm || '%'
-        		OR UPPER(soc2.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR atu.SILV_OBJECTIVE_CODE_3 like '%' || :mainSearchTerm || '%'
-        		OR UPPER(soc3.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR ATU.SILV_FUND_SRCE_CODE like '%' || :mainSearchTerm || '%'
-        		OR UPPER(sfsc.DESCRIPTION) like '%' || :mainSearchTerm || '%'
-        		OR UPPER(ATU.SILVICULTURE_PROJECT_ID) like '%' || :mainSearchTerm || '%'
-        		OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$') AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
-        	)
+          NVL(:mainSearchTerm,'NOVALUE') = 'NOVALUE' OR (
+            atu.SILV_BASE_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(sbc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_TECHNIQUE_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_TECHNIQUE_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(stc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_METHOD_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_METHOD_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(smc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_OBJECTIVE_CODE_1 LIKE '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_1 LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(soc1.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_OBJECTIVE_CODE_2 LIKE '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_2 LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(soc2.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_OBJECTIVE_CODE_3 LIKE '%' || :mainSearchTerm || '%'
+            OR atu.PLAN_SILV_OBJECTIVE_CODE_3 LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(soc3.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR atu.SILV_FUND_SRCE_CODE LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(sfsc.DESCRIPTION) LIKE '%' || :mainSearchTerm || '%'
+            OR UPPER(atu.SILVICULTURE_PROJECT_ID) LIKE '%' || :mainSearchTerm || '%'
+            OR (REGEXP_LIKE(:mainSearchTerm, '^\\d+(\\.\\d+)?$')
+                AND atu.TREATMENT_AMOUNT = TO_NUMBER(:mainSearchTerm DEFAULT 0 ON CONVERSION ERROR,'999999.999999'))
+          )
         )""";
 
   public static final String GET_OPENING_ACTIVITIES_BASE =
