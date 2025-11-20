@@ -33,10 +33,6 @@
         z-index: 2;
       }
 
-      .#{vars.$bcgov-prefix}--data-table-content {
-        overflow-x: unset;
-      }
-
       .activity-table {
 
         thead {
@@ -72,10 +68,6 @@
       .activity-table-container {
         max-height: 80vh;
         overflow: auto;
-
-        .#{vars.$bcgov-prefix}--data-table-content {
-          overflow-x: unset;
-        }
 
         .activity-table {
           thead {
