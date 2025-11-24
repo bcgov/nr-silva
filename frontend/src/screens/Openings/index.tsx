@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { sanitizeDigits } from "@/utils/InputUtils";
 
 import './styles.scss';
+import { ArrowRight } from "@carbon/icons-react";
 
 const Openings = () => {
   const navigate = useNavigate();
@@ -93,6 +94,7 @@ const Openings = () => {
             onClick={handleNavById}
             size="md"
             aria-label="Navigate to opening"
+            renderIcon={ArrowRight}
           >
             Go
           </Button>

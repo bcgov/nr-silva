@@ -260,7 +260,7 @@ const DisturbanceAccordion = ({
                             ))
                           }
                         </TableExpandRow>
-                        <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 1}>
+                        <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 2}>
                           <DisturbanceDetail detail={row} />
                         </TableExpandedRow>
                       </React.Fragment>
@@ -268,7 +268,7 @@ const DisturbanceAccordion = ({
                   })
                 ) : (
                   <TableRow key="empty-row">
-                    <TableCell colSpan={DisturbanceTableHeaders.length + 1}>
+                    <TableCell colSpan={DisturbanceTableHeaders.length + 2}>
                       <EmptySection
                         pictogram="UserSearch"
                         title={`No results for "${searchTerm}"`}
