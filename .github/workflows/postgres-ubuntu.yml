@@ -1,0 +1,105 @@
+name: Postgres Ubuntu PostGIS Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Container tag to build/push (defaults to run id)
+        required: false
+        type: string
+
+permissions:
+  packages: write
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Ubuntu PostGIS
+    runs-on: ubuntu-24.04
+    environment: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          TAG="${{ inputs.tag }}"
+          if [ -z "$TAG" ]; then TAG="${{ github.run_id }}"; fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image (postgres-oracle)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./postgres-oracle
+          file: ./postgres-oracle/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}
+
+      - name: Purge existing deployment and PVC on re-run
+        if: ${{ github.run_attempt > 1 }}
+        run: |
+          echo "Rerun detected (attempt ${{ github.run_attempt }}). Purging Deployment, Service, Secret and PVC to reset data..."
+          set +e
+          oc delete deployment ubuntu-postgis --ignore-not-found
+          oc delete svc ubuntu-postgis-svc --ignore-not-found
+          oc delete secret ubuntu-postgis-secret --ignore-not-found
+          oc delete pvc ubuntu-postgis-pvc --ignore-not-found
+          set -e
+          echo "Purge complete."
+
+      - name: Render secret manifest from GitHub Secrets
+        id: render-secret
+        run: |
+          cat > ubuntu-postgis-secret.yml <<EOF
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: ubuntu-postgis-secret
+          type: Opaque
+          stringData:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "${{ secrets.UBUNTU_POSTGRES }}"
+            POSTGRES_DB: "postgres"
+          EOF
+          echo "secret_file=ubuntu-postgis-secret.yml" >> $GITHUB_OUTPUT
+
+      - name: Apply Secret via OpenShift deployer
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: ${{ steps.render-secret.outputs.secret_file }}
+          overwrite: true
+
+      - name: Render deployment with built image
+        id: render
+        run: |
+          IMAGE="ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}"
+          echo "Using image: $IMAGE"
+          cp postgres-oracle/ubuntu-postgis-deploy.yml rendered-ubuntu-postgis-deploy.yml
+          sed -i 's|^\s*image: .*|          image: '"$IMAGE"'|' rendered-ubuntu-postgis-deploy.yml
+          echo "rendered_file=rendered-ubuntu-postgis-deploy.yml" >> $GITHUB_OUTPUT
+
+      - name: Deploy Ubuntu PostGIS to OpenShift
+        id: deploy
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          file: ${{ steps.render.outputs.rendered_file }}
+          overwrite: true
+          timeout: 15m

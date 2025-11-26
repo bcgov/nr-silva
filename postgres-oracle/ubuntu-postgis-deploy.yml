@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ubuntu-postgis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: netapp-file-standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-postgis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu-postgis
+  template:
+    metadata:
+      labels:
+        app: ubuntu-postgis
+    spec:
+      containers:
+        - name: postgis
+          # Using a custom Ubuntu-based image built from images/ubuntu-postgis/Dockerfile
+          # Build/push this image to your registry and replace the image name below.
+          image: local/ubuntu-postgis:17
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ubuntu-postgis-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ubuntu-postgis-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: ubuntu-postgis-secret
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: data-volume
+              # Postgres images default to this data directory
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: ubuntu-postgis-pvc
+
+# (Secret is applied at deploy time by CI; see workflow `.github/workflows/postgres-ubuntu.yml`)
+# Service to expose Postgres inside the cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntu-postgis-svc
+spec:
+  selector:
+    app: ubuntu-postgis
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
