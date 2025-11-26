@@ -19,7 +19,8 @@ init_db_if_needed() {
     if [ -n "${PG_HBA_ALLOWED_NETWORKS:-}" ]; then
       PG_HBA_NETWORKS="$PG_HBA_ALLOWED_NETWORKS"
     else
-      PG_HBA_NETWORKS="127.0.0.1/32 10.0.0.0/8"
+      echo "ERROR: PG_HBA_ALLOWED_NETWORKS environment variable must be set to specify allowed client networks (e.g., '127.0.0.1/32 10.128.0.0/14')."
+      exit 1
     fi
     for net in $PG_HBA_NETWORKS; do
       echo "host all all $net md5" >> "$PGDATA/pg_hba.conf"
