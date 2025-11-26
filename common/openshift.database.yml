@@ -98,7 +98,7 @@ objects:
       name: ${NAME}-${ZONE}-${COMPONENT}-checksum
     data:
       checksum.sql: |
-        SELECT 
+        SELECT
           concat(table_schema,'.',table_name) as full_table_name,
           (SELECT MD5(ARRAY_AGG(t.*::text)::text) AS checksum FROM concat(table_schema,'.',table_name) AS t) as checksum
         FROM information_schema.tables
@@ -151,7 +151,7 @@ objects:
                     - psql -q -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1'
                 successThreshold: 1
                 failureThreshold: 5
-                initialDelaySeconds: 10
+                initialDelaySeconds: 60
                 periodSeconds: 15
                 timeoutSeconds: 10
               livenessProbe:
@@ -211,7 +211,7 @@ objects:
         deployment: ${NAME}-${ZONE}-${COMPONENT}
       sessionAffinity: None
       type: ClusterIP
-# Cronjob responsible for backing up the database
+  # Cronjob responsible for backing up the database
   - kind: CronJob
     apiVersion: "batch/v1"
     metadata:
@@ -242,24 +242,24 @@ objects:
                   image: postgis/postgis:15-master
                   command: ["/bin/sh", "-c"]
                   args:
-                  - |
-                    pg_dump \
-                    -U ${POSTGRES_USER} \
-                    -h ${NAME}-${ZONE}-${COMPONENT} \
-                    -d ${POSTGRES_DB} \
-                    -Fc \
-                    --file=${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump \
-                    &&
-                    PAGER= psql \
-                    -U ${POSTGRES_USER} \
-                    -h ${NAME}-${ZONE}-${COMPONENT} \
-                    -d ${POSTGRES_DB} \
-                    -f /tmp/restore/checksum.sql \
-                    --quiet \
-                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/original.checksum &&
-                    pg_restore --list ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
-                    find "${BACKUP_DIR}" -type f -mtime +$NUM_BACKUPS -exec rm -f {} \; &&
-                    cp -r ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump ${BACKUP_DIR}/W0__restore.dump
+                    - |
+                      pg_dump \
+                      -U ${POSTGRES_USER} \
+                      -h ${NAME}-${ZONE}-${COMPONENT} \
+                      -d ${POSTGRES_DB} \
+                      -Fc \
+                      --file=${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump \
+                      &&
+                      PAGER= psql \
+                      -U ${POSTGRES_USER} \
+                      -h ${NAME}-${ZONE}-${COMPONENT} \
+                      -d ${POSTGRES_DB} \
+                      -f /tmp/restore/checksum.sql \
+                      --quiet \
+                      -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/original.checksum &&
+                      pg_restore --list ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
+                      find "${BACKUP_DIR}" -type f -mtime +$NUM_BACKUPS -exec rm -f {} \; &&
+                      cp -r ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump ${BACKUP_DIR}/W0__restore.dump
                   volumeMounts:
                     - mountPath: "${BACKUP_DIR}"
                       name: ${NAME}-${ZONE}-${COMPONENT}-backup
@@ -306,7 +306,7 @@ objects:
               dnsPolicy: "ClusterFirst"
               serviceAccountName: "${JOB_SERVICE_ACCOUNT}"
               serviceAccount: "${JOB_SERVICE_ACCOUNT}"
-# Cronjob responsible for verifying the backup, runs 1 hour after the backup
+  # Cronjob responsible for verifying the backup, runs 1 hour after the backup
   - kind: CronJob
     apiVersion: "batch/v1"
     metadata:
@@ -337,24 +337,24 @@ objects:
                   image: postgis/postgis:15-master
                   command: ["/bin/sh", "-c"]
                   args:
-                  - |
-                    echo "Creating test database" &&
-                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
-                    echo "Test database created, Restoring backup" &&
-                    pg_restore -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
-                    echo "Backup restored, running checksum" &&
-                    PAGER= psql \
-                    -U ${POSTGRES_USER} \
-                    -h ${NAME}-${ZONE}-${COMPONENT} \
-                    -d backup_test_db \
-                    -f /tmp/restore/checksum.sql \
-                    --quiet \
-                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
-                    echo "Checksums created, removing temporary database" &&
-                    psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'DROP DATABASE backup_test_db;' &&
-                    echo "Database removed, comparing checksums" &&
-                    diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
-                    rm -rf ${BACKUP_DIR}/restored.checksum
+                    - |
+                      echo "Creating test database" &&
+                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
+                      echo "Test database created, Restoring backup" &&
+                      pg_restore -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
+                      echo "Backup restored, running checksum" &&
+                      PAGER= psql \
+                      -U ${POSTGRES_USER} \
+                      -h ${NAME}-${ZONE}-${COMPONENT} \
+                      -d backup_test_db \
+                      -f /tmp/restore/checksum.sql \
+                      --quiet \
+                      -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
+                      echo "Checksums created, removing temporary database" &&
+                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'DROP DATABASE backup_test_db;' &&
+                      echo "Database removed, comparing checksums" &&
+                      diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
+                      rm -rf ${BACKUP_DIR}/restored.checksum
                   volumeMounts:
                     - mountPath: "${BACKUP_DIR}"
                       name: ${NAME}-${ZONE}-${COMPONENT}-backup
@@ -401,7 +401,7 @@ objects:
               dnsPolicy: "ClusterFirst"
               serviceAccountName: "${JOB_SERVICE_ACCOUNT}"
               serviceAccount: "${JOB_SERVICE_ACCOUNT}"
-# Cronjob responsible for restoring the backup if needed
+  # Cronjob responsible for restoring the backup if needed
   - kind: CronJob
     apiVersion: "batch/v1"
     metadata:
@@ -432,20 +432,20 @@ objects:
                   image: postgis/postgis:15-master
                   command: ["/bin/sh", "-c"]
                   args:
-                  - |
-                    pg_restore  -U ${POSTGRES_USER} \
-                    -h ${NAME}-${ZONE}-${COMPONENT} \
-                    -d ${POSTGRES_DB} \
-                    ${BACKUP_DIR}/W0__restore.dump &&                    
-                    PAGER= psql \
-                    -U ${POSTGRES_USER} \
-                    -h ${NAME}-${ZONE}-${COMPONENT} \
-                    -d ${POSTGRES_DB} \
-                    -f /tmp/restore/checksum.sql \
-                    --quiet \
-                    -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
-                    diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
-                    rm -rf ${BACKUP_DIR}/restored.checksum
+                    - |
+                      pg_restore  -U ${POSTGRES_USER} \
+                      -h ${NAME}-${ZONE}-${COMPONENT} \
+                      -d ${POSTGRES_DB} \
+                      ${BACKUP_DIR}/W0__restore.dump &&
+                      PAGER= psql \
+                      -U ${POSTGRES_USER} \
+                      -h ${NAME}-${ZONE}-${COMPONENT} \
+                      -d ${POSTGRES_DB} \
+                      -f /tmp/restore/checksum.sql \
+                      --quiet \
+                      -v ON_ERROR_STOP=1 > ${BACKUP_DIR}/restored.checksum &&
+                      diff ${BACKUP_DIR}/original.checksum ${BACKUP_DIR}/restored.checksum &&
+                      rm -rf ${BACKUP_DIR}/restored.checksum
                   volumeMounts:
                     - mountPath: "${BACKUP_DIR}"
                       name: ${NAME}-${ZONE}-${COMPONENT}-backup
