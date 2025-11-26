@@ -18,7 +18,7 @@ jobs:
     environment: test
     env:
       OC_NAMESPACE: ${{ vars.OC_NAMESPACE }}
-      OC_SERVER: ${{ secrets.OC_SERVER }}
+      OC_SERVER: ${{ vars.OC_SERVER }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
             exit 1
           fi
           # OC_SERVER is optional but prefer the environment secret if present
-          OC_SERVER="${{ secrets.OC_SERVER }}"
+          OC_SERVER="${{ vars.OC_SERVER }}"
           if [ -z "$OC_SERVER" ]; then
             echo "::warning::OC_SERVER not set in environment secrets; proceeding but deployer may require OC_SERVER depending on configuration."
           fi
@@ -83,23 +83,25 @@ jobs:
       - name: Render secret manifest from GitHub Secrets
         id: render-secret
         run: |
-          set +x
+          set -x
           umask 077
-          tmpfile=$(mktemp ubuntu-postgis-secret.XXXXXX.yml)
-          cat > "$tmpfile" <<EOF
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: ubuntu-postgis-secret
-          type: Opaque
-          stringData:
-            POSTGRES_USER: "postgres"
-            POSTGRES_PASSWORD: "${{ secrets.UBUNTU_POSTGRES }}"
-            POSTGRES_DB: "postgres"
-          EOF
+          # write the secret file into the workspace so subsequent actions can access it
+          tmpdir="$GITHUB_WORKSPACE"
+          tmpfile=$(mktemp -p "$tmpdir" ubuntu-postgis-secret.XXXXXX.yml)
+          printf '%s\n' \
+            "apiVersion: v1" \
+            "kind: Secret" \
+            "metadata:" \
+            "  name: ubuntu-postgis-secret" \
+            "type: Opaque" \
+            "stringData:" \
+            "  POSTGRES_USER: \"postgres\"" \
+            "  POSTGRES_PASSWORD: \"${{ secrets.UBUNTU_POSTGRES }}\"" \
+            "  POSTGRES_DB: \"postgres\"" \
+            > "$tmpfile"
           chmod 600 "$tmpfile"
           echo "secret_file=$tmpfile" >> $GITHUB_OUTPUT
-          set -x
+          set +x
 
       - name: Apply Secret via OpenShift deployer
         uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
