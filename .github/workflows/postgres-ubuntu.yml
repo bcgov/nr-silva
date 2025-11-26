@@ -38,6 +38,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push image (postgres-oracle)
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ./postgres-oracle
@@ -92,7 +93,12 @@ jobs:
       - name: Render deployment with built image
         id: render
         run: |
-          IMAGE="ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}"
+          # Prefer immutable digest if build produced one, fall back to tag
+          if [ -n "${{ steps.build.outputs.digest }}" ]; then
+            IMAGE="ghcr.io/${{ github.repository }}/ubuntu-postgis@${{ steps.build.outputs.digest }}"
+          else
+            IMAGE="ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}"
+          fi
           echo "Using image: $IMAGE"
           cp postgres-oracle/ubuntu-postgis-deploy.yml rendered-ubuntu-postgis-deploy.yml
           sed -i 's|^\s*image: .*|          image: '"$IMAGE"'|' rendered-ubuntu-postgis-deploy.yml
