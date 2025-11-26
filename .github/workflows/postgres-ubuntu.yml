@@ -90,12 +90,12 @@ jobs:
         if: ${{ github.run_attempt > 1 }}
         run: |
           echo "Rerun detected (attempt ${{ github.run_attempt }}). Purging Deployment, Service, Secret and PVC to reset data..."
-          set +e
           oc delete deployment ubuntu-postgis --ignore-not-found
           oc delete svc ubuntu-postgis-svc --ignore-not-found
           oc delete secret ubuntu-postgis-secret --ignore-not-found
           oc delete pvc ubuntu-postgis-pvc --ignore-not-found
-          set -e
+          # Wait for pods to fully terminate to avoid PVC race conditions
+          oc wait --for=delete pod -l app=ubuntu-postgis --timeout=120s 2>/dev/null || true
           echo "Purge complete."
 
       - name: Render secret manifest from GitHub Secrets
@@ -144,7 +144,7 @@ jobs:
         run: |
           set -euo pipefail
           oc apply -f "${{ steps.render.outputs.rendered_file }}"
-          echo "Deployment applied."
+          echo "Deployment applied. Waiting for rollout..."
 
       - name: Cleanup secret file
         if: always()
