@@ -29,6 +29,27 @@ spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+        # Run the container with a high UID/GID to satisfy cluster security policies and scanners
+        runAsUser: 20000
+        runAsGroup: 20000
+        fsGroup: 20000
+      initContainers:
+        - name: fix-permissions
+          # use the same major Postgres image to ensure consistent filesystem tools
+          image: postgres:17
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "chmod 0700 /var/lib/postgresql/data || true; chown -R 20000:20000 /var/lib/postgresql/data || true",
+            ]
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: data-volume
+              mountPath: /var/lib/postgresql/data
       containers:
         - name: postgis
           # IMAGE placeholder; the CI workflow replaces IMAGE_PLACEHOLDER with the built image

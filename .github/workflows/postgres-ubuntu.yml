@@ -80,18 +80,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}
 
-      - name: Purge existing deployment and PVC on re-run
-        if: ${{ github.run_attempt > 1 }}
-        run: |
-          echo "Rerun detected (attempt ${{ github.run_attempt }}). Purging Deployment, Service, Secret and PVC to reset data..."
-          set +e
-          oc delete deployment ubuntu-postgis --ignore-not-found
-          oc delete svc ubuntu-postgis-svc --ignore-not-found
-          oc delete secret ubuntu-postgis-secret --ignore-not-found
-          oc delete pvc ubuntu-postgis-pvc --ignore-not-found
-          set -e
-          echo "Purge complete."
-
       - name: Render secret manifest from GitHub Secrets
         id: render-secret
         run: |
@@ -121,6 +109,18 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           file: ${{ steps.render-secret.outputs.secret_file }}
           overwrite: true
+
+      - name: Purge existing deployment and PVC on re-run
+        if: ${{ github.run_attempt > 1 }}
+        run: |
+          echo "Rerun detected (attempt ${{ github.run_attempt }}). Purging Deployment, Service, Secret and PVC to reset data..."
+          set +e
+          oc delete deployment ubuntu-postgis --ignore-not-found
+          oc delete svc ubuntu-postgis-svc --ignore-not-found
+          oc delete secret ubuntu-postgis-secret --ignore-not-found
+          oc delete pvc ubuntu-postgis-pvc --ignore-not-found
+          set -e
+          echo "Purge complete."
 
       - name: Render deployment with built image
         id: render
