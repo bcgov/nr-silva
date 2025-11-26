@@ -14,6 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ubuntu-postgis
+  namespace: test
 spec:
   replicas: 1
   selector:
@@ -24,15 +25,26 @@ spec:
       labels:
         app: ubuntu-postgis
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 20000
+        runAsGroup: 20000
+        fsGroup: 20000
       containers:
         - name: postgis
-          # Using a custom Ubuntu-based image built from images/ubuntu-postgis/Dockerfile
-          # Build/push this image to your registry and replace the image name below.
-          image: local/ubuntu-postgis:17
+          image: ghcr.io/bcgov/nr-silva/ubuntu-postgis:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
               name: postgres
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -51,22 +63,17 @@ spec:
                   key: POSTGRES_DB
           volumeMounts:
             - name: data-volume
-              # Postgres images default to this data directory
               mountPath: /var/lib/postgresql/data
+            - name: tmp-volume
+              mountPath: /tmp
           readinessProbe:
             exec:
-              command:
-                - bash
-                - -c
-                - pg_isready -U "$POSTGRES_USER"
+              command: ["bash", "-c", "pg_isready -U $POSTGRES_USER"]
             initialDelaySeconds: 10
             periodSeconds: 5
           livenessProbe:
             exec:
-              command:
-                - bash
-                - -c
-                - pg_isready -U "$POSTGRES_USER"
+              command: ["bash", "-c", "pg_isready -U $POSTGRES_USER"]
             initialDelaySeconds: 30
             periodSeconds: 10
           resources:
@@ -80,14 +87,14 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: ubuntu-postgis-pvc
-
-# (Secret is applied at deploy time by CI; see workflow `.github/workflows/postgres-ubuntu.yml`)
-# Service to expose Postgres inside the cluster
+        - name: tmp-volume
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: ubuntu-postgis-svc
+  namespace: test
 spec:
   selector:
     app: ubuntu-postgis

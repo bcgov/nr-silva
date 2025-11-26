@@ -62,7 +62,10 @@ jobs:
       - name: Render secret manifest from GitHub Secrets
         id: render-secret
         run: |
-          cat > ubuntu-postgis-secret.yml <<EOF
+          set +x
+          umask 077
+          tmpfile=$(mktemp ubuntu-postgis-secret.XXXXXX.yml)
+          cat > "$tmpfile" <<EOF
           apiVersion: v1
           kind: Secret
           metadata:
@@ -73,7 +76,9 @@ jobs:
             POSTGRES_PASSWORD: "${{ secrets.UBUNTU_POSTGRES }}"
             POSTGRES_DB: "postgres"
           EOF
-          echo "secret_file=ubuntu-postgis-secret.yml" >> $GITHUB_OUTPUT
+          chmod 600 "$tmpfile"
+          echo "secret_file=$tmpfile" >> $GITHUB_OUTPUT
+          set -x
 
       - name: Apply Secret via OpenShift deployer
         uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
@@ -103,3 +108,13 @@ jobs:
           file: ${{ steps.render.outputs.rendered_file }}
           overwrite: true
           timeout: 15m
+
+      - name: Cleanup secret file
+        if: always()
+        run: |
+          set +x
+          tmp="${{ steps.render-secret.outputs.secret_file }}"
+          if [ -n "$tmp" ] && [ -f "$tmp" ]; then
+            shred -u "$tmp" || rm -f "$tmp"
+          fi
+          set -x

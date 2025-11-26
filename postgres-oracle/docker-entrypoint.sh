@@ -8,16 +8,45 @@ export PGDATA
 init_db_if_needed() {
   if [ ! -s "$PGDATA/PG_VERSION" ]; then
     echo "Initializing database at $PGDATA"
-    /usr/lib/postgresql/17/bin/initdb -D "$PGDATA" --username=postgres --pwfile=<(echo "$POSTGRES_PASSWORD" 2>/dev/null || true)
-    # Allow all local connections for quick startup; in production tighten pg_hba.conf
-    echo "host all all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+    # Initialize database cluster as postgres user. Do not attempt to set password via initdb --pwfile;
+    # instead set the postgres password after initialization using ALTER USER.
+    /usr/lib/postgresql/17/bin/initdb -D "$PGDATA" --username=postgres
+
+    # Configure pg_hba.conf. For quick startup we previously allowed all addresses,
+    # but that is too permissive for production. Use PG_HBA_ALLOWED_NETWORKS to
+    # control which CIDR ranges are permitted (space-separated). If not set,
+    # default to localhost and a common in-cluster range.
+    if [ -n "${PG_HBA_ALLOWED_NETWORKS:-}" ]; then
+      PG_HBA_NETWORKS="$PG_HBA_ALLOWED_NETWORKS"
+    else
+      PG_HBA_NETWORKS="127.0.0.1/32 10.0.0.0/8"
+    fi
+    for net in $PG_HBA_NETWORKS; do
+      echo "host all all $net md5" >> "$PGDATA/pg_hba.conf"
+    done
     chown -R postgres:postgres "$PGDATA"
-    # enable postgis extension on default DB if provided
-    if [ -n "${POSTGRES_DB:-}" ] && [ "$POSTGRES_DB" != "" ]; then
+
+    # If a DB name is provided, create it and enable PostGIS. Also set postgres user password if provided.
+    if [ -n "${POSTGRES_DB:-}" ]; then
       /usr/bin/pg_ctl -D "$PGDATA" -o "-c listen_addresses='localhost'" -w start
       createdb -U postgres "$POSTGRES_DB" || true
       psql -U postgres -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS postgis;" || true
+
+      if [ -n "${POSTGRES_PASSWORD:-}" ]; then
+        # Escape single quotes in password before embedding in SQL
+        esc_pwd=$(printf "%s" "$POSTGRES_PASSWORD" | sed "s/'/'\\''/g")
+        psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$esc_pwd';" || true
+      fi
+
       pg_ctl -D "$PGDATA" -m fast -w stop
+    else
+      # No DB specified; still set postgres password if provided
+      if [ -n "${POSTGRES_PASSWORD:-}" ]; then
+        /usr/bin/pg_ctl -D "$PGDATA" -o "-c listen_addresses='localhost'" -w start
+        esc_pwd=$(printf "%s" "$POSTGRES_PASSWORD" | sed "s/'/'\\''/g")
+        psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$esc_pwd';" || true
+        pg_ctl -D "$PGDATA" -m fast -w stop
+      fi
     fi
   fi
 }
@@ -30,6 +59,8 @@ case "$1" in
     exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA"
     ;;
   "")
+    # No args passed: ensure DB is initialized (covers cases where CMD was not provided)
+    init_db_if_needed
     exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA"
     ;;
   *)
