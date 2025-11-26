@@ -24,7 +24,6 @@ init_db_if_needed() {
     for net in $PG_HBA_NETWORKS; do
       echo "host all all $net md5" >> "$PGDATA/pg_hba.conf"
     done
-    chown -R postgres:postgres "$PGDATA"
 
     # If a DB name is provided, create it and enable PostGIS. Also set postgres user password if provided.
     if [ -n "${POSTGRES_DB:-}" ]; then
@@ -56,12 +55,12 @@ case "$1" in
     # ensure env
     : ${POSTGRES_PASSWORD:=}
     init_db_if_needed
-    exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA"
+    exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA" -c listen_addresses='*'
     ;;
   "")
     # No args passed: ensure DB is initialized (covers cases where CMD was not provided)
     init_db_if_needed
-    exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA"
+    exec /usr/lib/postgresql/17/bin/postgres -D "$PGDATA" -c listen_addresses='*'
     ;;
   *)
     # allow running other commands (useful for debugging)

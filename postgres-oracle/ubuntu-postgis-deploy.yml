@@ -44,9 +44,6 @@ objects:
           securityContext:
             seccompProfile:
               type: RuntimeDefault
-            runAsUser: 20000
-            runAsGroup: 20000
-            fsGroup: 20000
           containers:
             - name: postgis
               # IMAGE must be provided via template parameter; avoid hard-coded :latest
@@ -83,6 +80,10 @@ objects:
                   mountPath: /var/lib/postgresql/data
                 - name: tmp-volume
                   mountPath: /tmp
+                - name: run-volume
+                  mountPath: /var/run/postgresql
+                - name: log-volume
+                  mountPath: /var/log/postgresql
               readinessProbe:
                 exec:
                   command: ["bash", "-c", "pg_isready -U $POSTGRES_USER"]
@@ -105,6 +106,10 @@ objects:
               persistentVolumeClaim:
                 claimName: ubuntu-postgis-pvc
             - name: tmp-volume
+              emptyDir: {}
+            - name: run-volume
+              emptyDir: {}
+            - name: log-volume
               emptyDir: {}
   - apiVersion: v1
     kind: Service
