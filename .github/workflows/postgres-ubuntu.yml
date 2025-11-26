@@ -95,7 +95,7 @@ jobs:
             'type: Opaque' \
             'stringData:' \
             '  POSTGRES_USER: "postgres"' \
-            '  POSTGRES_PASSWORD: "${{ secrets.UBUNTU_POSTGRES }}"' \
+            "  POSTGRES_PASSWORD: \"${{ secrets.UBUNTU_POSTGRES }}\"" \
             '  POSTGRES_DB: "postgres"' \
             > "$tmpfile"
           chmod 600 "$tmpfile"
@@ -105,11 +105,13 @@ jobs:
 
       - name: Login to OpenShift
         run: |
+          set -euo pipefail
           oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ vars.OC_SERVER }}"
           oc project "${{ vars.OC_NAMESPACE }}"
 
       - name: Apply Secret (oc apply)
         run: |
+          set -euo pipefail
           oc apply -f "${{ steps.render-secret.outputs.secret_file }}"
 
       - name: Purge existing deployment and PVC on re-run
