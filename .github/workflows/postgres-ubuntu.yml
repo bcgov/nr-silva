@@ -80,39 +80,11 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}
 
-      - name: Render secret manifest from GitHub Secrets
-        id: render-secret
-        run: |
-          set -x
-          umask 077
-          # create a stable path for the secret so downstream steps can reference it reliably
-          tmpfile="$GITHUB_WORKSPACE/ubuntu-postgis-secret.yml"
-          printf '%s\n' \
-            'apiVersion: v1' \
-            'kind: Secret' \
-            'metadata:' \
-            '  name: ubuntu-postgis-secret' \
-            'type: Opaque' \
-            'stringData:' \
-            '  POSTGRES_USER: "postgres"' \
-            "  POSTGRES_PASSWORD: \"${{ secrets.UBUNTU_POSTGRES }}\"" \
-            '  POSTGRES_DB: "postgres"' \
-            > "$tmpfile"
-          chmod 600 "$tmpfile"
-          ls -l "$tmpfile"
-          echo "secret_file=$tmpfile" >> $GITHUB_OUTPUT
-          set +x
-
       - name: Login to OpenShift
         run: |
           set -euo pipefail
           oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ vars.OC_SERVER }}"
           oc project "${{ vars.OC_NAMESPACE }}"
-
-      - name: Apply Secret (oc apply)
-        run: |
-          set -euo pipefail
-          oc apply -f "${{ steps.render-secret.outputs.secret_file }}"
 
       - name: Purge existing deployment and PVC on re-run
         if: ${{ github.run_attempt > 1 }}
@@ -126,6 +98,31 @@ jobs:
           set -e
           echo "Purge complete."
 
+      - name: Render secret manifest from GitHub Secrets
+        id: render-secret
+        run: |
+          set -euo pipefail
+          umask 077
+          tmpfile="$GITHUB_WORKSPACE/ubuntu-postgis-secret.yml"
+          printf '%s\n' \
+            'apiVersion: v1' \
+            'kind: Secret' \
+            'metadata:' \
+            '  name: ubuntu-postgis-secret' \
+            'type: Opaque' \
+            'stringData:' \
+            '  POSTGRES_USER: "postgres"' \
+            "  POSTGRES_PASSWORD: \"${{ secrets.UBUNTU_POSTGRES }}\"" \
+            '  POSTGRES_DB: "postgres"' \
+            > "$tmpfile"
+          chmod 600 "$tmpfile"
+          echo "secret_file=$tmpfile" >> $GITHUB_OUTPUT
+
+      - name: Apply Secret (oc apply)
+        run: |
+          set -euo pipefail
+          oc apply -f "${{ steps.render-secret.outputs.secret_file }}"
+
       - name: Render deployment with built image
         id: render
         run: |
@@ -136,21 +133,18 @@ jobs:
             IMAGE="ghcr.io/${{ github.repository }}/ubuntu-postgis:${{ steps.vars.outputs.tag }}"
           fi
           echo "Using image: $IMAGE"
-          # Replace placeholder in the plain Kubernetes manifest
-          cp postgres-oracle/ubuntu-postgis-deploy.yml rendered-ubuntu-postgis-deploy.yml
-          sed -i "s|IMAGE_PLACEHOLDER|$IMAGE|g" rendered-ubuntu-postgis-deploy.yml
-          echo "rendered_file=rendered-ubuntu-postgis-deploy.yml" >> $GITHUB_OUTPUT
+          # Replace placeholder in the plain Kubernetes manifest (produce absolute path)
+          RENDERED_FILE="$GITHUB_WORKSPACE/rendered-ubuntu-postgis-deploy.yml"
+          cp postgres-oracle/ubuntu-postgis-deploy.yml "$RENDERED_FILE"
+          sed -i "s|IMAGE_PLACEHOLDER|$IMAGE|g" "$RENDERED_FILE"
+          ls -l "$RENDERED_FILE"
+          echo "rendered_file=$RENDERED_FILE" >> $GITHUB_OUTPUT
 
-      - name: Deploy Ubuntu PostGIS to OpenShift
-        id: deploy
-        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
-        with:
-          oc_namespace: ${{ vars.OC_NAMESPACE }}
-          oc_server: ${{ vars.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          file: ${{ steps.render.outputs.rendered_file }}
-          overwrite: true
-          timeout: 15m
+      - name: Deploy resources (oc apply)
+        run: |
+          set -euo pipefail
+          oc apply -f "${{ steps.render.outputs.rendered_file }}"
+          echo "Deployment applied."
 
       - name: Cleanup secret file
         if: always()
