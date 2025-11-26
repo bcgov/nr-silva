@@ -85,32 +85,34 @@ jobs:
         run: |
           set -x
           umask 077
-          # write the secret file into the workspace so subsequent actions can access it
-          tmpdir="$GITHUB_WORKSPACE"
-          tmpfile=$(mktemp -p "$tmpdir" ubuntu-postgis-secret.XXXXXX.yml)
+          # create a stable path for the secret so downstream steps can reference it reliably
+          tmpfile="$GITHUB_WORKSPACE/ubuntu-postgis-secret.yml"
           printf '%s\n' \
-            "apiVersion: v1" \
-            "kind: Secret" \
-            "metadata:" \
-            "  name: ubuntu-postgis-secret" \
-            "type: Opaque" \
-            "stringData:" \
-            "  POSTGRES_USER: \"postgres\"" \
+            'apiVersion: v1' \
+            'kind: Secret' \
+            'metadata:' \
+            '  name: ubuntu-postgis-secret' \
+            'type: Opaque' \
+            'stringData:' \
+            '  POSTGRES_USER: "postgres"' \
             "  POSTGRES_PASSWORD: \"${{ secrets.UBUNTU_POSTGRES }}\"" \
-            "  POSTGRES_DB: \"postgres\"" \
+            '  POSTGRES_DB: "postgres"' \
             > "$tmpfile"
           chmod 600 "$tmpfile"
+          ls -l "$tmpfile"
           echo "secret_file=$tmpfile" >> $GITHUB_OUTPUT
           set +x
 
-      - name: Apply Secret via OpenShift deployer
-        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
-        with:
-          oc_namespace: ${{ vars.OC_NAMESPACE }}
-          oc_server: ${{ vars.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          file: ${{ steps.render-secret.outputs.secret_file }}
-          overwrite: true
+      - name: Login to OpenShift
+        run: |
+          set -euo pipefail
+          oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ vars.OC_SERVER }}"
+          oc project "${{ vars.OC_NAMESPACE }}"
+
+      - name: Apply Secret (oc apply)
+        run: |
+          set -euo pipefail
+          oc apply -f "${{ steps.render-secret.outputs.secret_file }}"
 
       - name: Purge existing deployment and PVC on re-run
         if: ${{ github.run_attempt > 1 }}
