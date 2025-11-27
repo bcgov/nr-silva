@@ -26,6 +26,11 @@ spec:
       labels:
         app: ubuntu-postgis
     spec:
+      securityContext:
+        runAsUser: 1016730000
+        runAsGroup: 1016730000
+        fsGroup: 1016730000
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: postgis
           # IMAGE placeholder; the CI workflow replaces IMAGE_PLACEHOLDER with the built image
