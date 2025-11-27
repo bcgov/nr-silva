@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 400Mi
   storageClassName: netapp-file-standard
 ---
 apiVersion: apps/v1
