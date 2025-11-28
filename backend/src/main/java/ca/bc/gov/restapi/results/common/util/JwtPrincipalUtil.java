@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -366,13 +365,16 @@ public class JwtPrincipalUtil {
    *     an empty string if the provider is not specified.
    */
   private static String getProviderValue(Map<String, Object> claims) {
-    String provider = getClaimValue(claims, "custom:idp_name");
+    String userNameString = getClaimValue(claims, "username");
 
-    if (StringUtils.isNotBlank(provider)) {
-      return provider.startsWith("ca.bc.gov.flnr.fam.")
-          ? "BCSC"
-          : provider.toUpperCase(Locale.ROOT);
+    if (StringUtils.isNotBlank(userNameString)) {
+      if (userNameString.endsWith("@idir")) {
+        return "idir";
+      } else if (userNameString.endsWith("@bceidbusiness")) {
+        return "bceidbusiness";
+      }
     }
+
     return StringUtils.EMPTY;
   }
 
