@@ -7,18 +7,18 @@ import {
 import { Download } from "@carbon/icons-react";
 import { env } from "@/env";
 import axios from "axios";
-import { getAuthIdToken } from "@/services/AuthService";
 import { useQuery } from "@tanstack/react-query";
 import { pluralize } from "@/utils/StringUtils";
-import { PLACE_HOLDER } from "@/constants";
+import { ACCESS_TOKEN_KEY, PLACE_HOLDER } from "@/constants";
 import API from "@/services/API";
 import { OpeningDetailsAttachmentMetaDto } from "@/services/OpenApi";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import { getCookie } from "@/utils/CookieUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 import { AttachmentTableHeaders } from "./constants";
-import { formatLocalDate } from "@/utils/DateUtils";
 
 import './styles.scss';
 
@@ -41,7 +41,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
         `${API_BASE_URL}/api/openings/${openingId}/attachments/${guid}`,
         {
           headers: {
-            Authorization: `Bearer ${getAuthIdToken()}`,
+            Authorization: `Bearer ${getCookie(ACCESS_TOKEN_KEY)}`,
           },
         }
       );
