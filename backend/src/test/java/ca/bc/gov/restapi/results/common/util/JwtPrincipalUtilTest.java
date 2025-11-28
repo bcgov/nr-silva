@@ -24,14 +24,14 @@ class JwtPrincipalUtilTest {
 
   @ParameterizedTest(name = "For custom:idp_name {0} → JwtAuthenticationToken: {1}, Jwt: {2}")
   @CsvSource({
-    "ca.bc.gov.flnr.fam.dev, BCSC, BCSC",
-    "idir, IDIR, IDIR",
-    "bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
+    "someuser@bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
+    "someuser@idir, IDIR, IDIR",
+    "someuser@bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
     "'', '', ''"
   })
   @DisplayName("get provider")
   void shouldGetProvider(String idpName, String expectedTokenValue, String expectedJwtValue) {
-    Map<String, Object> claims = Map.of("custom:idp_name", idpName);
+    Map<String, Object> claims = Map.of("username", idpName);
 
     assertEquals(
         expectedTokenValue,
@@ -41,12 +41,12 @@ class JwtPrincipalUtilTest {
 
   @ParameterizedTest(name = "For custom:idp_username {0} and custom:idp_name {1} userId is {2}")
   @CsvSource({
-    "username, userid, ca.bc.gov.flnr.fam.dev, BCSC\\username",
-    "username, userid, idir, IDIR\\username",
-    "username, userid, bceidbusiness, BCEIDBUSINESS\\username",
-    "'', userid, ca.bc.gov.flnr.fam.dev, BCSC\\userid",
-    "'', userid, idir, IDIR\\userid",
-    "'', userid, bceidbusiness, BCEIDBUSINESS\\userid",
+    "username, userid, someuser@bceidbusiness, BCEIDBUSINESS\\username",
+    "username, userid, username@idir, IDIR\\username",
+    "username, userid, someuser@bceidbusiness, BCEIDBUSINESS\\username",
+    "'', userid, someuser@bceidbusiness, BCEIDBUSINESS\\userid",
+    "'', userid, username@idir, IDIR\\userid",
+    "'', userid, someuser@bceidbusiness, BCEIDBUSINESS\\userid",
     "'', '','', ''"
   })
   @DisplayName("get userId returns userId prefixed with provider when userId is not blank")
@@ -55,7 +55,7 @@ class JwtPrincipalUtilTest {
         Map.of(
             "custom:idp_username", idpUsername,
             "custom:idp_user_id", idpUserId,
-            "custom:idp_name", idpName);
+            "username", idpName);
 
     assertEquals(
         expected, JwtPrincipalUtil.getUserId(createJwtAuthenticationTokenWithAttributes(claims)));
