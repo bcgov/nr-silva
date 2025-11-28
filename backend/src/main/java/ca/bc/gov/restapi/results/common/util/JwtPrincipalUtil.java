@@ -369,9 +369,9 @@ public class JwtPrincipalUtil {
 
     if (StringUtils.isNotBlank(userNameString)) {
       if (userNameString.endsWith("@idir")) {
-        return "idir";
+        return "IDIR";
       } else if (userNameString.endsWith("@bceidbusiness")) {
-        return "bceidbusiness";
+        return "BCEIDBUSINESS";
       }
     }
 
