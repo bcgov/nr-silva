@@ -1,0 +1,90 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: ubuntu-postgis17-template
+  annotations:
+    description: "Ubuntu-style shell plus PostGIS 17 database for playground usage."
+parameters:
+  - name: SHELL_IMAGE
+    description: Container image that already includes Postgres client tooling.
+    value: docker.io/bitnami/postgresql-client:16
+  - name: POSTGIS_IMAGE
+    description: Container image for the PostGIS database.
+    value: postgis/postgis:17-3.4
+  - name: PVC_STORAGE
+    description: Persistent volume size for the shared data directory.
+    value: 300Mi
+objects:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgis17-pvc
+      labels:
+        app: ubuntu-postgis17
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: ${PVC_STORAGE}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ubuntu-postgis17
+      labels:
+        app: ubuntu-postgis17
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: ubuntu-postgis17
+      template:
+        metadata:
+          labels:
+            app: ubuntu-postgis17
+        spec:
+          volumes:
+            - name: postgis-data
+              persistentVolumeClaim:
+                claimName: postgis17-pvc
+            - name: run-volume
+              emptyDir: {}
+            - name: tmp-volume
+              emptyDir: {}
+            - name: log-volume
+              emptyDir: {}
+          containers:
+            - name: ubuntu-shell
+              image: ${SHELL_IMAGE}
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  echo "Shell container ready. Use 'oc exec -it <pod> -c ubuntu-shell -- /bin/bash'."
+                  tail -f /dev/null
+              volumeMounts:
+                - name: postgis-data
+                  mountPath: /var/lib/postgresql
+            - name: postgis
+              image: ${POSTGIS_IMAGE}
+              env:
+                - name: POSTGRES_DB
+                  value: "postgres"
+                - name: POSTGRES_USER
+                  value: "postgres"
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgis17-secret
+                      key: postgres-password
+              ports:
+                - name: postgres
+                  containerPort: 5432
+              volumeMounts:
+                - name: postgis-data
+                  mountPath: /var/lib/postgresql
+                - name: run-volume
+                  mountPath: /var/run/postgresql
+                - name: tmp-volume
+                  mountPath: /tmp
+                - name: log-volume
+                  mountPath: /var/log/postgresql
