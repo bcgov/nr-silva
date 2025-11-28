@@ -13,19 +13,26 @@ public class WithMockJwtSecurityContextFactory implements WithSecurityContextFac
 
   @Override
   public SecurityContext createSecurityContext(WithMockJwt annotation) {
-    Jwt jwt = Jwt
-        .withTokenValue("token")
-        .header("alg", "none")
-        .claim("sub", annotation.value())
-        .claim("cognito:groups", List.of(annotation.cognitoGroups()))
-        .claim("custom:idp_name", annotation.idp())
-        .claim("custom:idp_username", annotation.value())
-        .claim("custom:idp_display_name", annotation.displayName())
-        .claim("email", annotation.email())
-        .build();
+    // Construct a username claim that includes the idp suffix (e.g. "JAKETHEDOG@idir")
+    String usernameWithIdp = annotation.value();
+    if (annotation.idp() != null && !annotation.idp().isBlank()) {
+      usernameWithIdp = annotation.value() + "@" + annotation.idp();
+    }
 
-    List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
-        annotation.cognitoGroups());
+    Jwt jwt =
+        Jwt.withTokenValue("token")
+            .header("alg", "none")
+            .claim("sub", annotation.value())
+            .claim("username", usernameWithIdp)
+            .claim("cognito:groups", List.of(annotation.cognitoGroups()))
+            .claim("custom:idp_name", annotation.idp())
+            .claim("custom:idp_username", annotation.value())
+            .claim("custom:idp_display_name", annotation.displayName())
+            .claim("email", annotation.email())
+            .build();
+
+    List<GrantedAuthority> authorities =
+        AuthorityUtils.createAuthorityList(annotation.cognitoGroups());
     JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
     SecurityContext context = SecurityContextHolder.createEmptyContext();
