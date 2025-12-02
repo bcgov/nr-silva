@@ -28,6 +28,13 @@ spec:
       containers:
         - name: ubuntu-shell
           image: image-registry.openshift-image-registry.svc:5000/d41ea0-test/ubuntu-shell:latest
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
+            requests:
+              cpu: "30m"
+              memory: "256Mi"
           env:
             - name: PATH
               value: /tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -63,6 +70,13 @@ spec:
 
         - name: postgis
           image: postgis/postgis:17-3.4
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "1Gi"
+            requests:
+              cpu: "80m"
+              memory: "768Mi"
           env:
             - name: POSTGRES_DB
               value: "postgres"
@@ -85,3 +99,28 @@ spec:
               mountPath: /tmp
             - name: log-volume
               mountPath: /var/log/postgresql
+
+        - name: ora2pg
+          image: georgmoser/ora2pg:latest
+          resources:
+            limits:
+              cpu: "150m"
+              memory: "1Gi"
+            requests:
+              cpu: "40m"
+              memory: "512Mi"
+          command: ["sleep", "infinity"]
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
+          env:
+            - name: ORA2PG_INPUT_DIR
+              value: /work/config
+            - name: ORA2PG_OUTPUT
+              value: /work/output
+          volumeMounts:
+            - name: postgis-data
+              mountPath: /var/lib/postgresql
+            - name: tmp-volume
+              mountPath: /tmp
