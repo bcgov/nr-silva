@@ -5,10 +5,19 @@
 1. Log in on OpenShift using the one copied from https://console.apps.silver.devops.gov.bc.ca/
    Select the project `d41ea0-test` using `oc project d41ea0-test`
 
-2. OC Remote shell into the ubuntu environment
-   ```bash
-   oc rsh deploy/ubuntu-postgis17 -c ubuntu-shell
-   ```
+2. Accessing shells
+
+    - Ubuntu helper container
+
+       ```bash
+       oc rsh deploy/ubuntu-postgis17 -c ubuntu-shell
+       ```
+
+    - ora2pg container
+
+       ```bash
+       oc rsh --container=ora2pg pod/$(oc get pods -l app=ubuntu-postgis17 -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' | awk 'NR==1{print}')
+       ```
 
 3. Once inside, use the bundled `psql` to talk to the local PostGIS service:
    ```bash
