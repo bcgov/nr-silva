@@ -28,7 +28,7 @@
 ## Files in this folder
 - `openshift-postgis-playground.yml` – Deployment that runs both the PostGIS container and the Ubuntu helper shell.
 - `Dockerfile` – Builds the Debian/Ubuntu-based helper image with `psql` preinstalled.
-- `class-specific manifests` (e.g., `pvc.yml`, `up.yml`) – Storage and other OpenShift resources referenced by the deployment.
+- `storage and configuration manifests` (e.g., `pvc.yml`) – Storage and other OpenShift resources referenced by the deployment.
 - This `README.md` – Overview of the workflow.
 
 ## Build process
