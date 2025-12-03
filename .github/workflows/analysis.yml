@@ -107,6 +107,7 @@ jobs:
         with:
           format: "sarif"
           output: "trivy-results.sarif"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           scan-type: "fs"
           scanners: "vuln,secret,config"
