@@ -107,8 +107,7 @@ jobs:
         with:
           format: "sarif"
           output: "trivy-results.sarif"
-          # Use repository .trivyignore to skip known local artifacts
-          ignorefile: ".trivyignore"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           scan-type: "fs"
           scanners: "vuln,secret,config"
