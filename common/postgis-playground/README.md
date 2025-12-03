@@ -23,7 +23,7 @@
    ```bash
    psql -h localhost -U postgres -d postgres
    ```
-   The helper container mounts the PostGIS PVC at `/var/lib/postgresql`, so you can also inspect the volume with `du`/`df` or touch files directly.
+   The helper containers mount the PostGIS PVC at `/mnt/postgresql`, so you can also inspect the volume with `du`/`df` or touch files directly without interfering with PostgreSQL's own data directory.
 
 ## Files in this folder
 - `openshift-postgis-playground.yml` – Deployment that runs both the PostGIS container and the Ubuntu helper shell.
@@ -60,7 +60,7 @@
 
 ## When pods are already running
 - To update the helper image, restart the build and then `oc rollout restart deploy/ubuntu-postgis17`.
-- If the PostGIS pod is attached to the PVC, check for attach/volume events; the pvc is shared via `/var/lib/postgresql` so you can inspect with `du`/`df` inside the helper container.
+- If the PostGIS pod is attached to the PVC, check for attach/volume events; the PVC is shared via `/mnt/postgresql`, so you can inspect with `du`/`df` inside the helper containers without disturbing PostgreSQL's data files.
 - Retrieve credentials programmatically when needed:
   ```bash
   PASSWORD=$(oc get secret postgis17-secret -o jsonpath='{.data.postgres-password}' | base64 -d)
