@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ubuntu-postgis17
+  name: silva-postgis-playground
   labels:
-    app: ubuntu-postgis17
+    app: silva-postgis-playground
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ubuntu-postgis17
+      app: silva-postgis-playground
   template:
     metadata:
       labels:
-        app: ubuntu-postgis17
+        app: silva-postgis-playground
     spec:
       volumes:
         - name: postgis-data
@@ -25,48 +25,51 @@ spec:
         - name: log-volume
           emptyDir: {}
 
-      containers:
-        - name: ubuntu-shell
-          image: image-registry.openshift-image-registry.svc:5000/d41ea0-test/ubuntu-shell:latest
-          resources:
-            limits:
-              cpu: "250m"
-              memory: "512Mi"
-            requests:
-              cpu: "30m"
-              memory: "256Mi"
-          env:
-            - name: PATH
-              value: /tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      initContainers:
+        - name: init-silva
+          image: busybox
+          command:
+            - sh
+            - -c
+            - >-
+              mkdir -p /data/silva/work/config /data/silva/work/output &&
+              chown -R 1016730000:1016730000 /data/silva
           securityContext:
             runAsUser: 1016730000
             runAsGroup: 1016730000
             allowPrivilegeEscalation: false
-          command:
-            - /bin/bash
-            - -lc
-            - |
-              set -euo pipefail
-              export PATH="/tmp:${PATH}"
-              cat <<'EOF' >/tmp/-c
-              #!/bin/bash
-              exec /bin/bash -c "$@"
-              EOF
-              cat <<'EOF' >/tmp/--
-              #!/bin/bash
-              exec /bin/bash "$@"
-              EOF
-              cat <<'EOF' >/tmp/ubuntu-shell
-              #!/bin/bash
-              exec /bin/bash "$@"
-              EOF
-              chmod +x /tmp/-c /tmp/-- /tmp/ubuntu-shell
-              trap : TERM INT; sleep infinity & wait
-          stdin: true
-          tty: true
           volumeMounts:
             - name: postgis-data
-              mountPath: /mnt/postgresql
+              mountPath: /data
+
+      containers:
+        - name: ora2pg
+          image: georgmoser/ora2pg:latest
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+          command: ["sleep", "infinity"]
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
+          stdin: true
+          tty: true
+          env:
+            - name: ORA2PG_INPUT_DIR
+              value: /silva/work/config
+            - name: ORA2PG_OUTPUT
+              value: /silva/work/output
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: postgis-data
+              mountPath: /silva
+              subPath: silva
 
         - name: postgis
           image: postgis/postgis:17-3.4
@@ -75,8 +78,12 @@ spec:
               cpu: "200m"
               memory: "1Gi"
             requests:
-              cpu: "80m"
+              cpu: "50m"
               memory: "768Mi"
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
           env:
             - name: POSTGRES_DB
               value: "postgres"
@@ -99,28 +106,3 @@ spec:
               mountPath: /tmp
             - name: log-volume
               mountPath: /var/log/postgresql
-
-        - name: ora2pg
-          image: georgmoser/ora2pg:latest
-          resources:
-            limits:
-              cpu: "150m"
-              memory: "1Gi"
-            requests:
-              cpu: "40m"
-              memory: "512Mi"
-          command: ["sleep", "infinity"]
-          securityContext:
-            runAsUser: 1016730000
-            runAsGroup: 1016730000
-            allowPrivilegeEscalation: false
-          env:
-            - name: ORA2PG_INPUT_DIR
-              value: /work/config
-            - name: ORA2PG_OUTPUT
-              value: /work/output
-          volumeMounts:
-            - name: postgis-data
-              mountPath: /mnt/postgresql
-            - name: tmp-volume
-              mountPath: /tmp
