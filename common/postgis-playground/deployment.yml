@@ -52,7 +52,7 @@ spec:
             requests:
               cpu: "100m"
               memory: "512Mi"
-          command: ["sleep", "infinity"]
+          command: ["/bin/sh", "-c", "sleep infinity"]
           securityContext:
             runAsUser: 1016730000
             runAsGroup: 1016730000
@@ -72,7 +72,7 @@ spec:
               subPath: silva
 
         - name: postgis
-          image: postgis/postgis:17-3.4
+          image: postgis/postgis:17-3.6-alpine
           resources:
             limits:
               cpu: "200m"
