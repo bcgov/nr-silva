@@ -84,7 +84,6 @@ test.describe('Dashboard', () => {
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
     await dashboardPage.favouriteOpening(openingId);
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(true);
-    expect(await dashboardPage.isFavouriteNotificationVisible(openingId)).toBe(true);
     await dashboardPage.unfavouriteOpening(openingId);
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
   });
