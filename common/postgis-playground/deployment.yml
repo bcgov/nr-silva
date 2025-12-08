@@ -52,7 +52,12 @@ spec:
             requests:
               cpu: "100m"
               memory: "512Mi"
-          command: ["/bin/sh", "-c", "sleep infinity"]
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "until nc -z 127.0.0.1 5432; do echo waiting for postgis; sleep 1; done; sleep infinity",
+            ]
           securityContext:
             runAsUser: 1016730000
             runAsGroup: 1016730000
@@ -84,6 +89,25 @@ spec:
             runAsUser: 1016730000
             runAsGroup: 1016730000
             allowPrivilegeEscalation: false
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
           env:
             - name: POSTGRES_DB
               value: "postgres"
