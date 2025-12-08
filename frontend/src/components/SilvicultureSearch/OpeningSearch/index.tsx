@@ -324,7 +324,7 @@ const OpeningSearch: React.FC = () => {
         }
 
         {/* Loaded Table section */}
-        {searchQuery.isFetched ? (
+        {searchQuery.isFetched && !isAuthRefreshInProgress() ? (
           <>
             <Table
               className="opening-search-table default-zebra-table"
