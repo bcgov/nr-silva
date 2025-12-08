@@ -44,7 +44,7 @@ export class OpeningsPage extends BasePage {
   }
 
   async isOpeningFavourited(openingId: string) {
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     const ariaPressed = await favButton.getAttribute('aria-pressed');
     return ariaPressed === 'true';
   }
@@ -53,7 +53,7 @@ export class OpeningsPage extends BasePage {
     if (await this.isOpeningFavourited(openingId)) {
       throw new Error(`Opening ${openingId} is already favourited.`);
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -61,7 +61,7 @@ export class OpeningsPage extends BasePage {
     if (!(await this.isOpeningFavourited(openingId))) {
       throw new Error(`Opening ${openingId} is not favourited.`);
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 

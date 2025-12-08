@@ -1,71 +1,38 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNotification } from '@/contexts/NotificationProvider';
-import { EIGHT_SECONDS } from "@/constants/TimeUnits";
+import { useQuery } from "@tanstack/react-query";
 import { OpeningDetailsRoute } from "@/routes/config";
 import API from "@/services/API";
-
-import FavoriteButton from '../FavoriteButton';
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
+import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
 
 import './styles.scss';
-import { isAuthRefreshInProgress } from "../../constants/tanstackConfig";
 
+/**
+ * Terminology: UI uses "bookmark", but this component retains the
+ * backend term "favourite" for compatibility.
+ */
 const FavouriteOpenings: React.FC = () => {
-  const { displayNotification } = useNotification();
-  const queryClient = useQueryClient();
-
   const favouriteOpeningsQuery = useQuery({
     queryKey: ['openings', 'favourites'],
     queryFn: () => API.OpeningEndpointService.getFavorites(),
     refetchOnMount: 'always'
   });
 
-  const deleteFavOpenMutation = useMutation({
-    mutationFn: (openingId: number) => API.OpeningEndpointService.removeFromFavorites(openingId),
-    onSuccess: (_, openingId) => {
-      displayNotification({
-        title: `Opening Id ${openingId} unfavourited`,
-        type: 'success',
-        dismissIn: EIGHT_SECONDS,
-        onClose: () => { }
-      });
-      // Refetch data
-      favouriteOpeningsQuery.refetch();
-      // Update data on recent openings
-      queryClient.invalidateQueries({
-        queryKey: ["opening", "recent"]
-      });
-    },
-    onError: (_, openingId) => {
-      displayNotification({
-        title: 'Error',
-        subTitle: `Failed to update favorite status for ${openingId}`,
-        type: 'error',
-        dismissIn: EIGHT_SECONDS,
-        onClose: () => { }
-      });
-    }
-  });
-
-  const deleteFavourite = (openingId: number) => (
-    deleteFavOpenMutation.mutate(openingId)
-  )
-
   return (
     <ChartContainer
       className="favourite-openings-container"
       title="Track Openings"
-      description="Follow your favourite openings"
+      description="Follow your bookmarked openings"
     >
       <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
           favouriteOpeningsQuery.isLoading || isAuthRefreshInProgress()
             ? (
-              <div className="trend-loading-container">
+              <div className="loading-container">
                 <Loading withOverlay={false} />
               </div>
             )
@@ -76,8 +43,8 @@ const FavouriteOpenings: React.FC = () => {
             ? (
               <EmptySection
                 pictogram="UserInsights"
-                title="You don't have any favourites to show yet!"
-                description="You can favourite your openings by clicking on the heart icon inside opening details page"
+                title="You don't have any bookmarks to show yet!"
+                description="Click the bookmark icon on an opening's details page or in opening tables to save it."
               />
             )
             : null
@@ -94,15 +61,7 @@ const FavouriteOpenings: React.FC = () => {
                       id={`favourite-opening-tile-${openingId}`}
                       data-testid={`favourite-opening-tile-${openingId}`}
                     >
-                      <FavoriteButton
-                        id={openingId.toString()}
-                        tooltipPosition="bottom"
-                        kind="ghost"
-                        size="sm"
-                        favorited={true}
-                        onFavoriteChange={() => deleteFavourite(openingId)}
-                        disabled={deleteFavOpenMutation.isPending}
-                      />
+                      <OpeningBookmarkBtn openingId={openingId} />
                       <Link
                         className="fav-open-label"
                         to={OpeningDetailsRoute.path!.replace(":openingId", openingId.toString())}

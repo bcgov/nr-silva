@@ -26,10 +26,10 @@ vi.mock("../../components/SpatialCheckbox", () => ({
   ),
 }));
 
-vi.mock("../../components/ActionButtons", () => ({
+vi.mock("../../components/OpeningBookmarkBtn", () => ({
   default: ({ rowId, favorited }: { rowId: string; favorited: boolean }) => (
-    <button data-testid={`action-button-${rowId}`}>
-      {favorited ? "Unfavorite" : "Favorite"}
+    <button data-testid={`opening-bookmark-btn-${rowId}`}>
+      {favorited ? "Bookmarked" : "Bookmark"}
     </button>
   ),
 }));
@@ -122,8 +122,8 @@ describe("OpeningRow component", () => {
 
   it("should display the action buttons", () => {
     renderWithProviders();
-    expect(screen.getByTestId("action-button-101")).toHaveTextContent(
-      "Favorite"
+    expect(screen.getByTestId("opening-bookmark-btn-101")).toHaveTextContent(
+      "Bookmark"
     );
   });
 });

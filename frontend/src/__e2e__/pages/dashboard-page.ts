@@ -91,7 +91,7 @@ export class DashboardPage extends BasePage {
   }
 
   async isOpeningFavourited(openingId: string) {
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     const ariaPressed = await favButton.getAttribute('aria-pressed');
     return ariaPressed === 'true';
   }
@@ -101,7 +101,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is already favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -110,7 +110,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is not favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -174,7 +174,7 @@ export class DashboardPage extends BasePage {
     }
 
     const favTile = this.favouritesSection.getByTestId(`favourite-opening-tile-${openingId}`);
-    const favButton = favTile.getByTestId(`action-fav-${openingId}`);
+    const favButton = favTile.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
     const unfavouriteNotification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` })
     await unfavouriteNotification.waitFor({ state: 'visible' });

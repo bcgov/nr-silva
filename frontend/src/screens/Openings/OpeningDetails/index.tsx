@@ -23,7 +23,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
-import ActionableFavouriteButton from "@/components/FavoriteButton/ActionableFavouriteButton";
+import OpeningBookmarkBtn from "@/components/OpeningBookmarkBtn";
 import PageTitle from "@/components/PageTitle";
 import EmptySection from "@/components/EmptySection";
 import { OpeningSummary } from "@/components/OpeningDetails";
@@ -137,7 +137,7 @@ const OpeningDetails = () => {
         subtitle="Check and manage this opening"
         breadCrumbs={OpeningDetailBreadCrumbs}
       >
-        <ActionableFavouriteButton openingId={Number(openingId)} />
+        <OpeningBookmarkBtn openingId={Number(openingId)} />
       </PageTitle>
 
       {
