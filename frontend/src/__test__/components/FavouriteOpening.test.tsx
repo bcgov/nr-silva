@@ -68,14 +68,14 @@ describe("FavouriteOpenings Component", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("You don't have any favourites to show yet!")
+        screen.getByText("You don't have any bookmarks to show yet!")
       ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(
         screen.getByText(
-          "You can favourite your openings by clicking on the heart icon inside opening details page"
+          "Click the bookmark icon on an opening's details page or in opening tables to save it."
         )
       ).toBeInTheDocument();
     });

@@ -27,8 +27,8 @@ vi.mock("../../components/SpatialCheckbox", () => ({
 }));
 
 vi.mock("../../components/OpeningBookmarkBtn", () => ({
-  default: ({ rowId, favorited }: { rowId: string; favorited: boolean }) => (
-    <button data-testid={`opening-bookmark-btn-${rowId}`}>
+  default: ({ openingId, favorited }: { openingId?: number; favorited: boolean }) => (
+    <button data-testid={`opening-bookmark-btn-${openingId}`}>
       {favorited ? "Bookmarked" : "Bookmark"}
     </button>
   ),
