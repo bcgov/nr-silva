@@ -51,12 +51,7 @@ spec:
             requests:
               cpu: "100m"
               memory: "512Mi"
-          command:
-            [
-              "/bin/sh",
-              "-c",
-              "until nc -z 127.0.0.1 5432; do echo waiting for postgis; sleep 1; done; sleep infinity",
-            ]
+          command: ["/bin/sh", "-c", "sleep infinity"]
           securityContext:
             runAsUser: 1016730000
             runAsGroup: 1016730000
