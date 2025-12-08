@@ -107,6 +107,8 @@ jobs:
         with:
           format: "sarif"
           output: "trivy-results.sarif"
+          trivyignores: ".trivyignore"
+          skip-dirs: "common/postgis-playground"
           ignore-unfixed: true
           scan-type: "fs"
           scanners: "vuln,secret,config"

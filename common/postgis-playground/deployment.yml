@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: silva-postgis-playground
+  labels:
+    app: silva-postgis-playground
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: silva-postgis-playground
+  template:
+    metadata:
+      labels:
+        app: silva-postgis-playground
+    spec:
+      volumes:
+        - name: postgis-data
+          persistentVolumeClaim:
+            claimName: postgis17-pvc
+        - name: run-volume
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+        - name: log-volume
+          emptyDir: {}
+
+      initContainers:
+        - name: init-silva
+          image: busybox
+          command:
+            - sh
+            - -c
+            - >-
+              mkdir -p /data/silva/work/config /data/silva/work/output
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: postgis-data
+              mountPath: /data
+
+      containers:
+        - name: ora2pg
+          image: georgmoser/ora2pg:latest
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
+          stdin: true
+          tty: true
+          env:
+            - name: ORA2PG_INPUT_DIR
+              value: /silva/work/config
+            - name: ORA2PG_OUTPUT
+              value: /silva/work/output
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: postgis-data
+              mountPath: /silva
+              subPath: silva
+
+        - name: postgis
+          image: postgis/postgis:17-3.6-alpine
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "1Gi"
+            requests:
+              cpu: "50m"
+              memory: "768Mi"
+          securityContext:
+            runAsUser: 1016730000
+            runAsGroup: 1016730000
+            allowPrivilegeEscalation: false
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+          env:
+            - name: POSTGRES_DB
+              value: "postgres"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgis17-secret
+                  key: postgres-password
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: postgis-data
+              mountPath: /var/lib/postgresql
+            - name: run-volume
+              mountPath: /var/run/postgresql
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: log-volume
+              mountPath: /var/log/postgresql
