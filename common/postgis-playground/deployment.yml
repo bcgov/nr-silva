@@ -32,8 +32,7 @@ spec:
             - sh
             - -c
             - >-
-              mkdir -p /data/silva/work/config /data/silva/work/output &&
-              chown -R 1016730000:1016730000 /data/silva
+              mkdir -p /data/silva/work/config /data/silva/work/output
           securityContext:
             runAsUser: 1016730000
             runAsGroup: 1016730000

@@ -16,7 +16,7 @@
    ```bash
    psql -h localhost -U postgres -d postgres
    ```
-   The helper containers mount the PostGIS PVC at `/mnt/postgresql`, so you can also inspect the volume with `du`/`df` or touch files directly without interfering with PostgreSQL's own data directory.
+   The helper containers mount the PostGIS PVC at `/silva`, so you can also inspect the volume with `du`/`df` or touch files directly without interfering with PostgreSQL's own data directory.
 
 ## Files in this folder
 - `deployment.yml` – Deployment that runs both the PostGIS container and the ora2pg container.
