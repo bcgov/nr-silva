@@ -1,4 +1,9 @@
 #!/bin/sh
+#-----------------------------------------------------------------------------------------------
+#
+# Modified Ora2Pg generated script to use Docker georgmoser/ora2pg image and filter tables
+#
+#-----------------------------------------------------------------------------------------------
 EXPORT_TYPE="TABLE"
 namespace="."
 unit_cost=5

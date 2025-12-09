@@ -1,5 +1,9 @@
 #!/bin/sh
-
+#------------------------------------------------------------------------------------------------------------------
+#
+# Modified Ora2Pg generated script to use Docker georgmoser/ora2pg image and generate reports for filtered tables
+#
+#------------------------------------------------------------------------------------------------------------------
 namespace="."
 unit_cost=5
 
