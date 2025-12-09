@@ -93,7 +93,8 @@ export class DashboardPage extends BasePage {
   async isOpeningFavourited(openingId: string) {
     // The bookmark button no longer uses aria-pressed. Check for the filled bookmark icon.
     try {
-      const favButton = this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
+      // The bookmark button sets an id attribute rather than data-testid; use an id selector.
+      const favButton = this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
       const filledIconCount = await favButton.locator('.bookmark-filled-icon').count();
       return filledIconCount > 0;
     } catch {
@@ -106,7 +107,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is already favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -115,7 +116,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is not favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -161,7 +162,7 @@ export class DashboardPage extends BasePage {
     }
 
     const favTile = this.favouritesSection.getByTestId(`favourite-opening-tile-${openingId}`);
-    const favButton = favTile.getByTestId(`actionable-bookmark-button-${openingId}`);
+    const favButton = favTile.locator(`#actionable-bookmark-button-${openingId}`);
     await favButton.click();
     const unfavouriteNotification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` })
     await unfavouriteNotification.waitFor({ state: 'visible' });
