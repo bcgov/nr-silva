@@ -9,7 +9,6 @@ test.describe('Opening Details', () => {
 
   test.beforeEach(async ({ page }) => {
     openingDetailsPage = new OpeningDetailsPage(page, openingId);
-    await openingDetailsPage.goto();
 
     await page.route(`**/api/openings/favourites/${openingId}`, async route => {
       route.fulfill({
@@ -126,6 +125,8 @@ test.describe('Opening Details', () => {
         body: loadStub('openings/details', 'coverdetails.json'),
       });
     });
+
+    await openingDetailsPage.goto();
   });
 
   test('should load opening details page', async () => {

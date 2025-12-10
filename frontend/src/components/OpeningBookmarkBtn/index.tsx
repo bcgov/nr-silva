@@ -11,7 +11,7 @@ type OpeningBookmarkBtnProps = {
   tooltipPosition?: ButtonTooltipPosition;
 }
 
-const BookmarkFilledIcon = () => <BookmarkFilled className="bookmark-filled-icon" />;
+const BookmarkFilledIcon = () => <BookmarkFilled className="bookmark-filled-icon" data-testid="bookmark-filled-icon" />;
 
 const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookmarkBtnProps) => {
   const qc = useQueryClient();
@@ -74,6 +74,7 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
 
   return (
     <Button
+      data-testid={`actionable-bookmark-button-${openingId}`}
       id={`actionable-bookmark-button-${openingId}`}
       className="actionable-bookmark-button"
       hasIconOnly

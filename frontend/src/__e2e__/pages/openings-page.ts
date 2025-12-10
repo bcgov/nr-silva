@@ -69,16 +69,6 @@ export class OpeningsPage extends BasePage {
     await favButton.click();
   }
 
-  async isFavouriteNotificationVisible(openingId: string) {
-    // Notifications for bookmark/unbookmark were removed from the UI; related checks removed.
-    return false;
-  }
-
-  async isUnfavouriteNotificationVisible(openingId: string) {
-    // Notifications for bookmark/unbookmark were removed from the UI; related checks removed.
-    return false;
-  }
-
   async openOpeningFromTable(openingId: string) {
     const cell = await this.recentOpeningsTableRows.getByTestId(`opening-table-cell-openingId-${openingId}`);
     const link = await cell.locator('a');

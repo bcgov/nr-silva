@@ -91,12 +91,10 @@ export class DashboardPage extends BasePage {
   }
 
   async isOpeningFavourited(openingId: string) {
-    // The bookmark button no longer uses aria-pressed. Check for the filled bookmark icon.
     try {
-      // The bookmark button sets an id attribute rather than data-testid; use an id selector.
-      const favButton = this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
-      const filledIconCount = await favButton.locator('.bookmark-filled-icon').count();
-      return filledIconCount > 0;
+      const favButton = this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
+      const icon = favButton.getByTestId('bookmark-filled-icon');
+      return await icon.isVisible();
     } catch {
       return false;
     }
@@ -107,7 +105,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is already favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -116,7 +114,7 @@ export class DashboardPage extends BasePage {
       console.warn(`Opening ${openingId} is not favourited.`);
       return;
     }
-    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
+    const favButton = this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
