@@ -19,16 +19,17 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites", openingId],
     queryFn: () => API.OpeningEndpointService.checkFavorite(openingId!),
-    refetchOnMount: 'always',
     enabled: !!openingId,
   });
 
   const invalidateBookmarkQuery = () => {
     qc.invalidateQueries({
-      queryKey: ['openings', 'favourites']
+      queryKey: ['openings', 'favourites'],
+      exact: true,
     });
     qc.invalidateQueries({
-      queryKey: ["opening", "recent"]
+      queryKey: ['openings', 'favourites', openingId],
+      exact: true,
     });
   }
 
