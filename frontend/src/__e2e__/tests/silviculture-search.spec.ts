@@ -21,7 +21,6 @@ test.describe('Silviculture Search', () => {
 
   test.beforeEach(async ({ page }) => {
     silvicultureSearchPage = new SilvicultureSearchPage(page);
-    await silvicultureSearchPage.goto();
 
     // Intercept global data calls return a stubbed response
     // Intercept the recent openings API call and return a stubbed response
@@ -100,6 +99,8 @@ test.describe('Silviculture Search', () => {
         body: loadStub(`openings/map`, 'opening.json'),
       });
     });
+
+    await silvicultureSearchPage.goto();
   });
 
   test('header should be visible', async () => {

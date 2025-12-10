@@ -7,7 +7,6 @@ import { Launch } from "@carbon/icons-react";
 
 import { OpeningStatusTag } from "../Tags";
 import SpatialCheckbox from "../SpatialCheckbox";
-import ActionButtons from "../ActionButtons";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
@@ -15,6 +14,7 @@ import { OpeningSearchResponseDto } from "@/services/OpenApi";
 
 import { OpeningDetailsRoute } from "@/routes/config";
 import "./styles.scss";
+import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -63,11 +63,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
                 />
               ) : null
             }
-            <ActionButtons
-              favorited={rowData.favourite}
-              rowId={rowData.openingId.toString()}
-              showToast
-            />
+            <OpeningBookmarkBtn openingId={rowData.openingId} tooltipPosition="right" />
             <Button
               hasIconOnly
               className="new-tab-button"

@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow } from '@carbon/react';
 import { Location } from '@carbon/icons-react';
+import { isAuthRefreshInProgress } from '@/constants/tanstackConfig';
+import { useQuery } from '@tanstack/react-query';
+import API from '@/services/API';
+
 import OpeningsMap from '../OpeningsMap';
 import SectionTitle from '../SectionTitle';
 import useBreakpoint from '@/hooks/UseBreakpoint';
-import { useQuery } from '@tanstack/react-query';
-import API from '@/services/API';
 import TableSkeleton from '../TableSkeleton';
 import { recentOpeningsHeaders } from './constants';
 import EmptySection from '../EmptySection';
 import OpeningTableRow from '../OpeningTableRow';
 
 import './styles.scss';
-import { isAuthRefreshInProgress } from '../../constants/tanstackConfig';
 
 type RecentOpeningsProps = {
   defaultMapOpen?: boolean;
