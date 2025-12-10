@@ -1,9 +1,0 @@
-@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
-
-.favourite-button-container {
-  .favorite-button {
-    .favourited-icon {
-      fill: var(--#{vars.$bcgov-prefix}-link-primary);
-    }
-  }
-}

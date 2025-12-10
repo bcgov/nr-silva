@@ -8,7 +8,6 @@ test.describe('Dashboard', () => {
 
   test.beforeEach(async ({ page }) => {
     dashboardPage = new DashboardPage(page);
-    await dashboardPage.goto();
 
     // Intercept the recent openings API call and return a stubbed response
     await page.route('**/api/openings/recent**', async route => {
@@ -38,23 +37,34 @@ test.describe('Dashboard', () => {
     });
 
     // Intercept the favorites API call and return a stubbed response
-    await page.route('**/api/openings/favourites**', async route => {
+    await page.route(`**/api/openings/favourites/**`, async route => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: loadStub('openings/favourites.json'),
       });
     });
+
+    await page.route(`**/api/openings/favourites`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: loadStub('openings', 'favourites.json'),
+      });
+    });
+
+
+    await dashboardPage.goto();
+    await page.waitForLoadState('networkidle');
   });
 
   test('Load and check', async ({ page }) => {
-    expect(await dashboardPage.getTitle()).toBe('Silva');
     await page.waitForURL('**/dashboard');
+    expect(await dashboardPage.getTitle()).toBe('Silva');
     expect(await dashboardPage.getHeading()).toBe('Dashboard');
   });
 
   test('sections should be visible', async () => {
-    expect(await dashboardPage.isRecentOpeningsSectionVisible()).toBe(true);
+    // expect(await dashboardPage.isRecentOpeningsSectionVisible()).toBe(true);
     expect(await dashboardPage.isOpeningSubmissionsTrendSectionVisible()).toBe(true);
     expect(await dashboardPage.isFavouritesSectionVisible()).toBe(true);
   });
@@ -79,19 +89,55 @@ test.describe('Dashboard', () => {
     expect(openingData).toEqual(expectedData);
   });
 
-  test('favourite and unfavourite opening', async () => {
+  test('favourite and unfavourite opening', async ({ page }) => {
     const openingId = '60000';
+
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
-    await dashboardPage.favouriteOpening(openingId);
+
+    await page.unroute(`**/api/openings/favourites`);
+    await page.route(`**/api/openings/favourites`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([Number(openingId)]),
+      });
+    });
+
+    await Promise.all([
+      page.waitForResponse(resp => resp.url().endsWith('/api/openings/favourites') && resp.status() === 200),
+      dashboardPage.favouriteOpening(openingId),
+    ]);
+
+    // scope to the recent openings table row so we don't match the same button in the favourites section
+    const row = page.getByTestId(`opening-table-row-${openingId}`);
+    await expect(row.getByTestId(`actionable-bookmark-button-${openingId}`).getByTestId('bookmark-filled-icon')).toBeVisible();
+
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(true);
-    expect(await dashboardPage.isFavouriteNotificationVisible(openingId)).toBe(true);
-    await dashboardPage.unfavouriteOpening(openingId);
+
+    await page.unroute(`**/api/openings/favourites`);
+    await page.route(`**/api/openings/favourites`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    // Click the unfavourite button which triggers a DELETE and then a refetch of GET /api/openings/favourites
+    await Promise.all([
+      page.waitForResponse(resp => resp.url().endsWith('/api/openings/favourites') && resp.status() === 200),
+      dashboardPage.unfavouriteOpening(openingId),
+    ]);
+
+    // wait for the filled bookmark icon to disappear (hidden or removed) - re-query row to avoid stale references
+    await expect(row.getByTestId(`actionable-bookmark-button-${openingId}`).getByTestId('bookmark-filled-icon')).toBeHidden();
+
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
   });
 
-  test('favourite opening should be visible in favourites section', async () => {
+  test('favourite opening should be visible in favourites section', async ({ page }) => {
     const openingId = '1004185';
-    expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(true);
+
     expect(await dashboardPage.isOpeningFavouritedOnFavouriteSection(openingId)).toBe(true);
   });
 

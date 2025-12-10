@@ -44,16 +44,20 @@ export class OpeningsPage extends BasePage {
   }
 
   async isOpeningFavourited(openingId: string) {
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
-    const ariaPressed = await favButton.getAttribute('aria-pressed');
-    return ariaPressed === 'true';
+    try {
+      const favButton = this.recentOpeningsTableRows.getByTestId(`actionable-bookmark-button-${openingId}`);
+      const filledIconCount = await favButton.locator('.bookmark-filled-icon').count();
+      return filledIconCount > 0;
+    } catch {
+      return false;
+    }
   }
 
   async favouriteOpening(openingId: string) {
     if (await this.isOpeningFavourited(openingId)) {
       throw new Error(`Opening ${openingId} is already favourited.`);
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
     await favButton.click();
   }
 
@@ -61,26 +65,8 @@ export class OpeningsPage extends BasePage {
     if (!(await this.isOpeningFavourited(openingId))) {
       throw new Error(`Opening ${openingId} is not favourited.`);
     }
-    const favButton = await this.recentOpeningsTableRows.getByTestId(`action-fav-${openingId}`);
+    const favButton = await this.recentOpeningsTableRows.locator(`#actionable-bookmark-button-${openingId}`);
     await favButton.click();
-  }
-
-  async isFavouriteNotificationVisible(openingId: string) {
-    try {
-      const notification = this.page.getByRole('status', { name: `Opening Id ${openingId} favourited` });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async isUnfavouriteNotificationVisible(openingId: string) {
-    try {
-      const notification = this.page.getByRole('status', { name: `Opening Id ${openingId} unfavourited` });
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   async openOpeningFromTable(openingId: string) {
