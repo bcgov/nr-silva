@@ -132,7 +132,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       }
       {/* Loaded table content */}
       {
-        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content?.length ?
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content?.length && !isAuthRefreshInProgress() ?
           (
             <Table
               className="recent-openings-table default-zebra-table"
