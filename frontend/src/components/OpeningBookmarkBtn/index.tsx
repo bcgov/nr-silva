@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 import { Button, type ButtonTooltipPosition, InlineLoading } from '@carbon/react';
 import { BookmarkAdd, BookmarkFilled } from '@carbon/icons-react';
+import { isAuthRefreshInProgress } from '@/constants/tanstackConfig';
 
 import './styles.scss';
 
@@ -53,7 +54,7 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
     return null;
   }
 
-  if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending) {
+  if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending || isAuthRefreshInProgress()) {
     return (
       <div className="opening-bookmark-btn-loading-container">
         <InlineLoading className="bookmark-button-inline-loading" />
