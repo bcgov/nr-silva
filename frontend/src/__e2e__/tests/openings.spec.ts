@@ -34,9 +34,12 @@ test.describe('Openings', () => {
     });
 
     await openingsPage.goto();
+    await page.waitForLoadState('networkidle');
   });
 
-  test('map button should hide and reveal map', async () => {
+  test('map button should hide and reveal map', async ({ page }) => {
+    // Wait for the map to finish loading so the test isn't flaky when run in sequence
+    await page.waitForSelector('.leaflet-container', { state: 'visible', timeout: 5000 });
     expect(await openingsPage.isMapVisible()).toBe(true);
     await openingsPage.toggleMapButton();
     expect(await openingsPage.isMapVisible()).toBe(false);

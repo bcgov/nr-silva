@@ -127,6 +127,7 @@ test.describe('Opening Details', () => {
     });
 
     await openingDetailsPage.goto();
+    await page.waitForLoadState('networkidle');
   });
 
   test('should load opening details page', async () => {
