@@ -10,7 +10,6 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
@@ -81,8 +80,8 @@ public class OpeningEndpoint {
    *
    * @param openingId Opening ID
    * @param eventHistoryId History ID of the SSU
-   * @return List of {@link OpeningStockingHistoryDto} containing detailed information about the
-   *     SSU history entry.
+   * @return List of {@link OpeningStockingHistoryDto} containing detailed information about the SSU
+   *     history entry.
    */
   @GetMapping("/{openingId}/ssu/history/{eventHistoryId}")
   public List<OpeningStockingHistoryDto> getOpeningSsuHistoryDetails(
@@ -135,7 +134,8 @@ public class OpeningEndpoint {
    * Retrieves the forest cover history overview for a given opening.
    *
    * @param openingId the ID of the opening
-   * @return a list of {@link OpeningForestCoverHistoryOverviewDto} representing the forest cover history overview
+   * @return a list of {@link OpeningForestCoverHistoryOverviewDto} representing the forest cover
+   *     history overview
    * @throws NotFoundGenericException if no overview is found for the given opening ID
    */
   @GetMapping("/{openingId}/cover/history/overview")
@@ -145,7 +145,8 @@ public class OpeningEndpoint {
   }
 
   /**
-   * Retrieves the forest cover history for a given opening and update date, optionally filtered by a search term.
+   * Retrieves the forest cover history for a given opening and update date, optionally filtered by
+   * a search term.
    *
    * @param openingId the ID of the opening
    * @param updateDate the update date to filter history (required, format: yyyy-MM-dd)
@@ -163,7 +164,8 @@ public class OpeningEndpoint {
   }
 
   /**
-   * Retrieves the details of a specific forest cover history entry for a given opening, forest cover ID, and archive date.
+   * Retrieves the details of a specific forest cover history entry for a given opening, forest
+   * cover ID, and archive date.
    *
    * @param openingId the ID of the opening
    * @param forestCoverId the ID of the forest cover
@@ -211,6 +213,7 @@ public class OpeningEndpoint {
       @RequestParam(value = "category", required = false) List<String> category,
       @RequestParam(value = "statusList", required = false) List<String> statusList,
       @RequestParam(value = "myOpenings", required = false) Boolean myOpenings,
+      @RequestParam(value = "myOpeningsUserId", required = false) String myOpeningsUserId,
       @RequestParam(value = "submittedToFrpa", required = false) Boolean submittedToFrpa,
       @RequestParam(value = "disturbanceDateStart", required = false) String disturbanceDateStart,
       @RequestParam(value = "disturbanceDateEnd", required = false) String disturbanceDateEnd,
@@ -232,6 +235,7 @@ public class OpeningEndpoint {
             category,
             statusList,
             myOpenings,
+            myOpeningsUserId,
             submittedToFrpa,
             disturbanceDateStart,
             disturbanceDateEnd,

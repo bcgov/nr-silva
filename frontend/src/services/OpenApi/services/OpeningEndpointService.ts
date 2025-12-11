@@ -405,6 +405,7 @@ export class OpeningEndpointService {
      * @param category
      * @param statusList
      * @param myOpenings
+     * @param myOpeningsUserId
      * @param submittedToFrpa
      * @param disturbanceDateStart
      * @param disturbanceDateEnd
@@ -431,6 +432,7 @@ export class OpeningEndpointService {
         category?: Array<string>,
         statusList?: Array<string>,
         myOpenings?: boolean,
+        myOpeningsUserId?: string,
         submittedToFrpa?: boolean,
         disturbanceDateStart?: string,
         disturbanceDateEnd?: string,
@@ -458,6 +460,7 @@ export class OpeningEndpointService {
                 'category': category,
                 'statusList': statusList,
                 'myOpenings': myOpenings,
+                'myOpeningsUserId': myOpeningsUserId,
                 'submittedToFrpa': submittedToFrpa,
                 'disturbanceDateStart': disturbanceDateStart,
                 'disturbanceDateEnd': disturbanceDateEnd,
