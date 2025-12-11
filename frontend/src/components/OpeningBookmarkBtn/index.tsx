@@ -1,8 +1,9 @@
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 import { Button, type ButtonTooltipPosition, InlineLoading } from '@carbon/react';
 import { BookmarkAdd, BookmarkFilled } from '@carbon/icons-react';
+import { isAuthRefreshInProgress } from '@/constants/tanstackConfig';
 
 import './styles.scss';
 
@@ -14,47 +15,35 @@ type OpeningBookmarkBtnProps = {
 const BookmarkFilledIcon = () => <BookmarkFilled className="bookmark-filled-icon" data-testid="bookmark-filled-icon" />;
 
 const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookmarkBtnProps) => {
-  const qc = useQueryClient();
-
   const openingFavouriteQuery = useQuery({
-    queryKey: ["openings", "favourites", openingId],
-    queryFn: () => API.OpeningEndpointService.checkFavorite(openingId!),
-    enabled: !!openingId,
+    queryKey: ["openings", "favourites"],
+    queryFn: () => API.OpeningEndpointService.getFavorites()
   });
 
-  const invalidateBookmarkQuery = () => {
-    qc.invalidateQueries({
-      queryKey: ['openings', 'favourites'],
-      exact: true,
-    });
-    qc.invalidateQueries({
-      queryKey: ['openings', 'favourites', openingId],
-      exact: true,
-    });
+  const invalidateFavouriteQuery = () => {
+    openingFavouriteQuery.refetch();
   }
 
   const deleteFavOpenMutation = useMutation({
     mutationFn: () => API.OpeningEndpointService.removeFromFavorites(openingId!),
     onSettled: () => {
-      openingFavouriteQuery.refetch();
-      invalidateBookmarkQuery();
+      invalidateFavouriteQuery();
     }
   });
 
   const putFavOpenMutation = useMutation({
     mutationFn: () => API.OpeningEndpointService.addToFavorites(openingId!),
     onSettled: () => {
-      openingFavouriteQuery.refetch();
-      invalidateBookmarkQuery();
+      invalidateFavouriteQuery();
     }
   });
 
   const handleFavouriteChange = () => {
-    if (openingFavouriteQuery.data === undefined) {
+    if (openingFavouriteQuery.data === undefined || openingId === undefined) {
       return;
     }
 
-    if (openingFavouriteQuery.data) {
+    if (openingFavouriteQuery.data.includes(openingId)) {
       deleteFavOpenMutation.mutate();
     } else {
       putFavOpenMutation.mutate();
@@ -65,7 +54,7 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
     return null;
   }
 
-  if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending) {
+  if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending || isAuthRefreshInProgress()) {
     return (
       <div className="opening-bookmark-btn-loading-container">
         <InlineLoading className="bookmark-button-inline-loading" />
@@ -79,10 +68,10 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
       id={`actionable-bookmark-button-${openingId}`}
       className="actionable-bookmark-button"
       hasIconOnly
-      iconDescription={`${openingFavouriteQuery.data === true ? 'Unb' : 'B'}ookmark ${openingId}`}
+      iconDescription={`${openingFavouriteQuery.data?.includes(openingId) ? 'Unb' : 'B'}ookmark ${openingId}`}
       kind="ghost"
       onClick={handleFavouriteChange}
-      renderIcon={openingFavouriteQuery.data === true ? BookmarkFilledIcon : BookmarkAdd}
+      renderIcon={openingFavouriteQuery.data?.includes(openingId) ? BookmarkFilledIcon : BookmarkAdd}
       size="md"
       tooltipPosition={tooltipPosition}
     />

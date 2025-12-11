@@ -37,13 +37,21 @@ test.describe('Dashboard', () => {
     });
 
     // Intercept the favorites API call and return a stubbed response
-    await page.route('**/api/openings/favourites**', async route => {
+    await page.route(`**/api/openings/favourites/**`, async route => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: loadStub('openings/favourites.json'),
       });
     });
+
+    await page.route(`**/api/openings/favourites`, async route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: loadStub('openings', 'favourites.json'),
+      });
+    });
+
 
     await dashboardPage.goto();
     await page.waitForLoadState('networkidle');
@@ -84,56 +92,46 @@ test.describe('Dashboard', () => {
   test('favourite and unfavourite opening', async ({ page }) => {
     const openingId = '60000';
 
-    // Override the favourites response so this test starts from a known state.
-    // Register the route and reload the page so the dashboard re-fetches the favourites.
-    await page.route('**/api/openings/favourites', async route => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([]), // no favourites initially
-      });
-    });
-    // Reload so the new stub is applied to the dashboard's initial fetch
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-
-    // Verify opening is not favourited initially
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
 
-    // Stub the server response for favouriting this opening and wait for the POST
-    await page.route(`**/api/openings/favourites/${openingId}`, async route => {
+    await page.unroute(`**/api/openings/favourites`);
+    await page.route(`**/api/openings/favourites`, async route => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(true),
+        body: JSON.stringify([Number(openingId)]),
       });
     });
 
-    // Click favourite and wait for the network response that confirms it
     await Promise.all([
-      page.waitForResponse(resp => resp.url().includes(`/api/openings/favourites/${openingId}`) && resp.status() === 200),
+      page.waitForResponse(resp => resp.url().endsWith('/api/openings/favourites') && resp.status() === 200),
       dashboardPage.favouriteOpening(openingId),
     ]);
 
-    // Wait for the filled bookmark icon to appear
-    const favButton = page.getByTestId(`actionable-bookmark-button-${openingId}`);
-    const favIcon = favButton.getByTestId('bookmark-filled-icon');
-    await favIcon.waitFor({ state: 'visible', timeout: 5000 });
+    // scope to the recent openings table row so we don't match the same button in the favourites section
+    const row = page.getByTestId(`opening-table-row-${openingId}`);
+    await expect(row.getByTestId(`actionable-bookmark-button-${openingId}`).getByTestId('bookmark-filled-icon')).toBeVisible();
+
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(true);
 
-    // Stub the server response for unfavouriting and perform the action
-    await page.route(`**/api/openings/favourites/${openingId}`, async route => {
+    await page.unroute(`**/api/openings/favourites`);
+    await page.route(`**/api/openings/favourites`, async route => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(false),
+        body: JSON.stringify([]),
       });
     });
+
+    // Click the unfavourite button which triggers a DELETE and then a refetch of GET /api/openings/favourites
     await Promise.all([
-      page.waitForResponse(resp => resp.url().includes(`/api/openings/favourites/${openingId}`) && resp.status() === 200),
+      page.waitForResponse(resp => resp.url().endsWith('/api/openings/favourites') && resp.status() === 200),
       dashboardPage.unfavouriteOpening(openingId),
     ]);
-    await favIcon.waitFor({ state: 'hidden', timeout: 5000 });
+
+    // wait for the filled bookmark icon to disappear (hidden or removed) - re-query row to avoid stale references
+    await expect(row.getByTestId(`actionable-bookmark-button-${openingId}`).getByTestId('bookmark-filled-icon')).toBeHidden();
+
     expect(await dashboardPage.isOpeningFavourited(openingId)).toBe(false);
   });
 

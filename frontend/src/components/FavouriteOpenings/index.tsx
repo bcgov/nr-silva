@@ -50,7 +50,7 @@ const FavouriteOpenings: React.FC = () => {
             : null
         }
         {
-          !favouriteOpeningsQuery.isLoading && favouriteOpeningsQuery.data?.length
+          !favouriteOpeningsQuery.isLoading && favouriteOpeningsQuery.data?.length && !isAuthRefreshInProgress()
             ? (
               <Grid className="twelve-col-grid">
                 {
