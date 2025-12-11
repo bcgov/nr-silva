@@ -14,16 +14,16 @@ afterEach(() => {
   cleanup();
 });
 
-window.matchMedia = window.matchMedia || function() {
+window.matchMedia = window.matchMedia || function () {
   return {
-      matches: false,
-      media: "",
-      onchange: null,
-      addListener: vi.fn(), // Legacy method
-      removeListener: vi.fn(), // Legacy method
-      addEventListener: vi.fn(), // Modern method
-      removeEventListener: vi.fn(), // Modern method
-      dispatchEvent: vi.fn(),
+    matches: false,
+    media: "",
+    onchange: null,
+    addListener: vi.fn(), // Legacy method
+    removeListener: vi.fn(), // Legacy method
+    addEventListener: vi.fn(), // Modern method
+    removeEventListener: vi.fn(), // Modern method
+    dispatchEvent: vi.fn(),
   };
 };
 
@@ -55,7 +55,7 @@ Object.defineProperty(global.SVGElement.prototype, 'transform', {
   writable: true,
   value: {
     baseVal: {
-      consolidate: vi.fn(() => {})
+      consolidate: vi.fn(() => { })
     }
   }
 });
@@ -65,9 +65,10 @@ Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
   value: vi.fn().mockReturnValue({
     x: 10,
     y: 10,
-    inverse: () => {},
-    multiply: () => {}
+    inverse: () => { },
+    multiply: () => { }
   })
 });
 
-window.HTMLElement.prototype.scrollIntoView = function() {};
+window.HTMLElement.prototype.scrollIntoView = function () { };
+

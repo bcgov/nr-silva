@@ -2,10 +2,8 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import SilvicultureSearch from "../../screens/SilvicultureSearch";
-import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import API from "../../services/API";
-import { PreferenceProvider } from "@/contexts/PreferenceProvider";
+import { renderWithProviders } from "../utils/testAuthProvider";
 import { PagedModelOpeningSearchResponseDto } from "../../services/OpenApi";
 
 vi.mock("../../services/API", () => {
@@ -51,18 +49,8 @@ describe("SilvicultureSearch Component", () => {
       } as PagedModelOpeningSearchResponseDto
     );
   });
-  const queryClient = new QueryClient();
-
   const renderComponent = () =>
-    render(
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <PreferenceProvider>
-            <SilvicultureSearch />
-          </PreferenceProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
-    );
+    render(<SilvicultureSearch />, renderWithProviders());
 
   it("should render the page title correctly", () => {
     renderComponent();
