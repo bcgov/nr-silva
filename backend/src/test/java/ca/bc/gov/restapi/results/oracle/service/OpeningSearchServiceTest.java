@@ -25,20 +25,18 @@ import org.springframework.data.domain.PageRequest;
 class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10000)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
-  @Autowired
-  private OpeningSearchService openingSearchService;
+  @Autowired private OpeningSearchService openingSearchService;
 
   @Test
   @DisplayName("Opening search file id happy path should succeed")
@@ -47,28 +45,10 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Page<OpeningSearchResponseDto> result =
         openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "101017"
-            ),
-            PageRequest.of(0, 10)
-        );
+                null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                "101017"),
+            PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getPageable().getPageNumber());
@@ -76,7 +56,7 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Assertions.assertEquals(1, result.getTotalPages());
     Assertions.assertEquals(1, result.getContent().size());
     Assertions.assertEquals(101017, result.getContent().get(0).getOpeningId());
-    Assertions.assertEquals(" 514",result.getContent().get(0).getOpeningNumber());
+    Assertions.assertEquals(" 514", result.getContent().get(0).getOpeningNumber());
     Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getContent().get(0).getCategory());
     Assertions.assertEquals(OpeningStatusEnum.FG, result.getContent().get(0).getStatus());
     Assertions.assertEquals("12K", result.getContent().get(0).getCuttingPermitId());
@@ -107,10 +87,9 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
-                null
-            ),
-            PageRequest.of(0, 10)
-        );
+                null,
+                null),
+            PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getPageable().getPageNumber());
@@ -127,28 +106,10 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Page<OpeningSearchResponseDto> result =
         openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "ABCD"
-            ),
-            PageRequest.of(0, 10)
-        );
+                null, null, null, null, null, // myOpeningsUserId
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                "ABCD"),
+            PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getPageable().getPageNumber());
@@ -161,31 +122,14 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
   @Test
   @DisplayName("Opening search max page exception should fail")
   void openingSearch_maxPageException_shouldFail() {
-    OpeningSearchFiltersDto filterDto = new OpeningSearchFiltersDto(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "FTML"
-    );
+    OpeningSearchFiltersDto filterDto =
+        new OpeningSearchFiltersDto(
+            null, null, null, null, null, // myOpeningsUserId
+            null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            "FTML");
     PageRequest pagination = PageRequest.of(0, 2999);
     Assertions.assertThrows(
         MaxPageSizeException.class,
-        () -> openingSearchService.openingSearch(filterDto,pagination)
-    );
+        () -> openingSearchService.openingSearch(filterDto, pagination));
   }
 }

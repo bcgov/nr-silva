@@ -1,10 +1,9 @@
 import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
-import { MemoryRouter } from "react-router-dom";
 import OpeningSearchBar from "../../../components/SilvicultureSearch/OpeningSearch/OpeningSearchBar";
+import { renderWithProviders } from "../../utils/testAuthProvider";
 import { OpeningSearchFilterType } from "../../../components/SilvicultureSearch/OpeningSearch/definitions";
 import { CodeDescriptionDto } from "../../../services/OpenApi";
 import { defaultSearchTableHeaders } from "../../../utils/localStorageUtils";
@@ -47,33 +46,22 @@ const mockHandleSearch = vi.fn();
 const mockSetShowMap = vi.fn();
 
 const renderComponent = (props = {}) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
   return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <OpeningSearchBar
-          headers={mockHeaders}
-          setHeaders={mockSetHeaders}
-          filters={mockFilters}
-          setFilters={mockSetFilters}
-          categories={mockCategories}
-          orgUnits={mockOrgUnits}
-          handleSearch={mockHandleSearch}
-          totalResults={10}
-          showMap={false}
-          setShowMap={mockSetShowMap}
-          setEnableSearch={vi.fn()}
-          resetPagination={vi.fn()}
-        />
-      </MemoryRouter>
-    </QueryClientProvider>
+    <OpeningSearchBar
+      headers={mockHeaders}
+      setHeaders={mockSetHeaders}
+      filters={mockFilters}
+      setFilters={mockSetFilters}
+      categories={mockCategories}
+      orgUnits={mockOrgUnits}
+      handleSearch={mockHandleSearch}
+      totalResults={10}
+      showMap={false}
+      setShowMap={mockSetShowMap}
+      setEnableSearch={vi.fn()}
+      resetPagination={vi.fn()}
+    />,
+    renderWithProviders()
   );
 };
 

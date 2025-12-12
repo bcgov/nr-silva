@@ -24,7 +24,7 @@ interface AuthProviderProps {
 }
 
 // 3. Create the context with a default value of `undefined`
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 4. Create the AuthProvider component with explicit typing
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
