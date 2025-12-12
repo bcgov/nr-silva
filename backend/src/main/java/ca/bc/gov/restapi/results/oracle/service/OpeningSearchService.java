@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
@@ -28,75 +27,67 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-/**
- * This class holds methods for fetching and handling {@link OpeningEntity} in general.
- */
+/** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpeningSearchService {
 
   private final OpeningRepository openingRepository;
-  private final LoggedUserHelper loggedUserHelper;
+  // private final LoggedUserHelper loggedUserHelper;
   private final ForestClientApiProvider forestClientApiProvider;
   private final UserOpeningService userOpeningService;
 
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearch(
-      OpeningSearchFiltersDto filtersDto, Pageable pagination
-  ) {
+      OpeningSearchFiltersDto filtersDto, Pageable pagination) {
     log.info(
         "Search Openings with page index {} and page size {} with filters {}",
         pagination.getPageNumber(),
         pagination.getPageSize(),
-        filtersDto
-    );
+        filtersDto);
 
     if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
-    // Set the user in the filter, if required
-    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS) && Boolean.TRUE.equals(
-        filtersDto.getMyOpenings())) {
-      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
+    // Set the user in the filter, if required, using query param for user id is temporary until
+    // front-end sends the user id in access token.
+    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
+        && Boolean.TRUE.equals(filtersDto.getMyOpenings())
+        && filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS_USER_ID)) {
+      log.info("Filtering by My Openings for user id {}", filtersDto.getMyOpeningsUserId());
+      filtersDto.setRequestUserId(filtersDto.getMyOpeningsUserId());
     }
-    List<SilvicultureSearchProjection> searchContent = openingRepository.searchBy(
-        filtersDto,
-        List.of(0L),
-        pagination.getOffset(),
-        pagination.getPageSize()
-    );
+    List<SilvicultureSearchProjection> searchContent =
+        openingRepository.searchBy(
+            filtersDto, List.of(0L), pagination.getOffset(), pagination.getPageSize());
 
     long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
-    log.info("Search resulted in {}/{} results",
-        searchContent.size(),
-        total
-    );
+    log.info("Search resulted in {}/{} results", searchContent.size(), total);
 
-    Page<SilvicultureSearchProjection> searchResultPage = new PageImpl<>(
-        searchContent, pagination, total
-    );
+    Page<SilvicultureSearchProjection> searchResultPage =
+        new PageImpl<>(searchContent, pagination, total);
 
     return parsePageResult(searchResultPage);
   }
 
   public Page<OpeningSearchResponseDto> parsePageResult(
-      Page<SilvicultureSearchProjection> searchResultPage
-  ) {
-    return fetchClientAcronyms(fetchFavorites(new PageImpl<>(
-        searchResultPage.get()
-            .map(mapToSearchResponse())
-            .filter(OpeningSearchResponseDto::isValid)
-            .toList(),
-        searchResultPage.getPageable(),
-        searchResultPage.getTotalElements()
-    )));
+      Page<SilvicultureSearchProjection> searchResultPage) {
+    return fetchClientAcronyms(
+        fetchFavorites(
+            new PageImpl<>(
+                searchResultPage
+                    .get()
+                    .map(mapToSearchResponse())
+                    .filter(OpeningSearchResponseDto::isValid)
+                    .toList(),
+                searchResultPage.getPageable(),
+                searchResultPage.getTotalElements())));
   }
 
   private Page<OpeningSearchResponseDto> fetchClientAcronyms(
-      Page<OpeningSearchResponseDto> result
-  ) {
+      Page<OpeningSearchResponseDto> result) {
     Map<String, ForestClientDto> forestClientsMap = new HashMap<>();
 
     List<String> clientNumbers =
@@ -116,29 +107,25 @@ public class OpeningSearchService {
 
     result
         .getContent()
-        .forEach(response -> {
-          if (StringUtils.isNotBlank(response.getClientNumber()) && forestClientsMap.containsKey(
-              response.getClientNumber())) {
-            ForestClientDto client = forestClientsMap.get(response.getClientNumber());
-            response.setClientAcronym(client.acronym());
-            response.setClientName(client.clientName());
-          }
-        });
+        .forEach(
+            response -> {
+              if (StringUtils.isNotBlank(response.getClientNumber())
+                  && forestClientsMap.containsKey(response.getClientNumber())) {
+                ForestClientDto client = forestClientsMap.get(response.getClientNumber());
+                response.setClientAcronym(client.acronym());
+                response.setClientName(client.clientName());
+              }
+            });
 
     return result;
   }
 
   private Page<OpeningSearchResponseDto> fetchFavorites(
-      Page<OpeningSearchResponseDto> pagedResult
-  ) {
+      Page<OpeningSearchResponseDto> pagedResult) {
 
-    List<Long> favourites = userOpeningService.checkForFavorites(
-        pagedResult
-            .getContent()
-            .stream()
-            .map(OpeningSearchResponseDto::getOpeningId)
-            .toList()
-    );
+    List<Long> favourites =
+        userOpeningService.checkForFavorites(
+            pagedResult.getContent().stream().map(OpeningSearchResponseDto::getOpeningId).toList());
 
     for (OpeningSearchResponseDto opening : pagedResult.getContent()) {
       opening.setFavourite(favourites.contains(opening.getOpeningId()));
@@ -174,8 +161,6 @@ public class OpeningSearchService {
             projection.getForestFileId(),
             projection.getSubmittedToFrpa108(),
             null,
-            false
-        );
+            false);
   }
-
 }

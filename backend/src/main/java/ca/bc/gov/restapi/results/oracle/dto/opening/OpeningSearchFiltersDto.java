@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.CollectionUtils;
 
-/**
- * This record contains all possible filters when using the Opening Search API.
- */
+/** This record contains all possible filters when using the Opening Search API. */
 @Slf4j
 @Getter
 @ToString
@@ -38,18 +36,17 @@ public class OpeningSearchFiltersDto {
   private final String mainSearchTerm;
   private final String clientLocationCode;
   private final String clientNumber;
+  private final String myOpeningsUserId;
 
-  @Setter
-  private String requestUserId;
+  @Setter private String requestUserId;
 
-  /**
-   * Creates an instance of the search opening filter dto.
-   */
+  /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
       List<String> orgUnit,
       List<String> category,
       List<String> statusList,
       Boolean myOpenings,
+      String myOpeningsUserId,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -65,21 +62,15 @@ public class OpeningSearchFiltersDto {
       String clientLocationCode,
       String clientNumber,
       String mainSearchTerm) {
-    this.orgUnit = !CollectionUtils.isEmpty(orgUnit) ? orgUnit : List.of(
-        SilvaOracleConstants.NOVALUE);
-    this.category = !CollectionUtils.isEmpty(category) ? category : List.of(
-        SilvaOracleConstants.NOVALUE);
-    this.statusList = !CollectionUtils.isEmpty(statusList) ? statusList : List.of(
-        SilvaOracleConstants.NOVALUE);
+    this.orgUnit =
+        !CollectionUtils.isEmpty(orgUnit) ? orgUnit : List.of(SilvaOracleConstants.NOVALUE);
+    this.category =
+        !CollectionUtils.isEmpty(category) ? category : List.of(SilvaOracleConstants.NOVALUE);
+    this.statusList =
+        !CollectionUtils.isEmpty(statusList) ? statusList : List.of(SilvaOracleConstants.NOVALUE);
     this.myOpenings = myOpenings;
-    this.submittedToFrpa =
-        BooleanUtils
-            .toString(
-                submittedToFrpa,
-                "YES",
-                "NO",
-                "NO"
-            );
+    this.myOpeningsUserId = myOpeningsUserId;
+    this.submittedToFrpa = BooleanUtils.toString(submittedToFrpa, "YES", "NO", "NO");
     this.disturbanceDateStart =
         Objects.isNull(disturbanceDateStart) ? null : disturbanceDateStart.trim();
     this.disturbanceDateEnd = Objects.isNull(disturbanceDateEnd) ? null : disturbanceDateEnd.trim();
@@ -97,12 +88,11 @@ public class OpeningSearchFiltersDto {
     this.timberMark = Objects.isNull(timberMark) ? null : timberMark.toUpperCase().trim();
     this.mainSearchTerm =
         Objects.isNull(mainSearchTerm) ? null : mainSearchTerm.toUpperCase().trim();
-    this.clientLocationCode =
-        Objects.isNull(clientLocationCode) ? null : clientLocationCode.trim();
+    this.clientLocationCode = Objects.isNull(clientLocationCode) ? null : clientLocationCode.trim();
     this.clientNumber = Objects.isNull(clientNumber) ? null : clientNumber.trim();
   }
 
-  public OpeningSearchFiltersDto(){
+  public OpeningSearchFiltersDto() {
     this.orgUnit = List.of(SilvaOracleConstants.NOVALUE);
     this.category = List.of(SilvaOracleConstants.NOVALUE);
     this.statusList = List.of(SilvaOracleConstants.NOVALUE);
@@ -123,6 +113,7 @@ public class OpeningSearchFiltersDto {
     this.clientLocationCode = null;
     this.clientNumber = null;
     this.requestUserId = null;
+    this.myOpeningsUserId = null;
   }
 
   /**
@@ -133,21 +124,21 @@ public class OpeningSearchFiltersDto {
    */
   public boolean hasValue(String prop) {
     return switch (prop) {
-      case SilvaOracleConstants.ORG_UNIT ->
-          !Objects.isNull(this.orgUnit) && !this.orgUnit.isEmpty();
-      case SilvaOracleConstants.CATEGORY ->
-          !Objects.isNull(this.category) && !this.category.isEmpty();
-      case SilvaOracleConstants.STATUS_LIST ->
-          !Objects.isNull(this.statusList) && !this.statusList.isEmpty();
+      case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit)
+          && !this.orgUnit.isEmpty();
+      case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category)
+          && !this.category.isEmpty();
+      case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList)
+          && !this.statusList.isEmpty();
       case SilvaOracleConstants.MY_OPENINGS -> !Objects.isNull(this.myOpenings);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
-      case SilvaOracleConstants.DISTURBANCE_DATE_START ->
-          !Objects.isNull(this.disturbanceDateStart);
+      case SilvaOracleConstants.DISTURBANCE_DATE_START -> !Objects.isNull(
+          this.disturbanceDateStart);
       case SilvaOracleConstants.DISTURBANCE_DATE_END -> !Objects.isNull(this.disturbanceDateEnd);
       case SilvaOracleConstants.REGEN_DELAY_DATE_START -> !Objects.isNull(this.regenDelayDateStart);
       case SilvaOracleConstants.REGEN_DELAY_DATE_END -> !Objects.isNull(this.regenDelayDateEnd);
-      case SilvaOracleConstants.FREE_GROWING_DATE_START ->
-          !Objects.isNull(this.freeGrowingDateStart);
+      case SilvaOracleConstants.FREE_GROWING_DATE_START -> !Objects.isNull(
+          this.freeGrowingDateStart);
       case SilvaOracleConstants.FREE_GROWING_DATE_END -> !Objects.isNull(this.freeGrowingDateEnd);
       case SilvaOracleConstants.UPDATE_DATE_START -> !Objects.isNull(this.updateDateStart);
       case SilvaOracleConstants.UPDATE_DATE_END -> !Objects.isNull(this.updateDateEnd);
@@ -157,11 +148,12 @@ public class OpeningSearchFiltersDto {
       case SilvaOracleConstants.MAIN_SEARCH_TERM -> !Objects.isNull(this.mainSearchTerm);
       case SilvaOracleConstants.LOCATION_CODE -> !Objects.isNull(this.clientLocationCode);
       case SilvaOracleConstants.CLIENT_NUMBER -> !Objects.isNull(this.clientNumber);
+      case SilvaOracleConstants.MY_OPENINGS_USER_ID -> !Objects.isNull(this.myOpeningsUserId)
+          && !this.myOpeningsUserId.isEmpty();
       default -> {
         log.warn("Prop not found {}", prop);
         yield false;
       }
     };
   }
-
 }

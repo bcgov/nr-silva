@@ -1,10 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { vi } from "vitest";
 import OpeningSearch from "../../../components/SilvicultureSearch/OpeningSearch";
-import { NotificationProvider } from "../../../contexts/NotificationProvider";
 import { openingA, openingB } from "../../fixtures/openings";
 import {
   OpeningSearchResponseDto,
@@ -12,7 +9,6 @@ import {
 } from "../../../services/OpenApi";
 import { DEFAULT_PAGE_CONFIG } from "../../fixtures/defaults";
 import * as utils from "../../../components/SilvicultureSearch/OpeningSearch/utils";
-import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 import API from "../../../services/API";
 
 const mockOpenings: OpeningSearchResponseDto[] = [openingA, openingB];
@@ -44,20 +40,9 @@ vi.mock("../../../components/OpeningsMap", () => ({
   default: () => <div data-testid="mock-openings-map" />,
 }));
 
-const queryClient = new QueryClient();
+import { renderWithProviders } from "../../utils/testAuthProvider";
 
-const renderComponent = () =>
-  render(
-    <QueryClientProvider client={queryClient}>
-      <PreferenceProvider>
-        <MemoryRouter>
-          <NotificationProvider>
-            <OpeningSearch />
-          </NotificationProvider>
-        </MemoryRouter>
-      </PreferenceProvider>
-    </QueryClientProvider>
-  );
+const renderComponent = () => render(<OpeningSearch />, renderWithProviders());
 
 describe("OpeningSearch Component", () => {
   beforeEach(() => {
@@ -148,17 +133,7 @@ describe("OpeningSearch Component", () => {
       "../../../components/SilvicultureSearch/OpeningSearch"
     );
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <PreferenceProvider>
-          <MemoryRouter>
-            <NotificationProvider>
-              <OpeningSearchReloaded />
-            </NotificationProvider>
-          </MemoryRouter>
-        </PreferenceProvider>
-      </QueryClientProvider>
-    );
+    render(<OpeningSearchReloaded />, renderWithProviders());
 
     const searchButtons = await screen.findAllByRole("button", {
       name: "Search",
