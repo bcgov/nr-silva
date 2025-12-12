@@ -1,0 +1,17 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE unit_bid_code;
+
+COPY unit_bid_code (unit_bid_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+DY	Days	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+HA	Hectares	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+HL	Hectolitres	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+HR	Hours	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+KG	Kilograms	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+KM	Kilometers	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+PT	Plots	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+TC	Total Cost per Unit Area	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+TRE	Trees	2006-08-31 00:00:00	9999-12-31 00:00:00	2007-03-11 17:50:54
+\.

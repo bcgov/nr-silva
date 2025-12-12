@@ -1,0 +1,24 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE silv_reserve_objective_code;
+
+COPY silv_reserve_objective_code (silv_reserve_objective_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+BIO	Biodiversity	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+BOT	Botanical Forest Products	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+CAR	Carbon Offset	2011-09-20 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+CHR	Cultural Heritage Resource	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+CWD	Coarse Woody Debris	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+FH	Forest health	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+FUE	Fuel Management	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+MSM	MSMA Treated Area	2007-09-04 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+OTH	Other	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+REC	Recreation	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+RMA	Riparian Management Area	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+SEN	Sensitive Site	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+TER	Terrain Stability	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+TIM	Timber management	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+VIS	Visual	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+WTR	Wildlife Tree Retention Goals	1905-01-01 00:00:00	9999-12-31 00:00:00	2013-09-13 09:30:57
+\.

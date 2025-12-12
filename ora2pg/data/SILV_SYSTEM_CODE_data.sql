@@ -1,0 +1,17 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE silv_system_code;
+
+COPY silv_system_code (silv_system_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+CCRES	Clearcut with reserves	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+CLEAR	Clearcut	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+COPPI	Coppice	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+IMCUT	Intermediate cut	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+PATCT	Patch cut	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+RETEN	Retention	1999-03-16 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+SEEDT	Seed tree	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+SELEC	Selection	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+SHELT	Shelterwood	1905-01-01 00:00:00	9999-12-31 00:00:00	2003-11-15 19:24:00
+\.
