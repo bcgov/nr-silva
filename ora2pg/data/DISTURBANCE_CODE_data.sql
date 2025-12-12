@@ -1,0 +1,19 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE disturbance_code;
+
+COPY disturbance_code (disturbance_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+B	Burnt Wildfire	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+C	Drought	2006-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+D	Disease	2006-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+E	Stand Enhancement	2012-03-12 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+F	Flood	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+I	Slide	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+L	Logged	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+P	Pest (beetle)	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+R	Rehabilitation	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+S	Salvage	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+W	Windblow	1905-01-01 00:00:00	9999-12-31 00:00:00	2012-03-12 12:02:27
+\.
