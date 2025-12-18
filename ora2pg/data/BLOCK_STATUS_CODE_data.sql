@@ -1,0 +1,24 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE block_status_code;
+
+COPY block_status_code (block_status_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+HRS	Harvesting Rights Surrendered	2013-01-30 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+AP	Appeal Pending	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+DD	Disallowed by District	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+EE	Entered In Error	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+HB	Approved for Harvesting	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+HD	Harvesting Deferred	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+HS	Suspended	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+HX	Cancelled	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+ID	Inactive - Closed (Deactivated)	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+LC	Logging Complete	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+PD	Pending Deferred	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+PE	Pending Electronic	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+PL	Planned TSL	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+PP	Proposed	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+S	Silviculture	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+SP	SP only, no application received	2003-04-15 00:00:00	9999-12-31 00:00:00	2014-03-12 12:25:23
+\.

@@ -1,0 +1,8 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE silv_relief_application;
+
+COPY silv_relief_application (silv_relief_application_id,silv_relief_application_no,activity_treatment_unit_id,silv_relief_appl_status_code,pre_event_forest_cover_date,post_event_forest_cover_date,amendment_opening_id,opening_amendment_number,obligation_relief_ind,obligation_met_ind,cause_damage_ind,officially_induced_error_ind,due_diligence_ind,authorization_checked_ind,submitted_date,submitted_by_userid,approved_date,approved_by_userid,reject_comment,entry_userid,entry_timestamp,update_userid,update_timestamp,revision_count) FROM STDIN;
+\.

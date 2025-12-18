@@ -1,0 +1,20 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE stocking_standard_unit_archive;
+
+COPY stocking_standard_unit_archive (stocking_standard_unit_id,stocking_event_history_id,opening_id,standards_unit_id,standards_regime_id,net_area,max_allow_soil_disturbance_pct,variance_ind,regen_delay_offset_yrs,regen_obligation_ind,no_regen_early_offset_yrs,no_regen_late_offset_yrs,free_growing_early_offset_yrs,free_growing_late_offset_yrs,amendment_rationale_comment,entry_userid,entry_timestamp,update_userid,update_timestamp,revision_count) FROM STDIN;
+194833	1297119	101017	A	\N	7.9	5	\N	3	Y	\N	\N	8	11	\N	RESULTS_CONV	2003-11-15 19:46:23	RESULTS_CONV	2003-11-15 19:46:23	4
+194837	1297119	101017	B	\N	1.1	0	\N	0	Y	\N	\N	0	0	\N	RESULTS_CONV	2003-11-15 19:46:23	RESULTS_CONV	2003-11-15 19:46:23	4
+1013720	1262610	1009974	A	36109	25.5	5	Y	6	Y	\N	\N	11	14	\N	BCEID\\ASKYWALKER	2005-05-02 15:56:26	BCEID\\ASKYWALKER	2005-05-04 16:21:21	3
+1795272	1524245	1480130	A	\N	140	2	N	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:08:47	IDIR\\JDOE	2012-09-26 12:08:47	1
+1795273	1524245	1480130	B	\N	140	2	N	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:09:10	IDIR\\JDOE	2012-09-26 12:09:10	1
+1795273	1739159	1480130	B	\N	140	2	N	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:09:10	IDIR\\JDOE	2012-09-26 12:09:10	3
+1795272	1739158	1480130	A	\N	140	2	Y	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:08:47	IDIR\\JDOE	2012-09-26 12:08:47	2
+1795273	1739158	1480130	B	\N	140	2	N	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:09:10	IDIR\\JDOE	2012-09-26 12:09:10	2
+1795272	1739159	1480130	A	36008	140	2	Y	3	Y	\N	\N	8	11	\N	IDIR\\JDOE	2012-09-26 12:08:47	IDIR\\JDOE	2025-02-03 17:18:44	3
+2411888	1741496	1480130	C	1079794	5	5	N	3	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2025-03-14 10:46:37	IDIR\\JDOE	2025-03-14 10:46:37	1
+1795272	1741496	1480130	A	36008	140	2	Y	3	Y	\N	\N	8	11	\N	IDIR\\JDOE	2012-09-26 12:08:47	IDIR\\JDOE	2025-02-03 17:18:44	3
+1795273	1741496	1480130	B	\N	140	2	N	5	Y	\N	\N	\N	20	\N	IDIR\\JDOE	2012-09-26 12:09:10	IDIR\\JDOE	2012-09-26 12:09:10	3
+\.

@@ -1,0 +1,8 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE stocking_standard_unit_amd;
+
+COPY stocking_standard_unit_amd (stocking_standard_unit_id,opening_id,standards_unit_id,standards_regime_id,net_area,max_allow_soil_disturbance_pct,variance_ind,regen_delay_offset_yrs,regen_obligation_ind,no_regen_early_offset_yrs,no_regen_late_offset_yrs,free_growing_early_offset_yrs,free_growing_late_offset_yrs,amendment_rationale_comment,entry_userid,entry_timestamp,update_userid,update_timestamp,revision_count) FROM STDIN;
+\.

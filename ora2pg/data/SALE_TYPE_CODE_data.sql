@@ -1,0 +1,24 @@
+SET client_encoding TO 'UTF8';
+SET synchronous_commit TO off;
+SET search_path = silva,public;
+
+TRUNCATE TABLE sale_type_code;
+
+COPY sale_type_code (sale_type_code,description,effective_date,expiry_date,update_timestamp) FROM STDIN;
+CA	Conventional Application	2004-10-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+H1	H1 SSS for Forest Health reasons 0 - 50 m3	2000-07-05 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+H2	H2 SSS for Forest Health reasons 51 - 500 m3	2000-07-05 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+H3	H3 SSS for Forest Health reasons 501 - 2,000 m3	2000-07-05 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+H4	H4 SSS for Forest Health reasons >2000 m3	2000-07-05 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+HL	Handlog	1998-07-23 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+LY	Log Yard	1905-01-01 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+PA	Professional Application	2004-10-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+PW	Pulpwood	1998-07-23 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+S1	S1 Small Scale Salvage 0 - 50 m3	1998-11-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+S2	S2 Small Scale Salvage 51 - 500 m3	1998-11-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+S3	S3 Small Scale Salvage 501 - 2,000 m3	1998-11-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+S4	S4 Small Scale Salvage 2,000 m3	1998-11-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+SL	Sawlog	1998-07-23 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+SP	Special Forest Products	1998-07-23 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+XM	Christmas Tree	1998-11-25 00:00:00	9999-12-31 00:00:00	2004-12-21 13:35:21
+\.
