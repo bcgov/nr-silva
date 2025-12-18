@@ -1,13 +1,17 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -58,7 +62,47 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
     // Log the error status and message
     log.error("{} - {}", errorStatus, errorMessage, exception);
 
-    return ProblemDetail.forStatusAndDetail(errorStatus, errorMessage);
+    ProblemDetail pd = ProblemDetail.forStatusAndDetail(errorStatus, errorMessage);
+    if (pd.getType() == null) {
+      pd.setType(URI.create("about:blank"));
+    }
+    return pd;
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    String paramName = ex.getParameterName();
+    String detail = String.format("Required parameter '%s' is not present.", paramName);
+    ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, detail);
+    if (pd.getType() == null) {
+      pd.setType(URI.create("about:blank"));
+    }
+    String title = status.toString().replaceFirst("\\d+ ", "");
+    title = title.replace('_', ' ');
+    String[] parts = title.split(" ");
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].length() == 0) {
+        continue;
+      }
+      sb.append(parts[i].substring(0, 1).toUpperCase());
+      if (parts[i].length() > 1) {
+        sb.append(parts[i].substring(1).toLowerCase());
+      }
+      if (i < parts.length - 1) {
+        sb.append(' ');
+      }
+    }
+    pd.setTitle(sb.toString());
+    String desc = request.getDescription(false); // returns "uri=/path"
+    if (desc != null && desc.startsWith("uri=")) {
+      pd.setInstance(URI.create(desc.substring(4)));
+    }
+    return ResponseEntity.status(status).headers(headers).body(pd);
   }
 
   /**
@@ -72,7 +116,11 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
   @ExceptionHandler(AccessDeniedException.class)
   public ProblemDetail handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
     log.warn("Access denied: {}", ex.getMessage());
-    return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+    ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+    if (pd.getType() == null) {
+      pd.setType(URI.create("about:blank"));
+    }
+    return pd;
   }
 
   /**
@@ -87,6 +135,11 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
   public ProblemDetail handleAuthenticationException(
       AuthenticationException ex, WebRequest request) {
     log.warn("Authentication failed: {}", ex.getMessage());
-    return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Authentication failed");
+    ProblemDetail pd =
+        ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Authentication failed");
+    if (pd.getType() == null) {
+      pd.setType(URI.create("about:blank"));
+    }
+    return pd;
   }
 }
