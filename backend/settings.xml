@@ -1,7 +1,7 @@
 <settings>
   <profiles>
     <profile>
-      <id>osgeo</id>
+      <id>silva-external</id>
       <repositories>
         <repository>
           <id>osgeo</id>
@@ -12,6 +12,6 @@
     </profile>
   </profiles>
   <activeProfiles>
-    <activeProfile>osgeo</activeProfile>
+    <activeProfile>silva-external</activeProfile>
   </activeProfiles>
 </settings>
