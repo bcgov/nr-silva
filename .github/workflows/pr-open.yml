@@ -2,6 +2,7 @@ name: PR
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
 
 concurrency:
   # PR open and close use the same group, allowing only one at a time

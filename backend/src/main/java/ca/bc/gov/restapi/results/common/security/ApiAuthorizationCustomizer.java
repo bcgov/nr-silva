@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.common.security;
 import ca.bc.gov.restapi.results.common.util.SecurityEnvironmentUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.stereotype.Component;
@@ -13,23 +12,21 @@ import org.springframework.stereotype.Component;
  * defined.
  */
 @Component
-public class ApiAuthorizationCustomizer implements
-    Customizer<
-        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
-        > {
+public class ApiAuthorizationCustomizer {
+
+  private final String environment;
 
   /**
    * The environment of the application, which is injected from the application properties. The
    * default value is "PROD".
    */
-  @Value("${ca.bc.gov.nrs.environment:PROD}")
-  String environment;
+  public ApiAuthorizationCustomizer(@Value("${ca.bc.gov.nrs.environment:PROD}") String environment) {
+    this.environment = environment;
+  }
 
-  @Override
-  public void customize(
-      AuthorizeHttpRequestsConfigurer<HttpSecurity>
-          .AuthorizationManagerRequestMatcherRegistry authorize
-  ) {
+  public void configure(
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+          authorize) {
 
     authorize
         // Allow actuator endpoints to be accessed without authentication
@@ -39,23 +36,19 @@ public class ApiAuthorizationCustomizer implements
     // Only allow OpenAPI and Swagger UI in the local environment
     if (SecurityEnvironmentUtil.isLocalEnvironment(environment)) {
       authorize
-        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-        .permitAll();
+          .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+          .permitAll();
     } else {
-      authorize
-        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-        .denyAll();
+      authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").denyAll();
     }
 
-    authorize
-        // Protect everything under /api with authentication
-        .requestMatchers("/api/**")
-        .authenticated()
-        // Allow OPTIONS requests to be accessed with authentication
-        .requestMatchers(HttpMethod.OPTIONS, "/**")
-        .authenticated()
-        // Deny all other requests
-        .anyRequest().denyAll();
+    // Protect everything under /api with authentication
+    authorize.requestMatchers("/api/**").authenticated();
 
+    // Allow OPTIONS requests to be accessed with authentication
+    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").authenticated();
+
+    // Deny all other requests last so additional matchers cannot be added afterwards
+    authorize.anyRequest().denyAll();
   }
 }

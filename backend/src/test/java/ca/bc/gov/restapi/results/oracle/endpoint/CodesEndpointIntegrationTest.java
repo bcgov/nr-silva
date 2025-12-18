@@ -13,24 +13,22 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @WithMockJwt
 @DisplayName("Integrated Test | Opening Search Endpoint")
-class CodesEndpointIntegrationTest  extends AbstractTestContainerIntegrationTest {
+class CodesEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
+  @Autowired private MockMvc mockMvc;
 
   @Test
   @DisplayName("Get Opening Categories happy Path should Succeed")
   void getOpeningCategories_happyPath_shouldSucceed() throws Exception {
-    CodeDescriptionDto category = new CodeDescriptionDto("BLCF",
-        "Backlog SP Area - Community Forest (Expired)");
+    CodeDescriptionDto category =
+        new CodeDescriptionDto("BLCF", "Backlog SP Area - Community Forest (Expired)");
 
     mockMvc
         .perform(
@@ -75,5 +73,4 @@ class CodesEndpointIntegrationTest  extends AbstractTestContainerIntegrationTest
         .andExpect(jsonPath("$[0].description").value(orgUnit.getOrgUnitName()))
         .andReturn();
   }
-
 }

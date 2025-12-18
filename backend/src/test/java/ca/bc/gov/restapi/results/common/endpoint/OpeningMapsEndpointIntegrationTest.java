@@ -17,7 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,24 +27,21 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Integrated Test | Feature Service Endpoint")
 class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10001)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10001)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Test
-
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() throws Exception {
     String openingId = "58993";
@@ -59,7 +56,9 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
             .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY"))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 {
                   "type": "FeatureCollection",
                   "features": [
@@ -92,8 +91,7 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
                     }
                   ]
                 }
-                """))
-    );
+                """)));
 
     mockMvc
         .perform(

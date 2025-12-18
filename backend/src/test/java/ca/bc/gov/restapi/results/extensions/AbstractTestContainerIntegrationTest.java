@@ -34,26 +34,25 @@ public abstract class AbstractTestContainerIntegrationTest {
 
   // Static fields declared like this are instantiated first by the JVM
   static {
-    postgres = new PostgreSQLContainer("postgres:13")
-        .withDatabaseName("silva")
-        .withUsername("silva")
-        .withPassword(UUID.randomUUID().toString());
+    postgres =
+        new PostgreSQLContainer("postgres:17")
+            .withDatabaseName("silva")
+            .withUsername("silva")
+            .withPassword(UUID.randomUUID().toString());
     oracle = new CustomOracleContainer();
 
     postgres.start();
     oracle.start();
 
     flywayPostgres =
-        Flyway
-            .configure()
+        Flyway.configure()
             .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
             .locations("classpath:db/migration", "classpath:migration/postgres")
             .baselineOnMigrate(true)
             .load();
 
     flywayOracle =
-        Flyway
-            .configure()
+        Flyway.configure()
             .dataSource(oracle.getJdbcUrl(), oracle.getUsername(), oracle.getPassword())
             .locations("classpath:migration/oracle")
             .schemas("THE")
@@ -93,4 +92,3 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry.add("spring.oracle.password", oracle::getPassword);
   }
 }
-

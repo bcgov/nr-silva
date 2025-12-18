@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,11 +27,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private UserOpeningRepository userOpeningRepository;
+  @Autowired private UserOpeningRepository userOpeningRepository;
 
   @Test
   @Order(1)
@@ -50,7 +48,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
   @Order(2)
   @DisplayName("Should check if entry is favourite and get false")
   void shouldCheckIfEntryIsFavouriteGetFails() throws Exception {
-    checkFavourite(101017,false);
+    checkFavourite(101017, false);
   }
 
   @Test
@@ -65,17 +63,14 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
         .andExpect(status().isAccepted())
         .andExpect(content().string(StringUtils.EMPTY));
 
-    assertThat(userOpeningRepository.findAll())
-        .isNotNull()
-        .isNotEmpty()
-        .hasSize(1);
+    assertThat(userOpeningRepository.findAll()).isNotNull().isNotEmpty().hasSize(1);
   }
 
   @Test
   @Order(4)
   @DisplayName("Should check if entry is favourite")
   void shouldCheckIfEntryIsFavourite() throws Exception {
-    checkFavourite(101017,true);
+    checkFavourite(101017, true);
   }
 
   @Test
@@ -89,7 +84,12 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserOpening record(s) not found!\",\"instance\":\"/api/openings/favourites/987\"}"));
+        .andExpect(
+            content()
+                .json(
+                    "{\"type\":\"about:blank\",\"title\":\"Not"
+                        + " Found\",\"status\":404,\"detail\":\"UserOpening record(s) not"
+                        + " found!\",\"instance\":\"/api/openings/favourites/987\"}"));
   }
 
   @Test
@@ -124,9 +124,7 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
         .andExpect(status().isNoContent())
         .andExpect(content().string(StringUtils.EMPTY));
 
-    assertThat(userOpeningRepository.findAll())
-        .isNotNull()
-        .isEmpty();
+    assertThat(userOpeningRepository.findAll()).isNotNull().isEmpty();
   }
 
   @Test
@@ -140,8 +138,12 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"UserFavoriteEntity record(s) not found!\",\"instance\":\"/api/openings/favourites/101\"}"));
-
+        .andExpect(
+            content()
+                .json(
+                    "{\"type\":\"about:blank\",\"title\":\"Not"
+                        + " Found\",\"status\":404,\"detail\":\"UserFavoriteEntity record(s) not"
+                        + " found!\",\"instance\":\"/api/openings/favourites/101\"}"));
   }
 
   private void checkFavourite(long id, boolean expected) throws Exception {
@@ -150,8 +152,6 @@ class OpeningFavoriteEndpointIntegrationTest extends AbstractTestContainerIntegr
             MockMvcRequestBuilders.get("/api/openings/favourites/{id}", id)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().string(expected+""));
+        .andExpect(content().string(expected + ""));
   }
-
-
 }

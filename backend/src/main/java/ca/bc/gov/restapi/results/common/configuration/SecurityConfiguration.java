@@ -24,18 +24,16 @@ public class SecurityConfiguration {
       HeadersSecurityCustomizer headersCustomizer,
       CsrfSecurityCustomizer csrfCustomizer,
       ApiAuthorizationCustomizer apiCustomizer,
-      Oauth2SecurityCustomizer oauth2Customizer
-  ) throws Exception {
-    http
-        .headers(headersCustomizer)
+      Oauth2SecurityCustomizer oauth2Customizer)
+      throws Exception {
+    http.headers(headersCustomizer)
         .csrf(csrfCustomizer)
         .cors(Customizer.withDefaults())
-        .authorizeHttpRequests(apiCustomizer)
+        .authorizeHttpRequests(apiCustomizer::configure)
         .httpBasic(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .oauth2ResourceServer(oauth2Customizer);
 
     return http.build();
   }
-
 }

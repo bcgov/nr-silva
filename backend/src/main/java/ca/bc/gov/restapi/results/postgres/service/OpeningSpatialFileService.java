@@ -4,10 +4,6 @@ import ca.bc.gov.restapi.results.postgres.SilvaConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.GeoMetaDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -48,6 +44,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * This service handles processing of uploaded spatial files (GeoJSON, GML, ESF/XML).
@@ -77,7 +77,7 @@ import org.w3c.dom.NodeList;
 @SuppressWarnings("deprecation")
 public class OpeningSpatialFileService {
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final JsonMapper mapper = new JsonMapper();
 
   /**
    * Processes an uploaded spatial file (GeoJSON, GML, or ESF/XML) and delegates to the appropriate

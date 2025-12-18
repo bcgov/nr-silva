@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,7 +20,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
   private final SilvaConfiguration configuration;
 
   @Override
-  public void addCorsMappings(@NonNull CorsRegistry registry) {
+  public void addCorsMappings(@Nonnull CorsRegistry registry) {
     var frontendConfig = configuration.getFrontend();
     var cors = frontendConfig.getCors();
     String origins = frontendConfig.getUrl();
