@@ -21,9 +21,9 @@ parameters:
   - name: ORG
     description: Organization name
     value: bcgov
-  - name: IMAGE_TAG
-    description: Image tag to use
-    value: latest
+  - name: POSTGIS_VERSION
+    description: PostGIS version
+    value: postgis-17
   - name: PVC_MOUNT_PATH
     description: Where to mount the PVC, subpath (e.g. data/)
     value: /var/lib/postgresql
@@ -44,7 +44,7 @@ parameters:
     description: "Name of the Service Account To Exeucte the Job As."
     value: "default"
     required: true
-  - name: BACKUP_DIR"
+  - name: BACKUP_DIR
     description: "The name of the root backup directory"
     required: true
     value: "/tmp/backup"
@@ -67,7 +67,7 @@ objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: ${NAME}-${ZONE}-${COMPONENT}
+      name: ${NAME}-${ZONE}-${COMPONENT}-${POSTGIS_VERSION}
       labels:
         app: ${NAME}-${ZONE}
     spec:
@@ -131,10 +131,10 @@ objects:
           volumes:
             - name: ${NAME}-${ZONE}-${COMPONENT}
               persistentVolumeClaim:
-                claimName: ${NAME}-${ZONE}-${COMPONENT}
+                claimName: ${NAME}-${ZONE}-${COMPONENT}-${POSTGIS_VERSION}
           containers:
             - name: ${NAME}-${ZONE}
-              image: postgis/postgis:15-master
+              image: postgis/postgis:17-master
               ports:
                 - containerPort: 5432
                   protocol: TCP
@@ -239,7 +239,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-cron
-                  image: postgis/postgis:15-master
+                  image: postgis/postgis:17-master
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
@@ -334,7 +334,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
-                  image: postgis/postgis:15-master
+                  image: postgis/postgis:17-master
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
@@ -429,7 +429,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
-                  image: postgis/postgis:15-master
+                  image: postgis/postgis:17-master
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
