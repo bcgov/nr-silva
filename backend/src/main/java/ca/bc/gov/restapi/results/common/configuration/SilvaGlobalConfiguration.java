@@ -87,6 +87,7 @@ import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.json.JsonMapper.Builder;
 
@@ -182,6 +183,6 @@ public class SilvaGlobalConfiguration {
 
   @Bean
   public JsonMapper objectMapper(Builder builder) {
-    return builder.build();
+    return builder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS).build();
   }
 }
