@@ -1,10 +1,10 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import lombok.Builder;
 import lombok.With;
 import org.springframework.lang.Nullable;
+import tools.jackson.databind.JsonNode;
 
 /**
  * DTO representing extracted geographical data, including metadata, geoJson, and tenure

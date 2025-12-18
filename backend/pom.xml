@@ -51,7 +51,7 @@
     <tomcat.version>10.1.42</tomcat.version>
     <postgresql.version>42.7.7</postgresql.version>
     <nimbus-jose-jwt.version>10.6</nimbus-jose-jwt.version>
-    <spring-web.version>6.2.14</spring-web.version>
+    <spring-web.version>7.0.2</spring-web.version>
   </properties>
 
   <profiles>

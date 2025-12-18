@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,11 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockJwt("jakethedog")
 class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private UserRecentOpeningRepository userRecentOpeningRepository;
+  @Autowired private UserRecentOpeningRepository userRecentOpeningRepository;
 
   @BeforeEach
   void dataSetUp() {
@@ -37,10 +35,8 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
     userRecentOpeningRepository.saveAllAndFlush(
         List.of(
             new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 100L, LocalDateTime.now()),
-            new UserRecentOpeningEntity("IDIR\\JAKETHEDOG", 101L,
-                LocalDateTime.now().plusMinutes(3))
-        )
-    );
+            new UserRecentOpeningEntity(
+                "IDIR\\JAKETHEDOG", 101L, LocalDateTime.now().plusMinutes(3))));
   }
 
   @Test
@@ -52,8 +48,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
             get("/api/openings/recent")
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
   }
@@ -66,20 +61,20 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
             put("/api/openings/recent/123456")
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-        .andExpect(content().json("""
+        .andExpect(
+            content()
+                .json(
+                    """
                 {
                   "type":"about:blank",
                   "title":"Not Found",
                   "status":404,
                   "detail":"UserOpening record(s) not found!",
                   "instance":"/api/openings/recent/123456"
-                }"""
-            )
-        );
+                }"""));
   }
 
   @Test
@@ -90,10 +85,7 @@ class UserRecentOpeningEndpointIntegrationTest extends AbstractTestContainerInte
             put("/api/openings/recent/1009974")
                 .with(csrf().asHeader())
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
   }
-
-
 }

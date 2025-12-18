@@ -1,0 +1,40 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.security.config.annotation.web.builders.HttpSecurity",
+      "methods": [
+        {
+          "name": "headers",
+          "parameterTypes": [
+            "org.springframework.security.config.Customizer"
+          ]
+        },
+        {
+          "name": "csrf",
+          "parameterTypes": [
+            "org.springframework.security.config.Customizer"
+          ]
+        },
+        {
+          "name": "cors",
+          "parameterTypes": [
+            "org.springframework.security.config.Customizer"
+          ]
+        },
+        {
+          "name": "authorizeHttpRequests",
+          "parameterTypes": [
+            "org.springframework.security.config.Customizer"
+          ]
+        },
+        {
+          "name": "oauth2ResourceServer",
+          "parameterTypes": [
+            "org.springframework.security.config.Customizer"
+          ]
+        }
+      ]
+    }
+
+  ]
+}

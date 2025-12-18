@@ -16,6 +16,11 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  jpa:
+    show-sql: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
   oracle:
     jdbcUrl: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}:${DATABASE_PORT:1543}/${SERVICE_NAME:servicename}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}
     url: ${spring.datasource.oracle.jdbcUrl}
@@ -55,8 +60,6 @@ spring:
       maximumPoolSize: 3
       leakDetectionThreshold: 60000
       connection-test-query: SELECT 1
-  jpa:
-    show-sql: false
   http:
     encoding:
       charset: UTF-8

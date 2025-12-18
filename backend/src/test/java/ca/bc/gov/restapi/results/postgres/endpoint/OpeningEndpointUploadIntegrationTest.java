@@ -10,15 +10,15 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -34,7 +34,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @Autowired private OpeningSpatialFileService openingSpatialFileService;
 
-  @Autowired private ObjectMapper mapper;
+  @Autowired private JsonMapper mapper;
 
   @BeforeEach
   void resetMocks() {
@@ -92,8 +92,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   void shouldReturnBadRequestWhenServiceThrows() throws Exception {
     when(openingSpatialFileService.processOpeningSpatialFile(any()))
         .thenThrow(
-            new ResponseStatusException(
-                org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
+            new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
 
     MockMultipartFile file =
         new MockMultipartFile(
