@@ -13,6 +13,8 @@ spec:
         role: ROLE_TEAM_MANAGER
       - name: michelle.douville@gov.bc.ca
         role: ROLE_TEAM_MANAGER
+      - name: paulushc@gmail.com
+        role: ROLE_TEAM_MANAGER
       - name: paulo.cruz@gov.bc.ca
         role: ROLE_TEAM_MANAGER
       - name: craig.yu@gov.bc.ca
