@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -32,24 +31,35 @@ public class PostgresJpaConfiguration {
   @Bean(name = "postgresEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
       @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
-      @Qualifier("postgresManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
-      EntityManagerFactoryBuilder builder) {
-    return builder
-        .dataSource(dataSource)
-        .properties(
-            Map.of(
-                "hibernate.dialect",
-                "org.hibernate.dialect.PostgreSQLDialect",
-                "hibernate.boot.allow_jdbc_metadata_access",
-                "false",
-                "hibernate.hikari.connection.provider_class",
+      @Qualifier("postgresManagedTypes") PersistenceManagedTypes persistenceManagedTypes) {
+
+    LocalContainerEntityManagerFactoryBean factoryBean =
+        new LocalContainerEntityManagerFactoryBean();
+    factoryBean.setDataSource(dataSource);
+    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.postgres");
+    factoryBean.setPersistenceUnitName("postgres");
+    factoryBean.setManagedTypes(persistenceManagedTypes);
+
+    // Set JPA vendor adapter
+    org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter =
+        new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter();
+    factoryBean.setJpaVendorAdapter(vendorAdapter);
+
+    // Explicitly set EntityManagerFactory interface to avoid conflicts
+    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
+
+    // Set JPA properties manually to avoid Spring Boot auto-configuration
+    factoryBean.setJpaPropertyMap(
+        Map.of(
+            "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
+            "hibernate.boot.allow_jdbc_metadata_access", "false",
+            "hibernate.hikari.connection.provider_class",
                 "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
-                "hibernate.connection.datasource",
-                dataSource))
-        .packages("ca.bc.gov.restapi.results.postgres")
-        .managedTypes(persistenceManagedTypes)
-        .persistenceUnit("postgres")
-        .build();
+            "hibernate.connection.datasource", dataSource,
+            "hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"));
+
+    return factoryBean;
   }
 
   @Bean(name = "postgresManagedTypes")

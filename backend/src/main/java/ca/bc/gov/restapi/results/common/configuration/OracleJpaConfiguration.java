@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
@@ -34,28 +33,37 @@ public class OracleJpaConfiguration {
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
-      @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
-      EntityManagerFactoryBuilder builder) {
-    return builder
-        .dataSource(dataSource)
-        .properties(
-            Map.of(
-                "hibernate.dialect",
-                "org.hibernate.dialect.OracleDialect",
-                "hibernate.boot.allow_jdbc_metadata_access",
-                "false",
-                "hibernate.hikari.connection.provider_class",
+      @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes) {
+
+    LocalContainerEntityManagerFactoryBean factoryBean =
+        new LocalContainerEntityManagerFactoryBean();
+    factoryBean.setDataSource(dataSource);
+    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.oracle");
+    factoryBean.setPersistenceUnitName("oracle");
+    factoryBean.setManagedTypes(persistenceManagedTypes);
+
+    // Set JPA vendor adapter
+    org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter =
+        new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter();
+    factoryBean.setJpaVendorAdapter(vendorAdapter);
+
+    // Explicitly set EntityManagerFactory interface to avoid conflicts
+    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
+
+    // Set JPA properties manually to avoid Spring Boot auto-configuration
+    factoryBean.setJpaPropertyMap(
+        Map.of(
+            "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
+            "hibernate.boot.allow_jdbc_metadata_access", "false",
+            "hibernate.hikari.connection.provider_class",
                 "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
-                "hibernate.connection.datasource",
-                dataSource,
-                "hibernate.connection.oracle.net.ssl_server_dn_match",
-                "false",
-                "hibernate.connection.oracle.net.ssl_key_alias",
-                oracleHost))
-        .packages("ca.bc.gov.restapi.results.oracle")
-        .managedTypes(persistenceManagedTypes)
-        .persistenceUnit("oracle")
-        .build();
+            "hibernate.connection.datasource", dataSource,
+            "hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
+            "hibernate.connection.oracle.net.ssl_server_dn_match", "false",
+            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost));
+
+    return factoryBean;
   }
 
   @Bean(name = "oracleManagedTypes")
