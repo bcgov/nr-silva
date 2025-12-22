@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.oracle.OracleContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * Abstract base class for integration tests using Testcontainers for PostgreSQL and Oracle
@@ -34,7 +35,9 @@ public abstract class AbstractTestContainerIntegrationTest {
 
   // Static fields declared like this are instantiated first by the JVM
   static {
-    postgres = new PostgreSQLContainer("postgres:13")
+    postgres = new PostgreSQLContainer(
+        DockerImageName.parse("postgis/postgis:17-master")
+            .asCompatibleSubstituteFor("postgres"))
         .withDatabaseName("silva")
         .withUsername("silva")
         .withPassword(UUID.randomUUID().toString());
