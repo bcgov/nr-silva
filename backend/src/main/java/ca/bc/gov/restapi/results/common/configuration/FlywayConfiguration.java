@@ -11,7 +11,11 @@ public class FlywayConfiguration {
   @Bean
   public FlywayConfigurationCustomizer flywayConfigurationCustomizer(Environment env) {
     return configuration -> {
-      String environmentName = env.getProperty("FLYWAY_ENVIRONMENT", "prod");
+       String environmentName = System.getenv("FLYWAY_ENVIRONMENT");
+       if (environmentName == null || environmentName.isBlank()) {
+         environmentName = "prod";
+       }
+
       if (environmentName.equals("prod")) {
         configuration.locations("classpath:db/migration");
       } else {
