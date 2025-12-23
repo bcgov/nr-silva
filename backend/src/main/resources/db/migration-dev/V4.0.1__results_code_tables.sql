@@ -1390,7 +1390,7 @@ COMMENT ON COLUMN silva.tree_cover_pattern_code.update_timestamp IS 'The date an
 
 -- DROP TABLE silva.tree_size_unit_code;
 
-CREATE TABLE silva.tree_size_unit_code (
+CREATE TABLE IF NOT EXISTS silva.tree_size_unit_code (
 	tree_size_unit_code varchar(3) NOT NULL, -- The unit of measure used for height relative to competition. Expressed either in number of centimetres above vegetation (cm), or percentage above vegetation (%).
 	description varchar(120) NOT NULL, -- The full description of the code value.
 	effective_date timestamp(0) NOT NULL, -- The date the value is available for use.
