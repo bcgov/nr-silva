@@ -601,7 +601,7 @@ COMMENT ON COLUMN silva.open_category_code.update_timestamp IS 'The date and tim
 
 -- DROP TABLE silva.opening_status_code;
 
-CREATE TABLE silva.opening_status_code (
+CREATE TABLE IF NOT EXISTS silva.opening_status_code (
 	opening_status_code varchar(3) NOT NULL, -- A code indicating the status of the prescription. Examples include but are not limited to DFT (draft) and APP (approved). A subset of the STATUS_CODE table.
 	description varchar(120) NOT NULL, -- Full description of code value.
 	effective_date timestamp(0) NOT NULL, -- The date the value is available for use.
