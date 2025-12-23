@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.extensions;
 
+import java.util.List;
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,24 @@ public abstract class AbstractTestContainerIntegrationTest {
 
   // Static fields declared like this are instantiated first by the JVM
   static {
+    String env = System.getenv("FLYWAY_ENVIRONMENT");
+    if (env == null || env.isBlank()) {
+      env = "prod";
+    }
+    String[] postgresLocations;
+    if ("prod".equals(env)) {
+      postgresLocations = new String[] {
+          "classpath:db/migration",
+          "classpath:migration/postgres/default"
+      };
+    } else {
+        postgresLocations = new String[] {
+            "classpath:db/migration",
+            "classpath:migration/postgres/default",
+            "classpath:migration/postgres/dev"
+        };
+    }
+
     postgres = new PostgreSQLContainer(
         DockerImageName.parse("postgis/postgis:17-master")
             .asCompatibleSubstituteFor("postgres"))
@@ -50,7 +69,7 @@ public abstract class AbstractTestContainerIntegrationTest {
         Flyway
             .configure()
             .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
-            .locations("classpath:db/migration", "classpath:migration/postgres")
+            .locations(postgresLocations)
             .baselineOnMigrate(true)
             .load();
 
