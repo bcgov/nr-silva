@@ -49,6 +49,7 @@ public abstract class AbstractTestContainerIntegrationTest {
     } else {
         postgresLocations = new String[] {
             "classpath:db/migration",
+            "classpath:db/migration-dev",
             "classpath:migration/postgres/default",
             "classpath:migration/postgres/dev"
         };
