@@ -71,6 +71,7 @@ public abstract class AbstractTestContainerIntegrationTest {
             .configure()
             .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
             .locations(postgresLocations)
+            .schemas("silva")
             .baselineOnMigrate(true)
             .load();
 
