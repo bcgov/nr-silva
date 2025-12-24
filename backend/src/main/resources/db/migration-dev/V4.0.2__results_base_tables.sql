@@ -67,12 +67,12 @@ CREATE TABLE IF NOT EXISTS silva.request_item (
 	seedlot_qa_test_status_code varchar(3) NULL,
 	CONSTRAINT request_item_pkey PRIMARY KEY (request_skey, item_id)
 );
-CREATE UNIQUE INDEX "i1$_request_item" ON silva.request_item USING btree (nrsry_cli_number, nrsry_cli_locn_cd, request_skey, item_id);
-CREATE UNIQUE INDEX "i2$_request_item" ON silva.request_item USING btree (tender_number, tender_bid_group, request_skey, item_id);
-CREATE INDEX "i3$_request_item" ON silva.request_item USING btree (request_skey);
-CREATE INDEX "i4$_request_item" ON silva.request_item USING btree (standard_workplan_skey);
-CREATE INDEX "i5$_request_item" ON silva.request_item USING btree (family_lot_number);
-CREATE INDEX spr_ri_sqatscd_fk_i ON silva.request_item USING btree (seedlot_qa_test_status_code);
+CREATE UNIQUE INDEX IF NOT EXISTS "i1$_request_item" ON silva.request_item USING btree (nrsry_cli_number, nrsry_cli_locn_cd, request_skey, item_id);
+CREATE UNIQUE INDEX IF NOT EXISTS"i2$_request_item" ON silva.request_item USING btree (tender_number, tender_bid_group, request_skey, item_id);
+CREATE INDEX IF NOT EXISTS "i3$_request_item" ON silva.request_item USING btree (request_skey);
+CREATE INDEX IF NOT EXISTS "i4$_request_item" ON silva.request_item USING btree (standard_workplan_skey);
+CREATE INDEX IF NOT EXISTS "i5$_request_item" ON silva.request_item USING btree (family_lot_number);
+CREATE INDEX IF NOT EXISTS spr_ri_sqatscd_fk_i ON silva.request_item USING btree (seedlot_qa_test_status_code);
 COMMENT ON TABLE silva.request_item IS 'A particular item within a request for which services are being requested.';
 
 -- Column comments
@@ -230,8 +230,8 @@ CREATE TABLE IF NOT EXISTS silva.feature_classes (
 	CONSTRAINT feature_classes_pkey PRIMARY KEY (feature_class_skey),
 	CONSTRAINT featur_cls_file_fk FOREIGN KEY (group_name_cd) REFERENCES silva.storage_files(group_name_cd)
 );
-CREATE UNIQUE INDEX "i2$_featur_cls" ON silva.feature_classes USING btree (name);
-CREATE INDEX "i3$_featur_cls" ON silva.feature_classes USING btree (group_name_cd);
+CREATE UNIQUE INDEX IF NOT EXISTS "i2$_featur_cls" ON silva.feature_classes USING btree (name);
+CREATE INDEX IF NOT EXISTS "i3$_featur_cls" ON silva.feature_classes USING btree (group_name_cd);
 
 -- Column comments
 
@@ -244,7 +244,7 @@ COMMENT ON COLUMN silva.feature_classes.feature_class_skey IS 'The unique key as
 
 -- DROP TABLE silva.silv_admin_zone;
 
-CREATE TABLE silva.silv_admin_zone (
+CREATE TABLE IF NOT EXISTS silva.silv_admin_zone (
 	dist_admin_zone varchar(2) NOT NULL, -- A zonal code, district specific in meaning.
 	org_unit_no int8 NOT NULL, -- Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests" offices. Values stored here are for the computer"s use only, and are not to be used by people as "ministry codes".
 	admin_zone_desc varchar(50) NOT NULL, -- A zonal description, district specific in meaning.
@@ -270,7 +270,7 @@ COMMENT ON COLUMN silva.silv_admin_zone.revision_count IS 'Internal counter used
 
 -- DROP TABLE silva.results_electronic_submission;
 
-CREATE TABLE silva.results_electronic_submission (
+CREATE TABLE IF NOT EXISTS silva.results_electronic_submission (
 	results_submission_id int8 NOT NULL, -- Used to link information about a data submission. A submission may have many rows of Silviculture (Form A), Activities (Form B), and Forest Cover/Milestones (Form C) information. This attribute will be receiving a system generated number from the Electronic Submission Framework.
 	submission_timestamp timestamp(0) NOT NULL, -- Date and time the data submission was read.
 	submitted_by varchar(30) NOT NULL, -- The USERID of the person logged on when the submission was made.
@@ -372,13 +372,13 @@ CREATE TABLE IF NOT EXISTS silva.activity_treatment_unit (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT activity_treatment_unit_pkey PRIMARY KEY (activity_treatment_unit_id)
 );
-CREATE INDEX atu_atu_i ON silva.activity_treatment_unit USING btree (opening_id, silv_base_code, silv_method_code, silv_technique_code, treatment_amount);
-CREATE INDEX atu_base_i ON silva.activity_treatment_unit USING btree (silv_base_code, results_ind);
-CREATE INDEX atu_cboa_fk_i ON silva.activity_treatment_unit USING btree (cut_block_open_admin_id);
-CREATE INDEX atu_licensee_i ON silva.activity_treatment_unit USING btree (activity_licensee_id);
-CREATE INDEX atu_o_fk_i ON silva.activity_treatment_unit USING btree (opening_id);
-CREATE INDEX atu_proj_fk_i ON silva.activity_treatment_unit USING btree (silviculture_project_id);
-CREATE INDEX atu_project_i ON silva.activity_treatment_unit USING btree (fia_project_id, results_ind);
+CREATE INDEX IF NOT EXISTS atu_atu_i ON silva.activity_treatment_unit USING btree (opening_id, silv_base_code, silv_method_code, silv_technique_code, treatment_amount);
+CREATE INDEX IF NOT EXISTS atu_base_i ON silva.activity_treatment_unit USING btree (silv_base_code, results_ind);
+CREATE INDEX IF NOT EXISTS atu_cboa_fk_i ON silva.activity_treatment_unit USING btree (cut_block_open_admin_id);
+CREATE INDEX IF NOT EXISTS atu_licensee_i ON silva.activity_treatment_unit USING btree (activity_licensee_id);
+CREATE INDEX IF NOT EXISTS atu_o_fk_i ON silva.activity_treatment_unit USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS atu_proj_fk_i ON silva.activity_treatment_unit USING btree (silviculture_project_id);
+CREATE INDEX IF NOT EXISTS atu_project_i ON silva.activity_treatment_unit USING btree (fia_project_id, results_ind);
 COMMENT ON TABLE silva.activity_treatment_unit IS 'An Activity Treatment Unit is a Silvicultural treatment that is performed on a mappable area which deliniates a specific area of land. ATUs may not span opening boundaries but an opening may have more than one ATU associated with it.';
 
 -- Column comments
@@ -484,10 +484,10 @@ CREATE TABLE IF NOT EXISTS silva.cut_block (
 	CONSTRAINT cut_block_pkey PRIMARY KEY (cb_skey),
 	CONSTRAINT cut_block_timber_mark_forest_file_id_cut_block_id_key UNIQUE (timber_mark, forest_file_id, cut_block_id)
 );
-CREATE INDEX cblk1_i ON silva.cut_block USING btree (forest_file_id, cutting_permit_id, cut_block_id);
-CREATE INDEX cblk2_i ON silva.cut_block USING btree (timber_mark, cut_block_id);
-CREATE INDEX cblk_ff_tm_cb_i ON silva.cut_block USING btree (forest_file_id, timber_mark, cut_block_id);
-CREATE INDEX cblk_i ON silva.cut_block USING btree (timber_mark, forest_file_id, cutting_permit_id, cut_block_id);
+CREATE INDEX IF NOT EXISTS cblk1_i ON silva.cut_block USING btree (forest_file_id, cutting_permit_id, cut_block_id);
+CREATE INDEX IF NOT EXISTS cblk2_i ON silva.cut_block USING btree (timber_mark, cut_block_id);
+CREATE INDEX IF NOT EXISTS cblk_ff_tm_cb_i ON silva.cut_block USING btree (forest_file_id, timber_mark, cut_block_id);
+CREATE INDEX IF NOT EXISTS cblk_i ON silva.cut_block USING btree (timber_mark, forest_file_id, cutting_permit_id, cut_block_id);
 COMMENT ON TABLE silva.cut_block IS 'Information about harvesting that takes place on a cut block within a cutting permit, for a file on a harvesting tenure.';
 
 -- Column comments
@@ -539,8 +539,8 @@ CREATE TABLE IF NOT EXISTS silva.cut_block_client (
 	CONSTRAINT cut_block_client_client_number_client_locn_code_cb_skey_cut_key UNIQUE (client_number, client_locn_code, cb_skey, cut_block_client_type_code, licensee_start_date),
 	CONSTRAINT cut_block_client_pkey PRIMARY KEY (cblk_client_skey)
 );
-CREATE INDEX cbc_cb_fk_i ON silva.cut_block_client USING btree (cb_skey);
-CREATE INDEX cbc_cl_fk_i ON silva.cut_block_client USING btree (client_number, client_locn_code);
+CREATE INDEX IF NOT EXISTS cbc_cb_fk_i ON silva.cut_block_client USING btree (cb_skey);
+CREATE INDEX IF NOT EXISTS cbc_cl_fk_i ON silva.cut_block_client USING btree (client_number, client_locn_code);
 COMMENT ON TABLE silva.cut_block_client IS 'Identifies the licencee assigned to a given cut block for a specified duration of time.';
 
 -- Column comments
@@ -588,11 +588,11 @@ CREATE TABLE IF NOT EXISTS silva.cut_block_open_admin (
 	CONSTRAINT avcon_1054232647_openi_000 CHECK (((opening_prime_licence_ind)::text = ANY ((ARRAY['N'::character varying, 'Y'::character varying])::text[]))),
 	CONSTRAINT cut_block_open_admin_pkey PRIMARY KEY (cut_block_open_admin_id)
 );
-CREATE INDEX cboa_cblk_fk_i ON silva.cut_block_open_admin USING btree (cut_block_id, timber_mark, forest_file_id);
-CREATE INDEX cboa_cbskey_i ON silva.cut_block_open_admin USING btree (cb_skey);
-CREATE INDEX cboa_ffid_mark_blk_i ON silva.cut_block_open_admin USING btree (forest_file_id, timber_mark, cut_block_id);
-CREATE INDEX cboa_mark_blk_i ON silva.cut_block_open_admin USING btree (timber_mark, cut_block_id);
-CREATE INDEX cboa_o_fk_i ON silva.cut_block_open_admin USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS cboa_cblk_fk_i ON silva.cut_block_open_admin USING btree (cut_block_id, timber_mark, forest_file_id);
+CREATE INDEX IF NOT EXISTS cboa_cbskey_i ON silva.cut_block_open_admin USING btree (cb_skey);
+CREATE INDEX IF NOT EXISTS cboa_ffid_mark_blk_i ON silva.cut_block_open_admin USING btree (forest_file_id, timber_mark, cut_block_id);
+CREATE INDEX IF NOT EXISTS cboa_mark_blk_i ON silva.cut_block_open_admin USING btree (timber_mark, cut_block_id);
+CREATE INDEX IF NOT EXISTS cboa_o_fk_i ON silva.cut_block_open_admin USING btree (opening_id);
 COMMENT ON TABLE silva.cut_block_open_admin IS 'Used by FTA and RESULTS to track area and date information associated with a cut block and/or opening.';
 
 -- Column comments
@@ -643,8 +643,8 @@ CREATE TABLE IF NOT EXISTS silva.for_client_link (
 	CONSTRAINT for_client_link_forest_file_id_cutting_permit_id_cut_block__key UNIQUE (forest_file_id, cutting_permit_id, cut_block_id, file_client_type, client_number, client_locn_code, licensee_start_dt),
 	CONSTRAINT for_client_link_pkey PRIMARY KEY (for_client_link_skey)
 );
-CREATE INDEX fcl_i1 ON silva.for_client_link USING btree (forest_file_id);
-CREATE UNIQUE INDEX "i1$_for_client_link" ON silva.for_client_link USING btree (client_number, client_locn_code, file_client_type, forest_file_id, cutting_permit_id, cut_block_id, licensee_start_dt);
+CREATE INDEX IF NOT EXISTS fcl_i1 ON silva.for_client_link USING btree (forest_file_id);
+CREATE UNIQUE INDEX IF NOT EXISTS "i1$_f or_client_link" ON silva.for_client_link USING btree (client_number, client_locn_code, file_client_type, forest_file_id, cutting_permit_id, cut_block_id, licensee_start_dt);
 COMMENT ON TABLE silva.for_client_link IS 'Retrofitted from table FOR_CLIENT_LINK';
 
 -- Column comments
@@ -698,7 +698,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_pkey PRIMARY KEY (forest_cover_id)
 );
-CREATE INDEX fc_o_fk_i ON silva.forest_cover USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS fc_o_fk_i ON silva.forest_cover USING btree (opening_id);
 COMMENT ON TABLE silva.forest_cover IS 'Describes the opening"s forest cover attributes stratified by Forest Cover Polygon which will satisfy Inventory Program requirements.';
 
 -- Column comments
@@ -763,7 +763,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover_archive (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_archive_pkey PRIMARY KEY (forest_cover_id, archive_date)
 );
-CREATE INDEX fca_o_fk_i ON silva.forest_cover_archive USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS fca_o_fk_i ON silva.forest_cover_archive USING btree (opening_id);
 COMMENT ON TABLE silva.forest_cover_archive IS 'Forest Cover Archive contains the exact information from the Forest Cover with each update. Existing Forest cover entries are saved down to the Forest Cover Archive instead of being updated, thus maintaining a complete history of all changes.';
 
 -- Column comments
@@ -819,7 +819,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover_archive_geometry (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_archive_geometry_pkey PRIMARY KEY (forest_cover_id, archive_date)
 );
-CREATE INDEX fcag_geometry_i ON silva.forest_cover_archive_geometry USING gist (geometry);
+CREATE INDEX IF NOT EXISTS fcag_geometry_i ON silva.forest_cover_archive_geometry USING gist (geometry);
 COMMENT ON TABLE silva.forest_cover_archive_geometry IS 'The spatial polygon component for Forest Covers which has been modified.';
 
 -- Column comments
@@ -862,7 +862,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover_geometry (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_geometry_pkey PRIMARY KEY (forest_cover_id)
 );
-CREATE INDEX fcg_geometry_i ON silva.forest_cover_geometry USING gist (geometry);
+CREATE INDEX IF NOT EXISTS fcg_geometry_i ON silva.forest_cover_geometry USING gist (geometry);
 COMMENT ON TABLE silva.forest_cover_geometry IS 'The spatial polygon component for the Forest Cover.';
 
 -- Column comments
@@ -1073,9 +1073,9 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover_non_mapped_arc (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_non_mapped_arc_pkey PRIMARY KEY (forest_cover_id, non_mapped_area_id, archive_date)
 );
-CREATE INDEX fcnma1_fca_fk_i ON silva.forest_cover_non_mapped_arc USING btree (forest_cover_id, archive_date);
-CREATE INDEX fcnma1_ssc6_fk_i ON silva.forest_cover_non_mapped_arc USING btree (stocking_status_code);
-CREATE INDEX fcnma1_stc3_fk_i ON silva.forest_cover_non_mapped_arc USING btree (stocking_type_code);
+CREATE INDEX IF NOT EXISTS fcnma1_fca_fk_i ON silva.forest_cover_non_mapped_arc USING btree (forest_cover_id, archive_date);
+CREATE INDEX IF NOT EXISTS fcnma1_ssc6_fk_i ON silva.forest_cover_non_mapped_arc USING btree (stocking_status_code);
+CREATE INDEX IF NOT EXISTS fcnma1_stc3_fk_i ON silva.forest_cover_non_mapped_arc USING btree (stocking_type_code);
 COMMENT ON TABLE silva.forest_cover_non_mapped_arc IS 'Small Forest Cover non-productive areas, such as roads, which do not require spatial mapping and are not part of the Net Area to be Reforested.';
 
 -- Column comments
@@ -1104,9 +1104,9 @@ CREATE TABLE IF NOT EXISTS silva.forest_cover_non_mapped_area (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT forest_cover_non_mapped_area_pkey PRIMARY KEY (forest_cover_id, non_mapped_area_id)
 );
-CREATE INDEX fcnma_fc_fk_i ON silva.forest_cover_non_mapped_area USING btree (forest_cover_id);
-CREATE INDEX fcnma_ssc6_fk_i ON silva.forest_cover_non_mapped_area USING btree (stocking_status_code);
-CREATE INDEX fcnma_stc3_fk_i ON silva.forest_cover_non_mapped_area USING btree (stocking_type_code);
+CREATE INDEX IF NOT EXISTS fcnma_fc_fk_i ON silva.forest_cover_non_mapped_area USING btree (forest_cover_id);
+CREATE INDEX IF NOT EXISTS fcnma_ssc6_fk_i ON silva.forest_cover_non_mapped_area USING btree (stocking_status_code);
+CREATE INDEX IF NOT EXISTS fcnma_stc3_fk_i ON silva.forest_cover_non_mapped_area USING btree (stocking_type_code);
 COMMENT ON TABLE silva.forest_cover_non_mapped_area IS 'Small Forest Cover non-productive areas, such as roads, which do not require spatial mapping and are not part of the Net Area to be Reforested.';
 
 -- Column comments
@@ -1142,7 +1142,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_file_client (
 	CONSTRAINT forest_file_client_forest_file_id_forest_file_client_type_c_key UNIQUE (forest_file_id, forest_file_client_type_code, client_number, client_locn_code, licensee_start_date),
 	CONSTRAINT forest_file_client_pkey PRIMARY KEY (forest_file_client_skey)
 );
-CREATE INDEX ffc_i2 ON silva.forest_file_client USING btree (forest_file_id, forest_file_client_type_code);
+CREATE INDEX IF NOT EXISTS ffc_i2 ON silva.forest_file_client USING btree (forest_file_id, forest_file_client_type_code);
 COMMENT ON TABLE silva.forest_file_client IS 'Identifies the licencee assigned to a given file for a specified duration of time.';
 
 -- Column comments
@@ -1238,7 +1238,7 @@ CREATE TABLE IF NOT EXISTS silva.forest_stewardship_plan (
 	update_timestamp timestamp(0) NOT NULL, -- The timestamp of the last update to the road section record.
 	CONSTRAINT forest_stewardship_plan_pkey PRIMARY KEY (fsp_id, fsp_amendment_number)
 );
-CREATE INDEX fsp_fspsc_fk_i ON silva.forest_stewardship_plan USING btree (fsp_status_code);
+CREATE INDEX IF NOT EXISTS fsp_fspsc_fk_i ON silva.forest_stewardship_plan USING btree (fsp_status_code);
 COMMENT ON TABLE silva.forest_stewardship_plan IS 'A plan submitted by a forest industry licensee stating how the BC Government?s objectives for managing the province?s forest resources will be met. It identifies the plan-holder?s obligations for a five-year period.';
 
 -- Column comments
@@ -1297,8 +1297,8 @@ CREATE TABLE IF NOT EXISTS silva.forhealth_rslt (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT forhealth_rslt_pkey PRIMARY KEY (forhealth_rslt_id)
 );
-CREATE INDEX fr_fclr_fk_i ON silva.forhealth_rslt USING btree (forest_cover_id, forest_cover_layer_id);
-CREATE INDEX fr_o_fk_i ON silva.forhealth_rslt USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS fr_fclr_fk_i ON silva.forhealth_rslt USING btree (forest_cover_id, forest_cover_layer_id);
+CREATE INDEX IF NOT EXISTS fr_o_fk_i ON silva.forhealth_rslt USING btree (opening_id);
 COMMENT ON TABLE silva.forhealth_rslt IS 'A table which stores the forest health survey results.';
 
 -- Column comments
@@ -1342,7 +1342,7 @@ CREATE TABLE IF NOT EXISTS silva.forhealth_rslt_archive (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT forhealth_rslt_archive_pkey PRIMARY KEY (forhealth_rslt_id, archive_date)
 );
-CREATE INDEX fra_fcla_fk_i ON silva.forhealth_rslt_archive USING btree (forest_cover_id, forest_cover_archive_date, forest_cover_layer_id);
+CREATE INDEX IF NOT EXISTS fra_fcla_fk_i ON silva.forhealth_rslt_archive USING btree (forest_cover_id, forest_cover_archive_date, forest_cover_layer_id);
 COMMENT ON TABLE silva.forhealth_rslt_archive IS 'A table which stores the archive of forest health survey results.';
 
 -- Column comments
@@ -1381,8 +1381,8 @@ CREATE TABLE IF NOT EXISTS silva.fsp_standards_regime_xref (
 	update_timestamp timestamp(0) NOT NULL, -- The timestamp of the last update to the record.
 	CONSTRAINT fsp_standards_regime_xref_pkey PRIMARY KEY (fsp_id, fsp_amendment_number, standards_regime_id)
 );
-CREATE INDEX fspsrx_fsp_fk_i ON silva.fsp_standards_regime_xref USING btree (fsp_amendment_number, fsp_id);
-CREATE INDEX fspsrx_sr_fk_i ON silva.fsp_standards_regime_xref USING btree (standards_regime_id);
+CREATE INDEX IF NOT EXISTS fspsrx_fsp_fk_i ON silva.fsp_standards_regime_xref USING btree (fsp_amendment_number, fsp_id);
+CREATE INDEX IF NOT EXISTS fspsrx_sr_fk_i ON silva.fsp_standards_regime_xref USING btree (standards_regime_id);
 COMMENT ON TABLE silva.fsp_standards_regime_xref IS 'A cross reference entity that allows for the relationship between a Forest Stewardship Plan and a Standards Regime. An FSP may refer to many Standards, and a Standard may be included in many FSPs.';
 
 -- Column comments
@@ -1457,10 +1457,10 @@ CREATE TABLE IF NOT EXISTS silva.harvesting_authority (
 	CONSTRAINT hva_is_waste_assess_req_ck CHECK (((is_waste_assessment_required)::text = ANY ((ARRAY['N'::character varying, 'U'::character varying, 'Y'::character varying])::text[]))),
 	CONSTRAINT hva_is_within_frz_ck CHECK (((is_within_fibre_recovery_zone)::text = ANY ((ARRAY['N'::character varying, 'U'::character varying, 'Y'::character varying])::text[])))
 );
-CREATE INDEX hva_ff_cp_i ON silva.harvesting_authority USING btree (forest_file_id, cutting_permit_id);
-CREATE INDEX hva_i1 ON silva.harvesting_authority USING btree (forest_file_id, forest_district, harvest_auth_status_code);
-CREATE INDEX hva_ltccd_fk_i ON silva.harvesting_authority USING btree (licence_to_cut_code);
-CREATE INDEX hva_ou_fk_i ON silva.harvesting_authority USING btree (forest_district);
+CREATE INDEX IF NOT EXISTS hva_ff_cp_i ON silva.harvesting_authority USING btree (forest_file_id, cutting_permit_id);
+CREATE INDEX IF NOT EXISTS hva_i1 ON silva.harvesting_authority USING btree (forest_file_id, forest_district, harvest_auth_status_code);
+CREATE INDEX IF NOT EXISTS hva_ltccd_fk_i ON silva.harvesting_authority USING btree (licence_to_cut_code);
+CREATE INDEX IF NOT EXISTS hva_ou_fk_i ON silva.harvesting_authority USING btree (forest_district);
 COMMENT ON TABLE silva.harvesting_authority IS 'Information about the timber cutting permission for a timber tenure.';
 
 -- Column comments
@@ -1529,9 +1529,9 @@ CREATE TABLE IF NOT EXISTS silva.hauling_authority (
 	CONSTRAINT hauling_authority_hauling_authority_guid_key UNIQUE (hauling_authority_guid),
 	CONSTRAINT hauling_authority_pkey PRIMARY KEY (timber_mark)
 );
-CREATE INDEX haa_ff_i ON silva.hauling_authority USING btree (forest_file_id);
-CREATE INDEX haa_micd_fk_i ON silva.hauling_authority USING btree (marking_instrument_code);
-CREATE INDEX haa_mmcd_fk_i ON silva.hauling_authority USING btree (marking_method_code);
+CREATE INDEX IF NOT EXISTS haa_ff_i ON silva.hauling_authority USING btree (forest_file_id);
+CREATE INDEX IF NOT EXISTS haa_micd_fk_i ON silva.hauling_authority USING btree (marking_instrument_code);
+CREATE INDEX IF NOT EXISTS haa_mmcd_fk_i ON silva.hauling_authority USING btree (marking_method_code);
 COMMENT ON TABLE silva.hauling_authority IS 'Information about the moving permission for a timber tenure. For some Road Permits and Licences to Cut, no moving permission is granted.';
 
 -- Column comments
@@ -1614,11 +1614,11 @@ CREATE TABLE IF NOT EXISTS silva.opening (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT opening_pkey PRIMARY KEY (opening_id)
 );
-CREATE INDEX o_licensee_id_i ON silva.opening USING btree (licensee_opening_id);
-CREATE INDEX o_open_category_code_i ON silva.opening USING btree (open_category_code);
-CREATE INDEX o_opening_number_i ON silva.opening USING btree (mapsheet_grid, mapsheet_letter, mapsheet_quad, mapsheet_square, mapsheet_sub_quad, opening_number);
-CREATE INDEX o_ou_fk_i ON silva.opening USING btree (admin_district_no);
-CREATE INDEX o_status_i ON silva.opening USING btree (opening_status_code);
+CREATE INDEX IF NOT EXISTS o_licensee_id_i ON silva.opening USING btree (licensee_opening_id);
+CREATE INDEX IF NOT EXISTS o_open_category_code_i ON silva.opening USING btree (open_category_code);
+CREATE INDEX IF NOT EXISTS o_opening_number_i ON silva.opening USING btree (mapsheet_grid, mapsheet_letter, mapsheet_quad, mapsheet_square, mapsheet_sub_quad, opening_number);
+CREATE INDEX IF NOT EXISTS o_ou_fk_i ON silva.opening USING btree (admin_district_no);
+CREATE INDEX IF NOT EXISTS o_status_i ON silva.opening USING btree (opening_status_code);
 COMMENT ON TABLE silva.opening IS 'The administrative boundary of an area of land on which silviculture activities are planned and completed.';
 
 -- Column comments
@@ -1723,8 +1723,8 @@ CREATE TABLE IF NOT EXISTS silva.opening_attachment (
 	CONSTRAINT opening_attachment_opening_attachment_guid_key UNIQUE (opening_attachment_guid),
 	CONSTRAINT opening_attachment_pkey PRIMARY KEY (opening_attachment_file_id)
 );
-CREATE INDEX oa_mtc_fk_i ON silva.opening_attachment USING btree (mime_type_code);
-CREATE INDEX oa_o_fk_i ON silva.opening_attachment USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS oa_mtc_fk_i ON silva.opening_attachment USING btree (mime_type_code);
+CREATE INDEX IF NOT EXISTS oa_o_fk_i ON silva.opening_attachment USING btree (opening_id);
 COMMENT ON TABLE silva.opening_attachment IS 'A file attached to an Opening for purpose of clarification or exhibit.';
 
 -- Column comments
@@ -1784,7 +1784,7 @@ CREATE TABLE IF NOT EXISTS silva.opening_geometry (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT opening_geometry_pkey PRIMARY KEY (opening_id)
 );
-CREATE INDEX og_geometry_i ON silva.opening_geometry USING gist (geometry);
+CREATE INDEX IF NOT EXISTS og_geometry_i ON silva.opening_geometry USING gist (geometry);
 COMMENT ON TABLE silva.opening_geometry IS 'The spatial representation for an opening, which is the administrative boundary of an area of land on which silviculture activities are planned and completed.';
 
 -- Column comments
@@ -1880,8 +1880,8 @@ CREATE TABLE IF NOT EXISTS silva.planting_rslt (
 	climate_based_seed_xfer_ind varchar(1) DEFAULT 'N'::character varying NOT NULL, -- CLIMATE BASED SEED TRANSFER - Indicates that the seedlings 'transferred beyond limit' are based on the Ministry's Climate Change Seed Policy.
 	CONSTRAINT planting_rslt_pkey PRIMARY KEY (activity_treatment_unit_id, results_ind, plant_rslt_seq_no)
 );
-CREATE INDEX pr_sparri_fk_i ON silva.planting_rslt USING btree (request_skey, item_id);
-CREATE INDEX pr_vl_fk_i ON silva.planting_rslt USING btree (veg_lot_id);
+CREATE INDEX IF NOT EXISTS pr_sparri_fk_i ON silva.planting_rslt USING btree (request_skey, item_id);
+CREATE INDEX IF NOT EXISTS pr_vl_fk_i ON silva.planting_rslt USING btree (veg_lot_id);
 COMMENT ON TABLE silva.planting_rslt IS 'Collects planned and actual information about a planting activity performed on an Activity Treatment Unit.';
 
 -- Column comments
@@ -1932,10 +1932,10 @@ CREATE TABLE IF NOT EXISTS silva.prov_forest_use (
 	CONSTRAINT prov_forest_use_forest_tenure_guid_key UNIQUE (forest_tenure_guid),
 	CONSTRAINT prov_forest_use_pkey PRIMARY KEY (forest_file_id)
 );
-CREATE INDEX pfu_fsc_fk_i ON silva.prov_forest_use USING btree (file_status_st);
-CREATE INDEX pfu_ftcd_fk_i ON silva.prov_forest_use USING btree (file_type_code);
-CREATE INDEX pfu_i2 ON silva.prov_forest_use USING btree (forest_file_id, file_type_code, file_status_st);
-CREATE INDEX pfu_ou_fk_i ON silva.prov_forest_use USING btree (forest_region);
+CREATE INDEX IF NOT EXISTS pfu_fsc_fk_i ON silva.prov_forest_use USING btree (file_status_st);
+CREATE INDEX IF NOT EXISTS pfu_ftcd_fk_i ON silva.prov_forest_use USING btree (file_type_code);
+CREATE INDEX IF NOT EXISTS pfu_i2 ON silva.prov_forest_use USING btree (forest_file_id, file_type_code, file_status_st);
+CREATE INDEX IF NOT EXISTS pfu_ou_fk_i ON silva.prov_forest_use USING btree (forest_region);
 COMMENT ON TABLE silva.prov_forest_use IS 'General header information to identify the type of forest land use managed by the Ministry of Forests (eg., timber tenures, grazing tenures, recreation files, forest service roads, etc.). This is the main access point for examining land use information. Recommend that this entity be renamed to FOREST TENURE or FOREST FILE in the future (TF - this needs more analysis to determine what is indentified in this entity - licence, permit, etc and if all rights identified belong here).';
 
 -- Column comments
@@ -1976,7 +1976,7 @@ CREATE TABLE IF NOT EXISTS silva.results_audit_detail (
 	entry_timestamp timestamp(0) NOT NULL, -- The date and time the data change occurred.
 	CONSTRAINT results_audit_detail_pkey PRIMARY KEY (results_audit_detail_id)
 );
-CREATE INDEX rad_rae_fk_i ON silva.results_audit_detail USING btree (results_audit_event_id);
+CREATE INDEX IF NOT EXISTS rad_rae_fk_i ON silva.results_audit_detail USING btree (results_audit_event_id);
 COMMENT ON TABLE silva.results_audit_detail IS 'Details each of the changes included during an EDT AUDIT EVENT. Shows the value of the modified column before and after the change.';
 
 -- Column comments
@@ -2014,9 +2014,9 @@ CREATE TABLE IF NOT EXISTS silva.results_audit_event (
 	entry_timestamp timestamp(0) NOT NULL, -- The date and time the information was entered.
 	CONSTRAINT results_audit_event_pkey PRIMARY KEY (results_audit_event_id)
 );
-CREATE INDEX rae_o_fk_i ON silva.results_audit_event USING btree (opening_id, action_date, results_audit_action_code);
-CREATE INDEX rae_proj_i ON silva.results_audit_event USING btree (silviculture_project_id);
-CREATE INDEX rae_sr_fk_i ON silva.results_audit_event USING btree (standards_regime_id, action_date, results_audit_action_code);
+CREATE INDEX IF NOT EXISTS rae_o_fk_i ON silva.results_audit_event USING btree (opening_id, action_date, results_audit_action_code);
+CREATE INDEX IF NOT EXISTS rae_proj_i ON silva.results_audit_event USING btree (silviculture_project_id);
+CREATE INDEX IF NOT EXISTS rae_sr_fk_i ON silva.results_audit_event USING btree (standards_regime_id, action_date, results_audit_action_code);
 COMMENT ON TABLE silva.results_audit_event IS 'Stores Audit Information such as openings submitted, activities submitted, changes in statuses, etc.';
 
 -- Column comments
@@ -2108,9 +2108,9 @@ CREATE TABLE IF NOT EXISTS silva.silv_relief_application (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT silv_relief_application_pkey PRIMARY KEY (silv_relief_application_id)
 );
-CREATE INDEX sra_atu_fk_i ON silva.silv_relief_application USING btree (activity_treatment_unit_id);
-CREATE INDEX sra_oah_fk_i ON silva.silv_relief_application USING btree (amendment_opening_id, opening_amendment_number);
-CREATE INDEX sra_srascd_fk_i ON silva.silv_relief_application USING btree (silv_relief_appl_status_code);
+CREATE INDEX IF NOT EXISTS sra_atu_fk_i ON silva.silv_relief_application USING btree (activity_treatment_unit_id);
+CREATE INDEX IF NOT EXISTS sra_oah_fk_i ON silva.silv_relief_application USING btree (amendment_opening_id, opening_amendment_number);
+CREATE INDEX IF NOT EXISTS sra_srascd_fk_i ON silva.silv_relief_application USING btree (silv_relief_appl_status_code);
 COMMENT ON TABLE silva.silv_relief_application IS 'Application for relief from obligation or montary reembursement for damage done by natural disasters etc.';
 
 -- Column comments
@@ -2205,12 +2205,12 @@ CREATE TABLE IF NOT EXISTS silva.silviculture_project (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record has been modified. Used in the web page access to determine if the record has been modified since the data was first retrieved.
 	CONSTRAINT silviculture_project_pkey PRIMARY KEY (silviculture_project_id)
 );
-CREATE INDEX proj_cchcd_fk_i ON silva.silviculture_project USING btree (crew_contract_hire_code);
-CREATE INDEX proj_fc2_fk_i ON silva.silviculture_project USING btree (client_number);
-CREATE INDEX proj_pscd_fk_i ON silva.silviculture_project USING btree (silv_project_status_code);
-CREATE INDEX proj_saz_fk_i ON silva.silviculture_project USING btree (org_unit_no, dist_admin_zone);
-CREATE INDEX proj_sbc_fk_i ON silva.silviculture_project USING btree (silv_base_code);
-CREATE INDEX proj_ubcd_fk_i ON silva.silviculture_project USING btree (unit_bid_code);
+CREATE INDEX IF NOT EXISTS proj_cchcd_fk_i ON silva.silviculture_project USING btree (crew_contract_hire_code);
+CREATE INDEX IF NOT EXISTS proj_fc2_fk_i ON silva.silviculture_project USING btree (client_number);
+CREATE INDEX IF NOT EXISTS proj_pscd_fk_i ON silva.silviculture_project USING btree (silv_project_status_code);
+CREATE INDEX IF NOT EXISTS proj_saz_fk_i ON silva.silviculture_project USING btree (org_unit_no, dist_admin_zone);
+CREATE INDEX IF NOT EXISTS proj_sbc_fk_i ON silva.silviculture_project USING btree (silv_base_code);
+CREATE INDEX IF NOT EXISTS proj_ubcd_fk_i ON silva.silviculture_project USING btree (unit_bid_code);
 COMMENT ON TABLE silva.silviculture_project IS 'A administrative instrument that allows Ministry staff to plan and execute contracts for silviculture treatments. Collects the general project information recorded during Planting, Site Preparation, Pruning and Survey activities';
 
 -- Column comments
@@ -2272,8 +2272,8 @@ CREATE TABLE IF NOT EXISTS silva.standards_regime (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT standards_regime_pkey PRIMARY KEY (standards_regime_id)
 );
-CREATE INDEX sr_srsc_fk_i ON silva.standards_regime USING btree (standards_regime_status_code);
-CREATE INDEX sr_sstcd_fk_i ON silva.standards_regime USING btree (silv_statute_code);
+CREATE INDEX IF NOT EXISTS sr_srsc_fk_i ON silva.standards_regime USING btree (standards_regime_status_code);
+CREATE INDEX IF NOT EXISTS sr_sstcd_fk_i ON silva.standards_regime USING btree (silv_statute_code);
 
 -- Column comments
 
@@ -2349,7 +2349,7 @@ CREATE TABLE IF NOT EXISTS silva.stocking_ecology (
 	CONSTRAINT stocking_ecology_pkey PRIMARY KEY (stocking_ecology_id),
 	CONSTRAINT stocking_ecology_stocking_standard_unit_id_key UNIQUE (stocking_standard_unit_id)
 );
-CREATE INDEX se_o_fk_i ON silva.stocking_ecology USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS se_o_fk_i ON silva.stocking_ecology USING btree (opening_id);
 COMMENT ON TABLE silva.stocking_ecology IS 'Primarily a classification of the land base in terms of biogeoclimatic and physical factors.';
 
 -- Column comments
@@ -2398,7 +2398,7 @@ CREATE TABLE IF NOT EXISTS silva.stocking_ecology_archive (
 	update_timestamp timestamp(0) NOT NULL, -- The date and time of the last update.
 	CONSTRAINT stocking_ecology_archive_pkey PRIMARY KEY (stocking_ecology_id, stocking_event_history_id, stocking_standard_unit_id)
 );
-CREATE INDEX searc_ssuarc_fk_i ON silva.stocking_ecology_archive USING btree (stocking_event_history_id, stocking_standard_unit_id);
+CREATE INDEX IF NOT EXISTS searc_ssuarc_fk_i ON silva.stocking_ecology_archive USING btree (stocking_event_history_id, stocking_standard_unit_id);
 COMMENT ON TABLE silva.stocking_ecology_archive IS 'Contains archived geometry information for a Stocking Standard amendment.';
 
 -- Column comments
@@ -2442,8 +2442,8 @@ CREATE TABLE IF NOT EXISTS silva.stocking_event_history (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT stocking_event_history_pkey PRIMARY KEY (stocking_event_history_id)
 );
-CREATE INDEX seh_o_fk_i ON silva.stocking_event_history USING btree (opening_id);
-CREATE INDEX seh_oah_fk_i ON silva.stocking_event_history USING btree (opening_amendment_id, opening_amendment_number);
+CREATE INDEX IF NOT EXISTS seh_o_fk_i ON silva.stocking_event_history USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS seh_oah_fk_i ON silva.stocking_event_history USING btree (opening_amendment_id, opening_amendment_number);
 COMMENT ON TABLE silva.stocking_event_history IS 'Records amendments to stocking standards';
 
 -- Column comments
@@ -2489,8 +2489,8 @@ CREATE TABLE IF NOT EXISTS silva.stocking_layer (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT stocking_layer_pkey PRIMARY KEY (stocking_layer_id)
 );
-CREATE INDEX sl_o_fk_i ON silva.stocking_layer USING btree (opening_id);
-CREATE INDEX sl_ssu_fk_i ON silva.stocking_layer USING btree (stocking_standard_unit_id);
+CREATE INDEX IF NOT EXISTS sl_o_fk_i ON silva.stocking_layer USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS sl_ssu_fk_i ON silva.stocking_layer USING btree (stocking_standard_unit_id);
 COMMENT ON TABLE silva.stocking_layer IS 'Details the standards unit layer information.';
 
 -- Column comments
@@ -2545,7 +2545,7 @@ CREATE TABLE IF NOT EXISTS silva.stocking_layer_archive (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT stocking_layer_archive_pkey PRIMARY KEY (stocking_layer_id, stocking_event_history_id, stocking_standard_unit_id)
 );
-CREATE INDEX slarc_ssuarc_fk_i ON silva.stocking_layer_archive USING btree (stocking_event_history_id, stocking_standard_unit_id);
+CREATE INDEX IF NOT EXISTS slarc_ssuarc_fk_i ON silva.stocking_layer_archive USING btree (stocking_event_history_id, stocking_standard_unit_id);
 COMMENT ON TABLE silva.stocking_layer_archive IS 'Contains archived layer information for a Stocking Standard amendment.';
 
 -- Column comments
@@ -2628,7 +2628,7 @@ CREATE TABLE IF NOT EXISTS silva.stocking_layer_species_archive (
 	revision_count int4 NOT NULL, -- A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.
 	CONSTRAINT stocking_layer_species_archive_pkey PRIMARY KEY (silv_tree_species_code, stocking_layer_id, stocking_event_history_id, stocking_standard_unit_id)
 );
-CREATE INDEX slsarc_slarc_fk_i ON silva.stocking_layer_species_archive USING btree (stocking_layer_id, stocking_event_history_id, stocking_standard_unit_id);
+CREATE INDEX IF NOT EXISTS slsarc_slarc_fk_i ON silva.stocking_layer_species_archive USING btree (stocking_layer_id, stocking_event_history_id, stocking_standard_unit_id);
 COMMENT ON TABLE silva.stocking_layer_species_archive IS 'Contains archived layer species information for a Stocking Standard amendment.';
 
 -- Column comments
@@ -2673,8 +2673,8 @@ CREATE TABLE IF NOT EXISTS silva.stocking_milestone (
 	extent_feasible_declared_ind varchar(1) DEFAULT 'N'::character varying NOT NULL, -- DECLARED TO THE EXTENT PRACTICABLE - Indicator for Milestones that do not meet applicable Stocking Standards.
 	CONSTRAINT stocking_milestone_pkey PRIMARY KEY (stocking_standard_unit_id, silv_milestone_type_code)
 );
-CREATE INDEX sm_ded_i ON silva.stocking_milestone USING btree (due_early_date);
-CREATE INDEX sm_dld_i ON silva.stocking_milestone USING btree (due_late_date);
+CREATE INDEX IF NOT EXISTS sm_ded_i ON silva.stocking_milestone USING btree (due_early_date);
+CREATE INDEX IF NOT EXISTS sm_dld_i ON silva.stocking_milestone USING btree (due_late_date);
 COMMENT ON TABLE silva.stocking_milestone IS 'Silviculture milestones that have been achieved for a specific area (SU - Standards Unit). The milestones that are currently tracked are post harvest, regeneration and free growing.';
 
 -- Column comments
@@ -2739,9 +2739,9 @@ CREATE TABLE IF NOT EXISTS silva.stocking_standard_unit (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT stocking_standard_unit_pkey PRIMARY KEY (stocking_standard_unit_id)
 );
-CREATE INDEX ssu_o_fk_i ON silva.stocking_standard_unit USING btree (opening_id);
-CREATE INDEX ssu_sr_fk_i ON silva.stocking_standard_unit USING btree (standards_regime_id);
-CREATE INDEX ssu_su_i ON silva.stocking_standard_unit USING btree (opening_id, standards_unit_id);
+CREATE INDEX IF NOT EXISTS ssu_o_fk_i ON silva.stocking_standard_unit USING btree (opening_id);
+CREATE INDEX IF NOT EXISTS ssu_sr_fk_i ON silva.stocking_standard_unit USING btree (standards_regime_id);
+CREATE INDEX IF NOT EXISTS ssu_su_i ON silva.stocking_standard_unit USING btree (opening_id, standards_unit_id);
 COMMENT ON TABLE silva.stocking_standard_unit IS 'Basic Silviculture objective stated in quantifiable terms for a specific area. These are the acceptable standards for reforestation and soil conversation. Also known as SU - Standards Unit.';
 
 -- Column comments
@@ -2789,7 +2789,7 @@ CREATE TABLE IF NOT EXISTS silva.stocking_standard_unit_archive (
 	revision_count int4 NOT NULL, -- Internal counter used by the system to avoid conflicting updates to the record.
 	CONSTRAINT stocking_standard_unit_archive_pkey PRIMARY KEY (stocking_event_history_id, stocking_standard_unit_id)
 );
-CREATE INDEX ssuarc_seh_fk_i ON silva.stocking_standard_unit_archive USING btree (stocking_event_history_id);
+CREATE INDEX IF NOT EXISTS ssuarc_seh_fk_i ON silva.stocking_standard_unit_archive USING btree (stocking_event_history_id);
 COMMENT ON TABLE silva.stocking_standard_unit_archive IS 'Contains archived information about a Stocking Standard amendment.';
 
 -- Column comments
@@ -2872,12 +2872,12 @@ CREATE TABLE IF NOT EXISTS silva.timber_mark (
 	CONSTRAINT timber_mark_pkey PRIMARY KEY (timber_mark),
 	CONSTRAINT timber_mark_timber_mark_forest_file_id_key UNIQUE (timber_mark, forest_file_id)
 );
-CREATE INDEX tfalling_geographically_wit__i ON silva.timber_mark USING btree (geographic_distrct);
-CREATE INDEX tm1_i ON silva.timber_mark USING btree (vm_timber_mark);
-CREATE INDEX tm2_i ON silva.timber_mark USING btree (hdbs_timber_mark);
-CREATE INDEX tm3_i ON silva.timber_mark USING btree (timber_mark, forest_file_id, forest_district);
-CREATE INDEX tm_ou_fk_i ON silva.timber_mark USING btree (forest_district);
-CREATE INDEX tm_pfu_fk_i ON silva.timber_mark USING btree (forest_file_id);
+CREATE INDEX IF NOT EXISTS tfalling_geographically_wit__i ON silva.timber_mark USING btree (geographic_distrct);
+CREATE INDEX IF NOT EXISTS tm1_i ON silva.timber_mark USING btree (vm_timber_mark);
+CREATE INDEX IF NOT EXISTS tm2_i ON silva.timber_mark USING btree (hdbs_timber_mark);
+CREATE INDEX IF NOT EXISTS tm3_i ON silva.timber_mark USING btree (timber_mark, forest_file_id, forest_district);
+CREATE INDEX IF NOT EXISTS tm_ou_fk_i ON silva.timber_mark USING btree (forest_district);
+CREATE INDEX IF NOT EXISTS tm_pfu_fk_i ON silva.timber_mark USING btree (forest_file_id);
 COMMENT ON TABLE silva.timber_mark IS 'Information about the timber cutting and moving permission for a timber tenure. For Private Timber Marks, the ministry does not grant cutting permission. For some Road Permits and Licences to Cut, no moving permission is granted. Otherwise, synonymous. This entity is not directly updated, but is rather done via a replication process using its base tables, of harvesting authority and hauling authority.';
 
 -- Column comments
