@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.extensions;
 
-import java.util.List;
 import java.util.UUID;
+
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,6 +90,7 @@ public abstract class AbstractTestContainerIntegrationTest {
    */
   @BeforeEach
   public void setUp() {
+    flywayPostgres.clean();
     flywayPostgres.migrate();
     flywayOracle.migrate();
   }
