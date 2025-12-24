@@ -90,7 +90,6 @@ public abstract class AbstractTestContainerIntegrationTest {
    */
   @BeforeEach
   public void setUp() {
-    flywayPostgres.clean();
     flywayPostgres.migrate();
     flywayOracle.migrate();
   }
