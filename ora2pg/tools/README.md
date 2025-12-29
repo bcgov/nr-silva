@@ -39,3 +39,29 @@ python3 converter.py --input-dir migration/oracle --output-dir migration/postgre
 Notes
 - Script only touches INSERT INTO patterns and simple date/timestamp constructs — test outputs before applying to production DB.
 - If you want the script to use your local converter.config.json, place it next to converter.py. Otherwise copy/rename the example to create a per-user config.
+
+## Combiner (combine_sql.py / combiner.py)
+
+Purpose
+- Combine multiple versioned migration SQL files into a single combined SQL file.
+- Files are expected to include a version token like `V1.0.0` (case-insensitive) in the filename; files are sorted by version before concatenation.
+- Each file's contents are wrapped with `-- Begin file: <name>` / `-- End file: <name>` markers in the output.
+
+Usage
+- Run the combiner script with flags:
+  - `--input-dir / -i` : Directory containing .sql files to combine (required)
+  - `--output-dir / -d` : Directory to write the combined file (defaults to input dir)
+  - `--output / -o` : Output filename (default: combined.sql)
+
+Examples
+- Combine files in-place (output in same directory):
+  `python3 combiner.py --input-dir migration/postgres`
+
+- Specify output directory and filename:
+  `python3 combiner.py -i migration/postgres -d migration/combined -o all_in_one.sql`
+
+Notes
+- The script finds files ending with `.sql` (case-insensitive).
+- Files without a parsable version (Vx.y.z) are sorted last.
+- Output directory will be created if it doesn't exist.
+- Review the combined file before applying it to your database.
