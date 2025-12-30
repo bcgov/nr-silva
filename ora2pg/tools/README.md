@@ -65,3 +65,52 @@ Notes
 - Files without a parsable version (Vx.y.z) are sorted last.
 - Output directory will be created if it doesn't exist.
 - Review the combined file before applying it to your database.
+
+## SQL Loader (sql_loader.py)
+
+Purpose
+- Load a combined SQL file (produced by the combiner) into a PostgreSQL database using the `psql` client.
+- The script requires `psql` on PATH; if not present it prints install hints and exits.
+- Password prompt hides input (no characters echoed).
+
+Defaults
+- host: localhost
+- port: 5432
+- dbname: postgres
+- user: postgres
+
+Usage
+- Basic:
+  `python3 sql_loader.py --sql-file /path/to/combined.sql`
+
+- With explicit connection options:
+  `python3 sql_loader.py --sql-file combined.sql --host db.host --port 5432 --dbname mydb --user myuser`
+  - If `--password` omitted the script prompts (input hidden).
+
+Options
+- --sql-file / -s   : Path to the SQL file to load (required).
+- --host / -H       : Postgres host (default: localhost).
+- --port / -P       : Postgres port (default: 5432).
+- --dbname / -d     : Database name (default: postgres).
+- --user / -U       : Database user (default: postgres).
+- --password / -W   : Password (if omitted you'll be prompted; input is not echoed).
+- --yes / -y        : Skip confirmation prompt.
+
+Behavior
+- The script shows the SQL file path and the target DB info (user@host:port/dbname) before asking for confirmation.
+- Uses the `PGPASSWORD` environment variable to pass the password to `psql` if provided.
+- If `psql` is not found, the script prints platform hints (macOS Homebrew example) and exits with an error.
+
+Examples
+- Prompt for password and confirm before running:
+  `python3 sql_loader.py -s combined.sql -U postgres`
+
+- Non-interactive (skip confirmation; still hidden password prompt unless provided):
+  `python3 sql_loader.py -s combined.sql -U postgres -W secret -y`
+
+Notes / install hints
+- On macOS you can install the PostgreSQL client with Homebrew:
+  `brew install libpq`
+  then add it to PATH:
+  `export PATH="$(brew --prefix libpq)/bin:$PATH"`
+- Always review the combined SQL before loading into a production database.
