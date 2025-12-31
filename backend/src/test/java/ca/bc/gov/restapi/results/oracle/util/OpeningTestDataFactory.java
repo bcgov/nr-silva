@@ -3,15 +3,15 @@ package ca.bc.gov.restapi.results.oracle.util;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
-import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingLayerProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingSpeciesProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewMilestoneProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneOverviewOpeningProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTombstoneProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.projection.comment.CommentProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingSpeciesProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewMilestoneProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewOpeningProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneProjection;
 import java.time.LocalDate;
 
 public class OpeningTestDataFactory {

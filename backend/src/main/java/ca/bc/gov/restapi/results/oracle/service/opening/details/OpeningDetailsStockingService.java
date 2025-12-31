@@ -3,7 +3,7 @@ package ca.bc.gov.restapi.results.oracle.service.opening.details;
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;

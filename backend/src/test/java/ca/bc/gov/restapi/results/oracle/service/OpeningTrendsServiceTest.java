@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
+import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.OpeningTrendsService;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;

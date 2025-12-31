@@ -2,8 +2,8 @@ package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryOverviewProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.history.ForestCoverHistoryPolygonProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.history.ForestCoverHistoryOverviewProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.history.ForestCoverHistoryPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

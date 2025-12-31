@@ -4,7 +4,7 @@ import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.SimplePageDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenureDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTenureProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjection;
 import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
 import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
 import java.util.Map;

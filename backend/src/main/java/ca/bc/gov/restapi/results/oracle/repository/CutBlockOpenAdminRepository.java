@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningTenureProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

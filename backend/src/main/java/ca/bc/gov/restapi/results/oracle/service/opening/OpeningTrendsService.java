@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service.opening;
 
-import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
+import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import java.time.LocalDate;

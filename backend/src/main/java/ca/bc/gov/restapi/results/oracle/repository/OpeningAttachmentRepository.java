@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentMetaProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningAttachmentMetaProjection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

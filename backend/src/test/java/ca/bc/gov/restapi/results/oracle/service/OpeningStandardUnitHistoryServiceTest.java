@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
-import ca.bc.gov.restapi.results.oracle.entity.opening.history.*;
+import ca.bc.gov.restapi.results.common.projection.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;

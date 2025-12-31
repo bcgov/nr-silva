@@ -1,18 +1,18 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.projection.cover.history.*;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverDetailedSpeciesProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverDetailsDamageProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverDetailsLayerProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverDetailedSpeciesProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverDetailsDamageProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverDetailsLayerProjection;
 import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverPolygonProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverSpeciesProjection;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverUnmappedProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverPolygonProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverSpeciesProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverUnmappedProjection;
 import java.util.List;
 import java.util.Optional;
 
-import ca.bc.gov.restapi.results.oracle.entity.cover.history.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

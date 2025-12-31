@@ -1,9 +1,9 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsNotificationDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingNotificationProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningDetailsNotificationStatusEnum;
 import ca.bc.gov.restapi.results.oracle.enums.StockingMilestoneTypeEnum;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingNotificationProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import java.util.Arrays;
 import java.util.Comparator;

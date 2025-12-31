@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
-import ca.bc.gov.restapi.results.oracle.entity.comments.CommentProjection;
+import ca.bc.gov.restapi.results.common.projection.comment.CommentProjection;
 import ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,8 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsNotificationDto;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningStockingNotificationProjection;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningDetailsNotificationStatusEnum;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingNotificationProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsNotificationService;
 import org.junit.jupiter.api.Assertions;

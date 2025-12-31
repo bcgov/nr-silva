@@ -9,7 +9,7 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerListDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverPolygonDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverUnmappedDto;
-import ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverPolygonProjection;
+import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
 import java.util.List;
 import java.util.Optional;
