@@ -1,12 +1,12 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.history;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.*;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsBecDto;
+import ca.bc.gov.restapi.results.common.dto.opening.history.*;
 import ca.bc.gov.restapi.results.common.projection.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
-import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
+import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;

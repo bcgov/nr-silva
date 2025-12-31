@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.oracle.enums;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
+
+import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

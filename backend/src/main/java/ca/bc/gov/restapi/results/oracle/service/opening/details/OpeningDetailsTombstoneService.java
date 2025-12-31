@@ -1,11 +1,11 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
-import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsCommentConverter;
-import ca.bc.gov.restapi.results.oracle.service.conversion.opening.OpeningDetailsTombstoneConverter;
+import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
+import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsTombstoneConverter;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;

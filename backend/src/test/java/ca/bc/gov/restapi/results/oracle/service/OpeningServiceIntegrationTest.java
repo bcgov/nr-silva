@@ -5,8 +5,8 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsStockingDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.util.List;

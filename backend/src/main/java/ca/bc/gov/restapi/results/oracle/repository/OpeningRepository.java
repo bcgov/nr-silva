@@ -3,7 +3,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 import ca.bc.gov.restapi.results.common.projection.opening.*;
 import ca.bc.gov.restapi.results.common.projection.opening.history.*;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.*;

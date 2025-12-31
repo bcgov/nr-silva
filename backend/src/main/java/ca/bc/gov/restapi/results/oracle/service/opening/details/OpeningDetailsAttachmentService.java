@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsAttachmentMetaDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsAttachmentMetaDto;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningAttachmentMetaProjection;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningAttachmentRepository;
 import java.net.URI;

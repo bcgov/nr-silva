@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.service.OpenCategoryCodeService;
 import ca.bc.gov.restapi.results.oracle.service.OrgUnitService;
 import java.util.List;

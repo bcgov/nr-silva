@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeRepository;
 import java.time.LocalDate;

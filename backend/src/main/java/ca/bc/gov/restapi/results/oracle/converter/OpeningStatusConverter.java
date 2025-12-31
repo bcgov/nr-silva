@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.converter;
 
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.util.Objects;

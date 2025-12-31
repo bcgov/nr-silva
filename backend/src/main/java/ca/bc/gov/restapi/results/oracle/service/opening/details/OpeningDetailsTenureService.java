@@ -1,12 +1,12 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.SimplePageDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenureDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.SimplePageDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTenureDto;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTenuresDto;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjection;
 import ca.bc.gov.restapi.results.oracle.repository.CutBlockOpenAdminRepository;
-import ca.bc.gov.restapi.results.oracle.util.PaginationUtil;
+import ca.bc.gov.restapi.results.common.util.PaginationUtil;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;

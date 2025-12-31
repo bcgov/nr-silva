@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.jayway.jsonpath.JsonPath;

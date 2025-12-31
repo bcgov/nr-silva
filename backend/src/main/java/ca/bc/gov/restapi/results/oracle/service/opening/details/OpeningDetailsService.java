@@ -1,16 +1,16 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
-import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDetailsDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.*;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
+import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailsDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDto;
+import ca.bc.gov.restapi.results.common.dto.cover.history.OpeningForestCoverHistoryDetailsDto;
+import ca.bc.gov.restapi.results.common.dto.cover.history.OpeningForestCoverHistoryDto;
+import ca.bc.gov.restapi.results.common.dto.cover.history.OpeningForestCoverHistoryOverviewDto;
+import ca.bc.gov.restapi.results.common.dto.opening.*;
+import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryDto;
+import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryWithComparisonDto;
+import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningForestCoverHistoryService;
 import ca.bc.gov.restapi.results.oracle.service.opening.history.OpeningStandardUnitHistoryService;
 import java.util.List;

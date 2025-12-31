@@ -1,14 +1,14 @@
 package ca.bc.gov.restapi.results.oracle.service.opening.details;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDamageDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailedSpeciesDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverLayerListDescriptionDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverPolygonDto;
-import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverUnmappedDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDamageDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailedSpeciesDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailsDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverLayerDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverLayerListDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverPolygonDto;
+import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverUnmappedDto;
 import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverPolygonProjection;
 import ca.bc.gov.restapi.results.oracle.repository.ForestCoverEntityRepository;
 import java.util.List;

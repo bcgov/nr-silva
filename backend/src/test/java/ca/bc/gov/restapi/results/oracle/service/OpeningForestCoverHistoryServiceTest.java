@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import ca.bc.gov.restapi.results.oracle.dto.cover.history.*;
+import ca.bc.gov.restapi.results.common.dto.cover.history.*;
 import ca.bc.gov.restapi.results.common.projection.cover.history.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
