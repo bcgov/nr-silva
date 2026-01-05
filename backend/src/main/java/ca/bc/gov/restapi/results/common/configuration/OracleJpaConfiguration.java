@@ -1,10 +1,12 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -28,38 +30,32 @@ public class OracleJpaConfiguration {
   private String oracleHost;
 
   @Bean(name = "oracleEntityManagerFactory")
-  public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
+      EntityManagerFactoryBuilder builder,
       @Qualifier("oracleDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
-        new LocalContainerEntityManagerFactoryBean();
-    factoryBean.setDataSource(dataSource);
-    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.oracle");
-    factoryBean.setPersistenceUnitName("oracle");
-
-    // Set JPA vendor adapter
-    org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter =
-        new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter();
-    factoryBean.setJpaVendorAdapter(vendorAdapter);
-
-    // Explicitly set EntityManagerFactory interface to avoid conflicts
-    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
-
-    // Set JPA properties manually to avoid Spring Boot auto-configuration
-    factoryBean.setJpaPropertyMap(
-        Map.of(
+      builder
+        .dataSource(dataSource)
+        .packages(OpenCategoryCodeEntity.class)
+        .persistenceUnit("oracle")
+        .properties(
+          Map.of(
             "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",
             "hibernate.hikari.connection.provider_class",
-                "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
+              "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
             "hibernate.connection.datasource", dataSource,
             "hibernate.physical_naming_strategy",
-                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
+              "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
             "hibernate.connection.oracle.net.ssl_server_dn_match", "false",
-            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost));
+            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost))
+        .build();
 
+    // Explicitly set EntityManagerFactory interface to avoid conflicts in native image builds.
+    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
     return factoryBean;
-  }
+    }
 
   @Bean(name = "oracleDataSource")
   @ConfigurationProperties(prefix = "spring.oracle.hikari")

@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -26,36 +28,30 @@ public class PostgresJpaConfiguration {
 
   @Primary
   @Bean(name = "postgresEntityManagerFactory")
-  public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
+      EntityManagerFactoryBuilder builder,
       @Qualifier("postgresHikariDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
-        new LocalContainerEntityManagerFactoryBean();
-    factoryBean.setDataSource(dataSource);
-    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.postgres");
-    factoryBean.setPersistenceUnitName("postgres");
-
-    // Set JPA vendor adapter
-    org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter =
-        new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter();
-    factoryBean.setJpaVendorAdapter(vendorAdapter);
-
-    // Explicitly set EntityManagerFactory interface to avoid conflicts
-    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
-
-    // Set JPA properties manually to avoid Spring Boot auto-configuration
-    factoryBean.setJpaPropertyMap(
-        Map.of(
+      builder
+        .dataSource(dataSource)
+        .packages(UserOpeningEntity.class)
+        .persistenceUnit("postgres")
+        .properties(
+          Map.of(
             "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",
             "hibernate.hikari.connection.provider_class",
-                "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
+              "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
             "hibernate.connection.datasource", dataSource,
             "hibernate.physical_naming_strategy",
-                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"));
+              "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"))
+        .build();
 
+    // Explicitly set EntityManagerFactory interface to avoid conflicts in native image builds.
+    factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
     return factoryBean;
-  }
+    }
 
   @Bean(name = "postgresHikariDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.hikari")
