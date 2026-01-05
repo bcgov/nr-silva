@@ -1005,7 +1005,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                     "Forest cover history polygon with id 1 and archive date 2000-01-01 record(s)"
                         + " not found!"))
         .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/1"));
-    ;
   }
 
   @Test
