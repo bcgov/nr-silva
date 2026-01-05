@@ -23,8 +23,8 @@
   </licenses>
 
   <properties>
-    <java.version>17</java.version>
-    <jdk.version>17</jdk.version>
+    <java.version>25</java.version>
+    <jdk.version>25</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <skip.integration.tests>true</skip.integration.tests>
@@ -41,7 +41,7 @@
     <oci.revision>${project.version}</oci.revision>
     <snakeyaml.version>2.2</snakeyaml.version>
     <testcontainers.version>1.21.1</testcontainers.version>
-    <flyway.version>10.13.0</flyway.version>
+    <flyway.version>11.20.0</flyway.version>
     <logback.version>1.5.18</logback.version>
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-database.version>23.8.0.25.04</oracle-database.version>
