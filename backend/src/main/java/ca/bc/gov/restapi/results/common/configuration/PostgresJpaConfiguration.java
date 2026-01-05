@@ -9,9 +9,12 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -25,15 +28,25 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     transactionManagerRef = "postgresTransactionManager")
 public class PostgresJpaConfiguration {
 
+  @Bean(name = "postgresManagedTypes")
+  @Primary
+  public PersistenceManagedTypes postgresManagedTypes(ResourceLoader resourceLoader) {
+    // Automatically scan and register all Postgres entity classes (required for native image)
+    return new PersistenceManagedTypesScanner(resourceLoader)
+        .scan("ca.bc.gov.restapi.results.postgres.entity");
+  }
+
   @Primary
   @Bean(name = "postgresEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
-      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource) {
+      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
+      @Qualifier("postgresManagedTypes") PersistenceManagedTypes managedTypes) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.postgres.entity");
+    // Explicitly set managed types instead of package scanning (required for native images)
+    factoryBean.setManagedTypes(managedTypes);
     factoryBean.setPersistenceUnitName("postgres");
 
     // Set JPA vendor adapter

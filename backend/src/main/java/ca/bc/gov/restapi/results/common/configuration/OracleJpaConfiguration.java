@@ -9,9 +9,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -28,14 +31,23 @@ public class OracleJpaConfiguration {
   @Value("${ca.bc.gov.nrs.oracle.host}")
   private String oracleHost;
 
+  @Bean(name = "oracleManagedTypes")
+  public PersistenceManagedTypes oracleManagedTypes(ResourceLoader resourceLoader) {
+    // Automatically scan and register all Oracle entity classes (required for native image)
+    return new PersistenceManagedTypesScanner(resourceLoader)
+        .scan("ca.bc.gov.restapi.results.oracle.entity");
+  }
+
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
-      @Qualifier("oracleDataSource") HikariDataSource dataSource) {
+      @Qualifier("oracleDataSource") HikariDataSource dataSource,
+      @Qualifier("oracleManagedTypes") PersistenceManagedTypes managedTypes) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.oracle.entity");
+    // Explicitly set managed types instead of package scanning (required for native images)
+    factoryBean.setManagedTypes(managedTypes);
     factoryBean.setPersistenceUnitName("oracle");
 
     // Set JPA vendor adapter
