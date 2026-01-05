@@ -9,12 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -32,15 +29,13 @@ public class OracleJpaConfiguration {
 
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
-      @Qualifier("oracleDataSource") HikariDataSource dataSource,
-      @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes) {
+      @Qualifier("oracleDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
     factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.oracle");
     factoryBean.setPersistenceUnitName("oracle");
-    factoryBean.setManagedTypes(persistenceManagedTypes);
 
     // Set JPA vendor adapter
     org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter =
@@ -64,12 +59,6 @@ public class OracleJpaConfiguration {
             "hibernate.connection.oracle.net.ssl_key_alias", oracleHost));
 
     return factoryBean;
-  }
-
-  @Bean(name = "oracleManagedTypes")
-  public PersistenceManagedTypes oracleManagedTypes(ResourceLoader resourceLoader) {
-    return new PersistenceManagedTypesScanner(resourceLoader)
-        .scan("ca.bc.gov.restapi.results.oracle");
   }
 
   @Bean(name = "oracleDataSource")
