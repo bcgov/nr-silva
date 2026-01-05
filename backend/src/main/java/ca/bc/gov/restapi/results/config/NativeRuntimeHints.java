@@ -27,5 +27,9 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
           MemberCategory.INVOKE_DECLARED_METHODS,
           MemberCategory.INVOKE_PUBLIC_METHODS);
     }
+
+    // Register Hibernate resources
+    hints.resources().registerPattern("META-INF/orm.xml");
+    hints.resources().registerPattern("org/hibernate/orm/event/jpa/persistence-unit-static-definition.xml");
   }
 }
