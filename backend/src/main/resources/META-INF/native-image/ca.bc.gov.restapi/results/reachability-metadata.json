@@ -1,0 +1,12 @@
+{
+  "reflection": [
+    {
+      "type": {
+        "proxy": [
+          "jakarta.persistence.EntityManagerFactory",
+          "org.springframework.orm.jpa.EntityManagerFactoryInfo"
+        ]
+      }
+    }
+  ]
+}
