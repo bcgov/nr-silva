@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.config.EntityRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
@@ -9,12 +10,10 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -30,10 +29,9 @@ public class PostgresJpaConfiguration {
 
   @Bean(name = "postgresManagedTypes")
   @Primary
-  public PersistenceManagedTypes postgresManagedTypes(ResourceLoader resourceLoader) {
-    // Automatically scan and register all Postgres entity classes (required for native image)
-    return new PersistenceManagedTypesScanner(resourceLoader)
-        .scan("ca.bc.gov.restapi.results.postgres.entity");
+  public PersistenceManagedTypes postgresManagedTypes() {
+    // Use centralized EntityRegistry - only Postgres entities for Postgres datasource
+    return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
   }
 
   @Primary

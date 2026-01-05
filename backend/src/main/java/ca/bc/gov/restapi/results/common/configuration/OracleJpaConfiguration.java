@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.config.EntityRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
@@ -9,12 +10,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -32,10 +31,9 @@ public class OracleJpaConfiguration {
   private String oracleHost;
 
   @Bean(name = "oracleManagedTypes")
-  public PersistenceManagedTypes oracleManagedTypes(ResourceLoader resourceLoader) {
-    // Automatically scan and register all Oracle entity classes (required for native image)
-    return new PersistenceManagedTypesScanner(resourceLoader)
-        .scan("ca.bc.gov.restapi.results.oracle.entity");
+  public PersistenceManagedTypes oracleManagedTypes() {
+    // Use centralized EntityRegistry - only Oracle entities for Oracle datasource
+    return PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames());
   }
 
   @Bean(name = "oracleEntityManagerFactory")
