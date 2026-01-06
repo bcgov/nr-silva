@@ -55,6 +55,10 @@ export default defineConfig({
   globalSetup: './src/__e2e__/auth/auth.setup.ts',
   globalTeardown: './src/__e2e__/auth/auth.teardown.ts',
   projects,
+  reporter: [
+    ['list'],
+    ['junit', { outputFile: './test-results/results.xml' }]
+  ],
   webServer: {
     command: 'npm start',
     url: baseURL,

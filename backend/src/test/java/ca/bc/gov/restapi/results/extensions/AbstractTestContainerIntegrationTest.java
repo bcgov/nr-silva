@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.extensions;
 
 import java.util.UUID;
+
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.oracle.OracleContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * Abstract base class for integration tests using Testcontainers for PostgreSQL and Oracle
@@ -34,11 +36,31 @@ public abstract class AbstractTestContainerIntegrationTest {
 
   // Static fields declared like this are instantiated first by the JVM
   static {
-    postgres =
-        new PostgreSQLContainer("postgres:17")
-            .withDatabaseName("silva")
-            .withUsername("silva")
-            .withPassword(UUID.randomUUID().toString());
+    String env = System.getenv("FLYWAY_ENVIRONMENT");
+    if (env == null || env.isBlank()) {
+      env = "prod";
+    }
+    String[] postgresLocations;
+    if ("prod".equals(env)) {
+      postgresLocations = new String[] {
+          "classpath:db/migration",
+          "classpath:migration/postgres/default"
+      };
+    } else {
+        postgresLocations = new String[] {
+            "classpath:db/migration",
+            "classpath:db/migration-dev",
+            "classpath:migration/postgres/default",
+            "classpath:migration/postgres/dev"
+        };
+    }
+
+    postgres = new PostgreSQLContainer(
+        DockerImageName.parse("postgis/postgis:17-master")
+            .asCompatibleSubstituteFor("postgres"))
+        .withDatabaseName("silva")
+        .withUsername("silva")
+        .withPassword(UUID.randomUUID().toString());
     oracle = new CustomOracleContainer();
 
     postgres.start();
@@ -47,7 +69,8 @@ public abstract class AbstractTestContainerIntegrationTest {
     flywayPostgres =
         Flyway.configure()
             .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
-            .locations("classpath:db/migration", "classpath:migration/postgres")
+            .locations(postgresLocations)
+            .schemas("silva")
             .baselineOnMigrate(true)
             .load();
 

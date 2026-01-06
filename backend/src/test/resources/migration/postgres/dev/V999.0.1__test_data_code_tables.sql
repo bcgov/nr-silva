@@ -1,0 +1,3333 @@
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('1', '1 - 20 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('2', '21 - 40 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('3', '41 - 60 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('4', '61 - 80 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('5', '81 - 100 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('6', '101 - 120 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('7', '121 - 140 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('8', '141 - 250 Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.age_class_code
+(age_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('9', '251 + Years', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('1', '0 - 10.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('2', '10.5 - 19.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('3', '19.5 - 28.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('4', '28.5 - 37.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('5', '37.5 - 46.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('6', '46.5 - 55.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('7', '55.5 - 64.4 Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+INSERT INTO silva.height_class_code
+(height_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('8', '64.5 + Meters', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:35');
+
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BLCF', 'Backlog SP Area - Community Forest', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BLFS', 'Backlog SP Area - Forest Service', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BLML', 'Backlog SP Area - Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BLWL', 'Backlog SP Area - Woodlot License', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('CONT', 'SP as a part of contractual agreement', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EXCLU', 'Openings excluded from Crown managed forests', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FFTFLTC', 'Forest For Tomorrow - Forestry Licence to Cut', TIMESTAMP '2009-11-16 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FFTITSL', 'Forest For Tomorrow - Innovative Timber Sale Licence', TIMESTAMP '2009-11-16 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FG', 'Opening that has achieved free growing', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2010-07-07 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTCF', 'Forest Tenure - Site Plan under Community Forest', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTFSM', 'Forest Tenure - Forest Stand Management FPC s.71', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTLEVY', 'Forest Stand Levy under FSM Fund Reg.', TIMESTAMP '2000-09-14 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTML', 'Forest Tenure - Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTMSL', 'Forest Tenure Ministry Silviculture Liability', TIMESTAMP '2009-12-09 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTNOLVY', 'Post April 1/09 blocks (1-5 ha) for which there is no opportunity within the appraisal manual to collect a levy.', TIMESTAMP '2011-05-27 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTPI', 'Forest Tenure - pilot agreement', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTSBF', 'Forest Tenure - Small Business Forest Enterprise Program', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FTWL', 'Forest Tenure - Woodlot: Site Plan', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NDAML', 'Natural Disturbance - area-based Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NDCF', 'Natural Disturbance - Community Forest', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NDFS', 'Natural Disturbance - forest service', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NDVML', 'Natural Disturbance - volume-based Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NDWL', 'Natural Disturbance - Woodlot License', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NREQ', 'Areas where SP/SMP''s are not required by law', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('P87', 'Pre-87 areas that is either NSR, or stocked but not FG', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SMPCF', 'Stand Management Prescription - Community Forest', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SMPEX', 'Areas where exemptions to SMP''s apply', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SMPFS', 'Stand Management Prescription - Forest service', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SMPML', 'Stand Management Prescription - Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SMPWL', 'Stand Management Prescription - Woodlot License', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SPEX', 'Areas with no reforestation or FG obligations and the area is exempt from a site plan requirement', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UHCF', 'Unauthorized Harvest - Community Forest', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UHFS', 'Unauthorized Harvesting - Forest Service', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UHML', 'Unauthorized Harvesting - Major Licensee', TIMESTAMP '2000-04-17 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UHRV', 'Unauthorized Harvesting', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UHWL', 'Unauthorized Harvest - Woodlot License', TIMESTAMP '2001-02-01 00:00:00', TIMESTAMP '2013-07-05 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+INSERT INTO silva.open_category_code
+(open_category_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UNKN', 'Unknown', TIMESTAMP '2003-07-03 00:00:00', TIMESTAMP '2002-12-17 00:00:00', TIMESTAMP '2013-07-31 13:41:13');
+
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AMG', 'Amalgamate', TIMESTAMP '2005-04-07 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FG', 'Free Growing', TIMESTAMP '2003-04-10 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AMD', 'Amended', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('APP', 'Approved', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DFT', 'Draft', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RET', 'Retired', TIMESTAMP '2013-10-21 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RMD', 'Removed', TIMESTAMP '2006-08-31 00:00:00', TIMESTAMP '2015-05-11 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+INSERT INTO silva.opening_status_code
+(opening_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SUB', 'Submitted', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:38:33');
+
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('0', 'Immature Stands', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('1', 'Stocking Class 1', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('2', 'Stocking Class 2', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('3', 'Stocking Class 3', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('4', 'Stocking Class 4', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('5', 'Stocking Class 5', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.stocking_class_code
+(stocking_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('R', 'Mature Residual', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+
+INSERT INTO silva.site_class_code
+(site_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('G', 'Good', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_class_code
+(site_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('L', 'Low', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_class_code
+(site_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('M', 'Medium', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_class_code
+(site_class_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('P', 'Poor', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('A', 'Site index from adjacent stand', TIMESTAMP '1999-03-16 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('C', 'SI from site index curve', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('E', 'SI from Biogeoclimatic Ecosystem Classification', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('H', 'SI from stand before harvest', TIMESTAMP '1999-03-16 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('I', 'SI from growth intercept', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('M', 'SI from G, M, P, L site class conversion', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('O', 'SI from provincial SIBEC rollover, Nov 1998', TIMESTAMP '1998-11-30 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+INSERT INTO silva.site_index_source_code
+(site_index_source_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('S', 'Site index assigned by District Silviculture Section', TIMESTAMP '1999-03-16 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2003-06-17 14:16:37');
+
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('A', 'Alpine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AF', 'Alpine Forest', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('C', 'Cultivated', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DSD', 'Disturbed Stocking Doubtful', TIMESTAMP '2003-07-07 00:00:00', TIMESTAMP '2002-12-17 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('G', 'Gravel Bar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('IMM', 'Immature', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('L', 'Lake', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('M', 'Meadow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MAT', 'Mature', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NC', 'Non-commercial', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NF', 'Non-forest', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NP', 'Non-productive', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('NSR', 'Not Satisfactorily Restocked', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('OR', 'Open Range', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('R', 'Rock', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RES', 'Residual', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2012-05-07 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('S', 'Swamp', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+INSERT INTO silva.stocking_status_code
+(stocking_status_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('U', 'Urban', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2012-05-08 16:20:22');
+
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01B', 'Arrow TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01D', 'Arrow TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01E', 'Arrow TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01F', 'Arrow TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01G', 'Arrow TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01H', 'Arrow TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01I', 'Arrow TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01K', 'Arrow TSA Block K', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01L', 'Arrow TSA Block L', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('01M', 'Arrow TSA Block M', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02A', 'Boundary Block A (To Be Confirmed)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02B', 'Boundary Block B (To Be Confirmed)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02C', 'Boundary TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02D', 'Boundary TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02E', 'Boundary TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02F', 'Boundary TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('02G', 'Boundary TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('03A', 'Bulkley TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('03B', 'Bulkley TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('03C', 'Bulkley TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04A', 'Cassiar TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04B', 'Cassiar TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04C', 'Cassiar TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04D', 'Cassiar TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04E', 'Cassiar TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('04F', 'Cassiar TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05A', 'Cranbrook TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05B', 'Cranbrook TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05C', 'Cranbrook TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05D', 'Cranbrook TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05E', 'Cranbrook TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05F', 'Cranbrook TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05G', 'Cranbrook TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05H', 'Cranbrook TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05I', 'Cranbrook TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05J', 'Cranbrook TSA Block J', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05K', 'Cranbrook TSA Block K', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('05L', 'Cranbrook TSA Block L', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07A', 'Golden TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07B', 'Golden TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07C', 'Golden TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07D', 'Golden TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07E', 'Golden TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07F', 'Golden TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('07G', 'Golden TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('08A', 'Fort Nelson TSA Liard Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('08B', 'Fort Nelson TSA Ft Nelson Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('08C', 'Fort Nelson TSA Sikanni Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('08D', 'Fort Nelson TSA Kotcho Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('08E', 'Fort Nelson TSA Kechika Block', TIMESTAMP '2000-08-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09A', 'Invermere TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09B', 'Invermere TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09C', 'Invermere TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09D', 'Invermere TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09E', 'Invermere TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09F', 'Invermere TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('09G', 'Invermere TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('10A', 'Kalum TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('10B', 'Kalum TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('10C', 'Kalum TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('10D', 'Kalum TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('10F', 'Kalum TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('11A', 'Kamloops TSA Block 1', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('11B', 'Kamloops TSA Block 2', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('11C', 'Kamloops TSA Block 3', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('11D', 'Kamloops TSA Block 4', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12A', 'Kispiox TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12B', 'Kispiox TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12C', 'Kispiox TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13B', 'Kootenay Lake TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12D', 'Kispiox TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12E', 'Kispiox TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12F', 'Kispiox TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13A', 'Kootenay Lake TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('12G', 'Kispiox TSA Block G', TIMESTAMP '2024-08-21 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13C', 'Kootenay Lake TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13D', 'Kootenay Lake TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13E', 'Kootenay Lake TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13F', 'Kootenay Lake TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13G', 'Kootenay Lake TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13H', 'Kootenay Lake TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13I', 'Kootenay Lake TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('13J', 'Kootenay Lake TSA Block J', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14A', 'Lakes TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14B', 'Lakes TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14C', 'Lakes TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14D', 'Lakes TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14E', 'Lakes TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14F', 'Lakes TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('14G', 'Lakes TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('15A', 'Lillooet TSA Block 1', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('15B', 'Lillooet TSA Block 2', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16A', 'Mackenzie TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16B', 'Mackenzie TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16C', 'Mackenzie TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16D', 'Mackenzie TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16E', 'Mackenzie TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16F', 'Mackenzie TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16G', 'Mackenzie TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16H', 'Mackenzie TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16I', 'Mackenzie TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16J', 'Mackenzie TSA Block J', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16K', 'Mackenzie TSA Block K', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16L', 'Mackenzie TSA Block L', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16M', 'Mackenzie TSA Block M', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16N', 'Mackenzie TSA Block N', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16O', 'Mackenzie TSA Block O', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('16P', 'Mackenzie TSA Block P', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17A', 'McBride TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17B', 'McBride TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17C', 'McBride TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17D', 'McBride TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17E', 'McBride TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17F', 'McBride TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17G', 'McBride TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17H', 'McBride TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17I', 'McBride TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('17J', 'McBride TSA Block J', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18A', 'Merritt TSA Block 1', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18B', 'Merritt TSA Block 2', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18C', 'Merritt TSA Block 3', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18D', 'Merritt TSA Block 4', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18E', 'Merritt TSA Block 5', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18F', 'Merritt TSA Block 6', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18G', 'Merritt TSA Block 7', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18H', 'Merritt TSA Block 8', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('18I', 'Merritt TSA Block 9', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19A', 'Mid-Coast TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19B', 'Mid-Coast TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19C', 'Mid-Coast TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19D', 'Mid-Coast TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19E', 'Mid-Coast TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('19F', 'Mid-Coast TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('20A', 'Morice TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('20B', 'Morice TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('20C', 'Morice TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('20D', 'Morice TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('20E', 'Morice TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('21A', 'North Coast TSA Stewart Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('21B', 'North Coast TSA Alice Arm Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('21C', 'North Coast TSA Skeena Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('21D', 'N. Coast TSA Outer Coast Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('21E', 'North Coast TSA Douglas Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22A', 'Okanagan TSA Block 1', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22B', 'Okanagan TSA Block 2', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22C', 'Okanagan TSA Block 3', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22D', 'Okanagan TSA Block 4', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22E', 'Okanagan TSA Block 5', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22F', 'Okanagan TSA Block 6', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22G', 'Okanagan TSA Block 7', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22H', 'Okanagan TSA Block 8', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('22I', 'Okanagan TSA Block 9', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23A', '100 Mile House TSA Meadow Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23B', '100 Mile House TSA Loon Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23C', '100 Mile House Bonaparte Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23D', '100 Mile House Sheridan Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23E', '100 Mile House Holden Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23F', '100 Mile House Rail Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23G', '100 Mile House Ruth Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('23H', '100 Mile House Canim Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24A', 'Prince George TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24B', 'Prince George TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24C', 'Prince George TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24D', 'Prince George TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24E', 'Prince George TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24F', 'Prince George TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24G', 'Prince George TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24H', 'Prince George TSA Block H', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('24I', 'Prince George TSA Block I', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('25A', 'Haida Gwaii TSA Block A (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('25B', 'Haida Gwaii TSA Block B (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('25C', 'Haida Gwaii TSA Block C (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('25D', 'Haida Gwaii TSA Block D (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26A', 'Quesnel TSA South Kluskus Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26B', 'Quesnel TSA Narcosli West Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26C', 'Quesnel TSA Narcosli East Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26D', 'Quesnel TSA S.S.A. Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26E', 'Quesnel TSA Cottonwood Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26F', 'Quesnel TSA Big Valley Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26G', 'Quesnel TSA Bowron Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26H', 'Quesnel TSA Cunningham Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('26I', 'Bowron (UNREG)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27A', 'Revelstoke TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27D', 'Revelstoke TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27E', 'Revelstoke TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27F', 'Revelstoke TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27G', 'Revelstoke TSA Block G', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27U', 'Revelstoke TSA Block U', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27V', 'Revelstoke TSA Block V', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29B', 'Wms Lk TSA Chezacut Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('25E', 'Haida Gwaii TSA Block E', TIMESTAMP '2017-10-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27W', 'Revelstoke TSA Block W', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27X', 'Revelstoke TSA Block X', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('27Y', 'Revelstoke TSA Block Y', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29A', 'Wms Lk TSA Anahim Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29C', 'Wms Lk TSA Tatla Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29D', 'Wms Lk TSA Chilcotin Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29E', 'Wms Lk TSA Kloacut Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29F', 'Wms Lk TSA Gaspard Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29G', 'Wms Lk TSA Churn Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29H', 'Wms Lk TSA Springhouse Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29I', 'Wms Lk TSA Palmer Lake Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29J', 'Wms Lk TSA Skelton Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29K', 'Wms Lk TSA Moffat Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29L', 'Wms Lk TSA Cariboo Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29M', 'Wms Lk TSA Upper Horsefly Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('29N', 'Wms Lk TSA Junction Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30B', 'Fraser TSA Chilliwack Block (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30C', 'Fraser TSA Harrison Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30D', 'Fraser TSA Yale Block (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30E', 'Fraser TSA Nahatlatch Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30F', 'Fraser TSA Stave Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30G', 'Fraser TSA Upper Pitt Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30H', 'Fraser TSA Maple Ridge Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('30I', 'Fraser TSA Chilliwack-Yale Block', TIMESTAMP '2017-10-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('31A', 'Soo TSA Squamish BlockSoo TSA Squamish Block (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('31B', 'Soo TSA Port Douglas Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('31C', 'Soo TSA Pemberton Block (Inactive; kept for historical purposes)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('31D', 'Soo TSA Squamish-Pemberton Block', TIMESTAMP '2017-10-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('33A', 'Kingcome TSA Brooks Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('33B', 'Kingcome TSA Cape Scott Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('33C', 'Kingcome TSA Seymour Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('33D', 'Kingcome TSA Broughton Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('33F', 'Kingcome TSA Klinaklini Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('37A', 'Strathcona TSA Sayward Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('37B', 'Strathcona TSA Kyuquot Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('37D', 'Strath. TSA Loughborough Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('38A', 'Arrowsmith TSA, Barkley S.B.', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('38B', 'Arrowsmith TSA Nanaimo Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('38C', 'Arrowsmith TSA Cowichan Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('39B', 'Sunsh Coast TSA Sechelt Block', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('39C', 'Sunsh Coast TSA Powell R. Blk', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40A', 'Fort St John TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40B', 'Fort St John TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40C', 'Fort St John TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40D', 'Fort St John TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40E', 'Fort St John TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('40F', 'Fort St John TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41A', 'Dawson Creek TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41B', 'Dawson Creek TSA Block B', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41C', 'Dawson Creek TSA Block C', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41D', 'Dawson Creek TSA Block D', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41E', 'Dawson Creek TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('41F', 'Dawson Creek TSA Block F', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('42A', 'Cranberry Creek TSA Block A', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2009-03-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('43A', 'Nass TSA Stewart Block', TIMESTAMP '2000-08-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('43E', 'Nass TSA Block E', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46C', 'GBR North TSA Block C', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('44N', 'Pacific TSA Block N', TIMESTAMP '2011-02-11 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('44W', 'Pacific TSA Block W', TIMESTAMP '2011-02-11 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('44Z', 'Pacific TSA Block Z', TIMESTAMP '2010-04-07 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('45C', 'Cascadia TSA Cariboo-Chilcotin Block', TIMESTAMP '2010-09-28 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('45K', 'Cascadia TSA Kootenay Block', TIMESTAMP '2010-09-28 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('45O', 'Cascadia TSA Okanagan-Columbia Block', TIMESTAMP '2010-09-28 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('45S', 'Cascadia TSA Skeena Block', TIMESTAMP '2010-09-28 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46A', 'GBR North TSA Block A', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46B', 'GBR North TSA Block B', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46I', 'GBR North TSA Skeena Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46D', 'GBR North TSA Block D', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46F', 'GBR North TSA Block F', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46G', 'GBR North TSA Stewart Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46H', 'GBR North TSA Alice Arm Blk', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46E', 'GBR North TSA Block E', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46J', 'GBR North TSA Outer Coast Blk', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('46K', 'GBR North TSA Douglas Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('47A', 'GBR South TSA Seymour Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('47B', 'GBR South TSA Broughton Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('47C', 'GBR South TSA Klinaklini Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('47D', 'GBR South TSA Loughborough Blk', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('48A', 'North Island TSA Brooks Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('48B', 'North Island TSA Cape Scott Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('48C', 'North Island TSA Broughton Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('48D', 'North Island TSA Sayward Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+INSERT INTO silva.tsb_number_code
+(tsb_number_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('48E', 'North Island TSA Kyuquot Block', TIMESTAMP '2016-07-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2024-09-13 15:41:44');
+
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BP', 'noble fir', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('OB', 'giant sequoia', TIMESTAMP '2023-06-29 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('OC', 'coast redwood', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SN', 'Norway spruce', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('A', 'Aspen, Cottonwood or Poplar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AC', 'poplar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('ACB', 'balsam poplar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('ACT', 'black cottonwood', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AT', 'trembling aspen', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AX', 'hybrid poplars', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('B', 'Fir (Balsam)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BA', 'amabilis fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BB', 'balsam fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BG', 'grand fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BL', 'subalpine fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('BN', 'Noble fir  (code replaced by Bp)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('C', 'Cedar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('CW', 'western redcedar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('D', 'Alder', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DG', 'green/Sitka alder', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DM', 'mountain alder', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DR', 'red alder', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('E', 'Birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EA', 'Alaska paper birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EB', 'scrub birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EP', 'paper birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('ES', 'silver birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EW', 'water birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EX', 'birch hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EXP', 'Alaska x paper birch hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('EXW', 'Water x paper birch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('F', 'Douglas-fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FD', 'Douglas-fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FDC', 'coastal Douglas-fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('FDI', 'interior Douglas-fir', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('G', 'Dogwood', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('GP', 'Pacific dogwood', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('GR', 'red-osier dogwood', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('H', 'Hemlock', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('HM', 'mountain hemlock', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('HW', 'western hemlock', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('HX', 'hemlock hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('HXM', 'mountain x western hemlock hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('J', 'Juniper', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('JD', 'common juniper', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('JH', 'creeping juniper', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('JR', 'Rocky Mtn. juniper', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('K', 'Cascara', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('KC', 'cascara', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('L', 'Larch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('LA', 'alpine larch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('LD', 'Dahurian larch', TIMESTAMP '2002-02-13 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('LS', 'Siberian larch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('LT', 'tamarack', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('LW', 'western larch', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('M', 'Maple', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MB', 'bigleaf maple', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MR', 'Douglas maple', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MV', 'vine maple', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('P', 'Pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PA', 'whitebark pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PF', 'limber pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PJ', 'jack pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PL', 'lodgepole pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PLC', 'shore pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PLI', 'lodgepole pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PR', 'red pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PW', 'western white pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PX', 'pine hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PXJ', 'lodgepole x jack pine hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('PY', 'ponderosa pine', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('Q', 'Oak', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('QG', 'Garry oak', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RA', 'Arbutus', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('S', 'Spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SA', 'Norway spruce (code replaced by Sn)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SB', 'black spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SE', 'Engelmann spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SS', 'Sitka spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SW', 'white spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SX', 'spruce hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXB', 'white x black spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXE', 'engelmann x sitka spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXL', 'Sitka x white', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXS', 'Sitka x unknown hybrid', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXW', 'Engelmann x white', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SXX', 'white x engelmann x sitka spruce', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('T', 'Yew', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('TW', 'western yew', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UP', 'Pacific crab apple', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('V', 'Cherry', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('VB', 'bitter cherry', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('VP', 'pin cherry', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('VW', 'choke cherry (code replaced by Vv)', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2006-07-25 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('W', 'Willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('WA', 'peachleaf willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('WB', 'Bebb''s willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('WD', 'pussy willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('WS', 'Scouler''s willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('WT', 'Sitka willow', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('Y', 'Cypress', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '2010-06-13 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+INSERT INTO silva.tree_species_code
+(tree_species_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('YC', 'yellow-cedar', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2023-07-17 09:06:00');
+
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('UPD', 'Update', TIMESTAMP '2001-11-19 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('COR', 'Correction', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('O', 'Original', TIMESTAMP '2005-04-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('197', 'Section 197', TIMESTAMP '2010-02-04 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AMG', 'Amalgamate', TIMESTAMP '2005-04-07 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('ES', 'E-submission', TIMESTAMP '2004-06-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MIL', 'Milestone', TIMESTAMP '2007-08-07 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('MIN', 'Amended (Minor)', TIMESTAMP '2005-08-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SPA', 'Site Plan Amendment', TIMESTAMP '2007-08-07 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('VAR', 'Variation', TIMESTAMP '2004-05-18 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('AMD', 'Amended', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('APP', 'Approved', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('DEL', 'Deleted', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('REJ', 'Rejected', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RET', 'Retired', TIMESTAMP '2013-10-21 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('RMD', 'Removed', TIMESTAMP '2006-08-31 00:00:00', TIMESTAMP '2015-05-11 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+INSERT INTO silva.results_audit_action_code
+(results_audit_action_code, description, effective_date, expiry_date, update_timestamp)
+VALUES('SUB', 'Submitted', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-30 00:00:00', TIMESTAMP '2015-05-12 09:40:54');
+
+INSERT INTO silva.file_client_type_code (file_client_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A','Licensee',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('B','Joint Venture/Partner',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('C','Previous Main Licensee',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('D','Applicant',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('E','Contractor',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('F','Non-Licensed Commercial Operator',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('G','Non-Commercial Licensed Operator',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('H','Licensed Commercial Rec. Operator',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('I','Club/Association/Society',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('J','General Public',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('K','Volunteer',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('L','Licensee Operating Division',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('M','Previous Licensee Operating Division',TIMESTAMP'2002-12-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('O','Silviculture Obligation',TIMESTAMP'2003-06-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('P','Previous Joint Venture/Partner',TIMESTAMP'2002-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('R','RESULTS Silviculture Obligation',TIMESTAMP'2014-02-11 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54'),
+	 ('S','Appraisals & Billing Mailing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:12:54');
+
+INSERT INTO silva.file_type_code (file_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A01','Forest Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A02','Tree Farm Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A03','TSL Major, with AAC',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A04','Woodlot Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A05','Timber Sale Harvesting Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A06','Timber Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A07','Pulp Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A08','Wood Pulp Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A09','Timber Berth',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A10','Watershed Agreement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A11','Master Licence to Cut Sec 47.4',TIMESTAMP'1997-10-16 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A18','Forestry Licence to Cut with Cutting Permits',TIMESTAMP'2003-09-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A20','SB TSL S20 multi-mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A21','SB Direct TSL S23 multi-mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A22','SB TSL S72/73 multi-mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A23','SB TSL S21 Bid Proposal multi-mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A24','SB TSL S21 Special Bid Proposal multi-mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A25','SB Non-Replaceable Forest Licence S13 (1.1) CPs',TIMESTAMP'1998-05-14 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A26','SB TSL S21 Bid Proposal CPs',TIMESTAMP'1998-05-14 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A27','SB TSL S20 CPs',TIMESTAMP'2001-06-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18');
+INSERT INTO silva.file_type_code (file_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A28','Community Forest Agreement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A29','First Nations Woodlands Tenure',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A30','Consolidated Timber Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A31','Community Salvage Licence',TIMESTAMP'2003-09-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A41','Forest Licence, Sec 47.3 F.A.',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('A44','Woodlot Licence, Sec 47.3 F.A.',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B01','Road Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2018-06-01 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B02','Christmas Tree Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B03','Oil & Gas Licence to Cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B04','Forestry Licence To Cut, Sec 47.3 F.A.',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B05','Occupant Licence To Cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B06','Occupant Licence To Cut, Short Form',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B07','Forestry Licence to Cut',TIMESTAMP'2003-09-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B08','Exportable Crown Grant',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B09','Non-Exportable Crown Grant',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B10','Free Use Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B11','Special Mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B12','Right of Way',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B13','Dominion Patented Lands Timber Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B14','Indian Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18');
+INSERT INTO silva.file_type_code (file_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('B15','Letter of Marking Authority - Exporta',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B16','Letter of Marking Authority - Non-Exp',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B17','Log Salvage - Beachcomb',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B20','SB TSL S20 single mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B21','SB Direct TSL S23 single mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B22','SB TSL S72/73 single mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B23','SB TSL S21 Bid Proposal single mark',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B40','Forest Service Road',TIMESTAMP'2000-05-12 00:00:00',TIMESTAMP'2018-06-01 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B41','Road Use Permit',TIMESTAMP'2000-05-12 00:00:00',TIMESTAMP'2018-06-01 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('B50','Botanical Forest Products Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('C01','Administrative Area',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('E01','Grazing Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('E02','Grazing Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('E03','Non-Replaceable Grazing Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2004-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('F01','Wilderness Area',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-08-14 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('F02','Untenured Area',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('F03','UREP OIC Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('F04','UREP Map Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('F05','Recreation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('H01','Haycutting Licence',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18');
+INSERT INTO silva.file_type_code (file_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('H02','Haycutting Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('H03','Non-Replaceable Haycutting Permit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2004-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('I01','Stock Range',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('I02','Range Unit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('I03','Ranch Base',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('J01','Boom-Chain Brand',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('J02','Marine Log Brand',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('M01','Map Notation',TIMESTAMP'2005-03-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('P01','Pulpwood Agreement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('Q01','Communication Site',TIMESTAMP'2005-03-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('Q02','Non Status Road',TIMESTAMP'2005-03-08 00:00:00',TIMESTAMP'2018-06-01 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('Q03','Real Property Project',TIMESTAMP'2005-03-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('S01','Special Use Permit, Forest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('S02','Special Use Permit, Non-Forest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('T01','Timber Trespass',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('U1','BCTS Licence # only',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18'),
+	 ('U2','BCTS Licence # & Mark Designate',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:24:18');
+
+INSERT INTO silva.tenure_file_status_code (tenure_file_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A','Active',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('ACT','Operations Active',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AH','Active (HDBS)',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AN','Active - Map Notation',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AP','Appeal Pending',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AR','Archived',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AS','Active - Suspended',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AT','Archived - Transferred',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('AY','Active - Abeyance',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('CA','Cancelled',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('CL','Clearance',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('D','Disallowed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('DD','Disallowed by District',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('DE','Designation',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('DR','Disallowed by Region',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('DV','Disallowed by Victoria',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('EE','Entered In Error',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HA','Awarded for Harvesting',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HB','Approved for Harvesting',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HC','Closed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44');
+INSERT INTO silva.tenure_file_status_code (tenure_file_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('HD','Harvesting Deferred',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HH','HDBS - Harvest Database',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HI','Issued',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HN','Issued but Not Printed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HOC','Final Report - Harvesting Obligations Completed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HP','Harvesting Postponement',TIMESTAMP'2013-06-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HRS','Harvesting Rights Surrendered',TIMESTAMP'2013-06-11 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HS','Suspended',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('HX','Cancelled',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('I','Inactive',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('IC','Inactive - Completed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('ID','Inactive - Closed (Deactivated)',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('IH','Inactive - HDBS',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('IX','Inactive - Cancelled',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('LC','Logging Complete',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('NC','No Clearance or Designation',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('NLG','No Logging to Date',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('P','Pending',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PA','Pending Application',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PD','Pending Deferred',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44');
+INSERT INTO silva.tenure_file_status_code (tenure_file_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('PE','Pending Electronic',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PHC','Primary Harvest Completed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PI','Pending Issuance',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PL','Planned TSL',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PLI','Part Logged - now inactive',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PP','Proposed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PR','Pending Review',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('PS','Pending Status',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('RRS','Range Rights Surrendered',TIMESTAMP'2014-10-23 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('S','Silviculture',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('SP','SP only, no application received',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('SU','Suspended',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('TC','Trespass Investigation Complete',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44'),
+	 ('TU','Trespass Under Investigation',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-01 08:35:44');
+
+INSERT INTO silva.cut_block_client_type_code (cut_block_client_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('D','Applicant',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('E','Contractor',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('L','Licensee Operating Division',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('M','Previous Licensee Operating Division',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('O','Silviculture Obligation',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('S','Appraisals & Billing Mailing',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43'),
+	 ('R','RESULTS Silviculture Obligation',TIMESTAMP'2014-02-11 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-08-22 08:14:43');
+
+INSERT INTO silva.reforest_declare_type_code (reforest_declare_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CON','Coniferous',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:55'),
+	 ('DEC','Deciduous',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:55'),
+	 ('MIX','Mix',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:55');
+
+INSERT INTO silva.cut_regulation_code (cut_regulation_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('BBR','Bark Beetle Regulation',TIMESTAMP'2006-08-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:28');
+
+INSERT INTO silva.block_status_code (block_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('HRS','Harvesting Rights Surrendered',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('AP','Appeal Pending',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('DD','Disallowed by District',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('EE','Entered In Error',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('HB','Approved for Harvesting',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('HD','Harvesting Deferred',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('HS','Suspended',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('HX','Cancelled',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('ID','Inactive - Closed (Deactivated)',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('LC','Logging Complete',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('PD','Pending Deferred',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('PE','Pending Electronic',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('PL','Planned TSL',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('PP','Proposed',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('S','Silviculture',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23'),
+	 ('SP','SP only, no application received',TIMESTAMP'2003-04-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:23');
+
+INSERT INTO silva.mgmt_unit_type_code (mgmt_unit_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A','AGRICULTURAL LAND RESERVE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('B','BLUE MOUNTAIN FOREST RESERVE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('C','COMMUNITY FOREST',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('D','DOMINION GOVERNMENT BLOCK',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('E','E & N LAND BELT',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('F','Woodlot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('G','GULF ISLANDS',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('H','Organizational Unit Designation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('J','ECOLOGICAL RESERVE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('K','PROVINCIAL FOREST',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-12-01 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('L','WILDERNESS AREA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('M','First Nations Woodlands Tenure',TIMESTAMP'2011-03-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('N','TREATY SETTLEMENT LANDS',TIMESTAMP'1999-12-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('O','PUBLIC SUSTAINED YIELD UNIT',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('P','PARKS & WILDERNESS CONSERV.',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('Q','Range Management Unit',TIMESTAMP'2014-10-23 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('R','RECREATIONAL AREA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('S','SPECIAL SALE AREA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('T','TREE FARM LICENCE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('U','TIMBER SUPPLY AREA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37');
+INSERT INTO silva.mgmt_unit_type_code (mgmt_unit_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('V','TIMBER SUPPLY BLOCK',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('W','WATERSHED LEASE OR RESERVE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('X','CERTIFIED TREE FARM',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2000-04-18 00:00:00',TIMESTAMP'2014-12-02 08:21:37'),
+	 ('Z','Outside Managed Units',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-12-02 08:21:37');
+
+INSERT INTO silva.cascade_split_code (cascade_split_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('E','East',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('W','West',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56');
+
+INSERT INTO silva.quota_type_code (quota_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('A','Normal replaceable AAC',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('B','Temporary AAC approved by Chief Forester',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('C','Forest Service Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('D','Small Business Apportionment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('J','Non-Quota Timber sold in a TSA/TFL, includes salvage or opportunity wood and Private Timber Marks.',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('K','Undercut from TFLs/FLs (Small Business)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('L','Undercut of TFLs/FLs (OTHER) (expired 89 /06/',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('M','Non-QUOTA, Small Business Only (expired  89/0',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('O','Opportunity wood (Timber outside net lan d ba',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05'),
+	 ('P','Any Timber sale sold under a Pulpwood Ag reem',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:05');
+
+INSERT INTO silva.salvage_type_code (salvage_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('BBR','Bark Beetle Regulation',TIMESTAMP'2005-04-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2005-06-23 11:23:19'),
+	 ('SSS','Small Scale Salvage',TIMESTAMP'2005-04-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2005-06-23 11:23:19');
+
+INSERT INTO silva.crown_lands_region_code (crown_lands_region_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('1','VAN ISLAND',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('2','LOWER MAINLAND',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('3','THOMP-OKANAGAN',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('4','KOOTENAY',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('5','CARIBOO',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('6','SKEENA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('7','OMINECA',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56'),
+	 ('8','PEACE',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:04:56');
+
+INSERT INTO silva.marking_method_code (marking_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('0','100% Marking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('1','100% One End',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('2','2 Marks Front, 2 on Sides',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('3','2 Marks Front, 2 on Sides to Site; 100% at Site',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('4','Four Corner Marking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('5','4 Corner Marking to Site; 100% at Site',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('8','Eight corner marking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('A','35% With Mark Painted Orange on Each Side of Load',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('B','35% With Mark Painted Blue on Each Side of Load',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('C','20% With 16 Log Minimum',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('D','Bottom Tier Front and Back on Area, 100% at Scale Site',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('E','Exempt From Marking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('S','Full, Standard Marking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02');
+
+INSERT INTO silva.mark_extension_reason_code (mark_extension_reason_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('E','Equipment Failure',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('H','Health/Death',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('L','Legislation',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('M','Markets',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('P','Management Discretion',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('T','Transfer',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('W','Weather',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26'),
+	 ('X','Miscellaneous',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:26');
+
+INSERT INTO silva.marking_instrument_code (marking_instrument_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('B','Paint and/or Crayon',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('C','Crayon',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('H','Hammer',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('P','Paint',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02'),
+	 ('T','Tag',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:05:02');
+
+INSERT INTO silva.fire_harvesting_reason_code (fire_harvesting_reason_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('PREVENTION','Harvesting of materials for fire prevention',TIMESTAMP'2024-04-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-04-18 11:54:20'),
+	 ('RESTORE','Harvesting of materials for restoration',TIMESTAMP'2024-04-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-04-18 11:54:20'),
+	 ('SALVAGE','Salvage of burned timber',TIMESTAMP'2024-04-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-04-18 11:54:20');
+
+INSERT INTO silva.harvest_type_code (harvest_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('F','Fort St. John',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:30'),
+	 ('G','Green',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:30'),
+	 ('M','Multi-Mark',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:30'),
+	 ('R','Road',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-06-02 09:58:30');
+
+INSERT INTO silva.harvest_auth_status_code (harvest_auth_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('HRS','Harvesting Rights Surrendered',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HP','Harvesting Postponement',TIMESTAMP'2008-06-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('ACT','Operations Active',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('AP','Appeal Pending',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('DD','Disallowed by District',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('DR','Disallowed by Region',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('DV','Disallowed by Victoria',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('EE','Entered In Error',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HA','Awarded for Harvesting',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'2008-06-25 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HB','Approved for Harvesting',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HC','Closed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HD','Harvesting Deferred',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HH','HDBS - Harvest Database',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HI','Issued',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HN','Issued but Not Printed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HOC','Final Report - Harvesting Obligations Completed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HS','Suspended',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('HX','Cancelled',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('IC','Inactive - Completed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('ID','Inactive - Closed (Deactivated)',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25');
+INSERT INTO silva.harvest_auth_status_code (harvest_auth_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('IH','Inactive - HDBS',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('IX','Inactive - Cancelled',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('LC','Logging Complete',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('NLG','No Logging to Date',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PA','Pending Application',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PD','Pending Deferred',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PE','Pending Electronic',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PHC','Primary Harvest Completed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PI','Pending Issuance',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PL','Planned TSL',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PLI','Part Logged - now inactive',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PP','Proposed',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PR','Pending Review',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('PS','Pending Status',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('S','Silviculture',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('SP','SP only, no application received',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('TC','Trespass Investigation Complete',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25'),
+	 ('TU','Trespass Under Investigation',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:25');
+
+INSERT INTO silva.harvest_auth_extend_reas_code (harvest_auth_extend_reas_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('E','Equipment Failure',TIMESTAMP'2006-10-06 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('H','Health/Death',TIMESTAMP'2006-10-07 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('L','Legislation',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('M','Markets',TIMESTAMP'2006-10-08 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('P','Management Discretion',TIMESTAMP'2006-10-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('T','Transfer',TIMESTAMP'2006-10-10 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('W','Weather',TIMESTAMP'2006-10-11 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24'),
+	 ('X','Miscellaneous',TIMESTAMP'2006-10-12 00:00:00',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'2014-03-12 12:25:24');
+
+INSERT INTO silva.licence_to_cut_code (licence_to_cut_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AL','Agricultural Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('AP','Agreement to Purchase',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('BB','Bark Beetle',TIMESTAMP'2003-09-04 00:00:00',TIMESTAMP'2004-10-26 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CG','Crown Granted Lands (Timber Reserved)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CH','Chips and Hog Fuel',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CI','Community Interface',TIMESTAMP'2006-09-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CL','Clearing and Levelling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CO','Communications',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CR','Commercial Recreation Area',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('CT','Christmas Trees',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('DL','Dominion Patented Lands Timber Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('DT','Decked Timber',TIMESTAMP'2004-10-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('EA','Easement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('ER','Range Eco Restoration',TIMESTAMP'2013-01-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('EX','Experimental < 500m3',TIMESTAMP'2003-09-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('FH','Forest Health Contract',TIMESTAMP'2004-10-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('FN','First Nations',TIMESTAMP'2004-06-14 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('GL','Grazing Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('GP','Gravel Pit',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('GT','50m3 Green',TIMESTAMP'2004-10-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46');
+INSERT INTO silva.licence_to_cut_code (licence_to_cut_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('IL','Industrial Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('IS','Intermediate Salvage',TIMESTAMP'2006-09-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('LL','Log and Lake Salvage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('LS','Log Salvage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('MC','Mineral Claim',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('OG','Oil and Gas',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('OT','Other',TIMESTAMP'1998-10-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('PA','Pulpwood Agreement',TIMESTAMP'2003-09-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('PI','Pipeline',TIMESTAMP'1997-10-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('PL','Placer Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('PR','Parks',TIMESTAMP'2007-02-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('RD','Roads',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('RE','Recreational Lease (Cat., heli skiing)',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('RL','Residential Lease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('RW','Right of Way',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('SL','Seismic Line',TIMESTAMP'1997-10-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('SS','Small Scale Salvage < 2000m3',TIMESTAMP'2003-09-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('TC','TSL (major) Conversion',TIMESTAMP'2005-11-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('TN','Transportation',TIMESTAMP'2007-02-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('TR','Trails (ski, horse)',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46');
+INSERT INTO silva.licence_to_cut_code (licence_to_cut_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('UT','Utility (BC Hydro)',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('WL','Waterlines',TIMESTAMP'2003-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('WS','Well Site',TIMESTAMP'1997-10-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2016-01-06 09:06:46'),
+	 ('WT','Windthrow',TIMESTAMP'2003-09-04 00:00:00',TIMESTAMP'2004-10-26 00:00:00',TIMESTAMP'2016-01-06 09:06:46');
+
+INSERT INTO silva.silv_relief_appl_status_code (silv_relief_appl_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('APP','Approved',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2005-05-16 10:38:55'),
+	 ('DFT','Draft',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2005-05-16 10:38:55'),
+	 ('SUB','Submitted',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2005-05-16 10:38:55');
+
+INSERT INTO silva.mime_type_code (mime_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('BMP','image/bitmap',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('CSV','text/x-csv',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('DOC','application/msword',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('GIF','GIF Graphic File',TIMESTAMP'2002-05-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('HTM','text/html',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('IFM','application/vnd shana informed formdata',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('JPG','JPG Graphic File',TIMESTAMP'2002-05-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('JPK','application/vnd shana informed package',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('MDB','application/msaccess',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('MDE','Microsoft Access MDE Database',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('OBD','application/x-msbinder',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('PDF','application/pdf',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('PNG','image/png',TIMESTAMP'2004-12-17 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('PPS','application/vnd ms-powerpoint',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('PPT','application/vnd ms-powerpoint',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('RPT','application/x-rpt',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('RTF','application/msword',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('TIF','TIF Graphic File',TIMESTAMP'2002-05-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('TXT','text/plain',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('WAV','audio/wav',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36');
+INSERT INTO silva.mime_type_code (mime_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('XLD','Excel Data Only',TIMESTAMP'2004-08-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('XLS','application/vnd.ms-excel',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('XML','text/xml',TIMESTAMP'2003-07-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36'),
+	 ('ZIP','application/zip',TIMESTAMP'2004-08-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2006-06-23 09:27:36');
+
+INSERT INTO silva.standards_regime_status_code (standards_regime_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('APP','Approved',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2008-05-27 11:21:43'),
+	 ('DFT','Draft',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2008-05-27 11:21:43'),
+	 ('EXP','Expired',TIMESTAMP'2008-03-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2008-05-27 11:21:43'),
+	 ('REJ','Rejected',TIMESTAMP'2008-03-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2008-05-27 11:21:43'),
+	 ('SUB','Submitted',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2008-05-27 11:21:43');
+
+INSERT INTO silva.silv_reserve_objective_code (silv_reserve_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('BIO','Biodiversity',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('BOT','Botanical Forest Products',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('CAR','Carbon Offset',TIMESTAMP'2011-09-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('CHR','Cultural Heritage Resource',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('CWD','Coarse Woody Debris',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('FH','Forest health',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('FUE','Fuel Management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('MSM','MSMA Treated Area',TIMESTAMP'2007-09-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('OTH','Other',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('REC','Recreation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('RMA','Riparian Management Area',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('SEN','Sensitive Site',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('TER','Terrain Stability',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('TIM','Timber management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('VIS','Visual',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57'),
+	 ('WTR','Wildlife Tree Retention Goals',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:30:57');
+
+INSERT INTO silva.tree_cover_pattern_code (tree_cover_pattern_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('1','Single to very few (<4) occurrences of limited extent, circular to irregular shape.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('2','Single to very few (<4) occurrences of limited extent, linear or elongated shape.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('3','Several (>3) sporadic occurrences of limited extent, circular to irregular shape.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('4','Several (>3) sporadic occurrences of limited extent, linear or elongated shape.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('5','Intimately intermixed units, often with gradiational transitions from one to the other.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('6','Discontinuous but extensive occurrences, parallel to sub-parallel elongated in shape.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('7','Limited continuous occurrence with few inclusions.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('8','Continuous occurrence with several inclusions.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('9','Continuous occurrence with very few inclusions.',TIMESTAMP'1998-12-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02');
+
+INSERT INTO silva.stocking_type_code (stocking_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 (' ','No stocking type required',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('ART','Artificial',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('BR','Brush',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('FOR','Forested',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('NAT','Natural',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('NPL','Non-plantable',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('PL','Plantable',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('RD','Road',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('RHR','Rehabilitated Roads',TIMESTAMP'2001-02-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('UNN','Unnatural',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02');
+
+INSERT INTO silva.silv_reserve_code (silv_reserve_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('C','Carbon Offset',TIMESTAMP'2011-09-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('D','Dispersed',TIMESTAMP'2001-07-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('G','Group',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('M','Mixed',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('N','No Reserve',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('O','Other Reserve',TIMESTAMP'1999-10-15 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('R','Riparian Reserve',TIMESTAMP'1999-10-15 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('U','Uniform',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('V','Variable',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41'),
+	 ('W','Wildlife Tree Patch Reserve',TIMESTAMP'1999-10-15 00:00:00',TIMESTAMP'2009-11-30 00:00:00',TIMESTAMP'2013-09-13 09:29:41');
+
+INSERT INTO silva.data_source_code (data_source_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AP','Air Photo',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('CDMS','CDMS',TIMESTAMP'1999-10-27 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('FC1','Forest Cover Maps',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('SAT','Satelite',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('SUR','Survey',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('TRIM','TRIM',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47'),
+	 ('UNK','Unknown',TIMESTAMP'1998-12-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-08-09 09:06:47');
+
+INSERT INTO silva.silv_tree_species_code (silv_tree_species_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AC','poplar',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('ACB','balsam poplar',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('ACT','black cottonwood',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('AT','trembling aspen',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('AX','hybrid poplars',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BA','amabilis fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BB','balsam fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BG','grand fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BL','subalpine fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BN','Noble fir  (code replaced by Bp)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('BP','noble fir',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('CW','western redcedar',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('DM','mountain alder',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('DR','red alder',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('EA','Alaska paper birch',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('EP','paper birch',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('FDC','coastal Douglas-fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('FDI','interior Douglas-fir',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('HM','mountain hemlock',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('HW','western hemlock',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52');
+INSERT INTO silva.silv_tree_species_code (silv_tree_species_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('LA','alpine larch',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('LS','Siberian larch',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('LT','tamarack',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('LW','western larch',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('M','Maple',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2010-06-13 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('MB','bigleaf maple',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PA','whitebark pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PF','limber pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PJ','jack pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PLC','shore pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PLI','lodgepole pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PR','red pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PW','western white pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('PY','ponderosa pine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('QG','Garry oak',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SA','Norway spruce (code replaced by Sn)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SB','black spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SE','Engelmann spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SN','Norway spruce',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SS','Sitka spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52');
+INSERT INTO silva.silv_tree_species_code (silv_tree_species_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('SW','white spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SX','spruce hybrid',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXB','white x black spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXE','engelmann x sitka spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXL','Sitka x white',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXS','Sitka x unknown hybrid',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXW','Engelmann x white',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('SXX','white x engelmann x sitka spruce',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2006-07-25 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('TW','western yew',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('VB','bitter cherry',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('W','Willow',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2010-06-13 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('YC','yellow-cedar',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('OC','coast redwood',TIMESTAMP'1999-01-14 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52'),
+	 ('OB','giant sequoia',TIMESTAMP'2023-06-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2023-08-09 15:17:52');
+
+INSERT INTO silva.silv_system_variant_code (silv_system_variant_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CTN','Commercial thin',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('GRP','Group',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('IRR','Irregular',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('NAT','Natural',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('NUR','Nurse',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('POL','Pole removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('SIN','Single',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('STR','Strip',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('UNI','Uniform',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00');
+
+INSERT INTO silva.silv_technique_code (silv_technique_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AE','Aerial',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('BI','Biological',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('BL','Backlog Silviculture Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('BR','Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('BU','Burn',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CA','Chemical Air',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CB','Climb',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CC','Cone Collection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CG','Chemical Ground',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CL','Road Clearing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CS','Cone Survey',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('CT','Commercial Thinning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('DD','Site Deg/Disturbance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('DE','Deactivation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('DR','Drainage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('FE','Fertilization',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('FG','Free Growing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('FH','Forest Health',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('FI','Fire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('FN','Forest Nutrient',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54');
+INSERT INTO silva.silv_technique_code (silv_technique_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('FP','Fill Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('GR','Ground',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('GS','Grass Seeding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('HV','Harvest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('HZ','Hazard',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('IN','Inventory',TIMESTAMP'2021-02-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('JS','Juvenile Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('MA','Manual',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('ME','Mechanical',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('MO','Monitoring',TIMESTAMP'2014-05-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('MS','Mineral Soil Disturbance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('NA','Natural',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('OF','Office Review',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('OG','Organic Ground (e.g. sewage sludge, fish mort, pulp sludge, et c.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('OV','Overpass',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('PA','Pay',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('PH','Pre-Harvest Silviculture Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('PL','Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('PO','Post Harvest Inspection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('PR','Pruning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54');
+INSERT INTO silva.silv_technique_code (silv_technique_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('RA','Regeneration Performance Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RE','Reconnaissance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RG','Regen/Stocking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RO','Roadside',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RP','Re-Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RR','Road Rehab',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('RT','Root Rot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SE','Seedling Protection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SG','Signage',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SH','Species Health',TIMESTAMP'2021-02-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SI','Silviculture Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SL','Slide',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SM','Stand Management Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SP','Site Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SR','Site Rehabilitation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SU','Survival',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('SX','Silviculture Trials',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('TP','Trapping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('TR','Traverse',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('UN','Underpass',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54');
+INSERT INTO silva.silv_technique_code (silv_technique_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('UP','Road Upgrading',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('WF','Wire Fencing (primarily for ungulates)',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54'),
+	 ('WT','Wildlife Tree',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:10:54');
+
+INSERT INTO silva.disturbance_code (disturbance_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('B','Burnt Wildfire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('C','Drought',TIMESTAMP'2006-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('D','Disease',TIMESTAMP'2006-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('E','Stand Enhancement',TIMESTAMP'2012-03-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('F','Flood',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('I','Slide',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('L','Logged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('P','Pest (beetle)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('R','Rehabilitation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('S','Salvage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27'),
+	 ('W','Windblow',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2012-03-12 12:02:27');
+
+INSERT INTO silva.crew_contract_hire_code (crew_contract_hire_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('D','Direct Contract',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('F','RPF - Ministry Staff',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('L','Local Tender',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('O','Own Crew',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('P','Provincial Tender',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('Q','Request for Proposal',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('R','Region Tender',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('S','Select Invitation',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43'),
+	 ('T','Tech - Ministry Staff',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:43');
+
+INSERT INTO silva.silv_fund_srce_code (silv_fund_srce_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('BCP','BC Parks Funded',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('BCT','BC Timber Sales',TIMESTAMP'2003-04-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('CBI','Carbon Offset Investment',TIMESTAMP'2011-09-20 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('CF','Community Funding and Support',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('CFR','Office of the Chief Forester Researcher',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('CL','Catastrophic Losses',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('ERP','Ecosystem Restoration Program',TIMESTAMP'2014-11-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FCE','FCI under FESBC funding',TIMESTAMP'2018-03-02 00:00:00',TIMESTAMP'2024-09-24 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FCM','FCI under Ministry funding',TIMESTAMP'2018-03-02 00:00:00',TIMESTAMP'2024-09-24 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FED','Federal funding delivered by individual external agency (not BC government-led)',TIMESTAMP'2023-06-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FEP','Forest Employment Program',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FES','Forest Enhancement Society BC',TIMESTAMP'2017-08-03 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FID','Forest Investment Account - FRPA 108',TIMESTAMP'2003-04-01 00:00:00',TIMESTAMP'2006-09-14 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FIL','Forest Investment Account - licensee administered',TIMESTAMP'2003-04-01 00:00:00',TIMESTAMP'2012-05-07 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FIM','Forest Investment Account - ministry administered',TIMESTAMP'2003-04-01 00:00:00',TIMESTAMP'2012-05-07 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FIP','Forest Investment Program',TIMESTAMP'2022-08-18 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FIV','Forest Investment Vote',TIMESTAMP'2002-04-02 00:00:00',TIMESTAMP'2012-05-07 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FMC','COMFOR',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FME','Forest Worker Development Program (non-MOF funded)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FMY','Youth Fund',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55');
+INSERT INTO silva.silv_fund_srce_code (silv_fund_srce_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('FR','FRDA I & II',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FRP','FRPA - Application For Relief',TIMESTAMP'2005-08-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FTL','Forests for Tomorrow Lic Admin',TIMESTAMP'2005-04-01 00:00:00',TIMESTAMP'2024-09-24 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('FTM','Forests for Tomorrow MOF Admin',TIMESTAMP'2005-04-01 00:00:00',TIMESTAMP'2024-09-24 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GA','Other Agencies or Voluntary Work',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GAC','Corrections',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GEN','Genetics',TIMESTAMP'2021-04-23 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GFS','Forest Stand Management Fund',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GJF','Job Creation, Federal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GJJ','Job Creation, Joint',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('GJM','Job Creation, MOF',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HBF','Habitat Only ? Base funding',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HCA','Habitat Only - Natural Resources Canada',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HCB','Habitat Only - Columbia Basin Trust',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HCR','Habitat Only - Caribou Recovery Fund',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HDU','Habitat Only - Ducks Unlimited',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HFB','Habitat Only - Fraser Basin Council',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HFE','Habitat Only - Federal Government (if not Natural Resources Canada)',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HFF','Habitat Only ? Freshwater Fisheries Society of BC',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HFW','Habitat Only - Fish and Wildlife Compensation Program',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55');
+INSERT INTO silva.silv_fund_srce_code (silv_fund_srce_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('HHC','Habitat Only - Habitat Conservation Trust Fund',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HLB','Habitat Only - Land Based Investment Strategy',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HNC','Habitat Only - Nature Conservancy of Canada',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HNF','Habitat Only - Canada Nature Fund',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HNT','Habitat Only - Nature Trust',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HSR','Habitat only - Salmon Restoration and Innovation',TIMESTAMP'2024-06-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('HTW','Habitat Only ? Together for Wildlife',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('IA','Industrial Appraisal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('IIR','Industrial Incr., Required',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('IIV','Industrial Incr., Voluntary',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('IO','Industry Outstanding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2008-08-26 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('IR','Industry Royalties',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('JOP','Job Opportunity Program',TIMESTAMP'2009-12-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('LFP','Licensee Funded Program',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('LPP','BC PARKS only - License Plate Program',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('M','Ministry',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('O','Operational',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('RBC','Forest Renewal B.C.',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('RBL','Forest Renewal B.C. - licensee administered',TIMESTAMP'1997-08-13 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('RBM','Forest Renewal B.C. - ministry administered',TIMESTAMP'1997-08-13 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55');
+INSERT INTO silva.silv_fund_srce_code (silv_fund_srce_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('S','Section 88',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('SBF','BC Timber Sales',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('SMF','South Moresby Forest Replacement Account',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('TEB','Ministry of Transportation and Transit - Environment Branch Funding',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('TSC','Tree Seed Centre',TIMESTAMP'2005-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('TTO','Ministry of Transportation and Transit - Other',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VCV','Provincial Contingency Vote (Special Use Only)',TIMESTAMP'2007-08-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VFH','Forest Health',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VFP','Current Reforestation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VG','Ministry Outstanding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VI','Provicial Incremental',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VOB','Ministry Vote, SBEP',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VOI','Industry Outstanding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-03-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('VRT','Afforestation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2007-09-30 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('WRR','Wildfire Risk Reduction',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55'),
+	 ('XXX','No Funding Source',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:08:55');
+
+INSERT INTO silva.silv_project_status_code (silv_project_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ACT','Active',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:32'),
+	 ('CAN','Cancelled',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:32'),
+	 ('COM','Complete',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:32'),
+	 ('PLN','Planning',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:32');
+
+INSERT INTO silva.silv_base_code (silv_base_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AU','Audit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('BR','Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('CC','Cone Collection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('CM','Crown Modification',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('DN','Denudation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('DS','Direct Seeding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('EP','Experimental Activities',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('FE','Fertilization',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('HC','Habitat Connectivity',TIMESTAMP'2025-01-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('HI','Habitat Installation',TIMESTAMP'2021-02-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('JS','Juvenile Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('LB','Land Based Planning',TIMESTAMP'2018-06-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('PC','Pest Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('PL','Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('PR','Pruning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('RC','Recreation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('RD','Roads',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('SP','Site Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('ST','Species Translocation',TIMESTAMP'2021-02-25 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07'),
+	 ('SU','Surveys',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07');
+INSERT INTO silva.silv_base_code (silv_base_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('SX','Silviculture Trials',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2025-01-29 13:06:07');
+
+INSERT INTO silva.silv_cut_phase_code (silv_cut_phase_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ESTAB','Establishment Cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREPC','Preparatory Cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RECRU','Recruitment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('REMOV','Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SALVF','Salvage - Fire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SALVO','Salvage - Other',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SALVP','Salvage - Pest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SALVW','Salvage - Wind',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('2BT','2 Billion Trees',TIMESTAMP'2023-04-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('A','Animal Damage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('AC','Cattle Damage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('AHM','Aquatic Habitat Management',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ALP','Alpine Management',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('AMD','Amendment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('AMP','Amphibian',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ARC','Archaeological Survey',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('BIO','Biodiversity',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('BR','Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('BTR','Bull Trout',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CBU','Caribou',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CC','Cone Collection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CE','Crop Establishment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CGE','Crop Growth Enhancement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('COM','Compliance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CON','Cone Production',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CR','Conifer Release',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CSB','Cone and Seedbed',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('CT','Commercial Thinning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CUB','Cultural Burning',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('D','(Obsolete) Disease Control',TIMESTAMP'2003-07-07 00:00:00',TIMESTAMP'2002-12-17 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DA','Foliage Disease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DAF','Broom Rust',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DD','Stem Rot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DG','Drainage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DL','Disease Caused Dieback',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DM','Dwarf Mistletoe',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DR','Root Disease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DS','Stem Diseases (Cankers and Rusts)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DSA','Detailed Site Assessment',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('DTA','Danger Tree Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ECO','Listed Ecosystems',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('EFF','Efficacy',TIMESTAMP'2001-02-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ER','Ecosystem Restoration',TIMESTAMP'2018-06-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ERO','Erosion Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('EST','Establishment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FE','Fertilization',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FG','Free Growing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FH','(Obsolete) Forest Health',TIMESTAMP'2003-07-07 00:00:00',TIMESTAMP'2002-12-17 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('FIS','Fish',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FM','Fisheries Management',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FN','Forest Nutrient',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FP','Fill Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FRA','Forest Road Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FRE','Fuel Reduction',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FUR','Fur Bearer',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FWD','Four Wheel Drive Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('FWF','Freshwater Fish',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('GB','Grizzly Bear',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('GOS','Northern Goshawk',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('GRA','Grassland Management',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('HAZ','Fire Hazard Abatement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('HER','Habitat Enhancement Restoration',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('HPR','Habitat protection',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('HSR','Habitat Wildlife fish species research',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('I','(Obsolete) Insect Control',TIMESTAMP'2003-07-07 00:00:00',TIMESTAMP'2002-12-17 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('IA','Aphids',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('IB','Bark Beetles',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ID','Defoliators',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('INC','Incremental',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('INN','Innovation',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('INS','Invasive Species',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('IS','Shoot Insects',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('IVT','Invertebrate',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('IW','Weevils',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('JS','Juvenile Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('LPR','Large Predator',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('LPS','Listed Species',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MAP','Mapping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MAX','Max. Density Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MG','Mountain Goat',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MIG','Migratory Bird',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MLS','MLSIS Reporting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MMU','Marbled Murre let',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MNT','Maintenance',TIMESTAMP'2001-05-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MON','Monitoring',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MOO','Moose',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MS','Mineral Soil Disturbance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('MTC','Mistletoe Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('MTS','Multistory',TIMESTAMP'2001-03-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('N','Non Biological (Abiotic) Injuries',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('NAT','Natural Regeneration',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ND','Drought',TIMESTAMP'2022-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('NG','Frost',TIMESTAMP'2022-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('NOA','No Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('NUT','Forest Nutrient Improvement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('OGF','Old Growth Forest',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ONC','Salmon',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PER','Permanent Deactivation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PH','Pre Harvest Silviculture Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PL','Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PLT','Planting Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('POL','Pole Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PP','Plantability Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PR','Pruning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PRP','Prepartory',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PRY','Birds of Prey',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('PVM','Pre-Harvest Vegetation Management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RA','Regeneration Performance Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('RCR','Recruitment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RE','Reconnaissance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('REC','Recreation Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('REM','Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('REP','Reptile',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RG','Regen Delay',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RH','Rehabilitation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RHM','Range Habitat Management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RIP','Riparian Restoration',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RP','Re-Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RS','Repression Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('RT','Root Rot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SAL','Stagnant Stand Salvage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SAN','Sanitation Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SBI','Song Bird',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SC','Site Disturbance/Degradation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SE','Seedling Protection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SEE','Seeding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SEM','Semi-permanent Deactivation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SH','Sheep',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('SM','Small Mammal',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SMP','Stand Management Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SNP','Sanitation Pest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SP','Site Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SPE','Species Composition Change',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SPR','Species Recovery',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SR','Site Rehabilitation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SRI','Salmon Restoration and Innovation',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('ST','Stocking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('STC','Seed Tree Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('STD','Stand Tending Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('STE','Steelhead',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('STU','Sturgeon',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SU','Survival',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SUP','Suppression Release',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SVF','Salvage - Fire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SVO','Salvage - Other',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SVW','Salvage - Wild',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('SWF','Saltwater Fish',TIMESTAMP'2023-05-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('TEM','Temporary Deactivation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+INSERT INTO silva.silv_objective_code (silv_objective_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('TP','Treatment Prescription',TIMESTAMP'2000-02-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('TWD','Two Wheel Drive Access',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('UNG','Ungulate',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('UPG','Site Upgrading',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('UR','Understory Retention',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('VM','Vegetation Management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('W','Wildlife Damage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('WET','Wetland Management',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('WHM','Wildlife Habitat Management',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('WND','Wind Firming',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('WQI','Wood Quality Improvement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57'),
+	 ('WT','Wildlife Tree',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-10-16 13:13:57');
+
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('35MM','35mm Photo',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('70MM','70 mm Photo',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('ASCAN','Aerial Infra-red Scanning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('AUGER','Auger',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BAGS','Gro-max Bags',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BASL','Basal Spray',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BDGRM','Bridge Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BDGRP','Bridge Replacement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BERMS','Berms',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BLADE','Blading',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BLOCK','Clearcut Block',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BPACK','Back Pack Application',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BRIP','Block Ripping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BRMAT','Brush Mats',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BROAD','Broadcast Burn',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BROOT','Bareroot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BRUSH','Brush Saw',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('BURY','Bury Surface Fuels',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CABLE','Cable Knockdown',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CAGES','Cage Style Protectors',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CCRES','Clearcut with reserves',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CHAIN','Chain Drag',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CHAUL','Chipping and Haul from site',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CHEM','Chemical',TIMESTAMP'2001-02-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CHOP','Chopping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CLEAR','Clearcut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CLIMB','Climbing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CLVBY','Culvert Bypass',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CLVRM','Culvert Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CLVRP','Culvert Replacement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CONE','Cone Style Protectors',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('COPPI','Coppice',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('COPPR','Copper Treated Plugs',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('COVER','Cover Crop',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CROSS','Cross Ditching',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CROWN','Crowning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CRUIS','Cruise',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CSCAT','Chipping and Scatter',TIMESTAMP'2020-08-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CSEED','Cyclone Seeder',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('CTAIN','Container',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DBARK','Debarking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('DISC','Disc Trenching',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('DITCH','Ditching',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('DIVFO','Diversionary Food',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('DRONE','Drone',TIMESTAMP'2024-05-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('EXCAV','Excavator',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FBURN','Fall And Burn',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FCOLL','Fall and Collect',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FENCE','Fence Style Protectors',TIMESTAMP'1997-09-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FILE','File Review',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FIXED','Fixed Wing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FORW','Forwarder',TIMESTAMP'2009-11-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FRILL','Notch or Frill Individual Trees',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FRLTZ','Fertilizing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FULL','Full Tree',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FUNNE','Funnel Trapping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('FUROW','Furrow Seeder',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GPS','GPS',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GRADE','Grading',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GRANU','Granular Application',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('GRASS','Grass Seeding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GRAZE','Grazing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GRCOW','Cattle Grazing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GROCO','Grow Cone',TIMESTAMP'1999-10-29 00:00:00',TIMESTAMP'2001-11-06 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GRSHP','Sheep Grazing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GSCAN','Ground Infra-red Scanning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('GUARD','Fireguard',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HAND','Hand Site Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HANDR','Hand Pulling (Removal)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HANDS','Hand Saw',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HARV','Harvest',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HELI','Helicopter',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('HYDRO','Hydro-Axe',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('IMCUT','Intermediate cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('IMPS','Intensity Measuring Pixels',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('INSL','Insloping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('ISECT','Insect',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('KNOCK','3 Metre Knock Down',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LAND','Landings',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LANDS','Landscape Level',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('LAYOT','Layout',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LCLIP','Leader Clipping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LETHL','Lethal Trap Trees',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LINE','Lines',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('LRIP','Landing Ripping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MACH','Machine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MAINT','Maintenance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MANCT','Manual Cutting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MANGI','Manual Girdling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MANSB','Manual Stem Bending',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MDOWN','Machine Knockdown',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MEAS','Measurement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MESH','Mesh Style Protectors',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MICRO','Microorganism',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MOCUT','Motorized Cutting (Handheld)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MOGIR','Motorized Girdling (Handheld)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MOUND','Mounding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MSM','MSMA Treated Area',TIMESTAMP'2007-09-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MSQ','Mean Stocked Quadrant',TIMESTAMP'2005-09-28 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MULCH','Mulching',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('MULTI','Multi-layered',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('MXPLT','Mixed Stock',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('OUTSL','Outsloping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PATCH','Machine Patch Scarification',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PATCT','Patch cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PBURN','Pile and Burn',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PHERO','Pheromone Baiting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PHOTO','Air Photo Interp',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PILE','Piling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PITA','Post Incremental Treatment Assessment',TIMESTAMP'2014-05-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PIXEL','Pixels',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PLOT','Plots',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('POLE','Extension Pole',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('POPUP','Popup',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('POST','Blade or Strip Post-scarification',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('POWER','Power Saw',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PRE','Blade or Strip Pre-scarification',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PREDA','Predator Enhancement',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PSP','Permanent Sample Plot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('PUSH','Pushover',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('RAKE','Excavation Raking',TIMESTAMP'2000-08-17 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RANGE','Open Range',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RBROO','Resistant Bareroot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RCOOP','Resistant Copper treated',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RCTAI','Resistant Container',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RECCE','Reconnaisance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('REMOV','Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('REPEL','Repelling Style Protectors',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RESL','Resloping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RESTU','Removing Stump',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RETEN','Retention',TIMESTAMP'1999-03-16 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RIP','Fish/Riparian',TIMESTAMP'2014-05-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('ROADS','Roads and Landings',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RPILE','Roadside Piles',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('RRIP','Ripping Road',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SBARK','Stem Bark Spraying',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SCALP','Spot Scalping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SCON','Site Construction',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SCONE','Spot Cone',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SDM','Stand Development Monitoring',TIMESTAMP'2010-10-15 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('SEEDT','Seed tree',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SELEC','Selection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SEPI','SEPI',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SHARK','Shark Fin Drag',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SHEAR','Pruning Shears',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SHELT','Shelterwood',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SINCO','Sinocast',TIMESTAMP'1999-10-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SINJE','Stem Injection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SKID','Skid Roads',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SLBD','Stand Level Biodiversity',TIMESTAMP'2014-05-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SLIDE','Slide',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SMAIN','Site Maintenance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SNAG','Snag Falling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SNOW','Snow Mobile',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SNWRM','Snow Removal',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SPGUN','Spot Gun Application (Liquid)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SPOT','Spot Treatment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SPOTS','Spot Seeding (Hand)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('SPYDR','Spyder',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('STAKE','Staking',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('STUMP','Stump Treatment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TABLT','Fertilizer Tablets',TIMESTAMP'1999-03-09 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TCON','Trail Construction',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TIGHT','Tight Chain',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TMAIN','Trail Maintenance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TRAIL','Planting Trail Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TRANS','Transplanted stock',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TRAP','Trapping',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TSP','Temporary Sample Plot',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TUBE','Tube Style Protectors',TIMESTAMP'2001-10-22 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('TUBEX','Tubex Tubing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2001-11-06 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('UNDER','Understory Burn',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VEHIC','Vehicle (e.g. tractor spreader or truck spraying)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VEXAR','Vexar Tubing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VMSFB','Vehicle Mount Sprayer (Fixed Boom)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VMSGH','Vehicle Mount Sprayer (Gun & Hose)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VMSLI','Vehicle Mounted Slinger',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('VOCOL','Vole Collar',TIMESTAMP'2003-07-02 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WALK','Walkthrough',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WBAR','Water Bars',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+INSERT INTO silva.silv_method_code (silv_method_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('WFIRE','Wildfire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WHIPS','Whips',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WINDP','Windrow Perimiters Only',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WINDR','Windrow',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WING','Winged Tooth Sub-soiler',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WIPNG','Wiping Application of Herbicide(Vision with a wick)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05'),
+	 ('WQ','Water Quality',TIMESTAMP'2014-05-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-06-04 13:03:05');
+
+INSERT INTO silva.silv_activity_measurement_code (silv_activity_measurement_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DY','Days',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:57'),
+	 ('HA','Hectares',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:57'),
+	 ('HL','Hectolitres',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:57'),
+	 ('HR','Hours',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:57'),
+	 ('KM','Kilometers',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:57');
+
+INSERT INTO silva.silv_system_code (silv_system_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CCRES','Clearcut with reserves',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('CLEAR','Clearcut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('COPPI','Coppice',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('IMCUT','Intermediate cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('PATCT','Patch cut',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('RETEN','Retention',TIMESTAMP'1999-03-16 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('SEEDT','Seed tree',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('SELEC','Selection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00'),
+	 ('SHELT','Shelterwood',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:00');
+
+INSERT INTO silva.unit_bid_code (unit_bid_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DY','Days',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('HA','Hectares',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('HL','Hectolitres',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('HR','Hours',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('KG','Kilograms',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('KM','Kilometers',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('PT','Plots',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('TC','Total Cost per Unit Area',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54'),
+	 ('TRE','Trees',TIMESTAMP'2006-08-31 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2007-03-11 17:50:54');
+
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ACCESS','Access to Opening',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ADVERTIS','Prescription Advertised',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTBR','Alternate Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTDN','Alternate Denudation',TIMESTAMP'1998-07-16 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTFE','Alternate Fertilization',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTJS','Alternate Juvenile Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTPC','Alternate Pest Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTPR','Alternate Pruning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTREG','Alternate Regeneration',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTSP','Alternate Site Prep',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ALTST','Alternate Tending',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ARCHAEO','Archaeological Sites',TIMESTAMP'1998-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ASSESS1','Assessments Made Available',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ASSESS2','Assessments Pertinent Details',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('BIODIV1','Biodiversity Objectives/Values/Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('BIODIV2','Biodiversity Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('BLADED','Bladed or Excavated Trails',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('BR','Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('CONSIST','Consistency with Higher Level Plans',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('CONTRACT','Contractor Performance',TIMESTAMP'1998-05-12 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CRITICAL','Critical Site Factors',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('CULTURE1','Cultural Heritage Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('CULTURE2','Cultural Heritage Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('DEBRIS1','Coarse Woody Debris Objectives/Acions/Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('DEBRIS2','Coarse Woody Debris Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ECOLOGY','Ecology',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('EXTENURE','Ex-Tenure comment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FDP','Forest Development Plans',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FEEDBACK','Feedback',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FIRE','Fire Protection',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FIRE1','Protection Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FIRE2','Protection Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FISH','Fisheries',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FISH1','Fisheries Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FISH2','Fisheries Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FORCOVER','Forest Cover',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FORHLTH','Forest Health Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('FRGROW','Post Free-growing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('GENERAL','General Comments',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('GULLY','Gully Management Strategies',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('HARVEST','Harvest Plan',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HARVEST1','Harvest Plan #1',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HARVEST2','Harvest Plan #2',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HARVEST3','Harvest Plan #3',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HARVEST4','Harvest Plan #4',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HLP','Higher Level Plans',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('HRC','History Record Conversion',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('LAND1','Visual Landscape Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('LAND2','Visual Landscape Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('LEAVETR','Leave Tree Characteristics',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('LNDSCAPE','Landscape',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('MGMTOBJ','Management Objectives',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('MGMTOBJ1','Deviations To Plans',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('MGMTOBJ2','Detailed Objectives',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('MILSTONE','Milestone',TIMESTAMP'2003-06-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('MINSOIL','Minimizing Soil Disturbance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('OPCOND','Operating Conditions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('OR','Other Activities',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('OTHRVAL','Other Forest Values',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('OTHRVAL1','Other Value Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('OTHRVAL2','Other Value Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PL','Planting',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFBR','Preferred Brushing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFDN','Preferred Denudation',TIMESTAMP'1998-07-16 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFFE','Preferred Fertilization',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFJS','Preferred Juvenile Spacing',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFPC','Preferred Pest Control',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFPR','Preferred Pruning',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFREG','Preferred Regeneration',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFSP','Preferred Site Prep',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREFST','Preferred Tending',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('PREHARV','Pre-Harvest Stand Structure',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RANGE','Range Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RANGE1','Range Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RANGE2','Range Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RATIONAL','Rationale for Proposed Silvicultural System',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RECREATN','Recreation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RECRTN1','Recreation Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RECRTN2','Recreation Values',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('REGEN','Regeneration',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('REHAB','Rehabilitation Plan',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RESERVE','Reserve Description',TIMESTAMP'1998-03-27 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('REVIEW','Prescription Review and Comment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RIP1','Riparian Reserve Zone',TIMESTAMP'1998-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RIP2','Riparian Management Zone',TIMESTAMP'1998-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('RIPARIAN','Riparian Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SENAREA1','Sensitive Area Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SENAREA2','Sensitive Area Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SITE','Site Sensitivity',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SOILCON','Soil Conservation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SOILDIST','TAUP Soil Disturbance',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SP','Site Preparation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SSGOALS','Stand Structure Goals',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('ST','Stand Tending',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('STOCKING','Stocking Rationale',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('STOCKREQ','Other Stocking Requirements',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SU','Surveys',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SUCRTRIA','Special Survey Criteria',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SU_AREA','SU Area Description',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('SXTRIAL','SX Trial Comment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+INSERT INTO silva.silv_comment_type_code (silv_comment_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('TRADUSE1','Aboriginal Traditional Use Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('TRADUSE2','Aboriginal Traditional Use Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('VEG','Vegetation Management',TIMESTAMP'1998-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WATER','Watershed',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WATER1','Watershed Concerns',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WATER2','Watershed Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WILDLF1','Wildlife Attributes',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WILDLF2','Wildlife Actions',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WILDLIFE','Wildlife',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('WIND','Windthrow Hazard Assessment',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58'),
+	 ('XREF','Licence Cross Reference',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:58');
+
+INSERT INTO silva.silv_comment_source_code (silv_comment_source_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ALL','All',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('AUDT','Audit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('ECO','SP Eco-Stratum',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('OPEN','Opening',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('PHSP','Pre-Harvest Silviculture Prescription',TIMESTAMP'2003-11-26 00:00:00',TIMESTAMP'2003-11-26 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('PLAN','Plans and Goals',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('PROJ','Project',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('RIP','Riparian Prescription',TIMESTAMP'1998-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('RSLT','Record Activities/Surveys',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('SP','Silviculture Prescription',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('SSYS','Silvicultural System',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36'),
+	 ('SU','Standards Unit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-26 15:07:36');
+
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('ALL','ACCESS',30),
+	 ('ALL','ARCHAEO',34),
+	 ('ALL','BR',5),
+	 ('ALL','CONTRACT',33),
+	 ('ALL','ECOLOGY',6),
+	 ('ALL','EXTENURE',14),
+	 ('ALL','FEEDBACK',15),
+	 ('ALL','FIRE',26),
+	 ('ALL','FISH',25),
+	 ('ALL','FORCOVER',24),
+	 ('ALL','FORHLTH',29),
+	 ('ALL','FRGROW',23),
+	 ('ALL','GENERAL',22),
+	 ('ALL','HARVEST',21),
+	 ('ALL','HRC',20),
+	 ('ALL','LNDSCAPE',19),
+	 ('ALL','MGMTOBJ',1),
+	 ('ALL','OR',17),
+	 ('ALL','OTHRVAL',16),
+	 ('ALL','PL',28);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('ALL','RANGE',18),
+	 ('ALL','RECREATN',4),
+	 ('ALL','REGEN',3),
+	 ('ALL','RESERVE',32),
+	 ('ALL','RIP1',36),
+	 ('ALL','RIP2',37),
+	 ('ALL','SOILCON',2),
+	 ('ALL','SP',7),
+	 ('ALL','ST',8),
+	 ('ALL','STOCKING',9),
+	 ('ALL','SU',10),
+	 ('ALL','SU_AREA',31),
+	 ('ALL','SXTRIAL',11),
+	 ('ALL','VEG',35),
+	 ('ALL','WATER',12),
+	 ('ALL','WILDLIFE',13),
+	 ('ALL','XREF',27),
+	 ('ECO','CRITICAL',1),
+	 ('ECO','ECOLOGY',2),
+	 ('OPEN','ACCESS',27);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('OPEN','BR',24),
+	 ('OPEN','ECOLOGY',13),
+	 ('OPEN','EXTENURE',14),
+	 ('OPEN','FEEDBACK',15),
+	 ('OPEN','FIRE',16),
+	 ('OPEN','FISH',17),
+	 ('OPEN','FORCOVER',18),
+	 ('OPEN','FORHLTH',19),
+	 ('OPEN','FRGROW',20),
+	 ('OPEN','GENERAL',21),
+	 ('OPEN','HARVEST',22),
+	 ('OPEN','HRC',23),
+	 ('OPEN','LNDSCAPE',26),
+	 ('OPEN','MGMTOBJ',12),
+	 ('OPEN','OTHRVAL',11),
+	 ('OPEN','RANGE',25),
+	 ('OPEN','RECREATN',1),
+	 ('OPEN','REGEN',2),
+	 ('OPEN','SOILCON',3),
+	 ('OPEN','SP',4);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('OPEN','ST',5),
+	 ('OPEN','STOCKING',6),
+	 ('OPEN','SXTRIAL',7),
+	 ('OPEN','WATER',8),
+	 ('OPEN','WILDLIFE',9),
+	 ('OPEN','XREF',10),
+	 ('PHSP','ACCESS',6),
+	 ('PHSP','ALTBR',7),
+	 ('PHSP','ALTREG',8),
+	 ('PHSP','ALTSP',9),
+	 ('PHSP','ALTST',10),
+	 ('PHSP','ECOLOGY',11),
+	 ('PHSP','FEEDBACK',12),
+	 ('PHSP','FIRE1',13),
+	 ('PHSP','FIRE2',14),
+	 ('PHSP','FISH1',15),
+	 ('PHSP','FISH2',16),
+	 ('PHSP','FORHLTH',4),
+	 ('PHSP','FRGROW',5),
+	 ('PHSP','HARVEST1',30);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('PHSP','HARVEST2',29),
+	 ('PHSP','HARVEST3',27),
+	 ('PHSP','HARVEST4',26),
+	 ('PHSP','LNDSCAPE',24),
+	 ('PHSP','MGMTOBJ1',23),
+	 ('PHSP','MGMTOBJ2',22),
+	 ('PHSP','OTHRVAL1',21),
+	 ('PHSP','OTHRVAL2',20),
+	 ('PHSP','PREFBR',19),
+	 ('PHSP','PREFREG',34),
+	 ('PHSP','PREFSP',25),
+	 ('PHSP','PREFST',28),
+	 ('PHSP','RANGE',31),
+	 ('PHSP','RECREATN',32),
+	 ('PHSP','SOILCON',33),
+	 ('PHSP','STOCKING',18),
+	 ('PHSP','WATER1',17),
+	 ('PHSP','WATER2',1),
+	 ('PHSP','WILDLF1',2),
+	 ('PHSP','WILDLF2',3);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('PLAN','GENERAL',1),
+	 ('PLAN','HRC',2),
+	 ('PLAN','OR',4),
+	 ('PLAN','PL',3),
+	 ('PLAN','SP',5),
+	 ('PLAN','ST',6),
+	 ('PLAN','SU',7),
+	 ('PROJ','CONTRACT',2),
+	 ('PROJ','GENERAL',1),
+	 ('RIP','RIP1',1),
+	 ('RIP','RIP2',2),
+	 ('RSLT','GENERAL',2),
+	 ('RSLT','HRC',3),
+	 ('RSLT','OR',7),
+	 ('RSLT','PL',4),
+	 ('RSLT','SP',1),
+	 ('RSLT','ST',6),
+	 ('RSLT','SU',5),
+	 ('SP','ADVERTIS',1),
+	 ('SP','ARCHAEO',42);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('SP','ASSESS1',19),
+	 ('SP','ASSESS2',18),
+	 ('SP','BIODIV1',17),
+	 ('SP','BIODIV2',16),
+	 ('SP','BLADED',15),
+	 ('SP','CONSIST',14),
+	 ('SP','CULTURE1',13),
+	 ('SP','CULTURE2',12),
+	 ('SP','DEBRIS1',11),
+	 ('SP','DEBRIS2',10),
+	 ('SP','FDP',9),
+	 ('SP','FIRE1',8),
+	 ('SP','FIRE2',7),
+	 ('SP','FISH1',6),
+	 ('SP','FISH2',5),
+	 ('SP','FORHLTH',40),
+	 ('SP','GULLY',4),
+	 ('SP','HLP',3),
+	 ('SP','LAND1',2),
+	 ('SP','LAND2',20);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('SP','MGMTOBJ',21),
+	 ('SP','OTHRVAL1',32),
+	 ('SP','OTHRVAL2',33),
+	 ('SP','RANGE1',34),
+	 ('SP','RANGE2',35),
+	 ('SP','RECRTN1',36),
+	 ('SP','RECRTN2',37),
+	 ('SP','RESERVE',41),
+	 ('SP','REVIEW',38),
+	 ('SP','RIPARIAN',39),
+	 ('SP','SENAREA1',31),
+	 ('SP','SENAREA2',30),
+	 ('SP','SITE',29),
+	 ('SP','SOILDIST',28),
+	 ('SP','TRADUSE1',27),
+	 ('SP','TRADUSE2',26),
+	 ('SP','VEG',43),
+	 ('SP','WATER1',25),
+	 ('SP','WATER2',24),
+	 ('SP','WILDLF1',23);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('SP','WILDLF2',22),
+	 ('SSYS','LEAVETR',3),
+	 ('SSYS','PREHARV',2),
+	 ('SSYS','RATIONAL',1),
+	 ('SSYS','SSGOALS',4),
+	 ('SU','ALTBR',5),
+	 ('SU','ALTDN',23),
+	 ('SU','ALTFE',21),
+	 ('SU','ALTJS',6),
+	 ('SU','ALTPC',4),
+	 ('SU','ALTPR',20),
+	 ('SU','ALTREG',19),
+	 ('SU','ALTSP',18),
+	 ('SU','MINSOIL',17),
+	 ('SU','OPCOND',16),
+	 ('SU','PREFBR',15),
+	 ('SU','PREFDN',24),
+	 ('SU','PREFFE',14),
+	 ('SU','PREFJS',13),
+	 ('SU','PREFPC',12);
+INSERT INTO silva.silv_comment_xref (silv_comment_source_code, silv_comment_type_code, comment_order_no) VALUES
+	 ('SU','PREFPR',11),
+	 ('SU','PREFREG',10),
+	 ('SU','PREFSP',9),
+	 ('SU','REHAB',8),
+	 ('SU','STOCKING',1),
+	 ('SU','STOCKREQ',2),
+	 ('SU','SU_AREA',22),
+	 ('SU','SUCRTRIA',3),
+	 ('SU','WIND',7),
+	 ('SU','MILSTONE',25);
+
+INSERT INTO silva.fsp_status_code (fsp_status_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('APP','Approved',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('CAN','Cancelled',TIMESTAMP'2017-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('DEL','Deleted',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('DFT','Draft',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('EXP','Expired',TIMESTAMP'2008-03-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('INE','In Effect',TIMESTAMP'2009-03-04 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('OHS','Opportunity to be Heard Sent',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('REJ','Rejected',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('RET','Retired',TIMESTAMP'2017-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('SUB','Submitted',TIMESTAMP'2006-09-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24'),
+	 ('UPD','Update',TIMESTAMP'2024-08-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2024-09-25 13:31:24');
+
+INSERT INTO silva.stocking_layer_code (stocking_layer_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('1','Mature',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:01'),
+	 ('2','Pole',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:01'),
+	 ('3','Sapling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:01'),
+	 ('4','Regen',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:01'),
+	 ('I','Inventory Layer',TIMESTAMP'2003-05-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:01');
+
+INSERT INTO silva.tree_size_unit_code (tree_size_unit_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('%','Percent',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02'),
+	 ('CM','Centimeters',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:24:02');
+
+INSERT INTO silva.silv_milestone_type_code (silv_milestone_type_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('RG','Regeneration',TIMESTAMP'2003-04-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-12-22 13:30:06'),
+	 ('FG','Free Growing',TIMESTAMP'2003-04-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-12-22 13:30:06'),
+	 ('PH','Post Harvest',TIMESTAMP'2003-04-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-12-22 13:30:06'),
+	 ('NR','No Regeneration',TIMESTAMP'2003-04-10 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-12-22 13:30:06');
+
+INSERT INTO silva.forest_cover_layer_code (forest_cover_layer_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 (' ','Inventory Layer',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2003-05-30 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('1','Mature',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('1S','Silviculture Layer 1 - uneven aged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('2','Pole',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('2S','Silviculture Layer 2 - uneven aged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('3','Sapling',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('3S','Silviculture Layer 3 - uneven aged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('4','Regen',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('4S','Silviculture Layer 4 - uneven aged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('I','Inventory Layer',TIMESTAMP'2003-05-30 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('S','Silviculture Layer - even aged',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56'),
+	 ('V','Veteran',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2003-11-15 19:23:56');
+
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('AO','Pika  (L. Ochotona spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFX','Brown Felt Blight  (L. Herpotrichia spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDY','Birch-Aspen Leafroller  (L. Epinotia solandriana )',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NAV','Avalanche or Snow Slide',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFO','Lophodermium Needle Cast  (L. Lophodermium seditiosum)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFY','Hendersonia Needle Cast  (L. Hendersonia pinicola)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFZ','Rhizosphaera Needle Cast  (L. Rhizosphaera kalkhoffii)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFU','Cedar Leaf Blight  (L. Didymascella thujina)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLK','Conifer Cytospora Canker  (L. Leucostoma kunzei)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRS','Schweinitzii Butt Rot  (L. Phaeolus schweinitzii)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NX','Wind Scarring or Rubbing',TIMESTAMP'2009-07-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFN','Leptomelanconium Needle Blight  (L. Leptomelanconium pinicola)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFJ','Phaeoseptoria Needle Cast  (L. Phaeoseptoria contortae)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NCY','Yellow Cedar (Yc) Decline',TIMESTAMP'2006-11-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NCA','Aspen Decline',TIMESTAMP'2006-11-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NCB','Birch Decline',TIMESTAMP'2006-11-06 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID2','Bruce Spanworm  (L. Operophtera bruceata)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID3','Winter Moth  (L. Operophtera brumata)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID4','Cottonwood Sawfly  (L. Nematus currani)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID5','Fall Webworm  (L. Hyphantria cunea)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ID7','Woolly Alder Sawfly  (L. Eriocampa ovata)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDK','Northern Tent Caterpillar  (L. Malacosoma californicum)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID6','Aspen Leaf Miner  (L. Phyllocristis populiella)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID8','Aspen Leaf Roller  (L. Pseudexentera oregonana)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID9','Birch Leaf Skeletonizer  (L. Buccalatrix spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEA','Unidentified Aspen Defoliation',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDO','Filament Bearer  (L. Nematocampa fiamentaria)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDJ','Gray Forest Loooper  (L. Caripeta divista)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDQ','Hemlock Needle Miner  (L. Epinotia tsugana)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEB','Hemlock Sawfly  (L. Neodiprion tsugae)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEC','Larch Budmoth  (L. Zairaphera improbana)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IED','Larch Looper  (L. Semiothis sexmaculata)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEF','Cottonwood Leaf Skeletonizer  (L. Phyllonorycytes apparella)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEG','Lodgepole Pine Sawfly  (L. Neodiprion nanulus contortae)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEH','Phantom Hemlock Looper  (L. Nepytia phantasmaria)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEI','Saddleback Looper  (L. Ectropis crepuscularia)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEJ','Willow Leafminer  (L. Micrurapteryx salicifoliella)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFB','Delphinella Tip Blight  (L. Delphinella spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFF','Marssonina Leaf Blights  (L. Marssonina spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFG','Cottonwood Leaf Rust  (L. Melampsora occidentalis)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DFI','Linospora Leaf Blotch  (L. Linospora tetraspora)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFK','Septoria Leaf Spot  (L. Septoria populicola)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFT','Sirococcus Tip Blight  (L. Sirococcus conigenus)',TIMESTAMP'2002-12-19 00:00:00',TIMESTAMP'2020-10-08 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDA','White Mottled Rot  (L. Ganoderma applanatum)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDC','Brown Cubical Rot of Birch  (L. Piptoporus betulinus)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDG','Sterile Conk Trunk Rot of Birch  (L. Inonotus obliquus)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBH','Hylurgops Beetle  (L. Hylurgops rugipennis)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBF','Fir Engraver Beetle  (L. Scolytus ventralis)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBL','Lodgepole Pine Beetle  (L. Dendroctonus murryanae)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBE','Silver Fir Beetle  (L. Pseudohylesinus sericeus)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBR','Fir Root Bark Beetle  (L. Pseudohylesinus granulatus)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISA','Bronze Birch Borer  (L. Agrilus anxius)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISC','Poplar Borer  (L. Saperda calcarata)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISW','Poplar and Willow Borer  (L. Cryptorhynchus lapathi)',TIMESTAMP'2002-12-19 00:00:00',TIMESTAMP'9999-12-30 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID1','Leaf Beetles  (L. Chrysomela spp.)',TIMESTAMP'2009-12-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('UBT','Unknown Broken Top',TIMESTAMP'2013-04-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('UCR','Unknown Crook',TIMESTAMP'2013-04-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('USW','Unknown Sweep',TIMESTAMP'2013-04-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFQ','Alpine Fir Needle Cast  (L. Isthmiella quadrispora)',TIMESTAMP'2013-04-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEK','Rusty Tussock Moth  (L. Orgyia antiqua)',TIMESTAMP'2013-04-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('NBP','Post-Burn Mortality',TIMESTAMP'2013-04-05 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFW','Swiss Needle Cast  (L. Phaeocryptopus gaumanni)',TIMESTAMP'2012-11-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('UF','Unknown Fork Damage',TIMESTAMP'2012-11-19 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PBC','Gray Mould  (L. Botrytris cinerea)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PCD','Neonectria radicicola  (L. Neonectria radicicola)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PCF','Seed or Cold Fungus  (L. Caloscypha fulgens)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PCP','Inland Spruce Cone Rust  (L. Chrysomyxa pirolata)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PDT','Cedar Leaf Blight  (L. Didymascella thujina)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2010-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PFX','Fusarium spp.  (L. Fusarium spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PPG','Damping-off Disease  (L. Phoma glomerata)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PPX','Penicillium spp.  (L. Penicillium spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PSS','Sirococcus Blight  (L. Sirococcus strobilinus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2010-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PTX','Trichothecium spp.  (L. Trichothecium spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('T','Treatment Injuries',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TC','Chemical Injury',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TL','Logging Wounds',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TM','Other Mechanical Damage (non-logging)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TP','Planting (incorrectly planted)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TPM','Planting (poor microsite)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('TR','Pruning Wound',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('TT','Thinning or Spacing Wound',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('V','Problem Vegetation',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('VH','Herbaceous Competition',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('VP','Vegetation Press',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('VS','Shrub Competition',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('VT','Tree Competition',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDL','Western Hemlock Looper  (L. Lambdina fiscellaria lugubrosa)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDM','Gypsy Moth  (L. Lymantria dispar)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDN','Birch Leaf Miners  (L. Fenusa pusilla and Profenusa thomsoni)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDP','Larch Sawfly  (L. Pristophora erichsoni)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDR','Alder Sawfly  (L. Eriocampa ovata)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDS','Balsam Fir Sawfly  (L. Neodiprion abietis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDT','Douglas-fir Tussock Moth  (L. Orgyia pseudotsugata)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDU','Satin Moth  (L. Leucoma salicis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDV','Variegated Cutworm  (L. Peridroma saucia)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDW','Western Spruce Budworm  (L. Choristoneura occidentalis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDX','Large Aspen Tortrix  (L. Choristoneura conflictana)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDZ','Western False Hemlock Looper  (L. Nepytia freemani)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IS','Shoot Insects',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISB','Western Cedar Borer  (L. Trachykele blondeli)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('ISE','European Pine Shoot Moth  (L. Rhyacionia buoliana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISG','Gouty Pitch Midge  (L. Cecidomyia piniinopsis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISP','Pitch Nodule Moths  (L. Petrova species)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISQ','Sequoia Pitch Moth  (L. Vespamima sequoiae)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ISS','Western Pine Shoot Borer  (L. Eucosma sonomana)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IW','Weevils',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWC','Conifer Seedling Weevil  (L. Steremnius carinatus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWM','Magdalis Species  (L. Magdalis spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWP','Lodgepole Pine Terminal Weevil  (L. Pissodes terminalis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWS','White Pine Weevil (on spruce)  (L. Pissodes strobi)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWW','Warrens Root Collar Weevil  (L. Hylobius warreni)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWY','Cylindrocopturus Weevil  (L. Cylindrocopturus spp.)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IWZ','Yosemite Bark Weevil  (L. Pissodes schwartzii)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('M','Mite Damage  (L. Trisetacus spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('N','Non-Biological (Abiotic) Injuries',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NB','Fire',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ND','Drought',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NF','Flooding',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NG','Frost',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NGC','Frost Crack',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('NGH','Frost Heaved',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NGK','Shoot/Bud Frost Kill',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NH','Hail',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NK','Fumekill',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NL','Lightning',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NN','Road Salt',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NR','Redbelt',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NS','Slide',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NW','Windthrow',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NWS','Windthrow - Soil Failure',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NWT','Windthrow - Treatment or Harvest-related',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NY','Snow or Ice (includes snow press)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NZ','Sunscald',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('P','Cone and Seedling Fungal Pathogens',TIMESTAMP'1997-08-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('PAX','Alternaria spp.  (L. Alternaria spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRL','Laminated Root Rot Fd form  (L. Inonotus sulphurascens)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRN','Annosus Root Disease  (L. Heterobasidion annosum)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRR','Rhizina Root Disease  (L. Rhizina undulata)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRT','Tomentosus Root Rot  (L. Inonotus tomentosus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DS','Stem Diseases  (L. Cankers and Rusts)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DSA','Atropellis Canker  (L. Atropellis piniphila)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSB','White Pine Blister Rust  (L. Cronartium ribicola)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSC','Comandra Blister Rust  (L. Cronartium comandrae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSE','Sooty Bark Canker  (L. Encoelia pruinosa)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSG','Western Gall Rust  (L. Endocronartium harknessii)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSH','Hypoxylon Canker  (L. Entoleuca (Hypoxylon) mammatum)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSP','Cryptosphaeria Canker  (L. Cryptosphaeria populina)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSR','Ceratocystis Canker  (L. Ceratocystis fimbriata)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSS','Stalactiform Blister Rust  (L. Cronartium coleosporioides)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DST','Target Canker  (L. Nectria galligena)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSY','Cytospora Canker  (L. Cytospora chrysosperma)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('I','Insects',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IA','Aphids',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAB','Balsam Woolly Adelgid  (L. Adelges piceae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAC','Giant Conifer Aphid  (L. Cinara spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAG','Cooley Spruce Gall Adelgid  (L. Adelges cooleyi)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAL','Larch (Lw) Cone Woolly Aphid  (L. Adelges lariciatus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAS','Green Spruce Aphid  (L. Elatobium abietinum)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IB','Bark Beetles',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBB','Western Balsam Bark Beetle  (L. Dryocoetes confusus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('IBD','Douglas-fir Beetle  (L. Dendroctonus pseudotsugae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBI','Engraver Beetles  (L. Ips spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBM','Mountain Pine Beetle  (L. Dendroctonus ponderosae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBP','Twig Beetles  (L. Pityogenes or Pityophthorus spp.)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBS','Spruce Beetle  (L. Dendroctonus rufipennis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBT','Red Turpentine Beetle  (L. Dendroctonus valens)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IBW','Western Pine Beetle  (L. Dendroctonus brevicomis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('ID','Defoliators',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDA','Black Army Cutworm  (L. Actebia fennica)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDB','Two-Year Budworm  (L. Choristoneura biennis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDC','Larch Casebearer  (L. Coleophora laricella)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDD','Western Winter Moth  (L. Erannis tiliaria vancouverensis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDE','Eastern Spruce Budworm  (L. Choristoneura fumiferana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDF','Forest Tent Caterpillar  (L. Malacosoma disstria)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDG','Greenstriped Forest Looper  (L. Melanolophia imitata)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDH','Western Blackheaded Budworm  (L. Acleris gloverana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IDI','Pine Needle Sheath Miner  (L. Zellaria haimbachi)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CYT','Cedar (Cw) Cone Midge  (L. Mayetiola thujae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CYX','Seedworms  (L. Cydia spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('D','Diseases',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DB','Broom Rusts',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DBF','Fir Broom Rust  (L. Melampsorella caryophyllacearum)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DBS','Spruce Broom Rust  (L. Chrysomyxa arctostaphyli)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DD','Stem Decay',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDB','Birch Trunk Rot  (L. Fomes fomentarius)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDD','Sulfur Fungus  (L. Laetiporus sulphureus)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDE','Rust Red Stringy Rot  (L. Echindontium tinctorium)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDF','Brown Crumbly Rot  (L. Fomitopsis pinicola)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDH','Hardwood Trunk Rot  (L. Phellinus ignarius)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDO','Cedar Brown Pocket Rot  (L. Poria sericeomollis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDP','Red Ring Rot  (L. Phellinus pini)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDQ','Quinine Conk Rot  (L. Fomitopsis officinalis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDS','Schweinitzii Butt Rot  (L. Phaeolus schweinitzii)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'2010-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDT','Aspen Trunk Rot  (L. Phellinus tremulae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DF','Foliage Diseases',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFA','Western Pine Aster Rust  (L. Coleosporium asterum)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFC','Large-Spored Spruce-Labrador Tea Rust  (L. Chrysomyxa ledicola)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFD','Spruce Needle Cast  (L. Lirula macrospora)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFE','Elytroderma Needle Cast  (L. Elytroderma deformans)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFH','Larch Needle Blight  (L. Hypodermella laricis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DFL','Pine Needle Cast  (L. Lophodermella concolor)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFM','Larch Needle Cast  (L. Meria laricis)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFP','Fir Fireweed Rust  (L. Pucciniastrum epilobi)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFR','Douglas-fir Needle Cast  (L. Rhabdocline pseudotsugae)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DFS','Dothistroma Needle Blight  (L. Dothistroma septosporum)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DL','Disease Caused Dieback',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLD','Dermea Canker  (L. Dermea pseudotsugae)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLF','Red Flag Disease  (L. Potebniamyces balsamicola)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLP','Phomopsis Canker  (L. Phomopsis lokoyae)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLS','Sydowia (Sclerophoma) Tip Dieback  (L. Sclerophoma pithyophila)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLV','Aspen-Poplar Twig Blight  (L. Venturia spp.)',TIMESTAMP'1999-04-07 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DM','Dwarf Mistletoe',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DMF','Douglas-fir Dwarf Mistletoe  (L. Arceuthobium douglasii)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DMH','Hemlock Dwarf Mistletoe  (L. Arceuthobium tsugense)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DML','Larch Dwarf Mistletoe  (L. Arceuthobium laricis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DMP','Lodgepole pine Dwarf Mistletoe  (L. Arceuthobium americanum)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DR','Root Disease',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRA','Armillaria Root Disease  (L. Armillaria ostoyae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRB','Black Stain Root Disease  (L. Leptographium wageneri)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DRC','Laminated Root Rot cedar strain  (L. Phellinus weirii)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('C','Cone and Seed Insects',TIMESTAMP'1997-08-13 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CAH','Cone Resin Midge  (L. Asynapta hopkinsi)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CBC','Fir (Fd) Cone Moth  (L. Barbara colfaxiana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CBX','Fir Cone Moth  (L. Barbara spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CCP','Douglas-fir Cone Scale Midge  (L. Camptomyia pseudotsugae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CDC','Spruce (Sx) Cone Gall Midge  (L. Kaltenbachiola (Dasineura) canadensis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CDD','Fir Seed Midge  (L. Kaltenbachiola (Dasineura) abiesemia)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CDR','Spruce (Sx) Cone Axis Midge  (L. Kaltenbachiola (Dasineura) rachiphaga)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CDX','Kaltenbachiola Midges  (L. Kaltenbachiola (Dasineura) spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CEA','Fir Seed Maggot  (L. Earomyia abietum)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CEB','Spruce Cone Maggot  (L. Earomyia barbara)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CEQ','Earomyia aquilonia  (L. Earomyia aquilonia)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CEX','Earomyia Maggots  (L. Earomyia spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CFP','Fir (Fd) Cone Beetle  (L. Ernobius punctulatus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CHX','Budworms  (L. Choristoneura spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CIA','Fir Coneworm  (L. Dioryctria abietivorella)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CIP','Fir (Fd) Coneworm  (L. Dioryctria pseudotsugella)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CIR','Spruce (Sx) Coneworm  (L. Dioryctria reniculelloides)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CIS','Pine (Py)  Coneworm  (L. Dioryctria rossi)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CIV','Ponderosa Pine  (Py) Coneworm  (L. Dioryctria auranticella)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CIX','Coneworms  (L. Dioryctria spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CLO','Western Conifer Seed Bug  (L. Leptoglossus occidentalis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMA','Ponderosa Pine (Py) Seed Chalcid  (L. Megastigmus albifrons)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMC','Spruce (Sx) Seed Chalcid  (L. Megastigmus piceae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CML','Subalpine Fir (Bl) Seed Chalcid  (L. Megastigmus lasiocarpae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMP','Fir Seed Chalcid  (L. Megastigmus pinus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMR','Megastigmus rafni  (L. Megastigmus rafni)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMS','Fir (Fd) Seed Chalcid  (L. Megastigmus spermotrophus)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMT','Hemlock Seed Chalcid  (L. Megastigmus tsugae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CMX','Seed Chalcids  (L. Megastigmus spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CNP','Pine Cone Beetle  (L. Conophthorus ponderosae)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CPS','Spruce Gall Adelgid  (L. Pineus similis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CRX','Cone Scale Midges  (L. Resseliella spp.)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CSN','Spiral Spruce Cone Borer  (L. Strobilomyia neanthracina)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CTO','Fir (Fd) Cone Gall Midge  (L. Contarinia oregonensis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CTW','Fir (Fd) Cone Scale Midge  (L. Contarinia washingtonensis)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CVP','White Pine (Pw) Cone Borer  (L. Eucosma ponderosa)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CVR','Lodgepole Pine (Pl) Cone Borer  (L. Eucosma recissoriana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CYC','Spruce (Sx) Seed Midge  (L. Mayetiola carpophaga)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('CYP','Ponderosa Pine (Py) Seedworm  (L. Cydia piperana)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('CYS','Spruce (Sx) Seedworm  (L. Cydia strobilella)',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('A','Animal Damage',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AB','Bear',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AC','Cattle',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AD','Deer',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AE','Elk',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AH','Hare or Rabbit',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AM','Moose',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AP','Porcupine',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AS','Squirrel',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AV','Vole',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AX','Birds',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AZ','Beaver',TIMESTAMP'1905-01-01 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('O','Tree damage checked for but NONE exists',TIMESTAMP'2000-01-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('U','Tree damage present but specific damage agent unknown',TIMESTAMP'2000-01-26 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IEL','Pine Needleminer  (L. Coletechnites spp.)',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NCF','Douglas-fir Decline',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NE','Cedar Flagging',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NI','Redheart',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DDR','Red Heart Rot  (L. Stereum sanguinolentum)',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');
+INSERT INTO silva.silv_damage_agent_code (silv_damage_agent_code, description, effective_date, expiry_date, update_timestamp) VALUES
+	 ('DDU','Stringy Butt Rot  (L. Perenniporia subacida)',TIMESTAMP'2014-07-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('IAP','Pine Needle Scale  (L. Chionaspis (Phenacaspis) pinifoliae)',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NDM','Drought - Mortality',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NDF','Drought - Foliage Loss/Damage',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('AN','Horse',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLC','Lodgepole Pine Dieback (Cenangium ferruginosum)',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DSN','Aspen Running Canker (Neodothiora populina)',TIMESTAMP'2022-01-24 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NYP','Snow Press',TIMESTAMP'2020-04-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('NYB','Snow or Ice Breakage',TIMESTAMP'2020-04-29 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49'),
+	 ('DLT','Sirococcus Tip Blight  (L. Sirococcus conigenus)',TIMESTAMP'2020-10-08 00:00:00',TIMESTAMP'9999-12-31 00:00:00',TIMESTAMP'2022-02-03 14:08:49');

@@ -44,6 +44,10 @@ on:
         description: Maximum replicas for backend
         default: "5"
         type: string
+      backend_flyway_environment:
+        description: Flyway environment for backend database migrations
+        default: "prod"
+        type: string
 
     outputs:
       run_tests:
@@ -129,6 +133,7 @@ jobs:
               -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
               -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
+              -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml

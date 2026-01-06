@@ -45,6 +45,7 @@ jobs:
       backend_cpu_request: "30m"
       backend_min_replicas: "1"
       backend_max_replicas: "1"
+      backend_flyway_environment: "dev"
       triggers: ('backend/' 'common/' 'frontend/')
 
   e2e:
