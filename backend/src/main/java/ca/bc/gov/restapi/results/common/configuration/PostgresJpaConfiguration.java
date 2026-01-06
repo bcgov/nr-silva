@@ -39,7 +39,7 @@ public class PostgresJpaConfiguration {
     factoryBean.setDataSource(dataSource);
 
     // Explicitly set managed entity classes for native image support
-    // Package scanning doesn't work in GraalVM native images
+    // Package scanning doesn't work in GraalVM native images.
     factoryBean.setManagedTypes(PersistenceManagedTypes.of(
         Arrays.stream(EntityRegistry.POSTGRES_ENTITIES)
             .map(Class::getName)
