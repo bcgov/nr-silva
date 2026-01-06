@@ -1,0 +1,19 @@
+# Auto-Detect Mode
+{
+  "mode": "auto-detect",
+  "input_dir": "../../backend/src/test/resources/migration/oracle",
+  "output_dir": "../../backend/src/test/resources/migration/postgres",
+  "mappings": []
+}
+
+# Manual Mode
+{
+  "mode": "manual",
+  "input_dir": "../../backend/src/test/resources/migration/oracle",
+  "output_dir": "../../backend/src/test/resources/migration/postgres",
+  "mappings": [
+    { "src": "V3.0.0__test_data_101017.sql", "dst": "V999.1.0__test_data_101017.sql" },
+    { "src": "V3.0.1__test_data_1009974.sql", "dst": "V999.1.1__test_data_1009974.sql" },
+    { "src": "V4.0.0__post_test_data_attachments.sql", "dst": "V999.2.0__post_test_data_attachments.sql" }
+  ]
+}
