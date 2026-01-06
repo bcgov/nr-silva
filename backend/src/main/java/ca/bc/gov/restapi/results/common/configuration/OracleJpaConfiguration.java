@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.config.EntityRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
+import java.util.Arrays;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -35,8 +38,14 @@ public class OracleJpaConfiguration {
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    // Package scanning for entity discovery
-    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.oracle.entity");
+
+    // Explicitly set managed entity classes for native image support
+    // Package scanning doesn't work in GraalVM native images
+    factoryBean.setManagedTypes(PersistenceManagedTypes.of(
+        Arrays.stream(EntityRegistry.ORACLE_ENTITIES)
+            .map(Class::getName)
+            .toArray(String[]::new)));
+
     factoryBean.setPersistenceUnitName("oracle");
 
     // Set JPA vendor adapter
