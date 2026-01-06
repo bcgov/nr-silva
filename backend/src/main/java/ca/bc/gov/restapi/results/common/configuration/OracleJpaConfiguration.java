@@ -24,7 +24,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(
     basePackages = {"ca.bc.gov.restapi.results.oracle"},
     entityManagerFactoryRef = "oracleEntityManagerFactory",
-    transactionManagerRef = "oracleTransactionManager")
+    transactionManagerRef = "oracleTransactionManager",
+    bootstrapMode = org.springframework.data.repository.config.BootstrapMode.DEFERRED)
 @EnableTransactionManagement
 public class OracleJpaConfiguration {
 
@@ -41,10 +42,7 @@ public class OracleJpaConfiguration {
 
     // Explicitly set managed entity classes for native image support
     // Package scanning doesn't work in GraalVM native images
-    factoryBean.setManagedTypes(PersistenceManagedTypes.of(
-        Arrays.stream(EntityRegistry.ORACLE_ENTITIES)
-            .map(Class::getName)
-            .toArray(String[]::new)));
+    factoryBean.setManagedTypes(PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames()));
 
     factoryBean.setPersistenceUnitName("oracle");
 

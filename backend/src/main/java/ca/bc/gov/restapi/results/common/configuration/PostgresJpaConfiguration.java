@@ -25,7 +25,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(
     basePackages = {"ca.bc.gov.restapi.results.postgres"},
     entityManagerFactoryRef = "postgresEntityManagerFactory",
-    transactionManagerRef = "postgresTransactionManager")
+    transactionManagerRef = "postgresTransactionManager",
+    bootstrapMode = org.springframework.data.repository.config.BootstrapMode.DEFERRED)
 public class PostgresJpaConfiguration {
 
   @Primary

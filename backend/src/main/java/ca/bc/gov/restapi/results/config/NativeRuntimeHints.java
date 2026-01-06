@@ -26,6 +26,7 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
     // constructors (for entity instantiation), and methods (for getters/setters)
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
       hints.reflection().registerType(entity,
+          MemberCategory.DECLARED_FIELDS,
           MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
           MemberCategory.INVOKE_DECLARED_METHODS,
           MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
