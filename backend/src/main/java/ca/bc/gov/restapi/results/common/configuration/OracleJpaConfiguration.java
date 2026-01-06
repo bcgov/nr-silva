@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -30,24 +29,22 @@ public class OracleJpaConfiguration {
   @Value("${ca.bc.gov.nrs.oracle.host}")
   private String oracleHost;
 
-  @Bean(name = "oracleManagedTypes")
-  public PersistenceManagedTypes oracleManagedTypes() {
-    // Explicit entity registration for native image compatibility
-    // Package scanning doesn't work reliably in GraalVM native images
-    return PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames());
-  }
-
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
-      @Qualifier("oracleDataSource") HikariDataSource dataSource,
-      @Qualifier("oracleManagedTypes") PersistenceManagedTypes managedTypes) {
+      @Qualifier("oracleDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    // Use explicit managed types instead of package scanning for native image support
-    factoryBean.setManagedTypes(managedTypes);
     factoryBean.setPersistenceUnitName("oracle");
+
+    // Use PersistenceUnitPostProcessors to explicitly add entity classes
+    // This works better with GraalVM native images than setManagedTypes or setPackagesToScan
+    factoryBean.setPersistenceUnitPostProcessors(pui -> {
+      for (Class<?> entityClass : EntityRegistry.ORACLE_ENTITIES) {
+        pui.addManagedClassName(entityClass.getName());
+      }
+    });
 
     // Set JPA vendor adapter
     HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

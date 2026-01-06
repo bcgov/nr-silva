@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -28,25 +27,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PostgresJpaConfiguration {
 
   @Primary
-  @Bean(name = "postgresManagedTypes")
-  public PersistenceManagedTypes postgresManagedTypes() {
-    // Explicit entity registration for native image compatibility
-    // Package scanning doesn't work reliably in GraalVM native images
-    return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
-  }
-
-  @Primary
   @Bean(name = "postgresEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
-      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
-      @Qualifier("postgresManagedTypes") PersistenceManagedTypes managedTypes) {
+      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    // Use explicit managed types instead of package scanning for native image support
-    factoryBean.setManagedTypes(managedTypes);
     factoryBean.setPersistenceUnitName("postgres");
+
+    // Use PersistenceUnitPostProcessors to explicitly add entity classes
+    // This works better with GraalVM native images than setManagedTypes or setPackagesToScan
+    factoryBean.setPersistenceUnitPostProcessors(pui -> {
+      for (Class<?> entityClass : EntityRegistry.POSTGRES_ENTITIES) {
+        pui.addManagedClassName(entityClass.getName());
+      }
+    });
 
     // Set JPA vendor adapter
     HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
