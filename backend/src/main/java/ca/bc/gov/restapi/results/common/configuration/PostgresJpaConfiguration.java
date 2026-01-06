@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
-import ca.bc.gov.restapi.results.config.EntityRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -27,24 +25,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     transactionManagerRef = "postgresTransactionManager")
 public class PostgresJpaConfiguration {
 
-  @Bean(name = "postgresManagedTypes")
-  @Primary
-  public PersistenceManagedTypes postgresManagedTypes() {
-    // Use centralized EntityRegistry - only Postgres entities for Postgres datasource
-    return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
-  }
-
   @Primary
   @Bean(name = "postgresEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
-      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
-      @Qualifier("postgresManagedTypes") PersistenceManagedTypes managedTypes) {
+      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource) {
 
     LocalContainerEntityManagerFactoryBean factoryBean =
         new LocalContainerEntityManagerFactoryBean();
     factoryBean.setDataSource(dataSource);
-    // Explicitly set managed types instead of package scanning (required for native images)
-    factoryBean.setManagedTypes(managedTypes);
+    // Package scanning
+    factoryBean.setPackagesToScan("ca.bc.gov.restapi.results.postgres.entity");
     factoryBean.setPersistenceUnitName("postgres");
 
     // Set JPA vendor adapter
