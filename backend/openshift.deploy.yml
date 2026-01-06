@@ -81,6 +81,9 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
+  - name: FLYWAY_ENVIRONMENT
+    description: The Flyway environment to use for database migrations
+    value: "prod"
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -160,6 +163,8 @@ objects:
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
+                - name: FLYWAY_ENVIRONMENT
+                  value: ${FLYWAY_ENVIRONMENT}
                 - name: DATABASE_HOST
                   valueFrom:
                     secretKeyRef:
