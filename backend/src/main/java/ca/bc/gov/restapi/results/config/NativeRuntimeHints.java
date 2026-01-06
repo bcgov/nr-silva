@@ -20,17 +20,26 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         EntityManagerFactoryInfo.class
     );
 
-    // Register all entities from EntityRegistry for reflection with full access
+    // Register all entities from EntityRegistry for reflection with FULL access
+    // Native images require access to fields (for Hibernate property access),
+    // constructors (for entity instantiation), and methods (for getters/setters)
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
       hints.reflection().registerType(entity,
           MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
           MemberCategory.INVOKE_DECLARED_METHODS,
-          MemberCategory.INVOKE_PUBLIC_METHODS
-        );
+          MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+          MemberCategory.INVOKE_PUBLIC_METHODS,
+          MemberCategory.UNSAFE_ALLOCATED
+      );
     }
 
     // Register Hibernate resources
     hints.resources().registerPattern("META-INF/orm.xml");
     hints.resources().registerPattern("org/hibernate/orm/event/jpa/persistence-unit-static-definition.xml");
+
+    // Register Flyway migration resources for native image
+    // This fixes the "unsupported protocol: resource" warning
+    hints.resources().registerPattern("db/migration/*");
+    hints.resources().registerPattern("db/migration/**");
   }
 }
