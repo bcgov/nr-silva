@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.config;
 
+import ca.bc.gov.restapi.results.oracle.converter.UuidToBytesConverter;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
@@ -32,6 +33,14 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
           MemberCategory.UNSAFE_ALLOCATED
       );
     }
+
+    // Register JPA AttributeConverters for reflection (Hibernate needs to instantiate them)
+    hints.reflection().registerType(UuidToBytesConverter.class,
+        MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+        MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+        MemberCategory.INVOKE_DECLARED_METHODS,
+        MemberCategory.INVOKE_PUBLIC_METHODS
+    );
 
     // Register Hibernate resources
     hints.resources().registerPattern("META-INF/persistence.xml");
