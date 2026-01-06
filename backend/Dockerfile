@@ -1,5 +1,5 @@
 ### Builder
-FROM ghcr.io/graalvm/native-image:22.3.3 AS build
+FROM container-registry.oracle.com/graalvm/native-image:25 AS build
 
 # Copy
 WORKDIR /app
