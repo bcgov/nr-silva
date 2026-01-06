@@ -16,9 +16,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | Org Unit Service")
 class OrgUnitServiceTest {
 
@@ -85,7 +85,6 @@ class OrgUnitServiceTest {
   void findNoOrgUnits_emptyResponse_shouldSucceed() {
     orgUnitService = new OrgUnitService(orgUnitRepository, silvaConfiguration.withOrgUnits(List.of()));
 
-    when(orgUnitRepository.findAllByOrgUnitCodeIn(List.of("DAS"))).thenReturn(List.of());
     List<CodeDescriptionDto> entities = orgUnitService.findAllOrgUnits();
 
     Assertions.assertNotNull(entities);

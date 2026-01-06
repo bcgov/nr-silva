@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
-import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
+import org.springframework.boot.flyway.autoconfigure.FlywayConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -12,7 +12,7 @@ public class FlywayConfiguration {
   public FlywayConfigurationCustomizer flywayConfigurationCustomizer(Environment env) {
     return configuration -> {
        String environmentName = env.getProperty("FLYWAY_ENVIRONMENT", "prod");
-       
+
       if (environmentName.equals("prod")) {
         configuration.locations("classpath:db/migration");
       } else {

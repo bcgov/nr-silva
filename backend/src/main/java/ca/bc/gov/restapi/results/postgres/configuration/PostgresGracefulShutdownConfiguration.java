@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +18,7 @@ public class PostgresGracefulShutdownConfiguration implements
   private final EntityManager postgresEntityManager;
 
   @Override
-  public void onApplicationEvent(@NonNull ContextClosedEvent event) {
+  public void onApplicationEvent(@Nonnull ContextClosedEvent event) {
     postgresEntityManager.close();
   }
 }

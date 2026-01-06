@@ -23,7 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -846,7 +846,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Bad Request"))
         .andExpect(jsonPath("$.status").value(400))
-        .andExpect(jsonPath("$.detail").value("Required parameter 'updateDate' is not present."))
+        .andExpect(jsonPath("$.detail").value("Required request parameter 'updateDate' for method parameter type String is not present"))
         .andExpect(jsonPath("$.instance").value("/api/openings/101017/cover/history"));
   }
 
@@ -1000,7 +1000,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Bad Request"))
         .andExpect(jsonPath("$.status").value(400))
-        .andExpect(jsonPath("$.detail").value("Required parameter 'archiveDate' is not present."))
+        .andExpect(jsonPath("$.detail").value("Required request parameter 'archiveDate' for method parameter type String is not present"))
         .andExpect(jsonPath("$.instance").value("/api/openings/101017/cover/history/1021182"));
   }
 

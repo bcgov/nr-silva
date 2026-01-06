@@ -53,9 +53,7 @@ public class ApiAuthorizationCustomizer implements
         .authenticated()
         // Allow OPTIONS requests to be accessed with authentication
         .requestMatchers(HttpMethod.OPTIONS, "/**")
-        .authenticated()
-        // Deny all other requests
-        .anyRequest().denyAll();
+        .authenticated();
 
   }
 }

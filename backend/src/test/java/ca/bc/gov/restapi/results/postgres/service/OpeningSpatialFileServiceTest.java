@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ca.bc.gov.restapi.results.postgres.SilvaConstants;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ class OpeningSpatialFileServiceTest {
 
   private final OpeningSpatialFileService service = new OpeningSpatialFileService();
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final JsonMapper mapper = JsonMapper.builder().build();
 
   @Test
   @DisplayName("Should throw when file is null or empty")
@@ -88,7 +88,7 @@ class OpeningSpatialFileServiceTest {
 
     Method m =
         OpeningSpatialFileService.class.getDeclaredMethod(
-            "detectGeoJsonCrs", com.fasterxml.jackson.databind.JsonNode.class);
+            "detectGeoJsonCrs", tools.jackson.databind.JsonNode.class);
     m.setAccessible(true);
     String code = (String) m.invoke(service, root);
     assertThat(code).isEqualTo("3005");

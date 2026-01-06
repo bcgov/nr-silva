@@ -226,7 +226,7 @@ public class SilvaOracleQueryConstants {
         cboa.OPENING_GROSS_AREA,
         op.ENTRY_USERID AS created_by,
         to_char(op.ENTRY_TIMESTAMP,'YYYY-MM-DD') AS created_on,
-        op.UPDATE_TIMESTAMP AS last_updated_on, -- needs TO be ON ANY OF the related date
+        to_char(op.UPDATE_TIMESTAMP,'YYYY-MM-DD') AS last_updated_on, -- needs TO be ON ANY OF the related date
         to_char(cboa.DISTURBANCE_START_DATE,'YYYY-MM-DD') AS disturbance_start_date
       FROM OPENING op
       LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
