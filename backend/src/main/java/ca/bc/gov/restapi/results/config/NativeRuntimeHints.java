@@ -34,7 +34,7 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
     }
 
     // Register Hibernate resources
-    hints.resources().registerPattern("META-INF/orm.xml");
+    hints.resources().registerPattern("META-INF/persistence.xml");
     hints.resources().registerPattern("org/hibernate/orm/event/jpa/persistence-unit-static-definition.xml");
 
     // Register Flyway migration resources for native image
