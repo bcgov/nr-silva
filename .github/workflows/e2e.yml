@@ -33,6 +33,7 @@ jobs:
     if: inputs.target != 'prod' && inputs.target != 'PROD'
     needs: [fam-routing]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     container:
       image: mcr.microsoft.com/playwright:v1.56.1-noble
     env:
