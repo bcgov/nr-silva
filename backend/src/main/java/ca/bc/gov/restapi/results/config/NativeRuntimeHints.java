@@ -20,12 +20,13 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         EntityManagerFactoryInfo.class
     );
 
-    // Register all entities from EntityRegistry for reflection
+    // Register all entities from EntityRegistry for reflection with full access
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
       hints.reflection().registerType(entity,
           MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
           MemberCategory.INVOKE_DECLARED_METHODS,
-          MemberCategory.INVOKE_PUBLIC_METHODS);
+          MemberCategory.INVOKE_PUBLIC_METHODS
+        );
     }
 
     // Register Hibernate resources

@@ -66,7 +66,8 @@ public class OracleJpaConfiguration {
             "hibernate.physical_naming_strategy",
                 "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
             "hibernate.connection.oracle.net.ssl_server_dn_match", "false",
-            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost));
+            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost,
+            "hibernate.jpa.compliance.query", "false"));
 
     return factoryBean;
   }
