@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results;
 import ca.bc.gov.restapi.results.config.NativeRuntimeHints;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
@@ -14,11 +13,6 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 @ComponentScan(
   basePackages = {
     "ca.bc.gov.restapi.results"
-})
-@EntityScan(
-  basePackages = {
-    "ca.bc.gov.restapi.results.oracle.entity",
-    "ca.bc.gov.restapi.results.postgres.entity"
 })
 @ImportRuntimeHints(NativeRuntimeHints.class)
 public class ResultsApplication {
