@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.common.projection.opening.*;
 import ca.bc.gov.restapi.results.common.projection.opening.history.*;
+import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Repository;
  * This interface allows the service to fetch and save data into the database.
  */
 @Repository
-public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
+public interface OpeningOracleRepository extends JpaRepository<OpeningEntity, Long>,
+    OpeningRepository {
 
   @Query(
       value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH,

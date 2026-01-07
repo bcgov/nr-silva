@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.repository.ActivityTreatmentUnitRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityBaseProjection;
@@ -16,8 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ActivityTreatmentUnitRepository
-    extends JpaRepository<ActivityTreatmentUnitEntity, Long> {
+public interface ActivityTreatmentUnitOracleRepository
+    extends JpaRepository<ActivityTreatmentUnitEntity, Long>, ActivityTreatmentUnitRepository {
 
   @Query(
       nativeQuery = true,

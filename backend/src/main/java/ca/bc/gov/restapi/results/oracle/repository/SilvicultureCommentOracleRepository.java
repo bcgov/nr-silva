@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SilvicultureCommentRepository extends JpaRepository<SilvicultureCommentEntity, Long> {
+public interface SilvicultureCommentOracleRepository extends JpaRepository<SilvicultureCommentEntity, Long> {
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_COMMENTS)
   List<CommentProjection> getCommentById(

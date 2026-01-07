@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.repository.OpeningAttachmentRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningAttachmentMetaProjection;
@@ -9,7 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface OpeningAttachmentRepository extends JpaRepository<OpeningAttachmentEntity, Long> {
+public interface OpeningAttachmentOracleRepository extends JpaRepository<OpeningAttachmentEntity, Long>,
+    OpeningAttachmentRepository {
 
   /**
    * Finds all attachments for a given Opening ID.

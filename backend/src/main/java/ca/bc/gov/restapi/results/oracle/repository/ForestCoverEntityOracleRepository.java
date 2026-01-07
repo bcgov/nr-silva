@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.common.projection.cover.history.*;
+import ca.bc.gov.restapi.results.common.repository.ForestCoverRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverDetailedSpeciesProjection;
 import ca.bc.gov.restapi.results.common.projection.cover.ForestCoverDetailsDamageProjection;
@@ -18,7 +19,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ForestCoverEntityRepository extends JpaRepository<ForestCoverEntity,Long> {
+public interface ForestCoverEntityOracleRepository
+    extends JpaRepository<ForestCoverEntity,Long>, ForestCoverRepository{
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_LIST)
   List<ForestCoverProjection> findByOpeningDetails(Long openingId, String mainSearchTerm);

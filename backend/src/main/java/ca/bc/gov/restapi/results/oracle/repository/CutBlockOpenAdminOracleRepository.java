@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.projection.CutBlockOpenAdminProjection;
+import ca.bc.gov.restapi.results.common.repository.CutBlockOpenAdminRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjection;
@@ -16,10 +18,11 @@ import org.springframework.stereotype.Repository;
  * database.
  */
 @Repository
-public interface CutBlockOpenAdminRepository extends JpaRepository<CutBlockOpenAdminEntity, Long> {
+public interface CutBlockOpenAdminOracleRepository extends JpaRepository<CutBlockOpenAdminEntity, Long>,
+    CutBlockOpenAdminRepository {
 
   @Query("from CutBlockOpenAdminEntity where openingId in ?1")
-  List<CutBlockOpenAdminEntity> findAllByOpeningIdIn(List<Long> openingIdList);
+  List<CutBlockOpenAdminProjection> findAllByOpeningIdIn(List<Long> openingIdList);
 
   @Query(
       nativeQuery = true,
