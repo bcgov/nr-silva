@@ -1,7 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.dto.opening.history;
 
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsBecDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsStockingDetailsMilestoneDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.With;
 

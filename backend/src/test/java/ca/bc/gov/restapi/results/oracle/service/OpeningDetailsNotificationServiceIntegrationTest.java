@@ -1,7 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
-import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsNotificationDto;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningDetailsNotificationStatusEnum;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsNotificationService;
