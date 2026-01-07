@@ -159,14 +159,12 @@
       "allDeclaredConstructors": true
     }
   ],
-  "resources": {
-    "includes": [
-      {
-        "pattern": "META-INF/persistence.xml"
-      },
-      {
-        "pattern": ".*\\.sql"
-      }
-    ]
-  }
+  "resources": [
+    {
+      "pattern": "META-INF/persistence.xml"
+    },
+    {
+      "pattern": ".*\\.sql"
+    }
+  ]
 }
