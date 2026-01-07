@@ -6,6 +6,36 @@
     "allDeclaredFields": true
   },
   {
+    "name": "org.flywaydb.core.internal.exception.sqlExceptions.FlywaySqlServerUntrustedCertificateSqlException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.flywaydb.core.internal.exception.sqlExceptions.FlywaySqlNoIntegratedAuthException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.flywaydb.core.internal.exception.sqlExceptions.FlywaySqlConnectionException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.flywaydb.core.internal.exception.sqlExceptions.FlywaySqlScriptException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.flywaydb.core.internal.exception.FlywaySqlException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
     "name": "ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection",
     "allDeclaredMethods": true
   },
