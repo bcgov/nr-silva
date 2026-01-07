@@ -7,6 +7,7 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,8 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
     registerJpaMetamodelClasses(hints);
 
     registerSpringBoot4JpaClasses(hints);
+
+    registerSpringSecurityClasses(hints);
 
     // Register Hibernate resources
     hints.resources().registerPattern("META-INF/persistence.xml");
@@ -211,5 +214,14 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         log.debug("Could not register {} for Spring Boot 4.0 native hints", className);
       }
     }
+  }
+
+  private void registerSpringSecurityClasses(RuntimeHints hints) {
+    hints.reflection().registerType(HttpSecurity.class, builder -> builder
+        .withMembers(
+            MemberCategory.INVOKE_DECLARED_METHODS,
+            MemberCategory.INVOKE_PUBLIC_METHODS,
+            MemberCategory.DECLARED_FIELDS
+        ));
   }
 }
