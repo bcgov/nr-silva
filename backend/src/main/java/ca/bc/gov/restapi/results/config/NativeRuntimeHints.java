@@ -57,6 +57,9 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
     // Register Hibernate core classes that are required for native compilation
     registerHibernateClasses(hints);
 
+    // Register JPA metamodel classes specifically mentioned in runtime errors
+    registerJpaMetamodelClasses(hints);
+
     // Register Hibernate resources
     hints.resources().registerPattern("META-INF/persistence.xml");
     hints.resources().registerPattern("org/hibernate/orm/event/jpa/persistence-unit-static-definition.xml");
@@ -110,6 +113,52 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         );
       } catch (ClassNotFoundException e) {
         // Class not available in classpath, skip
+      }
+    }
+  }
+
+  private void registerJpaMetamodelClasses(RuntimeHints hints) {
+    // Register the specific JPA metamodel classes mentioned in runtime error
+    String[] jpaMetamodelClasses = {
+        "org.hibernate.metamodel.model.domain.internal.JpaMetamodelImpl",
+        "org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl",
+        "org.springframework.data.jpa.repository.support.JpaEntityInformationSupport",
+        "org.springframework.data.jpa.repository.support.JpaRepositoryFactory",
+        "org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean",
+        "org.springframework.data.repository.core.support.RepositoryFactorySupport",
+        "org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport"
+    };
+
+    for (String className : jpaMetamodelClasses) {
+      try {
+        Class<?> clazz = Class.forName(className);
+        hints.reflection().registerType(clazz,
+            MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+            MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+            MemberCategory.INVOKE_DECLARED_METHODS,
+            MemberCategory.INVOKE_PUBLIC_METHODS,
+            MemberCategory.DECLARED_FIELDS
+        );
+      } catch (ClassNotFoundException e) {
+        // Class not available in classpath, skip
+      }
+    }
+
+    // Register entity-specific metamodel classes for all entities
+    for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
+      try {
+        // Try to register the Hibernate-generated metamodel class (Entity_)
+        String metamodelClassName = entity.getName() + "_";
+        Class<?> metamodelClass = Class.forName(metamodelClassName);
+        hints.reflection().registerType(metamodelClass,
+            MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+            MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+            MemberCategory.INVOKE_DECLARED_METHODS,
+            MemberCategory.INVOKE_PUBLIC_METHODS,
+            MemberCategory.DECLARED_FIELDS
+        );
+      } catch (ClassNotFoundException e) {
+        // Metamodel class doesn't exist, that's ok
       }
     }
   }
