@@ -12,9 +12,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 @SpringBootApplication
 @ComponentScan(
   basePackages = {
-    "ca.bc.gov.restapi.results",
-    "ca.bc.gov.restapi.results.oracle.entity",
-    "ca.bc.gov.restapi.results.postgres.entity"
+    "ca.bc.gov.restapi.results"
 })
 @ImportRuntimeHints(NativeRuntimeHints.class)
 public class ResultsApplication {
