@@ -47,6 +47,7 @@ public class OracleJpaConfiguration {
   ) {
     return builder
         .dataSource(dataSource)
+        .packages(EntityRegistry.ORACLE_ENTITIES)
         .managedTypes(managedTypes) // Use Spring Boot 4.0 PersistenceManagedTypes approach
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
