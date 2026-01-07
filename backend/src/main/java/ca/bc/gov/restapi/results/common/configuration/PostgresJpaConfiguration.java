@@ -11,10 +11,12 @@ import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -30,7 +32,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PostgresJpaConfiguration {
 
   @Bean(name = "postgresPersistenceManagedTypes")
-  public PersistenceManagedTypes postgresPersistenceManagedTypes() {
+  public PersistenceManagedTypes postgresPersistenceManagedTypes(ResourceLoader resourceLoader) {
+    // Spring Boot 4.0: Use explicit entity class names from EntityRegistry for native image support
     return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
   }
 
