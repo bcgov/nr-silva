@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -36,11 +35,11 @@ public class OracleJpaConfiguration {
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
-      @Qualifier("aotOracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
         .dataSource(dataSource)
+        .packages(EntityRegistry.ORACLE_ENTITIES) // Direct package/entity registration
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",
@@ -50,16 +49,8 @@ public class OracleJpaConfiguration {
             "hibernate.connection.oracle.net.ssl_server_dn_match","false",
             "hibernate.connection.oracle.net.ssl_key_alias", oracleHost
         ))
-        .managedTypes(persistenceManagedTypes)
         .persistenceUnit("oracle")
         .build();
-  }
-
-  @Bean(name = "oracleManagedTypes")
-  public PersistenceManagedTypes oracleManagedTypes() {
-    // For native image compatibility, use explicit entity registration from EntityRegistry
-    // instead of package scanning
-    return PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames());
   }
 
   @Bean(name = "oracleDataSource")

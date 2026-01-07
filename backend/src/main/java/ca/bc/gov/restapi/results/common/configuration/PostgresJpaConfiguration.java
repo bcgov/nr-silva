@@ -33,11 +33,11 @@ public class PostgresJpaConfiguration {
   @Bean(name = "postgresEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
       @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
-      @Qualifier("aotPostgresManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
         .dataSource(dataSource)
+        .packages(EntityRegistry.POSTGRES_ENTITIES) // Direct package/entity registration
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",
@@ -45,17 +45,8 @@ public class PostgresJpaConfiguration {
             "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
             "hibernate.connection.datasource", dataSource
         ))
-        .managedTypes(persistenceManagedTypes)
         .persistenceUnit("postgres")
         .build();
-  }
-
-  @Bean(name = "postgresManagedTypes")
-  @Primary
-  public PersistenceManagedTypes postgresManagedTypes() {
-    // For native image compatibility, use explicit entity registration from EntityRegistry
-    // instead of package scanning
-    return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
   }
 
   @Bean(name = "postgresHikariDataSource")

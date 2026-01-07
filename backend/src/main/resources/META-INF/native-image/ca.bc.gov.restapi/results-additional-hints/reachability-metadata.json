@@ -1,0 +1,136 @@
+{
+  "reflection": [
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "org.hibernate.metamodel.model.domain.internal.JpaMetamodelImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "name": "org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    }
+  ],
+  "jni": [
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity"
+    },
+    {
+      "name": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity"
+    }
+  ],
+  "resources": {
+    "includes": [
+      {
+        "pattern": "META-INF/persistence.xml"
+      },
+      {
+        "pattern": ".*\\.sql"
+      }
+    ]
+  }
+}
