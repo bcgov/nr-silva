@@ -1,17 +1,13 @@
 package ca.bc.gov.restapi.results.config;
 
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 
 /**
- * Early initialization configuration for AOT compilation.
- * This ensures managed types are available before repository processing.
+ * Spring Boot 4.0 / GraalVM 25 compatibility configuration.
+ * Ensures JPA entities are registered for AOT processing.
  */
 @Configuration
-@Order(Integer.MIN_VALUE) // Highest priority
 @RegisterReflectionForBinding({
     // Oracle entities
     ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity.class,
@@ -28,23 +24,5 @@ import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
     ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity.class,
     ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity.class
 })
-public class AotEntityInitialization {
-
-    /**
-     * Pre-initialize Oracle managed types for AOT compatibility.
-     */
-    @Bean(name = "aotOracleManagedTypes")
-    @Order(Integer.MIN_VALUE)
-    public PersistenceManagedTypes aotOracleManagedTypes() {
-        return PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames());
-    }
-
-    /**
-     * Pre-initialize Postgres managed types for AOT compatibility.
-     */
-    @Bean(name = "aotPostgresManagedTypes")
-    @Order(Integer.MIN_VALUE)
-    public PersistenceManagedTypes aotPostgresManagedTypes() {
-        return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
-    }
+public class SpringBoot4AotConfig {
 }

@@ -15,6 +15,17 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+    // GraalVM 25 Compatibility: Force early entity class loading for AOT metamodel
+    System.out.println("NativeRuntimeHints: Pre-loading entities for GraalVM 25 compatibility");
+    for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
+      try {
+        // Force class initialization to ensure availability during AOT processing
+        Class.forName(entity.getName(), true, classLoader);
+      } catch (ClassNotFoundException e) {
+        System.err.println("Warning: Could not pre-load entity: " + entity.getName());
+      }
+    }
+
     // Register JPA EntityManagerFactory proxy for reflection
     hints.proxies().registerJdkProxy(
         EntityManagerFactory.class,
