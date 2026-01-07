@@ -42,7 +42,7 @@ public class OpeningSearchService {
   public Page<OpeningSearchResponseDto> openingSearch(
       OpeningSearchFiltersDto filtersDto, Pageable pagination) {
     log.info(
-        "Search Openings with page index {} and page size {} with filters {}",
+        "Search Openings with page index {} and page size {} with filters {}.",
         pagination.getPageNumber(),
         pagination.getPageSize(),
         filtersDto);
