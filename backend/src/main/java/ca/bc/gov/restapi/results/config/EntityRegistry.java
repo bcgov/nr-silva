@@ -79,7 +79,5 @@ public final class EntityRegistry {
     return result;
   }
 
-  private EntityRegistry() {
-    // Utility class, prevent instantiation
-  }
+  private EntityRegistry() {}
 }

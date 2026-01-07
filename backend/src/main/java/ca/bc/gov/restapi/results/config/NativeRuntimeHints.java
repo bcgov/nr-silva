@@ -24,7 +24,6 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
     System.out.println("NativeRuntimeHints: Pre-loading entities for GraalVM 25 compatibility");
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
       try {
-        // Force class initialization to ensure availability during AOT processing
         Class.forName(entity.getName(), true, classLoader);
       } catch (ClassNotFoundException e) {
         System.err.println("Warning: Could not pre-load entity: " + entity.getName());
@@ -148,9 +147,8 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
 
     // Register entity-specific metamodel classes for all entities
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
+      String metamodelClassName = entity.getName() + "_";
       try {
-        // Try to register the Hibernate-generated metamodel class (Entity_)
-        String metamodelClassName = entity.getName() + "_";
         Class<?> metamodelClass = Class.forName(metamodelClassName);
         hints.reflection().registerType(metamodelClass,
             MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
