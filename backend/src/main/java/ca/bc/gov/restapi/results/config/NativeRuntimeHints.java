@@ -5,13 +5,18 @@ import jakarta.persistence.EntityManagerFactory;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.aot.hint.TypeReference;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Registers runtime hints for GraalVM native image compilation.
  * Uses EntityRegistry as single source of truth for all entities.
  */
 public class NativeRuntimeHints implements RuntimeHintsRegistrar {
+
+  private static final Logger log = LoggerFactory.getLogger(NativeRuntimeHints.class);
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
@@ -32,9 +37,7 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         EntityManagerFactoryInfo.class
     );
 
-    // Register all entities from EntityRegistry for reflection with FULL access
-    // Native images require access to fields (for Hibernate property access),
-    // constructors (for entity instantiation), and methods (for getters/setters)
+    // Register all entities from EntityRegistry for reflection
     for (Class<?> entity : EntityRegistry.ALL_ENTITIES) {
       hints.reflection().registerType(entity,
           MemberCategory.DECLARED_FIELDS,
@@ -46,7 +49,6 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
       );
     }
 
-    // Register JPA AttributeConverters for reflection (Hibernate needs to instantiate them)
     hints.reflection().registerType(UuidToBytesConverter.class,
         MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
         MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
@@ -54,11 +56,11 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         MemberCategory.INVOKE_PUBLIC_METHODS
     );
 
-    // Register Hibernate core classes that are required for native compilation
     registerHibernateClasses(hints);
 
-    // Register JPA metamodel classes specifically mentioned in runtime errors
     registerJpaMetamodelClasses(hints);
+
+    registerSpringBoot4JpaClasses(hints);
 
     // Register Hibernate resources
     hints.resources().registerPattern("META-INF/persistence.xml");
@@ -140,7 +142,7 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
             MemberCategory.DECLARED_FIELDS
         );
       } catch (ClassNotFoundException e) {
-        // Class not available in classpath, skip
+        log.debug("Could not register JPA metamodel class {}: {}", className, e.getMessage());
       }
     }
 
@@ -158,7 +160,57 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
             MemberCategory.DECLARED_FIELDS
         );
       } catch (ClassNotFoundException e) {
-        // Metamodel class doesn't exist, that's ok
+        log.debug("Could not register metamodel class {}: {}", metamodelClassName, e.getMessage());
+      }
+    }
+  }
+
+  /**
+   * Spring Boot 4.0 specific JPA native configuration.
+   * Registers classes needed for PersistenceManagedTypes pattern.
+   */
+  private void registerSpringBoot4JpaClasses(RuntimeHints hints) {
+    // Register PersistenceManagedTypes and related classes for Spring Boot 4.0
+    try {
+      hints.reflection().registerType(
+          TypeReference.of("org.springframework.boot.orm.jpa.PersistenceManagedTypes"),
+          builder -> builder
+              .withMembers(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_DECLARED_METHODS)
+      );
+    } catch (Exception e) {
+      log.warn("Could not register PersistenceManagedTypes for native hints", e);
+    }
+
+    // Register EntityManagerFactoryBuilder ManagedTypes inner class
+    try {
+      hints.reflection().registerType(
+          TypeReference.of("org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder$ManagedTypes"),
+          builder -> builder
+              .withMembers(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_DECLARED_METHODS)
+      );
+    } catch (Exception e) {
+      log.warn("Could not register ManagedTypes for native hints", e);
+    }
+
+    // Register Spring Boot 4.0 JPA annotations and classes that might be needed at runtime
+    String[] springBoot4JpaClasses = {
+        "org.springframework.boot.orm.jpa.hibernate.SpringJtaPlatform",
+        "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy",
+        "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+        "org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilderCustomizer"
+    };
+
+    for (String className : springBoot4JpaClasses) {
+      try {
+        hints.reflection().registerType(
+            TypeReference.of(className),
+            builder -> builder
+                .withMembers(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+                           MemberCategory.INVOKE_DECLARED_METHODS,
+                           MemberCategory.DECLARED_FIELDS)
+        );
+      } catch (Exception e) {
+        log.debug("Could not register {} for Spring Boot 4.0 native hints", className);
       }
     }
   }

@@ -29,15 +29,21 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     transactionManagerRef = "postgresTransactionManager")
 public class PostgresJpaConfiguration {
 
+  @Bean(name = "postgresPersistenceManagedTypes")
+  public PersistenceManagedTypes postgresPersistenceManagedTypes() {
+    return PersistenceManagedTypes.of(EntityRegistry.getPostgresEntityNames());
+  }
+
   @Primary
   @Bean(name = "postgresEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
       @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
+      @Qualifier("postgresPersistenceManagedTypes") PersistenceManagedTypes managedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
         .dataSource(dataSource)
-        .packages(EntityRegistry.POSTGRES_ENTITIES) // Direct package/entity registration
+        .managedTypes(managedTypes) // Use Spring Boot 4.0 PersistenceManagedTypes approach
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -32,14 +33,20 @@ public class OracleJpaConfiguration {
   @Value("${ca.bc.gov.nrs.oracle.host}")
   private String oracleHost;
 
+  @Bean(name = "oraclePersistenceManagedTypes")
+  public PersistenceManagedTypes oraclePersistenceManagedTypes() {
+    return PersistenceManagedTypes.of(EntityRegistry.getOracleEntityNames());
+  }
+
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
+      @Qualifier("oraclePersistenceManagedTypes") PersistenceManagedTypes managedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
         .dataSource(dataSource)
-        .packages(EntityRegistry.ORACLE_ENTITIES) // Direct package/entity registration
+        .managedTypes(managedTypes) // Use Spring Boot 4.0 PersistenceManagedTypes approach
         .properties(Map.of(
             "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
             "hibernate.boot.allow_jdbc_metadata_access", "false",
