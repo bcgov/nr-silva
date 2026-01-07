@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportRuntimeHints;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Entry point for the RESULTS REST API application.
@@ -20,11 +19,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
   basePackages = {
     "ca.bc.gov.restapi.results.oracle.entity",
     "ca.bc.gov.restapi.results.postgres.entity"
-})
-@EnableJpaRepositories(
-  basePackages = {
-    "ca.bc.gov.restapi.results.oracle.repository",
-    "ca.bc.gov.restapi.results.postgres.repository"
 })
 @ImportRuntimeHints(NativeRuntimeHints.class)
 public class ResultsApplication {
