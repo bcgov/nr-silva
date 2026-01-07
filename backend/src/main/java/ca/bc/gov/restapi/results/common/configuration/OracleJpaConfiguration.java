@@ -36,7 +36,7 @@ public class OracleJpaConfiguration {
   @Bean(name = "oracleEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
-      @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
+      @Qualifier("aotOracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
@@ -50,7 +50,6 @@ public class OracleJpaConfiguration {
             "hibernate.connection.oracle.net.ssl_server_dn_match","false",
             "hibernate.connection.oracle.net.ssl_key_alias", oracleHost
         ))
-        .packages("ca.bc.gov.restapi.results.oracle")
         .managedTypes(persistenceManagedTypes)
         .persistenceUnit("oracle")
         .build();

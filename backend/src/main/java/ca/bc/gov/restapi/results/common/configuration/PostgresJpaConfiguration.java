@@ -33,7 +33,7 @@ public class PostgresJpaConfiguration {
   @Bean(name = "postgresEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
       @Qualifier("postgresHikariDataSource") HikariDataSource dataSource,
-      @Qualifier("postgresManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
+      @Qualifier("aotPostgresManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
       EntityManagerFactoryBuilder builder
   ) {
     return builder
@@ -45,7 +45,6 @@ public class PostgresJpaConfiguration {
             "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
             "hibernate.connection.datasource", dataSource
         ))
-        .packages("ca.bc.gov.restapi.results.postgres")
         .managedTypes(persistenceManagedTypes)
         .persistenceUnit("postgres")
         .build();
