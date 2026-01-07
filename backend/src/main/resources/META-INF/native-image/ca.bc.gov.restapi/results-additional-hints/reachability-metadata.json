@@ -1,85 +1,85 @@
 {
   "reflection": [
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity",
+      "type": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity",
+      "type": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "org.hibernate.metamodel.model.domain.internal.JpaMetamodelImpl",
+      "type": "org.hibernate.metamodel.model.domain.internal.JpaMetamodelImpl",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl",
+      "type": "org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -87,73 +87,73 @@
   ],
   "jni": [
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.activities.ActivityTreatmentUnitEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.cover.ForestCoverEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity",
+      "type": "ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity",
+      "type": "ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "name": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity",
+      "type": "ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
