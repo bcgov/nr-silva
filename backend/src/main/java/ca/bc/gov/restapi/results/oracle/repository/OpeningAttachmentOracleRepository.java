@@ -19,6 +19,7 @@ public interface OpeningAttachmentOracleRepository extends JpaRepository<Opening
    * @param openingId The ID of the opening.
    * @return List of attachments.
    */
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ATTACHMENT_LIST)
   List<OpeningAttachmentMetaProjection> findByOpeningId(Long openingId);
 
@@ -28,6 +29,7 @@ public interface OpeningAttachmentOracleRepository extends JpaRepository<Opening
    * @param attachmentGuidHex the lowercase hex string version of the GUID (RAWTOHEX)
    * @return Optional metadata projection
    */
+  @Override
   @Query(
       value =
           """

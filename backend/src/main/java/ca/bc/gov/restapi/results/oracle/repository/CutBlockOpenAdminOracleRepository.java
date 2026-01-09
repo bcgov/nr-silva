@@ -21,9 +21,11 @@ import org.springframework.stereotype.Repository;
 public interface CutBlockOpenAdminOracleRepository extends JpaRepository<CutBlockOpenAdminEntity, Long>,
     CutBlockOpenAdminRepository {
 
+  @Override
   @Query("from CutBlockOpenAdminEntity where openingId in ?1")
   List<CutBlockOpenAdminProjection> findAllByOpeningIdIn(List<Long> openingIdList);
 
+  @Override
   @Query(
       nativeQuery = true,
       value = SilvaOracleQueryConstants.GET_OPENING_TENURES,
@@ -35,6 +37,7 @@ public interface CutBlockOpenAdminOracleRepository extends JpaRepository<CutBloc
       Pageable pageable
   );
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_TENURE_PRIME)
   Optional<OpeningTenureProjection> findPrimeTenureByOpeningId(Long openingId);
 

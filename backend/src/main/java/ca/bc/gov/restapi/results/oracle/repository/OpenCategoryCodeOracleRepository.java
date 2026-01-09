@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OpenCategoryCodeOracleRepository extends JpaRepository<OpenCategoryCodeEntity, String>,
     OpenCategoryCodeRepository {
+  @Override
   List<OpenCategoryCodeProjection> findAllBy();
+
+  @Override
   List<OpenCategoryCodeProjection> findAllByExpiryDateAfter(LocalDate now);
 }

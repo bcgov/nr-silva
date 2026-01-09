@@ -20,6 +20,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ActivityTreatmentUnitOracleRepository
     extends JpaRepository<ActivityTreatmentUnitEntity, Long>, ActivityTreatmentUnitRepository {
 
+  @Override
   @Query(
       nativeQuery = true,
       value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_DISTURBANCE,
@@ -27,6 +28,7 @@ public interface ActivityTreatmentUnitOracleRepository
   Page<OpeningActivitiesDisturbanceProjection> getOpeningActivitiesDisturbanceByOpeningId(
       Long openingId, Pageable page);
 
+  @Override
   @Query(
       nativeQuery = true,
       value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_ACTIVITIES,
@@ -34,21 +36,27 @@ public interface ActivityTreatmentUnitOracleRepository
   Page<OpeningActivitiesActivitiesProjection> getOpeningActivitiesActivitiesByOpeningId(
       Long openingId, String mainSearchTerm, Pageable page);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_BASE)
   OpeningActivityBaseProjection getOpeningActivitiesBase(Long openingId, Long atuId);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITIES_SU)
   Optional<OpeningActivitySurveyProjection> getOpeningActivitySU(Long openingId, Long atuId);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITY_SPECIES)
   List<OpeningActivitySpeciesProjection> getOpeningActivitySpecies(Long openingId, Long atuId);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITY_JS)
   Optional<OpeningActivityJuvenileProjection> getOpeningActivityJS(Long openingId, Long atuId);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITY_PR)
   Optional<OpeningActivityPruningProjection> getOpeningActivityPR(Long openingId, Long atuId);
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_ACTIVITY_SP)
   Optional<Long> getOpeningActivitySP(Long openingId, Long atuId);
 }

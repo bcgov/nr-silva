@@ -12,5 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface OrgUnitOracleRepository extends JpaRepository<OrgUnitEntity, Long>,
     OrgUnitRepository {
 
+  @Override
   List<OrgUnitProjection> findAllByOrgUnitCodeIn(List<String> orgUnitCodes);
 }

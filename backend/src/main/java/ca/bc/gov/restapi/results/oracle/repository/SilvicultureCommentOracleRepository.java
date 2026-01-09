@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.common.projection.comment.CommentProjection;
 import ca.bc.gov.restapi.results.oracle.entity.comments.SilvicultureCommentEntity;
@@ -9,8 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SilvicultureCommentOracleRepository extends JpaRepository<SilvicultureCommentEntity, Long> {
+public interface SilvicultureCommentOracleRepository extends JpaRepository<SilvicultureCommentEntity, Long>,
+    SilvicultureCommentRepository {
 
+  @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_COMMENTS)
   List<CommentProjection> getCommentById(
       Long openingId,
