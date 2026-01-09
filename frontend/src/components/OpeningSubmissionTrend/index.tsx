@@ -240,7 +240,7 @@ const OpeningSubmissionTrend = () => {
             description="No results found with the current filters. Try adjusting them to refine your search."
           />
         ) : null}
-        {!submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
+        {!submissionTrendQuery.isFetching && !isAuthRefreshInProgress() && submissionTrendQuery.data ? (
           <GroupedBarChart
             ref={handleChartRef}
             data={submissionTrendQuery.data}
