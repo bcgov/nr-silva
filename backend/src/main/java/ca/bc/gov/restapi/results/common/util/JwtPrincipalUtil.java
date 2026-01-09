@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -64,7 +63,7 @@ public class JwtPrincipalUtil {
    *     if the user ID is blank.
    */
   public static String getUserId(JwtAuthenticationToken principal) {
-    return getUserIdValue(principal.getTokenAttributes());
+    return getUserIdWithProviderValue(principal.getTokenAttributes());
   }
 
   /**
@@ -78,7 +77,7 @@ public class JwtPrincipalUtil {
    *     if the user ID is blank.
    */
   public static String getUserId(Jwt principal) {
-    return getUserIdValue(principal.getClaims());
+    return getUserIdWithProviderValue(principal.getClaims());
   }
 
   /**
@@ -365,17 +364,7 @@ public class JwtPrincipalUtil {
    *     an empty string if the provider is not specified.
    */
   private static String getProviderValue(Map<String, Object> claims) {
-    String userNameString = getClaimValue(claims, "username");
-
-    if (StringUtils.isNotBlank(userNameString)) {
-      if (userNameString.endsWith("@idir")) {
-        return "IDIR";
-      } else if (userNameString.endsWith("@bceidbusiness")) {
-        return "BCEIDBUSINESS";
-      }
-    }
-
-    return StringUtils.EMPTY;
+    return getClaimValue(claims, "custom:idp_name").toUpperCase();
   }
 
   /**
@@ -403,25 +392,12 @@ public class JwtPrincipalUtil {
    * @return The constructed user ID in the format "Provider\Username" or "Provider\UserID", or an
    *     empty string if neither the username nor the user ID is present in the claims.
    */
-  private static String getUserIdValue(Map<String, Object> claims) {
-    return Stream.of(
-            getClaimValue(claims, "custom:idp_username"),
-            getClaimValue(claims, "custom:idp_user_id"))
-        .map(Object::toString)
-        .filter(StringUtils::isNotBlank)
-        .map(userId -> getProviderValue(claims) + "\\" + userId)
-        .findFirst()
-        .orElse(StringUtils.EMPTY);
+  private static String getUserIdWithProviderValue(Map<String, Object> claims) {
+    return getProviderValue(claims) + "\\" + getIdpUsernameValue(claims);
   }
 
   private static String getIdpUsernameValue(Map<String, Object> claims) {
-    return Stream.of(
-            getClaimValue(claims, "custom:idp_username"),
-            getClaimValue(claims, "custom:idp_user_id"))
-        .map(Object::toString)
-        .filter(StringUtils::isNotBlank)
-        .findFirst()
-        .orElse(StringUtils.EMPTY);
+    return getClaimValue(claims, "custom:idp_username");
   }
 
   /**
