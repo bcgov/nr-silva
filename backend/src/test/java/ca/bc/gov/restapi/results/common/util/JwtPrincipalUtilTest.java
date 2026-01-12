@@ -1,201 +1,706 @@
 package ca.bc.gov.restapi.results.common.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.HashMap;
+import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 @DisplayName("Unit Test | JwtPrincipalUtil")
 class JwtPrincipalUtilTest {
 
-  @ParameterizedTest(name = "For custom:idp_name {0} → JwtAuthenticationToken: {1}, Jwt: {2}")
-  @CsvSource({
-    "someuser@bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
-    "someuser@idir, IDIR, IDIR",
-    "someuser@bceidbusiness, BCEIDBUSINESS, BCEIDBUSINESS",
-    "'', '', ''"
-  })
-  @DisplayName("get provider")
-  void shouldGetProvider(String idpName, String expectedTokenValue, String expectedJwtValue) {
-    Map<String, Object> claims = Map.of("username", idpName);
+  private static final Map<String, Object> JWT_HEADERS = Map.of("alg", "HS256", "typ", "JWT");
+  private static final Instant ISSUED_AT = Instant.parse("2024-05-12T10:30:00Z");
+  private static final Instant EXPIRES_AT = Instant.parse("2024-05-12T11:30:00Z");
 
-    assertEquals(
-        expectedTokenValue,
-        JwtPrincipalUtil.getProvider(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(expectedJwtValue, JwtPrincipalUtil.getProvider(createJwt(claims)));
+  private Jwt createJwt(Map<String, Object> claims) {
+    return new Jwt("mock-token-value", ISSUED_AT, EXPIRES_AT, JWT_HEADERS, claims);
   }
 
-  @ParameterizedTest(name = "For custom:idp_username {0} and custom:idp_name {1} userId is {2}")
-  @CsvSource({
-    "username, userid, someuser@bceidbusiness, BCEIDBUSINESS\\username",
-    "username, userid, username@idir, IDIR\\username",
-    "username, userid, someuser@bceidbusiness, BCEIDBUSINESS\\username",
-    "'', userid, someuser@bceidbusiness, BCEIDBUSINESS\\userid",
-    "'', userid, username@idir, IDIR\\userid",
-    "'', userid, someuser@bceidbusiness, BCEIDBUSINESS\\userid",
-    "'', '','', ''"
-  })
-  @DisplayName("get userId returns userId prefixed with provider when userId is not blank")
-  void shouldGetUserId(String idpUsername, String idpUserId, String idpName, String expected) {
-    Map<String, Object> claims =
-        Map.of(
-            "custom:idp_username", idpUsername,
-            "custom:idp_user_id", idpUserId,
-            "username", idpName);
-
-    assertEquals(
-        expected, JwtPrincipalUtil.getUserId(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(expected, JwtPrincipalUtil.getUserId(createJwt(claims)));
+  private JwtAuthenticationToken createJwtAuthenticationToken(Map<String, Object> claims) {
+    return new JwtAuthenticationToken(createJwt(claims), Collections.emptyList());
   }
 
-  @ParameterizedTest(name = "For custom:idp_business_id {0} id is {1}")
-  @ValueSource(strings = {"businessId", ""})
-  @DisplayName("get businessId")
-  void shouldGetBusinessId(String value) {
-    Map<String, Object> claims = Map.of("custom:idp_business_id", value);
+  @Nested
+  @DisplayName("getProvider Tests")
+  class GetProviderTests {
 
-    assertEquals(
-        value, JwtPrincipalUtil.getBusinessId(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(value, JwtPrincipalUtil.getBusinessId(createJwt(claims)));
+    @Test
+    @DisplayName("Should return IDIR provider for JwtAuthenticationToken")
+    void shouldReturnIdirProviderForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String provider = JwtPrincipalUtil.getProvider(token);
+
+      assertEquals("IDIR", provider);
+    }
+
+    @Test
+    @DisplayName("Should return IDIR provider for Jwt")
+    void shouldReturnIdirProviderForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      Jwt jwt = createJwt(claims);
+      String provider = JwtPrincipalUtil.getProvider(jwt);
+
+      assertEquals("IDIR", provider);
+    }
+
+    @Test
+    @DisplayName("Should return BCEIDBUSINESS provider for JwtAuthenticationToken")
+    void shouldReturnBceidBusinessProviderForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "bceidbusiness", "custom:idp_username", "BUSINESSUSER");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String provider = JwtPrincipalUtil.getProvider(token);
+
+      assertEquals("BCEIDBUSINESS", provider);
+    }
+
+    @Test
+    @DisplayName("Should return BCEIDBUSINESS provider for Jwt")
+    void shouldReturnBceidBusinessProviderForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "bceidbusiness", "custom:idp_username", "BUSINESSUSER");
+
+      Jwt jwt = createJwt(claims);
+      String provider = JwtPrincipalUtil.getProvider(jwt);
+
+      assertEquals("BCEIDBUSINESS", provider);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when provider is missing")
+    void shouldReturnEmptyStringWhenProviderIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_username", "TESTUSER");
+
+      Jwt jwt = createJwt(claims);
+      String provider = JwtPrincipalUtil.getProvider(jwt);
+
+      assertEquals("", provider);
+    }
   }
 
-  @ParameterizedTest(name = "For custom:idp_business_name {0} name is {1}")
-  @ValueSource(strings = {"The Business Name", ""})
-  @DisplayName("get businessName")
-  void shouldGetBusinessName(String value) {
-    Map<String, Object> claims = Map.of("custom:idp_business_name", value);
+  @Nested
+  @DisplayName("getUserId Tests")
+  class GetUserIdTests {
 
-    assertEquals(
-        value,
-        JwtPrincipalUtil.getBusinessName(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(value, JwtPrincipalUtil.getBusinessName(createJwt(claims)));
+    @Test
+    @DisplayName("Should return userId with provider prefix for JwtAuthenticationToken")
+    void shouldReturnUserIdWithProviderPrefixForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String userId = JwtPrincipalUtil.getUserId(token);
+
+      assertEquals("IDIR\\TESTUSER", userId);
+    }
+
+    @Test
+    @DisplayName("Should return userId with provider prefix for Jwt")
+    void shouldReturnUserIdWithProviderPrefixForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      Jwt jwt = createJwt(claims);
+      String userId = JwtPrincipalUtil.getUserId(jwt);
+
+      assertEquals("IDIR\\TESTUSER", userId);
+    }
+
+    @Test
+    @DisplayName("Should return userId with BCEIDBUSINESS provider")
+    void shouldReturnUserIdWithBceidBusinessProvider() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "bceidbusiness", "custom:idp_username", "BIZUSER123");
+
+      Jwt jwt = createJwt(claims);
+      String userId = JwtPrincipalUtil.getUserId(jwt);
+
+      assertEquals("BCEIDBUSINESS\\BIZUSER123", userId);
+    }
+
+    @Test
+    @DisplayName("Should return empty backslash when username is missing")
+    void shouldReturnEmptyBackslashWhenUsernameIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String userId = JwtPrincipalUtil.getUserId(jwt);
+
+      assertEquals("IDIR\\", userId);
+    }
   }
 
-  @ParameterizedTest(name = "For email {0} email is {1}")
-  @ValueSource(strings = {"my_email_is@mail.ca", ""})
-  @DisplayName("get email")
-  void shouldGetEmail(String value) {
-    Map<String, Object> claims = Map.of("email", value);
+  @Nested
+  @DisplayName("getEmail Tests")
+  class GetEmailTests {
 
-    assertEquals(
-        value, JwtPrincipalUtil.getEmail(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(value, JwtPrincipalUtil.getEmail(createJwt(claims)));
+    @Test
+    @DisplayName("Should return email for JwtAuthenticationToken")
+    void shouldReturnEmailForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("email", "test.user@gov.bc.ca", "custom:idp_name", "idir");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String email = JwtPrincipalUtil.getEmail(token);
+
+      assertEquals("test.user@gov.bc.ca", email);
+    }
+
+    @Test
+    @DisplayName("Should return email for Jwt")
+    void shouldReturnEmailForJwt() {
+      Map<String, Object> claims =
+          Map.of("email", "test.user@gov.bc.ca", "custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String email = JwtPrincipalUtil.getEmail(jwt);
+
+      assertEquals("test.user@gov.bc.ca", email);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when email is missing")
+    void shouldReturnEmptyStringWhenEmailIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String email = JwtPrincipalUtil.getEmail(jwt);
+
+      assertEquals("", email);
+    }
   }
 
-  @ParameterizedTest(
-      name =
-          "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3}"
-              + " fullname is {4}")
-  @CsvSource({
-    "John, Wick, '',  ca.bc.gov.flnr.fam.dev, John Wick",
-    "John, Wick, '',  idir, John Wick",
-    "'', '', 'John Wick',  bceidbusiness, John Wick",
-    "'', '', 'John Valeus Wick',  bceidbusiness, John Valeus Wick",
-    "'', '', 'Wick, John WLRS:EX',  idir, John Wick",
-    "'', '', 'da Silva, Anderson WLRS:EX',  idir, Anderson Silva",
-    "'', '', 'Wick, John V WLRS:EX',  idir, John Wick",
-    "'', '', '',  bceidbusiness, ''",
-    "'', '', '', '', ''"
-  })
-  @DisplayName("get name")
-  void shouldGetName(
-      String givenName, String familyName, String displayName, String idpName, String expected) {
-    Map<String, Object> claims =
-        Map.of(
-            "given_name", givenName,
-            "family_name", familyName,
-            "custom:idp_name", idpName,
-            "custom:idp_display_name", displayName);
+  @Nested
+  @DisplayName("getName Tests")
+  class GetNameTests {
 
-    assertEquals(
-        expected, JwtPrincipalUtil.getName(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(expected, JwtPrincipalUtil.getName(createJwt(claims)));
+    @Test
+    @DisplayName("Should return full name from given and family names for IDIR")
+    void shouldReturnFullNameFromGivenAndFamilyNamesForIdir() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "John",
+              "family_name", "Doe",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("John Doe", name);
+    }
+
+    @Test
+    @DisplayName("Should parse display name for BCEIDBUSINESS with space separator")
+    void shouldParseDisplayNameForBceidBusinessWithSpace() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "bceidbusiness",
+              "custom:idp_display_name", "Alice Smith");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("Alice Smith", name);
+    }
+
+    @Test
+    @DisplayName("Should parse IDIR display name with comma format")
+    void shouldParseIdirDisplayNameWithCommaFormat() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "Smith, Bob WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("Bob Smith", name);
+    }
+
+    @Test
+    @DisplayName("Should parse IDIR display name with middle initial")
+    void shouldParseIdirDisplayNameWithMiddleInitial() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "Doe, John A WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("John Doe", name);
+    }
+
+    @Test
+    @DisplayName("Should parse display name with prefix like 'da' or 'de'")
+    void shouldParseDisplayNameWithPrefix() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "da Silva, Maria WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("Maria Silva", name);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when all name fields are missing")
+    void shouldReturnEmptyStringWhenAllNameFieldsAreMissing() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("", name);
+    }
+
+    @Test
+    @DisplayName("Should work with JwtAuthenticationToken")
+    void shouldWorkWithJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "Jane",
+              "family_name", "Smith",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String name = JwtPrincipalUtil.getName(token);
+
+      assertEquals("Jane Smith", name);
+    }
   }
 
-  @ParameterizedTest(
-      name =
-          "For given_name {0} family_name {1} custom:idp_display_name {2} custom:idp_name {3}"
-              + " fullname is {4}")
-  @CsvSource({
-    "John, Wick, '',  ca.bc.gov.flnr.fam.dev, Wick",
-    "John, Wick, '',  idir, Wick",
-    "'', '', 'John Wick',  bceidbusiness, Wick",
-    "'', '', 'John Valeus Wick',  bceidbusiness, Valeus Wick",
-    "'', '', 'Wick, John WLRS:EX',  idir, Wick",
-    "'', '', 'da Silva, Anderson WLRS:EX',  idir, Silva",
-    "'', '', 'Wick, John V WLRS:EX',  idir, Wick",
-    "'', '', '',  bceidbusiness, ''",
-    "'', '', '', '', ''"
-  })
-  @DisplayName("get last name")
-  void shouldGetLastName(
-      String givenName, String familyName, String displayName, String idpName, String expected) {
-    Map<String, Object> claims =
-        Map.of(
-            "given_name", givenName,
-            "family_name", familyName,
-            "custom:idp_name", idpName,
-            "custom:idp_display_name", displayName);
+  @Nested
+  @DisplayName("getFirstName Tests")
+  class GetFirstNameTests {
 
-    assertEquals(
-        expected, JwtPrincipalUtil.getLastName(createJwtAuthenticationTokenWithAttributes(claims)));
-    assertEquals(expected, JwtPrincipalUtil.getLastName(createJwt(claims)));
+    @Test
+    @DisplayName("Should return first name from given_name for IDIR")
+    void shouldReturnFirstNameFromGivenNameForIdir() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "John",
+              "family_name", "Doe",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String firstName = JwtPrincipalUtil.getFirstName(jwt);
+
+      assertEquals("John", firstName);
+    }
+
+    @Test
+    @DisplayName("Should parse first name from display name for BCEIDBUSINESS")
+    void shouldParseFirstNameFromDisplayNameForBceidBusiness() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "bceidbusiness",
+              "custom:idp_display_name", "Alice Smith");
+
+      Jwt jwt = createJwt(claims);
+      String firstName = JwtPrincipalUtil.getFirstName(jwt);
+
+      assertEquals("Alice", firstName);
+    }
+
+    @Test
+    @DisplayName("Should parse first name from comma-separated IDIR display name")
+    void shouldParseFirstNameFromCommaSeparatedIdirDisplayName() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "Smith, Bob WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String firstName = JwtPrincipalUtil.getFirstName(jwt);
+
+      assertEquals("Bob", firstName);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when first name is missing")
+    void shouldReturnEmptyStringWhenFirstNameIsMissing() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String firstName = JwtPrincipalUtil.getFirstName(jwt);
+
+      assertEquals("", firstName);
+    }
   }
 
-  private JwtAuthenticationToken createJwtAuthenticationTokenWithAttributes(
-      Map<String, Object> attributes) {
-    return new JwtAuthenticationToken(createJwt(attributes), List.of());
+  @Nested
+  @DisplayName("getLastName Tests")
+  class GetLastNameTests {
+
+    @Test
+    @DisplayName("Should return last name from family_name for IDIR")
+    void shouldReturnLastNameFromFamilyNameForIdir() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "John",
+              "family_name", "Doe",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String lastName = JwtPrincipalUtil.getLastName(jwt);
+
+      assertEquals("Doe", lastName);
+    }
+
+    @Test
+    @DisplayName("Should parse last name from display name for BCEIDBUSINESS")
+    void shouldParseLastNameFromDisplayNameForBceidBusiness() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "bceidbusiness",
+              "custom:idp_display_name", "Alice Smith");
+
+      Jwt jwt = createJwt(claims);
+      String lastName = JwtPrincipalUtil.getLastName(jwt);
+
+      assertEquals("Smith", lastName);
+    }
+
+    @Test
+    @DisplayName("Should parse last name from comma-separated IDIR display name")
+    void shouldParseLastNameFromCommaSeparatedIdirDisplayName() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "Smith, Bob WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String lastName = JwtPrincipalUtil.getLastName(jwt);
+
+      assertEquals("Smith", lastName);
+    }
+
+    @Test
+    @DisplayName("Should handle last name with prefix like 'da' or 'de'")
+    void shouldHandleLastNameWithPrefix() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "da Silva, Maria WLRS:EX");
+
+      Jwt jwt = createJwt(claims);
+      String lastName = JwtPrincipalUtil.getLastName(jwt);
+
+      assertEquals("Silva", lastName);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when last name is missing")
+    void shouldReturnEmptyStringWhenLastNameIsMissing() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "");
+
+      Jwt jwt = createJwt(claims);
+      String lastName = JwtPrincipalUtil.getLastName(jwt);
+
+      assertEquals("", lastName);
+    }
   }
 
-  private static @NotNull Jwt createJwt(Map<String, Object> attributes) {
-    return new Jwt(
-        "token",
-        LocalDateTime.now().minusMinutes(10).toInstant(ZoneOffset.UTC),
-        LocalDateTime.now().plusMinutes(90).toInstant(ZoneOffset.UTC),
-        Map.of("alg", "HS256", "typ", "JWT"),
-        attributes);
+  @Nested
+  @DisplayName("getDisplayName Tests")
+  class GetDisplayNameTests {
+
+    @Test
+    @DisplayName("Should return display name for JwtAuthenticationToken")
+    void shouldReturnDisplayNameForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_display_name", "Smith, John WLRS:EX", "custom:idp_name", "idir");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String displayName = JwtPrincipalUtil.getDisplayName(token);
+
+      assertEquals("Smith, John WLRS:EX", displayName);
+    }
+
+    @Test
+    @DisplayName("Should return display name for Jwt")
+    void shouldReturnDisplayNameForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_display_name", "Alice Johnson", "custom:idp_name", "bceidbusiness");
+
+      Jwt jwt = createJwt(claims);
+      String displayName = JwtPrincipalUtil.getDisplayName(jwt);
+
+      assertEquals("Alice Johnson", displayName);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when display name is missing")
+    void shouldReturnEmptyStringWhenDisplayNameIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String displayName = JwtPrincipalUtil.getDisplayName(jwt);
+
+      assertEquals("", displayName);
+    }
   }
 
-  @ParameterizedTest
-  @DisplayName("getGroups should return expected group list")
-  @MethodSource("provideGroupsTestData")
-  void shouldGetGroups(Map<String, Object> tokenAttributes, Set<String> expectedGroups) {
-    JwtAuthenticationToken jwtAuthenticationToken =
-        tokenAttributes == null
-            ? null
-            : createJwtAuthenticationTokenWithAttributes(tokenAttributes);
+  @Nested
+  @DisplayName("getIdpUsername Tests")
+  class GetIdpUsernameTests {
 
-    Set<String> actualGroups = JwtPrincipalUtil.getGroups(jwtAuthenticationToken);
+    @Test
+    @DisplayName("Should return IDP username for JwtAuthenticationToken")
+    void shouldReturnIdpUsernameForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_username", "TESTUSER", "custom:idp_name", "idir");
 
-    assertEquals(expectedGroups, actualGroups);
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      String username = JwtPrincipalUtil.getIdpUsername(token);
+
+      assertEquals("TESTUSER", username);
+    }
+
+    @Test
+    @DisplayName("Should return IDP username for Jwt")
+    void shouldReturnIdpUsernameForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_username", "TESTUSER", "custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String username = JwtPrincipalUtil.getIdpUsername(jwt);
+
+      assertEquals("TESTUSER", username);
+    }
+
+    @Test
+    @DisplayName("Should return empty string when IDP username is missing")
+    void shouldReturnEmptyStringWhenIdpUsernameIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      String username = JwtPrincipalUtil.getIdpUsername(jwt);
+
+      assertEquals("", username);
+    }
   }
 
-  private static Stream<Arguments> provideGroupsTestData() {
-    return Stream.of(
-        Arguments.of(Map.of("cognito:groups", List.of("CLIENT_ADMIN")), Set.of("CLIENT_ADMIN")),
-        Arguments.of(Map.of("cognito:groups", List.of()), Set.of()),
-        Arguments.of(
-            new HashMap<>() {
-              {
-                put("cognito:groups", null);
-              }
-            },
-            Set.of()),
-        Arguments.of(Map.of("otherKey", "someValue"), Set.of()),
-        Arguments.of(null, Set.of()));
+  @Nested
+  @DisplayName("getGroups Tests")
+  class GetGroupsTests {
+
+    @Test
+    @DisplayName("Should return groups from JwtAuthenticationToken")
+    void shouldReturnGroupsFromJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of(
+              "cognito:groups", List.of("CLIENT_ADMIN", "USER_ADMIN"), "custom:idp_name", "idir");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      Set<String> groups = JwtPrincipalUtil.getGroups(token);
+
+      assertEquals(2, groups.size());
+      assertTrue(groups.contains("CLIENT_ADMIN"));
+      assertTrue(groups.contains("USER_ADMIN"));
+    }
+
+    @Test
+    @DisplayName("Should return groups from Jwt")
+    void shouldReturnGroupsFromJwt() {
+      Map<String, Object> claims =
+          Map.of("cognito:groups", List.of("CLIENT_ADMIN"), "custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      Set<String> groups = JwtPrincipalUtil.getGroups(jwt);
+
+      assertEquals(1, groups.size());
+      assertTrue(groups.contains("CLIENT_ADMIN"));
+    }
+
+    @Test
+    @DisplayName("Should return empty set when groups are missing")
+    void shouldReturnEmptySetWhenGroupsAreMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      Set<String> groups = JwtPrincipalUtil.getGroups(jwt);
+
+      assertTrue(groups.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return empty set when groups list is empty")
+    void shouldReturnEmptySetWhenGroupsListIsEmpty() {
+      Map<String, Object> claims =
+          Map.of("cognito:groups", Collections.emptyList(), "custom:idp_name", "idir");
+
+      Jwt jwt = createJwt(claims);
+      Set<String> groups = JwtPrincipalUtil.getGroups(jwt);
+
+      assertTrue(groups.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return empty set when JwtAuthenticationToken is null")
+    void shouldReturnEmptySetWhenJwtAuthenticationTokenIsNull() {
+      Set<String> groups = JwtPrincipalUtil.getGroups((JwtAuthenticationToken) null);
+
+      assertTrue(groups.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return empty set when Jwt is null")
+    void shouldReturnEmptySetWhenJwtIsNull() {
+      Set<String> groups = JwtPrincipalUtil.getGroups((Jwt) null);
+
+      assertTrue(groups.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should filter out null values from groups list")
+    void shouldFilterOutNullValuesFromGroupsList() {
+      List<String> groupsWithNull = new java.util.ArrayList<>();
+      groupsWithNull.add("CLIENT_ADMIN");
+      groupsWithNull.add(null);
+      groupsWithNull.add("USER_ADMIN");
+
+      Map<String, Object> claims = new java.util.HashMap<>();
+      claims.put("cognito:groups", groupsWithNull);
+
+      Jwt jwt = createJwt(claims);
+      Set<String> groups = JwtPrincipalUtil.getGroups(jwt);
+
+      assertEquals(2, groups.size());
+      assertTrue(groups.contains("CLIENT_ADMIN"));
+      assertTrue(groups.contains("USER_ADMIN"));
+    }
+  }
+
+  @Nested
+  @DisplayName("getIdentityProvider Tests")
+  class GetIdentityProviderTests {
+
+    @Test
+    @DisplayName("Should return IDIR identity provider for JwtAuthenticationToken")
+    void shouldReturnIdirIdentityProviderForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      IdentityProvider identityProvider = JwtPrincipalUtil.getIdentityProvider(token);
+
+      assertEquals(IdentityProvider.IDIR, identityProvider);
+    }
+
+    @Test
+    @DisplayName("Should return IDIR identity provider for Jwt")
+    void shouldReturnIdirIdentityProviderForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "idir", "custom:idp_username", "TESTUSER");
+
+      Jwt jwt = createJwt(claims);
+      IdentityProvider identityProvider = JwtPrincipalUtil.getIdentityProvider(jwt);
+
+      assertEquals(IdentityProvider.IDIR, identityProvider);
+    }
+
+    @Test
+    @DisplayName("Should return BUSINESS_BCEID identity provider for JwtAuthenticationToken")
+    void shouldReturnBusinessBceidIdentityProviderForJwtAuthenticationToken() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "bceidbusiness", "custom:idp_username", "BIZUSER");
+
+      JwtAuthenticationToken token = createJwtAuthenticationToken(claims);
+      IdentityProvider identityProvider = JwtPrincipalUtil.getIdentityProvider(token);
+
+      assertEquals(IdentityProvider.BUSINESS_BCEID, identityProvider);
+    }
+
+    @Test
+    @DisplayName("Should return BUSINESS_BCEID identity provider for Jwt")
+    void shouldReturnBusinessBceidIdentityProviderForJwt() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "bceidbusiness", "custom:idp_username", "BIZUSER");
+
+      Jwt jwt = createJwt(claims);
+      IdentityProvider identityProvider = JwtPrincipalUtil.getIdentityProvider(jwt);
+
+      assertEquals(IdentityProvider.BUSINESS_BCEID, identityProvider);
+    }
+
+    @Test
+    @DisplayName("Should throw NoSuchElementException when provider is invalid")
+    void shouldThrowNoSuchElementExceptionWhenProviderIsInvalid() {
+      Map<String, Object> claims =
+          Map.of("custom:idp_name", "invalid_provider", "custom:idp_username", "USER");
+
+      Jwt jwt = createJwt(claims);
+
+      assertThrows(NoSuchElementException.class, () -> JwtPrincipalUtil.getIdentityProvider(jwt));
+    }
+
+    @Test
+    @DisplayName("Should throw NoSuchElementException when provider is missing")
+    void shouldThrowNoSuchElementExceptionWhenProviderIsMissing() {
+      Map<String, Object> claims = Map.of("custom:idp_username", "USER");
+
+      Jwt jwt = createJwt(claims);
+
+      assertThrows(NoSuchElementException.class, () -> JwtPrincipalUtil.getIdentityProvider(jwt));
+    }
   }
 }

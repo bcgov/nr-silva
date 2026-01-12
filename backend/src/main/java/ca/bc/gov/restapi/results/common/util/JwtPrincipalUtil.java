@@ -81,54 +81,6 @@ public class JwtPrincipalUtil {
   }
 
   /**
-   * Retrieves the business ID from the given JwtAuthenticationToken principal. The business ID is
-   * extracted from the token attributes under the key "custom:idp_business_id". If the business ID
-   * is blank, an empty string is returned.
-   *
-   * @param principal JwtAuthenticationToken object from which the business ID is to be extracted.
-   * @return The business ID, or an empty string if the business ID is blank.
-   */
-  public static String getBusinessId(JwtAuthenticationToken principal) {
-    return getBusinessIdValue(principal.getTokenAttributes());
-  }
-
-  /**
-   * Retrieves the business ID from the given Jwt principal. The business ID is extracted from the
-   * token attributes under the key "custom:idp_business_id". If the business ID is blank, an empty
-   * string is returned.
-   *
-   * @param principal Jwt object from which the business ID is to be extracted.
-   * @return The business ID, or an empty string if the business ID is blank.
-   */
-  public static String getBusinessId(Jwt principal) {
-    return getBusinessIdValue(principal.getClaims());
-  }
-
-  /**
-   * Retrieves the business name from the given JwtAuthenticationToken principal. The business name
-   * is extracted from the token attributes under the key "custom:idp_business_name". If the
-   * business name is blank, an empty string is returned.
-   *
-   * @param principal JwtAuthenticationToken object from which the business name is to be extracted.
-   * @return The business name, or an empty string if the business name is blank.
-   */
-  public static String getBusinessName(JwtAuthenticationToken principal) {
-    return getBusinessNameValue(principal.getTokenAttributes());
-  }
-
-  /**
-   * Retrieves the business name from the given Jwt principal. The business name is extracted from
-   * the token attributes under the key "custom:idp_business_name". If the business name is blank,
-   * an empty string is returned.
-   *
-   * @param principal Jwt object from which the business name is to be extracted.
-   * @return The business name, or an empty string if the business name is blank.
-   */
-  public static String getBusinessName(Jwt principal) {
-    return getBusinessNameValue(principal.getClaims());
-  }
-
-  /**
    * Retrieves the business name from the given JwtAuthenticationToken principal. The business name
    * is extracted from the token attributes under the key "custom:idp_business_name". If the
    * business name is blank, an empty string is returned.
@@ -368,18 +320,6 @@ public class JwtPrincipalUtil {
   }
 
   /**
-   * Retrieves the business name value from the JWT claims. The business name is identified by the
-   * key "custom:idp_business_name" within the claims. If the business name is not specified, an
-   * empty string is returned.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The business name or an empty string if the business name is not specified.
-   */
-  private static String getBusinessNameValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "custom:idp_business_name");
-  }
-
-  /**
    * Constructs the user ID by combining the provider's name with the user's username or user ID.
    * The method first attempts to retrieve the user's username from the JWT claims using the key
    * "custom:idp_username". If the username is not present or is blank, it then attempts to retrieve
@@ -398,19 +338,6 @@ public class JwtPrincipalUtil {
 
   private static String getIdpUsernameValue(Map<String, Object> claims) {
     return getClaimValue(claims, "custom:idp_username");
-  }
-
-  /**
-   * Retrieves the business ID from the JWT claims. The business ID is identified by the key
-   * "custom:idp_business_id" within the claims. If the business ID is not specified or is blank, an
-   * empty string is returned. This method is used to extract the business ID for further processing
-   * or validation.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The business ID as a string, or an empty string if the business ID is not specified.
-   */
-  private static String getBusinessIdValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "custom:idp_business_id");
   }
 
   /**
@@ -454,9 +381,6 @@ public class JwtPrincipalUtil {
    */
   private static Map<String, String> processName(Map<String, Object> claims) {
     Map<String, String> additionalInfo = new HashMap<>();
-
-    // Extract business name if exists
-    additionalInfo.put("businessName", getBusinessNameValue(claims));
 
     // Extract first and last names if they exist
     String firstName = getClaimValue(claims, "given_name");
