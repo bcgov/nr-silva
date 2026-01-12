@@ -52,8 +52,7 @@ public class OpeningSearchService {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
-    // Set the user in the filter, if required, using query param for user id is temporary until
-    // front-end sends the user id in access token.
+    // Set the user in the filter, if required
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
         && Boolean.TRUE.equals(filtersDto.getMyOpenings())) {
       filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
