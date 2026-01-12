@@ -27,13 +27,12 @@ public class JwtPrincipalUtil {
 
   /**
    * Retrieves the provider of the JWT token from the given JwtAuthenticationToken principal. The
-   * provider is extracted from the token attributes under the key "custom:idp_name". If the
-   * provider starts with "ca.bc.gov.flnr.fam.", it is replaced with "BCSC". If the provider is not
-   * blank, it is returned in uppercase. If the provider is blank, an empty string is returned.
+   * provider is extracted from the token attributes under the key "custom:idp_name" and converted
+   * to uppercase. If the provider is not specified, an empty string is returned.
    *
    * @param principal JwtAuthenticationToken object from which the provider is to be extracted.
-   * @return The provider of the JWT token in uppercase, or an empty string if the provider is
-   *     blank.
+   * @return The provider of the JWT token in uppercase, or an empty string if the provider is not
+   *     present.
    */
   public static String getProvider(JwtAuthenticationToken principal) {
     return getProviderValue(principal.getTokenAttributes());
@@ -53,14 +52,13 @@ public class JwtPrincipalUtil {
 
   /**
    * Retrieves the user ID from the given JwtAuthenticationToken principal. The user ID is extracted
-   * from the token attributes under the key "custom:idp_username". If the user ID is blank, the
-   * value under the key "custom:idp_user_id" is used. If both values are blank, an empty string is
-   * returned. If the user ID is not blank, it is prefixed with the provider in uppercase and a
-   * backslash.
+   * from the token attributes under the key "custom:idp_username". The user ID is prefixed with the
+   * provider in uppercase and a backslash. If the username is not present or blank, the result will
+   * have an empty string after the backslash.
    *
    * @param principal JwtAuthenticationToken object from which the user ID is to be extracted.
-   * @return The user ID prefixed with the provider in uppercase and a backslash, or an empty string
-   *     if the user ID is blank.
+   * @return The user ID prefixed with the provider in uppercase and a backslash (e.g.,
+   *     "IDIR\\TESTUSER"), or "PROVIDER\\" if the username is blank.
    */
   public static String getUserId(JwtAuthenticationToken principal) {
     return getUserIdWithProviderValue(principal.getTokenAttributes());
@@ -68,37 +66,36 @@ public class JwtPrincipalUtil {
 
   /**
    * Retrieves the user ID from the given Jwt principal. The user ID is extracted from the token
-   * attributes under the key "custom:idp_username". If the user ID is blank, the value under the
-   * key "custom:idp_user_id" is used. If both values are blank, an empty string is returned. If the
-   * user ID is not blank, it is prefixed with the provider in uppercase and a backslash.
+   * claims under the key "custom:idp_username". The user ID is prefixed with the provider in
+   * uppercase and a backslash. If the username is not present or blank, the result will have an
+   * empty string after the backslash.
    *
    * @param principal Jwt object from which the user ID is to be extracted.
-   * @return The user ID prefixed with the provider in uppercase and a backslash, or an empty string
-   *     if the user ID is blank.
+   * @return The user ID prefixed with the provider in uppercase and a backslash (e.g.,
+   *     "IDIR\\TESTUSER"), or "PROVIDER\\" if the username is blank.
    */
   public static String getUserId(Jwt principal) {
     return getUserIdWithProviderValue(principal.getClaims());
   }
 
   /**
-   * Retrieves the business name from the given JwtAuthenticationToken principal. The business name
-   * is extracted from the token attributes under the key "custom:idp_business_name". If the
-   * business name is blank, an empty string is returned.
+   * Retrieves the email from the given JwtAuthenticationToken principal. The email is extracted
+   * from the token attributes under the key "email". If the email is not present, an empty string
+   * is returned.
    *
-   * @param principal JwtAuthenticationToken object from which the business name is to be extracted.
-   * @return The business name, or an empty string if the business name is blank.
+   * @param principal JwtAuthenticationToken object from which the email is to be extracted.
+   * @return The email value, or an empty string if the email is not present.
    */
   public static String getEmail(JwtAuthenticationToken principal) {
     return getEmailValue(principal.getTokenAttributes());
   }
 
   /**
-   * Retrieves the business name from the given Jwt principal. The business name is extracted from
-   * the token attributes under the key "custom:idp_business_name". If the business name is blank,
-   * an empty string is returned.
+   * Retrieves the email from the given Jwt principal. The email is extracted from the token claims
+   * under the key "email". If the email is not present, an empty string is returned.
    *
-   * @param principal Jwt object from which the business name is to be extracted.
-   * @return The business name, or an empty string if the business name is blank.
+   * @param principal Jwt object from which the email is to be extracted.
+   * @return The email value, or an empty string if the email is not present.
    */
   public static String getEmail(Jwt principal) {
     return getEmailValue(principal.getClaims());
@@ -133,47 +130,52 @@ public class JwtPrincipalUtil {
   }
 
   /**
-   * Retrieves the first name from the given JwtAuthenticationToken principal. The first name is
-   * extracted from the token attributes under the key "given_name". If the first name is blank, an
-   * empty string is returned.
+   * Retrieves the first name from the given JwtAuthenticationToken principal. For IDIR providers,
+   * the first name is extracted from the "given_name" claim. For BCEIDBUSINESS providers or when
+   * given_name is blank, the display name is parsed to extract the first name. If no first name can
+   * be determined, an empty string is returned.
    *
    * @param principal JwtAuthenticationToken object from which the first name is to be extracted.
-   * @return The first name or an empty string if the first name is blank.
+   * @return The first name, or an empty string if not present or cannot be determined.
    */
   public static String getFirstName(JwtAuthenticationToken principal) {
     return getFirstNameValue(principal.getTokenAttributes());
   }
 
   /**
-   * Retrieves the first name from the given Jwt principal. The first name is extracted from the
-   * token attributes under the key "given_name". If the first name is blank, an empty string is
-   * returned.
+   * Retrieves the first name from the given Jwt principal. For IDIR providers, the first name is
+   * extracted from the "given_name" claim. For BCEIDBUSINESS providers or when given_name is blank,
+   * the display name is parsed to extract the first name. If no first name can be determined, an
+   * empty string is returned.
    *
    * @param principal Jwt object from which the first name is to be extracted.
-   * @return The first name or an empty string if the first name is blank.
+   * @return The first name, or an empty string if not present or cannot be determined.
    */
   public static String getFirstName(Jwt principal) {
     return getFirstNameValue(principal.getClaims());
   }
 
   /**
-   * Retrieves the last name from the given JwtAuthenticationToken principal. The last name is
-   * extracted from the token attributes under the key "family_name". If the last name is blank, an
-   * empty string is returned.
+   * Retrieves the last name from the given JwtAuthenticationToken principal. For IDIR providers,
+   * the last name is extracted from the "family_name" claim. For BCEIDBUSINESS providers or when
+   * family_name is blank, the display name is parsed to extract the last name. If no last name can
+   * be determined, an empty string is returned.
    *
    * @param principal JwtAuthenticationToken object from which the last name is to be extracted.
-   * @return The last name or an empty string if the last name is blank.
+   * @return The last name, or an empty string if not present or cannot be determined.
    */
   public static String getLastName(JwtAuthenticationToken principal) {
     return getLastNameValue(principal.getTokenAttributes());
   }
 
   /**
-   * Retrieves the last name from the given Jwt principal. The last name is extracted from the token
-   * attributes under the key "family_name". If the last name is blank, an empty string is returned.
+   * Retrieves the last name from the given Jwt principal. For IDIR providers, the last name is
+   * extracted from the "family_name" claim. For BCEIDBUSINESS providers or when family_name is
+   * blank, the display name is parsed to extract the last name. If no last name can be determined,
+   * an empty string is returned.
    *
    * @param principal Jwt object from which the last name is to be extracted.
-   * @return The last name or an empty string if the last name is blank.
+   * @return The last name, or an empty string if not present or cannot be determined.
    */
   public static String getLastName(Jwt principal) {
     return getLastNameValue(principal.getClaims());
@@ -206,11 +208,10 @@ public class JwtPrincipalUtil {
   /**
    * Retrieves the IDP username from the given JwtAuthenticationToken principal. The IDP username is
    * extracted from the token attributes under the key "custom:idp_username". If the IDP username is
-   * blank, the value under the key "custom:idp_user_id" is used. If both values are blank, an empty
-   * string is returned.
+   * not present or blank, an empty string is returned.
    *
    * @param principal JwtAuthenticationToken object from which the IDP username is to be extracted.
-   * @return The IDP username or an empty string if both values are blank.
+   * @return The IDP username, or an empty string if not present or blank.
    */
   public static String getIdpUsername(JwtAuthenticationToken principal) {
     return getIdpUsernameValue(principal.getTokenAttributes());
@@ -218,29 +219,27 @@ public class JwtPrincipalUtil {
 
   /**
    * Retrieves the IDP username from the given Jwt principal. The IDP username is extracted from the
-   * token attributes under the key "custom:idp_username". If the IDP username is blank, the value
-   * under the key "custom:idp_user_id" is used. If both values are blank, an empty string is
-   * returned.
+   * token claims under the key "custom:idp_username". If the IDP username is not present or blank,
+   * an empty string is returned.
    *
    * @param principal Jwt object from which the IDP username is to be extracted.
-   * @return The IDP username or an empty string if both values are blank.
+   * @return The IDP username, or an empty string if not present or blank.
    */
   public static String getIdpUsername(Jwt principal) {
     return getIdpUsernameValue(principal.getClaims());
   }
 
   /**
-   * Retrieves a list of groups from the given JwtPrincipal. This method extracts the token
-   * attributes from the provided {@link JwtAuthenticationToken}, then looks for the key
-   * "cognito:groups" in the token attributes. If the value associated with this key is a {@link
-   * List}, the method filters the elements to only include non-null values of type {@link String}.
-   * The resulting list of strings is returned.
+   * Retrieves a set of groups from the given JwtAuthenticationToken. This method extracts the token
+   * attributes, then looks for the key "cognito:groups" in the token attributes. If the value
+   * associated with this key is a {@link List}, the method filters the elements to only include
+   * non-null values of type {@link String}. The resulting set of strings is returned.
    *
-   * @param jwtPrincipal The {@link JwtAuthenticationToken} containing the token attributes. It must
-   *     have the "cognito:groups" key. If the key does not exist or the value is not a list of
-   *     strings, an empty list is returned.
-   * @return A list of group names, or an empty list if the key is missing or the value is not a
-   *     list of strings.
+   * @param jwtPrincipal The {@link JwtAuthenticationToken} containing the token attributes. If
+   *     jwtPrincipal or its attributes are null, an empty set is returned. If the "cognito:groups"
+   *     key does not exist or the value is not a list of strings, an empty set is returned.
+   * @return A set of group names, or an empty set if the key is missing, the value is not a list of
+   *     strings, or the principal is null.
    */
   public static Set<String> getGroups(JwtAuthenticationToken jwtPrincipal) {
     if (jwtPrincipal == null || jwtPrincipal.getTokenAttributes() == null) {
@@ -250,17 +249,16 @@ public class JwtPrincipalUtil {
   }
 
   /**
-   * Retrieves a list of groups from the given JwtPrincipal. This method extracts the token
-   * attributes from the provided {@link Jwt}, then looks for the key "cognito:groups" in the token
-   * attributes. If the value associated with this key is a {@link List}, the method filters the
-   * elements to only include non-null values of type {@link String}. The resulting list of strings
-   * is returned.
+   * Retrieves a set of groups from the given Jwt. This method extracts the token claims, then looks
+   * for the key "cognito:groups" in the claims. If the value associated with this key is a {@link
+   * List}, the method filters the elements to only include non-null values of type {@link String}.
+   * The resulting set of strings is returned.
    *
-   * @param jwtPrincipal The {@link Jwt} containing the token attributes. It must have the
-   *     "cognito:groups" key. If the key does not exist or the value is not a list of strings, an
-   *     empty list is returned.
-   * @return A list of group names, or an empty list if the key is missing or the value is not a
-   *     list of strings.
+   * @param jwtPrincipal The {@link Jwt} containing the token claims. If jwtPrincipal or its claims
+   *     are null, an empty set is returned. If the "cognito:groups" key does not exist or the value
+   *     is not a list of strings, an empty set is returned.
+   * @return A set of group names, or an empty set if the key is missing, the value is not a list of
+   *     strings, or the principal is null.
    */
   public static Set<String> getGroups(Jwt jwtPrincipal) {
     if (jwtPrincipal == null || jwtPrincipal.getClaims() == null) {
@@ -368,14 +366,14 @@ public class JwtPrincipalUtil {
 
   /**
    * Processes the given JWT claims to extract and assemble user name information. This method
-   * extracts the business name, first name, and last name from the JWT claims. If the provider is
-   * "bceidbusiness" or if both first and last names are missing, it attempts to parse the display
-   * name to extract these names. The method then assembles and returns a map containing the
-   * business name, first name, last name, and full name (a concatenation of first and last names).
+   * extracts the first and last names from the JWT claims. For BCEIDBUSINESS providers or when both
+   * first and last names are blank, it parses the display name to extract these names. The method
+   * then assembles and returns a map containing the display name, first name, last name, and full
+   * name (a concatenation of first and last names with trimming).
    *
    * @param claims The map containing the JWT claims from which the name information is to be
    *     extracted.
-   * @return A map with keys "businessName", "firstName", "lastName", and "fullName", containing the
+   * @return A map with keys "displayName", "firstName", "lastName", and "fullName", containing the
    *     extracted and/or computed name information. If specific name components are not found,
    *     their values in the map will be empty strings.
    */
@@ -435,6 +433,24 @@ public class JwtPrincipalUtil {
     return processName(claims).get(FIRST_NAME);
   }
 
+  /**
+   * Parses the display name claim to extract first and last names. Supports two formats:
+   *
+   * <ul>
+   *   <li>Comma-separated format (typically IDIR): "LastName, FirstName WLRS:EX" or "da Silva,
+   *       Maria WLRS:EX"
+   *   <li>Space-separated format (typically BCEIDBUSINESS): "FirstName LastName"
+   * </ul>
+   *
+   * For comma-separated format, the first part is the last name and the second part is the first
+   * name. Additional information after a space in the first name part (e.g., "WLRS:EX") is removed.
+   * For space-separated format with prefixes (e.g., "da", "de"), the second word is used as the
+   * last name.
+   *
+   * @param claims The map containing the JWT claims with "custom:idp_display_name" key.
+   * @return A Triple containing (displayName, firstName, lastName). If display name cannot be
+   *     parsed, lastName and firstName will be empty strings.
+   */
   private static Triple<String, String, String> extractNameClaim(Map<String, Object> claims) {
     // User name
     String displayName = getDisplayNameValue(claims);
