@@ -14,7 +14,6 @@ import {
 import { OpeningHeaderType } from "@/types/TableHeader";
 import { OpeningSearchFilterType } from "./definitions";
 import API from "@/services/API";
-import { useAuth } from "@/contexts/AuthProvider";
 import { CodeDescriptionDto } from "@/services/OpenApi";
 import TableSkeleton from "../../TableSkeleton";
 import OpeningTableRow from "../../OpeningTableRow";
@@ -35,7 +34,6 @@ import "./styles.scss";
 
 
 const OpeningSearch: React.FC = () => {
-  const auth = useAuth();
   const searchParams = useSilvicultureSearchParams();
   const { userPreference, updatePreferences } = usePreference();
 
@@ -137,7 +135,6 @@ const OpeningSearch: React.FC = () => {
         extractCodesFromCodeDescriptionArr(category ?? []) ?? undefined,
         extractCodesFromCodeDescriptionArr(statusList ?? []) ?? undefined,
         filters.myOpenings ?? undefined,
-        filters.myOpenings ? auth.user?.providerUsername : undefined,
         filters.submittedToFrpa ?? undefined,
         filters.disturbanceDateStart ?? undefined,
         filters.disturbanceDateEnd ?? undefined,

@@ -45,9 +45,8 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Page<OpeningSearchResponseDto> result =
         openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
-                null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                "101017"),
+                null, null, null, null, "101017"),
             PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
@@ -87,7 +86,6 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
                 null,
                 null,
                 null,
-                null,
                 null),
             PageRequest.of(0, 10));
 
@@ -106,9 +104,8 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
     Page<OpeningSearchResponseDto> result =
         openingSearchService.openingSearch(
             new OpeningSearchFiltersDto(
-                null, null, null, null, null, // myOpeningsUserId
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                "ABCD"),
+                null, null, null, null, "ABCD"),
             PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
@@ -124,9 +121,8 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
   void openingSearch_maxPageException_shouldFail() {
     OpeningSearchFiltersDto filterDto =
         new OpeningSearchFiltersDto(
-            null, null, null, null, null, // myOpeningsUserId
             null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-            "FTML");
+            null, null, null, null, "FTML");
     PageRequest pagination = PageRequest.of(0, 2999);
     Assertions.assertThrows(
         MaxPageSizeException.class,

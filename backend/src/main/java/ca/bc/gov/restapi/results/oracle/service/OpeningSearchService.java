@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
+import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Service;
 public class OpeningSearchService {
 
   private final OpeningRepository openingRepository;
-  // private final LoggedUserHelper loggedUserHelper;
+  private final LoggedUserHelper loggedUserHelper;
   private final ForestClientApiProvider forestClientApiProvider;
   private final UserOpeningService userOpeningService;
 
@@ -51,14 +52,12 @@ public class OpeningSearchService {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
 
-    // Set the user in the filter, if required, using query param for user id is temporary until
-    // front-end sends the user id in access token.
+    // Set the user in the filter, if required
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
-        && Boolean.TRUE.equals(filtersDto.getMyOpenings())
-        && filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS_USER_ID)) {
-      log.info("Filtering by My Openings for user id {}", filtersDto.getMyOpeningsUserId());
-      filtersDto.setRequestUserId(filtersDto.getMyOpeningsUserId());
+        && Boolean.TRUE.equals(filtersDto.getMyOpenings())) {
+      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
     }
+
     List<SilvicultureSearchProjection> searchContent =
         openingRepository.searchBy(
             filtersDto, List.of(0L), pagination.getOffset(), pagination.getPageSize());
