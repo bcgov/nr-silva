@@ -103,6 +103,14 @@
         <skip.unit.tests>true</skip.unit.tests>
         <jacoco.skip>true</jacoco.skip>
       </properties>
+      <dependencies>
+        <!-- Use API-only springdoc for native image (avoiding CGLIB proxy issues) -->
+        <dependency>
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+          <version>2.8.15</version>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <!--
