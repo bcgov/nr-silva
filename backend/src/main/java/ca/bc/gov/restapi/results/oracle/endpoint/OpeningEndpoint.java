@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
+import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
@@ -250,6 +251,59 @@ public class OpeningEndpoint {
             clientNumber,
             mainSearchTerm);
     return openingSearchService.openingSearch(filtersDto, paginationParameters);
+  }
+
+  /**
+   * Exact search for Openings with direct value matching on provided filters.
+   *
+   * @param openingId Opening ID
+   * @param categories Opening category codes filter
+   * @param openingStatuses Opening status codes filter
+   * @param licenseNumber Licensee number (forest file ID)
+   * @param cutBlockId Cut block identification filter
+   * @param cuttingPermitId Cutting permit identification filter
+   * @param timberMark Timber mark filter
+   * @param orgUnits Organization unit codes filter
+   * @param clientNumbers Client numbers filter
+   * @param isCreatedByUser Openings created by the request user
+   * @param submittedToFrpa Submitted to FRPA
+   * @param paginationParameters Pagination settings
+   * @return Page of opening search results with exact matching
+   * @throws MissingSearchParameterException if no search filter is provided
+   */
+  @GetMapping("/search-exact")
+  public Page<OpeningSearchResponseDto> openingSearchExact(
+      @RequestParam(value = "openingId", required = false) Long openingId,
+      @RequestParam(value = "categories", required = false) List<String> categories,
+      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "licenseNumber", required = false) String licenseNumber,
+      @RequestParam(value = "cutBlockId", required = false) String cutBlockId,
+      @RequestParam(value = "cuttingPermitId", required = false) String cuttingPermitId,
+      @RequestParam(value = "timberMark", required = false) String timberMark,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "isCreatedByUser", required = false) Boolean isCreatedByUser,
+      @RequestParam(value = "submittedToFrpa", required = false) Boolean submittedToFrpa,
+      @ParameterObject Pageable paginationParameters) {
+    OpeningSearchExactFiltersDto filtersDto =
+        new OpeningSearchExactFiltersDto(
+            openingId,
+            categories,
+            openingStatuses,
+            licenseNumber,
+            cutBlockId,
+            cuttingPermitId,
+            timberMark,
+            orgUnits,
+            clientNumbers,
+            isCreatedByUser,
+            submittedToFrpa);
+
+    if (!filtersDto.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return openingSearchService.openingSearchExact(filtersDto, paginationParameters);
   }
 
   @GetMapping("/{openingId}/attachments")

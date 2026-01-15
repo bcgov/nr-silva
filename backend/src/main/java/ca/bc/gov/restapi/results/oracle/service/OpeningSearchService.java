@@ -6,6 +6,7 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
@@ -64,6 +65,44 @@ public class OpeningSearchService {
 
     long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
     log.info("Search resulted in {}/{} results", searchContent.size(), total);
+
+    Page<SilvicultureSearchProjection> searchResultPage =
+        new PageImpl<>(searchContent, pagination, total);
+
+    return parsePageResult(searchResultPage);
+  }
+
+  /**
+   * Exact search for openings with direct value matching.
+   *
+   * @param filtersDto the exact search filter criteria
+   * @param pagination pagination parameters
+   * @return Page of opening search results
+   */
+  @Transactional
+  public Page<OpeningSearchResponseDto> openingSearchExact(
+      OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {
+    log.info(
+        "Exact search Openings with page index {} and page size {} with filters {}",
+        pagination.getPageNumber(),
+        pagination.getPageSize(),
+        filtersDto);
+
+    if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
+      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
+    }
+
+    if (filtersDto.hasValue("isCreatedByUser")
+        && Boolean.TRUE.equals(filtersDto.getIsCreatedByUser())) {
+      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
+    }
+
+    List<SilvicultureSearchProjection> searchContent =
+        openingRepository.searchByExact(
+            filtersDto, List.of(0L), pagination.getOffset(), pagination.getPageSize());
+
+    long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
+    log.info("Exact search resulted in {}/{} results", searchContent.size(), total);
 
     Page<SilvicultureSearchProjection> searchResultPage =
         new PageImpl<>(searchContent, pagination, total);

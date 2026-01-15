@@ -186,6 +186,62 @@ public class SilvaOracleQueryConstants {
           + " FROM silviculture_search ORDER BY opening_id DESC "
           + PAGINATION;
 
+  public static final String SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE =
+      """
+      WHERE
+          (
+              NVL(:#{#filter.openingId}, 0) = 0 OR op.OPENING_ID = :#{#filter.openingId}
+          )
+          AND (
+              'NOVALUE' in (:#{#filter.category}) OR op.open_category_code IN (:#{#filter.category})
+          )
+          AND (
+              'NOVALUE' in (:#{#filter.statusList}) OR op.opening_status_code IN (:#{#filter.statusList})
+          )
+          AND (
+              NVL(:#{#filter.licenseNumber},'NOVALUE') = 'NOVALUE' OR cboa.FOREST_FILE_ID = :#{#filter.licenseNumber}
+          )
+          AND (
+              NVL(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.cut_block_id = :#{#filter.cutBlockId}
+          )
+          AND (
+              NVL(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.cutting_permit_id = :#{#filter.cuttingPermitId}
+          )
+          AND (
+              NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.timber_mark = :#{#filter.timberMark}
+          )
+          AND (
+              'NOVALUE' in (:#{#filter.orgUnit}) OR ou.org_unit_code IN (:#{#filter.orgUnit})
+          )
+          AND (
+              'NOVALUE' in (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+          )
+          AND (
+              NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR op.ENTRY_USERID = :#{#filter.requestUserId}
+          )
+          AND (
+              NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
+              NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.silv_relief_application_id, 0) > 0
+            )
+          )
+          AND (
+             0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
+          )
+      """;
+
+  public static final String SILVICULTURE_SEARCH_EXACT_QUERY =
+      SILVICULTURE_SEARCH_SELECT
+          + SILVICULTURE_SEARCH_FROM_JOIN
+          + SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE;
+
+  public static final String SILVICULTURE_SEARCH_EXACT =
+      "WITH silviculture_search AS ("
+          + SILVICULTURE_SEARCH_EXACT_QUERY
+          + ")"
+          + SILVICULTURE_SEARCH_CTE_SELECT
+          + " FROM silviculture_search ORDER BY opening_id DESC "
+          + PAGINATION;
+
   public static final String OPENING_TRENDS_QUERY =
       """
       SELECT
