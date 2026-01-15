@@ -8,5 +8,8 @@ public interface OpenCategoryCodeProjection {
   LocalDate getEffectiveDate();
   LocalDate getExpiryDate();
   LocalDate getUpdateTimestamp();
-  boolean getIsExpired();
+  default boolean getIsExpired() {
+    LocalDate expiryDate = getExpiryDate();
+    return expiryDate != null && LocalDate.now().isAfter(expiryDate);
+  }
 }
