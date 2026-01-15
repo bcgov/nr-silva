@@ -260,6 +260,7 @@ public class OpeningEndpoint {
    * @param categories Opening category codes filter
    * @param openingStatuses Opening status codes filter
    * @param licenseNumber Licensee number (forest file ID)
+   * @param licenseeOpeningId Licensee-provided opening identifier (LICENSEE_OPENING_ID)
    * @param cutBlockId Cut block identification filter
    * @param cuttingPermitId Cutting permit identification filter
    * @param timberMark Timber mark filter
@@ -277,6 +278,7 @@ public class OpeningEndpoint {
       @RequestParam(value = "categories", required = false) List<String> categories,
       @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
       @RequestParam(value = "licenseNumber", required = false) String licenseNumber,
+      @RequestParam(value = "licenseeOpeningId", required = false) String licenseeOpeningId,
       @RequestParam(value = "cutBlockId", required = false) String cutBlockId,
       @RequestParam(value = "cuttingPermitId", required = false) String cuttingPermitId,
       @RequestParam(value = "timberMark", required = false) String timberMark,
@@ -291,6 +293,7 @@ public class OpeningEndpoint {
             categories,
             openingStatuses,
             licenseNumber,
+            licenseeOpeningId,
             cutBlockId,
             cuttingPermitId,
             timberMark,

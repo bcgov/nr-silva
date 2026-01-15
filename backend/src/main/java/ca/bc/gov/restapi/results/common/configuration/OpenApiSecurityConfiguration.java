@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Adds a bearer JWT security scheme to the OpenAPI definition so Swagger UI presents an
- * Authorize dialog and will send the provided token in Authorization header for requests.
+ * Adds a bearer JWT security scheme to the OpenAPI definition so Swagger UI presents an Authorize
+ * dialog and will send the provided token in Authorization header for requests.
  */
 @Configuration
 public class OpenApiSecurityConfiguration {
@@ -27,7 +27,6 @@ public class OpenApiSecurityConfiguration {
                 .name(SECURITY_SCHEME_NAME)
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
-                .bearerFormat("JWT")
-        );
+                .bearerFormat("JWT"));
   }
 }

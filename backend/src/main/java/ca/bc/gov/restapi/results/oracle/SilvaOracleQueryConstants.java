@@ -199,6 +199,9 @@ public class SilvaOracleQueryConstants {
               'NOVALUE' in (:#{#filter.statusList}) OR op.opening_status_code IN (:#{#filter.statusList})
           )
           AND (
+            NVL(:#{#filter.licenseeOpeningId},'NOVALUE') = 'NOVALUE' OR op.LICENSEE_OPENING_ID = :#{#filter.licenseeOpeningId}
+          )
+          AND (
               NVL(:#{#filter.licenseNumber},'NOVALUE') = 'NOVALUE' OR cboa.FOREST_FILE_ID = :#{#filter.licenseNumber}
           )
           AND (

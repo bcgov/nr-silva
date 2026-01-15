@@ -20,6 +20,7 @@ public class OpeningSearchExactFiltersDto {
   private final List<String> category;
   private final List<String> statusList;
   private final String licenseNumber;
+  private final String licenseeOpeningId;
   private final String cutBlockId;
   private final String cuttingPermitId;
   private final String timberMark;
@@ -36,6 +37,7 @@ public class OpeningSearchExactFiltersDto {
       List<String> category,
       List<String> statusList,
       String licenseNumber,
+      String licenseeOpeningId,
       String cutBlockId,
       String cuttingPermitId,
       String timberMark,
@@ -49,6 +51,8 @@ public class OpeningSearchExactFiltersDto {
     this.statusList =
         !CollectionUtils.isEmpty(statusList) ? statusList : List.of(SilvaOracleConstants.NOVALUE);
     this.licenseNumber = Objects.isNull(licenseNumber) ? null : licenseNumber.toUpperCase().trim();
+    this.licenseeOpeningId =
+        Objects.isNull(licenseeOpeningId) ? null : licenseeOpeningId.toUpperCase().trim();
     this.cutBlockId = Objects.isNull(cutBlockId) ? null : cutBlockId.toUpperCase().trim();
     this.cuttingPermitId =
         Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
@@ -77,6 +81,7 @@ public class OpeningSearchExactFiltersDto {
       case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList)
           && !this.statusList.isEmpty();
       case "licenseNumber" -> !Objects.isNull(this.licenseNumber);
+      case "licenseeOpeningId" -> !Objects.isNull(this.licenseeOpeningId);
       case SilvaOracleConstants.CUT_BLOCK_ID -> !Objects.isNull(this.cutBlockId);
       case SilvaOracleConstants.CUTTING_PERMIT_ID -> !Objects.isNull(this.cuttingPermitId);
       case SilvaOracleConstants.TIMBER_MARK -> !Objects.isNull(this.timberMark);
@@ -102,6 +107,7 @@ public class OpeningSearchExactFiltersDto {
         || hasValue(SilvaOracleConstants.CATEGORY)
         || hasValue(SilvaOracleConstants.STATUS_LIST)
         || hasValue("licenseNumber")
+        || hasValue("licenseeOpeningId")
         || hasValue(SilvaOracleConstants.CUT_BLOCK_ID)
         || hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)
         || hasValue(SilvaOracleConstants.TIMBER_MARK)
