@@ -73,12 +73,12 @@ public class OpeningSearchService {
   }
 
   /**
-   * Exact search for openings with direct value matching.
-   *
-   * @param filtersDto the exact search filter criteria.
-   * @param pagination pagination parameters
-   * @return Page of opening search results
-   */
+    * Exact search for openings with direct value matching.
+    *
+    * @param filtersDto the exact search filter criteria.
+    * @param pagination pagination parameters
+    * @return Page of opening search results
+    */
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearchExact(
       OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {

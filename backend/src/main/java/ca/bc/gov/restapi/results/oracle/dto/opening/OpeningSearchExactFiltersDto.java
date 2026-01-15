@@ -21,6 +21,8 @@ public class OpeningSearchExactFiltersDto {
   private final List<String> statusList;
   private final String licenseNumber;
   private final String licenseeOpeningId;
+  private final String entryDateStart;
+  private final String entryDateEnd;
   private final String cutBlockId;
   private final String cuttingPermitId;
   private final String timberMark;
@@ -38,6 +40,8 @@ public class OpeningSearchExactFiltersDto {
       List<String> statusList,
       String licenseNumber,
       String licenseeOpeningId,
+      String entryDateStart,
+      String entryDateEnd,
       String cutBlockId,
       String cuttingPermitId,
       String timberMark,
@@ -53,6 +57,8 @@ public class OpeningSearchExactFiltersDto {
     this.licenseNumber = Objects.isNull(licenseNumber) ? null : licenseNumber.toUpperCase().trim();
     this.licenseeOpeningId =
         Objects.isNull(licenseeOpeningId) ? null : licenseeOpeningId.toUpperCase().trim();
+    this.entryDateStart = Objects.isNull(entryDateStart) ? null : entryDateStart.trim();
+    this.entryDateEnd = Objects.isNull(entryDateEnd) ? null : entryDateEnd.trim();
     this.cutBlockId = Objects.isNull(cutBlockId) ? null : cutBlockId.toUpperCase().trim();
     this.cuttingPermitId =
         Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
@@ -82,6 +88,8 @@ public class OpeningSearchExactFiltersDto {
           && !this.statusList.isEmpty();
       case "licenseNumber" -> !Objects.isNull(this.licenseNumber);
       case "licenseeOpeningId" -> !Objects.isNull(this.licenseeOpeningId);
+      case "entryDateStart" -> !Objects.isNull(this.entryDateStart);
+      case "entryDateEnd" -> !Objects.isNull(this.entryDateEnd);
       case SilvaOracleConstants.CUT_BLOCK_ID -> !Objects.isNull(this.cutBlockId);
       case SilvaOracleConstants.CUTTING_PERMIT_ID -> !Objects.isNull(this.cuttingPermitId);
       case SilvaOracleConstants.TIMBER_MARK -> !Objects.isNull(this.timberMark);
@@ -108,6 +116,8 @@ public class OpeningSearchExactFiltersDto {
         || hasValue(SilvaOracleConstants.STATUS_LIST)
         || hasValue("licenseNumber")
         || hasValue("licenseeOpeningId")
+        || hasValue("entryDateStart")
+        || hasValue("entryDateEnd")
         || hasValue(SilvaOracleConstants.CUT_BLOCK_ID)
         || hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)
         || hasValue(SilvaOracleConstants.TIMBER_MARK)

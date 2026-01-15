@@ -14,12 +14,15 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHisto
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /** This class contains resources for the opening search api. */
 @RestController("oracleOpeningEndpoint")
@@ -261,6 +265,10 @@ public class OpeningEndpoint {
    * @param openingStatuses Opening status codes filter
    * @param licenseNumber Licensee number (forest file ID)
    * @param licenseeOpeningId Licensee-provided opening identifier (LICENSEE_OPENING_ID)
+   * @param entryDateStart Entry timestamp start date (yyyy-MM-dd). If provided returns records from
+   *     this date to present.
+   * @param entryDateEnd Entry timestamp end date (yyyy-MM-dd). If provided returns records up to
+   *     this date (inclusive).
    * @param cutBlockId Cut block identification filter
    * @param cuttingPermitId Cutting permit identification filter
    * @param timberMark Timber mark filter
@@ -279,6 +287,8 @@ public class OpeningEndpoint {
       @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
       @RequestParam(value = "licenseNumber", required = false) String licenseNumber,
       @RequestParam(value = "licenseeOpeningId", required = false) String licenseeOpeningId,
+      @RequestParam(value = "entryDateStart", required = false) String entryDateStart,
+      @RequestParam(value = "entryDateEnd", required = false) String entryDateEnd,
       @RequestParam(value = "cutBlockId", required = false) String cutBlockId,
       @RequestParam(value = "cuttingPermitId", required = false) String cuttingPermitId,
       @RequestParam(value = "timberMark", required = false) String timberMark,
@@ -287,6 +297,22 @@ public class OpeningEndpoint {
       @RequestParam(value = "isCreatedByUser", required = false) Boolean isCreatedByUser,
       @RequestParam(value = "submittedToFrpa", required = false) Boolean submittedToFrpa,
       @ParameterObject Pageable paginationParameters) {
+    // Validate entry date range if provided
+    if (entryDateStart != null && entryDateEnd != null) {
+      try {
+        LocalDate start = LocalDate.parse(entryDateStart);
+        LocalDate end = LocalDate.parse(entryDateEnd);
+        if (end.isBefore(start)) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
+        }
+      } catch (DateTimeParseException ex) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Invalid date format for entryDateStart/entryDateEnd. Expected yyyy-MM-dd");
+      }
+    }
+
     OpeningSearchExactFiltersDto filtersDto =
         new OpeningSearchExactFiltersDto(
             openingId,
@@ -294,6 +320,8 @@ public class OpeningEndpoint {
             openingStatuses,
             licenseNumber,
             licenseeOpeningId,
+            entryDateStart,
+            entryDateEnd,
             cutBlockId,
             cuttingPermitId,
             timberMark,
