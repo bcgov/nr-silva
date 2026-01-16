@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.oracle.dto.cover.OpeningForestCoverDto;
@@ -14,15 +15,12 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHisto
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 /** This class contains resources for the opening search api. */
 @RestController("oracleOpeningEndpoint")
@@ -276,42 +273,55 @@ public class OpeningEndpoint {
    * @param clientNumbers Client numbers filter
    * @param isCreatedByUser Openings created by the request user
    * @param submittedToFrpa Submitted to FRPA
+   * @param mapsheetGrid Mapsheet grid (3-digit code)
+   * @param mapsheetLetter Mapsheet letter (A-P or W)
+   * @param mapsheetSquare Mapsheet square (alphanumeric)
+   * @param mapsheetQuad Mapsheet quadrant (0-4)
+   * @param mapsheetSubQuad Mapsheet sub-quadrant (0-4)
+   * @param subOpeningNumber Opening number (4-digit), we call it sub opening number here to avoid
+   *     confusion
    * @param paginationParameters Pagination settings
    * @return Page of opening search results with exact matching
-   * @throws MissingSearchParameterException if no search filter is provided
    */
   @GetMapping("/search-exact")
   public Page<OpeningSearchResponseDto> openingSearchExact(
-      @RequestParam(value = "openingId", required = false) Long openingId,
-      @RequestParam(value = "categories", required = false) List<String> categories,
-      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
-      @RequestParam(value = "licenseNumber", required = false) String licenseNumber,
-      @RequestParam(value = "licenseeOpeningId", required = false) String licenseeOpeningId,
-      @RequestParam(value = "entryDateStart", required = false) String entryDateStart,
-      @RequestParam(value = "entryDateEnd", required = false) String entryDateEnd,
-      @RequestParam(value = "cutBlockId", required = false) String cutBlockId,
-      @RequestParam(value = "cuttingPermitId", required = false) String cuttingPermitId,
-      @RequestParam(value = "timberMark", required = false) String timberMark,
-      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
-      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
-      @RequestParam(value = "isCreatedByUser", required = false) Boolean isCreatedByUser,
-      @RequestParam(value = "submittedToFrpa", required = false) Boolean submittedToFrpa,
+      @RequestParam(value = SilvaOracleConstants.OPENING_ID, required = false) Long openingId,
+      @RequestParam(value = SilvaOracleConstants.CATEGORIES, required = false)
+          List<String> categories,
+      @RequestParam(value = SilvaOracleConstants.OPENING_STATUSES, required = false)
+          List<String> openingStatuses,
+      @RequestParam(value = SilvaOracleConstants.LICENSE_NUMBER, required = false)
+          String licenseNumber,
+      @RequestParam(value = SilvaOracleConstants.LICENSEE_OPENING_ID, required = false)
+          String licenseeOpeningId,
+      @RequestParam(value = SilvaOracleConstants.ENTRY_DATE_START, required = false)
+          String entryDateStart,
+      @RequestParam(value = SilvaOracleConstants.ENTRY_DATE_END, required = false)
+          String entryDateEnd,
+      @RequestParam(value = SilvaOracleConstants.CUT_BLOCK_ID, required = false) String cutBlockId,
+      @RequestParam(value = SilvaOracleConstants.CUTTING_PERMIT_ID, required = false)
+          String cuttingPermitId,
+      @RequestParam(value = SilvaOracleConstants.TIMBER_MARK, required = false) String timberMark,
+      @RequestParam(value = SilvaOracleConstants.ORG_UNITS, required = false) List<String> orgUnits,
+      @RequestParam(value = SilvaOracleConstants.CLIENT_NUMBERS, required = false)
+          List<String> clientNumbers,
+      @RequestParam(value = SilvaOracleConstants.IS_CREATED_BY_USER, required = false)
+          Boolean isCreatedByUser,
+      @RequestParam(value = SilvaOracleConstants.SUBMITTED_TO_FRPA, required = false)
+          Boolean submittedToFrpa,
+      @RequestParam(value = SilvaOracleConstants.MAPSHEET_GRID, required = false)
+          String mapsheetGrid,
+      @RequestParam(value = SilvaOracleConstants.MAPSHEET_LETTER, required = false)
+          String mapsheetLetter,
+      @RequestParam(value = SilvaOracleConstants.MAPSHEET_SQUARE, required = false)
+          String mapsheetSquare,
+      @RequestParam(value = SilvaOracleConstants.MAPSHEET_QUAD, required = false)
+          String mapsheetQuad,
+      @RequestParam(value = SilvaOracleConstants.MAPSHEET_SUB_QUAD, required = false)
+          String mapsheetSubQuad,
+      @RequestParam(value = SilvaOracleConstants.SUB_OPENING_NUMBER, required = false)
+          String subOpeningNumber,
       @ParameterObject Pageable paginationParameters) {
-    // Validate entry date range if provided
-    if (entryDateStart != null && entryDateEnd != null) {
-      try {
-        LocalDate start = LocalDate.parse(entryDateStart);
-        LocalDate end = LocalDate.parse(entryDateEnd);
-        if (end.isBefore(start)) {
-          throw new ResponseStatusException(
-              HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
-        }
-      } catch (DateTimeParseException ex) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "Invalid date format for entryDateStart/entryDateEnd. Expected yyyy-MM-dd");
-      }
-    }
 
     OpeningSearchExactFiltersDto filtersDto =
         new OpeningSearchExactFiltersDto(
@@ -328,7 +338,13 @@ public class OpeningEndpoint {
             orgUnits,
             clientNumbers,
             isCreatedByUser,
-            submittedToFrpa);
+            submittedToFrpa,
+            mapsheetGrid,
+            mapsheetLetter != null ? mapsheetLetter.trim().toUpperCase() : null,
+            mapsheetSquare,
+            mapsheetQuad,
+            mapsheetSubQuad,
+            subOpeningNumber);
 
     if (!filtersDto.hasAnyFilter()) {
       throw new MissingSearchParameterException();

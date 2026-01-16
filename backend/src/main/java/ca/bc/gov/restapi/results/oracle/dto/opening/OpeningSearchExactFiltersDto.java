@@ -17,8 +17,8 @@ import org.springframework.util.CollectionUtils;
 public class OpeningSearchExactFiltersDto {
 
   private final Long openingId;
-  private final List<String> category;
-  private final List<String> statusList;
+  private final List<String> categories;
+  private final List<String> openingStatuses;
   private final String licenseNumber;
   private final String licenseeOpeningId;
   private final String entryDateStart;
@@ -26,18 +26,24 @@ public class OpeningSearchExactFiltersDto {
   private final String cutBlockId;
   private final String cuttingPermitId;
   private final String timberMark;
-  private final List<String> orgUnit;
+  private final List<String> orgUnits;
   private final List<String> clientNumbers;
   private final Boolean isCreatedByUser;
   private final String submittedToFrpa;
+  private final String mapsheetGrid;
+  private final String mapsheetLetter;
+  private final String mapsheetSquare;
+  private final String mapsheetQuad;
+  private final String mapsheetSubQuad;
+  private final String subOpeningNumber;
 
   @Setter private String requestUserId;
 
   /** Creates an instance of the exact search opening filter dto. */
   public OpeningSearchExactFiltersDto(
       Long openingId,
-      List<String> category,
-      List<String> statusList,
+      List<String> categories,
+      List<String> openingStatuses,
       String licenseNumber,
       String licenseeOpeningId,
       String entryDateStart,
@@ -48,12 +54,20 @@ public class OpeningSearchExactFiltersDto {
       List<String> orgUnit,
       List<String> clientNumbers,
       Boolean isCreatedByUser,
-      Boolean submittedToFrpa) {
+      Boolean submittedToFrpa,
+      String mapsheetGrid,
+      String mapsheetLetter,
+      String mapsheetSquare,
+      String mapsheetQuad,
+      String mapsheetSubQuad,
+      String subOpeningNumber) {
     this.openingId = openingId;
-    this.category =
-        !CollectionUtils.isEmpty(category) ? category : List.of(SilvaOracleConstants.NOVALUE);
-    this.statusList =
-        !CollectionUtils.isEmpty(statusList) ? statusList : List.of(SilvaOracleConstants.NOVALUE);
+    this.categories =
+        !CollectionUtils.isEmpty(categories) ? categories : List.of(SilvaOracleConstants.NOVALUE);
+    this.openingStatuses =
+        !CollectionUtils.isEmpty(openingStatuses)
+            ? openingStatuses
+            : List.of(SilvaOracleConstants.NOVALUE);
     this.licenseNumber = Objects.isNull(licenseNumber) ? null : licenseNumber.toUpperCase().trim();
     this.licenseeOpeningId =
         Objects.isNull(licenseeOpeningId) ? null : licenseeOpeningId.toUpperCase().trim();
@@ -63,7 +77,7 @@ public class OpeningSearchExactFiltersDto {
     this.cuttingPermitId =
         Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
     this.timberMark = Objects.isNull(timberMark) ? null : timberMark.toUpperCase().trim();
-    this.orgUnit =
+    this.orgUnits =
         !CollectionUtils.isEmpty(orgUnit) ? orgUnit : List.of(SilvaOracleConstants.NOVALUE);
     this.clientNumbers =
         !CollectionUtils.isEmpty(clientNumbers)
@@ -71,6 +85,12 @@ public class OpeningSearchExactFiltersDto {
             : List.of(SilvaOracleConstants.NOVALUE);
     this.isCreatedByUser = isCreatedByUser;
     this.submittedToFrpa = BooleanUtils.toString(submittedToFrpa, "YES", "NO", "NO");
+    this.mapsheetGrid = Objects.isNull(mapsheetGrid) ? null : mapsheetGrid.trim();
+    this.mapsheetLetter = Objects.isNull(mapsheetLetter) ? null : mapsheetLetter.trim();
+    this.mapsheetSquare = Objects.isNull(mapsheetSquare) ? null : mapsheetSquare.trim();
+    this.mapsheetQuad = Objects.isNull(mapsheetQuad) ? null : mapsheetQuad.trim();
+    this.mapsheetSubQuad = Objects.isNull(mapsheetSubQuad) ? null : mapsheetSubQuad.trim();
+    this.subOpeningNumber = Objects.isNull(subOpeningNumber) ? null : subOpeningNumber.trim();
   }
 
   /**
@@ -81,23 +101,30 @@ public class OpeningSearchExactFiltersDto {
    */
   public boolean hasValue(String prop) {
     return switch (prop) {
-      case "openingId" -> !Objects.isNull(this.openingId);
-      case SilvaOracleConstants.CATEGORY -> !Objects.isNull(this.category)
-          && !this.category.isEmpty();
-      case SilvaOracleConstants.STATUS_LIST -> !Objects.isNull(this.statusList)
-          && !this.statusList.isEmpty();
-      case "licenseNumber" -> !Objects.isNull(this.licenseNumber);
-      case "licenseeOpeningId" -> !Objects.isNull(this.licenseeOpeningId);
-      case "entryDateStart" -> !Objects.isNull(this.entryDateStart);
-      case "entryDateEnd" -> !Objects.isNull(this.entryDateEnd);
+      case SilvaOracleConstants.OPENING_ID -> !Objects.isNull(this.openingId);
+      case SilvaOracleConstants.CATEGORIES -> !Objects.isNull(this.categories)
+          && !this.categories.isEmpty();
+      case SilvaOracleConstants.OPENING_STATUSES -> !Objects.isNull(this.openingStatuses)
+          && !this.openingStatuses.isEmpty();
+      case SilvaOracleConstants.LICENSE_NUMBER -> !Objects.isNull(this.licenseNumber);
+      case SilvaOracleConstants.LICENSEE_OPENING_ID -> !Objects.isNull(this.licenseeOpeningId);
+      case SilvaOracleConstants.ENTRY_DATE_START -> !Objects.isNull(this.entryDateStart);
+      case SilvaOracleConstants.ENTRY_DATE_END -> !Objects.isNull(this.entryDateEnd);
       case SilvaOracleConstants.CUT_BLOCK_ID -> !Objects.isNull(this.cutBlockId);
       case SilvaOracleConstants.CUTTING_PERMIT_ID -> !Objects.isNull(this.cuttingPermitId);
       case SilvaOracleConstants.TIMBER_MARK -> !Objects.isNull(this.timberMark);
-      case SilvaOracleConstants.ORG_UNIT -> !Objects.isNull(this.orgUnit)
-          && !this.orgUnit.isEmpty();
-      case "clientNumbers" -> !Objects.isNull(this.clientNumbers) && !this.clientNumbers.isEmpty();
-      case "isCreatedByUser" -> !Objects.isNull(this.isCreatedByUser);
+      case SilvaOracleConstants.ORG_UNITS -> !Objects.isNull(this.orgUnits)
+          && !this.orgUnits.isEmpty();
+      case SilvaOracleConstants.CLIENT_NUMBERS -> !Objects.isNull(this.clientNumbers)
+          && !this.clientNumbers.isEmpty();
+      case SilvaOracleConstants.IS_CREATED_BY_USER -> !Objects.isNull(this.isCreatedByUser);
       case SilvaOracleConstants.SUBMITTED_TO_FRPA -> !Objects.isNull(this.submittedToFrpa);
+      case SilvaOracleConstants.MAPSHEET_GRID -> !Objects.isNull(this.mapsheetGrid);
+      case SilvaOracleConstants.MAPSHEET_LETTER -> !Objects.isNull(this.mapsheetLetter);
+      case SilvaOracleConstants.MAPSHEET_SQUARE -> !Objects.isNull(this.mapsheetSquare);
+      case SilvaOracleConstants.MAPSHEET_QUAD -> !Objects.isNull(this.mapsheetQuad);
+      case SilvaOracleConstants.MAPSHEET_SUB_QUAD -> !Objects.isNull(this.mapsheetSubQuad);
+      case SilvaOracleConstants.SUB_OPENING_NUMBER -> !Objects.isNull(this.subOpeningNumber);
       default -> {
         log.warn("Prop not found {}", prop);
         yield false;
@@ -111,19 +138,25 @@ public class OpeningSearchExactFiltersDto {
    * @return True if at least one filter has a value, false otherwise.
    */
   public boolean hasAnyFilter() {
-    return hasValue("openingId")
-        || hasValue(SilvaOracleConstants.CATEGORY)
-        || hasValue(SilvaOracleConstants.STATUS_LIST)
-        || hasValue("licenseNumber")
-        || hasValue("licenseeOpeningId")
-        || hasValue("entryDateStart")
-        || hasValue("entryDateEnd")
+    return hasValue(SilvaOracleConstants.OPENING_ID)
+        || hasValue(SilvaOracleConstants.CATEGORIES)
+        || hasValue(SilvaOracleConstants.OPENING_STATUSES)
+        || hasValue(SilvaOracleConstants.LICENSE_NUMBER)
+        || hasValue(SilvaOracleConstants.LICENSEE_OPENING_ID)
+        || hasValue(SilvaOracleConstants.ENTRY_DATE_START)
+        || hasValue(SilvaOracleConstants.ENTRY_DATE_END)
         || hasValue(SilvaOracleConstants.CUT_BLOCK_ID)
         || hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)
         || hasValue(SilvaOracleConstants.TIMBER_MARK)
-        || hasValue(SilvaOracleConstants.ORG_UNIT)
-        || hasValue("clientNumbers")
-        || hasValue("isCreatedByUser")
-        || hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA);
+        || hasValue(SilvaOracleConstants.ORG_UNITS)
+        || hasValue(SilvaOracleConstants.CLIENT_NUMBERS)
+        || hasValue(SilvaOracleConstants.IS_CREATED_BY_USER)
+        || hasValue(SilvaOracleConstants.SUBMITTED_TO_FRPA)
+        || hasValue(SilvaOracleConstants.MAPSHEET_GRID)
+        || hasValue(SilvaOracleConstants.MAPSHEET_LETTER)
+        || hasValue(SilvaOracleConstants.MAPSHEET_SQUARE)
+        || hasValue(SilvaOracleConstants.MAPSHEET_QUAD)
+        || hasValue(SilvaOracleConstants.MAPSHEET_SUB_QUAD)
+        || hasValue(SilvaOracleConstants.SUB_OPENING_NUMBER);
   }
 }

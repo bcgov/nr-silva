@@ -16,6 +16,8 @@ import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
 @Slf4j
@@ -49,9 +53,7 @@ public class OpeningSearchService {
         pagination.getPageSize(),
         filtersDto);
 
-    if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
-      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
-    }
+    validatePageSize(pagination);
 
     // Set the user in the filter, if required
     if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
@@ -73,12 +75,12 @@ public class OpeningSearchService {
   }
 
   /**
-    * Exact search for openings with direct value matching.
-    *
-    * @param filtersDto the exact search filter criteria.
-    * @param pagination pagination parameters
-    * @return Page of opening search results
-    */
+   * Exact search for openings with direct value matching.
+   *
+   * @param filtersDto the exact search filter criteria.
+   * @param pagination pagination parameters
+   * @return Page of opening search results
+   */
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearchExact(
       OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {
@@ -88,11 +90,13 @@ public class OpeningSearchService {
         pagination.getPageSize(),
         filtersDto);
 
-    if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
-      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
-    }
+    validatePageSize(pagination);
+    validateEntryDateRange(filtersDto);
 
-    if (filtersDto.hasValue("isCreatedByUser")
+    // Validate mapsheet related fields for Opening Number
+    validateMapsheetFields(filtersDto);
+
+    if (filtersDto.hasValue(SilvaOracleConstants.IS_CREATED_BY_USER)
         && Boolean.TRUE.equals(filtersDto.getIsCreatedByUser())) {
       filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
     }
@@ -200,5 +204,116 @@ public class OpeningSearchService {
             projection.getSubmittedToFrpa108(),
             null,
             false);
+  }
+
+  /**
+   * Validates if the mapsheet grid value is one of the allowed values.
+   *
+   * @param gridValue the grid value to validate
+   * @return true if valid, false otherwise
+   */
+  private boolean isValidMapsheetGrid(String gridValue) {
+    return SilvaOracleConstants.VALID_MAPSHEET_GRID_VALUES.contains(gridValue);
+  }
+
+  /**
+   * Validates if the mapsheet letter is between A-P or W.
+   *
+   * @param letterValue the letter value to validate
+   * @return true if valid, false otherwise
+   */
+  private boolean isValidMapsheetLetter(String letterValue) {
+    return letterValue.length() == 1
+        && SilvaOracleConstants.VALID_MAPSHEET_LETTERS.contains(letterValue.charAt(0));
+  }
+
+  /**
+   * Validates if the mapsheet quad is between 0 and 4.
+   *
+   * @param quadValue the quad value to validate
+   * @return true if valid, false otherwise
+   */
+  private boolean isValidMapsheetQuad(String quadValue) {
+    return quadValue.length() == 1 && quadValue.charAt(0) >= '0' && quadValue.charAt(0) <= '4';
+  }
+
+  /**
+   * Validates if the mapsheet sub-quad is between 0 and 4.
+   *
+   * @param subQuadValue the sub-quad value to validate
+   * @return true if valid, false otherwise
+   */
+  private boolean isValidMapsheetSubQuad(String subQuadValue) {
+    return subQuadValue.length() == 1
+        && subQuadValue.charAt(0) >= '0'
+        && subQuadValue.charAt(0) <= '4';
+  }
+
+  private void validatePageSize(Pageable pagination) {
+    if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
+      throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
+    }
+  }
+
+  private void validateEntryDateRange(OpeningSearchExactFiltersDto filtersDto) {
+    if (filtersDto.getEntryDateStart() != null && filtersDto.getEntryDateEnd() != null) {
+      try {
+        LocalDate start = LocalDate.parse(filtersDto.getEntryDateStart());
+        LocalDate end = LocalDate.parse(filtersDto.getEntryDateEnd());
+        if (end.isBefore(start)) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
+        }
+      } catch (DateTimeParseException ex) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Invalid date format for entryDateStart/entryDateEnd. Expected yyyy-MM-dd");
+      }
+    }
+  }
+
+  /**
+   * Consolidated validation for all mapsheet-related fields.
+   *
+   * @param filtersDto the DTO containing mapsheet values
+   */
+  private void validateMapsheetFields(OpeningSearchExactFiltersDto filtersDto) {
+    // Validate mapsheet grid
+    if (filtersDto.getMapsheetGrid() != null) {
+      String gridValue = filtersDto.getMapsheetGrid().trim();
+      if (!isValidMapsheetGrid(gridValue)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Invalid mapsheetGrid value. Must be one of: 82, 83, 92, 93, 94, 082, 083, 092, 093,"
+                + " 094, 102, 103, 104, 105, or 114");
+      }
+    }
+
+    // Validate mapsheet letter
+    if (filtersDto.getMapsheetLetter() != null) {
+      String letterValue = filtersDto.getMapsheetLetter().trim().toUpperCase();
+      if (!isValidMapsheetLetter(letterValue)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Invalid mapsheetLetter value. Must be between A-P or W");
+      }
+    }
+
+    // Validate mapsheet quad
+    if (filtersDto.getMapsheetQuad() != null) {
+      String quadValue = filtersDto.getMapsheetQuad().trim();
+      if (!isValidMapsheetQuad(quadValue)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Invalid mapsheetQuad value. Must be between 0 and 4");
+      }
+    }
+
+    // Validate mapsheet sub-quad
+    if (filtersDto.getMapsheetSubQuad() != null) {
+      String subQuadValue = filtersDto.getMapsheetSubQuad().trim();
+      if (!isValidMapsheetSubQuad(subQuadValue)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Invalid mapsheetSubQuad value. Must be between 0 and 4");
+      }
+    }
   }
 }

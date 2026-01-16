@@ -81,27 +81,6 @@ public class SilvaOracleQueryConstants {
           )
           AND (
             (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE'
-            )
-            OR
-            (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
-            )
-            OR
-            (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
-            )
-            OR
-            (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
-              AND TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
-            )
-          )
-          AND (
-            (
                 NVL(:#{#filter.disturbanceDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.disturbanceDateEnd},'NOVALUE') = 'NOVALUE'
           )
             OR
@@ -247,6 +226,45 @@ public class SilvaOracleQueryConstants {
               NVL(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
               NVL(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.silv_relief_application_id, 0) > 0
             )
+          )
+          AND (
+            (
+              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE'
+            )
+            OR
+            (
+              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE' AND
+              op.ENTRY_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+            )
+            OR
+            (
+              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
+              op.ENTRY_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+            )
+            OR
+            (
+              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
+              op.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+              AND TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+            )
+          )
+          AND (
+              NVL(:#{#filter.mapsheetGrid},'NOVALUE') = 'NOVALUE' OR op.mapsheet_grid = :#{#filter.mapsheetGrid}
+          )
+          AND (
+              NVL(:#{#filter.mapsheetLetter},'NOVALUE') = 'NOVALUE' OR op.mapsheet_letter = :#{#filter.mapsheetLetter}
+          )
+          AND (
+              NVL(:#{#filter.mapsheetSquare},'NOVALUE') = 'NOVALUE' OR op.mapsheet_square = :#{#filter.mapsheetSquare}
+          )
+          AND (
+              NVL(:#{#filter.mapsheetQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_quad = :#{#filter.mapsheetQuad}
+          )
+          AND (
+              NVL(:#{#filter.mapsheetSubQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_sub_quad = :#{#filter.mapsheetSubQuad}
+          )
+          AND (
+              NVL(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR op.opening_number = :#{#filter.subOpeningNumber}
           )
           AND (
              0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
