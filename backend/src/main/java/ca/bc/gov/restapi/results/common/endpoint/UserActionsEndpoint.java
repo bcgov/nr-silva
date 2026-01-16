@@ -1,9 +1,7 @@
-package ca.bc.gov.restapi.results.oracle.endpoint;
+package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.oracle.service.opening.OpeningTrendsService;
+import ca.bc.gov.restapi.results.common.service.opening.OpeningTrendsService;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,8 +37,7 @@ public class UserActionsEndpoint {
       List<String> orgUnits,
       @RequestParam(value = "statusCode", required = false)
       List<String> statusCodes,
-      @RequestParam(value = "entryDateStart", required = false)
-      LocalDate entryDateStart,
+      @RequestParam(value = "entryDateStart", required = false) LocalDate entryDateStart,
       @RequestParam(value = "entryDateEnd", required = false)
       LocalDate entryDateEnd
   ) {

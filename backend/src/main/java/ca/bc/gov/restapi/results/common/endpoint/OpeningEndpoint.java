@@ -1,7 +1,8 @@
-package ca.bc.gov.restapi.results.oracle.endpoint;
+package ca.bc.gov.restapi.results.common.endpoint;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDto;
@@ -11,31 +12,29 @@ import ca.bc.gov.restapi.results.common.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.common.dto.opening.*;
 import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryDto;
 import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryOverviewDto;
-import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
-import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsService;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/** This class contains resources for the opening search api. */
-@RestController("oracleOpeningEndpoint")
-@RequestMapping("/api/openings")
+import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
+import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+@RestController("commonOpeningEndpoint")
+@RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Slf4j
 public class OpeningEndpoint {
-
+  private final UserOpeningService userOpeningService;
+  private final OpeningSpatialFileService openingSpatialFileService;
+  private final OpeningDetailsService openingDetailsService;
   private final OpeningSearchService openingSearchService;
-  private final OpeningDetailsService openingService;
 
   /**
    * Get the Opening Tombstone/Summary information.
@@ -46,7 +45,7 @@ public class OpeningEndpoint {
    */
   @GetMapping("/{openingId}/tombstone")
   public OpeningDetailsTombstoneOverviewDto getOpeningTombstone(@PathVariable Long openingId) {
-    return openingService
+    return openingDetailsService
         .getOpeningTombstone(openingId)
         .orElseThrow(() -> new OpeningNotFoundException(openingId));
   }
@@ -60,7 +59,7 @@ public class OpeningEndpoint {
    */
   @GetMapping("/{openingId}/ssu")
   public List<OpeningDetailsStockingDto> getOpeningSsu(@PathVariable Long openingId) {
-    return openingService.getOpeningStockingDetails(openingId);
+    return openingDetailsService.getOpeningStockingDetails(openingId);
   }
 
   /**
@@ -72,7 +71,7 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/ssu/history")
   public List<OpeningStockingHistoryOverviewDto> getOpeningSsuHistory(
       @PathVariable Long openingId) {
-    return openingService.getOpeningStandardUnitOverviewHistoryList(openingId);
+    return openingDetailsService.getOpeningStandardUnitOverviewHistoryList(openingId);
   }
 
   /**
@@ -86,13 +85,13 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/ssu/history/{eventHistoryId}")
   public List<OpeningStockingHistoryDto> getOpeningSsuHistoryDetails(
       @PathVariable Long openingId, @PathVariable Long eventHistoryId) {
-    return openingService.getOpeningStockingHistoryDetails(openingId, eventHistoryId);
+    return openingDetailsService.getOpeningStockingHistoryDetails(openingId, eventHistoryId);
   }
 
   @GetMapping("/{openingId}/disturbances")
   public Page<OpeningDetailsActivitiesDisturbanceDto> getOpeningDisturbances(
       @PathVariable Long openingId, @ParameterObject Pageable pageable) {
-    return openingService.getOpeningActivitiesDisturbances(openingId, pageable);
+    return openingDetailsService.getOpeningActivitiesDisturbances(openingId, pageable);
   }
 
   @GetMapping("/{openingId}/activities")
@@ -100,13 +99,13 @@ public class OpeningEndpoint {
       @PathVariable Long openingId,
       @RequestParam(name = "filter", required = false) String filter,
       @ParameterObject Pageable pageable) {
-    return openingService.getOpeningActivitiesActivities(openingId, filter, pageable);
+    return openingDetailsService.getOpeningActivitiesActivities(openingId, filter, pageable);
   }
 
   @GetMapping("/{openingId}/activities/{atuId}")
   public OpeningActivityBaseDto getOpeningActivity(
       @PathVariable Long openingId, @PathVariable Long atuId) {
-    return openingService.getOpeningActivitiesActivity(openingId, atuId);
+    return openingDetailsService.getOpeningActivitiesActivity(openingId, atuId);
   }
 
   @GetMapping("/{openingId}/tenures")
@@ -114,20 +113,20 @@ public class OpeningEndpoint {
       @PathVariable Long openingId,
       @RequestParam(name = "filter", required = false) String filter,
       @ParameterObject Pageable pageable) {
-    return openingService.getOpeningTenures(openingId, filter, pageable);
+    return openingDetailsService.getOpeningTenures(openingId, filter, pageable);
   }
 
   @GetMapping("/{openingId}/cover")
   public List<OpeningForestCoverDto> getCover(
       @PathVariable Long openingId,
       @RequestParam(name = "mainSearchTerm", required = false) String mainSearchTerm) {
-    return openingService.getOpeningForestCoverList(openingId, mainSearchTerm);
+    return openingDetailsService.getOpeningForestCoverList(openingId, mainSearchTerm);
   }
 
   @GetMapping("/{openingId}/cover/{forestCoverId}")
   public OpeningForestCoverDetailsDto getCoverDetails(
       @PathVariable Long openingId, @PathVariable Long forestCoverId) {
-    return openingService.getOpeningForestCoverDetails(forestCoverId);
+    return openingDetailsService.getOpeningForestCoverDetails(forestCoverId);
   }
 
   /**
@@ -141,7 +140,7 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/cover/history/overview")
   public List<OpeningForestCoverHistoryOverviewDto> getCoverHistoryOverview(
       @PathVariable Long openingId) throws NotFoundGenericException {
-    return openingService.getOpeningForestCoverHistoryOverviewList(openingId);
+    return openingDetailsService.getOpeningForestCoverHistoryOverviewList(openingId);
   }
 
   /**
@@ -160,7 +159,7 @@ public class OpeningEndpoint {
       @RequestParam(name = "updateDate", required = true) String updateDate,
       @RequestParam(name = "mainSearchTerm", required = false) String mainSearchTerm)
       throws NotFoundGenericException {
-    return openingService.getOpeningForestCoverHistoryList(openingId, updateDate, mainSearchTerm);
+    return openingDetailsService.getOpeningForestCoverHistoryList(openingId, updateDate, mainSearchTerm);
   }
 
   /**
@@ -179,7 +178,7 @@ public class OpeningEndpoint {
       @PathVariable Long forestCoverId,
       @RequestParam(name = "archiveDate", required = true) String archiveDate)
       throws NotFoundGenericException {
-    return openingService.getOpeningForestCoverHistoryDetails(forestCoverId, archiveDate);
+    return openingDetailsService.getOpeningForestCoverHistoryDetails(forestCoverId, archiveDate);
   }
 
   /**
@@ -257,7 +256,7 @@ public class OpeningEndpoint {
   @GetMapping("/{openingId}/attachments")
   @PreAuthorize("@auth.isIdirUser()")
   public List<OpeningDetailsAttachmentMetaDto> getAttachments(@PathVariable Long openingId) {
-    return openingService.getOpeningAttachments(openingId);
+    return openingDetailsService.getOpeningAttachments(openingId);
   }
 
   @GetMapping("/{openingId}/attachments/{guid}")
@@ -265,7 +264,7 @@ public class OpeningEndpoint {
   public ResponseEntity<String> getAttachmentByGuid(
       @PathVariable("openingId") Long openingId, @PathVariable String guid) {
 
-    String presignedUrl = openingService.generateAttachmentDownloadUrl(guid);
+    String presignedUrl = openingDetailsService.generateAttachmentDownloadUrl(guid);
     return ResponseEntity.ok(presignedUrl);
   }
 }
