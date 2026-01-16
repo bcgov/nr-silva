@@ -1,9 +1,9 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
+import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.repository.SilvicultureCommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
