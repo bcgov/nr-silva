@@ -180,7 +180,7 @@ public class OpeningSearchService {
     return projection ->
         new OpeningSearchResponseDto(
             projection.getOpeningId(),
-            projection.getOpeningNumber(),
+            composedOpeningNumber(projection),
             OpeningCategoryEnum.of(projection.getCategory()),
             OpeningStatusEnum.of(projection.getStatus()),
             projection.getCuttingPermitId(),
@@ -199,11 +199,28 @@ public class OpeningSearchService {
             projection.getLateFreeGrowingDate(),
             projection.getUpdateTimestamp(),
             projection.getEntryUserId(),
+            projection.getEntryTimestamp(),
             projection.getSubmittedToFrpa108() > 0,
             projection.getForestFileId(),
             projection.getSubmittedToFrpa108(),
             null,
             false);
+  }
+
+  /**
+   * Constructs the composed opening number from the projection. If any component is null, replaces
+   * it with "--" as a placeholder.
+   *
+   * @param projection the silviculture search projection
+   * @return the composed opening number (e.g., "93O 045 0.0 343" or "93O 045 -- --" if components
+   *     are null)
+   */
+  private String composedOpeningNumber(SilvicultureSearchProjection projection) {
+    String mapsheepOpeningId = projection.getMapsheepOpeningId();
+    if (mapsheepOpeningId != null && !mapsheepOpeningId.trim().isEmpty()) {
+      return mapsheepOpeningId;
+    }
+    return "--";
   }
 
   /**

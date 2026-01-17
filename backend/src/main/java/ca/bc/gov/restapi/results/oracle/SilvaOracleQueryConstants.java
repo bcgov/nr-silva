@@ -13,7 +13,7 @@ public class SilvaOracleQueryConstants {
         ,cboa.cutting_permit_id AS cutting_permit_id
         ,cboa.timber_mark AS timber_mark
         ,cboa.cut_block_id AS cut_block_id
-        ,TRIM(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,0) || ' ' || op.mapsheet_quad || DECODE(op.mapsheet_quad, NULL, NULL, '.') || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
+        ,TRIM(LPAD(TRIM(op.mapsheet_grid),3) || TRIM(mapsheet_letter) || ' ' || LPAD(TRIM(op.mapsheet_square),3,0) || ' ' || TRIM(op.mapsheet_quad) || DECODE(TRIM(op.mapsheet_quad), NULL, NULL, '.') || TRIM(op.mapsheet_sub_quad) || ' ' || TRIM(op.opening_number)) AS mapsheep_opening_id
         ,op.open_category_code AS category
         ,op.opening_status_code AS status
         ,cboa.opening_gross_area as opening_gross_area
@@ -26,6 +26,7 @@ public class SilvaOracleQueryConstants {
         ,to_char(smfg.due_early_date, 'YYYY-MM-DD') AS early_free_growing_date
         ,to_char(smfg.due_late_date, 'YYYY-MM-DD') AS late_free_growing_date
         ,op.UPDATE_TIMESTAMP as update_timestamp
+        ,op.ENTRY_TIMESTAMP as entry_timestamp
         ,op.ENTRY_USERID as entry_user_id
         ,MAX(COALESCE(sra.silv_relief_application_id, 0)) OVER() as submitted_to_frpa108
         ,op.opening_number AS opening_number
@@ -168,6 +169,7 @@ public class SilvaOracleQueryConstants {
           early_free_growing_date,
           late_free_growing_date,
           update_timestamp,
+          entry_timestamp,
           entry_user_id,
           submitted_to_frpa108,
           opening_number
@@ -193,10 +195,10 @@ public class SilvaOracleQueryConstants {
               NVL(:#{#filter.openingId}, 0) = 0 OR op.OPENING_ID = :#{#filter.openingId}
           )
           AND (
-              'NOVALUE' in (:#{#filter.category}) OR op.open_category_code IN (:#{#filter.category})
+              'NOVALUE' in (:#{#filter.categories}) OR op.open_category_code IN (:#{#filter.categories})
           )
           AND (
-              'NOVALUE' in (:#{#filter.statusList}) OR op.opening_status_code IN (:#{#filter.statusList})
+              'NOVALUE' in (:#{#filter.openingStatuses}) OR op.opening_status_code IN (:#{#filter.openingStatuses})
           )
           AND (
             NVL(:#{#filter.licenseeOpeningId},'NOVALUE') = 'NOVALUE' OR op.LICENSEE_OPENING_ID = :#{#filter.licenseeOpeningId}
@@ -214,7 +216,7 @@ public class SilvaOracleQueryConstants {
               NVL(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.timber_mark = :#{#filter.timberMark}
           )
           AND (
-              'NOVALUE' in (:#{#filter.orgUnit}) OR ou.org_unit_code IN (:#{#filter.orgUnit})
+              'NOVALUE' in (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
           )
           AND (
               'NOVALUE' in (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
@@ -249,7 +251,7 @@ public class SilvaOracleQueryConstants {
             )
           )
           AND (
-              NVL(:#{#filter.mapsheetGrid},'NOVALUE') = 'NOVALUE' OR op.mapsheet_grid = :#{#filter.mapsheetGrid}
+              NVL(:#{#filter.mapsheetGrid},'NOVALUE') = 'NOVALUE' OR TO_NUMBER(op.mapsheet_grid) = TO_NUMBER(:#{#filter.mapsheetGrid})
           )
           AND (
               NVL(:#{#filter.mapsheetLetter},'NOVALUE') = 'NOVALUE' OR op.mapsheet_letter = :#{#filter.mapsheetLetter}
@@ -264,7 +266,7 @@ public class SilvaOracleQueryConstants {
               NVL(:#{#filter.mapsheetSubQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_sub_quad = :#{#filter.mapsheetSubQuad}
           )
           AND (
-              NVL(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR op.opening_number = :#{#filter.subOpeningNumber}
+              NVL(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.subOpeningNumber}
           )
           AND (
              0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
