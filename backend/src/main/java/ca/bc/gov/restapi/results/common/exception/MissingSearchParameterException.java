@@ -11,11 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class MissingSearchParameterException extends ResponseStatusException {
 
-  /**
-   * Creates a MissingSearchParameterException with http status and message.
-   *
-   * @param message the error message
-   */
+  /** Creates a MissingSearchParameterException with http status and message. */
   public MissingSearchParameterException() {
     super(HttpStatus.BAD_REQUEST, "At least one search parameter is required.");
   }
