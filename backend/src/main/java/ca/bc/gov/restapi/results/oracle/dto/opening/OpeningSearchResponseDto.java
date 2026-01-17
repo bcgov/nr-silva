@@ -84,6 +84,9 @@ public class OpeningSearchResponseDto {
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String entryUserId;
 
+  @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  private LocalDateTime entryTimestamp;
+
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Boolean submittedToFrpa;
 
