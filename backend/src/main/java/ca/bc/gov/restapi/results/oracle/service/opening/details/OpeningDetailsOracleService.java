@@ -14,8 +14,8 @@ import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardU
 import org.springframework.stereotype.Service;
 
 @Service
-public class OpeningDetailsService extends AbstractOpeningDetailsService {
-  public OpeningDetailsService(OpeningDetailsTombstoneService tombstoneService,
+public class OpeningDetailsOracleService extends AbstractOpeningDetailsService {
+  public OpeningDetailsOracleService(OpeningDetailsTombstoneService tombstoneService,
       OpeningDetailsStockingService stockingService,
       OpeningDetailsActivitiesService activitiesService, OpeningDetailsTenureService tenureService,
       OpeningDetailsForestCoverService forestCoverService,

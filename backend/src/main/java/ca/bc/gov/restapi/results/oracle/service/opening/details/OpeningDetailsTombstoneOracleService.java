@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class OpeningDetailsTombstoneService extends AbstractOpeningDetailsTombstoneService {
+public class OpeningDetailsTombstoneOracleService extends AbstractOpeningDetailsTombstoneService {
 
-  public OpeningDetailsTombstoneService(OpeningRepository openingRepository,
+  public OpeningDetailsTombstoneOracleService(OpeningRepository openingRepository,
       ForestClientService forestClientService, SilvicultureCommentRepository commentRepository,
       OpeningDetailsNotificationService openingDetailsNotificationService) {
     super(openingRepository, forestClientService, commentRepository,

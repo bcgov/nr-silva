@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 /** This class holds methods for fetching and handling {@link OpeningEntity} in general. */
 @Slf4j
 @Service
-public class OpeningSearchService extends AbstractOpeningSearchService {
+public class OpeningSearchOracleService extends AbstractOpeningSearchService {
 
-  public OpeningSearchService(OpeningRepository openingRepository,
+  public OpeningSearchOracleService(OpeningRepository openingRepository,
       LoggedUserHelper loggedUserHelper, ForestClientApiProvider forestClientApiProvider,
       UserOpeningService userOpeningService) {
     super(openingRepository, loggedUserHelper, forestClientApiProvider, userOpeningService);

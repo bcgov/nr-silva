@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 /** This class holds methods for handling {@link CutBlockOpenAdminEntity}. */
 @Service
-public class CutBlockOpenAdminService extends AbstractCutBlockOpenAdminService {
+public class CutBlockOpenAdminOracleService extends AbstractCutBlockOpenAdminService {
 
-  public CutBlockOpenAdminService(CutBlockOpenAdminRepository cutBlockOpenAdminRepository) {
+  public CutBlockOpenAdminOracleService(CutBlockOpenAdminRepository cutBlockOpenAdminRepository) {
     super(cutBlockOpenAdminRepository);
   }
 }

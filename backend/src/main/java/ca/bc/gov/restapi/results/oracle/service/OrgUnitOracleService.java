@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class OrgUnitService extends AbstractOrgUnitService {
+public class OrgUnitOracleService extends AbstractOrgUnitService {
 
-  public OrgUnitService(OrgUnitRepository orgUnitRepository,
+  public OrgUnitOracleService(OrgUnitRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(orgUnitRepository, silvaConfiguration);
   }

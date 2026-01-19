@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class OpeningTrendsService extends AbstractOpeningTrendsService {
+public class OpeningTrendsOracleService extends AbstractOpeningTrendsService {
 
-  public OpeningTrendsService(OpeningRepository openingRepository) {
+  public OpeningTrendsOracleService(OpeningRepository openingRepository) {
     super(openingRepository);
   }
 

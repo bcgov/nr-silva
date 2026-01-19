@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class OpeningDetailsNotificationService extends AbstractOpeningDetailsNotificationService {
-    public OpeningDetailsNotificationService(OpeningRepository openingRepository) {
+public class OpeningDetailsNotificationOracleService extends AbstractOpeningDetailsNotificationService {
+    public OpeningDetailsNotificationOracleService(OpeningRepository openingRepository) {
         super(openingRepository);
     }
 }

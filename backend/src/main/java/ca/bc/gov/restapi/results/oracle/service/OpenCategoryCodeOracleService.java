@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class OpenCategoryCodeService extends AbstractOpenCategoryCodeService {
-  public OpenCategoryCodeService(OpenCategoryCodeRepository openCategoryCodeRepository) {
+public class OpenCategoryCodeOracleService extends AbstractOpenCategoryCodeService {
+  public OpenCategoryCodeOracleService(OpenCategoryCodeRepository openCategoryCodeRepository) {
     super(openCategoryCodeRepository);
   }
 }

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class OpeningStandardUnitHistoryService extends AbstractOpeningStandardUnitHistoryService {
+public class OpeningStandardUnitHistoryOracleService extends AbstractOpeningStandardUnitHistoryService {
 
-    public OpeningStandardUnitHistoryService(OpeningRepository openingRepository,
+    public OpeningStandardUnitHistoryOracleService(OpeningRepository openingRepository,
         SilvicultureCommentRepository commentRepository) {
         super(openingRepository, commentRepository);
     }

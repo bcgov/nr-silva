@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 @Slf4j
 @Service
-public class OpeningDetailsAttachmentService extends AbstractOpeningDetailsAttachmentService {
+public class OpeningDetailsAttachmentOracleService extends AbstractOpeningDetailsAttachmentService {
 
-  public OpeningDetailsAttachmentService(OpeningAttachmentRepository openingAttachmentRepository) {
+  public OpeningDetailsAttachmentOracleService(OpeningAttachmentRepository openingAttachmentRepository) {
     super(openingAttachmentRepository);
   }
 

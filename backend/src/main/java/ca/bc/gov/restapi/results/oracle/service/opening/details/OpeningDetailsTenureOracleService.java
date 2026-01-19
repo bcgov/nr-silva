@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class OpeningDetailsTenureService extends AbstractOpeningDetailsTenureService {
+public class OpeningDetailsTenureOracleService extends AbstractOpeningDetailsTenureService {
 
-  public OpeningDetailsTenureService(CutBlockOpenAdminRepository cutBlockOpenAdminRepository) {
+  public OpeningDetailsTenureOracleService(CutBlockOpenAdminRepository cutBlockOpenAdminRepository) {
     super(cutBlockOpenAdminRepository);
   }
 }
