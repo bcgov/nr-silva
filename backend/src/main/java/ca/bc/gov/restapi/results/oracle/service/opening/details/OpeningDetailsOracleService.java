@@ -11,8 +11,10 @@ import ca.bc.gov.restapi.results.common.service.opening.history.OpeningForestCov
 
 
 import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardUnitHistoryService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
 public class OpeningDetailsOracleService extends AbstractOpeningDetailsService {
   public OpeningDetailsOracleService(OpeningDetailsTombstoneService tombstoneService,
