@@ -11,6 +11,8 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Repository;
  * This interface allows the service to fetch and save data into the database.
  */
 @Repository
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 public interface OpeningOracleRepository extends JpaRepository<OpeningEntity, Long>,
     OpeningRepository {
 
