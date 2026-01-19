@@ -101,7 +101,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("1"))
         .andExpect(jsonPath("$.content[0].openingId").value(response.getOpeningId()))
-        .andExpect(jsonPath("$.content[0].openingNumber").value(response.getOpeningNumber()))
+        // Opening number is now composed (e.g., "92K 014 0.0 514")
+        .andExpect(jsonPath("$.content[0].openingNumber").value(Matchers.containsString("514")))
         .andExpect(jsonPath("$.content[0].category.code").value(response.getCategory().getCode()))
         .andReturn();
   }
@@ -369,7 +370,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
-  @DisplayName("Get Opening SSU History Details - should return expected details for opening 1480130 and eventHistoryId 1741496")
+  @DisplayName(
+      "Get Opening SSU History Details - should return expected details for opening 1480130 and"
+          + " eventHistoryId 1741496")
   void getOpeningSsuHistoryDetails_shouldReturnExpectedDetails() throws Exception {
     mockMvc
         .perform(
@@ -397,13 +400,15 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$[0].stocking.additionalStandards").isNotEmpty())
         .andExpect(jsonPath("$[0].preferredSpecies[0].layer").value("I"))
         .andExpect(jsonPath("$[0].preferredSpecies[0].species.code").value("CW"))
-        .andExpect(jsonPath("$[0].preferredSpecies[0].species.description").value("western redcedar"))
+        .andExpect(
+            jsonPath("$[0].preferredSpecies[0].species.description").value("western redcedar"))
         .andExpect(jsonPath("$[0].preferredSpecies[0].minHeight").value(1.5))
         .andExpect(jsonPath("$[0].preferredSpecies[1].species.code").value("YC"))
         .andExpect(jsonPath("$[0].preferredSpecies[1].species.description").value("yellow-cedar"))
         .andExpect(jsonPath("$[0].preferredSpecies[1].minHeight").value(1.5))
         .andExpect(jsonPath("$[0].acceptableSpecies[0].species.code").value("HW"))
-        .andExpect(jsonPath("$[0].acceptableSpecies[0].species.description").value("western hemlock"))
+        .andExpect(
+            jsonPath("$[0].acceptableSpecies[0].species.description").value("western hemlock"))
         .andExpect(jsonPath("$[0].acceptableSpecies[0].minHeight").value(2.0))
         .andExpect(jsonPath("$[0].layers[0].layer.code").value("I"))
         .andExpect(jsonPath("$[0].layers[0].layer.description").value("Inventory Layer"))
@@ -468,10 +473,12 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$[2].stocking.freeGrowingEarly").doesNotExist())
         .andExpect(jsonPath("$[2].stocking.additionalStandards").value("Test"))
         .andExpect(jsonPath("$[2].preferredSpecies[0].species.code").value("CW"))
-        .andExpect(jsonPath("$[2].preferredSpecies[0].species.description").value("western redcedar"))
+        .andExpect(
+            jsonPath("$[2].preferredSpecies[0].species.description").value("western redcedar"))
         .andExpect(jsonPath("$[2].preferredSpecies[0].minHeight").value(1.5))
         .andExpect(jsonPath("$[2].preferredSpecies[1].species.code").value("FDC"))
-        .andExpect(jsonPath("$[2].preferredSpecies[1].species.description").value("coastal Douglas-fir"))
+        .andExpect(
+            jsonPath("$[2].preferredSpecies[1].species.description").value("coastal Douglas-fir"))
         .andExpect(jsonPath("$[2].preferredSpecies[1].minHeight").value(1.8))
         .andExpect(jsonPath("$[2].acceptableSpecies").isArray())
         .andExpect(jsonPath("$[2].acceptableSpecies").isEmpty())
@@ -485,7 +492,6 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$[2].comments").isArray())
         .andExpect(jsonPath("$[2].comments").isEmpty());
   }
-
 
   @Test
   @DisplayName("Get Opening Activities Disturbances Details by existing openingId should succeed")
@@ -739,7 +745,11 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Not Found"))
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.detail").value("Forest cover history overview list for opening with id 1 record(s) not found!"))
+        .andExpect(
+            jsonPath("$.detail")
+                .value(
+                    "Forest cover history overview list for opening with id 1 record(s) not"
+                        + " found!"))
         .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/overview"));
   }
 
@@ -829,7 +839,11 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Not Found"))
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.detail").value("Forest cover history list for opening with id 1 and update date 2020-01-01 record(s) not found!"))
+        .andExpect(
+            jsonPath("$.detail")
+                .value(
+                    "Forest cover history list for opening with id 1 and update date 2020-01-01"
+                        + " record(s) not found!"))
         .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history"));
   }
 
@@ -851,7 +865,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
-  @DisplayName("Get Opening Forest Cover History - non-empty for opening 101017 and updateDate 2004-11-29")
+  @DisplayName(
+      "Get Opening Forest Cover History - non-empty for opening 101017 and updateDate 2004-11-29")
   void getOpeningForestCoverHistory_nonEmpty_shouldReturnList() throws Exception {
     mockMvc
         .perform(
@@ -941,7 +956,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
   }
 
   @Test
-  @DisplayName("Get Opening Forest Cover History - filtered by mainSearchTerm for opening 101017 and updateDate 2004-11-29")
+  @DisplayName(
+      "Get Opening Forest Cover History - filtered by mainSearchTerm for opening 101017 and"
+          + " updateDate 2004-11-29")
   void getOpeningForestCoverHistory_filtered_shouldReturnFilteredList() throws Exception {
     mockMvc
         .perform(
@@ -983,8 +1000,12 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.type").value("about:blank"))
         .andExpect(jsonPath("$.title").value("Not Found"))
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.detail").value("Forest cover history polygon with id 1 and archive date 2000-01-01 record(s) not found!"))
-        .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/1"));;
+        .andExpect(
+            jsonPath("$.detail")
+                .value(
+                    "Forest cover history polygon with id 1 and archive date 2000-01-01 record(s)"
+                        + " not found!"))
+        .andExpect(jsonPath("$.instance").value("/api/openings/1/cover/history/1"));
   }
 
   @Test
@@ -1020,7 +1041,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.polygon.reserve.description").value("No Reserve"))
         .andExpect(jsonPath("$.polygon.siteIndex").value(32))
         .andExpect(jsonPath("$.polygon.siteIndexSource.code").value("H"))
-        .andExpect(jsonPath("$.polygon.siteIndexSource.description").value("SI from stand before harvest"))
+        .andExpect(
+            jsonPath("$.polygon.siteIndexSource.description").value("SI from stand before harvest"))
         .andExpect(jsonPath("$.isSingleLayer").value(true))
         .andExpect(jsonPath("$.unmapped").isArray())
         .andExpect(jsonPath("$.layers[0].layerId").value(1032926))
@@ -1033,14 +1055,14 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.layers[0].species[0].averageHeight").value(0.2))
         .andExpect(jsonPath("$.layers[1].layerId").value(1032927))
         .andExpect(jsonPath("$.layers[1].layer.code").value("S"))
-        .andExpect(jsonPath("$.layers[1].layer.description").value("Silviculture Layer - even aged"))
+        .andExpect(
+            jsonPath("$.layers[1].layer.description").value("Silviculture Layer - even aged"))
         .andExpect(jsonPath("$.layers[1].wellSpaced").value(582))
         .andExpect(jsonPath("$.layers[1].species[0].species.code").value("FDC"))
         .andExpect(jsonPath("$.layers[1].species[0].percentage").value(76))
         .andExpect(jsonPath("$.layers[1].species[0].averageAge").value(3))
         .andExpect(jsonPath("$.layers[1].species[0].averageHeight").value(0.3));
   }
-
 
   @Test
   @DisplayName("Get attachments metadata by openingId should return list")

@@ -12,6 +12,8 @@ public interface SilvicultureSearchProjection {
 
   String getOpeningNumber();
 
+  String getMapsheepOpeningId();
+
   String getCategory();
 
   String getStatus();
@@ -37,10 +39,14 @@ public interface SilvicultureSearchProjection {
   String getClientLocation();
 
   LocalDate getRegenDelayDate();
+
   LocalDate getEarlyFreeGrowingDate();
+
   LocalDate getLateFreeGrowingDate();
 
   LocalDateTime getUpdateTimestamp();
+
+  LocalDateTime getEntryTimestamp();
 
   String getEntryUserId();
 
