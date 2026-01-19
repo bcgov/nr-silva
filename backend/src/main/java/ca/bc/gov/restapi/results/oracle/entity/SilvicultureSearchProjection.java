@@ -39,7 +39,9 @@ public interface SilvicultureSearchProjection {
   String getClientLocation();
 
   LocalDate getRegenDelayDate();
+
   LocalDate getEarlyFreeGrowingDate();
+
   LocalDate getLateFreeGrowingDate();
 
   LocalDateTime getUpdateTimestamp();
