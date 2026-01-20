@@ -28,14 +28,6 @@ export const mainActivitiesItems: LeftMenu[] = [
         breadcrumb: false
       },
       {
-        id: 'silviculture-search',
-        name: 'Silviculture search',
-        icon: 'SearchLocate',
-        link: '/silviculture-search',
-        disabled: false,
-        breadcrumb: false
-      },
-      {
         id: 'openings',
         name: 'Openings',
         icon: 'MapBoundaryVegetation',
@@ -43,6 +35,19 @@ export const mainActivitiesItems: LeftMenu[] = [
         disabled: false,
         breadcrumb: false,
       }
+    ]
+  },
+  {
+    name: 'Search',
+    items: [
+      {
+        id: 'openings-search',
+        name: 'Openings search',
+        icon: 'IbmSoftwareWatsonxDataAnalyzeAndProcess',
+        link: '/openings-search',
+        disabled: false,
+        breadcrumb: false
+      },
     ]
   }
 ];

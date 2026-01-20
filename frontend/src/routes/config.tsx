@@ -6,21 +6,24 @@ import Openings from '@/screens/Openings';
 import OpeningDetails from '@/screens/Openings/OpeningDetails';
 import LoginClientSelection from "@/screens/LoginClientSelection";
 import CreateOpening from "@/screens/CreateOpening";
+import OpeningsSearch from "@/screens/OpeningsSearch";
 
 export const DashboardRoute: RouteObject = {
   path: "/dashboard",
   element: <SideLayout pageContent={<Dashboard />} />
 }
 
-export const SilvicultureSearchRoute: RouteObject = {
-  path: "/silviculture-search",
-  element: <SideLayout pageContent={<SilvicultureSearch />} />
-}
-
 export const OpeningsRoute: RouteObject = {
   path: "/openings",
   element: <SideLayout pageContent={<Openings />} />,
 }
+
+
+export const OpeningsSearchRoute: RouteObject = {
+  path: "/openings-search",
+  element: <SideLayout pageContent={<OpeningsSearch />} />,
+}
+
 
 export const CreateOpeningRoute: RouteObject = {
   path: "/openings/create",
