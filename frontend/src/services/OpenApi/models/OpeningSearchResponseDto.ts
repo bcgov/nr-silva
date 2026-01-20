@@ -24,6 +24,7 @@ export type OpeningSearchResponseDto = {
     lateFreeGrowingDate: string | null;
     updateTimestamp: string;
     entryUserId: string;
+    entryTimestamp: string | null;
     submittedToFrpa: boolean;
     forestFileId: string | null;
     silvaReliefAppId: number | null;
