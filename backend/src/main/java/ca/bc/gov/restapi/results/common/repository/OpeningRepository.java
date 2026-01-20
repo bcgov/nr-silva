@@ -6,6 +6,7 @@ import ca.bc.gov.restapi.results.common.projection.opening.history.*;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,4 +74,8 @@ public interface OpeningRepository {
       Long eventHistoryId,
       Long ssuId
   );
+
+  Optional<OpeningBaseProjection> findProjectionById(Long openingId);
+
+  boolean existsById(Long openingId);
 }
