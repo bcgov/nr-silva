@@ -1,7 +1,6 @@
 import { type RouteObject } from "react-router-dom";
 import SideLayout from '@/layouts/SideLayout';
 import Dashboard from '@/screens/Dashboard';
-import SilvicultureSearch from '@/screens/SilvicultureSearch';
 import Openings from '@/screens/Openings';
 import OpeningDetails from '@/screens/Openings/OpeningDetails';
 import LoginClientSelection from "@/screens/LoginClientSelection";

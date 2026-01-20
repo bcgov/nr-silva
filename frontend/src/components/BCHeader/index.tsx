@@ -67,12 +67,20 @@ function BCHeader(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Returns true when the provided `target` path should be considered active
+  const isPathActive = (target: string | undefined): boolean => {
+    if (!target) return false;
+    const path = location.pathname;
+    if (path === target) return true;
+    return path.startsWith(target + "/");
+  };
+
   const renderSideNavMenu = (
     subItem: LeftMenuItem,
     IconComponent: React.ElementType
   ) => {
     const isActive = subItem.subItems?.some((subSubItem) =>
-      location.pathname.startsWith(subSubItem.link)
+      isPathActive(subSubItem.link)
     );
 
     return (
@@ -99,7 +107,7 @@ function BCHeader(): React.JSX.Element {
       key={subSubItem.id}
       aria-label={subSubItem.name}
       onClick={() => navigate(subSubItem.link)}
-      isActive={location.pathname.startsWith(subSubItem.link)}
+      isActive={isPathActive(subSubItem.link)}
     >
       {subSubItem.name}
     </SideNavMenuItem>
@@ -117,7 +125,7 @@ function BCHeader(): React.JSX.Element {
       aria-label={subItem.name}
       renderIcon={IconComponent as any}
       onClick={() => navigate(subItem.link)}
-      isActive={location.pathname.startsWith(subItem.link)}
+      isActive={isPathActive(subItem.link)}
     >
       {subItem.name}
     </SideNavLink>
