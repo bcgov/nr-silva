@@ -53,7 +53,7 @@ const OpeningsSearch = () => {
       hasAutoSearchedFromUrl.current = false; // reset to prevent re-triggering
       openingSearchQuery.refetch();
     }
-  }, []);
+  }, [searchParams, openingSearchQuery]);
 
   /**
    * Handler to update a single field in searchParams

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
 import { Checkbox, CheckboxGroup, Column, DatePicker, DatePickerInput, Grid, TextInput } from "@carbon/react";
@@ -7,6 +7,7 @@ import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes } from "@/utils/InputUtils";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from "@/constants";
+import useRefWithSearchParam from "@/hooks/useRefWithSearchParam";
 
 import CustomMultiSelect from "../CustomMultiSelect";
 
@@ -38,62 +39,17 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     queryFn: API.CodesEndpointService.getOpeningOrgUnits
   });
 
-  // Imperatively update the opening ID input when searchParams changes
-  // This avoids re-renders on keystroke but ensures reset works.
-  // The same goes for other text inputs here.
-  useEffect(() => {
-    if (openingIdInputRef.current) {
-      const value = searchParams?.openingId;
-      openingIdInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.openingId]);
+  // Update text inputs with search params
+  useRefWithSearchParam(openingIdInputRef, searchParams?.openingId);
+  useRefWithSearchParam(fileIdInputRef, searchParams?.licenseNumber);
+  useRefWithSearchParam(licenseeOpeningIdInputRef, searchParams?.licenseeOpeningId);
+  useRefWithSearchParam(cutBlockInputRef, searchParams?.cutBlockId);
+  useRefWithSearchParam(cuttingPermitInputRef, searchParams?.cuttingPermitId);
+  useRefWithSearchParam(timberMarkInputRef, searchParams?.timberMark);
 
-  useEffect(() => {
-    if (fileIdInputRef.current) {
-      const value = searchParams?.licenseNumber;
-      fileIdInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.licenseNumber]);
-
-  useEffect(() => {
-    if (licenseeOpeningIdInputRef.current) {
-      const value = searchParams?.licenseeOpeningId;
-      licenseeOpeningIdInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.licenseeOpeningId]);
-
-  useEffect(() => {
-    if (cutBlockInputRef.current) {
-      const value = searchParams?.cutBlockId;
-      cutBlockInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.cutBlockId]);
-
-  useEffect(() => {
-    if (cuttingPermitInputRef.current) {
-      const value = searchParams?.cuttingPermitId;
-      cuttingPermitInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.cuttingPermitId]);
-
-  useEffect(() => {
-    if (timberMarkInputRef.current) {
-      const value = searchParams?.timberMark;
-      timberMarkInputRef.current.value = value ? String(value) : '';
-    }
-  }, [searchParams?.timberMark]);
-
-  useEffect(() => {
-    if (createdByMeCheckboxRef.current) {
-      createdByMeCheckboxRef.current.checked = searchParams?.isCreatedByUser ?? false;
-    }
-  }, [searchParams?.isCreatedByUser]);
-
-  useEffect(() => {
-    if (frpaSectionCheckboxRef.current) {
-      frpaSectionCheckboxRef.current.checked = searchParams?.submittedToFrpa ?? false;
-    }
-  }, [searchParams?.submittedToFrpa]);
+  // Update checkboxes with search params
+  useRefWithSearchParam(createdByMeCheckboxRef, searchParams?.isCreatedByUser, true);
+  useRefWithSearchParam(frpaSectionCheckboxRef, searchParams?.submittedToFrpa, true);
 
   const handleMultiSelectChange = (field: keyof OpeningSearchParamsType) => (selected: { selectedItems: Array<any> }) => {
     const selectedCodes = getMultiSelectedCodes(selected);
@@ -330,12 +286,15 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           orientation="horizontal"
           warnText="Warning message goes here"
         >
+          {/* Created by me */}
           <Checkbox
             ref={createdByMeCheckboxRef}
             id="created-by-me-checkbox"
             labelText="Created by me"
             onChange={handleCheckboxChange('isCreatedByUser')}
           />
+
+          {/* FRPA Section 108 */}
           <Checkbox
             ref={frpaSectionCheckboxRef}
             id="frpa-section-108-checkbox"
