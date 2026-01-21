@@ -17,6 +17,8 @@ import {
 } from "@/utils/OpeningSearchParamsUtils";
 import OpeningsSearchInput from "@/components/OpeningsSearchInput";
 
+import './styles.scss';
+
 const OpeningsSearch = () => {
 
   const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
@@ -85,12 +87,12 @@ const OpeningsSearch = () => {
   };
 
   return (
-    <Grid className="default-grid">
+    <Grid className="default-grid openings-search-grid">
       <Column sm={4} md={8} lg={16}>
         <PageTitle title="Openings Search" />
       </Column>
 
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={16} className="bookmark-col">
         <FavOpeningSection />
       </Column>
 

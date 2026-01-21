@@ -2,8 +2,8 @@ import { OpeningSearchParamsType } from "@/types/OpeningTypes";
 import { Column, Grid, TextInput } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import CustomMultiSelect from "../CustomMultiSelect";
-import { codeDescriptionToDisplayText } from "../../utils/multiSelectUtils";
 
 import './styles.scss';
 
