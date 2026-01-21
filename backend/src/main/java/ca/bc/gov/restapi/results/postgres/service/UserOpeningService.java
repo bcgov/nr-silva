@@ -2,8 +2,8 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
+import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
@@ -64,7 +64,7 @@ public class UserOpeningService {
     log.info("Adding opening ID {} as favorite for user {}", openingId,
         loggedUserHelper.getLoggedUserId());
 
-    if (openingRepository.findById(openingId).isEmpty()) {
+    if (openingRepository.findProjectionById(openingId).isEmpty()) {
       log.info("Opening ID not found: {}", openingId);
       throw new OpeningNotFoundException();
     }
