@@ -158,14 +158,14 @@ const OpeningSearchBar = ({
   // Generic handler for boolean-based filters
   const handleBooleanChange =
     (key: keyof OpeningSearchFilterType): CheckBoxEvent =>
-    (_evt, data) => {
-      // When a check box is unchecked, we should not set it to false, it's rather undefined
-      const newVal = data.checked === true ? true : undefined;
-      setFilters((prev) => ({
-        ...prev,
-        [key]: newVal,
-      }));
-    };
+      (_evt, data) => {
+        // When a check box is unchecked, we should not set it to false, it's rather undefined
+        const newVal = data.checked === true ? true : undefined;
+        setFilters((prev) => ({
+          ...prev,
+          [key]: newVal,
+        }));
+      };
 
   // Generic handler for CodeDescriptionDto array filters
   const handleMultiSelectChange =
@@ -215,9 +215,8 @@ const OpeningSearchBar = ({
         ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
         : "";
 
-    const key = `${filters.dateType.code}${
-      isStartDate ? "DateStart" : "DateEnd"
-    }` as keyof OpeningSearchFilterType;
+    const key = `${filters.dateType.code}${isStartDate ? "DateStart" : "DateEnd"
+      }` as keyof OpeningSearchFilterType;
 
     setFilters((prev) => {
       // Prevent unnecessary updates
@@ -254,9 +253,9 @@ const OpeningSearchBar = ({
 
     const maxDate = filters[endDateKey]
       ? DateTime.fromFormat(
-          filters[endDateKey] as string,
-          API_DATE_FORMAT
-        ).toFormat(DATE_PICKER_FORMAT)
+        filters[endDateKey] as string,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT)
       : DateTime.now().toFormat(DATE_PICKER_FORMAT);
 
     return maxDate;
@@ -271,9 +270,9 @@ const OpeningSearchBar = ({
 
     const minDate = filters[startDateKey]
       ? DateTime.fromFormat(
-          filters[startDateKey] as string,
-          API_DATE_FORMAT
-        ).toFormat(DATE_PICKER_FORMAT)
+        filters[startDateKey] as string,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT)
       : undefined;
 
     return minDate;
