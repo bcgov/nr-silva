@@ -1,0 +1,15 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.opening-search-input-grid {
+  gap: 1.5rem;
+
+  .bx--css-grid-column {
+    align-content: end;
+  }
+
+  .opening-search-multi-select {
+    input::placeholder {
+      color: var(--#{vars.$bcgov-prefix}-text-primary);
+    }
+  }
+}

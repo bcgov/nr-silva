@@ -30,7 +30,6 @@ import "./styles.scss";
  */
 function BCHeader(): React.JSX.Element {
   const [myProfile, setMyProfile] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState<boolean>(false);
   const panelWrapperRef = useRef<HTMLDivElement | null>(null);
 
   // Closes the MyProfile panel when user clicks outside of it.
@@ -57,7 +56,6 @@ function BCHeader(): React.JSX.Element {
 
   const handleMyProfilePanel = useCallback((): void => {
     setMyProfile(!myProfile);
-    setNotifications(false);
   }, [myProfile]);
 
   const closeMyProfilePanel = useCallback((): void => {

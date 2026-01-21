@@ -48,3 +48,29 @@ export type OpeningActivityDetail = OpeningActivityBaseDto &
   Partial<OpeningActivitySurveyDto>;
 
 export type OpeningTypes = typeof TENURED_OPENING | typeof GOV_FUNDED_OPENING;
+
+export type OpeningSearchParamsType = {
+  openingId?: number,
+  categories?: Array<string>,
+  openingStatuses?: Array<string>,
+  licenseNumber?: string,
+  licenseeOpeningId?: string,
+  entryDateStart?: string,
+  entryDateEnd?: string,
+  cutBlockId?: string,
+  cuttingPermitId?: string,
+  timberMark?: string,
+  orgUnits?: Array<string>,
+  clientNumbers?: Array<string>,
+  isCreatedByUser?: boolean,
+  submittedToFrpa?: boolean,
+  mapsheetGrid?: string,
+  mapsheetLetter?: string,
+  mapsheetSquare?: string,
+  mapsheetQuad?: string,
+  mapsheetSubQuad?: string,
+  subOpeningNumber?: string,
+  page?: number,
+  size?: number,
+  sort?: Array<string>,
+}
