@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
 import { Checkbox, CheckboxGroup, Column, DatePicker, DatePickerInput, Grid, TextInput } from "@carbon/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes } from "@/utils/InputUtils";
@@ -12,12 +12,18 @@ import useRefWithSearchParam from "@/hooks/useRefWithSearchParam";
 import CustomMultiSelect from "../CustomMultiSelect";
 
 import './styles.scss';
+import { getClientLabel } from "../../utils/ForestClientUtils";
+import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "../../services/OpenApi";
+import { on } from "events";
 
 type props = {
   searchParams: OpeningSearchParamsType | undefined;
   onSearchParamsChange: (field: keyof OpeningSearchParamsType, value: unknown) => void;
 }
 const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
+  const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
+  const [selectedClients, setSelectedClients] = useState<ForestClientAutocompleteResultDto[] | null>(null);
+  const [matchingClients, setMatchingClients] = useState<ForestClientAutocompleteResultDto[]>([]);
 
   const openingIdInputRef = useRef<HTMLInputElement>(null); //NUMBER(10,0)
   const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
@@ -39,6 +45,34 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     queryFn: API.CodesEndpointService.getOpeningOrgUnits
   });
 
+  const clientMutation = useMutation({
+    mutationKey: ["forest-clients", "byNameAcronymNumber"],
+    mutationFn: (searchParam: string) => API.ForestClientEndpointService.searchForestClients(searchParam),
+    onSuccess: (data: ForestClientAutocompleteResultDto[] | null) => {
+      if (!data || !Array.isArray(data) || data.length === 0) return;
+
+      setMatchingClients((prev) => {
+        const existing = prev ?? [];
+        const existingIds = new Set(existing.map((c) => c.id));
+        const toAdd = data.filter((c) => c && c.id != null && !existingIds.has(c.id));
+        return existing.concat(toAdd);
+      });
+    },
+  });
+
+  /* Debounce the API call by 300ms */
+  useEffect(() => {
+    if (clientSearchTerm.length <= 2) return;
+
+    const handler = setTimeout(() => {
+      clientMutation.mutate(clientSearchTerm);
+    }, 300);
+
+    // Clear timeout if user types again
+    return () => clearTimeout(handler);
+  }, [clientSearchTerm]);
+
+
   // Update text inputs with search params
   useRefWithSearchParam(openingIdInputRef, searchParams?.openingId);
   useRefWithSearchParam(fileIdInputRef, searchParams?.licenseNumber);
@@ -51,12 +85,12 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   useRefWithSearchParam(createdByMeCheckboxRef, searchParams?.isCreatedByUser, true);
   useRefWithSearchParam(frpaSectionCheckboxRef, searchParams?.submittedToFrpa, true);
 
-  const handleMultiSelectChange = (field: keyof OpeningSearchParamsType) => (selected: { selectedItems: Array<any> }) => {
+  const handleMultiSelectChange = (field: keyof OpeningSearchParamsType) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
     const selectedCodes = getMultiSelectedCodes(selected);
     onSearchParamsChange(field, selectedCodes.length > 0 ? selectedCodes : undefined);
   };
 
-  const handleCheckboxChange = (field: keyof OpeningSearchParamsType) => (e: any) => {
+  const handleCheckboxChange = (field: keyof OpeningSearchParamsType) => (e: ChangeEvent<HTMLInputElement>) => {
     onSearchParamsChange(field, e.target.checked ? true : undefined);
   };
 
@@ -190,6 +224,28 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           labelText="Cut block"
           placeholder="Enter cut block"
           onBlur={(e) => onSearchParamsChange('cutBlockId', e.target.value ? e.target.value : undefined)}
+        />
+      </Column>
+
+      {/* Client */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <CustomMultiSelect
+          // placeholder={getMultiSelectPlaceholder('orgUnits')}
+          titleText="Client"
+          id="client-multi-select"
+          className="opening-search-multi-select"
+          items={matchingClients}
+          itemToString={getClientLabel}
+          onChange={
+            (selected: { selectedItems: ForestClientAutocompleteResultDto[] }) => {
+              const selectedClientNumber = selected.selectedItems.map(item => item.id) as string[];
+              onSearchParamsChange('clientNumbers', selectedClientNumber.length > 0 ? selectedClientNumber : undefined);
+            }
+          }
+          onInputValueChange={(changes) => {
+            setClientSearchTerm(String(changes));
+          }}
+          selectedItems={matchingClients.filter(client => searchParams?.clientNumbers?.includes(client.id ?? '')) ?? []}
         />
       </Column>
 
