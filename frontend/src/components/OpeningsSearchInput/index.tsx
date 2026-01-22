@@ -1,11 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
 import { Checkbox, CheckboxGroup, Column, DatePicker, DatePickerInput, Grid, TextInput } from "@carbon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes } from "@/utils/InputUtils";
+import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from "@/utils/InputUtils";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from "@/constants";
 import useRefWithSearchParam from "@/hooks/useRefWithSearchParam";
 
@@ -14,7 +14,6 @@ import CustomMultiSelect from "../CustomMultiSelect";
 import './styles.scss';
 import { getClientLabel } from "../../utils/ForestClientUtils";
 import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "../../services/OpenApi";
-import { on } from "events";
 
 type props = {
   searchParams: OpeningSearchParamsType | undefined;
@@ -71,6 +70,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     // Clear timeout if user types again
     return () => clearTimeout(handler);
   }, [clientSearchTerm]);
+
 
 
   // Update text inputs with search params
@@ -199,6 +199,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="file-id"
           labelText="File ID"
           placeholder="Enter file ID"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('licenseNumber', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -211,6 +213,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="licensee-opening-id"
           labelText="Licensee opening ID"
           placeholder="Enter licensee opening ID"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('licenseeOpeningId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -223,6 +227,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="cut-block-id"
           labelText="Cut block"
           placeholder="Enter cut block"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('cutBlockId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -261,6 +267,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="cutting-permit-id"
           labelText="Cutting permit"
           placeholder="Enter cutting permit"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('cuttingPermitId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -287,6 +295,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="timber-mark"
           labelText="Timber mark"
           placeholder="Enter timber mark"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('timberMark', e.target.value ? e.target.value : undefined)}
         />
       </Column>

@@ -1,3 +1,4 @@
+import { ClipboardEvent, FormEvent } from "react";
 import { TextInputEvent } from "../types/GeneralTypes";
 
 /**
@@ -82,10 +83,45 @@ export const enforceNumberInputOnPaste = (el: HTMLInputElement | null, e: any) =
   const cursorPos = start + digits.length;
   el.setSelectionRange(cursorPos, cursorPos);
 };
-
-
+/**
+ * Convert selected item objects from a multi-select into an array of code strings.
+ * Filters out undefined/invalid items and returns the `code` property for each.
+ * @param selected - Object containing `selectedItems` array from the multi-select component
+ * @returns Array of selected code strings
+ */
 export const getMultiSelectedCodes = (selected: { selectedItems: Array<any> }) => (
   selected.selectedItems
     .filter((item): item is NonNullable<typeof item> => item !== undefined && !!item.code)
     .map(item => item.code) as string[]
 );
+
+
+/**
+ * Transform the current input value to upper-case while preserving caret position.
+ * Intended for use as an `onInput` handler on uncontrolled text inputs.
+ * @param e - The input form event
+ */
+export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>) => {
+  const el = e.currentTarget;
+  const pos = el.selectionStart ?? 0;
+  el.value = el.value.toUpperCase();
+  el.setSelectionRange(pos, pos);
+};
+
+/**
+ * Handle paste into an uncontrolled input by inserting an upper-case version
+ * of the pasted text at the current caret position and preserving the caret.
+ * Intended for use as an `onPaste` handler.
+ * @param e - The clipboard event for the paste
+ */
+export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>) => {
+  e.preventDefault();
+  const paste = (e.clipboardData.getData('text') || '').toUpperCase();
+  const el = e.currentTarget;
+  const start = el.selectionStart ?? 0;
+  const end = el.selectionEnd ?? 0;
+  const newVal = el.value.slice(0, start) + paste + el.value.slice(end);
+  el.value = newVal;
+  const pos = start + paste.length;
+  el.setSelectionRange(pos, pos);
+};
