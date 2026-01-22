@@ -230,7 +230,11 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       {/* Client */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
-          // placeholder={getMultiSelectPlaceholder('orgUnits')}
+          placeholder={
+            searchParams?.clientNumbers && searchParams.clientNumbers.length > 0
+              ? searchParams?.clientNumbers.map((num) => matchingClients.find((c) => c.id === num)?.acronym ?? num).join(', ')
+              : 'Choose one or more options'
+          }
           titleText="Client"
           id="client-multi-select"
           className="opening-search-multi-select"
