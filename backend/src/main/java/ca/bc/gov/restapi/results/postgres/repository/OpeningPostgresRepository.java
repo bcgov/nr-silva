@@ -22,8 +22,7 @@ import java.util.Optional;
  */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
-public interface OpeningPostgresRepository extends JpaRepository<OpeningEntity, Long>,
-    OpeningRepository {
+public interface OpeningPostgresRepository extends OpeningRepository<OpeningEntity> {
 
   @Override
   @Query(

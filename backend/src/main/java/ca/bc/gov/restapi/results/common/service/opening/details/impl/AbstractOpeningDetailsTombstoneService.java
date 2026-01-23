@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.service.opening.details.impl;
 
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTombstoneOverviewDto;
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AbstractOpeningDetailsTombstoneService implements OpeningDetailsTombstoneService {
 
-  protected final OpeningRepository openingRepository;
+  protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final ForestClientService forestClientService;
   protected final SilvicultureCommentRepository commentRepository;
   protected final OpeningDetailsNotificationService openingDetailsNotificationService;

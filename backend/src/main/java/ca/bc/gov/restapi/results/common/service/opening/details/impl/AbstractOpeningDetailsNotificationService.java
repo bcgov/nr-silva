@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.service.opening.details.impl;
 
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsNotificationDto;
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.enums.OpeningDetailsNotificationStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.StockingMilestoneTypeEnum;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingNotificationProjection;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 public abstract class AbstractOpeningDetailsNotificationService implements
     OpeningDetailsNotificationService {
 
-  protected final OpeningRepository openingRepository;
+  protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
 
   @Override
   public List<OpeningDetailsNotificationDto> getNotifications(Long openingId) {

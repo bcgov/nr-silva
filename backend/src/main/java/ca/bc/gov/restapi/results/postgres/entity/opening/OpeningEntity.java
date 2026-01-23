@@ -1,37 +1,27 @@
 package ca.bc.gov.restapi.results.postgres.entity.opening;
 
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.AttributeOverride;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @With
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(schema = "silva", name = "opening")
-public class OpeningEntity {
-  @Id
-  @Column(name = "opening_id")
-  private Long id;
-
-  @Column(name = "opening_status_code", length = 3)
-  private String status;
-
-  @Column(name = "open_category_code", length = 7)
-  private String category;
-
-  @Column(name = "entry_userid", length = 30)
-  private String entryUserId;
-
-  @Column(name = "update_timestamp")
-  private LocalDateTime updateTimestamp;
-
-  @Column(name = "entry_timestamp")
-  private LocalDateTime entryTimestamp;
-}
+@AttributeOverrides({
+    @AttributeOverride(name = "id", column = @Column(name = "opening_id")),
+    @AttributeOverride(name = "status", column = @Column(name = "opening_status_code", length = 3)),
+    @AttributeOverride(name = "category", column = @Column(name = "open_category_code", length = 7)),
+    @AttributeOverride(name = "entryUserId", column = @Column(name = "entry_userid", length = 30)),
+    @AttributeOverride(name = "updateTimestamp", column = @Column(name = "update_timestamp")),
+    @AttributeOverride(name = "entryTimestamp", column = @Column(name = "entry_timestamp"))
+})
+public class OpeningEntity extends BaseOpeningEntity {}

@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.service.opening.history.impl;
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsBecDto;
 import ca.bc.gov.restapi.results.common.dto.opening.history.*;
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.projection.opening.history.*;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
@@ -22,7 +23,7 @@ import java.util.function.Function;
 public class AbstractOpeningStandardUnitHistoryService implements
     OpeningStandardUnitHistoryService {
 
-  protected final OpeningRepository openingRepository;
+  protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
 
   @Override

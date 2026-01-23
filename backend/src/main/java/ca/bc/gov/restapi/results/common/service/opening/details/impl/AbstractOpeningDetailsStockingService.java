@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.service.opening.details.impl;
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.common.dto.opening.*;
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AbstractOpeningDetailsStockingService implements OpeningDetailsStockingService {
-  protected final OpeningRepository openingRepository;
+  protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
 
   @Override

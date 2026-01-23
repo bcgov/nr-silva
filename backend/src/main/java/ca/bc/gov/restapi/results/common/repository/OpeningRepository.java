@@ -1,16 +1,34 @@
 package ca.bc.gov.restapi.results.common.repository;
 
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
-import ca.bc.gov.restapi.results.common.projection.opening.*;
-import ca.bc.gov.restapi.results.common.projection.opening.history.*;
-import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
-import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
-
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
-public interface OpeningRepository {
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
+import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningBaseProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingMilestoneProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingNotificationProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingSpeciesProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewMilestoneProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewOpeningProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryDetailsProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryDetailsWithComparisonProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryLayerSpeciesWithComparisonProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryLayerWithComparisonProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingLayerHistoryProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingSpeciesHistoryProjection;
+
+@NoRepositoryBean
+public interface OpeningRepository<T extends BaseOpeningEntity> extends JpaRepository<T, Long> {
   List<SilvicultureSearchProjection> searchBy(
       OpeningSearchFiltersDto filter,
       List<Long> openingIds,
