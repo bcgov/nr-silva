@@ -7,7 +7,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 
-// TODO: Complete the entity fields as per the Postgres database schema when implementing CRUD features.
 @Data
 @Builder
 @With
