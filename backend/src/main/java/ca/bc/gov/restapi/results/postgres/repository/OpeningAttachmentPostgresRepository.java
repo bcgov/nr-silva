@@ -53,9 +53,9 @@ public interface OpeningAttachmentPostgresRepository
             update_userid AS updateUserId,
             update_timestamp AS updateTimestamp,
             revision_count AS revisionCount,
-            opening_attachment_guid::text, '-', '' AS attachmentGuid
+            REPLACE(opening_attachment_guid::text, '-', '') AS attachmentGuid
           FROM silva.opening_attachment
-          WHERE opening_attachment_guid::text, '-', '' = :attachmentGuidHex
+          WHERE REPLACE(opening_attachment_guid::text, '-', '') = :attachmentGuidHex
           """,
       nativeQuery = true)
   Optional<OpeningAttachmentMetaProjection> findByAttachmentGuid(

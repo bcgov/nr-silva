@@ -931,11 +931,11 @@ public class SilvaPostgresQueryConstants {
 							attachment_description AS attachmentDescription,
 							mime_type_code AS mimeTypeCode,
 							entry_userid AS entryUserId,
-							entry_timestamp AS entryTimestamp, 
+							entry_timestamp AS entryTimestamp,
 							update_userid AS updateUserId,
 							update_timestamp AS updateTimestamp,
 							revision_count AS revisionCount,
-							opening_attachment_guid::text AS attachmentGuid
+							REPLACE(opening_attachment_guid::text, '-', '') AS attachmentGuid
 						FROM silva.opening_attachment
 						WHERE opening_id = :openingId
 						""";
