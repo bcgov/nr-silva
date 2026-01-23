@@ -28,7 +28,10 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RestController("commonOpeningEndpoint")
-@RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/openings", produces = {
+    MediaType.APPLICATION_JSON_VALUE,
+    MediaType.APPLICATION_PROBLEM_JSON_VALUE
+})
 @RequiredArgsConstructor
 public class OpeningEndpoint {
   private final UserOpeningService userOpeningService;
