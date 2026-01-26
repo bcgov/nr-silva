@@ -48,6 +48,10 @@ on:
         description: Flyway environment for backend database migrations
         default: "prod"
         type: string
+      backend_primary_db:
+        description: Primary database for backend
+        default: "oracle"
+        type: string
 
     outputs:
       run_tests:
@@ -134,6 +138,7 @@ jobs:
               -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
               -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
+              -p PRIMARY_DATABASE=${{ inputs.backend_primary_db }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
