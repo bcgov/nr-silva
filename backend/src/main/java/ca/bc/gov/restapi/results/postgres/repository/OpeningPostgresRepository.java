@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
@@ -9,7 +10,6 @@ import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +34,11 @@ public interface OpeningPostgresRepository extends OpeningRepository<OpeningEnti
       List<Long> openingIds,
       long page, long size
   );
+
+  @Override
+  @Query(value = SilvaPostgresQueryConstants.SILVICULTURE_SEARCH_EXACT, nativeQuery = true)
+  List<SilvicultureSearchProjection> searchByExact(
+      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
 
   @Override
   @Query(

@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.repository;
 import java.util.List;
 import java.util.Optional;
 
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -35,6 +36,9 @@ public interface OpeningRepository<T extends BaseOpeningEntity> extends JpaRepos
       long page,
       long size
   );
+
+  List<SilvicultureSearchProjection> searchByExact(
+      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
 
   List<OpeningTrendsProjection> getOpeningTrends(
       String startDate,
