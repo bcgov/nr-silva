@@ -42,7 +42,7 @@ const OpeningsSearch = () => {
 
   const openingSearchQuery = useQuery({
     queryKey: ['search', 'openings', searchParams],
-    queryFn: () => openingSearch(searchParams as any),
+    queryFn: () => openingSearch(searchParams),
     enabled: false,
     refetchOnMount: true
   });

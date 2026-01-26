@@ -44,4 +44,42 @@
       }
     }
   }
+
+  #opening-mapsheet-key-label {
+    margin-bottom: 0.5rem;
+  }
+
+  .quad-subquad-separator {
+    height: 100%;
+    display: flex;
+    align-items: end;
+    @include type.type-style('heading-04');
+  }
+
+  .mapsheet-wide-input {
+    inline-size: 10rem;
+  }
+
+  .mapsheet-narrow-input {
+    inline-size: 8rem;
+  }
+
+  #opening-mapsheet-key-label {
+    .#{vars.$bcgov-prefix}--popover-content {
+      inline-size: 26rem;
+      // max-width: 60vw;
+      max-inline-size: 60vw;
+    }
+  }
+
+  .example-image {
+    width: 16rem;
+  }
+
+  .opening-mapsheet-tooltip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 1rem;
+  }
 }

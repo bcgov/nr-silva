@@ -1,5 +1,6 @@
 import { ClipboardEvent, FormEvent } from "react";
-import { TextInputEvent } from "../types/GeneralTypes";
+import { TextInputEvent } from "@/types/GeneralTypes";
+import { ItemToStringHandler } from "@carbon/react/lib/components/ComboBox/ComboBox";
 
 /**
  * Creates a mock TextInputEvent with the specified value.
@@ -125,3 +126,13 @@ export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>) => {
   const pos = start + paste.length;
   el.setSelectionRange(pos, pos);
 };
+
+export const comboBoxStringFilter = (options: {
+  item: string;
+  itemToString?: ItemToStringHandler<string> | undefined;
+  inputValue: string | null;
+}) => {
+  const itemStr = options.itemToString ? options.itemToString(options.item) : options.item;
+  if (!options.inputValue) return true;
+  return itemStr.toLowerCase().includes(options.inputValue.toLowerCase());
+}

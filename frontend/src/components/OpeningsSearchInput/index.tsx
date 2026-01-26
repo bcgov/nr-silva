@@ -1,27 +1,31 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, use, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
-import { Checkbox, CheckboxGroup, Column, DatePicker, DatePickerInput, Grid, TextInput } from "@carbon/react";
+import { Checkbox, CheckboxGroup, Column, ComboBox, DatePicker, DatePickerInput, Grid, Stack, TextInput, Tooltip } from "@carbon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from "@/utils/InputUtils";
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from "@/constants";
+import { comboBoxStringFilter, enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from "@/utils/InputUtils";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST, VALID_MAPSHEET_GRID_LIST, VALID_MAPSHEET_LETTER_LIST, VALID_MAPSHEET_QUAD_LIST } from "@/constants";
 import useRefWithSearchParam from "@/hooks/useRefWithSearchParam";
+import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
+import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "@/services/OpenApi";
+import MapsheetKeyImg from "@/assets/img/opening-mapsheet-key-example.png";
+import useBreakpoint from "@/hooks/UseBreakpoint";
 
 import CustomMultiSelect from "../CustomMultiSelect";
+import TooltipLabel from "../TooltipLabel";
 
 import './styles.scss';
-import { getClientLabel } from "../../utils/ForestClientUtils";
-import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "../../services/OpenApi";
+
 
 type props = {
   searchParams: OpeningSearchParamsType | undefined;
   onSearchParamsChange: (field: keyof OpeningSearchParamsType, value: unknown) => void;
 }
 const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
+  const breakpoint = useBreakpoint();
   const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
-  const [selectedClients, setSelectedClients] = useState<ForestClientAutocompleteResultDto[] | null>(null);
   const [matchingClients, setMatchingClients] = useState<ForestClientAutocompleteResultDto[]>([]);
 
   const openingIdInputRef = useRef<HTMLInputElement>(null); //NUMBER(10,0)
@@ -32,7 +36,49 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   const timberMarkInputRef = useRef<HTMLInputElement>(null); //VARCHAR2(10)
   const createdByMeCheckboxRef = useRef<HTMLInputElement>(null);
   const frpaSectionCheckboxRef = useRef<HTMLInputElement>(null);
+  const mapsheetSquareInputRef = useRef<HTMLInputElement>(null); //VARCHAR2(3)
+  const openingNumberInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(4)
 
+  // Store initial clientNumbers on mount to prefetch only once
+  const initialClientNumbersRef = useRef<string[] | undefined>(undefined);
+  const hasLoadedInitialClientsRef = useRef(false);
+
+  // Capture clientNumbers on first arrival of searchParams
+  useEffect(() => {
+    if (!hasLoadedInitialClientsRef.current && searchParams?.clientNumbers && searchParams.clientNumbers.length > 0) {
+      initialClientNumbersRef.current = searchParams.clientNumbers;
+    }
+  }, [searchParams?.clientNumbers]);
+
+  // Prefetch client data when searchParams contains clientNumbers
+  const initialClientsQuery = useQuery({
+    queryKey: ['forest-clients', 'byClientNumbers', initialClientNumbersRef.current],
+    queryFn: () => API.ForestClientEndpointService.searchByClientNumbers(
+      initialClientNumbersRef.current!,
+      0,
+      initialClientNumbersRef.current!.length
+    ),
+    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbersRef.current && initialClientNumbersRef.current.length > 0),
+  });
+
+  // Merge prefetched clients into matchingClients
+  useEffect(() => {
+    if (initialClientsQuery.data && initialClientsQuery.data.length > 0) {
+      setMatchingClients((prev) => {
+        const existing = prev ?? [];
+        const existingIds = new Set(existing.map((c) => c.id));
+        const toAdd = initialClientsQuery.data
+          .filter((c) => c && c.clientNumber != null && !existingIds.has(c.clientNumber))
+          .map((c) => ({
+            id: c.clientNumber,
+            acronym: c.acronym,
+            name: c.name,
+          }));
+        return existing.concat(toAdd);
+      });
+      hasLoadedInitialClientsRef.current = true;
+    }
+  }, [initialClientsQuery.data]);
 
   const categoryQuery = useQuery({
     queryKey: ["codes", "opening-categories"],
@@ -65,13 +111,11 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
     const handler = setTimeout(() => {
       clientMutation.mutate(clientSearchTerm);
-    }, 300);
+    }, 200);
 
     // Clear timeout if user types again
     return () => clearTimeout(handler);
   }, [clientSearchTerm]);
-
-
 
   // Update text inputs with search params
   useRefWithSearchParam(openingIdInputRef, searchParams?.openingId);
@@ -80,6 +124,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   useRefWithSearchParam(cutBlockInputRef, searchParams?.cutBlockId);
   useRefWithSearchParam(cuttingPermitInputRef, searchParams?.cuttingPermitId);
   useRefWithSearchParam(timberMarkInputRef, searchParams?.timberMark);
+  useRefWithSearchParam(mapsheetSquareInputRef, searchParams?.mapsheetSquare);
+  useRefWithSearchParam(openingNumberInputRef, searchParams?.subOpeningNumber);
 
   // Update checkboxes with search params
   useRefWithSearchParam(createdByMeCheckboxRef, searchParams?.isCreatedByUser, true);
@@ -163,6 +209,116 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         />
       </Column>
 
+      {/* Opening Mapsheet Key aka Opening Number */}
+      <Column sm={4} md={8} lg={16} max={12}>
+        <TooltipLabel
+          id="opening-mapsheet-key-label"
+          label="Opening mapsheet key"
+          align="bottom"
+          tooltip={
+            <div className="opening-mapsheet-tooltip">
+              The opening mapsheet key consists of the mapsheet grid, letter, square, quad, sub-quad,
+              and opening number.
+              <img src={MapsheetKeyImg} alt="Opening Mapsheet Key Example" className="example-image" />
+              Example: An opening with 92L 045 0.0 123 would have:
+              <ul className="default-bullet-list">
+                <li>Mapsheet grid: 92</li>
+                <li>Mapsheet letter: L</li>
+                <li>Mapsheet square: 045</li>
+                <li>Mapsheet quad: 0</li>
+                <li>Mapsheet sub-quad: 0</li>
+                <li>Opening number: 123</li>
+              </ul>
+            </div>
+          }
+        />
+
+        <Stack
+          orientation={(breakpoint === 'sm' || breakpoint === 'md') ? "vertical" : "horizontal"}
+          gap={1}
+          className="opening-mapsheet-key-stack"
+        >
+          {/* Mapsheet Grid */}
+          <ComboBox
+            id="mapsheet-grid-combobox"
+            items={VALID_MAPSHEET_GRID_LIST}
+            className="mapsheet-wide-input"
+            placeholder="Grid"
+            onChange={(data) => onSearchParamsChange('mapsheetGrid', data.selectedItem ? String(data.selectedItem) : undefined)}
+            selectedItem={searchParams?.mapsheetGrid ?? null}
+            shouldFilterItem={comboBoxStringFilter}
+          />
+
+          {/* Mapsheet Letter */}
+          <ComboBox
+            id="mapsheet-letter-combobox"
+            className="mapsheet-narrow-input"
+            items={VALID_MAPSHEET_LETTER_LIST}
+            placeholder="Letter"
+            onChange={(data) => onSearchParamsChange('mapsheetLetter', data.selectedItem ? String(data.selectedItem) : undefined)}
+            selectedItem={searchParams?.mapsheetLetter ?? null}
+            shouldFilterItem={comboBoxStringFilter}
+          />
+
+          {/* Mapsheet Square */}
+          <TextInput
+            ref={mapsheetSquareInputRef}
+            id="mapsheet-square-input"
+            className="mapsheet-narrow-input"
+            name="mapsheet-square"
+            labelText=""
+            placeholder="Square"
+            onInput={handleAutoUpperInput}
+            onPaste={handleAutoUpperPaste}
+            onBlur={(e) => onSearchParamsChange('mapsheetSquare', e.target.value ? e.target.value : undefined)}
+          />
+
+          {/* Mapsheet Quad */}
+          <ComboBox
+            id="mapsheet-quad-combobox"
+            className="mapsheet-narrow-input"
+            items={VALID_MAPSHEET_QUAD_LIST}
+            placeholder="Quad"
+            onChange={(data) => onSearchParamsChange('mapsheetQuad', data.selectedItem ? String(data.selectedItem) : undefined)}
+            selectedItem={searchParams?.mapsheetQuad ?? null}
+            shouldFilterItem={comboBoxStringFilter}
+          />
+
+          {
+            (breakpoint !== 'sm' && breakpoint !== 'md')
+              ? (<div className="quad-subquad-separator">.</div>)
+              : null
+          }
+
+          {/* Mapsheet Sub-quad */}
+          <ComboBox
+            id="mapsheet-subquad-combobox"
+            className="mapsheet-narrow-input"
+            items={VALID_MAPSHEET_QUAD_LIST}
+            placeholder="Subquad"
+            onChange={(data) => onSearchParamsChange('mapsheetSubQuad', data.selectedItem ? String(data.selectedItem) : undefined)}
+            selectedItem={searchParams?.mapsheetSubQuad ?? null}
+            shouldFilterItem={comboBoxStringFilter}
+          />
+
+          {/* Opening Number */}
+          <TextInput
+            ref={openingNumberInputRef}
+            id="opening-number-input"
+            className="mapsheet-wide-input"
+            name="opening-number"
+            labelText=""
+            placeholder="Opening Number"
+            onInput={handleAutoUpperInput}
+            onPaste={handleAutoUpperPaste}
+            onBlur={(e) => onSearchParamsChange('subOpeningNumber', e.target.value ? e.target.value : undefined)}
+          />
+
+
+        </Stack>
+
+      </Column>
+
       {/* Opening Categories */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
@@ -236,12 +392,13 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       {/* Client */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
+          key={String(hasLoadedInitialClientsRef.current)}
           placeholder={
             searchParams?.clientNumbers && searchParams.clientNumbers.length > 0
-              ? searchParams?.clientNumbers.map((num) => matchingClients.find((c) => c.id === num)?.acronym ?? num).join(', ')
+              ? searchParams?.clientNumbers.map((num) => getClientSimpleLabel(matchingClients.find((c) => c.id === num))).join(', ')
               : 'Choose one or more options'
           }
-          titleText="Client"
+          titleText={<TooltipLabel label="Client" tooltip="Type at least 2 characters to search clients, matching options will be loaded." />}
           id="client-multi-select"
           className="opening-search-multi-select"
           items={matchingClients}
@@ -256,6 +413,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             setClientSearchTerm(String(changes));
           }}
           selectedItems={matchingClients.filter(client => searchParams?.clientNumbers?.includes(client.id ?? '')) ?? []}
+          showSkeleton={initialClientsQuery.isLoading}
         />
       </Column>
 
