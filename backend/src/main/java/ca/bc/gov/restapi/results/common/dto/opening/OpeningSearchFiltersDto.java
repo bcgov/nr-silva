@@ -36,9 +36,9 @@ public class OpeningSearchFiltersDto {
   private final String mainSearchTerm;
   private final String clientLocationCode;
   private final String clientNumber;
-  private final String myOpeningsUserId;
 
-  @Setter private String requestUserId;
+  @Setter
+  private String requestUserId;
 
   /** Creates an instance of the search opening filter dto. */
   public OpeningSearchFiltersDto(
@@ -46,7 +46,6 @@ public class OpeningSearchFiltersDto {
       List<String> category,
       List<String> statusList,
       Boolean myOpenings,
-      String myOpeningsUserId,
       Boolean submittedToFrpa,
       String disturbanceDateStart,
       String disturbanceDateEnd,
@@ -69,7 +68,6 @@ public class OpeningSearchFiltersDto {
     this.statusList =
         !CollectionUtils.isEmpty(statusList) ? statusList : List.of(SilvaOracleConstants.NOVALUE);
     this.myOpenings = myOpenings;
-    this.myOpeningsUserId = myOpeningsUserId;
     this.submittedToFrpa = BooleanUtils.toString(submittedToFrpa, "YES", "NO", "NO");
     this.disturbanceDateStart =
         Objects.isNull(disturbanceDateStart) ? null : disturbanceDateStart.trim();
@@ -113,7 +111,6 @@ public class OpeningSearchFiltersDto {
     this.clientLocationCode = null;
     this.clientNumber = null;
     this.requestUserId = null;
-    this.myOpeningsUserId = null;
   }
 
   /**
@@ -148,8 +145,6 @@ public class OpeningSearchFiltersDto {
       case SilvaOracleConstants.MAIN_SEARCH_TERM -> !Objects.isNull(this.mainSearchTerm);
       case SilvaOracleConstants.LOCATION_CODE -> !Objects.isNull(this.clientLocationCode);
       case SilvaOracleConstants.CLIENT_NUMBER -> !Objects.isNull(this.clientNumber);
-      case SilvaOracleConstants.MY_OPENINGS_USER_ID -> !Objects.isNull(this.myOpeningsUserId)
-          && !this.myOpeningsUserId.isEmpty();
       default -> {
         log.warn("Prop not found {}", prop);
         yield false;
