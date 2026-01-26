@@ -181,6 +181,105 @@ public class SilvaPostgresQueryConstants {
   public static final String SILVICULTURE_SEARCH =
 	  "WITH silviculture_search AS (" + SILVICULTURE_SEARCH_QUERY + ")" + SILVICULTURE_SEARCH_CTE_SELECT + " FROM silviculture_search ORDER BY opening_id DESC " + PAGINATION;
 
+	public static final String SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE =
+			"""
+            WHERE
+                (
+                    COALESCE(:#{#filter.openingId}, 0) = 0 OR op.OPENING_ID = :#{#filter.openingId}
+                )
+                AND (
+                    'NOVALUE' in (:#{#filter.categories}) OR op.open_category_code IN (:#{#filter.categories})
+                )
+                AND (
+                    'NOVALUE' in (:#{#filter.openingStatuses}) OR op.opening_status_code IN (:#{#filter.openingStatuses})
+                )
+                AND (
+                  COALESCE(:#{#filter.licenseeOpeningId},'NOVALUE') = 'NOVALUE' OR op.LICENSEE_OPENING_ID = :#{#filter.licenseeOpeningId}
+                )
+                AND (
+                    COALESCE(:#{#filter.licenseNumber},'NOVALUE') = 'NOVALUE' OR cboa.FOREST_FILE_ID = :#{#filter.licenseNumber}
+                )
+                AND (
+                    COALESCE(:#{#filter.cutBlockId},'NOVALUE') = 'NOVALUE' OR cboa.cut_block_id = :#{#filter.cutBlockId}
+                )
+                AND (
+                    COALESCE(:#{#filter.cuttingPermitId},'NOVALUE') = 'NOVALUE' OR cboa.cutting_permit_id = :#{#filter.cuttingPermitId}
+                )
+                AND (
+                    COALESCE(:#{#filter.timberMark},'NOVALUE') = 'NOVALUE' OR cboa.timber_mark = :#{#filter.timberMark}
+                )
+                AND (
+                    'NOVALUE' in (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
+                )
+                AND (
+                    'NOVALUE' in (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+                )
+                AND (
+                    COALESCE(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR op.ENTRY_USERID = :#{#filter.requestUserId}
+                )
+                AND (
+                    COALESCE(:#{#filter.submittedToFrpa},'NO') = 'NO' OR (
+                    COALESCE(:#{#filter.submittedToFrpa},'NO') = 'YES' AND COALESCE(sra.silv_relief_application_id, 0) > 0
+                  )
+                )
+                AND (
+                  (
+                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE'
+                  )
+                  OR
+                  (
+                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE' AND
+                    op.ENTRY_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+                  )
+                  OR
+                  (
+                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
+                    op.ENTRY_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+                  )
+                  OR
+                  (
+                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
+                    op.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+                    AND TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+                  )
+                )
+                AND (
+                    COALESCE(:#{#filter.mapsheetGrid},'NOVALUE') = 'NOVALUE' OR CAST(op.mapsheet_grid AS NUMERIC) = CAST(:#{#filter.mapsheetGrid} AS NUMERIC)
+                )
+                AND (
+                    COALESCE(:#{#filter.mapsheetLetter},'NOVALUE') = 'NOVALUE' OR op.mapsheet_letter = :#{#filter.mapsheetLetter}
+                )
+                AND (
+                    COALESCE(:#{#filter.mapsheetSquare},'NOVALUE') = 'NOVALUE' OR op.mapsheet_square = :#{#filter.mapsheetSquare}
+                )
+                AND (
+                    COALESCE(:#{#filter.mapsheetQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_quad = :#{#filter.mapsheetQuad}
+                )
+                AND (
+                    COALESCE(:#{#filter.mapsheetSubQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_sub_quad = :#{#filter.mapsheetSubQuad}
+                )
+                AND (
+                    COALESCE(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.subOpeningNumber}
+                )
+                AND (
+                   0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
+                )
+            """;
+
+	public static final String SILVICULTURE_SEARCH_EXACT_QUERY =
+			SILVICULTURE_SEARCH_SELECT
+					+ SILVICULTURE_SEARCH_FROM_JOIN
+					+ SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE;
+
+	public static final String SILVICULTURE_SEARCH_EXACT =
+			"WITH silviculture_search AS ("
+					+ SILVICULTURE_SEARCH_EXACT_QUERY
+					+ ")"
+					+ SILVICULTURE_SEARCH_CTE_SELECT
+					+ " FROM silviculture_search ORDER BY opening_id DESC "
+					+ PAGINATION;
+
+
   public static final String OPENING_TRENDS_QUERY =
 	  """
 	  SELECT
@@ -251,7 +350,7 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN file_type_code ftc ON (pfu.file_type_code = ftc.file_type_code)
 			LEFT JOIN mgmt_unit_type_code mutc ON (pfu.mgmt_unit_type = mutc.mgmt_unit_type_code)
 			WHERE op.opening_id = :openingId""";
-
+ 
 	public static final String GET_OPENING_OVERVIEW_MILESTONE =
 			"""
 			SELECT
