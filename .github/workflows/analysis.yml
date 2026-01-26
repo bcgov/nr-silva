@@ -15,16 +15,16 @@ permissions: {}
 
 jobs:
   tests-backend:
-    name: ${{ matrix.name }}
+    name: '${{ matrix.name }}'
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
     strategy:
       matrix:
         include:
-          - db: oracle
-            name: Tests (Backend - Oracle)
-          - db: postgres
-            name: Tests (Backend - Postgres)
+          - db: 'oracle'
+            name: 'Tests (Backend - Oracle)'
+          - db: 'postgres'
+            name: 'Tests (Backend - Postgres)'
     env:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
     steps:
