@@ -15,7 +15,7 @@ permissions: {}
 
 jobs:
   tests-backend:
-    name: '${{ matrix.name }}'
+    name: ${{ github.event.pull_request.draft && 'Tests (Backend)' || matrix.name }}
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
     strategy:
