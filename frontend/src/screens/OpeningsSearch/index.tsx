@@ -18,6 +18,7 @@ import {
 import OpeningsSearchInput from "@/components/OpeningsSearchInput";
 
 import './styles.scss';
+import { CircleDash, Search } from "@carbon/icons-react";
 
 const OpeningsSearch = () => {
 
@@ -69,8 +70,8 @@ const OpeningsSearch = () => {
    * Trigger search manually
    */
   const handleSearch = () => {
-    // Only search if params have active filters
-    if (!hasActiveFilters(searchParams)) {
+    // Only search if params have active filters and not already fetching
+    if (!hasActiveFilters(searchParams) && !openingSearchQuery.isFetching) {
       return;
     }
     // Update URL when search is triggered
@@ -101,14 +102,18 @@ const OpeningsSearch = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-          <Button onClick={handleSearch} disabled={!hasActiveFilters(searchParams)}>
-            Search
-          </Button>
-          <Button onClick={handleReset} kind="secondary">
-            Reset
-          </Button>
-        </div>
+        <Grid className="default-sub-grid">
+          <Column sm={4} md={4} lg={6} max={4}>
+            <Button className="default-button" onClick={handleReset} kind="secondary" renderIcon={CircleDash}>
+              Clear all
+            </Button>
+          </Column>
+          <Column sm={4} md={4} lg={6} max={4}>
+            <Button className="default-button" onClick={handleSearch} renderIcon={Search}>
+              Search
+            </Button>
+          </Column>
+        </Grid>
       </Column>
 
       {/* Search form will go here */}

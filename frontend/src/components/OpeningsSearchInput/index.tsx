@@ -209,12 +209,41 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         />
       </Column>
 
+      {/* Opening Categories */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <CustomMultiSelect
+          placeholder={getMultiSelectPlaceholder('categories')}
+          titleText="Opening category"
+          id="category-multi-select"
+          className="opening-search-multi-select"
+          items={categoryQuery.data ?? []}
+          itemToString={codeDescriptionToDisplayText}
+          onChange={handleMultiSelectChange('categories')}
+          selectedItems={categoryQuery.data?.filter(data => searchParams?.categories?.includes(data.code ?? '')) ?? []}
+        />
+      </Column>
+
+      {/* Opening Statuses */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <CustomMultiSelect
+          id="status-multiselect"
+          className="opening-search-multi-select"
+          titleText="Opening status"
+          placeholder={getMultiSelectPlaceholder('openingStatuses')}
+          items={OPENING_STATUS_LIST}
+          itemToString={codeDescriptionToDisplayText}
+          onChange={handleMultiSelectChange('openingStatuses')}
+          selectedItems={OPENING_STATUS_LIST.filter(data => searchParams?.openingStatuses?.includes(data.code ?? '')) ?? []}
+        />
+      </Column>
+
+
       {/* Opening Mapsheet Key aka Opening Number */}
-      <Column sm={4} md={8} lg={16} max={12}>
+      <Column sm={4} md={8} lg={16}>
         <TooltipLabel
           id="opening-mapsheet-key-label"
           label="Opening mapsheet key"
-          align="bottom"
+          align={(breakpoint === 'sm') ? 'bottom' : 'bottom-left'}
           tooltip={
             <div className="opening-mapsheet-tooltip">
               The opening mapsheet key consists of the mapsheet grid, letter, square, quad, sub-quad,
@@ -319,34 +348,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
       </Column>
 
-      {/* Opening Categories */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <CustomMultiSelect
-          placeholder={getMultiSelectPlaceholder('categories')}
-          titleText="Opening category"
-          id="category-multi-select"
-          className="opening-search-multi-select"
-          items={categoryQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('categories')}
-          selectedItems={categoryQuery.data?.filter(data => searchParams?.categories?.includes(data.code ?? '')) ?? []}
-        />
-      </Column>
-
-      {/* Opening Statuses */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <CustomMultiSelect
-          id="status-multiselect"
-          className="opening-search-multi-select"
-          titleText="Opening status"
-          placeholder={getMultiSelectPlaceholder('openingStatuses')}
-          items={OPENING_STATUS_LIST}
-          itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('openingStatuses')}
-          selectedItems={OPENING_STATUS_LIST.filter(data => searchParams?.openingStatuses?.includes(data.code ?? '')) ?? []}
-        />
-      </Column>
-
       {/* File ID, aka License Number */}
       <Column sm={4} md={4} lg={6} max={4}>
         <TextInput
@@ -389,6 +390,20 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         />
       </Column>
 
+      {/* Cutting Permit ID */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <TextInput
+          ref={cuttingPermitInputRef}
+          id="cutting-permit-id-input"
+          name="cutting-permit-id"
+          labelText="Cutting permit"
+          placeholder="Enter cutting permit"
+          onInput={handleAutoUpperInput}
+          onPaste={handleAutoUpperPaste}
+          onBlur={(e) => onSearchParamsChange('cuttingPermitId', e.target.value ? e.target.value : undefined)}
+        />
+      </Column>
+
       {/* Client */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
@@ -398,7 +413,13 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
               ? searchParams?.clientNumbers.map((num) => getClientSimpleLabel(matchingClients.find((c) => c.id === num))).join(', ')
               : 'Choose one or more options'
           }
-          titleText={<TooltipLabel label="Client" tooltip="Type at least 2 characters to search clients, matching options will be loaded." />}
+          titleText={
+            <TooltipLabel
+              align={(breakpoint === 'sm') ? 'top' : 'top-left'}
+              label="Client"
+              tooltip="Type at least 2 characters to search clients, matching options will be loaded."
+            />
+          }
           id="client-multi-select"
           className="opening-search-multi-select"
           items={matchingClients}
@@ -414,20 +435,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           }}
           selectedItems={matchingClients.filter(client => searchParams?.clientNumbers?.includes(client.id ?? '')) ?? []}
           showSkeleton={initialClientsQuery.isLoading}
-        />
-      </Column>
-
-      {/* Cutting Permit ID */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <TextInput
-          ref={cuttingPermitInputRef}
-          id="cutting-permit-id-input"
-          name="cutting-permit-id"
-          labelText="Cutting permit"
-          placeholder="Enter cutting permit"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
-          onBlur={(e) => onSearchParamsChange('cuttingPermitId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
 
@@ -457,6 +464,31 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           onPaste={handleAutoUpperPaste}
           onBlur={(e) => onSearchParamsChange('timberMark', e.target.value ? e.target.value : undefined)}
         />
+      </Column>
+
+      {/* Checkboxes */}
+      <Column sm={4} md={8} lg={16}>
+        <CheckboxGroup
+          legendText="Search openings by:"
+          orientation="horizontal"
+          warnText="Warning message goes here"
+        >
+          {/* Created by me */}
+          <Checkbox
+            ref={createdByMeCheckboxRef}
+            id="created-by-me-checkbox"
+            labelText="Created by me"
+            onChange={handleCheckboxChange('isCreatedByUser')}
+          />
+
+          {/* FRPA Section 108 */}
+          <Checkbox
+            ref={frpaSectionCheckboxRef}
+            id="frpa-section-108-checkbox"
+            labelText="FRPA Section 108"
+            onChange={handleCheckboxChange('submittedToFrpa')}
+          />
+        </CheckboxGroup>
       </Column>
 
       {/* Created on date range */}
@@ -506,32 +538,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           </Column>
         </Grid>
       </Column>
-
-
-      <Column sm={4} md={8} lg={16}>
-        <CheckboxGroup
-          legendText="Search openings by:"
-          orientation="horizontal"
-          warnText="Warning message goes here"
-        >
-          {/* Created by me */}
-          <Checkbox
-            ref={createdByMeCheckboxRef}
-            id="created-by-me-checkbox"
-            labelText="Created by me"
-            onChange={handleCheckboxChange('isCreatedByUser')}
-          />
-
-          {/* FRPA Section 108 */}
-          <Checkbox
-            ref={frpaSectionCheckboxRef}
-            id="frpa-section-108-checkbox"
-            labelText="FRPA Section 108"
-            onChange={handleCheckboxChange('submittedToFrpa')}
-          />
-        </CheckboxGroup>
-      </Column>
-
     </Grid>
   );
 }

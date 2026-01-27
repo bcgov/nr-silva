@@ -11,13 +11,22 @@ type TooltipLabelProps = {
   className?: string;
   id?: string;
   align?: PopoverAlignment;
+  autoAlign?: boolean;
 }
 
-const TooltipLabel = ({ label, tooltip, htmlFor, className, id, align }: TooltipLabelProps) => (
+const TooltipLabel = ({
+  label,
+  tooltip,
+  htmlFor,
+  className,
+  id,
+  align,
+  autoAlign
+}: TooltipLabelProps) => (
   <div className={`silva-tooltip-label ${className ?? ''}`} id={id}>
     <label className="default-label" htmlFor={htmlFor}>{label}</label>
 
-    <Tooltip label={tooltip} align={align} >
+    <Tooltip label={tooltip} align={align} autoAlign={autoAlign}>
       <Information />
     </Tooltip>
   </div>
