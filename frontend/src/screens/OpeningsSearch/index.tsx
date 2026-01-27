@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import {
   Grid,
@@ -44,7 +44,7 @@ import './styles.scss';
 const OpeningsSearch = () => {
 
   const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
-  const hasAutoSearchedFromUrl = useRef(false);
+  const [queryParams, setQueryParams] = useState<OpeningSearchParamsType>();
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
@@ -56,15 +56,18 @@ const OpeningsSearch = () => {
     const urlParams = readOpeningSearchUrlParams();
     // Apply URL params if there are active filters OR if pagination params exist
     if (hasActiveFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
-      setSearchParams(urlParams);
-      // Set pagination states from URL params
-      if (urlParams.page !== undefined) {
-        setCurrPageNumber(urlParams.page);
-      }
-      if (urlParams.size !== undefined) {
-        setCurrPageSize(urlParams.size);
-      }
-      hasAutoSearchedFromUrl.current = true;
+      const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
+      const nextSize = urlParams.size ?? PageSizesConfig[0]!;
+      const paramsWithPagination = {
+        ...urlParams,
+        page: nextPage,
+        size: nextSize,
+      } as OpeningSearchParamsType;
+
+      setSearchParams(paramsWithPagination);
+      setCurrPageNumber(nextPage);
+      setCurrPageSize(nextSize);
+      setQueryParams(paramsWithPagination);
     }
   }, []);
 
@@ -76,19 +79,10 @@ const OpeningsSearch = () => {
   }, []);
 
   const openingSearchQuery = useQuery({
-    queryKey: ['search', 'openings', { ...searchParams, page: currPageNumber, size: currPageSize }],
-    queryFn: () => openingSearch({ ...searchParams, page: currPageNumber, size: currPageSize }),
-    enabled: false,
-    refetchOnMount: true
+    queryKey: ['search', 'openings', queryParams],
+    queryFn: () => openingSearch(queryParams as OpeningSearchParamsType),
+    enabled: !!queryParams,
   });
-
-  // If the page was loaded with URL params, perform a one-time auto-search
-  useEffect(() => {
-    if (hasAutoSearchedFromUrl.current && hasActiveFilters(searchParams)) {
-      hasAutoSearchedFromUrl.current = false; // reset to prevent re-triggering
-      openingSearchQuery.refetch();
-    }
-  }, [searchParams, openingSearchQuery]);
 
   /**
    * Handler to update a single field in searchParams
@@ -104,14 +98,21 @@ const OpeningsSearch = () => {
    * Trigger search manually
    */
   const handleSearch = () => {
-    // Only search if params have active filters and not already fetching
-    if (!hasActiveFilters(searchParams) && !openingSearchQuery.isFetching) {
+    const paramsWithPagination = {
+      ...(searchParams ?? {}),
+      page: DEFAULT_PAGE_NUM,
+      size: PageSizesConfig[0]!,
+    } as OpeningSearchParamsType;
+
+    if (!hasActiveFilters(paramsWithPagination)) {
       return;
     }
-    // Update URL when search is triggered
-    updateOpeningSearchUrlParams(searchParams);
-    // Revalidate query - if params are already set, this re-runs the query
-    openingSearchQuery.refetch();
+    setCurrPageNumber(DEFAULT_PAGE_NUM);
+    setCurrPageSize(PageSizesConfig[0]!);
+    setSearchParams(paramsWithPagination);
+    setQueryParams(paramsWithPagination);
+    setSelectedOpeningIds([]);
+    updateOpeningSearchUrlParams(paramsWithPagination);
   };
 
   /**
@@ -119,23 +120,32 @@ const OpeningsSearch = () => {
    */
   const handleReset = () => {
     setSearchParams(undefined);
+    setQueryParams(undefined);
+    setCurrPageNumber(DEFAULT_PAGE_NUM);
+    setCurrPageSize(PageSizesConfig[0]!);
+    setSelectedOpeningIds([]);
+    updateOpeningSearchUrlParams(undefined);
   };
 
   const handlePagination = (paginationObj: PaginationOnChangeType) => {
     // Convert to 0 based index
     const nextPageNum = paginationObj.page - 1;
     const nextPageSize = paginationObj.pageSize;
-    console.log('nextPageNum', nextPageNum);
+    if (!queryParams) {
+      return;
+    }
+
+    const paramsWithPagination: OpeningSearchParamsType = {
+      ...queryParams,
+      page: nextPageNum,
+      size: nextPageSize,
+    };
+
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
-    updateOpeningSearchUrlParams({
-      ...searchParams,
-      page: nextPageNum,
-      size: nextPageSize,
-    });
-
-    openingSearchQuery.refetch();
+    setQueryParams(paramsWithPagination);
+    updateOpeningSearchUrlParams(paramsWithPagination);
   };
 
   const handleRowSelection = (id: number) => {
@@ -269,16 +279,21 @@ const OpeningsSearch = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {openingSearchQuery.data?.content?.map((row) => (
-                <OpeningTableRow
-                  key={row.openingId}
-                  headers={searchTableHeaders}
-                  rowData={row}
-                  showMap={true}
-                  selectedRows={selectedOpeningIds}
-                  handleRowSelection={handleRowSelection}
-                />
-              ))}
+              {
+                !openingSearchQuery.isLoading ? (
+                  openingSearchQuery.data?.content?.map((row) => (
+                    <OpeningTableRow
+                      key={row.openingId}
+                      headers={searchTableHeaders}
+                      rowData={row}
+                      showMap={true}
+                      selectedRows={selectedOpeningIds}
+                      handleRowSelection={handleRowSelection}
+                    />
+                  ))
+                )
+                  : null
+              }
             </TableBody>
           </Table>
           {/* Display either pagination or empty message */}
