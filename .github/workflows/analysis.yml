@@ -27,6 +27,7 @@ jobs:
             name: 'Tests (Backend - Postgres)'
     env:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
+      PRIMARY_DB: ${{ matrix.db }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
