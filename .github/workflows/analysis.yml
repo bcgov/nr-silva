@@ -20,32 +20,39 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
-      PRIMARY_DB: ${{ matrix.db }}
     steps:
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         with:
           commands: |
-            PRIMARY_DB="oracle" ./mvnw -s ~/.m2/settings.xml clean install \
-              -Dflyway.environment="oracle" \
-              -Djacoco.destFile=target/jacoco-run1.exec \
-              --no-transfer-progress checkstyle:checkstyle -P all-tests
+            mkdir -p ~/.m2
+             if [ -f settings.xml ]; then
+               cp settings.xml ~/.m2/settings.xml
+             fi
+             # Run tests with Oracle database
+             ./mvnw -s ~/.m2/settings.xml clean install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
 
-            PRIMARY_DB="postgres" ./mvnw -s ~/.m2/settings.xml clean install \
-            -Dflyway.environment="postgres" \
-            -Djacoco.destFile=target/jacoco-run1.exec \
-            --no-transfer-progress checkstyle:checkstyle -P all-tests
+             # Save Oracle execution data
+             mkdir -p target/jacoco-merge
+             cp target/jacoco.exec target/jacoco-merge/jacoco-oracle.exec || true
 
-            # Merge + report (you'll need jacoco-maven-plugin configured for these goals)
-            ./mvnw jacoco:merge jacoco:report -Djacoco.mergeFile=target/jacoco-merged.exec -Djacoco.execFiles=target/jacoco-run1.exec,target/jacoco-run2.exec
-            -Djacoco.mergeFile=target/jacoco-merged.exec \
-            -Djacoco.execFiles=target/jacoco-run1.exec,target/jacoco-run2.exec
+             # Run tests with Postgres database (skipping clean to preserve first results)
+             ./mvnw -s ~/.m2/settings.xml install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
+
+             # Save Postgres execution data
+             cp target/jacoco.exec target/jacoco-merge/jacoco-postgres.exec || true
+
+             # Merge JaCoCo execution files
+             ./mvnw -s ~/.m2/settings.xml jacoco:merge@merge-all-tests -Djakoco.destFile=target/jacoco-merge/jacoco-merged.exec || true
+
+             # Generate merged report
+             ./mvnw -s ~/.m2/settings.xml jacoco:report@report-all-tests -Djakoco.dataFile=target/jacoco-merge/jacoco-merged.exec || true
           dir: backend
           java-cache: maven
           java-distribution: temurin
           java-version: 21
           sonar_args: >
             -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/**
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco-all-tests/jacoco.xml
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
