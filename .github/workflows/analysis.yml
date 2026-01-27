@@ -18,28 +18,27 @@ jobs:
     name: ${{ matrix.name }}
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        include:
-          - db: 'oracle'
-            name: 'Tests (Backend - Oracle)'
-          - db: 'postgres'
-            name: 'Tests (Backend - Postgres)'
     env:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
       PRIMARY_DB: ${{ matrix.db }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         with:
           commands: |
-            mkdir -p ~/.m2
-            if [ -f settings.xml ]; then
-              cp settings.xml ~/.m2/settings.xml
-            fi
-            ./mvnw -s ~/.m2/settings.xml clean install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=${{ matrix.db }} --no-transfer-progress checkstyle:checkstyle -P all-tests
+            PRIMARY_DB="oracle" ./mvnw -s ~/.m2/settings.xml clean install \
+              -Dflyway.environment="oracle" \
+              -Djacoco.destFile=target/jacoco-run1.exec \
+              --no-transfer-progress checkstyle:checkstyle -P all-tests
+
+            PRIMARY_DB="postgres" ./mvnw -s ~/.m2/settings.xml clean install \
+            -Dflyway.environment="postgres" \
+            -Djacoco.destFile=target/jacoco-run1.exec \
+            --no-transfer-progress checkstyle:checkstyle -P all-tests
+
+            # Merge + report (you'll need jacoco-maven-plugin configured for these goals)
+            ./mvnw jacoco:merge jacoco:report -Djacoco.mergeFile=target/jacoco-merged.exec -Djacoco.execFiles=target/jacoco-run1.exec,target/jacoco-run2.exec
+            -Djacoco.mergeFile=target/jacoco-merged.exec \
+            -Djacoco.execFiles=target/jacoco-run1.exec,target/jacoco-run2.exec
           dir: backend
           java-cache: maven
           java-distribution: temurin
