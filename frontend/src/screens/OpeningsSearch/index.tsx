@@ -13,6 +13,8 @@ import {
   DataTable,
   InlineLoading,
   Stack,
+  TableToolbarMenu,
+  Checkbox,
 } from "@carbon/react";
 
 import FavOpeningSection from "@/components/FavouriteOpenings/FavOpeningSection";
@@ -25,14 +27,17 @@ import {
   hasActiveFilters,
 } from "@/utils/OpeningSearchParamsUtils";
 import OpeningsSearchInput from "@/components/OpeningsSearchInput";
-
 import { CircleDash, Search } from "@carbon/icons-react";
 import OpeningTableRow from "@/components/OpeningTableRow";
 import EmptySection from "@/components/EmptySection";
-import { usePreference } from "@/contexts/PreferenceProvider";
-import { OpeningHeaderType } from "@/types/TableHeader";
-import { PageSizesConfig } from "../../constants/tableConstants";
-import { PaginationOnChangeType } from "../../types/GeneralTypes";
+import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import OpeningsMap from "@/components/OpeningsMap";
+
+import { defaultSearchTableHeaders } from "./constants";
+
 
 import './styles.scss';
 
@@ -40,17 +45,25 @@ const OpeningsSearch = () => {
 
   const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
   const hasAutoSearchedFromUrl = useRef(false);
-  const { userPreference, updatePreferences } = usePreference();
-  const [searchTableHeaders, setSearchTableHeaders] = useState<
-    OpeningHeaderType[]
-  >(() => structuredClone(userPreference.visibleColumns.silvicultureSearch) || []);
+  const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
+  const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
+  const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
+
 
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
     const urlParams = readOpeningSearchUrlParams();
-    if (hasActiveFilters(urlParams)) {
+    // Apply URL params if there are active filters OR if pagination params exist
+    if (hasActiveFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
       setSearchParams(urlParams);
+      // Set pagination states from URL params
+      if (urlParams.page !== undefined) {
+        setCurrPageNumber(urlParams.page);
+      }
+      if (urlParams.size !== undefined) {
+        setCurrPageSize(urlParams.size);
+      }
       hasAutoSearchedFromUrl.current = true;
     }
   }, []);
@@ -63,8 +76,8 @@ const OpeningsSearch = () => {
   }, []);
 
   const openingSearchQuery = useQuery({
-    queryKey: ['search', 'openings', searchParams],
-    queryFn: () => openingSearch(searchParams),
+    queryKey: ['search', 'openings', { ...searchParams, page: currPageNumber, size: currPageSize }],
+    queryFn: () => openingSearch({ ...searchParams, page: currPageNumber, size: currPageSize }),
     enabled: false,
     refetchOnMount: true
   });
@@ -112,14 +125,17 @@ const OpeningsSearch = () => {
     // Convert to 0 based index
     const nextPageNum = paginationObj.page - 1;
     const nextPageSize = paginationObj.pageSize;
-
-    setSearchParams((prev) => ({
-      ...prev,
+    console.log('nextPageNum', nextPageNum);
+    setCurrPageNumber(nextPageNum);
+    setCurrPageSize(nextPageSize);
+    setSelectedOpeningIds([]);
+    updateOpeningSearchUrlParams({
+      ...searchParams,
       page: nextPageNum,
       size: nextPageSize,
-    }));
+    });
 
-    handleSearch();
+    openingSearchQuery.refetch();
   };
 
   const handleRowSelection = (id: number) => {
@@ -129,6 +145,19 @@ const OpeningsSearch = () => {
         : [...prev, id]
     );
   };
+
+  const toggleColumn = (key: OpendingHeaderKeyType) => {
+    if (key !== "openingId" && key !== "actions") {
+      setSearchTableHeaders((prevHeaders) =>
+        prevHeaders.map((header) =>
+          header.key === key
+            ? { ...header, selected: !header.selected }
+            : header
+        )
+      );
+    }
+  };
+
 
   return (
     <Grid className="default-grid openings-search-grid">
@@ -161,27 +190,67 @@ const OpeningsSearch = () => {
 
       <Column className="full-width-col" sm={4} md={8} lg={16}>
         <>
+          {
+            selectedOpeningIds.length > 0
+              ? (
+                <OpeningsMap
+                  openingIds={selectedOpeningIds}
+                  setOpeningPolygonNotFound={() => { }}
+                  mapHeight={480}
+                />
+              )
+              : null
+          }
           <div className="search-table-banner">
             <Stack className="search-result-title-section" orientation="vertical">
               <h5 className="search-result-title">Search results</h5>
 
-              <Stack className="search-result-sub-title-section" orientation="horizontal" gap={2}>
+              <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
                 <p className="search-result-subtitle">Total search results:</p>
                 {
-                  openingSearchQuery.isLoading
+                  openingSearchQuery.isLoading && !isAuthRefreshInProgress()
                     ? <InlineLoading />
                     : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
                 }
               </Stack>
             </Stack>
-            <Button
-              className="edit-col-button"
-              data-testid="edit-col-button"
-              type="button"
-              kind="tertiary"
+
+            <TableToolbarMenu
+              className="action-menu-button"
+              iconDescription="Edit columns"
+              menuOptionsClass="opening-search-action-menu-option"
+              renderIcon={
+                () => <Button
+                  className="edit-col-button"
+                  data-testid="edit-col-button"
+                  type="button"
+                  kind="tertiary"
+                >
+                  Edit columns
+                </Button>
+              }
             >
-              Edit columns
-            </Button>
+              <div className="opening-search-action-menu-option-item">
+                <div className="helper-text">
+                  Select columns you want to see
+                </div>
+                {
+                  searchTableHeaders.map((header) =>
+                    header.key !== "actions" ? (
+                      <Checkbox
+                        key={header.key}
+                        className="column-checkbox"
+                        id={`${header.key}-checkbox`}
+                        labelText={header.header}
+                        checked={header.selected}
+                        onChange={() => toggleColumn(header.key)}
+                        readOnly={header.key === "openingId"}
+                      />
+                    ) : null
+                  )
+                }
+              </div>
+            </TableToolbarMenu>
           </div>
           <Table
             className="opening-search-table default-zebra-table"
@@ -205,7 +274,7 @@ const OpeningsSearch = () => {
                   key={row.openingId}
                   headers={searchTableHeaders}
                   rowData={row}
-                  showMap={false}
+                  showMap={true}
                   selectedRows={selectedOpeningIds}
                   handleRowSelection={handleRowSelection}
                 />
@@ -217,8 +286,8 @@ const OpeningsSearch = () => {
             openingSearchQuery.data?.page.totalElements > 0 ? (
             <Pagination
               className="default-pagination-white"
-              page={searchParams?.page ?? 0 + 1}
-              pageSize={searchParams?.size ?? PageSizesConfig[0]}
+              page={currPageNumber + 1}
+              pageSize={currPageSize}
               pageSizes={PageSizesConfig}
               totalItems={openingSearchQuery.data?.page.totalElements}
               onChange={handlePagination}

@@ -1,11 +1,14 @@
 import { OpeningSearchParamsType } from '@/types/OpeningTypes';
 
 /**
- * Check if searchParams has any actual filter values
+ * Check if searchParams has any actual filter values (excluding pagination)
  */
 export const hasActiveFilters = (params: OpeningSearchParamsType | undefined): boolean => {
   if (!params) return false;
-  return Object.values(params).some(v => v !== undefined && v !== null && v !== '');
+  // Exclude page and size from active filters check
+  return Object.entries(params)
+    .filter(([key]) => key !== 'page' && key !== 'size')
+    .some(([, v]) => v !== undefined && v !== null && v !== '');
 };
 
 /**

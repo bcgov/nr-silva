@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import useBreakpoint from "@/hooks/UseBreakpoint";
 import { BreakpointType } from "@/types/BreakpointType";
-import { Bookmark } from "@carbon/icons-react";
+import { Bookmark, ChevronUp } from "@carbon/icons-react";
 
 const FavOpeningSection = () => {
 
@@ -58,8 +58,9 @@ const FavOpeningSection = () => {
                     type="button"
                     kind="ghost"
                     onClick={() => setShowSection(false)}
+                    renderIcon={ChevronUp}
                   >
-                    Hide bookmarks
+                    Hide bookmarked openings
                   </Button>
                 </span>
               </Column>
