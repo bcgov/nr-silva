@@ -40,6 +40,7 @@ import { defaultSearchTableHeaders } from "./constants";
 
 
 import './styles.scss';
+import TableSkeleton from "../../components/TableSkeleton";
 
 const OpeningsSearch = () => {
 
@@ -262,58 +263,84 @@ const OpeningsSearch = () => {
               </div>
             </TableToolbarMenu>
           </div>
-          <Table
-            className="opening-search-table default-zebra-table"
-            aria-label="Opening search table"
-            useZebraStyles
-          >
-            <TableHead>
-              <TableRow>
-                {searchTableHeaders
-                  .filter((header) => header.selected)
-                  .map((header) => (
-                    <TableHeader key={header.key}>
-                      {header.header}
-                    </TableHeader>
-                  ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                !openingSearchQuery.isLoading ? (
-                  openingSearchQuery.data?.content?.map((row) => (
-                    <OpeningTableRow
-                      key={row.openingId}
-                      headers={searchTableHeaders}
-                      rowData={row}
-                      showMap={true}
-                      selectedRows={selectedOpeningIds}
-                      handleRowSelection={handleRowSelection}
-                    />
-                  ))
-                )
-                  : null
-              }
-            </TableBody>
-          </Table>
+
+          {/* Table skeleton */}
+          {
+            (openingSearchQuery.isLoading || isAuthRefreshInProgress())
+              ? (
+                <TableSkeleton
+                  headers={searchTableHeaders}
+                  showToolbar={false}
+                  showHeader={false}
+                />
+              )
+              : null
+          }
+          {
+            !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+              ? (
+                <Table
+                  className="opening-search-table default-zebra-table"
+                  aria-label="Opening search table"
+                  useZebraStyles
+                >
+                  <TableHead>
+                    <TableRow>
+                      {searchTableHeaders
+                        .filter((header) => header.selected)
+                        .map((header) => (
+                          <TableHeader key={header.key}>
+                            {header.header}
+                          </TableHeader>
+                        ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      !openingSearchQuery.isLoading ? (
+                        openingSearchQuery.data?.content?.map((row) => (
+                          <OpeningTableRow
+                            key={row.openingId}
+                            headers={searchTableHeaders}
+                            rowData={row}
+                            showMap={true}
+                            selectedRows={selectedOpeningIds}
+                            handleRowSelection={handleRowSelection}
+                          />
+                        ))
+                      )
+                        : null
+                    }
+                  </TableBody>
+                </Table>
+              )
+              : null
+          }
+
           {/* Display either pagination or empty message */}
-          {openingSearchQuery.data?.page?.totalElements &&
-            openingSearchQuery.data?.page.totalElements > 0 ? (
-            <Pagination
-              className="default-pagination-white"
-              page={currPageNumber + 1}
-              pageSize={currPageSize}
-              pageSizes={PageSizesConfig}
-              totalItems={openingSearchQuery.data?.page.totalElements}
-              onChange={handlePagination}
-            />
-          ) : (
-            <EmptySection
-              pictogram="UserSearch"
-              title="No results"
-              description="Consider adjusting your search term(s) and try again."
-            />
-          )}
+          {
+            !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+              ? (
+                openingSearchQuery.data?.page?.totalElements &&
+                  openingSearchQuery.data?.page.totalElements > 0 ? (
+                  <Pagination
+                    className="default-pagination-white"
+                    page={currPageNumber + 1}
+                    pageSize={currPageSize}
+                    pageSizes={PageSizesConfig}
+                    totalItems={openingSearchQuery.data?.page.totalElements}
+                    onChange={handlePagination}
+                  />
+                ) : (
+                  <EmptySection
+                    pictogram="UserSearch"
+                    title="No results"
+                    description="Consider adjusting your search term(s) and try again."
+                  />
+                )
+              )
+              : null
+          }
         </>
       </Column>
     </Grid >
