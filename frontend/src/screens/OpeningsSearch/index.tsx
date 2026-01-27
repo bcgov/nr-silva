@@ -199,150 +199,157 @@ const OpeningsSearch = () => {
         </Grid>
       </Column>
 
-      <Column className="full-width-col" sm={4} md={8} lg={16}>
-        <>
-          {
-            selectedOpeningIds.length > 0
-              ? (
-                <OpeningsMap
-                  openingIds={selectedOpeningIds}
-                  setOpeningPolygonNotFound={() => { }}
-                  mapHeight={480}
-                />
-              )
-              : null
-          }
-          <div className="search-table-banner">
-            <Stack className="search-result-title-section" orientation="vertical">
-              <h5 className="search-result-title">Search results</h5>
-
-              <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
-                <p className="search-result-subtitle">Total search results:</p>
-                {
-                  openingSearchQuery.isLoading && !isAuthRefreshInProgress()
-                    ? <InlineLoading />
-                    : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
-                }
-              </Stack>
-            </Stack>
-
-            <TableToolbarMenu
-              className="action-menu-button"
-              iconDescription="Edit columns"
-              menuOptionsClass="opening-search-action-menu-option"
-              renderIcon={
-                () => <Button
-                  className="edit-col-button"
-                  data-testid="edit-col-button"
-                  type="button"
-                  kind="tertiary"
-                >
-                  Edit columns
-                </Button>
-              }
-            >
-              <div className="opening-search-action-menu-option-item">
-                <div className="helper-text">
-                  Select columns you want to see
-                </div>
-                {
-                  searchTableHeaders.map((header) =>
-                    header.key !== "actions" ? (
-                      <Checkbox
-                        key={header.key}
-                        className="column-checkbox"
-                        id={`${header.key}-checkbox`}
-                        labelText={header.header}
-                        checked={header.selected}
-                        onChange={() => toggleColumn(header.key)}
-                        readOnly={header.key === "openingId"}
-                      />
-                    ) : null
+      {
+        hasActiveFilters(queryParams) ? (
+          <Column className="full-width-col" sm={4} md={8} lg={16}>
+            <>
+              {
+                selectedOpeningIds.length > 0
+                  ? (
+                    <OpeningsMap
+                      openingIds={selectedOpeningIds}
+                      setOpeningPolygonNotFound={() => { }}
+                      mapHeight={480}
+                    />
                   )
-                }
-              </div>
-            </TableToolbarMenu>
-          </div>
+                  : null
+              }
+              <div className="search-table-banner">
+                <Stack className="search-result-title-section" orientation="vertical">
+                  <h5 className="search-result-title">Search results</h5>
 
-          {/* Table skeleton */}
-          {
-            (openingSearchQuery.isLoading || isAuthRefreshInProgress())
-              ? (
-                <TableSkeleton
-                  headers={searchTableHeaders}
-                  showToolbar={false}
-                  showHeader={false}
-                />
-              )
-              : null
-          }
-          {
-            !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
-              ? (
-                <Table
-                  className="opening-search-table default-zebra-table"
-                  aria-label="Opening search table"
-                  useZebraStyles
-                >
-                  <TableHead>
-                    <TableRow>
-                      {searchTableHeaders
-                        .filter((header) => header.selected)
-                        .map((header) => (
-                          <TableHeader key={header.key}>
-                            {header.header}
-                          </TableHeader>
-                        ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                    <p className="search-result-subtitle">Total search results:</p>
                     {
-                      !openingSearchQuery.isLoading ? (
-                        openingSearchQuery.data?.content?.map((row) => (
-                          <OpeningTableRow
-                            key={row.openingId}
-                            headers={searchTableHeaders}
-                            rowData={row}
-                            showMap={true}
-                            selectedRows={selectedOpeningIds}
-                            handleRowSelection={handleRowSelection}
-                          />
-                        ))
-                      )
-                        : null
+                      openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                        ? <InlineLoading />
+                        : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
-                  </TableBody>
-                </Table>
-              )
-              : null
-          }
+                  </Stack>
+                </Stack>
 
-          {/* Display either pagination or empty message */}
-          {
-            !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
-              ? (
-                openingSearchQuery.data?.page?.totalElements &&
-                  openingSearchQuery.data?.page.totalElements > 0 ? (
-                  <Pagination
-                    className="default-pagination-white"
-                    page={currPageNumber + 1}
-                    pageSize={currPageSize}
-                    pageSizes={PageSizesConfig}
-                    totalItems={openingSearchQuery.data?.page.totalElements}
-                    onChange={handlePagination}
-                  />
-                ) : (
-                  <EmptySection
-                    pictogram="UserSearch"
-                    title="No results"
-                    description="Consider adjusting your search term(s) and try again."
-                  />
-                )
-              )
-              : null
-          }
-        </>
-      </Column>
+                <TableToolbarMenu
+                  className="action-menu-button"
+                  iconDescription="Edit columns"
+                  menuOptionsClass="opening-search-action-menu-option"
+                  renderIcon={
+                    () => <Button
+                      className="edit-col-button"
+                      data-testid="edit-col-button"
+                      type="button"
+                      kind="tertiary"
+                    >
+                      Edit columns
+                    </Button>
+                  }
+                >
+                  <div className="opening-search-action-menu-option-item">
+                    <div className="helper-text">
+                      Select columns you want to see
+                    </div>
+                    {
+                      searchTableHeaders.map((header) =>
+                        header.key !== "actions" ? (
+                          <Checkbox
+                            key={header.key}
+                            className="column-checkbox"
+                            id={`${header.key}-checkbox`}
+                            labelText={header.header}
+                            checked={header.selected}
+                            onChange={() => toggleColumn(header.key)}
+                            readOnly={header.key === "openingId"}
+                          />
+                        ) : null
+                      )
+                    }
+                  </div>
+                </TableToolbarMenu>
+              </div>
+
+              {/* Table skeleton */}
+              {
+                (openingSearchQuery.isLoading || isAuthRefreshInProgress())
+                  ? (
+                    <TableSkeleton
+                      headers={searchTableHeaders}
+                      showToolbar={false}
+                      showHeader={false}
+                    />
+                  )
+                  : null
+              }
+              {
+                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                  ? (
+                    <Table
+                      className="opening-search-table default-zebra-table"
+                      aria-label="Opening search table"
+                      useZebraStyles
+                    >
+                      <TableHead>
+                        <TableRow>
+                          {searchTableHeaders
+                            .filter((header) => header.selected)
+                            .map((header) => (
+                              <TableHeader key={header.key}>
+                                {header.header}
+                              </TableHeader>
+                            ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {
+                          !openingSearchQuery.isLoading ? (
+                            openingSearchQuery.data?.content?.map((row) => (
+                              <OpeningTableRow
+                                key={row.openingId}
+                                headers={searchTableHeaders}
+                                rowData={row}
+                                showMap={true}
+                                selectedRows={selectedOpeningIds}
+                                handleRowSelection={handleRowSelection}
+                              />
+                            ))
+                          )
+                            : null
+                        }
+                      </TableBody>
+                    </Table>
+                  )
+                  : null
+              }
+
+              {/* Display either pagination or empty message */}
+              {
+                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                  ? (
+                    openingSearchQuery.data?.page?.totalElements &&
+                      openingSearchQuery.data?.page.totalElements > 0 ? (
+                      <Pagination
+                        className="default-pagination-white"
+                        page={currPageNumber + 1}
+                        pageSize={currPageSize}
+                        pageSizes={PageSizesConfig}
+                        totalItems={openingSearchQuery.data?.page.totalElements}
+                        onChange={handlePagination}
+                      />
+                    ) : (
+                      <EmptySection
+                        pictogram="UserSearch"
+                        title="No results"
+                        description="Consider adjusting your search term(s) and try again."
+                      />
+                    )
+                  )
+                  : null
+              }
+            </>
+          </Column>
+        )
+          : null
+      }
+
+
     </Grid >
   );
 };
