@@ -266,7 +266,7 @@ public class SilvaOracleQueryConstants {
               NVL(:#{#filter.mapsheetSubQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_sub_quad = :#{#filter.mapsheetSubQuad}
           )
           AND (
-              NVL(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.subOpeningNumber}
+              NVL(:#{#filter.openingNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.openingNumber}
           )
           AND (
              0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)

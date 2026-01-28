@@ -48,8 +48,7 @@ public class SearchEndpoint {
    * @param mapsheetSquare Mapsheet square (alphanumeric)
    * @param mapsheetQuad Mapsheet quadrant (0-4)
    * @param mapsheetSubQuad Mapsheet sub-quadrant (0-4)
-   * @param subOpeningNumber Opening number (4-digit), we call it sub opening number here to avoid
-   *     confusion
+   * @param mapsheetKey Mapsheet key (opening number composed from mapsheet components)
    * @param paginationParameters Pagination settings
    * @return Page of opening search results with exact matching
    */
@@ -89,8 +88,8 @@ public class SearchEndpoint {
           String mapsheetQuad,
       @RequestParam(value = SilvaOracleConstants.MAPSHEET_SUB_QUAD, required = false)
           String mapsheetSubQuad,
-      @RequestParam(value = SilvaOracleConstants.SUB_OPENING_NUMBER, required = false)
-          String subOpeningNumber,
+      @RequestParam(value = SilvaOracleConstants.OPENING_NUMBER, required = false)
+          String openingNumber,
       @ParameterObject Pageable paginationParameters) {
 
     OpeningSearchExactFiltersDto filtersDto =
@@ -114,7 +113,7 @@ public class SearchEndpoint {
             mapsheetSquare,
             mapsheetQuad,
             mapsheetSubQuad,
-            subOpeningNumber);
+            openingNumber);
 
     if (!filtersDto.hasAnyFilter()) {
       throw new MissingSearchParameterException();

@@ -32,7 +32,7 @@ public class SilvaOracleConstants {
   public static final String MAPSHEET_SQUARE = "mapsheetSquare";
   public static final String MAPSHEET_QUAD = "mapsheetQuad";
   public static final String MAPSHEET_SUB_QUAD = "mapsheetSubQuad";
-  public static final String SUB_OPENING_NUMBER = "subOpeningNumber";
+  public static final String OPENING_NUMBER = "openingNumber";
   public static final String LICENSE_NUMBER = "licenseNumber";
   public static final String LICENSEE_OPENING_ID = "licenseeOpeningId";
   public static final String ENTRY_DATE_START = "entryDateStart";

@@ -27,7 +27,7 @@ export class SearchEndpointService {
      * @param mapsheetSquare
      * @param mapsheetQuad
      * @param mapsheetSubQuad
-     * @param subOpeningNumber
+     * @param openingNumber
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -54,7 +54,7 @@ export class SearchEndpointService {
         mapsheetSquare?: string,
         mapsheetQuad?: string,
         mapsheetSubQuad?: string,
-        subOpeningNumber?: string,
+        openingNumber?: string,
         page?: number,
         size: number = 20,
         sort?: Array<string>,
@@ -82,7 +82,7 @@ export class SearchEndpointService {
                 'mapsheetSquare': mapsheetSquare,
                 'mapsheetQuad': mapsheetQuad,
                 'mapsheetSubQuad': mapsheetSubQuad,
-                'subOpeningNumber': subOpeningNumber,
+                'openingNumber': openingNumber,
                 'page': page,
                 'size': size,
                 'sort': sort,

@@ -35,7 +35,7 @@ public class OpeningSearchExactFiltersDto {
   private final String mapsheetSquare;
   private final String mapsheetQuad;
   private final String mapsheetSubQuad;
-  private final String subOpeningNumber;
+  private final String openingNumber;
 
   @Setter private String requestUserId;
 
@@ -60,7 +60,7 @@ public class OpeningSearchExactFiltersDto {
       String mapsheetSquare,
       String mapsheetQuad,
       String mapsheetSubQuad,
-      String subOpeningNumber) {
+      String openingNumber) {
     this.openingId = openingId;
     this.categories =
         !CollectionUtils.isEmpty(categories) ? categories : List.of(SilvaOracleConstants.NOVALUE);
@@ -90,7 +90,7 @@ public class OpeningSearchExactFiltersDto {
     this.mapsheetSquare = Objects.isNull(mapsheetSquare) ? null : mapsheetSquare.trim();
     this.mapsheetQuad = Objects.isNull(mapsheetQuad) ? null : mapsheetQuad.trim();
     this.mapsheetSubQuad = Objects.isNull(mapsheetSubQuad) ? null : mapsheetSubQuad.trim();
-    this.subOpeningNumber = Objects.isNull(subOpeningNumber) ? null : subOpeningNumber.trim();
+    this.openingNumber = Objects.isNull(openingNumber) ? null : openingNumber.trim();
   }
 
   /**
@@ -124,7 +124,7 @@ public class OpeningSearchExactFiltersDto {
       case SilvaOracleConstants.MAPSHEET_SQUARE -> !Objects.isNull(this.mapsheetSquare);
       case SilvaOracleConstants.MAPSHEET_QUAD -> !Objects.isNull(this.mapsheetQuad);
       case SilvaOracleConstants.MAPSHEET_SUB_QUAD -> !Objects.isNull(this.mapsheetSubQuad);
-      case SilvaOracleConstants.SUB_OPENING_NUMBER -> !Objects.isNull(this.subOpeningNumber);
+      case SilvaOracleConstants.OPENING_NUMBER -> !Objects.isNull(this.openingNumber);
       default -> {
         log.warn("Prop not found {}", prop);
         yield false;
@@ -157,6 +157,6 @@ public class OpeningSearchExactFiltersDto {
         || hasValue(SilvaOracleConstants.MAPSHEET_SQUARE)
         || hasValue(SilvaOracleConstants.MAPSHEET_QUAD)
         || hasValue(SilvaOracleConstants.MAPSHEET_SUB_QUAD)
-        || hasValue(SilvaOracleConstants.SUB_OPENING_NUMBER);
+        || hasValue(SilvaOracleConstants.OPENING_NUMBER);
   }
 }

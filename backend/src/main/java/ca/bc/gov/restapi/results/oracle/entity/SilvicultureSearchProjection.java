@@ -18,6 +18,8 @@ public interface SilvicultureSearchProjection {
 
   String getStatus();
 
+  String getLicenseeOpeningId();
+
   String getCuttingPermitId();
 
   String getTimberMark();

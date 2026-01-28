@@ -7,7 +7,6 @@ import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
@@ -44,43 +43,6 @@ public class OpeningSearchService {
   private final ForestClientApiProvider forestClientApiProvider;
   private final UserOpeningService userOpeningService;
 
-  @Transactional
-  public Page<OpeningSearchResponseDto> openingSearch(
-      OpeningSearchFiltersDto filtersDto, Pageable pagination) {
-    log.info(
-        "Search Openings with page index {} and page size {} with filters {}",
-        pagination.getPageNumber(),
-        pagination.getPageSize(),
-        filtersDto);
-
-    validatePageSize(pagination);
-
-    // Set the user in the filter, if required
-    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
-        && Boolean.TRUE.equals(filtersDto.getMyOpenings())) {
-      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
-    }
-
-    List<SilvicultureSearchProjection> searchContent =
-        openingRepository.searchBy(
-            filtersDto, List.of(0L), pagination.getOffset(), pagination.getPageSize());
-
-    long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
-    log.info("Search resulted in {}/{} results", searchContent.size(), total);
-
-    Page<SilvicultureSearchProjection> searchResultPage =
-        new PageImpl<>(searchContent, pagination, total);
-
-    return parsePageResult(searchResultPage);
-  }
-
-  /**
-   * Exact search for openings with direct value matching.
-   *
-   * @param filtersDto the exact search filter criteria.
-   * @param pagination pagination parameters
-   * @return Page of opening search results
-   */
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearchExact(
       OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {
@@ -180,9 +142,10 @@ public class OpeningSearchService {
     return projection ->
         new OpeningSearchResponseDto(
             projection.getOpeningId(),
-            composedOpeningNumber(projection),
+            composedMapsheetKey(projection),
             OpeningCategoryEnum.of(projection.getCategory()),
             OpeningStatusEnum.of(projection.getStatus()),
+            projection.getLicenseeOpeningId(),
             projection.getCuttingPermitId(),
             projection.getTimberMark(),
             projection.getCutBlockId(),
@@ -208,14 +171,14 @@ public class OpeningSearchService {
   }
 
   /**
-   * Constructs the composed opening number from the projection. If any component is null, replaces
+   * Constructs the composed mapsheet key from the projection. If any component is null, replaces
    * it with "--" as a placeholder.
    *
    * @param projection the silviculture search projection
-   * @return the composed opening number (e.g., "93O 045 0.0 343" or "93O 045 -- --" if components
+   * @return the composed mapsheet key (e.g., "93O 045 0.0 343" or "93O 045 -- --" if components
    *     are null)
    */
-  private String composedOpeningNumber(SilvicultureSearchProjection projection) {
+  private String composedMapsheetKey(SilvicultureSearchProjection projection) {
     String mapsheepOpeningId = projection.getMapsheepOpeningId();
     if (mapsheepOpeningId != null && !mapsheepOpeningId.trim().isEmpty()) {
       return mapsheepOpeningId;

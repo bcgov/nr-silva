@@ -1,4 +1,4 @@
-import { OpeningHeaderType } from "../../types/TableHeader";
+import { OpeningHeaderType } from "@/types/TableHeader";
 
 export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'actions', header: 'Actions', selected: true },
@@ -6,7 +6,7 @@ export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'forestFileId', header: 'File Id', selected: true },
   { key: 'cutBlockId', header: 'Cut block', selected: true },
   { key: 'cuttingPermitId', header: 'Cutting permit', selected: true },
-  { key: 'openingNumber', header: 'Mapsheet key', selected: true },
+  { key: 'mapsheetKey', header: 'Mapsheet key', selected: true },
   { key: 'category', header: 'Category', selected: true },
   { key: 'status', header: 'Status', selected: true },
   { key: 'orgUnitName', header: 'Org unit', selected: true },

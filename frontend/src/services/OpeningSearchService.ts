@@ -30,7 +30,7 @@ export const openingSearch = (params: OpeningSearchParamsType | undefined): Canc
     params.mapsheetSquare,
     params.mapsheetQuad,
     params.mapsheetSubQuad,
-    params.subOpeningNumber,
+    params.openingNumber,
     params.page,
     params.size,
     params.sort

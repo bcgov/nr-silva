@@ -69,7 +69,7 @@ export type OpeningSearchParamsType = {
   mapsheetSquare?: string,
   mapsheetQuad?: string,
   mapsheetSubQuad?: string,
-  subOpeningNumber?: string,
+  openingNumber?: string,
   page?: number,
   size?: number,
   sort?: Array<string>,

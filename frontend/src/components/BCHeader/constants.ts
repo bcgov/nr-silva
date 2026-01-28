@@ -42,8 +42,8 @@ export const mainActivitiesItems: LeftMenu[] = [
     items: [
       {
         id: 'openings-search',
-        name: 'Openings search',
-        icon: 'IbmSoftwareWatsonxDataAnalyzeAndProcess',
+        name: 'Openings',
+        icon: 'MapBoundaryVegetation',
         link: '/openings-search',
         disabled: false,
         breadcrumb: false

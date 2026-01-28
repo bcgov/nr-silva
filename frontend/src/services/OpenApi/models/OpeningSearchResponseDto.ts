@@ -5,9 +5,10 @@
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningSearchResponseDto = {
     openingId: number;
-    openingNumber: string | null;
+    mapsheetKey: string | null;
     category: CodeDescriptionDto;
     status: CodeDescriptionDto;
+    licenseeOpeningId: string | null;
     cuttingPermitId: string | null;
     timberMark: string | null;
     cutBlockId: string | null;

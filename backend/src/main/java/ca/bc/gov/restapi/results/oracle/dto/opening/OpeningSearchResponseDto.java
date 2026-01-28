@@ -27,7 +27,7 @@ public class OpeningSearchResponseDto {
   @Schema(
       types = {"string", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private String openingNumber;
+  private String mapsheetKey;
 
   @Schema(
       types = {"object", "null"},
@@ -38,6 +38,11 @@ public class OpeningSearchResponseDto {
       types = {"object", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
   private OpeningStatusEnum status;
+
+  @Schema(
+      types = {"string", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String licenseeOpeningId;
 
   @Schema(
       types = {"string", "null"},

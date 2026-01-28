@@ -125,7 +125,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   useRefWithSearchParam(cuttingPermitInputRef, searchParams?.cuttingPermitId);
   useRefWithSearchParam(timberMarkInputRef, searchParams?.timberMark);
   useRefWithSearchParam(mapsheetSquareInputRef, searchParams?.mapsheetSquare);
-  useRefWithSearchParam(openingNumberInputRef, searchParams?.subOpeningNumber);
+  useRefWithSearchParam(openingNumberInputRef, searchParams?.openingNumber);
 
   // Update checkboxes with search params
   useRefWithSearchParam(createdByMeCheckboxRef, searchParams?.isCreatedByUser, true);
@@ -340,10 +340,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             placeholder="Opening Number"
             onInput={handleAutoUpperInput}
             onPaste={handleAutoUpperPaste}
-            onBlur={(e) => onSearchParamsChange('subOpeningNumber', e.target.value ? e.target.value : undefined)}
+            onBlur={(e) => onSearchParamsChange('openingNumber', e.target.value ? e.target.value : undefined)}
           />
-
-
         </Stack>
 
       </Column>

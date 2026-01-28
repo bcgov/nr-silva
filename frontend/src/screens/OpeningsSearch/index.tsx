@@ -10,7 +10,6 @@ import {
   TableBody,
   Pagination,
   TableHeader,
-  DataTable,
   InlineLoading,
   Stack,
   TableToolbarMenu,
@@ -35,12 +34,11 @@ import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import OpeningsMap from "@/components/OpeningsMap";
+import TableSkeleton from "@/components/TableSkeleton";
 
 import { defaultSearchTableHeaders } from "./constants";
 
-
 import './styles.scss';
-import TableSkeleton from "../../components/TableSkeleton";
 
 const OpeningsSearch = () => {
 
@@ -81,7 +79,7 @@ const OpeningsSearch = () => {
 
   const openingSearchQuery = useQuery({
     queryKey: ['search', 'openings', queryParams],
-    queryFn: () => openingSearch(queryParams as OpeningSearchParamsType),
+    queryFn: () => openingSearch(queryParams),
     enabled: !!queryParams,
   });
 
@@ -168,7 +166,6 @@ const OpeningsSearch = () => {
       );
     }
   };
-
 
   return (
     <Grid className="default-grid openings-search-grid">
