@@ -2,13 +2,12 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningBaseProjection;
+import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.UserOpeningRepository;
 import java.util.List;
@@ -42,15 +41,15 @@ class UserOpeningSearchServiceTest {
   void setup() {
     this.userOpeningService =
         new UserOpeningService(
-            loggedUserHelper, userOpeningRepository,
-            openingRepository);
+            loggedUserHelper, userOpeningRepository, openingRepository);
   }
 
   @Test
   @DisplayName("Save opening to user happy path should succeed")
   void addUser_FavoriteOpening_happyPath_shouldSucceed() {
+    OpeningBaseProjection openingBaseProjection = mock(OpeningBaseProjection.class);
     when(loggedUserHelper.getLoggedUserId()).thenReturn(USER_ID);
-    when(openingRepository.findById(any())).thenReturn(Optional.of(new OpeningEntity()));
+    when(openingRepository.findProjectionById(any())).thenReturn(Optional.of(openingBaseProjection));
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
     userOpeningService.addUserFavoriteOpening(112233L);
   }

@@ -84,6 +84,9 @@ parameters:
   - name: FLYWAY_ENVIRONMENT
     description: The Flyway environment to use for database migrations
     value: "prod"
+  - name: PRIMARY_DB
+    description: The primary database to use (oracle or postgres)
+    value: "oracle"
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -165,6 +168,8 @@ objects:
                   value: ${RESULTS_ENV_OPENSEARCH}
                 - name: FLYWAY_ENVIRONMENT
                   value: ${FLYWAY_ENVIRONMENT}
+                - name: PRIMARY_DB
+                  value: ${PRIMARY_DB}
                 - name: DATABASE_HOST
                   valueFrom:
                     secretKeyRef:

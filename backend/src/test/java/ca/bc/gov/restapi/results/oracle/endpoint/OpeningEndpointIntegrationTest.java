@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.jayway.jsonpath.JsonPath;
@@ -709,8 +709,19 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.[3].coverId").value(2638622))
-        .andExpect(jsonPath("$.[3].polygonId").value("D4"))
+        .andExpect(jsonPath("$.length()").value(6))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638622)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638622)].polygonId").value("D4"))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638621)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638621)].polygonId").value("C3"))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638623)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638623)].polygonId").value("E"))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638619)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638619)].polygonId").value("A1"))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638620)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638620)].polygonId").value("B2"))
+        .andExpect(jsonPath("$.[*].coverId", Matchers.hasItem(2638624)))
+        .andExpect(jsonPath("$.[?(@.coverId == 2638624)].polygonId").value("L"))
         .andReturn();
   }
 
