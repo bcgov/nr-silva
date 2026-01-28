@@ -33,13 +33,13 @@ jobs:
 
              # Save Oracle execution data
              mkdir -p target/jacoco-merge
-             cp target/jacoco.exec target/jacoco-merge/jacoco-oracle.exec || true
+             cp target/coverage-reports/jacoco-ut.exec target/jacoco-merge/jacoco-oracle.exec || true
 
              # Run tests with Postgres database (skipping clean to preserve first results)
              ./mvnw -s ~/.m2/settings.xml install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
 
              # Save Postgres execution data
-             cp target/jacoco.exec target/jacoco-merge/jacoco-postgres.exec || true
+             cp target/coverage-reports/jacoco-ut.exec target/jacoco-merge/jacoco-postgres.exec || true
 
              # Merge JaCoCo execution files
              ./mvnw -s ~/.m2/settings.xml jacoco:merge@merge-all-tests -Djakoco.destFile=target/jacoco-merge/jacoco-merged.exec || true
