@@ -178,11 +178,11 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
-  @DisplayName("Opening search exact with invalid entry date range should return 400")
-  void openingSearchExact_invalidEntryDateRange_shouldReturn400() throws Exception {
+  @DisplayName("Opening search exact with invalid update date range should return 400")
+  void openingSearchExact_invalidUpdateDateRange_shouldReturn400() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/openings?entryDateStart=2025-01-16&entryDateEnd=2025-01-01")
+            get("/api/search/openings?updateDateStart=2025-01-16&updateDateEnd=2025-01-01")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -190,11 +190,11 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
-  @DisplayName("Opening search exact with valid entry date range should succeed")
-  void openingSearchExact_validEntryDateRange_shouldSucceed() throws Exception {
+  @DisplayName("Opening search exact with valid update date range should succeed")
+  void openingSearchExact_validUpdateDateRange_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/openings?entryDateStart=2001-01-01&entryDateEnd=2025-12-31")
+            get("/api/search/openings?updateDateStart=2001-01-01&updateDateEnd=2025-12-31")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

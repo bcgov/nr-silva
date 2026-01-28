@@ -13,8 +13,8 @@ export class SearchEndpointService {
      * @param openingStatuses
      * @param licenseNumber
      * @param licenseeOpeningId
-     * @param entryDateStart
-     * @param entryDateEnd
+     * @param updateDateStart
+     * @param updateDateEnd
      * @param cutBlockId
      * @param cuttingPermitId
      * @param timberMark
@@ -40,8 +40,8 @@ export class SearchEndpointService {
         openingStatuses?: Array<string>,
         licenseNumber?: string,
         licenseeOpeningId?: string,
-        entryDateStart?: string,
-        entryDateEnd?: string,
+        updateDateStart?: string,
+        updateDateEnd?: string,
         cutBlockId?: string,
         cuttingPermitId?: string,
         timberMark?: string,
@@ -68,8 +68,8 @@ export class SearchEndpointService {
                 'openingStatuses': openingStatuses,
                 'licenseNumber': licenseNumber,
                 'licenseeOpeningId': licenseeOpeningId,
-                'entryDateStart': entryDateStart,
-                'entryDateEnd': entryDateEnd,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
                 'cutBlockId': cutBlockId,
                 'cuttingPermitId': cuttingPermitId,
                 'timberMark': timberMark,

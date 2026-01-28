@@ -32,9 +32,9 @@ public class SearchEndpoint {
    * @param openingStatuses Opening status codes filter
    * @param licenseNumber Licensee number (forest file ID)
    * @param licenseeOpeningId Licensee-provided opening identifier (LICENSEE_OPENING_ID)
-   * @param entryDateStart Entry timestamp start date (yyyy-MM-dd). If provided returns records from
+   * @param updateDateStart Opening update timestamp start date (yyyy-MM-dd). If provided returns records from
    *     this date to present.
-   * @param entryDateEnd Entry timestamp end date (yyyy-MM-dd). If provided returns records up to
+   * @param updateDateEnd Opening update timestamp end date (yyyy-MM-dd). If provided returns records up to
    *     this date (inclusive).
    * @param cutBlockId Cut block identification filter
    * @param cuttingPermitId Cutting permit identification filter
@@ -63,10 +63,10 @@ public class SearchEndpoint {
           String licenseNumber,
       @RequestParam(value = SilvaOracleConstants.LICENSEE_OPENING_ID, required = false)
           String licenseeOpeningId,
-      @RequestParam(value = SilvaOracleConstants.ENTRY_DATE_START, required = false)
-          String entryDateStart,
-      @RequestParam(value = SilvaOracleConstants.ENTRY_DATE_END, required = false)
-          String entryDateEnd,
+      @RequestParam(value = SilvaOracleConstants.UPDATE_DATE_START, required = false)
+          String updateDateStart,
+      @RequestParam(value = SilvaOracleConstants.UPDATE_DATE_END, required = false)
+          String updateDateEnd,
       @RequestParam(value = SilvaOracleConstants.CUT_BLOCK_ID, required = false) String cutBlockId,
       @RequestParam(value = SilvaOracleConstants.CUTTING_PERMIT_ID, required = false)
           String cuttingPermitId,
@@ -99,8 +99,8 @@ public class SearchEndpoint {
             openingStatuses,
             licenseNumber,
             licenseeOpeningId,
-            entryDateStart,
-            entryDateEnd,
+            updateDateStart,
+            updateDateEnd,
             cutBlockId,
             cuttingPermitId,
             timberMark,

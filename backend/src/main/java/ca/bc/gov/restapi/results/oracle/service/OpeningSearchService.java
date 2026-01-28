@@ -236,10 +236,10 @@ public class OpeningSearchService {
   }
 
   private void validateEntryDateRange(OpeningSearchExactFiltersDto filtersDto) {
-    if (filtersDto.getEntryDateStart() != null && filtersDto.getEntryDateEnd() != null) {
+    if (filtersDto.getUpdateDateStart() != null && filtersDto.getUpdateDateEnd() != null) {
       try {
-        LocalDate start = LocalDate.parse(filtersDto.getEntryDateStart());
-        LocalDate end = LocalDate.parse(filtersDto.getEntryDateEnd());
+        LocalDate start = LocalDate.parse(filtersDto.getUpdateDateStart());
+        LocalDate end = LocalDate.parse(filtersDto.getUpdateDateEnd());
         if (end.isBefore(start)) {
           throw new ResponseStatusException(
               HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
@@ -247,7 +247,7 @@ public class OpeningSearchService {
       } catch (DateTimeParseException ex) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Invalid date format for entryDateStart/entryDateEnd. Expected yyyy-MM-dd");
+            "Invalid date format for updateDateStart/updateDateEnd. Expected yyyy-MM-dd");
       }
     }
   }

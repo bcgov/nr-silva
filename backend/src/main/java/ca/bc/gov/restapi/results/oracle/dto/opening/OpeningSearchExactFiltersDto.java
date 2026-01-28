@@ -21,8 +21,8 @@ public class OpeningSearchExactFiltersDto {
   private final List<String> openingStatuses;
   private final String licenseNumber;
   private final String licenseeOpeningId;
-  private final String entryDateStart;
-  private final String entryDateEnd;
+  private final String updateDateStart;
+  private final String updateDateEnd;
   private final String cutBlockId;
   private final String cuttingPermitId;
   private final String timberMark;
@@ -46,8 +46,8 @@ public class OpeningSearchExactFiltersDto {
       List<String> openingStatuses,
       String licenseNumber,
       String licenseeOpeningId,
-      String entryDateStart,
-      String entryDateEnd,
+      String updateDateStart,
+      String updateDateEnd,
       String cutBlockId,
       String cuttingPermitId,
       String timberMark,
@@ -71,8 +71,8 @@ public class OpeningSearchExactFiltersDto {
     this.licenseNumber = Objects.isNull(licenseNumber) ? null : licenseNumber.toUpperCase().trim();
     this.licenseeOpeningId =
         Objects.isNull(licenseeOpeningId) ? null : licenseeOpeningId.toUpperCase().trim();
-    this.entryDateStart = Objects.isNull(entryDateStart) ? null : entryDateStart.trim();
-    this.entryDateEnd = Objects.isNull(entryDateEnd) ? null : entryDateEnd.trim();
+    this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
+    this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
     this.cutBlockId = Objects.isNull(cutBlockId) ? null : cutBlockId.toUpperCase().trim();
     this.cuttingPermitId =
         Objects.isNull(cuttingPermitId) ? null : cuttingPermitId.toUpperCase().trim();
@@ -108,8 +108,8 @@ public class OpeningSearchExactFiltersDto {
           && !this.openingStatuses.isEmpty();
       case SilvaOracleConstants.LICENSE_NUMBER -> !Objects.isNull(this.licenseNumber);
       case SilvaOracleConstants.LICENSEE_OPENING_ID -> !Objects.isNull(this.licenseeOpeningId);
-      case SilvaOracleConstants.ENTRY_DATE_START -> !Objects.isNull(this.entryDateStart);
-      case SilvaOracleConstants.ENTRY_DATE_END -> !Objects.isNull(this.entryDateEnd);
+      case SilvaOracleConstants.UPDATE_DATE_START -> !Objects.isNull(this.updateDateStart);
+      case SilvaOracleConstants.UPDATE_DATE_END -> !Objects.isNull(this.updateDateEnd);
       case SilvaOracleConstants.CUT_BLOCK_ID -> !Objects.isNull(this.cutBlockId);
       case SilvaOracleConstants.CUTTING_PERMIT_ID -> !Objects.isNull(this.cuttingPermitId);
       case SilvaOracleConstants.TIMBER_MARK -> !Objects.isNull(this.timberMark);
@@ -143,8 +143,8 @@ public class OpeningSearchExactFiltersDto {
         || hasValue(SilvaOracleConstants.OPENING_STATUSES)
         || hasValue(SilvaOracleConstants.LICENSE_NUMBER)
         || hasValue(SilvaOracleConstants.LICENSEE_OPENING_ID)
-        || hasValue(SilvaOracleConstants.ENTRY_DATE_START)
-        || hasValue(SilvaOracleConstants.ENTRY_DATE_END)
+        || hasValue(SilvaOracleConstants.UPDATE_DATE_START)
+        || hasValue(SilvaOracleConstants.UPDATE_DATE_END)
         || hasValue(SilvaOracleConstants.CUT_BLOCK_ID)
         || hasValue(SilvaOracleConstants.CUTTING_PERMIT_ID)
         || hasValue(SilvaOracleConstants.TIMBER_MARK)

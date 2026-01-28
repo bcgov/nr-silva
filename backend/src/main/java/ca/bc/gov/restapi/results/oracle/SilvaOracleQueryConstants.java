@@ -231,23 +231,23 @@ public class SilvaOracleQueryConstants {
           )
           AND (
             (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE'
+              NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
             )
             OR
             (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+              NVL(:#{#filter.updateDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' AND
+              op.UPDATE_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
             )
             OR
             (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+              NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.updateDateEnd},'NOVALUE') <> 'NOVALUE' AND
+              op.UPDATE_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
             )
             OR
             (
-              NVL(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-              op.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
-              AND TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+              NVL(:#{#filter.updateDateStart},'NOVALUE') <> 'NOVALUE' AND NVL(:#{#filter.updateDateEnd},'NOVALUE') <> 'NOVALUE' AND
+              op.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+              AND TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
             )
           )
           AND (

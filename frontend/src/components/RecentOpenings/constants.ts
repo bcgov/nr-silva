@@ -9,6 +9,6 @@ export const recentOpeningsHeaders: TableHeaderType<OpendingHeaderKeyType>[] = [
   { key: 'cuttingPermitId', header: 'Cutting permit', selected: true },
   { key: 'timberMark', header: 'Timber mark', selected: true },
   { key: 'cutBlockId', header: 'Cut block', selected: true },
-  { key: 'openingGrossAreaHa', header: 'Gross Area (ha)', selected: true },
+  { key: 'openingGrossAreaHa', header: 'Opening Gross Area (ha)', selected: true },
   { key: 'disturbanceStartDate', header: 'Disturbance start', selected: true }
 ];

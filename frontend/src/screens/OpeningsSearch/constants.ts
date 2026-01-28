@@ -12,8 +12,8 @@ export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'orgUnitName', header: 'Org unit', selected: true },
   { key: 'clientName', header: 'Client', selected: false },
   { key: 'timberMark', header: 'Timber mark', selected: false },
-  { key: 'openingGrossAreaHa', header: 'Gross Area (ha)', selected: true },
-  { key: 'disturbanceStartDate', header: 'Disturbance date', selected: true },
+  { key: 'openingGrossAreaHa', header: 'Opening Gross Area (ha)', selected: false },
+  { key: 'disturbanceStartDate', header: 'Disturbance date', selected: false },
   { key: 'regenDelayDate', header: 'Regen delay due date', selected: false },
   { key: 'earlyFreeGrowingDate', header: 'Free growing due date', selected: false },
   { key: 'updateTimestamp', header: 'Update date', selected: false }

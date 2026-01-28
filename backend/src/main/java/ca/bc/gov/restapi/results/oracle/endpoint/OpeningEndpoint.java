@@ -11,7 +11,6 @@ import ca.bc.gov.restapi.results.oracle.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.oracle.dto.opening.*;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.history.OpeningStockingHistoryOverviewDto;
-import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.service.opening.details.OpeningDetailsService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class OpeningEndpoint {
 
-  private final OpeningSearchService openingSearchService;
   private final OpeningDetailsService openingService;
 
   /**

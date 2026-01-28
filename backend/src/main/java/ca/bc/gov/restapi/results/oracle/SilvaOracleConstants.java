@@ -35,8 +35,6 @@ public class SilvaOracleConstants {
   public static final String OPENING_NUMBER = "openingNumber";
   public static final String LICENSE_NUMBER = "licenseNumber";
   public static final String LICENSEE_OPENING_ID = "licenseeOpeningId";
-  public static final String ENTRY_DATE_START = "entryDateStart";
-  public static final String ENTRY_DATE_END = "entryDateEnd";
   public static final String CLIENT_NUMBERS = "clientNumbers";
   public static final String IS_CREATED_BY_USER = "isCreatedByUser";
   public static final String OPENING_ID = "openingId";

@@ -147,9 +147,9 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
 
   const getStartMaxDate = () => {
-    const maxDate = searchParams?.entryDateEnd
+    const maxDate = searchParams?.updateDateEnd
       ? DateTime.fromFormat(
-        searchParams.entryDateEnd as string,
+        searchParams.updateDateEnd,
         API_DATE_FORMAT
       ).toFormat(DATE_PICKER_FORMAT)
       : DateTime.now().toFormat(DATE_PICKER_FORMAT);
@@ -158,9 +158,9 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   };
 
   const getEndMinDate = () => {
-    const minDate = searchParams?.entryDateStart
+    const minDate = searchParams?.updateDateStart
       ? DateTime.fromFormat(
-        searchParams.entryDateStart as string,
+        searchParams.updateDateStart,
         API_DATE_FORMAT
       ).toFormat(DATE_PICKER_FORMAT)
       : undefined;
@@ -177,13 +177,13 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         : "";
 
     onSearchParamsChange(
-      isStartDate ? "entryDateStart" : "entryDateEnd",
+      isStartDate ? "updateDateStart" : "updateDateEnd",
       formattedDate ? formattedDate : undefined
     );
   };
 
   const getDateValue = (isStartDate: boolean) => {
-    const key = isStartDate ? 'entryDateStart' : 'entryDateEnd';
+    const key = isStartDate ? 'updateDateStart' : 'updateDateEnd';
     if (searchParams?.[key]) {
       return DateTime.fromFormat(
         searchParams[key] as string,
@@ -238,17 +238,17 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       </Column>
 
 
-      {/* Opening Mapsheet Key aka Opening Number */}
+      {/* Mapsheet Key aka Opening Number */}
       <Column sm={4} md={8} lg={16}>
         <TooltipLabel
           id="opening-mapsheet-key-label"
-          label="Opening mapsheet key"
+          label="Mapsheet key"
           align={(breakpoint === 'sm') ? 'bottom' : 'bottom-left'}
           tooltip={
             <div className="opening-mapsheet-tooltip">
-              The opening mapsheet key consists of the mapsheet grid, letter, square, quad, sub-quad,
+              The mapsheet key consists of the mapsheet grid, letter, square, quad, sub-quad,
               and opening number.
-              <img src={MapsheetKeyImg} alt="Opening Mapsheet Key Example" className="example-image" />
+              <img src={MapsheetKeyImg} alt="Mapsheet Key Example" className="example-image" />
               Example: An opening with 92L 045 0.0 123 would have:
               <ul className="default-bullet-list">
                 <li>Mapsheet grid: 92</li>
@@ -489,9 +489,9 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         </CheckboxGroup>
       </Column>
 
-      {/* Created on date range */}
+      {/* Updated on date range */}
       <Column sm={4} md={8} lg={16}>
-        <label htmlFor="created-on-date-range" className="date-label">Created on date range</label>
+        <label htmlFor="updated-on-date-range" className="date-label">Updated on date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
