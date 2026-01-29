@@ -1,4 +1,4 @@
-import { NOT_APPLICABLE } from "@/constants";
+import { PLACE_HOLDER } from "@/constants";
 
 /**
  * Converts a string to kebab-case format by replacing spaces with hyphens
@@ -35,6 +35,6 @@ export const renderLabelValueWithUnit = (
     value: string | number | null | undefined,
     unit: string
 ): string => {
-    const display = value ? `${value} ${unit}` : NOT_APPLICABLE;
+    const display = value ? `${value} ${unit}` : PLACE_HOLDER;
     return `${label}: ${display}`;
 };

@@ -5,7 +5,7 @@ import {
   TableHead, TableHeader, TableRow
 } from "@carbon/react";
 import { TreeFallRisk } from "@carbon/icons-react";
-import { NOT_APPLICABLE, PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { OpeningForestCoverDamageDto, OpeningForestCoverLayerDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { DamageAgentTableHeader, LayerTableHeaders } from "./constants";
@@ -112,10 +112,10 @@ const LayerTable = ({ layer }: LayerTableProps) => {
                 {/* Stems */}
                 <TableCell className="default-table-cell">
                   <ul className="cell-content-list">
-                    <li>Total stems: {layer.totalStems ? `${layer.totalStems} (st/ha)` : NOT_APPLICABLE}</li>
-                    <li>Total well spaced: {layer.totalWellSpaced ? `${layer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</li>
-                    <li>Well spaced: {layer.wellSpaced ? `${layer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</li>
-                    <li>Free growing: {layer.freeGrowing ? `${layer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</li>
+                    <li>Total stems: {layer.totalStems ? `${layer.totalStems} (st/ha)` : PLACE_HOLDER}</li>
+                    <li>Total well spaced: {layer.totalWellSpaced ? `${layer.totalWellSpaced} (st/ha)` : PLACE_HOLDER}</li>
+                    <li>Well spaced: {layer.wellSpaced ? `${layer.wellSpaced} (st/ha)` : PLACE_HOLDER}</li>
+                    <li>Free growing: {layer.freeGrowing ? `${layer.freeGrowing} (st/ha)` : PLACE_HOLDER}</li>
                   </ul>
                 </TableCell>
               </TableRow>
