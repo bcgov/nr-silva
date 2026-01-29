@@ -20,7 +20,7 @@ const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
     hasIconOnly
     renderIcon={selectedRows.includes(rowId) ? LocationFilled : Location}
     onClick={() => handleRowSelection(rowId)}
-    iconDescription="Click to view this opening's map activity"
+    iconDescription="Click to view this opening on the map"
     tooltipPosition="right"
     kind="ghost"
     size="sm"
