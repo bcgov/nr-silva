@@ -98,26 +98,50 @@ export const getMultiSelectedCodes = (selected: { selectedItems: Array<any> }) =
 
 
 /**
- * Transform the current input value to upper-case while preserving caret position.
- * Intended for use as an `onInput` handler on uncontrolled text inputs.
+ * Transform the current input value to upper-case, remove space characters,
+ * and preserve the caret position. Use as an `onInput` handler on
+ * uncontrolled text inputs.
  * @param e - The input form event
  */
 export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>) => {
   const el = e.currentTarget;
-  const pos = el.selectionStart ?? 0;
-  el.value = el.value.toUpperCase();
+  const orig = el.value ?? "";
+  let pos = el.selectionStart ?? orig.length;
+
+  const out: string[] = [];
+  for (let i = 0; i < orig.length; i++) {
+    const ch = orig.charAt(i);
+    if (ch === ' ') {
+      // remove space; if the removed character is before the caret, shift caret left
+      if (i < pos) pos--;
+      continue;
+    }
+    out.push(ch);
+  }
+
+  const newVal = out.join('').toUpperCase();
+  el.value = newVal;
+  if (pos < 0) pos = 0;
+  if (pos > newVal.length) pos = newVal.length;
   el.setSelectionRange(pos, pos);
 };
 
 /**
  * Handle paste into an uncontrolled input by inserting an upper-case version
- * of the pasted text at the current caret position and preserving the caret.
- * Intended for use as an `onPaste` handler.
+ * of the pasted text with spaces removed, at the current caret position.
+ * Preserves the caret after the inserted text. Use as an `onPaste` handler.
  * @param e - The clipboard event for the paste
  */
 export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>) => {
   e.preventDefault();
-  const paste = (e.clipboardData.getData('text') || '').toUpperCase();
+  const raw = (e.clipboardData?.getData('text') ?? '');
+  const out: string[] = [];
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw.charAt(i);
+    if (ch === ' ') continue;
+    out.push(ch);
+  }
+  const paste = out.join('').toUpperCase();
   const el = e.currentTarget;
   const start = el.selectionStart ?? 0;
   const end = el.selectionEnd ?? 0;

@@ -65,6 +65,11 @@ public class OpeningSearchResponseDto {
   private BigDecimal openingGrossAreaHa;
 
   @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private BigDecimal disturbanceGrossArea;
+
+  @Schema(
       types = {"string", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
   private LocalDate disturbanceStartDate;
@@ -137,8 +142,6 @@ public class OpeningSearchResponseDto {
       requiredMode = Schema.RequiredMode.REQUIRED)
   private LocalDateTime lastViewDate;
 
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private boolean favourite;
 
   public boolean isValid() {
     return Objects.nonNull(openingId);

@@ -10,13 +10,15 @@ public class SilvaOracleQueryConstants {
       """
       SELECT DISTINCT op.opening_id
         ,cboa.forest_file_id AS forest_file_id
-        ,cboa.cutting_permit_id AS cutting_permit_id
+        ,TRIM(cboa.cutting_permit_id) AS cutting_permit_id
         ,cboa.timber_mark AS timber_mark
         ,cboa.cut_block_id AS cut_block_id
         ,TRIM(LPAD(TRIM(op.mapsheet_grid),3) || TRIM(mapsheet_letter) || ' ' || LPAD(TRIM(op.mapsheet_square),3,0) || ' ' || TRIM(op.mapsheet_quad) || DECODE(TRIM(op.mapsheet_quad), NULL, NULL, '.') || TRIM(op.mapsheet_sub_quad) || ' ' || TRIM(op.opening_number)) AS mapsheep_opening_id
         ,op.open_category_code AS category
         ,op.opening_status_code AS status
+        ,op.LICENSEE_OPENING_ID AS licensee_opening_id
         ,cboa.opening_gross_area as opening_gross_area
+        ,cboa.disturbance_gross_area as disturbance_gross_area
         ,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
         ,ou.org_unit_code as org_unit_code
         ,ou.org_unit_name as org_unit_name
@@ -159,7 +161,9 @@ public class SilvaOracleQueryConstants {
           mapsheep_opening_id,
           category,
           status,
+          licensee_opening_id,
           opening_gross_area,
+          disturbance_gross_area,
           disturbance_start_date,
           org_unit_code,
           org_unit_name,
@@ -176,17 +180,6 @@ public class SilvaOracleQueryConstants {
       """;
 
   public static final String PAGINATION = "OFFSET :page ROWS FETCH NEXT :size ROWS ONLY";
-
-  public static final String SILVICULTURE_SEARCH_QUERY =
-      SILVICULTURE_SEARCH_SELECT + SILVICULTURE_SEARCH_FROM_JOIN + SILVICULTURE_SEARCH_WHERE_CLAUSE;
-
-  public static final String SILVICULTURE_SEARCH =
-      "WITH silviculture_search AS ("
-          + SILVICULTURE_SEARCH_QUERY
-          + ")"
-          + SILVICULTURE_SEARCH_CTE_SELECT
-          + " FROM silviculture_search ORDER BY opening_id DESC "
-          + PAGINATION;
 
   public static final String SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE =
       """
@@ -273,14 +266,11 @@ public class SilvaOracleQueryConstants {
           )
       """;
 
-  public static final String SILVICULTURE_SEARCH_EXACT_QUERY =
-      SILVICULTURE_SEARCH_SELECT
-          + SILVICULTURE_SEARCH_FROM_JOIN
-          + SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE;
-
   public static final String SILVICULTURE_SEARCH_EXACT =
       "WITH silviculture_search AS ("
-          + SILVICULTURE_SEARCH_EXACT_QUERY
+          + SILVICULTURE_SEARCH_SELECT
+          + SILVICULTURE_SEARCH_FROM_JOIN
+          + SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE
           + ")"
           + SILVICULTURE_SEARCH_CTE_SELECT
           + " FROM silviculture_search ORDER BY opening_id DESC "
@@ -1677,4 +1667,14 @@ public class SilvaOracleQueryConstants {
         fr.FOREST_COVER_LAYER_ID = :forestCoverLayerId
         AND TRUNC(fr.ARCHIVE_DATE) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
       """;
+
+  public static final String SILVICULTURE_SEARCH_BY_OPENING_IDS =
+      "WITH silviculture_search AS ("
+          + SILVICULTURE_SEARCH_SELECT
+          + SILVICULTURE_SEARCH_FROM_JOIN
+          + "WHERE op.OPENING_ID IN (:openingIds)"
+          + ")"
+          + SILVICULTURE_SEARCH_CTE_SELECT
+          + " FROM silviculture_search ORDER BY opening_id DESC "
+          + PAGINATION;
 }

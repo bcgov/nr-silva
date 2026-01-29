@@ -108,7 +108,6 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
         .andExpect(jsonPath("$.page.totalElements").isNumber())
         .andExpect(jsonPath("$.content[0].openingId").value(101017L))
         .andExpect(jsonPath("$.content[0].mapsheetKey").exists())
-        .andExpect(jsonPath("$.content[0].licenseeOpeningId").exists())
         .andReturn();
   }
 

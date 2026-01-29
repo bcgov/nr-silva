@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 @Slf4j
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
 public class OpeningSearchExactFiltersDto {
 
   private final Long openingId;

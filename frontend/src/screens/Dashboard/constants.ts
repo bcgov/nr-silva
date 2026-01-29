@@ -6,7 +6,7 @@ export const FavouriteCardsConfig: FavouriteCardProps[] = [
     index: 0,
     title: 'Openings search',
     link: '/openings-search',
-    icon: 'IbmSoftwareWatsonxDataAnalyzeAndProcess'
+    icon: 'MapBoundaryVegetation'
   },
   {
     index: 1,

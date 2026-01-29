@@ -26,7 +26,7 @@ import {
   hasActiveFilters,
 } from "@/utils/OpeningSearchParamsUtils";
 import OpeningsSearchInput from "@/components/OpeningsSearchInput";
-import { CircleDash, Search } from "@carbon/icons-react";
+import { CircleDash, Edit, Search } from "@carbon/icons-react";
 import OpeningTableRow from "@/components/OpeningTableRow";
 import EmptySection from "@/components/EmptySection";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
@@ -226,19 +226,10 @@ const OpeningsSearch = () => {
                 </Stack>
 
                 <TableToolbarMenu
-                  className="action-menu-button"
+                  className="edit-col-button"
                   iconDescription="Edit columns"
                   menuOptionsClass="opening-search-action-menu-option"
-                  renderIcon={
-                    () => <Button
-                      className="edit-col-button"
-                      data-testid="edit-col-button"
-                      type="button"
-                      kind="tertiary"
-                    >
-                      Edit columns
-                    </Button>
-                  }
+                  renderIcon={() => <p>Edit columns</p>}
                 >
                   <div className="opening-search-action-menu-option-item">
                     <div className="helper-text">

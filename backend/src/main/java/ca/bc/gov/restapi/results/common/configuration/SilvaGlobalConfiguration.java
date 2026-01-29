@@ -34,7 +34,7 @@ import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenureDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTenuresDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningDetailsTombstoneOverviewDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
+import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningTombstoneDto;
 import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
@@ -102,7 +102,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     OpeningStatusConverter.class,
     CodeDescriptionDto.class,
     RecentOpeningDto.class,
-    OpeningSearchFiltersDto.class,
+    OpeningSearchExactFiltersDto.class,
     OpeningSearchResponseDto.class,
     OpeningTombstoneDto.class,
     ClientAcronymEntity.class,
@@ -165,7 +165,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
     OpeningDetailsTenuresDto.class,
     OpeningDetailsTombstoneDto.class,
     OpeningDetailsTombstoneOverviewDto.class,
-    OpeningSearchFiltersDto.class,
     OpeningSearchResponseDto.class,
     OpeningTombstoneDto.class,
     CommentDto.class,

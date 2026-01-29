@@ -28,16 +28,11 @@
     }
   }
 
-  .action-menu-button {
-    margin-right: 1rem;
-    min-width: fit-content;
-    padding: 0;
-  }
-
   .edit-col-button {
     width: fit-content;
     background-color: var(--#{vars.$bcgov-prefix}-background);
     padding-inline: 0.75rem;
+    border: 1px solid var(--#{vars.$bcgov-prefix}-button-tertiary);
 
     &:hover,
     &:focus {

@@ -28,6 +28,8 @@ public interface SilvicultureSearchProjection {
 
   BigDecimal getOpeningGrossArea();
 
+  BigDecimal getDisturbanceGrossArea();
+
   LocalDate getDisturbanceStartDate();
 
   String getForestFileId();

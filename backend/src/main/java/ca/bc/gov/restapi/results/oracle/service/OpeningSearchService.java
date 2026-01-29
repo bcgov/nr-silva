@@ -13,7 +13,6 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -41,7 +40,7 @@ public class OpeningSearchService {
   private final OpeningRepository openingRepository;
   private final LoggedUserHelper loggedUserHelper;
   private final ForestClientApiProvider forestClientApiProvider;
-  private final UserOpeningService userOpeningService;
+
 
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearchExact(
@@ -79,15 +78,14 @@ public class OpeningSearchService {
   public Page<OpeningSearchResponseDto> parsePageResult(
       Page<SilvicultureSearchProjection> searchResultPage) {
     return fetchClientAcronyms(
-        fetchFavorites(
-            new PageImpl<>(
-                searchResultPage
-                    .get()
-                    .map(mapToSearchResponse())
-                    .filter(OpeningSearchResponseDto::isValid)
-                    .toList(),
-                searchResultPage.getPageable(),
-                searchResultPage.getTotalElements())));
+      new PageImpl<>(
+        searchResultPage
+          .get()
+          .map(mapToSearchResponse())
+          .filter(OpeningSearchResponseDto::isValid)
+          .toList(),
+        searchResultPage.getPageable(),
+        searchResultPage.getTotalElements()));
   }
 
   private Page<OpeningSearchResponseDto> fetchClientAcronyms(
@@ -124,19 +122,7 @@ public class OpeningSearchService {
     return result;
   }
 
-  private Page<OpeningSearchResponseDto> fetchFavorites(
-      Page<OpeningSearchResponseDto> pagedResult) {
 
-    List<Long> favourites =
-        userOpeningService.checkForFavorites(
-            pagedResult.getContent().stream().map(OpeningSearchResponseDto::getOpeningId).toList());
-
-    for (OpeningSearchResponseDto opening : pagedResult.getContent()) {
-      opening.setFavourite(favourites.contains(opening.getOpeningId()));
-    }
-
-    return pagedResult;
-  }
 
   private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
     return projection ->
@@ -150,6 +136,7 @@ public class OpeningSearchService {
             projection.getTimberMark(),
             projection.getCutBlockId(),
             projection.getOpeningGrossArea(),
+            projection.getDisturbanceGrossArea(),
             projection.getDisturbanceStartDate(),
             projection.getOrgUnitCode(),
             projection.getOrgUnitName(),
@@ -166,8 +153,7 @@ public class OpeningSearchService {
             projection.getSubmittedToFrpa108() > 0,
             projection.getForestFileId(),
             projection.getSubmittedToFrpa108(),
-            null,
-            false);
+            null);
   }
 
   /**

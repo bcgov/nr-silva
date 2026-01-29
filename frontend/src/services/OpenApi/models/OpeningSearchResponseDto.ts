@@ -13,6 +13,7 @@ export type OpeningSearchResponseDto = {
     timberMark: string | null;
     cutBlockId: string | null;
     openingGrossAreaHa: number | null;
+    disturbanceGrossArea: number | null;
     disturbanceStartDate: string | null;
     orgUnitCode: string;
     orgUnitName: string;
@@ -30,7 +31,6 @@ export type OpeningSearchResponseDto = {
     forestFileId: string | null;
     silvaReliefAppId: number | null;
     lastViewDate: string | null;
-    favourite: boolean;
     valid?: boolean;
 };
 

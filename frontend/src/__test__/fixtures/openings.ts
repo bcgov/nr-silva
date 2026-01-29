@@ -2,7 +2,7 @@ import { OpeningSearchResponseDto } from "@/services/OpenApi";
 
 export const openingA: OpeningSearchResponseDto = {
   openingId: 101,
-  openingNumber: null,
+  mapsheetKey: null,
   category: {
     code: "NREQ",
     description: "Areas where SP/SMP's are not required by law",
@@ -15,6 +15,8 @@ export const openingA: OpeningSearchResponseDto = {
   timberMark: null,
   cutBlockId: null,
   openingGrossAreaHa: 27.5,
+  disturbanceGrossArea: 30.0,
+  licenseeOpeningId: null,
   disturbanceStartDate: "2011-10-21T00:00:00",
   orgUnitCode: "DAS",
   orgUnitName: "Org one",
@@ -27,7 +29,6 @@ export const openingA: OpeningSearchResponseDto = {
   submittedToFrpa: false,
   forestFileId: null,
   silvaReliefAppId: 0,
-  favourite: false,
   clientName: "",
   earlyFreeGrowingDate: "2036-01-20T00:00:00",
   clientLocation: null,
@@ -37,7 +38,7 @@ export const openingA: OpeningSearchResponseDto = {
 
 export const openingB: OpeningSearchResponseDto = {
   openingId: 102,
-  openingNumber: null,
+  mapsheetKey: null,
   category: {
     code: "FTML",
     description: "Forest Tenure - Major Licensee",
@@ -50,6 +51,8 @@ export const openingB: OpeningSearchResponseDto = {
   timberMark: "47/12S",
   cutBlockId: "12",
   openingGrossAreaHa: 12.9,
+  disturbanceGrossArea: 15.5,
+  licenseeOpeningId: "12521521152",
   disturbanceStartDate: "2024-01-20T00:00:00",
   orgUnitCode: "DAS",
   orgUnitName: "Org one",
@@ -64,7 +67,6 @@ export const openingB: OpeningSearchResponseDto = {
   submittedToFrpa: true,
   forestFileId: "TFL47",
   silvaReliefAppId: 101,
-  favourite: false,
   clientLocation: null,
   lateFreeGrowingDate: null,
   lastViewDate: null,
