@@ -26,7 +26,7 @@ import {
   hasActiveFilters,
 } from "@/utils/OpeningSearchParamsUtils";
 import OpeningsSearchInput from "@/components/OpeningsSearchInput";
-import { CircleDash, Edit, Search } from "@carbon/icons-react";
+import { CircleDash, Search } from "@carbon/icons-react";
 import OpeningTableRow from "@/components/OpeningTableRow";
 import EmptySection from "@/components/EmptySection";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
