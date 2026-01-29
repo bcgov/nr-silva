@@ -142,7 +142,6 @@ public class OpeningSearchResponseDto {
       requiredMode = Schema.RequiredMode.REQUIRED)
   private LocalDateTime lastViewDate;
 
-
   public boolean isValid() {
     return Objects.nonNull(openingId);
   }

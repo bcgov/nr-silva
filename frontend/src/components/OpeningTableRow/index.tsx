@@ -91,8 +91,13 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         return PLACE_HOLDER;
 
       case "regenDelayDate":
+        return formatLocalDate(rowData.regenDelayDate, true);
       case "updateTimestamp":
+        return formatLocalDate(rowData.updateTimestamp, true);
       case "earlyFreeGrowingDate":
+        return formatLocalDate(rowData.earlyFreeGrowingDate, true);
+      case "entryTimestamp":
+        return formatLocalDate(rowData.entryTimestamp, true);
       case "disturbanceStartDate":
         return formatLocalDate(rowData.disturbanceStartDate, true);
       default:
