@@ -202,15 +202,6 @@ export type MapPositionType = {
   zoom: number;
 };
 
-const getDeterministicColor = (colors: string[], featureId: string | number): string => {
-  const str = String(featureId);
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
-  }
-  return colors[hash % colors.length]!;
-}
-
 const getSpacedColor = (colors: string[], index: number, total: number): string => {
   if (total <= 1) return colors[0]!;
   const colorIdx = Math.round((index / (total - 1)) * (colors.length - 1));

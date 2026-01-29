@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback, ReactElement } from "react";
 import { FilterableMultiSelect, TextInputSkeleton, type FilterableMultiSelectProps } from "@carbon/react";
 import { CARBON_CLASS_PREFIX } from "@/constants";
 
@@ -22,7 +22,7 @@ interface CustomMultiSelectProps<ItemType> extends FilterableMultiSelectProps<It
  *
  * @returns {React.ReactElement} The skeleton loader component.
  */
-const renderSkeleton = (): React.ReactElement => {
+const RenderSkeleton = (): ReactElement => {
   return <TextInputSkeleton hideLabel />;
 };
 
@@ -34,15 +34,15 @@ const renderSkeleton = (): React.ReactElement => {
  * @param {CustomMultiSelectProps<ItemType>} props - The component props.
  * @returns {React.ReactElement} The multi-select component.
  */
-const renderMultiSelect = <ItemType,>({
+const RenderMultiSelect = <ItemType,>({
   selectionFeedback = "top-after-reopen",
   onChange,
   ...props
-}: CustomMultiSelectProps<ItemType>): React.ReactElement => {
+}: CustomMultiSelectProps<ItemType>): ReactElement => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Defer onChange callback to prevent "Cannot update a component while rendering a different component" warning
-  const deferredOnChange = React.useCallback((changes: any) => {
+  const deferredOnChange = useCallback((changes: any) => {
     if (onChange) {
       // Use queueMicrotask to defer the callback until after the current render cycle
       queueMicrotask(() => {
@@ -105,7 +105,7 @@ const CustomMultiSelect = <ItemType,>({
   showSkeleton = false,
   ...props
 }: CustomMultiSelectProps<ItemType>): React.ReactElement => {
-  return showSkeleton ? renderSkeleton() : renderMultiSelect(props);
+  return showSkeleton ? <RenderSkeleton /> : <RenderMultiSelect {...props} />;
 };
 
 export default CustomMultiSelect;

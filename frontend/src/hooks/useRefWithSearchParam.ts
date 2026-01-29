@@ -11,7 +11,7 @@ const useRefWithSearchParam = (ref: RefObject<HTMLInputElement | null>, value: a
     if (!ref.current) return;
 
     if (isCheckbox) {
-      (ref.current as HTMLInputElement).checked = value ?? false;
+      ref.current.checked = value ?? false;
     } else {
       ref.current.value = value ? String(value) : '';
     }

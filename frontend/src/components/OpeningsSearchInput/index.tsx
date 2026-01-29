@@ -78,7 +78,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         const existing = prev ?? [];
         const existingIds = new Set(existing.map((c) => c.id));
         const toAdd = initialClientsQuery.data
-          .filter((c) => c && c.clientNumber != null && !existingIds.has(c.clientNumber))
+          .filter((c) => c.clientNumber != null && !existingIds.has(c.clientNumber))
           .map((c) => ({
             id: c.clientNumber,
             acronym: c.acronym,
@@ -109,7 +109,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       setMatchingClients((prev) => {
         const existing = prev ?? [];
         const existingIds = new Set(existing.map((c) => c.id));
-        const toAdd = data.filter((c) => c && c.id != null && !existingIds.has(c.id));
+        const toAdd = data.filter((c) => c.id != null && !existingIds.has(c.id));
         return existing.concat(toAdd);
       });
     },
@@ -196,7 +196,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     const key = isStartDate ? 'updateDateStart' : 'updateDateEnd';
     if (searchParams?.[key]) {
       return DateTime.fromFormat(
-        searchParams[key] as string,
+        searchParams[key],
         API_DATE_FORMAT
       ).toFormat(DATE_PICKER_FORMAT);
     }

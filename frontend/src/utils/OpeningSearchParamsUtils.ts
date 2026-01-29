@@ -73,7 +73,7 @@ export const deserializeOpeningSearchParams = (urlParams: URLSearchParams): Open
     } else if (booleanFields.has(key)) {
       params[key] = value === 'true';
     } else if (numberFields.has(key)) {
-      params[key] = parseInt(value, 10);
+      params[key] = Number.parseInt(value, 10);
     } else {
       params[key] = value;
     }

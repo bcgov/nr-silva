@@ -1,5 +1,4 @@
 import { OpeningHeaderType } from "@/types/TableHeader";
-import { tr } from "date-fns/locale";
 
 export const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'actions', header: 'Actions', selected: true },

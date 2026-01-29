@@ -224,7 +224,7 @@ export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>, maxLen
 
 export const comboBoxStringFilter = (options: {
   item: string;
-  itemToString?: ItemToStringHandler<string> | undefined;
+  itemToString?: ItemToStringHandler<string>;
   inputValue: string | null;
 }) => {
   const itemStr = options.itemToString ? options.itemToString(options.item) : options.item;
