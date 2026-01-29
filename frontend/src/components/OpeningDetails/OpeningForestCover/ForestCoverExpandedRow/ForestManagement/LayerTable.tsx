@@ -174,7 +174,11 @@ const LayerTable = ({ layer }: LayerTableProps) => {
               </Column>
             </>
           )
-          : null
+          : (
+            <Column sm={4} md={8} lg={16}>
+              <p>No damage agent data available for this layer.</p>
+            </Column>
+          )
       }
 
     </Grid>
