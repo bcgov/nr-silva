@@ -4,17 +4,17 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
-
-import { OpeningStatusTag } from "../Tags";
-import SpatialCheckbox from "../SpatialCheckbox";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
-
 import { OpeningDetailsRoute } from "@/routes/config";
-import "./styles.scss";
+
+import { OpeningStatusTag } from "../Tags";
+import SpatialCheckbox from "../SpatialCheckbox";
 import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
+
+import "./styles.scss";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
