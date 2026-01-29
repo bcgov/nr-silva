@@ -95,7 +95,8 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
         <div className="primary-ind-cell">
           <RadioButton
             disabled={isReview}
-            labelText=""
+            labelText="Is primary tenure"
+            hideLabel
             checked={tenure.isPrimary}
             onChange={() => handlePrimaryChange(tenure.displayId)}
           />

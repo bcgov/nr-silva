@@ -78,7 +78,8 @@ const Openings = () => {
           <TextInput
             id="opening-id-input"
             name="opening-id"
-            labelText=""
+            labelText="Opening ID"
+            hideLabel
             placeholder="View Opening by ID"
             value={openingId}
             onChange={handleOpeningIdChange}

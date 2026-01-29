@@ -20,7 +20,7 @@ export const serializeOpeningSearchParams = (params: OpeningSearchParamsType | u
 
   if (!params) return urlParams;
 
-  const entries = Object.entries(params) as [keyof OpeningSearchParamsType, any][];
+  const entries = Object.entries(params) as [keyof OpeningSearchParamsType, unknown][];
 
   for (const [key, value] of entries) {
     if (value === undefined || value === null || value === '') {

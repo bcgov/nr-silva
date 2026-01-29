@@ -46,7 +46,7 @@ export const sanitizeDigits = (value: string): string => {
  *
  * Example: `<input onKeyDown={enforceNumberInputOnKeyDown} />`
  */
-export const enforceNumberInputOnKeyDown = (e: any) => {
+export const enforceNumberInputOnKeyDown = (e: unknown) => {
   const allowed = [
     'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End',
   ];

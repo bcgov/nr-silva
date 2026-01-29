@@ -1,7 +1,7 @@
-import { ChangeEvent, use, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
-import { Checkbox, CheckboxGroup, Column, ComboBox, DatePicker, DatePickerInput, Grid, Stack, TextInput, Tooltip } from "@carbon/react";
+import { Checkbox, CheckboxGroup, Column, ComboBox, DatePicker, DatePickerInput, Grid, Stack, TextInput } from "@carbon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
@@ -105,7 +105,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     },
   });
 
-  /* Debounce the API call by 300ms */
+  /* Debounce the API call by 200ms */
   useEffect(() => {
     if (clientSearchTerm.length <= 2) return;
 
@@ -295,7 +295,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             id="mapsheet-square-input"
             className="mapsheet-narrow-input"
             name="mapsheet-square"
-            labelText=""
+            labelText="Square"
+            hideLabel
             placeholder="Square"
             onInput={handleAutoUpperInput}
             onPaste={handleAutoUpperPaste}
@@ -336,7 +337,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             id="opening-number-input"
             className="mapsheet-wide-input"
             name="opening-number"
-            labelText=""
+            labelText="Opening Number"
+            hideLabel
             placeholder="Opening Number"
             onInput={handleAutoUpperInput}
             onPaste={handleAutoUpperPaste}
@@ -469,7 +471,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
         <CheckboxGroup
           legendText="Search openings by:"
           orientation="horizontal"
-          warnText="Warning message goes here"
         >
           {/* Created by me */}
           <Checkbox
