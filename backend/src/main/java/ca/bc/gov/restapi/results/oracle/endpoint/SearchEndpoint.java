@@ -32,10 +32,10 @@ public class SearchEndpoint {
    * @param openingStatuses Opening status codes filter
    * @param licenseNumber Licensee number (forest file ID)
    * @param licenseeOpeningId Licensee-provided opening identifier (LICENSEE_OPENING_ID)
-   * @param updateDateStart Opening update timestamp start date (yyyy-MM-dd). If provided returns records from
-   *     this date to present.
-   * @param updateDateEnd Opening update timestamp end date (yyyy-MM-dd). If provided returns records up to
-   *     this date (inclusive).
+   * @param updateDateStart Opening update timestamp start date (yyyy-MM-dd). If provided returns
+   *     records from this date to present.
+   * @param updateDateEnd Opening update timestamp end date (yyyy-MM-dd). If provided returns
+   *     records up to this date (inclusive).
    * @param cutBlockId Cut block identification filter
    * @param cuttingPermitId Cutting permit identification filter
    * @param timberMark Timber mark filter

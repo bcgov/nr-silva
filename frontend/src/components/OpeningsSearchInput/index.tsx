@@ -12,6 +12,16 @@ import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils"
 import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "@/services/OpenApi";
 import MapsheetKeyImg from "@/assets/img/opening-mapsheet-key-example.png";
 import useBreakpoint from "@/hooks/UseBreakpoint";
+import {
+  OPENING_ID_MAX_LENGTH,
+  FILE_ID_MAX_LENGTH,
+  LICENSEE_OPENING_ID_MAX_LENGTH,
+  CUT_BLOCK_MAX_LENGTH,
+  CUTTING_PERMIT_MAX_LENGTH,
+  TIMBER_MARK_MAX_LENGTH,
+  MAPSHEET_SQUARE_MAX_LENGTH,
+  OPENING_NUMBER_MAX_LENGTH
+} from "./constants";
 
 import CustomMultiSelect from "../CustomMultiSelect";
 import TooltipLabel from "../TooltipLabel";
@@ -204,8 +214,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           labelText="Opening ID"
           placeholder="Enter opening ID"
           onBlur={(e) => onSearchParamsChange('openingId', e.target.value ? Number(e.target.value) : undefined)}
-          onKeyDown={enforceNumberInputOnKeyDown}
-          onPaste={(e) => enforceNumberInputOnPaste(openingIdInputRef.current, e)}
+          onKeyDown={(e) => enforceNumberInputOnKeyDown(e, OPENING_ID_MAX_LENGTH)}
+          onPaste={(e) => enforceNumberInputOnPaste(openingIdInputRef.current, e, OPENING_ID_MAX_LENGTH)}
         />
       </Column>
 
@@ -298,8 +308,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             labelText="Square"
             hideLabel
             placeholder="Square"
-            onInput={handleAutoUpperInput}
-            onPaste={handleAutoUpperPaste}
+            onInput={(e) => handleAutoUpperInput(e, MAPSHEET_SQUARE_MAX_LENGTH)}
+            onPaste={(e) => handleAutoUpperPaste(e, MAPSHEET_SQUARE_MAX_LENGTH)}
             onBlur={(e) => onSearchParamsChange('mapsheetSquare', e.target.value ? e.target.value : undefined)}
           />
 
@@ -340,8 +350,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             labelText="Opening Number"
             hideLabel
             placeholder="Opening Number"
-            onInput={handleAutoUpperInput}
-            onPaste={handleAutoUpperPaste}
+            onInput={(e) => handleAutoUpperInput(e, OPENING_NUMBER_MAX_LENGTH)}
+            onPaste={(e) => handleAutoUpperPaste(e, OPENING_NUMBER_MAX_LENGTH)}
             onBlur={(e) => onSearchParamsChange('openingNumber', e.target.value ? e.target.value : undefined)}
           />
         </Stack>
@@ -356,8 +366,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="file-id"
           labelText="File ID"
           placeholder="Enter file ID"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
+          onInput={(e) => handleAutoUpperInput(e, FILE_ID_MAX_LENGTH)}
+          onPaste={(e) => handleAutoUpperPaste(e, FILE_ID_MAX_LENGTH)}
           onBlur={(e) => onSearchParamsChange('licenseNumber', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -370,8 +380,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="licensee-opening-id"
           labelText="Licensee opening ID"
           placeholder="Enter licensee opening ID"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
+          onInput={(e) => handleAutoUpperInput(e, LICENSEE_OPENING_ID_MAX_LENGTH)}
+          onPaste={(e) => handleAutoUpperPaste(e, LICENSEE_OPENING_ID_MAX_LENGTH)}
           onBlur={(e) => onSearchParamsChange('licenseeOpeningId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -384,8 +394,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="cut-block-id"
           labelText="Cut block"
           placeholder="Enter cut block"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
+          onInput={(e) => handleAutoUpperInput(e, CUT_BLOCK_MAX_LENGTH)}
+          onPaste={(e) => handleAutoUpperPaste(e, CUT_BLOCK_MAX_LENGTH)}
           onBlur={(e) => onSearchParamsChange('cutBlockId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -398,8 +408,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="cutting-permit-id"
           labelText="Cutting permit"
           placeholder="Enter cutting permit"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
+          onInput={(e) => handleAutoUpperInput(e, CUTTING_PERMIT_MAX_LENGTH)}
+          onPaste={(e) => handleAutoUpperPaste(e, CUTTING_PERMIT_MAX_LENGTH)}
           onBlur={(e) => onSearchParamsChange('cuttingPermitId', e.target.value ? e.target.value : undefined)}
         />
       </Column>
@@ -460,8 +470,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           name="timber-mark"
           labelText="Timber mark"
           placeholder="Enter timber mark"
-          onInput={handleAutoUpperInput}
-          onPaste={handleAutoUpperPaste}
+          onInput={(e) => handleAutoUpperInput(e, TIMBER_MARK_MAX_LENGTH)}
+          onPaste={(e) => handleAutoUpperPaste(e, TIMBER_MARK_MAX_LENGTH)}
           onBlur={(e) => onSearchParamsChange('timberMark', e.target.value ? e.target.value : undefined)}
         />
       </Column>

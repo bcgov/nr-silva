@@ -1,7 +1,6 @@
 package ca.bc.gov.restapi.results.oracle.dto.opening;
 
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,12 +31,12 @@ public class OpeningSearchResponseDto {
   @Schema(
       types = {"object", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private OpeningCategoryEnum category;
+  private CodeDescriptionDto category;
 
   @Schema(
       types = {"object", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private OpeningStatusEnum status;
+  private CodeDescriptionDto status;
 
   @Schema(
       types = {"string", "null"},

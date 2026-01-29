@@ -1,11 +1,11 @@
 import API from '@/services/API';
 import { OpeningSearchParamsType } from '@/types/OpeningTypes';
-import { CancelablePromise, PagedModelOpeningSearchResponseDto } from './OpenApi';
+import { CancelablePromise, PageOpeningSearchResponseDto } from './OpenApi';
 
 /**
  * Typed wrapper for opening search that eliminates the need for `as any`
  */
-export const openingSearch = (params: OpeningSearchParamsType | undefined): CancelablePromise<PagedModelOpeningSearchResponseDto> => {
+export const openingSearch = (params: OpeningSearchParamsType | undefined): CancelablePromise<PageOpeningSearchResponseDto> => {
   if (!params) {
     throw new Error('Search params required');
   }

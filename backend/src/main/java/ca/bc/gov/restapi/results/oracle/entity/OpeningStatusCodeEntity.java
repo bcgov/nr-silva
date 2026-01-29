@@ -10,19 +10,17 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
-/** This class represents an Opening Category in the database. */
+/** Entity for opening status codes. */
 @SuperBuilder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Getter
-@Table(schema = "THE", name = "OPEN_CATEGORY_CODE")
-public class OpenCategoryCodeEntity extends AbstractCodeEntity {
+@Table(schema = "THE", name = "OPENING_STATUS_CODE")
+public class OpeningStatusCodeEntity extends AbstractCodeEntity {
 
   @Id
-  @Column(name = "OPEN_CATEGORY_CODE")
+  @Column(name = "OPENING_STATUS_CODE")
   private String code;
-
-  // description, effectiveDate, expiryDate, updateTimestamp are inherited
 }

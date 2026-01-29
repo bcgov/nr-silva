@@ -287,19 +287,16 @@ const OpeningsSearch = () => {
                       </TableHead>
                       <TableBody>
                         {
-                          !openingSearchQuery.isLoading ? (
-                            openingSearchQuery.data?.content?.map((row) => (
-                              <OpeningTableRow
-                                key={row.openingId}
-                                headers={searchTableHeaders}
-                                rowData={row}
-                                showMap={true}
-                                selectedRows={selectedOpeningIds}
-                                handleRowSelection={handleRowSelection}
-                              />
-                            ))
-                          )
-                            : null
+                          openingSearchQuery.data?.content?.map((row) => (
+                            <OpeningTableRow
+                              key={row.openingId}
+                              headers={searchTableHeaders}
+                              rowData={row}
+                              showMap={true}
+                              selectedRows={selectedOpeningIds}
+                              handleRowSelection={handleRowSelection}
+                            />
+                          ))
                         }
                       </TableBody>
                     </Table>

@@ -14,6 +14,7 @@ import { NotificationProvider } from "./contexts/NotificationProvider";
 import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { queryClientConfig } from "./constants/tanstackConfig";
+import { CARBON_CLASS_PREFIX } from "./constants";
 
 const queryClient = new QueryClient(queryClientConfig);
 const container: HTMLElement | null = document.getElementById("root");
@@ -26,7 +27,7 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <ClassPrefix prefix="bx">
+      <ClassPrefix prefix={CARBON_CLASS_PREFIX}>
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <NotificationProvider>
