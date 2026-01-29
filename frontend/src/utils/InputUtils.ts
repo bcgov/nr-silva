@@ -46,7 +46,7 @@ export const sanitizeDigits = (value: string): string => {
  *
  * Example: `<input onKeyDown={enforceNumberInputOnKeyDown} />`
  */
-export const enforceNumberInputOnKeyDown = (e: unknown) => {
+export const enforceNumberInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
   const allowed = [
     'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End',
   ];
@@ -68,7 +68,7 @@ export const enforceNumberInputOnKeyDown = (e: unknown) => {
  * Call from an `onPaste` handler, passing the input element reference and
  * the paste event: `onPaste={(e) => enforceNumberInputOnPaste(inputRef.current, e)}`
  */
-export const enforceNumberInputOnPaste = (el: HTMLInputElement | null, e: any) => {
+export const enforceNumberInputOnPaste = (el: HTMLInputElement | null, e: React.ClipboardEvent<HTMLInputElement>) => {
   const text = e.clipboardData?.getData('text') ?? '';
   const digits = sanitizeDigits(text);
   if (!digits) {
