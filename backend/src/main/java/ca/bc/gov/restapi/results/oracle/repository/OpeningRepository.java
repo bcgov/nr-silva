@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.entity.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.*;
@@ -11,19 +10,25 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /** This interface allows the service to fetch and save data into the database. */
 @Repository
 public interface OpeningRepository extends JpaRepository<OpeningEntity, Long> {
 
-  @Query(value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH, nativeQuery = true)
-  List<SilvicultureSearchProjection> searchBy(
-      OpeningSearchFiltersDto filter, List<Long> openingIds, long page, long size);
-
   @Query(value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_EXACT, nativeQuery = true)
   List<SilvicultureSearchProjection> searchByExact(
-      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
+      OpeningSearchExactFiltersDto filter,
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
+
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_BY_OPENING_IDS)
+  List<SilvicultureSearchProjection> searchByOpeningIds(
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
 
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.OPENING_TRENDS_QUERY)
   List<OpeningTrendsProjection> getOpeningTrends(

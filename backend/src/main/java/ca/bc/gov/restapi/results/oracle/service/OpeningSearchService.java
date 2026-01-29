@@ -6,15 +6,16 @@ import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
+import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.oracle.entity.OpenCategoryCodeEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OpeningStatusCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningStatusCodeRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,47 +42,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class OpeningSearchService {
 
   private final OpeningRepository openingRepository;
+  private final OpenCategoryCodeRepository openCategoryCodeRepository;
+  private final OpeningStatusCodeRepository openingStatusCodeRepository;
   private final LoggedUserHelper loggedUserHelper;
   private final ForestClientApiProvider forestClientApiProvider;
-  private final UserOpeningService userOpeningService;
 
-  @Transactional
-  public Page<OpeningSearchResponseDto> openingSearch(
-      OpeningSearchFiltersDto filtersDto, Pageable pagination) {
-    log.info(
-        "Search Openings with page index {} and page size {} with filters {}",
-        pagination.getPageNumber(),
-        pagination.getPageSize(),
-        filtersDto);
-
-    validatePageSize(pagination);
-
-    // Set the user in the filter, if required
-    if (filtersDto.hasValue(SilvaOracleConstants.MY_OPENINGS)
-        && Boolean.TRUE.equals(filtersDto.getMyOpenings())) {
-      filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
-    }
-
-    List<SilvicultureSearchProjection> searchContent =
-        openingRepository.searchBy(
-            filtersDto, List.of(0L), pagination.getOffset(), pagination.getPageSize());
-
-    long total = searchContent.isEmpty() ? 0 : searchContent.get(0).getTotalCount();
-    log.info("Search resulted in {}/{} results", searchContent.size(), total);
-
-    Page<SilvicultureSearchProjection> searchResultPage =
-        new PageImpl<>(searchContent, pagination, total);
-
-    return parsePageResult(searchResultPage);
-  }
-
-  /**
-   * Exact search for openings with direct value matching.
-   *
-   * @param filtersDto the exact search filter criteria.
-   * @param pagination pagination parameters
-   * @return Page of opening search results
-   */
   @Transactional
   public Page<OpeningSearchResponseDto> openingSearchExact(
       OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {
@@ -116,16 +82,30 @@ public class OpeningSearchService {
 
   public Page<OpeningSearchResponseDto> parsePageResult(
       Page<SilvicultureSearchProjection> searchResultPage) {
+    // Load code mappings once before processing results
+    final var categoryMap =
+        openCategoryCodeRepository.findAll().stream()
+            .collect(
+                Collectors.toMap(
+                    OpenCategoryCodeEntity::getCode,
+                    e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
+
+    final var statusMap =
+        openingStatusCodeRepository.findAll().stream()
+            .collect(
+                Collectors.toMap(
+                    OpeningStatusCodeEntity::getCode,
+                    e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
+
     return fetchClientAcronyms(
-        fetchFavorites(
-            new PageImpl<>(
-                searchResultPage
-                    .get()
-                    .map(mapToSearchResponse())
-                    .filter(OpeningSearchResponseDto::isValid)
-                    .toList(),
-                searchResultPage.getPageable(),
-                searchResultPage.getTotalElements())));
+        new PageImpl<>(
+            searchResultPage
+                .get()
+                .map(mapToSearchResponse(categoryMap, statusMap))
+                .filter(OpeningSearchResponseDto::isValid)
+                .toList(),
+            searchResultPage.getPageable(),
+            searchResultPage.getTotalElements()));
   }
 
   private Page<OpeningSearchResponseDto> fetchClientAcronyms(
@@ -162,60 +142,59 @@ public class OpeningSearchService {
     return result;
   }
 
-  private Page<OpeningSearchResponseDto> fetchFavorites(
-      Page<OpeningSearchResponseDto> pagedResult) {
+  private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse(
+      Map<String, CodeDescriptionDto> categoryMap, Map<String, CodeDescriptionDto> statusMap) {
+    return projection -> {
+      CodeDescriptionDto categoryDto = null;
+      if (projection.getCategory() != null) {
+        categoryDto = categoryMap.get(projection.getCategory());
+      }
 
-    List<Long> favourites =
-        userOpeningService.checkForFavorites(
-            pagedResult.getContent().stream().map(OpeningSearchResponseDto::getOpeningId).toList());
+      CodeDescriptionDto statusDto = null;
+      if (projection.getStatus() != null) {
+        statusDto = statusMap.get(projection.getStatus());
+      }
 
-    for (OpeningSearchResponseDto opening : pagedResult.getContent()) {
-      opening.setFavourite(favourites.contains(opening.getOpeningId()));
-    }
-
-    return pagedResult;
-  }
-
-  private Function<SilvicultureSearchProjection, OpeningSearchResponseDto> mapToSearchResponse() {
-    return projection ->
-        new OpeningSearchResponseDto(
-            projection.getOpeningId(),
-            composedOpeningNumber(projection),
-            OpeningCategoryEnum.of(projection.getCategory()),
-            OpeningStatusEnum.of(projection.getStatus()),
-            projection.getCuttingPermitId(),
-            projection.getTimberMark(),
-            projection.getCutBlockId(),
-            projection.getOpeningGrossArea(),
-            projection.getDisturbanceStartDate(),
-            projection.getOrgUnitCode(),
-            projection.getOrgUnitName(),
-            projection.getClientNumber(),
-            projection.getClientLocation(),
-            "",
-            "",
-            projection.getRegenDelayDate(),
-            projection.getEarlyFreeGrowingDate(),
-            projection.getLateFreeGrowingDate(),
-            projection.getUpdateTimestamp(),
-            projection.getEntryUserId(),
-            projection.getEntryTimestamp(),
-            projection.getSubmittedToFrpa108() > 0,
-            projection.getForestFileId(),
-            projection.getSubmittedToFrpa108(),
-            null,
-            false);
+      return new OpeningSearchResponseDto(
+          projection.getOpeningId(),
+          composedMapsheetKey(projection),
+          categoryDto,
+          statusDto,
+          projection.getLicenseeOpeningId(),
+          projection.getCuttingPermitId(),
+          projection.getTimberMark(),
+          projection.getCutBlockId(),
+          projection.getOpeningGrossArea(),
+          projection.getDisturbanceGrossArea(),
+          projection.getDisturbanceStartDate(),
+          projection.getOrgUnitCode(),
+          projection.getOrgUnitName(),
+          projection.getClientNumber(),
+          projection.getClientLocation(),
+          "",
+          "",
+          projection.getRegenDelayDate(),
+          projection.getEarlyFreeGrowingDate(),
+          projection.getLateFreeGrowingDate(),
+          projection.getUpdateTimestamp(),
+          projection.getEntryUserId(),
+          projection.getEntryTimestamp(),
+          projection.getSubmittedToFrpa108() > 0,
+          projection.getForestFileId(),
+          projection.getSubmittedToFrpa108(),
+          null);
+    };
   }
 
   /**
-   * Constructs the composed opening number from the projection. If any component is null, replaces
-   * it with "--" as a placeholder.
+   * Constructs the composed mapsheet key from the projection. If any component is null, replaces it
+   * with "--" as a placeholder.
    *
    * @param projection the silviculture search projection
-   * @return the composed opening number (e.g., "93O 045 0.0 343" or "93O 045 -- --" if components
-   *     are null)
+   * @return the composed mapsheet key (e.g., "93O 045 0.0 343" or "93O 045 -- --" if components are
+   *     null)
    */
-  private String composedOpeningNumber(SilvicultureSearchProjection projection) {
+  private String composedMapsheetKey(SilvicultureSearchProjection projection) {
     String mapsheepOpeningId = projection.getMapsheepOpeningId();
     if (mapsheepOpeningId != null && !mapsheepOpeningId.trim().isEmpty()) {
       return mapsheepOpeningId;
@@ -273,10 +252,10 @@ public class OpeningSearchService {
   }
 
   private void validateEntryDateRange(OpeningSearchExactFiltersDto filtersDto) {
-    if (filtersDto.getEntryDateStart() != null && filtersDto.getEntryDateEnd() != null) {
+    if (filtersDto.getUpdateDateStart() != null && filtersDto.getUpdateDateEnd() != null) {
       try {
-        LocalDate start = LocalDate.parse(filtersDto.getEntryDateStart());
-        LocalDate end = LocalDate.parse(filtersDto.getEntryDateEnd());
+        LocalDate start = LocalDate.parse(filtersDto.getUpdateDateStart());
+        LocalDate end = LocalDate.parse(filtersDto.getUpdateDateEnd());
         if (end.isBefore(start)) {
           throw new ResponseStatusException(
               HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
@@ -284,7 +263,7 @@ public class OpeningSearchService {
       } catch (DateTimeParseException ex) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Invalid date format for entryDateStart/entryDateEnd. Expected yyyy-MM-dd");
+            "Invalid date format for updateDateStart/updateDateEnd. Expected yyyy-MM-dd");
       }
     }
   }

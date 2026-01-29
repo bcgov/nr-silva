@@ -1,0 +1,84 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.opening-search-input-grid {
+  gap: 1.5rem;
+
+  .bx--css-grid-column {
+    align-content: end;
+  }
+
+  .opening-search-multi-select {
+    input::placeholder {
+      color: var(--#{vars.$bcgov-prefix}-text-primary);
+    }
+  }
+
+  .date-label {
+    @include type.type-style('label-02');
+    margin-bottom: 0.5rem;
+  }
+
+  .date-sub-grid {
+    gap: 1.5rem;
+  }
+
+  #start-date-picker-input-id,
+  #end-date-picker-input-id {
+    inline-size: 100%;
+  }
+
+  .#{vars.$bcgov-prefix}--date-picker {
+    height: 100%;
+    width: 100%;
+
+    .#{vars.$bcgov-prefix}--date-picker-container {
+      width: 100%;
+
+      .#{vars.$bcgov-prefix}--date-picker-input__wrapper {
+        width: 100%;
+
+        span {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  #opening-mapsheet-key-label {
+    margin-bottom: 0.5rem;
+  }
+
+  .quad-subquad-separator {
+    height: 100%;
+    display: flex;
+    align-items: end;
+    @include type.type-style('heading-04');
+  }
+
+  .mapsheet-wide-input {
+    inline-size: 10rem;
+  }
+
+  .mapsheet-narrow-input {
+    inline-size: 8rem;
+  }
+
+  #opening-mapsheet-key-label {
+    .#{vars.$bcgov-prefix}--popover-content {
+      inline-size: 26rem;
+      max-inline-size: 60vw;
+    }
+  }
+
+  .example-image {
+    width: 16rem;
+  }
+
+  .opening-mapsheet-tooltip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 1rem;
+  }
+}

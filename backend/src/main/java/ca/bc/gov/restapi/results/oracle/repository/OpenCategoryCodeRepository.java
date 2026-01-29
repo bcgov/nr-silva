@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface OpenCategoryCodeRepository extends JpaRepository<OpenCategoryCodeEntity, String> {
 
   List<OpenCategoryCodeEntity> findAllByExpiryDateAfter(LocalDate now);
+
+  List<OpenCategoryCodeEntity> findAll();
 }

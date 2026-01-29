@@ -1,5 +1,8 @@
 import React from "react";
-import { Checkbox, Tooltip } from "@carbon/react";
+import { Button } from "@carbon/react";
+import { Location, LocationFilled } from "@carbon/icons-react";
+
+import "./styles.scss";
 
 interface SpatialCheckboxProps {
   rowId: number;
@@ -12,18 +15,16 @@ const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
   selectedRows,
   handleRowSelection
 }) => (
-  <Tooltip
-    align="bottom-left"
-    autoAlign
-    label="Click to view this opening's map activity.">
-    <Checkbox
-      data-testid={`checkbox-${rowId}`}
-      id={`checkbox-label-${rowId}`}
-      checked={selectedRows.includes(rowId)}
-      onChange={() => handleRowSelection(rowId)}
-      labelText=""
-    />
-  </Tooltip>
+  <Button
+    className={selectedRows.includes(rowId) ? 'spatial-checkbox-checked' : 'spatial-checkbox'}
+    hasIconOnly
+    renderIcon={selectedRows.includes(rowId) ? LocationFilled : Location}
+    onClick={() => handleRowSelection(rowId)}
+    iconDescription="Click to view this opening's map activity"
+    tooltipPosition="right"
+    kind="ghost"
+    size="sm"
+  />
 );
 
 export default SpatialCheckbox;

@@ -4,44 +4,25 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import lombok.experimental.SuperBuilder;
 
-/**
- * This class represents an Opening Category in the database.
- */
-@Data
-@Builder
+/** This class represents an Opening Category in the database. */
+@SuperBuilder
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 @Table(schema = "THE", name = "OPEN_CATEGORY_CODE")
-public class OpenCategoryCodeEntity {
+public class OpenCategoryCodeEntity extends AbstractCodeEntity {
 
   @Id
   @Column(name = "OPEN_CATEGORY_CODE")
   private String code;
 
-  @Column(name = "DESCRIPTION", length = 120, nullable = false)
-  private String description;
-
-  @Column(name = "EFFECTIVE_DATE", nullable = false)
-  private LocalDate effectiveDate;
-
-  @Column(name = "EXPIRY_DATE", nullable = false)
-  private LocalDate expiryDate;
-
-  @Column(name = "UPDATE_TIMESTAMP", nullable = false)
-  private LocalDate updateTimestamp;
-
-  @Transient
-  public boolean isExpired() {
-    return expiryDate != null && LocalDate.now().isAfter(expiryDate);
-  }
+  // description, effectiveDate, expiryDate, updateTimestamp are inherited
 }
