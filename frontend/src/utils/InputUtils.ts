@@ -1,4 +1,6 @@
-import { TextInputEvent } from "../types/GeneralTypes";
+import { ClipboardEvent, FormEvent } from "react";
+import { TextInputEvent } from "@/types/GeneralTypes";
+import { ItemToStringHandler } from "@carbon/react/lib/components/ComboBox/ComboBox";
 
 /**
  * Creates a mock TextInputEvent with the specified value.
@@ -36,3 +38,125 @@ export const sanitizeDigits = (value: string): string => {
   }
   return out.join('');
 };
+
+/**
+ * Enforce numeric-only input on keydown for an uncontrolled input.
+ * Use as an `onKeyDown` handler on the input element.
+ * Allows navigation keys and common shortcuts (ctrl/cmd + ...).
+ *
+ * Example: `<input onKeyDown={enforceNumberInputOnKeyDown} />`
+ */
+export const enforceNumberInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const allowed = [
+    'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End',
+  ];
+  if (allowed.includes(e.key)) return;
+  if (e.ctrlKey || e.metaKey) return; // allow copy/paste shortcuts
+  // allow digits without using a regular expression
+  const key = e.key;
+  if (typeof key === 'string' && key.length === 1) {
+    const code = key.charCodeAt(0);
+    if (code >= 48 && code <= 57) return; // '0'..'9'
+  }
+  e.preventDefault();
+};
+
+/**
+ * Enforce numeric-only paste for an uncontrolled input by sanitizing clipboard
+ * text to digits and inserting it at the current caret position.
+ *
+ * Call from an `onPaste` handler, passing the input element reference and
+ * the paste event: `onPaste={(e) => enforceNumberInputOnPaste(inputRef.current, e)}`
+ */
+export const enforceNumberInputOnPaste = (el: HTMLInputElement | null, e: React.ClipboardEvent<HTMLInputElement>) => {
+  const text = e.clipboardData?.getData('text') ?? '';
+  const digits = sanitizeDigits(text);
+  if (!digits) {
+    e.preventDefault();
+    return;
+  }
+  if (!el) return;
+  e.preventDefault();
+  const start = el.selectionStart ?? el.value.length;
+  const end = el.selectionEnd ?? el.value.length;
+  const newValue = el.value.slice(0, start) + digits + el.value.slice(end);
+  el.value = newValue;
+  const cursorPos = start + digits.length;
+  el.setSelectionRange(cursorPos, cursorPos);
+};
+/**
+ * Convert selected item objects from a multi-select into an array of code strings.
+ * Filters out undefined/invalid items and returns the `code` property for each.
+ * @param selected - Object containing `selectedItems` array from the multi-select component
+ * @returns Array of selected code strings
+ */
+export const getMultiSelectedCodes = (selected: { selectedItems: Array<any> }) => (
+  selected.selectedItems
+    .filter((item): item is NonNullable<typeof item> => item !== undefined && !!item.code)
+    .map(item => item.code) as string[]
+);
+
+
+/**
+ * Transform the current input value to upper-case, remove space characters,
+ * and preserve the caret position. Use as an `onInput` handler on
+ * uncontrolled text inputs.
+ * @param e - The input form event
+ */
+export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>) => {
+  const el = e.currentTarget;
+  const orig = el.value ?? "";
+  let pos = el.selectionStart ?? orig.length;
+
+  const out: string[] = [];
+  for (let i = 0; i < orig.length; i++) {
+    const ch = orig.charAt(i);
+    if (ch === ' ') {
+      // remove space; if the removed character is before the caret, shift caret left
+      if (i < pos) pos--;
+      continue;
+    }
+    out.push(ch);
+  }
+
+  const newVal = out.join('').toUpperCase();
+  el.value = newVal;
+  if (pos < 0) pos = 0;
+  if (pos > newVal.length) pos = newVal.length;
+  el.setSelectionRange(pos, pos);
+};
+
+/**
+ * Handle paste into an uncontrolled input by inserting an upper-case version
+ * of the pasted text with spaces removed, at the current caret position.
+ * Preserves the caret after the inserted text. Use as an `onPaste` handler.
+ * @param e - The clipboard event for the paste
+ */
+export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>) => {
+  e.preventDefault();
+  const raw = (e.clipboardData?.getData('text') ?? '');
+  const out: string[] = [];
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw.charAt(i);
+    if (ch === ' ') continue;
+    out.push(ch);
+  }
+  const paste = out.join('').toUpperCase();
+  const el = e.currentTarget;
+  const start = el.selectionStart ?? 0;
+  const end = el.selectionEnd ?? 0;
+  const newVal = el.value.slice(0, start) + paste + el.value.slice(end);
+  el.value = newVal;
+  const pos = start + paste.length;
+  el.setSelectionRange(pos, pos);
+};
+
+export const comboBoxStringFilter = (options: {
+  item: string;
+  itemToString?: ItemToStringHandler<string> | undefined;
+  inputValue: string | null;
+}) => {
+  const itemStr = options.itemToString ? options.itemToString(options.item) : options.item;
+  if (!options.inputValue) return true;
+  return itemStr.toLowerCase().includes(options.inputValue.toLowerCase());
+}

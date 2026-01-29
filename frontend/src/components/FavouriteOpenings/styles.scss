@@ -28,25 +28,29 @@
       grid-template-columns: repeat(3, 1fr);
     }
   }
+}
 
-  .fav-open-tile-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 0.25rem;
-    width: 100%;
-    height: 2rem;
+.fav-open-tile-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 0.25rem;
+  width: 100%;
+  height: 2rem;
 
-    .fav-open-label {
-      @include type.type-style('heading-01');
-      text-decoration: none;
-      color: var(--#{vars.$bcgov-prefix}-text-primary);
+  .fav-open-label {
+    @include type.type-style('heading-01');
+    text-decoration: none;
+    color: var(--#{vars.$bcgov-prefix}-text-primary);
 
-      .fav-open-id {
-        margin-left: 0.25rem;
-        @include type.type-style('body-01');
-        color: var(--#{vars.$bcgov-prefix}-text-secondary);
-      }
+    .fav-open-id {
+      margin-left: 0.25rem;
+      @include type.type-style('body-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
     }
   }
+}
+
+.hide-bookmarks-btn-container {
+  display: flex;
 }

@@ -7,12 +7,8 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.oracle.enums.OpeningStatusEnum;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,99 +37,6 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
   @Autowired private OpeningSearchService openingSearchService;
 
   @Test
-  @DisplayName("Opening search file id happy path should succeed")
-  void openingSearch_fileId_shouldSucceed() {
-
-    Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearch(
-            new OpeningSearchFiltersDto(
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, "101017"),
-            PageRequest.of(0, 10));
-
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(0, result.getPageable().getPageNumber());
-    Assertions.assertEquals(10, result.getPageable().getPageSize());
-    Assertions.assertEquals(1, result.getTotalPages());
-    Assertions.assertEquals(1, result.getContent().size());
-    Assertions.assertEquals(101017, result.getContent().get(0).getOpeningId());
-    // Opening number is now composed (e.g., "92K 014 0.0 514" instead of just "514")
-    Assertions.assertTrue(result.getContent().get(0).getOpeningNumber().contains("514"));
-    Assertions.assertEquals(OpeningCategoryEnum.FTML, result.getContent().get(0).getCategory());
-    Assertions.assertEquals(OpeningStatusEnum.FG, result.getContent().get(0).getStatus());
-    Assertions.assertEquals("12K", result.getContent().get(0).getCuttingPermitId());
-  }
-
-  @Test
-  @DisplayName("Opening search org unit happy path should succeed")
-  void openingSearch_orgUnit_shouldSucceed() {
-
-    Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearch(
-            new OpeningSearchFiltersDto(
-                List.of("DAS"),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null),
-            PageRequest.of(0, 10));
-
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(0, result.getPageable().getPageNumber());
-    Assertions.assertEquals(10, result.getPageable().getPageSize());
-    Assertions.assertEquals(1, result.getTotalPages());
-    Assertions.assertEquals(9, result.getContent().size());
-    Assertions.assertEquals(1796497, result.getContent().get(0).getOpeningId());
-    // Opening number may be "--" if not available
-    Assertions.assertNotNull(result.getContent().get(0).getOpeningNumber());
-  }
-
-  @Test
-  @DisplayName("Opening search no records found should succeed")
-  void openingSearch_noRecordsFound_shouldSucceed() {
-    Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearch(
-            new OpeningSearchFiltersDto(
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, "ABCD"),
-            PageRequest.of(0, 10));
-
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(0, result.getPageable().getPageNumber());
-    Assertions.assertEquals(10, result.getPageable().getPageSize());
-    Assertions.assertEquals(0, result.getTotalPages());
-    Assertions.assertTrue(result.getContent().isEmpty());
-    Assertions.assertFalse(result.hasNext());
-  }
-
-  @Test
-  @DisplayName("Opening search max page exception should fail")
-  void openingSearch_maxPageException_shouldFail() {
-    OpeningSearchFiltersDto filterDto =
-        new OpeningSearchFiltersDto(
-            null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, "FTML");
-    PageRequest pagination = PageRequest.of(0, 2999);
-    Assertions.assertThrows(
-        MaxPageSizeException.class,
-        () -> openingSearchService.openingSearch(filterDto, pagination));
-  }
-
-  @Test
   @DisplayName("Opening search exact with mapsheet grid should succeed")
   void openingSearchExact_mapsheetGrid_shouldSucceed() {
     OpeningSearchExactFiltersDto filterDto =
@@ -149,8 +52,8 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
   }
 
   @Test
-  @DisplayName("Opening search exact with sub opening number should succeed")
-  void openingSearchExact_subOpeningNumber_shouldSucceed() {
+  @DisplayName("Opening search exact with mapsheet key should succeed")
+  void openingSearchExact_mapsheetKey_shouldSucceed() {
     OpeningSearchExactFiltersDto filterDto =
         new OpeningSearchExactFiltersDto(
             0L, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -161,10 +64,10 @@ class OpeningSearchServiceTest extends AbstractTestContainerIntegrationTest {
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().size() > 0);
-    // Verify the composed opening number is properly formatted (not just raw DB value)
-    String openingNumber = result.getContent().get(0).getOpeningNumber();
-    Assertions.assertNotNull(openingNumber);
-    Assertions.assertFalse(openingNumber.equals("514")); // Should be composed, not raw
+    // Verify the composed mapsheet key is properly formatted (not just raw DB value)
+    String mapsheetKey = result.getContent().get(0).getMapsheetKey();
+    Assertions.assertNotNull(mapsheetKey);
+    Assertions.assertFalse(mapsheetKey.equals("514")); // Should be composed, not raw
   }
 
   @Test

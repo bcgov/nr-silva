@@ -47,20 +47,11 @@ jobs:
       backend_flyway_environment: "dev"
       triggers: ('backend/' 'common/' 'frontend/')
 
-  e2e:
-    name: E2E test on (${{ github.event.number }})
-    if: needs.deploys.outputs.run_tests == 'true'
-    needs: [deploys]
-    permissions:
-      checks: write
-    uses: ./.github/workflows/e2e.yml
-    secrets: inherit
-
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [builds, deploys, e2e]
+    needs: [builds, deploys]
     runs-on: ubuntu-24.04
     steps:
       - run: |

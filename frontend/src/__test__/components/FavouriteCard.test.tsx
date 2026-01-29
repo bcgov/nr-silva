@@ -2,8 +2,13 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import * as Icons from "@carbon/icons-react";
+// Mock the Carbon icons module so `BookmarkAdd` is a predictable mock component
+vi.mock("@carbon/icons-react", () => ({
+  BookmarkAdd: () => <svg data-testid="mock-icon" />,
+}));
+
 import FavouriteCard from "../../components/FavouriteCard";
+import type { FavouriteCardProps } from "../../components/FavouriteCard/definitions";
 
 // Mock the useModal hook
 vi.mock("../../contexts/ModalContext", () => ({
@@ -14,16 +19,12 @@ vi.mock("../../contexts/ModalContext", () => ({
 
 describe("FavouriteCard", () => {
   const mockIcon = () => <svg data-testid="mock-icon" />;
-  const props = {
+  const props: FavouriteCardProps = {
     index: 0,
     title: "Test Title",
     link: "/test-link",
-    icon: "Search20" as keyof typeof Icons,
+    icon: "BookmarkAdd",
   };
-
-  beforeEach(() => {
-    (Icons as any)["Search20"] = mockIcon; // Override the icon with a mock
-  });
 
   it("renders the card with correct content", () => {
     render(

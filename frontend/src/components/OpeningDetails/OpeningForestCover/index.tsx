@@ -450,7 +450,8 @@ const OpeningForestCover = ({
                                   checked={allSelected}
                                   indeterminate={!allSelected && someSelected}
                                   disabled={allAvailableIds.length === 0 || !isLatestHistory}
-                                  labelText=""
+                                  labelText="Select all polygons on map"
+                                  hideLabel
                                   onChange={(_, { checked }) => {
                                     setSelectedForestCoverIds(checked ? allAvailableIds : []);
                                   }}
@@ -501,7 +502,8 @@ const OpeningForestCover = ({
                                       key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
                                       checked={selectedForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
                                       disabled={!availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
-                                      labelText=""
+                                      labelText="Select polygon on map"
+                                      hideLabel
                                       onChange={(_, { checked }) => {
                                         setSelectedForestCoverIds(ids =>
                                           checked

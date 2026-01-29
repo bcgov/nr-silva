@@ -4,7 +4,7 @@ import { OpeningHeaderType } from "@/types/TableHeader";
 const defaultSearchTableHeaders: OpeningHeaderType[] = [
   { key: 'actions', header: 'Actions', selected: true },
   { key: 'openingId', header: 'Opening Id', selected: true },
-  { key: 'openingNumber', header: 'Opening number', selected: false },
+  { key: 'mapsheetKey', header: 'Mapsheet key', selected: false },
   { key: 'forestFileId', header: 'File Id', selected: true },
   { key: 'category', header: 'Category', selected: true },
   { key: 'orgUnitName', header: 'Org unit', selected: true },
@@ -32,7 +32,7 @@ const loadUserPreference = (): UserPreference => {
 
 const saveUserPreference = (preference: Partial<UserPreference>): UserPreference => {
   const updatedPreferences = { ...loadUserPreference(), ...preference, } as UserPreference;
-  localStorage.setItem("userPreference", JSON.stringify(updatedPreferences));  
+  localStorage.setItem("userPreference", JSON.stringify(updatedPreferences));
   return updatedPreferences;
 };
 

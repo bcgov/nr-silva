@@ -1,13 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
-import { OpeningDetailsRoute } from "@/routes/config";
 import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
-import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
+import FavOpeningItem from "./FavOpeningItem";
 
 import './styles.scss';
 
@@ -55,22 +53,7 @@ const FavouriteOpenings: React.FC = () => {
               <Grid className="twelve-col-grid">
                 {
                   favouriteOpeningsQuery.data.map((openingId) => (
-                    <div
-                      key={openingId}
-                      className="fav-open-tile-container"
-                      id={`favourite-opening-tile-${openingId}`}
-                      data-testid={`favourite-opening-tile-${openingId}`}
-                    >
-                      <OpeningBookmarkBtn openingId={openingId} />
-                      <Link
-                        className="fav-open-label"
-                        to={OpeningDetailsRoute.path!.replace(":openingId", openingId.toString())}
-                      >
-                        Opening ID{' '}
-                        <span className="fav-open-id">{openingId}</span>
-                      </Link>
-
-                    </div>
+                    <FavOpeningItem key={openingId} openingId={openingId} />
                   ))
                 }
               </Grid>

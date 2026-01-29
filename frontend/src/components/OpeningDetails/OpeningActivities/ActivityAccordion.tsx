@@ -339,7 +339,8 @@ const ActivityAccordion = ({
                                   checked={allSelected}
                                   indeterminate={!allSelected && someSelected}
                                   disabled={allAvailableIds.length === 0}
-                                  labelText=""
+                                  labelText="Select all polygons on map"
+                                  hideLabel
                                   onChange={(_, { checked }) => {
                                     setSelectedSilvicultureActivityIds(checked ? allAvailableIds : []);
                                   }}
@@ -397,7 +398,8 @@ const ActivityAccordion = ({
                                     key={`activities-map-checkbox-${row.atuId}-${index}`}
                                     checked={selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
                                     disabled={!availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
-                                    labelText=""
+                                    labelText="Select polygon on map"
+                                    hideLabel
                                     onChange={(_, { checked }) => {
                                       setSelectedSilvicultureActivityIds(ids =>
                                         checked

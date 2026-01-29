@@ -17,7 +17,6 @@ import type { OpeningStockingHistoryDto } from '../models/OpeningStockingHistory
 import type { OpeningStockingHistoryOverviewDto } from '../models/OpeningStockingHistoryOverviewDto';
 import type { PagedModelOpeningDetailsActivitiesActivitiesDto } from '../models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 import type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from '../models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
-import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -396,85 +395,6 @@ export class OpeningEndpointService {
             path: {
                 'openingId': openingId,
                 'atuId': atuId,
-            },
-        });
-    }
-    /**
-     * @param mainSearchTerm
-     * @param orgUnit
-     * @param category
-     * @param statusList
-     * @param myOpenings
-     * @param submittedToFrpa
-     * @param disturbanceDateStart
-     * @param disturbanceDateEnd
-     * @param regenDelayDateStart
-     * @param regenDelayDateEnd
-     * @param freeGrowingDateStart
-     * @param freeGrowingDateEnd
-     * @param updateDateStart
-     * @param updateDateEnd
-     * @param cuttingPermitId
-     * @param cutBlockId
-     * @param clientLocationCode
-     * @param clientNumber
-     * @param timberMark
-     * @param page Zero-based page index (0..N)
-     * @param size The size of the page to be returned
-     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @returns PagedModelOpeningSearchResponseDto OK
-     * @throws ApiError
-     */
-    public static openingSearch(
-        mainSearchTerm?: string,
-        orgUnit?: Array<string>,
-        category?: Array<string>,
-        statusList?: Array<string>,
-        myOpenings?: boolean,
-        submittedToFrpa?: boolean,
-        disturbanceDateStart?: string,
-        disturbanceDateEnd?: string,
-        regenDelayDateStart?: string,
-        regenDelayDateEnd?: string,
-        freeGrowingDateStart?: string,
-        freeGrowingDateEnd?: string,
-        updateDateStart?: string,
-        updateDateEnd?: string,
-        cuttingPermitId?: string,
-        cutBlockId?: string,
-        clientLocationCode?: string,
-        clientNumber?: string,
-        timberMark?: string,
-        page?: number,
-        size: number = 20,
-        sort?: Array<string>,
-    ): CancelablePromise<PagedModelOpeningSearchResponseDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/openings/search',
-            query: {
-                'mainSearchTerm': mainSearchTerm,
-                'orgUnit': orgUnit,
-                'category': category,
-                'statusList': statusList,
-                'myOpenings': myOpenings,
-                'submittedToFrpa': submittedToFrpa,
-                'disturbanceDateStart': disturbanceDateStart,
-                'disturbanceDateEnd': disturbanceDateEnd,
-                'regenDelayDateStart': regenDelayDateStart,
-                'regenDelayDateEnd': regenDelayDateEnd,
-                'freeGrowingDateStart': freeGrowingDateStart,
-                'freeGrowingDateEnd': freeGrowingDateEnd,
-                'updateDateStart': updateDateStart,
-                'updateDateEnd': updateDateEnd,
-                'cuttingPermitId': cuttingPermitId,
-                'cutBlockId': cutBlockId,
-                'clientLocationCode': clientLocationCode,
-                'clientNumber': clientNumber,
-                'timberMark': timberMark,
-                'page': page,
-                'size': size,
-                'sort': sort,
             },
         });
     }

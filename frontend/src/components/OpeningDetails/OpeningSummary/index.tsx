@@ -117,7 +117,7 @@ const OpeningSummary = ({
       <Column sm={2} md={4} lg={4} xlg={3} max={2}>
         <CardItem
           id="opening-number-card-item"
-          label="Opening number"
+          label="Mapsheet key"
           showSkeleton={isLoading}
         >
           {tombstoneObj?.openingNumber?.trim() === ""

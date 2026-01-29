@@ -43,11 +43,11 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
           .build();
 
   @Test
-  @DisplayName("Opening search exact with sub opening number should succeed")
-  void openingSearchExact_subOpeningNumber_shouldSucceed() throws Exception {
+  @DisplayName("Opening search exact with mapsheet key should succeed")
+  void openingSearchExact_mapsheetKey_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/openings?subOpeningNumber=514")
+            get("/api/search/openings?mapsheetKey=514")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -107,7 +107,7 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
         .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").isNumber())
         .andExpect(jsonPath("$.content[0].openingId").value(101017L))
-        .andExpect(jsonPath("$.content[0].openingNumber").exists())
+        .andExpect(jsonPath("$.content[0].mapsheetKey").exists())
         .andReturn();
   }
 
@@ -177,11 +177,11 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
-  @DisplayName("Opening search exact with invalid entry date range should return 400")
-  void openingSearchExact_invalidEntryDateRange_shouldReturn400() throws Exception {
+  @DisplayName("Opening search exact with invalid update date range should return 400")
+  void openingSearchExact_invalidUpdateDateRange_shouldReturn400() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/openings?entryDateStart=2025-01-16&entryDateEnd=2025-01-01")
+            get("/api/search/openings?updateDateStart=2025-01-16&updateDateEnd=2025-01-01")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -189,11 +189,11 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
-  @DisplayName("Opening search exact with valid entry date range should succeed")
-  void openingSearchExact_validEntryDateRange_shouldSucceed() throws Exception {
+  @DisplayName("Opening search exact with valid update date range should succeed")
+  void openingSearchExact_validUpdateDateRange_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/openings?entryDateStart=2001-01-01&entryDateEnd=2025-12-31")
+            get("/api/search/openings?updateDateStart=2001-01-01&updateDateEnd=2025-12-31")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -217,8 +217,8 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   }
 
   @Test
-  @DisplayName("Opening search exact with composed opening number should be formatted correctly")
-  void openingSearchExact_composedOpeningNumber_shouldBeFormatted() throws Exception {
+  @DisplayName("Opening search exact with composed mapsheet key should be formatted correctly")
+  void openingSearchExact_composedMapsheetKey_shouldBeFormatted() throws Exception {
     String clientNumber = "00010003";
     clientApiStub.stubFor(
         WireMock.get(urlPathEqualTo("/clients/findByClientNumber/" + clientNumber))
@@ -246,12 +246,12 @@ class SearchEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
             .andExpect(content().contentType("application/json"))
             .andReturn();
 
-    // Extract and verify the opening number is properly composed (not just the raw DB value)
+    // Extract and verify the mapsheet key is properly composed (not just the raw DB value)
     String responseBody = result.getResponse().getContentAsString();
-    String openingNumber = JsonPath.read(responseBody, "$.content[0].openingNumber");
-    Assertions.assertNotNull(openingNumber);
+    String mapsheetKey = JsonPath.read(responseBody, "$.content[0].mapsheetKey");
+    Assertions.assertNotNull(mapsheetKey);
     // Should be like "92K 014 0.0  514" not just "514"
     Assertions.assertTrue(
-        openingNumber.contains(" "), "Opening number should be composed with spaces");
+        mapsheetKey.contains(" "), "Mapsheet key should be composed with spaces");
   }
 }

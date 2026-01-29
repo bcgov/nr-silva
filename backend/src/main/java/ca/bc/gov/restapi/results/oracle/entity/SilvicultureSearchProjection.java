@@ -18,6 +18,8 @@ public interface SilvicultureSearchProjection {
 
   String getStatus();
 
+  String getLicenseeOpeningId();
+
   String getCuttingPermitId();
 
   String getTimberMark();
@@ -25,6 +27,8 @@ public interface SilvicultureSearchProjection {
   String getCutBlockId();
 
   BigDecimal getOpeningGrossArea();
+
+  BigDecimal getDisturbanceGrossArea();
 
   LocalDate getDisturbanceStartDate();
 

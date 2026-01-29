@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-
+import { ArrowRight } from "@carbon/icons-react";
 import { Button, Column, Grid, TextInput } from "@carbon/react";
+import { useNavigate } from "react-router-dom";
 import PageTitle from "@/components/PageTitle";
 import RecentOpenings from "@/components/RecentOpenings";
 import FavouriteCard from "@/components/FavouriteCard";
-import { FavouriteCardsConfig } from "./constants";
-import { useNavigate } from "react-router-dom";
 import { sanitizeDigits } from "@/utils/InputUtils";
+import { FavouriteCardsConfig } from "./constants";
 
 import './styles.scss';
-import { ArrowRight } from "@carbon/icons-react";
 
 const Openings = () => {
   const navigate = useNavigate();
@@ -79,7 +78,8 @@ const Openings = () => {
           <TextInput
             id="opening-id-input"
             name="opening-id"
-            labelText=""
+            labelText="Opening ID"
+            hideLabel
             placeholder="View Opening by ID"
             value={openingId}
             onChange={handleOpeningIdChange}

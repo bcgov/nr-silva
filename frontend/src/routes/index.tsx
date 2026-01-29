@@ -3,7 +3,13 @@ import Landing from "@/screens/Landing";
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import ErrorHandling from '@/screens/ErrorHandling';
 import { Navigate, type RouteObject } from "react-router-dom";
-import { CreateOpeningRoute, DashboardRoute, OpeningDetailsRoute, OpeningsRoute, SilvicultureSearchRoute } from "./config";
+import {
+  CreateOpeningRoute,
+  DashboardRoute,
+  OpeningDetailsRoute,
+  OpeningsRoute,
+  OpeningsSearchRoute
+} from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -18,7 +24,7 @@ const protectedRouteList: RouteObject[] = [
     element: <Navigate to={DashboardRoute?.path ?? "/dashboard"} replace /> // Redirect `/` to `/dashboard` for logged-in users
   },
   DashboardRoute,
-  SilvicultureSearchRoute,
+  OpeningsSearchRoute,
   OpeningsRoute,
   CreateOpeningRoute,
   OpeningDetailsRoute

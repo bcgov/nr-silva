@@ -46,7 +46,6 @@ export class OpeningDetailsPage extends BasePage {
   private readonly activitiesSilvicultureTable: Locator;
   private readonly activitiesSilvicultureTableRows: Locator;
   private readonly activitiesSilvicultureTableSearchInput: Locator;
-  private readonly activitiesSilvicultureSearchButton: Locator;
 
   // Forest Cover Section
   private readonly forestCoverSection: Locator;
@@ -103,7 +102,6 @@ export class OpeningDetailsPage extends BasePage {
     this.activitiesSilvicultureTable = this.activitiesSilvicultureAccordion.getByRole('table', { name: 'Activity table' });
     this.activitiesSilvicultureTableRows = this.activitiesSilvicultureTable.locator('tbody tr');
     this.activitiesSilvicultureTableSearchInput = this.activitiesSilvicultureAccordion.getByRole('searchbox', { name: 'Filter table' })
-    this.activitiesSilvicultureSearchButton = this.activitiesSilvicultureAccordion.getByRole('button', { name: 'Search' });
 
     // Forest Cover Section
     this.forestCoverSection = page.getByRole('tabpanel', { name: 'Forest Cover' });
@@ -197,14 +195,6 @@ export class OpeningDetailsPage extends BasePage {
 
   async fillActivitiesDisturbanceSearchInput(value: string) {
     await this.activitiesDisturbanceTableSearchInput.fill(value);
-  }
-
-  async fillActivitiesSilvicultureSearchInput(value: string) {
-    await this.activitiesSilvicultureTableSearchInput.fill(value);
-  }
-
-  async clickActivitiesSilvicultureSearchButton() {
-    await this.activitiesSilvicultureSearchButton.click();
   }
 
   async fillForestCoverSearchInput(value: string) {

@@ -63,3 +63,26 @@ export function formatForestClient(client?: ForestClientDto | null): string {
   }
   return acronym || clientName || '';
 }
+
+/**
+ * Return a compact label for a client for use in tight UI spaces.
+ * Preference order: `acronym`, then `name`, then `clientNumber`.
+ * If none are present, returns the application `PLACE_HOLDER`.
+ *
+ * @param client - The client object (may be undefined or null).
+ * @returns A short display string for the client.
+ */
+export const getClientSimpleLabel = (
+  client?: ForestClientAutocompleteResultDto | null
+): string => {
+  if (client?.acronym) {
+    return client.acronym;
+  }
+  if (client?.name) {
+    return client.name;
+  }
+  if (client?.id) {
+    return client.id;
+  }
+  return PLACE_HOLDER;
+}

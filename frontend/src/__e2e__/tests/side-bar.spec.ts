@@ -9,12 +9,10 @@ test.describe('Side Bar', () => {
     await expect(sideBar.sideBarMenu).toBeVisible();
     await expect(sideBar.mainActivitiesTitle).toBeVisible();
     await expect(sideBar.dashboardButton).toBeVisible();
-    await expect(sideBar.silvicultureSearchButton).toBeVisible();
     await expect(sideBar.openingsButton).toBeVisible();
 
     await expect(sideBar.mainActivitiesTitle).toHaveText('Main activities');
     await expect(sideBar.dashboardButton).toHaveText('Dashboard');
-    await expect(sideBar.silvicultureSearchButton).toHaveText('Silviculture search');
     await expect(sideBar.openingsButton).toHaveText('Openings');
   });
 
@@ -25,15 +23,6 @@ test.describe('Side Bar', () => {
 
     await expect(page).toHaveURL(/.*\/dashboard/);
     await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-  });
-
-  test('should navigate to silviculture search', async ({ page }) => {
-    const sideBar = new SideBar(page);
-    await sideBar.goto();
-    await sideBar.goToSilvicultureSearch();
-
-    await expect(page).toHaveURL(/.*\/silviculture-search/);
-    await expect(page.getByRole('heading', { name: 'Silviculture search' })).toBeVisible();
   });
 
   test('should navigate to openings', async ({ page }) => {

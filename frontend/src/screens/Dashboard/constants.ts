@@ -4,9 +4,9 @@ import { env } from "@/env";
 export const FavouriteCardsConfig: FavouriteCardProps[] = [
   {
     index: 0,
-    title: 'Silviculture search',
-    link: '/silviculture-search',
-    icon: 'SearchLocate'
+    title: 'Openings search',
+    link: '/openings-search',
+    icon: 'MapBoundaryVegetation'
   },
   {
     index: 1,

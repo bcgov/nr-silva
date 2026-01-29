@@ -43,3 +43,14 @@ export const TENURED_OPENING = "TENURED_OPENING" as const;
 
 export const GOV_FUNDED_OPENING = "GOV_FUNDED_OPENING" as const;
 
+export const VALID_MAPSHEET_GRID_LIST = ["82", "83", "92", "93", "94", "082", "083", "092", "093", "094", "102", "103", "104", "105", "114"];
+
+/**
+ * Allowed mapsheet letters (A-P and W)
+ */
+export const VALID_MAPSHEET_LETTER_LIST = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'W'];
+
+/**
+ * Allowed mapsheet quad and sub-quad numbers (0-4)
+ */
+export const VALID_MAPSHEET_QUAD_LIST = ['0', '1', '2', '3', '4'];

@@ -22,10 +22,10 @@ describe("SpatialCheckbox", () => {
     );
 
     // Check if the checkbox is in the document
-    const checkbox = screen.getByRole("checkbox", {
+    const button = screen.getByRole("button", {
       name: /click to view this opening's map activity/i,
     });
-    expect(checkbox).toBeInTheDocument();
+    expect(button).toBeInTheDocument();
   });
 
   it("sets the checkbox to 'checked' if rowId is in selectedRows", () => {
@@ -37,8 +37,10 @@ describe("SpatialCheckbox", () => {
       />
     );
 
-    const checkbox = screen.getByRole("checkbox");
-    expect(checkbox).toBeChecked();
+    const button = screen.getByRole("button", {
+      name: /click to view this opening's map activity/i,
+    });
+    expect(button).toHaveClass("spatial-checkbox-checked");
   });
 
   it("calls handleRowSelectionChanged with rowId when checkbox is toggled", () => {
@@ -50,12 +52,14 @@ describe("SpatialCheckbox", () => {
       />
     );
 
-    const checkbox = screen.getByRole("checkbox");
+    const button = screen.getByRole("button", {
+      name: /click to view this opening's map activity/i,
+    });
 
-    // Simulate a click on the checkbox
-    fireEvent.click(checkbox);
+    // Simulate a click on the button
+    fireEvent.click(button);
 
-    // Check if handleRowSelectionChanged was called with the correct rowId
+    // Check if handleRowSelection was called with the correct rowId
     expect(handleRowSelectionChanged).toHaveBeenCalledWith(rowId);
   });
 });

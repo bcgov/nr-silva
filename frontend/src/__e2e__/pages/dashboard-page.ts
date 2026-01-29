@@ -4,7 +4,6 @@ import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
 import { BasePage } from "./base-page";
 
 export class DashboardPage extends BasePage {
-  private readonly silvicultureSearchButton: Locator;
   private readonly mapButton: Locator;
   private readonly map: Locator;
   private readonly recentOpeningsSection: Locator;
@@ -19,8 +18,6 @@ export class DashboardPage extends BasePage {
 
   constructor(page: Page) {
     super(page, routes.dashboard());
-
-    this.silvicultureSearchButton = page.getByRole('button', { name: 'Silviculture search' });
     this.recentOpeningsSection = page.locator('.recent-openings-container');
     this.mapButton = this.recentOpeningsSection.getByTestId('toggle-map-button');
     this.map = this.recentOpeningsSection.locator('.leaflet-container');
@@ -44,11 +41,6 @@ export class DashboardPage extends BasePage {
 
   async isFavouritesSectionVisible() {
     return await this.favouritesSection.isVisible();
-  }
-
-  async clickSilvicultureSearchButton() {
-    await this.silvicultureSearchButton.click();
-    await this.page.waitForURL('**/' + routes.silvicultureSearch());
   }
 
   async isMapVisible() {
