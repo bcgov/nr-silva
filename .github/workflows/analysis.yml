@@ -129,7 +129,7 @@ jobs:
     name: Analysis Results
     if: always()
     # Include all needs that could have failures!
-    needs: [lint-frontend, tests-backend-oracle, tests-backend-postgres, tests-frontend] # Include trivy when/if it gets back to being reliable
+    needs: [lint-frontend, tests-backend, tests-frontend] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-24.04
     steps:
       - run: |
