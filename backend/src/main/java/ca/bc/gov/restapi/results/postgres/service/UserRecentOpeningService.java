@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
@@ -101,8 +100,7 @@ public class UserRecentOpeningService {
 
     List<SilvicultureSearchProjection> projectionList =
         openingRepository
-            .searchBy(
-                new OpeningSearchFiltersDto(),
+            .searchByOpeningIds(
                 new ArrayList<>(openingIds.keySet()),
                 // Here it really doesn't matter, if we set the page as first,
                 // because it will be just for the current page anyway

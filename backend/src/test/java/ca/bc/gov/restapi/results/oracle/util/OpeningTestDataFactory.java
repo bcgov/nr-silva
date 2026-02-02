@@ -10,8 +10,6 @@ import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingSpecie
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewMilestoneProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewOpeningProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneProjection;
-import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import java.time.LocalDate;
 
 public class OpeningTestDataFactory {
@@ -30,12 +28,12 @@ public class OpeningTestDataFactory {
 
       @Override
       public String getOpeningStatusCode() {
-        return OpeningStatusEnum.APP.getCode();
+        return "APP";
       }
 
       @Override
       public String getOpeningStatusName() {
-        return OpeningStatusEnum.APP.getDescription();
+        return "Approved";
       }
 
       @Override
@@ -55,12 +53,12 @@ public class OpeningTestDataFactory {
 
       @Override
       public String getOpenCategoryCode() {
-        return OpeningCategoryEnum.FTML.getCode();
+        return "FTML";
       }
 
       @Override
       public String getOpenCategoryName() {
-        return OpeningCategoryEnum.FTML.getDescription();
+        return "Forest Tenure - Major Licensee";
       }
 
       @Override

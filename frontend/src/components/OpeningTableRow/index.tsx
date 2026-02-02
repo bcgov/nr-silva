@@ -4,17 +4,17 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
-
-import { OpeningStatusTag } from "../Tags";
-import SpatialCheckbox from "../SpatialCheckbox";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
-
 import { OpeningDetailsRoute } from "@/routes/config";
-import "./styles.scss";
+
+import { OpeningStatusTag } from "../Tags";
+import SpatialCheckbox from "../SpatialCheckbox";
 import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
+
+import "./styles.scss";
 
 interface TableRowComponentProps {
   headers: TableHeaderType<OpendingHeaderKeyType>[];
@@ -91,8 +91,13 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         return PLACE_HOLDER;
 
       case "regenDelayDate":
+        return formatLocalDate(rowData.regenDelayDate, true);
       case "updateTimestamp":
+        return formatLocalDate(rowData.updateTimestamp, true);
       case "earlyFreeGrowingDate":
+        return formatLocalDate(rowData.earlyFreeGrowingDate, true);
+      case "entryTimestamp":
+        return formatLocalDate(rowData.entryTimestamp, true);
       case "disturbanceStartDate":
         return formatLocalDate(rowData.disturbanceStartDate, true);
       default:

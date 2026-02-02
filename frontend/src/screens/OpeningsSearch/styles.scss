@@ -1,0 +1,79 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.openings-search-grid {
+
+  .bookmark-col {
+    margin-top: -1.5rem;
+  }
+
+  .search-table-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem 1.5rem 1rem;
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+
+    .search-result-title {
+      @include type.type-style('heading-03');
+    }
+
+    .search-result-subtitle {
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
+
+    .search-result-sub-title-section {
+      align-items: center;
+    }
+  }
+
+  .edit-col-button {
+    width: fit-content;
+    background-color: var(--#{vars.$bcgov-prefix}-background);
+    padding-inline: 0.75rem;
+    border: 1px solid var(--#{vars.$bcgov-prefix}-button-tertiary);
+
+    &:hover,
+    &:focus {
+      background-color: var(--#{vars.$bcgov-prefix}-button-tertiary-hover);
+      color: var(--#{vars.$bcgov-prefix}-text-inverse);
+    }
+  }
+}
+
+
+.opening-search-action-menu-option {
+  min-width: 16rem;
+  max-width: calc(100vw - 2rem);
+  width: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  max-height: 25rem;
+  overflow-y: scroll;
+
+  .opening-search-action-menu-option-item {
+    width: 100%;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .helper-text {
+    width: 100%;
+    @include type.type-style('label-01');
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .#{vars.$bcgov-prefix}--form-item.#{vars.$bcgov-prefix}--checkbox-wrapper {
+    margin-block-end: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--form-item.#{vars.$bcgov-prefix}--checkbox-wrapper:hover {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
+  }
+
+  .column-checkbox {
+    padding: 1rem;
+  }
+}

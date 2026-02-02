@@ -1,0 +1,8 @@
+// Fix for Carbon FilterableMultiSelect persistent focus styling issue
+// Forces the outline to be removed when the component should not have focus
+.custom-multi-select-wrapper {
+  .bx--multi-select:not(:focus-within) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}

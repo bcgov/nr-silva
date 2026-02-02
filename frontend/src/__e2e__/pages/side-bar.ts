@@ -6,7 +6,6 @@ export class SideBar {
   readonly sideBarMenu: Locator;
   readonly mainActivitiesTitle: Locator;
   readonly dashboardButton: Locator;
-  readonly silvicultureSearchButton: Locator;
   readonly openingsButton: Locator;
 
   constructor(page: Page) {
@@ -15,7 +14,6 @@ export class SideBar {
     this.sideBarMenu = page.getByRole('navigation', { name: 'Side menu' }).getByRole('list');
     this.mainActivitiesTitle = this.sideBarMenu.getByText('Main activities');
     this.dashboardButton = this.sideBarMenu.getByTestId('side-nav-link-dashboard');
-    this.silvicultureSearchButton = this.sideBarMenu.getByTestId('side-nav-link-silviculture-search');
     this.openingsButton = this.sideBarMenu.getByTestId('side-nav-link-openings');
   }
 
@@ -26,11 +24,6 @@ export class SideBar {
   async goToDashboard() {
     await this.dashboardButton.click();
     await this.page.waitForURL('**/dashboard');
-  }
-
-  async goToSilvicultureSearch() {
-    await this.silvicultureSearchButton.click();
-    await this.page.waitForURL('**/silviculture-search');
   }
 
   async goToOpenings() {

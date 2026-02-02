@@ -5,8 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,17 +27,22 @@ public class OpeningSearchResponseDto {
   @Schema(
       types = {"string", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private String openingNumber;
+  private String mapsheetKey;
 
   @Schema(
       types = {"object", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private OpeningCategoryEnum category;
+  private CodeDescriptionDto category;
 
   @Schema(
       types = {"object", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
-  private OpeningStatusEnum status;
+  private CodeDescriptionDto status;
+
+  @Schema(
+      types = {"string", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String licenseeOpeningId;
 
   @Schema(
       types = {"string", "null"},
@@ -59,6 +63,11 @@ public class OpeningSearchResponseDto {
       types = {"number", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
   private BigDecimal openingGrossAreaHa;
+
+  @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private BigDecimal disturbanceGrossArea;
 
   @Schema(
       types = {"string", "null"},
@@ -132,9 +141,6 @@ public class OpeningSearchResponseDto {
       types = {"string", "null"},
       requiredMode = Schema.RequiredMode.REQUIRED)
   private LocalDateTime lastViewDate;
-
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private boolean favourite;
 
   public boolean isValid() {
     return Objects.nonNull(openingId);

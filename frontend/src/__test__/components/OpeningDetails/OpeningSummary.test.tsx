@@ -54,7 +54,7 @@ describe("OpeningSummary", () => {
 
     // Check card items using data-testid
     expect(
-      screen.getByTestId("card-item-content-opening-number")
+      screen.getByTestId("card-item-content-mapsheet-key")
     ).toHaveTextContent("92K 014 0.0 514");
     expect(
       screen.getByTestId("card-item-content-opening-status")

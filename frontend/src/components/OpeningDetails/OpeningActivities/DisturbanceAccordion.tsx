@@ -178,7 +178,8 @@ const DisturbanceAccordion = ({
                               checked={allSelected}
                               indeterminate={!allSelected && someSelected}
                               disabled={allAvailableIds.length === 0}
-                              labelText=""
+                              labelText="Select all polygons on map"
+                              hideLabel
                               onChange={(_, { checked }) => {
                                 setSelectedDisturbanceIds(checked ? allAvailableIds : []);
                               }}
@@ -233,7 +234,8 @@ const DisturbanceAccordion = ({
                                   key={`disturbance-map-checkbox-${row.atuId}-${index}`}
                                   checked={selectedDisturbanceIds.includes(`${row.atuId}-DN`)}
                                   disabled={!availableDisturbanceIds.includes(`${row.atuId}-DN`)}
-                                  labelText=""
+                                  labelText="Select polygon on map"
+                                  hideLabel
                                   onChange={(_, { checked }) => {
                                     setSelectedDisturbanceIds(ids =>
                                       checked

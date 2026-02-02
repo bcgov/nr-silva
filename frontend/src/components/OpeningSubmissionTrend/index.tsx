@@ -30,7 +30,6 @@ import { OPENING_STATUS_LIST } from "@/constants";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 // Local components
-import { SilvicultureSearchParams } from '../SilvicultureSearch/definitions';
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
 import { DefaultChartOptions } from "./constants";
@@ -40,6 +39,7 @@ import { generateYearList, getYearBoundaryDate } from "./utils";
 // Styles
 import "@carbon/charts/styles.css";
 import "./styles.scss";
+import { OpeningsSearchRoute } from "../../routes/config";
 
 interface BarChartGroupedEvent {
   detail: {
@@ -150,21 +150,23 @@ const OpeningSubmissionTrend = () => {
         startOfMonth(new Date(datum.year, datum.month - 1)),
         "yyyy-MM-dd"
       );
+      const now = new Date();
+      const isCurrentMonth = now.getFullYear() === datum.year && now.getMonth() + 1 === datum.month;
       const dateEnd = format(
-        endOfMonth(new Date(datum.year, datum.month - 1)),
+        isCurrentMonth
+          ? now
+          : endOfMonth(new Date(datum.year, datum.month - 1)),
         "yyyy-MM-dd"
       );
 
-      const queryParams: SilvicultureSearchParams = {
-        tab: "openings",
-        dateType: "update",
-        dateStart,
-        dateEnd,
-        orgUnit: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
-        status: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
+      const queryParams = {
+        updateDateStart: dateStart,
+        updateDateEnd: dateEnd,
+        orgUnits: extractCodesFromCodeDescriptionArr(selectedOrgUnits),
+        openingStatuses: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
       };
 
-      navigate(`/silviculture-search?${buildQueryString(queryParams)}`);
+      navigate(`${OpeningsSearchRoute.path}?${buildQueryString(queryParams)}`);
     };
     // Ensure existing listeners are removed before adding a new one
     chart.services.events.removeEventListener("bar-click", handleBarClick);
