@@ -14,8 +14,8 @@ concurrency:
 permissions: {}
 
 jobs:
-  tests-backend:
-    name: Tests (Oracle and Postgres)
+  tests-backend-oracle:
+    name: Tests (Backend - Oracle)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
     env:
@@ -25,27 +25,32 @@ jobs:
         with:
           commands: |
             mkdir -p ~/.m2
-             if [ -f settings.xml ]; then
-               cp settings.xml ~/.m2/settings.xml
-             fi
-             # Run tests with Oracle database
-             ./mvnw -s ~/.m2/settings.xml clean install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
+            if [ -f settings.xml ]; then
+              cp settings.xml ~/.m2/settings.xml
+            fi
+            ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=dev -Dprimary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
+          dir: backend
+          java-cache: maven
+          java-distribution: temurin
+          java-version: 21
+          # Only use triggers for PRs
+          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
-             # Save Oracle execution data
-             mkdir -p target/jacoco-merge
-             cp target/coverage-reports/jacoco-ut.exec target/jacoco-merge/jacoco-oracle.exec || true
-
-             # Run tests with Postgres database (skipping clean to preserve first results)
-             ./mvnw -s ~/.m2/settings.xml install -Dflyway.environment=${FLYWAY_ENVIRONMENT} -Dprimary.database=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
-
-             # Save Postgres execution data
-             cp target/coverage-reports/jacoco-ut.exec target/jacoco-merge/jacoco-postgres.exec || true
-
-             # Merge JaCoCo execution files
-             ./mvnw -s ~/.m2/settings.xml jacoco:merge@merge-all-tests -Djakoco.destFile=target/jacoco-merge/jacoco-merged.exec || true
-
-             # Generate merged report
-             ./mvnw -s ~/.m2/settings.xml jacoco:report@report-all-tests -Djakoco.dataFile=target/jacoco-merge/jacoco-merged.exec || true
+  tests-backend-postgres:
+    name: Tests (Backend - Postgres)
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    env:
+      FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
+    steps:
+      - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
+        with:
+          commands: |
+            mkdir -p ~/.m2
+            if [ -f settings.xml ]; then
+              cp settings.xml ~/.m2/settings.xml
+            fi
+            ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=dev -Dprimary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
           dir: backend
           java-cache: maven
           java-distribution: temurin
@@ -56,7 +61,7 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=nr-silva-backend
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          sonar_token: ${{ github.event_name == 'pull_request' && secrets.SONAR_TOKEN_BACKEND || '' }}
           # Only use triggers for PRs
           triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
