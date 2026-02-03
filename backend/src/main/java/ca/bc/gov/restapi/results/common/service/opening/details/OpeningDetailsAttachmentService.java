@@ -5,6 +5,6 @@ import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsAttachmentMeta
 import java.util.List;
 
 public interface OpeningDetailsAttachmentService {
-  public List<OpeningDetailsAttachmentMetaDto> getAttachmentList(Long openingId);
-  public String getS3PresignedUrl(String guid);
+  List<OpeningDetailsAttachmentMetaDto> getAttachmentList(Long openingId);
+  String getS3PresignedUrl(String guid);
 }
