@@ -5,14 +5,16 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.entity.BaseCodeEntity;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
+import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
+import ca.bc.gov.restapi.results.common.repository.OpeningStatusCodeRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
-import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -32,11 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AbstractOpeningSearchService implements OpeningSearchService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
+  protected final OpenCategoryCodeRepository<? extends BaseCodeEntity> openCategoryCodeRepository;
+  protected final OpeningStatusCodeRepository<? extends BaseCodeEntity> openingStatusCodeRepository;
   protected final LoggedUserHelper loggedUserHelper;
   protected final ForestClientApiProvider forestClientApiProvider;
   protected final UserOpeningService userOpeningService;
@@ -64,7 +69,7 @@ public class AbstractOpeningSearchService implements OpeningSearchService {
     // Validate mapsheet related fields for Opening Number
     validateMapsheetFields(filtersDto);
 
-    if (filtersDto.hasValue(SilvaOracleConstants.IS_CREATED_BY_USER)
+    if (filtersDto.hasValue(SilvaConstants.IS_CREATED_BY_USER)
         && Boolean.TRUE.equals(filtersDto.getIsCreatedByUser())) {
       filtersDto.setRequestUserId(loggedUserHelper.getLoggedUserId());
     }
@@ -90,14 +95,14 @@ public class AbstractOpeningSearchService implements OpeningSearchService {
         openCategoryCodeRepository.findAll().stream()
             .collect(
                 Collectors.toMap(
-                    OpenCategoryCodeEntity::getCode,
+                    BaseCodeEntity::getCode,
                     e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
 
     final var statusMap =
         openingStatusCodeRepository.findAll().stream()
             .collect(
                 Collectors.toMap(
-                    OpeningStatusCodeEntity::getCode,
+                    BaseCodeEntity::getCode,
                     e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
 
     return fetchClientAcronyms(
@@ -212,7 +217,7 @@ public class AbstractOpeningSearchService implements OpeningSearchService {
    * @return true if valid, false otherwise
    */
   private boolean isValidMapsheetGrid(String gridValue) {
-    return SilvaOracleConstants.VALID_MAPSHEET_GRID_VALUES.contains(gridValue);
+    return SilvaConstants.VALID_MAPSHEET_GRID_VALUES.contains(gridValue);
   }
 
   /**
@@ -223,7 +228,7 @@ public class AbstractOpeningSearchService implements OpeningSearchService {
    */
   private boolean isValidMapsheetLetter(String letterValue) {
     return letterValue.length() == 1
-        && SilvaOracleConstants.VALID_MAPSHEET_LETTERS.contains(letterValue.charAt(0));
+        && SilvaConstants.VALID_MAPSHEET_LETTERS.contains(letterValue.charAt(0));
   }
 
   /**
