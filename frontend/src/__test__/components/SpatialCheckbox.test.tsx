@@ -23,7 +23,7 @@ describe("SpatialCheckbox", () => {
 
     // Check if the checkbox is in the document
     const button = screen.getByRole("button", {
-      name: /click to view this opening's map activity/i,
+      name: /Click to view this opening on the map/i,
     });
     expect(button).toBeInTheDocument();
   });
@@ -38,7 +38,7 @@ describe("SpatialCheckbox", () => {
     );
 
     const button = screen.getByRole("button", {
-      name: /click to view this opening's map activity/i,
+      name: /Click to view this opening on the map/i,
     });
     expect(button).toHaveClass("spatial-checkbox-checked");
   });
@@ -53,7 +53,7 @@ describe("SpatialCheckbox", () => {
     );
 
     const button = screen.getByRole("button", {
-      name: /click to view this opening's map activity/i,
+      name: /Click to view this opening on the map/i,
     });
 
     // Simulate a click on the button
