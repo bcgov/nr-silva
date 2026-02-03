@@ -13,7 +13,7 @@ import {
   Modal
 } from "@carbon/react";
 import { CropGrowth, DiamondOutline, Layers, Popup, Search } from "@carbon/icons-react";
-import { NOT_APPLICABLE, PLACE_HOLDER } from "@/constants";
+import { PLACE_HOLDER } from "@/constants";
 import TableSkeleton from "@/components/TableSkeleton";
 import EmptySection from "@/components/EmptySection";
 import { StockingStatusTag } from "@/components/Tags";
@@ -155,10 +155,10 @@ const OpeningForestCover = ({
           <div className="opening-forest-cover-cell-multiple-lines">
             <span>Polygon ID: {row.polygonId}</span>
             <span>
-              Standard unit: {row.standardUnitId ?? NOT_APPLICABLE}
+              Standard unit: {row.standardUnitId ?? PLACE_HOLDER}
             </span>
             <span>
-              Unmapped area: {row.unmappedArea.code ? codeDescriptionToDisplayText(row.unmappedArea) : NOT_APPLICABLE}
+              Unmapped area: {row.unmappedArea.code ? codeDescriptionToDisplayText(row.unmappedArea) : PLACE_HOLDER}
             </span>
           </div>
         );
@@ -226,12 +226,12 @@ const OpeningForestCover = ({
                     <span>Species: {displayText}</span>
                   </DefinitionTooltip>
                 )
-                : `Species: ${NOT_APPLICABLE}`
+                : `Species: ${PLACE_HOLDER}`
             }
-            <span>Total: {row.inventoryLayer.total !== null ? `${row.inventoryLayer.total} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Total well spaced: {row.inventoryLayer.totalWellSpaced !== null ? `${row.inventoryLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Well spaced: {row.inventoryLayer.wellSpaced !== null ? `${row.inventoryLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Free growing: {row.inventoryLayer.freeGrowing !== null ? `${row.inventoryLayer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total: {row.inventoryLayer.total !== null ? `${row.inventoryLayer.total} (st/ha)` : PLACE_HOLDER}</span>
+            <span>Total well spaced: {row.inventoryLayer.totalWellSpaced !== null ? `${row.inventoryLayer.totalWellSpaced} (st/ha)` : PLACE_HOLDER}</span>
+            <span>Well spaced: {row.inventoryLayer.wellSpaced !== null ? `${row.inventoryLayer.wellSpaced} (st/ha)` : PLACE_HOLDER}</span>
+            <span>Free growing: {row.inventoryLayer.freeGrowing !== null ? `${row.inventoryLayer.freeGrowing} (st/ha)` : PLACE_HOLDER}</span>
           </div>
         );
       }
@@ -258,11 +258,11 @@ const OpeningForestCover = ({
                     <span>Species: {displayText}</span>
                   </DefinitionTooltip>
                 )
-                : `Species: ${NOT_APPLICABLE}`
+                : `Species: ${PLACE_HOLDER}`
             }
-            <span>Total well spaced: {row.silvicultureLayer.totalWellSpaced !== null ? `${row.silvicultureLayer.totalWellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Well spaced: {row.silvicultureLayer.wellSpaced !== null ? `${row.silvicultureLayer.wellSpaced} (st/ha)` : NOT_APPLICABLE}</span>
-            <span>Free growing: {row.silvicultureLayer.freeGrowing !== null ? `${row.silvicultureLayer.freeGrowing} (st/ha)` : NOT_APPLICABLE}</span>
+            <span>Total well spaced: {row.silvicultureLayer.totalWellSpaced !== null ? `${row.silvicultureLayer.totalWellSpaced} (st/ha)` : PLACE_HOLDER}</span>
+            <span>Well spaced: {row.silvicultureLayer.wellSpaced !== null ? `${row.silvicultureLayer.wellSpaced} (st/ha)` : PLACE_HOLDER}</span>
+            <span>Free growing: {row.silvicultureLayer.freeGrowing !== null ? `${row.silvicultureLayer.freeGrowing} (st/ha)` : PLACE_HOLDER}</span>
           </div>
         );
       }
