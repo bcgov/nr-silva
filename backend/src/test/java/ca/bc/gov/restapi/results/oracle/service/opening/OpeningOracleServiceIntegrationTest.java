@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | Opening Service | Legacy(Oracle primary)")
-@EnabledIfSystemProperty(named = "primary-db", matches = "oracle")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "oracle")
 @WithMockJwt(value = "ttester")
 public class OpeningOracleServiceIntegrationTest extends
     AbstractOpeningServiceIntegrationTest<OpeningDetailsOracleService> {

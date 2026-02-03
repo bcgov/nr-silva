@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | Opening Service | Postgres-only")
-@EnabledIfSystemProperty(named = "primary-db", matches = "postgres")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @WithMockJwt(value = "ttester")
 public class OpeningPostgresServiceIntegrationTest extends
     AbstractOpeningServiceIntegrationTest<OpeningDetailsPostgresService> {

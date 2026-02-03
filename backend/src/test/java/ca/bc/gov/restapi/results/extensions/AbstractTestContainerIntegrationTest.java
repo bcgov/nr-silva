@@ -35,7 +35,7 @@ public abstract class AbstractTestContainerIntegrationTest {
   static  Flyway flywayOracle;
 
   static final String env = resolveTestProperty("flyway-environment", "FLYWAY_ENVIRONMENT", "prod");
-  static final String primaryDb = resolveTestProperty("primary-db","PRIMARY_DB", "oracle");
+  static final String primaryDb = resolveTestProperty("server.primary-db","PRIMARY_DB", "oracle");
 
   // Static fields declared like this are instantiated first by the JVM
   static {

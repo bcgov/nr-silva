@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | Open Category Code Service | Postgres-only")
-@EnabledIfSystemProperty(named = "primary-db", matches = "postgres")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 public class OpenCategoryCodeServicePostgresIntegrationTest extends
     AbstractOpenCategoryCodeServiceIntegrationTest<OpenCategoryCodePostgresService> {
 }

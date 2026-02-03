@@ -6,6 +6,6 @@ import ca.bc.gov.restapi.results.common.service.AbstractCutBlockOpenAdminService
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | CutBlockOpenAdminService | Legacy(Oracle primary)")
-@EnabledIfSystemProperty(named = "primary-db", matches = "oracle")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "oracle")
 class CutBlockOpenAdminOracleServiceIntegrationTest extends AbstractCutBlockOpenAdminServiceIntegrationTest<CutBlockOpenAdminOracleService> {
 }

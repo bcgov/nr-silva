@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@EnabledIfSystemProperty(named = "primary-db", matches = "postgres")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @DisplayName("Integrated Test | User Actions Endpoint | Postgres-only")
 public class UserActionsEndpointPostgresIntegrationTest extends
     AbstractUserActionEndpointIntegrationTest<OpeningOracleRepository> {

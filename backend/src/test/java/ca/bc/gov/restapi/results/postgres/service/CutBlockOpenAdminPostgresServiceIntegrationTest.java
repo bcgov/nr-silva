@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | CutBlockOpenAdminService | Postgres-only")
-@EnabledIfSystemProperty(named = "primary-db", matches = "postgres")
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 public class CutBlockOpenAdminPostgresServiceIntegrationTest extends
     AbstractCutBlockOpenAdminServiceIntegrationTest<CutBlockOpenAdminPostgresService> {
 }
