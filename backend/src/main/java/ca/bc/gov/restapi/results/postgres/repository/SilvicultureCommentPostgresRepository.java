@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Repository interface for CRUD operations and custom queries against the
- * `silva.org_unit` and related tables in PostgreSQL.
+ * `silviculture_comment` table and related tables/queries in PostgreSQL.
  */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
