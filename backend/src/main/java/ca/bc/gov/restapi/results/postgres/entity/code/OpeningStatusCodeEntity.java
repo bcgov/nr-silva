@@ -4,12 +4,11 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
-/** This class represents an Opening Category in the database. */
+/** This class represents an Opening Status Code in the database. */
 @SuperBuilder
 @NoArgsConstructor
 @With
