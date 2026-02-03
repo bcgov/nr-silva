@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractOpenCategoryCodeService;
+import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
 public class OpenCategoryCodeOracleService extends AbstractOpenCategoryCodeService {
-  public OpenCategoryCodeOracleService(OpenCategoryCodeRepository openCategoryCodeRepository) {
+  public OpenCategoryCodeOracleService(OpenCategoryCodeRepository<OpenCategoryCodeEntity> openCategoryCodeRepository) {
     super(openCategoryCodeRepository);
   }
 }
