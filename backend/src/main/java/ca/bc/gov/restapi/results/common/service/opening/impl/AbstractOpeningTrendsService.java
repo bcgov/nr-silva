@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.service.opening.impl;
 
+import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.service.opening.OpeningTrendsService;
@@ -22,7 +23,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractOpeningTrendsService implements OpeningTrendsService {
 
-  protected final OpeningRepository openingRepository;
+  protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
 
   @Override
   public List<OpeningsPerYearDto> getOpeningSubmissionTrends(LocalDate startDate, LocalDate endDate,
