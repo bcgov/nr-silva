@@ -8,7 +8,6 @@ import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningBaseProjection;
@@ -27,18 +26,21 @@ import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStocki
 import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingHistoryProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingLayerHistoryProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStockingSpeciesHistoryProjection;
+import org.springframework.data.repository.query.Param;
 
 @NoRepositoryBean
 public interface OpeningRepository<T extends BaseOpeningEntity> extends JpaRepository<T, Long> {
-  List<SilvicultureSearchProjection> searchBy(
-      OpeningSearchFiltersDto filter,
-      List<Long> openingIds,
-      long page,
-      long size
-  );
 
   List<SilvicultureSearchProjection> searchByExact(
-      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
+      OpeningSearchExactFiltersDto filter,
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
+
+  List<SilvicultureSearchProjection> searchByOpeningIds(
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
 
   List<OpeningTrendsProjection> getOpeningTrends(
       String startDate,

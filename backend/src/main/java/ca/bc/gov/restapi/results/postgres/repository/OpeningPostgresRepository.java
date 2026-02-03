@@ -1,7 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.*;
@@ -11,6 +10,7 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,20 +25,19 @@ import java.util.Optional;
 public interface OpeningPostgresRepository extends OpeningRepository<OpeningEntity> {
 
   @Override
-  @Query(
-      value = SilvaPostgresQueryConstants.SILVICULTURE_SEARCH,
-      nativeQuery = true
-  )
-  List<SilvicultureSearchProjection> searchBy(
-      OpeningSearchFiltersDto filter,
-      List<Long> openingIds,
-      long page, long size
-  );
-
-  @Override
   @Query(value = SilvaPostgresQueryConstants.SILVICULTURE_SEARCH_EXACT, nativeQuery = true)
   List<SilvicultureSearchProjection> searchByExact(
-      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
+      OpeningSearchExactFiltersDto filter,
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.SILVICULTURE_SEARCH_BY_OPENING_IDS)
+  List<SilvicultureSearchProjection> searchByOpeningIds(
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
 
   @Override
   @Query(

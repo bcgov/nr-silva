@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
@@ -40,17 +39,19 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity> {
 
   @Override
-  @Query(
-      value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH,
-      nativeQuery = true
-  )
-  List<SilvicultureSearchProjection> searchBy(
-      OpeningSearchFiltersDto filter, List<Long> openingIds, long page, long size);
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_EXACT)
+  List<SilvicultureSearchProjection> searchByExact(
+      OpeningSearchExactFiltersDto filter,
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
 
   @Override
-  @Query(value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_EXACT, nativeQuery = true)
-  List<SilvicultureSearchProjection> searchByExact(
-      OpeningSearchExactFiltersDto filter, List<Long> openingIds, long page, long size);
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.SILVICULTURE_SEARCH_BY_OPENING_IDS)
+  List<SilvicultureSearchProjection> searchByOpeningIds(
+      @Param("openingIds") List<Long> openingIds,
+      @Param("page") long page,
+      @Param("size") long size);
 
   @Override
   @Query(
