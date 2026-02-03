@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningDetailsTombstoneService implements OpeningDetailsTombstoneService {
+public abstract class AbstractOpeningDetailsTombstoneService implements OpeningDetailsTombstoneService {
 
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final ForestClientService forestClientService;

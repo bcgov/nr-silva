@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningTrendsService implements OpeningTrendsService {
+public abstract class AbstractOpeningTrendsService implements OpeningTrendsService {
 
   protected final OpeningRepository openingRepository;
 

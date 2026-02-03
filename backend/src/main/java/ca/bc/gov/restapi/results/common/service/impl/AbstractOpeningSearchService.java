@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningSearchService implements OpeningSearchService {
+public abstract class AbstractOpeningSearchService implements OpeningSearchService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final OpenCategoryCodeRepository<? extends BaseCodeEntity> openCategoryCodeRepository;
   protected final OpeningStatusCodeRepository<? extends BaseCodeEntity> openingStatusCodeRepository;

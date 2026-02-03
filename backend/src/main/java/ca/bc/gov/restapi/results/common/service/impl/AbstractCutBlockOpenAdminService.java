@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractCutBlockOpenAdminService implements CutBlockOpenAdminService {
+public abstract class AbstractCutBlockOpenAdminService implements CutBlockOpenAdminService {
 
   protected final CutBlockOpenAdminRepository cutBlockOpenAdminRepository;
 

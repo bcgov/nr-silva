@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningDetailsTenureService implements OpeningDetailsTenureService {
+public abstract class AbstractOpeningDetailsTenureService implements OpeningDetailsTenureService {
 
   protected final CutBlockOpenAdminRepository cutBlockOpenAdminRepository;
 

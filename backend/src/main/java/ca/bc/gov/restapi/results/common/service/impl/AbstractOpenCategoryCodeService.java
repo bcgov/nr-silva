@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpenCategoryCodeService implements OpenCategoryCodeService {
+public abstract class AbstractOpenCategoryCodeService implements OpenCategoryCodeService {
 
   protected final OpenCategoryCodeRepository openCategoryCodeRepository;
 

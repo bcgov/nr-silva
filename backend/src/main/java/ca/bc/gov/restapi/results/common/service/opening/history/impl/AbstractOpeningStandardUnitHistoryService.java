@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningStandardUnitHistoryService implements
+public abstract class AbstractOpeningStandardUnitHistoryService implements
     OpeningStandardUnitHistoryService {
 
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;

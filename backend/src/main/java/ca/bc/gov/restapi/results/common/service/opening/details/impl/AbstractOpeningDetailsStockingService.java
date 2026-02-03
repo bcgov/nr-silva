@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningDetailsStockingService implements OpeningDetailsStockingService {
+public abstract class AbstractOpeningDetailsStockingService implements OpeningDetailsStockingService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
 

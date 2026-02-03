@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningForestCoverHistoryService implements OpeningForestCoverHistoryService {
+public abstract class AbstractOpeningForestCoverHistoryService implements OpeningForestCoverHistoryService {
 
   protected final ForestCoverRepository coverRepository;
 

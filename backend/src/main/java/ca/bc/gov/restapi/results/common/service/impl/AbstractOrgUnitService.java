@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOrgUnitService implements OrgUnitService {
+public abstract class AbstractOrgUnitService implements OrgUnitService {
 
   protected final OrgUnitRepository orgUnitRepository;
   protected final SilvaConfiguration silvaConfiguration;

@@ -24,7 +24,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractOpeningDetailsAttachmentService implements OpeningDetailsAttachmentService {
+public abstract class AbstractOpeningDetailsAttachmentService implements OpeningDetailsAttachmentService {
   protected final OpeningAttachmentRepository openingAttachmentRepository;
 
   @Value("${ca.bc.gov.nrs.s3-bucket}")
