@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @With
-@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(schema = "THE", name = "OPENING")
 @AttributeOverrides({

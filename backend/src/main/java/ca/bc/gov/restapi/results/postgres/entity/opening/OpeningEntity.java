@@ -13,7 +13,7 @@ import jakarta.persistence.AttributeOverride;
 @Data
 @Builder
 @With
-@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(schema = "silva", name = "opening")
 @AttributeOverrides({
