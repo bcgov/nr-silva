@@ -10,13 +10,15 @@ public class SilvaPostgresQueryConstants {
 	"""
 	SELECT DISTINCT op.opening_id
 		,cboa.forest_file_id AS forest_file_id
-		,cboa.cutting_permit_id AS cutting_permit_id
+		,TRIM(cboa.cutting_permit_id) AS cutting_permit_id
 		,cboa.timber_mark AS timber_mark
 		,cboa.cut_block_id AS cut_block_id
 		,TRIM(LPAD(op.mapsheet_grid,3) || mapsheet_letter || ' ' || LPAD(op.mapsheet_square,3,'0') || ' ' || op.mapsheet_quad || CASE WHEN op.mapsheet_quad IS NULL THEN NULL ELSE '.' END || op.mapsheet_sub_quad || ' ' || op.opening_number) AS mapsheep_opening_id
 		,op.open_category_code AS category
 		,op.opening_status_code AS status
+		,op.licensee_opening_id AS licensee_opening_id
 		,cboa.opening_gross_area as opening_gross_area
+		,cboa.disturbance_gross_area as disturbance_gross_area
 		,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
 		,ou.org_unit_code as org_unit_code
 		,ou.org_unit_name as org_unit_name
@@ -158,7 +160,9 @@ public class SilvaPostgresQueryConstants {
 		  mapsheep_opening_id,
 		  category,
 		  status,
+		  licensee_opening_id,
 		  opening_gross_area,
+		  disturbance_gross_area,
 		  disturbance_start_date,
 		  org_unit_code,
 		  org_unit_name,
@@ -174,12 +178,6 @@ public class SilvaPostgresQueryConstants {
 	  """;
 
   public static final String PAGINATION = "OFFSET :page LIMIT :size";
-
-  public static final String SILVICULTURE_SEARCH_QUERY =
-	  SILVICULTURE_SEARCH_SELECT + SILVICULTURE_SEARCH_FROM_JOIN + SILVICULTURE_SEARCH_WHERE_CLAUSE;
-
-  public static final String SILVICULTURE_SEARCH =
-	  "WITH silviculture_search AS (" + SILVICULTURE_SEARCH_QUERY + ")" + SILVICULTURE_SEARCH_CTE_SELECT + " FROM silviculture_search ORDER BY opening_id DESC " + PAGINATION;
 
 	public static final String SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE =
 			"""
@@ -224,23 +222,23 @@ public class SilvaPostgresQueryConstants {
                 )
                 AND (
                   (
-                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE'
+                    COALESCE(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
                   )
                   OR
                   (
-                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') = 'NOVALUE' AND
-                    op.ENTRY_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+                    COALESCE(:#{#filter.updateDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE' AND
+                    op.UPDATE_TIMESTAMP >= TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
                   )
                   OR
                   (
-                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-                    op.ENTRY_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+                    COALESCE(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.updateDateEnd},'NOVALUE') <> 'NOVALUE' AND
+                    op.UPDATE_TIMESTAMP <= TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
                   )
                   OR
                   (
-                    COALESCE(:#{#filter.entryDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.entryDateEnd},'NOVALUE') <> 'NOVALUE' AND
-                    op.ENTRY_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.entryDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
-                    AND TO_TIMESTAMP(:#{#filter.entryDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+                    COALESCE(:#{#filter.updateDateStart},'NOVALUE') <> 'NOVALUE' AND COALESCE(:#{#filter.updateDateEnd},'NOVALUE') <> 'NOVALUE' AND
+                    op.UPDATE_TIMESTAMP BETWEEN TO_TIMESTAMP(:#{#filter.updateDateStart} || ' 00:00:00','YYYY-MM-DD HH24:MI:SS')
+                    AND TO_TIMESTAMP(:#{#filter.updateDateEnd} || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
                   )
                 )
                 AND (
@@ -259,21 +257,18 @@ public class SilvaPostgresQueryConstants {
                     COALESCE(:#{#filter.mapsheetSubQuad},'NOVALUE') = 'NOVALUE' OR op.mapsheet_sub_quad = :#{#filter.mapsheetSubQuad}
                 )
                 AND (
-                    COALESCE(:#{#filter.subOpeningNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.subOpeningNumber}
+                    COALESCE(:#{#filter.openingNumber},'NOVALUE') = 'NOVALUE' OR TRIM(op.opening_number) = :#{#filter.openingNumber}
                 )
                 AND (
                    0 in (:openingIds) OR op.OPENING_ID IN (:openingIds)
                 )
             """;
 
-	public static final String SILVICULTURE_SEARCH_EXACT_QUERY =
-			SILVICULTURE_SEARCH_SELECT
-					+ SILVICULTURE_SEARCH_FROM_JOIN
-					+ SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE;
-
 	public static final String SILVICULTURE_SEARCH_EXACT =
 			"WITH silviculture_search AS ("
-					+ SILVICULTURE_SEARCH_EXACT_QUERY
+					+ SILVICULTURE_SEARCH_SELECT
+					+ SILVICULTURE_SEARCH_FROM_JOIN
+					+ SILVICULTURE_SEARCH_EXACT_WHERE_CLAUSE
 					+ ")"
 					+ SILVICULTURE_SEARCH_CTE_SELECT
 					+ " FROM silviculture_search ORDER BY opening_id DESC "
@@ -1658,5 +1653,14 @@ public class SilvaPostgresQueryConstants {
 					AND DATE(fr.archive_date) = TO_DATE(:archiveDate, 'YYYY-MM-DD')
 				""";
 
+	public static final String SILVICULTURE_SEARCH_BY_OPENING_IDS =
+			"WITH silviculture_search AS ("
+					+ SILVICULTURE_SEARCH_SELECT
+					+ SILVICULTURE_SEARCH_FROM_JOIN
+					+ "WHERE op.opening_id IN (:openingIds)"
+					+ ")"
+					+ SILVICULTURE_SEARCH_CTE_SELECT
+					+ " FROM silviculture_search ORDER BY opening_id DESC "
+					+ PAGINATION;
 	}
 
