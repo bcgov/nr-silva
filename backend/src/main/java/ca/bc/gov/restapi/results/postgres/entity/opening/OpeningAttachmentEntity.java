@@ -50,7 +50,7 @@ public class OpeningAttachmentEntity {
   @Column(name = "revision_count", nullable = false)
   private Integer revisionCount;
 
-  @Column(name = "opening_attachment_guid", nullable = false, columnDefinition = "RAW(16)")
+  @Column(name = "opening_attachment_guid", nullable = false, columnDefinition = "uuid")
   @Convert(converter = ca.bc.gov.restapi.results.oracle.converter.UuidToBytesConverter.class)
   private UUID attachmentGuid;
 
