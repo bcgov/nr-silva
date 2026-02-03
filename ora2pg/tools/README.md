@@ -55,7 +55,7 @@ Usage
 
 Examples
 - Combine files in-place (output in same directory):
-  `python3 combiner.py --input-dir migration/postgres`
+  `python3 combiner.py --input-dir ../../backend/src/test/resources/migration/postgres/dev`
 
 - Specify output directory and filename:
   `python3 combiner.py -i migration/postgres -d migration/combined -o all_in_one.sql`
@@ -81,7 +81,7 @@ Defaults
 
 Usage
 - Basic:
-  `python3 sql_loader.py --sql-file /path/to/combined.sql`
+  `python3 sql_loader.py --sql-file ../../backend/src/test/resources/migration/postgres/dev/combined.sql`
 
 - With explicit connection options:
   `python3 sql_loader.py --sql-file combined.sql --host db.host --port 5432 --dbname mydb --user myuser`
