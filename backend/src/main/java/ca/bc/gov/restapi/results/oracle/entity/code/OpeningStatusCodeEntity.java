@@ -1,11 +1,7 @@
-package ca.bc.gov.restapi.results.oracle.entity;
+package ca.bc.gov.restapi.results.oracle.entity.code;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
@@ -14,13 +10,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @With
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Getter
 @Table(schema = "THE", name = "OPENING_STATUS_CODE")
+@AttributeOverride(name = "code", column = @Column(name = "OPENING_STATUS_CODE", length = 3))
 public class OpeningStatusCodeEntity extends AbstractCodeEntity {
-
-  @Id
-  @Column(name = "OPENING_STATUS_CODE")
-  private String code;
 }
