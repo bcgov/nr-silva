@@ -111,11 +111,20 @@ jobs:
       - name: Merge coverage reports
         working-directory: backend
         run: |
-          ./mvnw jacoco:merge -Djacoco.destFile=target/coverage-reports/merged-backend/jacoco.exec \
-            -Djacoco.fileSets[0].directory=target/coverage-reports/oracle \
-            -Djacoco.fileSets[1].directory=target/coverage-reports/postgres
+          mkdir -p target/coverage-reports/merged-backend
 
-          ./mvnw jacoco:report -Djacoco.dataFile=target/coverage-reports/merged-backend/jacoco.exec \
+          # Find all .exec files from both Oracle and Postgres runs
+          find target/coverage-reports/oracle -name "*.exec" -exec cp {} target/coverage-reports/merged-backend/ \; || true
+          find target/coverage-reports/postgres -name "*.exec" -exec cp {} target/coverage-reports/merged-backend/ \; || true
+
+          # Merge using JaCoCo CLI
+          ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:merge \
+            -Djacoco.destFile=target/coverage-reports/merged-backend/jacoco.exec \
+            -Djacoco.dataDir=target/coverage-reports/merged-backend
+
+          # Generate XML report
+          ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
+            -Djacoco.dataFile=target/coverage-reports/merged-backend/jacoco.exec \
             -Djacoco.outputDirectory=target/coverage-reports/merged-backend
 
       - name: SonarCloud Scan
