@@ -7,17 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-/**
- * This class contains methods to handle Org Units.
- */
+/** This class contains methods to handle Org Units. */
 @Slf4j
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
 public class OrgUnitOracleService extends AbstractOrgUnitService {
 
-  public OrgUnitOracleService(OrgUnitRepository orgUnitRepository,
-      SilvaConfiguration silvaConfiguration) {
+  public OrgUnitOracleService(
+      OrgUnitRepository orgUnitRepository, SilvaConfiguration silvaConfiguration) {
     super(orgUnitRepository, silvaConfiguration);
   }
 
+  public void testOracleService() {
+    log.info("This is a test method in OrgUnitOracleService");
+  }
 }
