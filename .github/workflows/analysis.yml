@@ -142,7 +142,7 @@ jobs:
 
           # Ensure JaCoCo CLI is available for merging
           ./mvnw -q dependency:get -Dartifact=org.jacoco:org.jacoco.cli:0.8.14 -Dtransitive=false
-          JACOCO_CLI_JAR=~/.m2/repository/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar
+          JACOCO_CLI_JAR=~/.m2/repository/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14.jar
 
           # Merge execution data from Oracle and Postgres runs
           java -jar "$JACOCO_CLI_JAR" merge \
