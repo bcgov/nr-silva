@@ -22,6 +22,7 @@ jobs:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
     steps:
       - uses: actions/checkout@v6
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -29,6 +30,7 @@ jobs:
           java-version: 17
           cache: maven
           cache-dependency-path: backend/pom.xml
+
       - name: Run tests
         working-directory: backend
         run: |
@@ -38,6 +40,14 @@ jobs:
           fi
           ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dprimary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
 
+      - name: Upload Oracle coverage artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: coverage-oracle
+          path: backend/target/coverage-reports/merged-test-report/
+          retention-days: 1
+
   tests-backend-postgres:
     name: Tests Backend Postgres
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -45,27 +55,82 @@ jobs:
     env:
       FLYWAY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'dev' || 'prod' }}
     steps:
-      - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
+      - uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          commands: |
-            mkdir -p ~/.m2
-            if [ -f settings.xml ]; then
-              cp settings.xml ~/.m2/settings.xml
-            fi
-            ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dprimary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
-          dir: backend
-          java-cache: maven
-          java-distribution: temurin
+          distribution: temurin
           java-version: 17
-          sonar_args: >
-            -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/**
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.project.monorepo.enabled=true
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      - name: Run tests
+        working-directory: backend
+        run: |
+          mkdir -p ~/.m2
+          if [ -f settings.xml ]; then
+            cp settings.xml ~/.m2/settings.xml
+          fi
+          ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dprimary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
+
+      - name: Upload Postgres coverage artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: coverage-postgres
+          path: backend/target/coverage-reports/merged-test-report/
+          retention-days: 1
+
+  combine-backend-coverage:
+    name: Combine Backend Coverage
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    needs: [tests-backend-oracle, tests-backend-postgres]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Download Oracle coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-oracle
+          path: backend/target/coverage-reports/oracle
+
+      - name: Download Postgres coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-postgres
+          path: backend/target/coverage-reports/postgres
+
+      - name: Merge coverage reports
+        working-directory: backend
+        run: |
+          ./mvnw jacoco:merge -Djacoco.destFile=target/coverage-reports/merged-backend/jacoco.exec \
+            -Djacoco.fileSets[0].directory=target/coverage-reports/oracle \
+            -Djacoco.fileSets[1].directory=target/coverage-reports/postgres
+
+          ./mvnw jacoco:report -Djacoco.dataFile=target/coverage-reports/merged-backend/jacoco.exec \
+            -Djacoco.outputDirectory=target/coverage-reports/merged-backend
+
+      - name: SonarCloud Scan
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: backend
+        run: |
+          ./mvnw sonar:sonar \
+            -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/** \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-backend/jacoco.xml \
+            -Dsonar.organization=bcgov-sonarcloud \
+            -Dsonar.project.monorepo.enabled=true \
             -Dsonar.projectKey=nr-silva-backend
-          sonar_token: ${{ secrets.SONAR_TOKEN_BACKEND }}
-          # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("backend/")' || '' }}
 
   lint-frontend:
     name: Lint (Frontend)
@@ -146,7 +211,7 @@ jobs:
     name: Analysis Results
     if: always()
     # Include all needs that could have failures!
-    needs: [lint-frontend, tests-frontend, tests-backend-oracle, tests-backend-postgres] # Include trivy when/if it gets back to being reliable
+    needs: [lint-frontend, tests-frontend, tests-backend-oracle, tests-backend-postgres, combine-backend-coverage] # Include trivy when/if it gets back to being reliable
     runs-on: ubuntu-24.04
     steps:
       - run: |
