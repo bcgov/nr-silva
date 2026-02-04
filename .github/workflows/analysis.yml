@@ -160,19 +160,19 @@ jobs:
           echo "JaCoCo CLI downloaded successfully"
           ls -lh /tmp/jacococli.jar
 
-          # Download and verify checksum
-          echo "Downloading SHA256 checksum for verification..."
-          curl -L -f -o /tmp/jacococli.jar.sha256 \
-            https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar.sha256
+          # Download and verify SHA1 checksum (Maven Central standard)
+          echo "Downloading SHA1 checksum for verification..."
+          curl -L -f -o /tmp/jacococli.jar.sha1 \
+            https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar.sha1
 
-          if [ ! -f /tmp/jacococli.jar.sha256 ]; then
+          if [ ! -f /tmp/jacococli.jar.sha1 ]; then
             echo "ERROR: Failed to download checksum file"
             exit 1
           fi
 
           echo "Verifying JAR integrity..."
-          EXPECTED_SHA=$(cat /tmp/jacococli.jar.sha256 | awk '{print $1}')
-          ACTUAL_SHA=$(sha256sum /tmp/jacococli.jar | awk '{print $1}')
+          EXPECTED_SHA=$(cat /tmp/jacococli.jar.sha1)
+          ACTUAL_SHA=$(sha1sum /tmp/jacococli.jar | awk '{print $1}')
 
           if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
             echo "ERROR: Checksum verification failed!"
