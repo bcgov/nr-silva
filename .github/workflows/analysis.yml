@@ -118,7 +118,7 @@ jobs:
             cp settings.xml ~/.m2/settings.xml
           fi
           # Compile to get classes for report generation
-          ./mvnw -s ~/.m2/settings.xml clean compile --no-transfer-progress
+          ./mvnw -B -s ~/.m2/settings.xml clean compile --no-transfer-progress
 
       - name: Merge coverage reports
         working-directory: backend
@@ -160,7 +160,30 @@ jobs:
           echo "JaCoCo CLI downloaded successfully"
           ls -lh /tmp/jacococli.jar
 
-          # Merge execution data from Oracle and Postgres runs
+          # Download and verify checksum
+          echo "Downloading SHA256 checksum for verification..."
+          curl -L -f -o /tmp/jacococli.jar.sha256 \
+            https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar.sha256
+
+          if [ ! -f /tmp/jacococli.jar.sha256 ]; then
+            echo "ERROR: Failed to download checksum file"
+            exit 1
+          fi
+
+          echo "Verifying JAR integrity..."
+          EXPECTED_SHA=$(cat /tmp/jacococli.jar.sha256 | awk '{print $1}')
+          ACTUAL_SHA=$(sha256sum /tmp/jacococli.jar | awk '{print $1}')
+
+          if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
+            echo "ERROR: Checksum verification failed!"
+            echo "Expected: $EXPECTED_SHA"
+            echo "Actual:   $ACTUAL_SHA"
+            exit 1
+          fi
+
+          echo "Checksum verification successful"
+
+          # Merge Oracle and Postgres execution data into a single coverage file
           echo "Merging coverage data..."
           java -jar /tmp/jacococli.jar merge \
             --destfile target/coverage-reports/jacoco-merged.exec \
@@ -175,13 +198,13 @@ jobs:
           echo "Merge successful:"
           ls -lh target/coverage-reports/jacoco-merged.exec
 
-          # Generate XML report using the merged execution data
+          # Generate XML report from merged coverage using pom.xml's merged-reports execution
           echo "Generating JaCoCo XML report..."
-          # Copy merged exec to the location pom.xml expects for merged-reports execution
           cp target/coverage-reports/jacoco-merged.exec target/jacoco.exec
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report@merged-reports \
             -Djacoco.skip=false
 
+          # Validate XML report was generated successfully
           if [ ! -f target/coverage-reports/merged-test-report/jacoco.xml ]; then
             echo "ERROR: Report generation failed - jacoco.xml not created"
             ls -la target/coverage-reports/merged-test-report/ || echo "Directory does not exist"
@@ -228,7 +251,7 @@ jobs:
           ./mvnw -B -s ~/.m2/settings.xml \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/** \
+            -Dsonar.exclusions=**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/** \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml \
             -Dsonar.organization=bcgov-sonarcloud \
             -Dsonar.project.monorepo.enabled=true \
