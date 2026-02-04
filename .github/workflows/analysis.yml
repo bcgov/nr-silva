@@ -123,6 +123,8 @@ jobs:
       - name: Merge coverage reports
         working-directory: backend
         run: |
+          set -e
+
           mkdir -p target/coverage-reports
 
           # Gather the already-merged execution data from each database run
@@ -130,15 +132,20 @@ jobs:
           POSTGRES_EXEC=$(find ../backend-target-postgres -name "jacoco.exec" | head -n 1)
 
           if [ -z "$ORACLE_EXEC" ] || [ -z "$POSTGRES_EXEC" ]; then
-            echo "Could not locate jacoco.exec from one of the database runs"
+            echo "ERROR: Could not locate jacoco.exec from one of the database runs"
+            echo "Oracle: $ORACLE_EXEC"
+            echo "Postgres: $POSTGRES_EXEC"
             exit 1
           fi
+
+          echo "Found Oracle exec: $ORACLE_EXEC"
+          echo "Found Postgres exec: $POSTGRES_EXEC"
 
           cp "$ORACLE_EXEC" target/coverage-reports/jacoco-oracle.exec
           cp "$POSTGRES_EXEC" target/coverage-reports/jacoco-postgres.exec
 
           echo "Files to merge:"
-          ls -la target/coverage-reports/jacoco-*.exec
+          ls -lh target/coverage-reports/jacoco-*.exec
 
           # Download JaCoCo CLI
           echo "Downloading JaCoCo CLI..."
@@ -146,7 +153,7 @@ jobs:
             https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar
 
           if [ ! -f /tmp/jacococli.jar ]; then
-            echo "Failed to download JaCoCo CLI"
+            echo "ERROR: Failed to download JaCoCo CLI"
             exit 1
           fi
 
@@ -160,12 +167,32 @@ jobs:
             target/coverage-reports/jacoco-oracle.exec \
             target/coverage-reports/jacoco-postgres.exec
 
+          if [ ! -f target/coverage-reports/jacoco-merged.exec ]; then
+            echo "ERROR: Merge failed - jacoco-merged.exec not created"
+            exit 1
+          fi
+
+          echo "Merge successful:"
+          ls -lh target/coverage-reports/jacoco-merged.exec
+
           # Generate XML report using the merged execution data
+          echo "Generating JaCoCo XML report..."
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
             -Djacoco.dataFile=target/coverage-reports/jacoco-merged.exec \
             -Djacoco.outputDirectory=target/coverage-reports/merged-test-report \
             -Djacoco.classFiles=target/classes \
             -Djacoco.sourceFiles=src/main/java
+
+          if [ ! -f target/coverage-reports/merged-test-report/jacoco.xml ]; then
+            echo "ERROR: Report generation failed - jacoco.xml not created"
+            ls -la target/coverage-reports/merged-test-report/ || echo "Directory does not exist"
+            exit 1
+          fi
+
+          echo "Report generation successful:"
+          ls -lh target/coverage-reports/merged-test-report/jacoco.xml
+          echo "XML file size:"
+          wc -c target/coverage-reports/merged-test-report/jacoco.xml
 
       - name: SonarCloud Scan
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
@@ -174,10 +201,31 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: backend
         run: |
+          set -e
+
           mkdir -p ~/.m2
           if [ -f settings.xml ]; then
             cp settings.xml ~/.m2/settings.xml
           fi
+
+          # Verify the XML report exists before scanning
+          REPORT_FILE="target/coverage-reports/merged-test-report/jacoco.xml"
+          if [ ! -f "$REPORT_FILE" ]; then
+            echo "ERROR: SonarCloud report file not found: $REPORT_FILE"
+            ls -la target/coverage-reports/ || echo "coverage-reports directory not found"
+            exit 1
+          fi
+
+          echo "Found SonarCloud report file:"
+          ls -lh "$REPORT_FILE"
+          echo "Report file content preview (first 20 lines):"
+          head -20 "$REPORT_FILE"
+
+          echo ""
+          echo "Running SonarCloud scan..."
+          echo "SONAR_TOKEN length: ${#SONAR_TOKEN}"
+          echo "GITHUB_TOKEN length: ${#GITHUB_TOKEN}"
+
           ./mvnw -B -s ~/.m2/settings.xml \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
@@ -186,6 +234,22 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud \
             -Dsonar.project.monorepo.enabled=true \
             -Dsonar.projectKey=nr-silva-backend
+
+          SCAN_EXIT_CODE=$?
+          if [ $SCAN_EXIT_CODE -ne 0 ]; then
+            echo "ERROR: SonarCloud scan failed with exit code $SCAN_EXIT_CODE"
+            exit $SCAN_EXIT_CODE
+          fi
+
+          echo "SonarCloud scan completed successfully"
+
+      - name: Upload merged coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-merged
+          path: backend/target/coverage-reports
+          retention-days: 7
 
   lint-frontend:
     name: Lint (Frontend)
