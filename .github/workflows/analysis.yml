@@ -178,6 +178,7 @@ jobs:
           # Generate XML report using the merged execution data
           echo "Generating JaCoCo XML report..."
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
+            -Djacoco.skip=false \
             -Djacoco.dataFile=target/coverage-reports/jacoco-merged.exec \
             -Djacoco.outputDirectory=target/coverage-reports/merged-test-report \
             -Djacoco.classFiles=target/classes \
