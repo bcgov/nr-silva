@@ -21,9 +21,7 @@ public class UserRecentOpeningEndpoint {
   private final UserRecentOpeningService userRecentOpeningService;
 
   @GetMapping
-  public Page<OpeningSearchResponseDto> getUserRecentOpenings(
-      Pageable pageable
-  ) {
+  public Page<OpeningSearchResponseDto> getUserRecentOpenings(Pageable pageable) {
     // Fetch recent openings for the logged-in user with the specified limit
     return userRecentOpeningService.getAllRecentOpeningsForUser(pageable);
   }
@@ -35,10 +33,14 @@ public class UserRecentOpeningEndpoint {
    */
   @PutMapping("/{openingId}")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public void recordUserViewedOpening(
-      @PathVariable Long openingId) {
+  public void recordUserViewedOpening(@PathVariable Long openingId) {
     // Store the opening and return the DTO
     userRecentOpeningService.storeViewedOpening(openingId);
   }
 
+  @PutMapping("/test")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  public String dummyEndpoint() {
+    return "dummy";
+  }
 }
