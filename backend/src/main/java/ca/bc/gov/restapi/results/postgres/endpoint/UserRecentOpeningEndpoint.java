@@ -37,10 +37,4 @@ public class UserRecentOpeningEndpoint {
     // Store the opening and return the DTO
     userRecentOpeningService.storeViewedOpening(openingId);
   }
-
-  @PutMapping("/test")
-  @ResponseStatus(HttpStatus.ACCEPTED)
-  public String dummyEndpoint() {
-    return "dummy";
-  }
 }

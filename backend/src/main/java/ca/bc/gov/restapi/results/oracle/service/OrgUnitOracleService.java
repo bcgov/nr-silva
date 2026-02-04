@@ -17,8 +17,4 @@ public class OrgUnitOracleService extends AbstractOrgUnitService {
       OrgUnitRepository orgUnitRepository, SilvaConfiguration silvaConfiguration) {
     super(orgUnitRepository, silvaConfiguration);
   }
-
-  public void testOracleService() {
-    log.info("This is a test method in OrgUnitOracleService");
-  }
 }
