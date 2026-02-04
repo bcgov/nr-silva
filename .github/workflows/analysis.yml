@@ -123,28 +123,36 @@ jobs:
       - name: Merge coverage reports
         working-directory: backend
         run: |
-          mkdir -p target/coverage-reports/merged-test-report
+          mkdir -p target/coverage-reports
 
-          # Copy all .exec files with unique names to prevent overwrites
-          # Oracle artifacts
-          cp ../backend-target-oracle/coverage-reports/jacoco-ut.exec target/coverage-reports/merged-test-report/jacoco-ut-oracle.exec 2>/dev/null || true
-          cp ../backend-target-oracle/coverage-reports/jacoco-it.exec target/coverage-reports/merged-test-report/jacoco-it-oracle.exec 2>/dev/null || true
+          # Gather the already-merged execution data from each database run
+          ORACLE_EXEC=$(find ../backend-target-oracle -name "jacoco.exec" | head -n 1)
+          POSTGRES_EXEC=$(find ../backend-target-postgres -name "jacoco.exec" | head -n 1)
 
-          # Postgres artifacts
-          cp ../backend-target-postgres/coverage-reports/jacoco-ut.exec target/coverage-reports/merged-test-report/jacoco-ut-postgres.exec 2>/dev/null || true
-          cp ../backend-target-postgres/coverage-reports/jacoco-it.exec target/coverage-reports/merged-test-report/jacoco-it-postgres.exec 2>/dev/null || true
+          if [ -z "$ORACLE_EXEC" ] || [ -z "$POSTGRES_EXEC" ]; then
+            echo "Could not locate jacoco.exec from one of the database runs"
+            exit 1
+          fi
+
+          cp "$ORACLE_EXEC" target/coverage-reports/jacoco-oracle.exec
+          cp "$POSTGRES_EXEC" target/coverage-reports/jacoco-postgres.exec
 
           echo "Files to merge:"
-          ls -la target/coverage-reports/merged-test-report/
+          ls -la target/coverage-reports/jacoco-*.exec
 
-          # Merge all .exec files
-          ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:merge \
-            -Djacoco.destFile=target/coverage-reports/merged-test-report/jacoco.exec \
-            -Djacoco.dataDir=target/coverage-reports/merged-test-report
+          # Ensure JaCoCo CLI is available for merging
+          ./mvnw -q dependency:get -Dartifact=org.jacoco:org.jacoco.cli:0.8.14 -Dtransitive=false
+          JACOCO_CLI_JAR=~/.m2/repository/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar
 
-          # Generate XML report
+          # Merge execution data from Oracle and Postgres runs
+          java -jar "$JACOCO_CLI_JAR" merge \
+            target/coverage-reports/jacoco-oracle.exec \
+            target/coverage-reports/jacoco-postgres.exec \
+            --destfile target/coverage-reports/jacoco-merged.exec
+
+          # Generate XML report using the merged execution data
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
-            -Djacoco.dataFile=target/coverage-reports/merged-test-report/jacoco.exec \
+            -Djacoco.dataFile=target/coverage-reports/jacoco-merged.exec \
             -Djacoco.outputDirectory=target/coverage-reports/merged-test-report \
             -Djacoco.classFiles=target/classes \
             -Djacoco.sourceFiles=src/main/java
