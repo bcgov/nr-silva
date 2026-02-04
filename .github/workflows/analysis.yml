@@ -45,7 +45,7 @@ jobs:
         if: success()
         with:
           name: coverage-oracle
-          path: backend/target/coverage-reports/merged-test-report/
+          path: backend/target/**/*.exec
           retention-days: 1
 
   tests-backend-postgres:
@@ -79,7 +79,7 @@ jobs:
         if: success()
         with:
           name: coverage-postgres
-          path: backend/target/coverage-reports/merged-test-report/
+          path: backend/target/**/*.exec
           retention-days: 1
 
   combine-backend-coverage:
@@ -95,37 +95,59 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
+          cache-dependency-path: backend/pom.xml
 
       - name: Download Oracle coverage
         uses: actions/download-artifact@v4
         with:
           name: coverage-oracle
-          path: backend/target/coverage-reports/oracle
+          path: backend-target-oracle
 
       - name: Download Postgres coverage
         uses: actions/download-artifact@v4
         with:
           name: coverage-postgres
-          path: backend/target/coverage-reports/postgres
+          path: backend-target-postgres
+
+      - name: Compile classes
+        working-directory: backend
+        run: |
+          mkdir -p ~/.m2
+          if [ -f settings.xml ]; then
+            cp settings.xml ~/.m2/settings.xml
+          fi
+          # Compile to get classes for report generation
+          ./mvnw -s ~/.m2/settings.xml clean compile --no-transfer-progress
 
       - name: Merge coverage reports
         working-directory: backend
         run: |
-          mkdir -p target/coverage-reports/merged-backend
+          mkdir -p target/coverage-reports/merged-test-report
 
-          # Find all .exec files from both Oracle and Postgres runs
-          find target/coverage-reports/oracle -name "*.exec" -exec cp {} target/coverage-reports/merged-backend/ \; || true
-          find target/coverage-reports/postgres -name "*.exec" -exec cp {} target/coverage-reports/merged-backend/ \; || true
+          # Copy all .exec files with unique names to prevent overwrites
+          # Oracle artifacts
+          cp ../backend-target-oracle/coverage-reports/jacoco-ut.exec target/coverage-reports/merged-test-report/jacoco-ut-oracle.exec 2>/dev/null || true
+          cp ../backend-target-oracle/coverage-reports/jacoco-it.exec target/coverage-reports/merged-test-report/jacoco-it-oracle.exec 2>/dev/null || true
 
-          # Merge using JaCoCo CLI
+          # Postgres artifacts
+          cp ../backend-target-postgres/coverage-reports/jacoco-ut.exec target/coverage-reports/merged-test-report/jacoco-ut-postgres.exec 2>/dev/null || true
+          cp ../backend-target-postgres/coverage-reports/jacoco-it.exec target/coverage-reports/merged-test-report/jacoco-it-postgres.exec 2>/dev/null || true
+
+          echo "Files to merge:"
+          ls -la target/coverage-reports/merged-test-report/
+
+          # Merge all .exec files
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:merge \
-            -Djacoco.destFile=target/coverage-reports/merged-backend/jacoco.exec \
-            -Djacoco.dataDir=target/coverage-reports/merged-backend
+            -Djacoco.destFile=target/coverage-reports/merged-test-report/jacoco.exec \
+            -Djacoco.dataDir=target/coverage-reports/merged-test-report
 
           # Generate XML report
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
-            -Djacoco.dataFile=target/coverage-reports/merged-backend/jacoco.exec \
-            -Djacoco.outputDirectory=target/coverage-reports/merged-backend
+            -Djacoco.dataFile=target/coverage-reports/merged-test-report/jacoco.exec \
+            -Djacoco.outputDirectory=target/coverage-reports/merged-test-report \
+            -Djacoco.classFiles=target/classes \
+            -Djacoco.sourceFiles=src/main/java
 
       - name: SonarCloud Scan
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
@@ -136,7 +158,7 @@ jobs:
         run: |
           ./mvnw sonar:sonar \
             -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/** \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-backend/jacoco.xml \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml \
             -Dsonar.organization=bcgov-sonarcloud \
             -Dsonar.project.monorepo.enabled=true \
             -Dsonar.projectKey=nr-silva-backend
