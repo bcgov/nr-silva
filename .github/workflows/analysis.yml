@@ -140,15 +140,25 @@ jobs:
           echo "Files to merge:"
           ls -la target/coverage-reports/jacoco-*.exec
 
-          # Ensure JaCoCo CLI is available for merging
-          ./mvnw -q dependency:get -Dartifact=org.jacoco:org.jacoco.cli:0.8.14 -Dtransitive=false
-          JACOCO_CLI_JAR=~/.m2/repository/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14.jar
+          # Download JaCoCo CLI
+          echo "Downloading JaCoCo CLI..."
+          curl -L -f -o /tmp/jacococli.jar \
+            https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.14/org.jacoco.cli-0.8.14-nodeps.jar
+
+          if [ ! -f /tmp/jacococli.jar ]; then
+            echo "Failed to download JaCoCo CLI"
+            exit 1
+          fi
+
+          echo "JaCoCo CLI downloaded successfully"
+          ls -lh /tmp/jacococli.jar
 
           # Merge execution data from Oracle and Postgres runs
-          java -jar "$JACOCO_CLI_JAR" merge \
+          echo "Merging coverage data..."
+          java -jar /tmp/jacococli.jar merge \
+            --destfile target/coverage-reports/jacoco-merged.exec \
             target/coverage-reports/jacoco-oracle.exec \
-            target/coverage-reports/jacoco-postgres.exec \
-            --destfile target/coverage-reports/jacoco-merged.exec
+            target/coverage-reports/jacoco-postgres.exec
 
           # Generate XML report using the merged execution data
           ./mvnw org.jacoco:jacoco-maven-plugin:0.8.14:report \
