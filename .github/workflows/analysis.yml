@@ -174,7 +174,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: backend
         run: |
-          ./mvnw sonar:sonar \
+          mkdir -p ~/.m2
+          if [ -f settings.xml ]; then
+            cp settings.xml ~/.m2/settings.xml
+          fi
+          ./mvnw -B -s ~/.m2/settings.xml \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.exclusions=,**/configuration/**,**/dto/**,**/entity/**,**/exception/**,**/enums/**,**/repository/**,**/job/**,**/*$*Builder*,**/ResultsApplication.*,**/*Constants.*,**/security/** \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/coverage-reports/merged-test-report/jacoco.xml \
             -Dsonar.organization=bcgov-sonarcloud \
