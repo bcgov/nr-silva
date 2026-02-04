@@ -76,18 +76,16 @@ const OpeningSubmissionTrend = () => {
       }
     ],
     queryFn: async () => {
-      const result = await API.UserActionsEndpointService.getOpeningsSubmissionTrends(
+      const data = await API.UserActionsEndpointService.getOpeningsSubmissionTrends(
         extractCodesFromCodeDescriptionArr(selectedOrgUnits),
         extractCodesFromCodeDescriptionArr(selectedStatusCodes),
         getYearBoundaryDate(selectedYear, true) ?? undefined,
         getYearBoundaryDate(selectedYear, false) ?? undefined
       );
-
-      // Handles 204 no content
-      return result.length ? result : null;
+      return data ?? [];
     },
     select: (data): SubmissionTrendChartObj[] | undefined =>
-      data
+      data && data.length > 0
         ? data.map((item) => ({
           ...item,
           group: "Openings",

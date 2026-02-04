@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import ca.bc.gov.restapi.results.postgres.SilvaConstants;
+import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.GeoMetaDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
@@ -93,7 +93,7 @@ public class OpeningSpatialFileService {
     }
 
     // This is enforced at the spring boot level, but we double-check here
-    if (file.getSize() > SilvaConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+    if (file.getSize() > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
     }
 
@@ -474,9 +474,9 @@ public class OpeningSpatialFileService {
       JsonNode root = mapper.readTree(geojson);
       double tolerance;
       if ("3005".equals(crsCode)) {
-        tolerance = SilvaConstants.THINNING_TOLERANCE_METERS;
+        tolerance = SilvaPostgresConstants.THINNING_TOLERANCE_METERS;
       } else {
-        tolerance = SilvaConstants.THINNING_TOLERANCE_DEGREES;
+        tolerance = SilvaPostgresConstants.THINNING_TOLERANCE_DEGREES;
       }
 
       if (!root.has("features") || !root.get("features").isArray()) {
@@ -765,8 +765,8 @@ public class OpeningSpatialFileService {
   private Geometry thinGeometry(Geometry geometry, String crsCode) {
     double tolerance =
         crsCode.equals("3005")
-            ? SilvaConstants.THINNING_TOLERANCE_METERS
-            : SilvaConstants.THINNING_TOLERANCE_DEGREES;
+            ? SilvaPostgresConstants.THINNING_TOLERANCE_METERS
+            : SilvaPostgresConstants.THINNING_TOLERANCE_DEGREES;
     return DouglasPeuckerSimplifier.simplify(geometry, tolerance);
   }
 

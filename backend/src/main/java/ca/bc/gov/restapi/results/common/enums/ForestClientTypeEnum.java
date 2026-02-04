@@ -3,7 +3,7 @@ package ca.bc.gov.restapi.results.common.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import ca.bc.gov.restapi.results.oracle.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

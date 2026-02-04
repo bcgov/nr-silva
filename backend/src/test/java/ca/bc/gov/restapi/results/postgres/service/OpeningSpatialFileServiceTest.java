@@ -3,7 +3,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import ca.bc.gov.restapi.results.postgres.SilvaConstants;
+import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -42,7 +42,7 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should throw when file exceeds size limit")
   void shouldThrowOnOversize() {
-    byte[] big = new byte[SilvaConstants.MAX_OPENING_FILE_SIZE_BYTES + 1];
+    byte[] big = new byte[SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES + 1];
     MockMultipartFile bigFile =
         new MockMultipartFile("file", "big.geojson", "application/json", big);
 

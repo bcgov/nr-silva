@@ -2,11 +2,11 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.oracle.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.oracle.entity.SilvicultureSearchProjection;
-import ca.bc.gov.restapi.results.oracle.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.oracle.service.OpeningSearchService;
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;

@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.oracle.util;
 
 import ca.bc.gov.restapi.results.common.exception.InvalidSortingFieldException;
 import java.util.Map;
+
+import ca.bc.gov.restapi.results.common.util.PaginationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

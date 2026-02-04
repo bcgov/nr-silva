@@ -32,14 +32,13 @@ public abstract class AbstractTestContainerIntegrationTest {
   static final PostgreSQLContainer postgres;
   static final OracleContainer oracle;
   static final Flyway flywayPostgres;
-  static final Flyway flywayOracle;
+  static  Flyway flywayOracle;
+
+  static final String env = resolveTestProperty("flyway-environment", "FLYWAY_ENVIRONMENT", "prod");
+  static final String primaryDb = resolveTestProperty("server.primary-db","PRIMARY_DB", "oracle");
 
   // Static fields declared like this are instantiated first by the JVM
   static {
-    String env = System.getenv("FLYWAY_ENVIRONMENT");
-    if (env == null || env.isBlank()) {
-      env = "prod";
-    }
     String[] postgresLocations;
     if ("prod".equals(env)) {
       postgresLocations = new String[] {
@@ -64,7 +63,10 @@ public abstract class AbstractTestContainerIntegrationTest {
     oracle = new CustomOracleContainer();
 
     postgres.start();
-    oracle.start();
+
+    if ("oracle".equals(primaryDb)) {
+      oracle.start();
+    }
 
     flywayPostgres =
         Flyway
@@ -75,14 +77,16 @@ public abstract class AbstractTestContainerIntegrationTest {
             .baselineOnMigrate(true)
             .load();
 
-    flywayOracle =
-        Flyway
-            .configure()
-            .dataSource(oracle.getJdbcUrl(), oracle.getUsername(), oracle.getPassword())
-            .locations("classpath:migration/oracle")
-            .schemas("THE")
-            .baselineOnMigrate(true)
-            .load();
+    if (oracle.isRunning()) {
+      flywayOracle =
+          Flyway
+              .configure()
+              .dataSource(oracle.getJdbcUrl(), oracle.getUsername(), oracle.getPassword())
+              .locations("classpath:migration/oracle")
+              .schemas("THE")
+              .baselineOnMigrate(true)
+              .load();
+    }
   }
 
   /**
@@ -91,8 +95,13 @@ public abstract class AbstractTestContainerIntegrationTest {
    */
   @BeforeEach
   public void setUp() {
-    flywayPostgres.migrate();
-    flywayOracle.migrate();
+    if (flywayPostgres != null) {
+      flywayPostgres.migrate();
+    }
+
+    if (flywayOracle != null && oracle.isRunning()) {
+      flywayOracle.migrate();
+    }
   }
 
   /**
@@ -105,16 +114,28 @@ public abstract class AbstractTestContainerIntegrationTest {
    */
   @DynamicPropertySource
   static void registerDynamicProperties(DynamicPropertyRegistry registry) {
+    registry.add("server.primary-db", () -> primaryDb);
+
     registry.add("spring.datasource.jdbcUrl", postgres::getJdbcUrl);
     registry.add("spring.datasource.username", postgres::getUsername);
     registry.add("spring.datasource.password", postgres::getPassword);
     registry.add("spring.datasource.hikari.username", postgres::getUsername);
     registry.add("spring.datasource.hikari.password", postgres::getPassword);
 
-    registry.add("spring.oracle.url", oracle::getJdbcUrl);
-    registry.add("spring.oracle.jdbcUrl", oracle::getJdbcUrl);
-    registry.add("spring.oracle.username", oracle::getUsername);
-    registry.add("spring.oracle.password", oracle::getPassword);
+    if ("oracle".equals(primaryDb)) {
+      registry.add("spring.oracle.url", oracle::getJdbcUrl);
+      registry.add("spring.oracle.jdbcUrl", oracle::getJdbcUrl);
+      registry.add("spring.oracle.username", oracle::getUsername);
+      registry.add("spring.oracle.password", oracle::getPassword);
+    }
+  }
+
+  private static String resolveTestProperty(String property, String envVariable, String defaultValue) {
+    String value = System.getProperty(property);
+    if (value == null || value.isBlank()) {
+      value = System.getenv(envVariable);
+    }
+    return (value == null || value.isBlank()) ? defaultValue : value;
   }
 }
 

@@ -78,6 +78,7 @@ services:
       timeout: 5s
       retries: 5
     image: postgis/postgis:17-master
+    platform: linux/amd64
 
   backend-native:
     container_name: backend-native

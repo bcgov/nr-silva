@@ -148,3 +148,5 @@ backend/temp/
 backend/config/*.jks
 
 frontend/src/__e2e__/auth/user.*.json
+
+**/combined.sql
