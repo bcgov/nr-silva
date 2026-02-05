@@ -6,12 +6,12 @@ import ca.bc.gov.restapi.results.common.service.opening.history.AbstractOpeningS
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Unit Test | Opening Standard Unit History Service | Legacy(Oracle primary)")
-public class OpeningStandardUnitHistoryOracleServiceTest extends
-    AbstractOpeningStandardUnitHistoryServiceTest<OpeningStandardUnitHistoryOracleService> {
+public class OpeningStandardUnitHistoryOracleServiceTest
+    extends AbstractOpeningStandardUnitHistoryServiceTest<OpeningStandardUnitHistoryOracleService> {
 
-    @Override
-    protected OpeningStandardUnitHistoryOracleService createService(OpeningRepository openingRepository,
-        SilvicultureCommentRepository commentRepository) {
-        return new OpeningStandardUnitHistoryOracleService(openingRepository, commentRepository);
-    }
+  @Override
+  protected OpeningStandardUnitHistoryOracleService createService(
+      OpeningRepository<?> openingRepository, SilvicultureCommentRepository commentRepository) {
+    return new OpeningStandardUnitHistoryOracleService(openingRepository, commentRepository);
+  }
 }

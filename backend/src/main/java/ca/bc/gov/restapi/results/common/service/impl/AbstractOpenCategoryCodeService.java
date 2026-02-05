@@ -4,19 +4,18 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.projection.OpenCategoryCodeProjection;
 import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.service.OpenCategoryCodeService;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractOpenCategoryCodeService implements OpenCategoryCodeService {
 
-  protected final OpenCategoryCodeRepository openCategoryCodeRepository;
+  protected final OpenCategoryCodeRepository<?> openCategoryCodeRepository;
 
   /**
    * Find all Opening categories. Option to include expired ones.
@@ -33,19 +32,18 @@ public abstract class AbstractOpenCategoryCodeService implements OpenCategoryCod
             ? openCategoryCodeRepository.findAllBy()
             : openCategoryCodeRepository.findAllByExpiryDateAfter(LocalDate.now());
 
-    log.info("Found {} open category codes ({}cluding expired)",
+    log.info(
+        "Found {} open category codes ({}cluding expired)",
         openCategoryCodes.size(),
-        BooleanUtils.toString(includeExpired, "in", "ex")
-    );
-    return openCategoryCodes
-        .stream()
-        .map(entity -> new CodeDescriptionDto(
-                entity.getCode(),
-                entity.getIsExpired()
-                    ? entity.getDescription() + " (Expired)"
-                    : entity.getDescription()
-            )
-        )
+        BooleanUtils.toString(includeExpired, "in", "ex"));
+    return openCategoryCodes.stream()
+        .map(
+            entity ->
+                new CodeDescriptionDto(
+                    entity.getCode(),
+                    entity.getIsExpired()
+                        ? entity.getDescription() + " (Expired)"
+                        : entity.getDescription()))
         .toList();
   }
 }

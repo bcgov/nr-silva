@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.common.service.opening;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
@@ -17,17 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-
 @DisplayName("Integrated Test | Opening Search Service | Contract")
 @WithMockJwt(value = "ttester")
-public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends OpeningSearchService> extends
-    AbstractTestContainerIntegrationTest {
+public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends OpeningSearchService>
+    extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  protected OpeningSearchService openingSearchService;
+  @Autowired protected OpeningSearchService openingSearchService;
 
   @RegisterExtension
   static WireMockExtension clientApiStub =
@@ -40,7 +37,6 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
                   .stubRequestLoggingDisabled(false))
           .configureStaticDsl(true)
           .build();
-
 
   @Test
   @DisplayName("Opening search exact with mapsheet grid should succeed")

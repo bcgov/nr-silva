@@ -5,12 +5,13 @@ import ca.bc.gov.restapi.results.common.service.opening.details.AbstractOpeningD
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Unit Test | Opening Details Notification Service | Postgres-only")
-public class OpeningDetailsNotificationPostgresServiceTest extends
-    AbstractOpeningDetailsNotificationServiceTest<OpeningDetailsNotificationPostgresService> {
+public class OpeningDetailsNotificationPostgresServiceTest
+    extends AbstractOpeningDetailsNotificationServiceTest<
+        OpeningDetailsNotificationPostgresService> {
 
   @Override
   protected OpeningDetailsNotificationPostgresService createService(
-      OpeningRepository openingRepository) {
+      OpeningRepository<?> openingRepository) {
     return new OpeningDetailsNotificationPostgresService(openingRepository);
   }
 }

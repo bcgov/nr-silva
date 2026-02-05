@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class OpeningDetailsStockingPostgresService extends AbstractOpeningDetailsStockingService {
 
-  public OpeningDetailsStockingPostgresService(OpeningRepository openingRepository,
-      SilvicultureCommentRepository commentRepository) {
+  public OpeningDetailsStockingPostgresService(
+      OpeningRepository<?> openingRepository, SilvicultureCommentRepository commentRepository) {
     super(openingRepository, commentRepository);
   }
 }

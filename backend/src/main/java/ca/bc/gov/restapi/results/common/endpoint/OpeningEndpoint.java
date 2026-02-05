@@ -1,8 +1,5 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
-import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
-import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDto;
@@ -12,7 +9,11 @@ import ca.bc.gov.restapi.results.common.dto.cover.history.OpeningForestCoverHist
 import ca.bc.gov.restapi.results.common.dto.opening.*;
 import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryDto;
 import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryOverviewDto;
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
+import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsService;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,23 +22,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
-import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 @RestController("commonOpeningEndpoint")
-@RequestMapping(path = "/api/openings", produces = {
-    MediaType.APPLICATION_JSON_VALUE,
-    MediaType.APPLICATION_PROBLEM_JSON_VALUE
-})
+@RequestMapping(
+    path = "/api/openings",
+    produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 @RequiredArgsConstructor
 public class OpeningEndpoint {
-  private final UserOpeningService userOpeningService;
-  private final OpeningSpatialFileService openingSpatialFileService;
   private final OpeningDetailsService openingDetailsService;
-  private final OpeningSearchService openingSearchService;
 
   /**
    * Get the Opening Tombstone/Summary information.
@@ -162,7 +153,8 @@ public class OpeningEndpoint {
       @RequestParam(name = "updateDate", required = true) String updateDate,
       @RequestParam(name = "mainSearchTerm", required = false) String mainSearchTerm)
       throws NotFoundGenericException {
-    return openingDetailsService.getOpeningForestCoverHistoryList(openingId, updateDate, mainSearchTerm);
+    return openingDetailsService.getOpeningForestCoverHistoryList(
+        openingId, updateDate, mainSearchTerm);
   }
 
   /**
