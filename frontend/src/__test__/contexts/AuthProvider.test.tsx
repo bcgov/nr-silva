@@ -160,7 +160,7 @@ describe("AuthProvider", () => {
       ));
     });
 
-    act(() => {
+    await act(async () => {
       getByText("Logout").click();
     });
 
