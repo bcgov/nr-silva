@@ -5,8 +5,8 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.common.entity.BaseCodeEntity;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
+import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
@@ -17,9 +17,15 @@ import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
-import lombok.AccessLevel;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,23 +35,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractOpeningSearchService implements OpeningSearchService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
-  protected final OpenCategoryCodeRepository<? extends BaseCodeEntity> openCategoryCodeRepository;
-  protected final OpeningStatusCodeRepository<? extends BaseCodeEntity> openingStatusCodeRepository;
+  protected final OpenCategoryCodeRepository<? extends GenericCodeEntity>
+      openCategoryCodeRepository;
+  protected final OpeningStatusCodeRepository<? extends GenericCodeEntity>
+      openingStatusCodeRepository;
   protected final LoggedUserHelper loggedUserHelper;
   protected final ForestClientApiProvider forestClientApiProvider;
   protected final UserOpeningService userOpeningService;
-    
+
   /**
    * Exact search for openings with direct value matching.
    *
@@ -95,14 +96,14 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
         openCategoryCodeRepository.findAll().stream()
             .collect(
                 Collectors.toMap(
-                    BaseCodeEntity::getCode,
+                    GenericCodeEntity::getCode,
                     e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
 
     final var statusMap =
         openingStatusCodeRepository.findAll().stream()
             .collect(
                 Collectors.toMap(
-                    BaseCodeEntity::getCode,
+                    GenericCodeEntity::getCode,
                     e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
 
     return fetchClientAcronyms(

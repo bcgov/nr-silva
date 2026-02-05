@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.entity.code;
 
-import ca.bc.gov.restapi.results.common.entity.BaseCodeEntity;
+import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -12,10 +12,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AttributeOverrides({
-    @AttributeOverride(name = "description", column = @Column(name = "description", length = 120, nullable = false)),
-    @AttributeOverride(name = "effectiveDate", column = @Column(name = "effective_date", nullable = false)),
-    @AttributeOverride(name = "expiryDate", column = @Column(name = "expiry_date", nullable = false)),
-    @AttributeOverride(name = "updateTimestamp", column = @Column(name = "update_timestamp", nullable = false))
+  @AttributeOverride(
+      name = "description",
+      column = @Column(name = "description", length = 120, nullable = false)),
+  @AttributeOverride(
+      name = "effectiveDate",
+      column = @Column(name = "effective_date", nullable = false)),
+  @AttributeOverride(name = "expiryDate", column = @Column(name = "expiry_date", nullable = false)),
+  @AttributeOverride(
+      name = "updateTimestamp",
+      column = @Column(name = "update_timestamp", nullable = false))
 })
-public abstract class AbstractCodeEntity extends BaseCodeEntity {
-}
+public abstract class AbstractCodeEntity extends GenericCodeEntity {}
