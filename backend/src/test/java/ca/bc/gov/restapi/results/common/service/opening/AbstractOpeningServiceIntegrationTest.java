@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.common.service.opening;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsStockingDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsTombstoneOverviewDto;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsService;
@@ -7,21 +9,18 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Optional;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-
 @DisplayName("Integrated Test | Opening Service | Contract")
 @WithMockJwt(value = "ttester")
-public class AbstractOpeningServiceIntegrationTest<T extends OpeningDetailsService> extends
-    AbstractTestContainerIntegrationTest {
+public abstract class AbstractOpeningServiceIntegrationTest<T extends OpeningDetailsService>
+    extends AbstractTestContainerIntegrationTest {
 
   @RegisterExtension
   static WireMockExtension clientApiStub =
@@ -35,8 +34,7 @@ public class AbstractOpeningServiceIntegrationTest<T extends OpeningDetailsServi
           .configureStaticDsl(true)
           .build();
 
-  @Autowired
-  protected OpeningDetailsService openingService;
+  @Autowired protected OpeningDetailsService openingService;
 
   @Test
   @DisplayName("Opening with existing openingId should succeed")

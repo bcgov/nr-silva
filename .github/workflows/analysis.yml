@@ -38,7 +38,7 @@ jobs:
           if [ -f settings.xml ]; then
             cp settings.xml ~/.m2/settings.xml
           fi
-          ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dprimary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
+          ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dserver.primary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
 
       - name: Upload Oracle coverage artifact
         uses: actions/upload-artifact@v4
@@ -72,7 +72,7 @@ jobs:
           if [ -f settings.xml ]; then
             cp settings.xml ~/.m2/settings.xml
           fi
-          ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dprimary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
+          ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=${{ env.FLYWAY_ENVIRONMENT }} -Dserver.primary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
 
       - name: Upload Postgres coverage artifact
         uses: actions/upload-artifact@v4

@@ -13,4 +13,8 @@ public interface CodeService {
   List<CodeDescriptionDto> getAllSilvObjectiveCode();
 
   List<CodeDescriptionDto> getAllSilvFundSrceCode();
+
+  List<CodeDescriptionDto> findAllCategories(boolean includeExpired);
+
+  List<CodeDescriptionDto> findAllOrgUnits();
 }

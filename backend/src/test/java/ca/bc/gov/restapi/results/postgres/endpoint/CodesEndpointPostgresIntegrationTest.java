@@ -1,11 +1,15 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.endpoint.AbstractCodesEndpointIntegrationTest;
+import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
+import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvBaseCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvFundSrceCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvMethodCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvObjectiveCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvTechniqueCodePostgresEntity;
+import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -30,6 +34,10 @@ class CodesEndpointPostgresIntegrationTest extends AbstractCodesEndpointIntegrat
   @Autowired protected SilvObjectiveCodePostgresRepository silvObjectiveCodePostgresRepository;
 
   @Autowired protected SilvFundSrceCodePostgresRepository silvFundSrceCodePostgresRepository;
+
+  @Autowired protected OpenCategoryCodePostgresRepository openCategoryCodePostgresRepository;
+
+  @Autowired protected OrgUnitPostgresRepository orgUnitPostgresRepository;
 
   @Override
   protected void setupTestData() {
@@ -88,6 +96,37 @@ class CodesEndpointPostgresIntegrationTest extends AbstractCodesEndpointIntegrat
               .effectiveDate(today)
               .expiryDate(today.plusYears(1))
               .updateTimestamp(now)
+              .build());
+    }
+
+    if (openCategoryCodePostgresRepository.findAll().isEmpty()) {
+      openCategoryCodePostgresRepository.save(
+          OpenCategoryCodeEntity.builder()
+              .code("OC1")
+              .description("Opening Category 1")
+              .effectiveDate(today)
+              .expiryDate(today.plusYears(1))
+              .updateTimestamp(now)
+              .build());
+    }
+
+    if (orgUnitPostgresRepository.findAll().isEmpty()) {
+      orgUnitPostgresRepository.save(
+          OrgUnitEntity.builder()
+              .orgUnitCode("OU01")
+              .orgUnitName("Test Org Unit")
+              .locationCode("LOC")
+              .areaCode("AREA")
+              .telephoneNo("1234567")
+              .orgLevelCode('1')
+              .officeNameCode("01")
+              .rollupRegionNo(1L)
+              .rollupRegionCode("RR01")
+              .rollupDistNo(1L)
+              .rollupDistCode("RD01")
+              .effectiveDate(today)
+              .expiryDate(today.plusYears(1))
+              .updateTimestamp(today)
               .build());
     }
   }

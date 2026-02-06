@@ -112,4 +112,88 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
           Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
         });
   }
+
+  @Test
+  @DisplayName("Find all categories with includeExpired false should return list")
+  void findAllCategories_includeExpiredFalse_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+
+    // When
+    List<CodeDescriptionDto> result = codeService.findAllCategories(false);
+
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Find all categories with includeExpired true should return list")
+  void findAllCategories_includeExpiredTrue_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+
+    // When
+    List<CodeDescriptionDto> result = codeService.findAllCategories(true);
+
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Find all categories should return DTOs with code and description")
+  void findAllCategories_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+
+    // When
+    List<CodeDescriptionDto> result = codeService.findAllCategories(false);
+
+    // Then
+    Assertions.assertNotNull(result);
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+          Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
+        });
+  }
+
+  @Test
+  @DisplayName("Find all org units should return list of DTOs")
+  void findAllOrgUnits_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+
+    // When
+    List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
+
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Find all org units should return DTOs with code field")
+  void findAllOrgUnits_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+
+    // When
+    List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
+
+    // Then
+    Assertions.assertNotNull(result);
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+        });
+  }
 }

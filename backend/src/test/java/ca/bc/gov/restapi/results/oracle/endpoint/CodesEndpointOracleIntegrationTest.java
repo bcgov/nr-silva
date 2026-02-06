@@ -1,11 +1,15 @@
 package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.endpoint.AbstractCodesEndpointIntegrationTest;
+import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
+import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvBaseCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvFundSrceCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvMethodCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvObjectiveCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvTechniqueCodeOracleEntity;
+import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.OrgUnitOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvBaseCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvFundSrceCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvMethodCodeOracleRepository;
@@ -30,6 +34,10 @@ class CodesEndpointOracleIntegrationTest extends AbstractCodesEndpointIntegratio
   @Autowired protected SilvObjectiveCodeOracleRepository silvObjectiveCodeOracleRepository;
 
   @Autowired protected SilvFundSrceCodeOracleRepository silvFundSrceCodeOracleRepository;
+
+  @Autowired protected OpenCategoryCodeOracleRepository openCategoryCodeOracleRepository;
+
+  @Autowired protected OrgUnitOracleRepository orgUnitOracleRepository;
 
   @Override
   protected void setupTestData() {
@@ -88,6 +96,37 @@ class CodesEndpointOracleIntegrationTest extends AbstractCodesEndpointIntegratio
               .effectiveDate(today)
               .expiryDate(today.plusYears(1))
               .updateTimestamp(now)
+              .build());
+    }
+
+    if (openCategoryCodeOracleRepository.findAll().isEmpty()) {
+      openCategoryCodeOracleRepository.save(
+          OpenCategoryCodeEntity.builder()
+              .code("OC1")
+              .description("Opening Category 1")
+              .effectiveDate(today)
+              .expiryDate(today.plusYears(1))
+              .updateTimestamp(now)
+              .build());
+    }
+
+    if (orgUnitOracleRepository.findAll().isEmpty()) {
+      orgUnitOracleRepository.save(
+          OrgUnitEntity.builder()
+              .orgUnitCode("OU01")
+              .orgUnitName("Test Org Unit")
+              .locationCode("LOC")
+              .areaCode("AREA")
+              .telephoneNo("1234567")
+              .orgLevelCode('1')
+              .officeNameCode("01")
+              .rollupRegionNo(1L)
+              .rollupRegionCode("RR01")
+              .rollupDistNo(1L)
+              .rollupDistCode("RD01")
+              .effectiveDate(today)
+              .expiryDate(today.plusYears(1))
+              .updateTimestamp(today)
               .build());
     }
   }

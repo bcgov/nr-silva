@@ -2,8 +2,6 @@ package ca.bc.gov.restapi.results.common.endpoint;
 
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.service.CodeService;
-import ca.bc.gov.restapi.results.common.service.OpenCategoryCodeService;
-import ca.bc.gov.restapi.results.common.service.OrgUnitService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CodesEndpoint {
 
-  private final OpenCategoryCodeService openCategoryCodeService;
-  private final OrgUnitService orgUnitService;
   private final CodeService codeService;
 
   /**
@@ -32,7 +28,7 @@ public class CodesEndpoint {
       @RequestParam(value = "includeExpired", required = false, defaultValue = "true")
           Boolean includeExpired) {
     boolean addExpired = Boolean.TRUE.equals(includeExpired);
-    return openCategoryCodeService.findAllCategories(addExpired);
+    return codeService.findAllCategories(addExpired);
   }
 
   /**
@@ -42,7 +38,7 @@ public class CodesEndpoint {
    */
   @GetMapping("/org-units")
   public List<CodeDescriptionDto> getOpeningOrgUnits() {
-    return orgUnitService.findAllOrgUnits();
+    return codeService.findAllOrgUnits();
   }
 
   /**

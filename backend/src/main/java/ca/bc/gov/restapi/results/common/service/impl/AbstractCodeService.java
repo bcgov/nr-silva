@@ -1,13 +1,19 @@
 package ca.bc.gov.restapi.results.common.service.impl;
 
+import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
+import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
+import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.util.CodeConverterUtil;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 
-@AllArgsConstructor
+@Slf4j
 public abstract class AbstractCodeService implements CodeService {
   protected abstract GenericCodeRepository<?> getSilvBaseCodeRepository();
 
@@ -18,6 +24,12 @@ public abstract class AbstractCodeService implements CodeService {
   protected abstract GenericCodeRepository<?> getSilvObjectiveCodeRepository();
 
   protected abstract GenericCodeRepository<?> getSilvFundSrceCodeRepository();
+
+  protected abstract OpenCategoryCodeRepository<?> getOpenCategoryCodeRepository();
+
+  protected abstract OrgUnitRepository getOrgUnitRepository();
+
+  protected abstract SilvaConfiguration getSilvaConfiguration();
 
   @Override
   public List<CodeDescriptionDto> getAllSilvBaseCode() {
@@ -42,5 +54,64 @@ public abstract class AbstractCodeService implements CodeService {
   @Override
   public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
     return CodeConverterUtil.toCodeDescriptionDtos(getSilvFundSrceCodeRepository().findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> findAllCategories(boolean includeExpired) {
+    log.info("Getting all open category codes. Include expired: {}", includeExpired);
+    // Prefer converting entity results through the shared converter utility when possible.
+    List<? extends GenericCodeEntity> entities = getOpenCategoryCodeRepository().findAll();
+
+    log.info(
+        "Found {} open category codes ({}cluding expired)",
+        entities.size(),
+        BooleanUtils.toString(includeExpired, "in", "ex"));
+
+    if (!includeExpired) {
+      List<? extends GenericCodeEntity> filtered =
+          entities.stream().filter(e -> !e.isExpired()).toList();
+      return CodeConverterUtil.toCodeDescriptionDtos(filtered);
+    }
+
+    // include expired: apply suffix first to an in-memory list of GenericCodeEntity
+    List<GenericCodeEntity> adjusted =
+        entities.stream()
+            .map(
+                ent -> {
+                  GenericCodeEntity tmp = new GenericCodeEntity() {};
+                  tmp.setCode(ent.getCode());
+                  tmp.setDescription(
+                      ent.isExpired() ? ent.getDescription() + " (Expired)" : ent.getDescription());
+                  tmp.setEffectiveDate(ent.getEffectiveDate());
+                  tmp.setExpiryDate(ent.getExpiryDate());
+                  tmp.setUpdateTimestamp(ent.getUpdateTimestamp());
+                  return tmp;
+                })
+            .toList();
+
+    return CodeConverterUtil.toCodeDescriptionDtos(adjusted);
+  }
+
+  @Override
+  public List<CodeDescriptionDto> findAllOrgUnits() {
+    log.info("Getting all org units for the search openings");
+
+    if (Objects.isNull(getSilvaConfiguration().getOrgUnits())
+        || getSilvaConfiguration().getOrgUnits().isEmpty()) {
+      log.warn("No Org Units from the properties file.");
+      return List.of();
+    }
+
+    List<CodeDescriptionDto> orgUnits =
+        getOrgUnitRepository()
+            .findAllByOrgUnitCodeIn(getSilvaConfiguration().getOrgUnits())
+            .stream()
+            .map(
+                orgUnit ->
+                    new CodeDescriptionDto(orgUnit.getOrgUnitCode(), orgUnit.getOrgUnitName()))
+            .toList();
+
+    log.info("Found {} org units by codes", orgUnits.size());
+    return orgUnits;
   }
 }
