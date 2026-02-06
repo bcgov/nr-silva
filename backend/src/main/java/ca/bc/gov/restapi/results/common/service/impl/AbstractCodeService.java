@@ -73,23 +73,13 @@ public abstract class AbstractCodeService implements CodeService {
       return CodeConverterUtil.toCodeDescriptionDtos(filtered);
     }
 
-    // include expired: apply suffix first to an in-memory list of GenericCodeEntity
-    List<GenericCodeEntity> adjusted =
-        entities.stream()
-            .map(
-                ent -> {
-                  GenericCodeEntity tmp = new GenericCodeEntity() {};
-                  tmp.setCode(ent.getCode());
-                  tmp.setDescription(
-                      ent.isExpired() ? ent.getDescription() + " (Expired)" : ent.getDescription());
-                  tmp.setEffectiveDate(ent.getEffectiveDate());
-                  tmp.setExpiryDate(ent.getExpiryDate());
-                  tmp.setUpdateTimestamp(ent.getUpdateTimestamp());
-                  return tmp;
-                })
-            .toList();
-
-    return CodeConverterUtil.toCodeDescriptionDtos(adjusted);
+    return entities.stream()
+        .map(
+            ent ->
+                new CodeDescriptionDto(
+                    ent.getCode(),
+                    ent.isExpired() ? ent.getDescription() + " (Expired)" : ent.getDescription()))
+        .toList();
   }
 
   @Override
