@@ -1,11 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.exception.InvalidOpeningIdException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
-import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
@@ -34,11 +34,13 @@ public class UserRecentOpeningService {
   private final LoggedUserHelper loggedUserHelper;
   private final UserRecentOpeningRepository userRecentOpeningRepository;
   private final OpeningSearchService openingSearchService;
-  private final OpeningRepository openingRepository;
+  private final OpeningRepository<?> openingRepository;
 
   @Transactional
   public UserRecentOpeningDto storeViewedOpening(Long openingId) {
-    log.info("Adding opening ID {} as recently viewed for user {}", openingId,
+    log.info(
+        "Adding opening ID {} as recently viewed for user {}",
+        openingId,
         loggedUserHelper.getLoggedUserId());
 
     if (openingId == null) {
@@ -58,39 +60,26 @@ public class UserRecentOpeningService {
                 .map(entity -> entity.withLastViewed(LocalDateTime.now()))
                 .orElse(
                     new UserRecentOpeningEntity(
-                        loggedUserHelper.getLoggedUserId(),
-                        openingId,
-                        LocalDateTime.now()
-                    )
-                )
-        );
+                        loggedUserHelper.getLoggedUserId(), openingId, LocalDateTime.now())));
 
     // Return the DTO
     return new UserRecentOpeningDto(
-        recentOpening.getUserId(),
-        recentOpening.getOpeningId(),
-        recentOpening.getLastViewed()
-    );
+        recentOpening.getUserId(), recentOpening.getOpeningId(), recentOpening.getLastViewed());
   }
 
   public Page<OpeningSearchResponseDto> getAllRecentOpeningsForUser(Pageable pageable) {
     String userId = loggedUserHelper.getLoggedUserId();
 
     // Fetch recent openings for the user
-    Page<UserRecentOpeningEntity> recentOpenings = userRecentOpeningRepository
-        .findByUserIdOrderByLastViewedDesc(userId, pageable);
+    Page<UserRecentOpeningEntity> recentOpenings =
+        userRecentOpeningRepository.findByUserIdOrderByLastViewedDesc(userId, pageable);
 
     // Extract opening IDs as String
-    Map<Long, LocalDateTime> openingIds = recentOpenings
-        .getContent()
-        .stream()
-        .collect(
-            Collectors
-                .toMap(
-                    UserRecentOpeningEntity::getOpeningId,
-                    UserRecentOpeningEntity::getLastViewed
-                )
-        );
+    Map<Long, LocalDateTime> openingIds =
+        recentOpenings.getContent().stream()
+            .collect(
+                Collectors.toMap(
+                    UserRecentOpeningEntity::getOpeningId, UserRecentOpeningEntity::getLastViewed));
     log.info("User with the userId {} has the following openingIds {}", userId, openingIds);
 
     if (openingIds.isEmpty()) {
@@ -99,35 +88,30 @@ public class UserRecentOpeningService {
     }
 
     List<SilvicultureSearchProjection> projectionList =
-        openingRepository
-            .searchByOpeningIds(
-                new ArrayList<>(openingIds.keySet()),
-                // Here it really doesn't matter, if we set the page as first,
-                // because it will be just for the current page anyway
-                0L, openingIds.size()
-            );
+        openingRepository.searchByOpeningIds(
+            new ArrayList<>(openingIds.keySet()),
+            // Here it really doesn't matter, if we set the page as first,
+            // because it will be just for the current page anyway
+            0L,
+            openingIds.size());
 
     Page<OpeningSearchResponseDto> pageResult =
         openingSearchService.parsePageResult(
             new PageImpl<>(
                 projectionList,
                 PageRequest.of(0, openingIds.size()),
-                projectionList.stream().map(SilvicultureSearchProjection::getTotalCount).findFirst().orElse(0L)
-            )
-        );
+                projectionList.stream()
+                    .map(SilvicultureSearchProjection::getTotalCount)
+                    .findFirst()
+                    .orElse(0L)));
 
-    return
-        new PageImpl<>(
-            pageResult
-                .get()
-                .map(result -> result.withLastViewDate(
-                    openingIds.get(result.getOpeningId())))
-                .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
-                .toList(),
-            recentOpenings.getPageable(),
-            recentOpenings.getTotalPages()
-        );
+    return new PageImpl<>(
+        pageResult
+            .get()
+            .map(result -> result.withLastViewDate(openingIds.get(result.getOpeningId())))
+            .sorted(Comparator.comparing(OpeningSearchResponseDto::getLastViewDate).reversed())
+            .toList(),
+        recentOpenings.getPageable(),
+        recentOpenings.getTotalPages());
   }
-
-
 }

@@ -54,7 +54,7 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
     return null;
   }
 
-  if (openingFavouriteQuery.isFetching || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending || isAuthRefreshInProgress()) {
+  if (openingFavouriteQuery.isLoading || deleteFavOpenMutation.isPending || putFavOpenMutation.isPending || isAuthRefreshInProgress()) {
     return (
       <div className="opening-bookmark-btn-loading-container">
         <InlineLoading className="bookmark-button-inline-loading" />

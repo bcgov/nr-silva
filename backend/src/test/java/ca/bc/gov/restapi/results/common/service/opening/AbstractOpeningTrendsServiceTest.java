@@ -1,8 +1,16 @@
 package ca.bc.gov.restapi.results.common.service.opening;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
@@ -13,25 +21,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | Opening Trends Service | Contract")
 public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsService> {
 
-  @Mock
-  protected OpeningRepository openingRepository;
+  @Mock protected OpeningRepository<?> openingRepository;
 
   protected OpeningTrendsService openingTrendsService;
 
-  protected abstract T createService(OpeningRepository openingRepository);
+  protected abstract T createService(OpeningRepository<?> openingRepository);
 
   @BeforeEach
   void setup() {
@@ -40,12 +38,9 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
 
   protected List<OpeningTrendsProjection> mockOpeningsEntityList() {
 
-    OpeningTrendsProjection entity = new TestOpeningTrendsProjection(
-        LocalDate.now().getYear(),
-        LocalDate.now().getMonthValue(),
-        "APP",
-        1
-    );
+    OpeningTrendsProjection entity =
+        new TestOpeningTrendsProjection(
+            LocalDate.now().getYear(), LocalDate.now().getMonthValue(), "APP", 1);
     return List.of(entity);
   }
 
@@ -57,12 +52,9 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
     when(openingRepository.getOpeningTrends(anyString(), anyString(), anyList(), anyList()))
         .thenReturn(entities);
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        LocalDate.now().minusMonths(4),
-        LocalDate.now().plusMonths(2),
-        null,
-        null
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(
+            LocalDate.now().minusMonths(4), LocalDate.now().plusMonths(2), null, null);
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(7, list.size());
@@ -77,12 +69,12 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        now.toLocalDate().minusMonths(1),
-        now.toLocalDate().plusMonths(1),
-        List.of("AAA"),
-        null
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(
+            now.toLocalDate().minusMonths(1),
+            now.toLocalDate().plusMonths(1),
+            List.of("AAA"),
+            null);
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(3, list.size());
@@ -97,12 +89,9 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        LocalDate.now(),
-        LocalDate.now(),
-        null,
-        List.of("APP")
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(
+            LocalDate.now(), LocalDate.now(), null, List.of("APP"));
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(1, list.size());
@@ -116,12 +105,9 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
     List<OpeningTrendsProjection> entities = mockOpeningsEntityList();
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(entities);
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        LocalDate.now(),
-        LocalDate.now().plusYears(1),
-        null,
-        List.of("UPD")
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(
+            LocalDate.now(), LocalDate.now().plusYears(1), null, List.of("UPD"));
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(13, list.size());
     Assertions.assertEquals(1, list.get(0).amount());
@@ -149,12 +135,8 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
     LocalDate oneMonthBefore = now.minusMonths(1L);
     LocalDate oneMonthLater = now.plusMonths(1L);
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        oneMonthBefore,
-        oneMonthLater,
-        null,
-        null
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(oneMonthBefore, oneMonthLater, null, null);
 
     Assertions.assertFalse(list.isEmpty());
     Assertions.assertEquals(3, list.size());
@@ -167,16 +149,12 @@ public abstract class AbstractOpeningTrendsServiceTest<T extends OpeningTrendsSe
   void getOpeningSubmissionTrends_noData_shouldSucceed() {
     when(openingRepository.getOpeningTrends(any(), any(), any(), any())).thenReturn(List.of());
 
-    List<OpeningsPerYearDto> list = openingTrendsService.getOpeningSubmissionTrends(
-        LocalDate.now(),
-        LocalDate.now(),
-        null,
-        null
-    );
+    List<OpeningsPerYearDto> list =
+        openingTrendsService.getOpeningSubmissionTrends(
+            LocalDate.now(), LocalDate.now(), null, null);
 
     Assertions.assertTrue(list.isEmpty());
   }
-
 
   @Getter
   @AllArgsConstructor

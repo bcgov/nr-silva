@@ -1,7 +1,6 @@
 package ca.bc.gov.restapi.results.extensions;
 
 import java.util.UUID;
-
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,37 +28,37 @@ import org.testcontainers.utility.DockerImageName;
 @ContextConfiguration
 public abstract class AbstractTestContainerIntegrationTest {
 
-  static final PostgreSQLContainer postgres;
+  static final PostgreSQLContainer<?> postgres;
   static final OracleContainer oracle;
   static final Flyway flywayPostgres;
-  static  Flyway flywayOracle;
+  static Flyway flywayOracle;
 
   static final String env = resolveTestProperty("flyway-environment", "FLYWAY_ENVIRONMENT", "prod");
-  static final String primaryDb = resolveTestProperty("server.primary-db","PRIMARY_DB", "oracle");
+  static final String primaryDb = resolveTestProperty("server.primary-db", "PRIMARY_DB", "oracle");
 
   // Static fields declared like this are instantiated first by the JVM
   static {
     String[] postgresLocations;
     if ("prod".equals(env)) {
-      postgresLocations = new String[] {
-          "classpath:db/migration",
-          "classpath:migration/postgres/default"
-      };
+      postgresLocations =
+          new String[] {"classpath:db/migration", "classpath:migration/postgres/default"};
     } else {
-        postgresLocations = new String[] {
+      postgresLocations =
+          new String[] {
             "classpath:db/migration",
             "classpath:db/migration-dev",
             "classpath:migration/postgres/default",
             "classpath:migration/postgres/dev"
-        };
+          };
     }
 
-    postgres = new PostgreSQLContainer(
-        DockerImageName.parse("postgis/postgis:17-master")
-            .asCompatibleSubstituteFor("postgres"))
-        .withDatabaseName("silva")
-        .withUsername("silva")
-        .withPassword(UUID.randomUUID().toString());
+    postgres =
+        new PostgreSQLContainer(
+                DockerImageName.parse("postgis/postgis:17-master")
+                    .asCompatibleSubstituteFor("postgres"))
+            .withDatabaseName("silva")
+            .withUsername("silva")
+            .withPassword(UUID.randomUUID().toString());
     oracle = new CustomOracleContainer();
 
     postgres.start();
@@ -69,8 +68,7 @@ public abstract class AbstractTestContainerIntegrationTest {
     }
 
     flywayPostgres =
-        Flyway
-            .configure()
+        Flyway.configure()
             .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
             .locations(postgresLocations)
             .schemas("silva")
@@ -79,8 +77,7 @@ public abstract class AbstractTestContainerIntegrationTest {
 
     if (oracle.isRunning()) {
       flywayOracle =
-          Flyway
-              .configure()
+          Flyway.configure()
               .dataSource(oracle.getJdbcUrl(), oracle.getUsername(), oracle.getPassword())
               .locations("classpath:migration/oracle")
               .schemas("THE")
@@ -130,7 +127,8 @@ public abstract class AbstractTestContainerIntegrationTest {
     }
   }
 
-  private static String resolveTestProperty(String property, String envVariable, String defaultValue) {
+  private static String resolveTestProperty(
+      String property, String envVariable, String defaultValue) {
     String value = System.getProperty(property);
     if (value == null || value.isBlank()) {
       value = System.getenv(envVariable);
@@ -138,4 +136,3 @@ public abstract class AbstractTestContainerIntegrationTest {
     return (value == null || value.isBlank()) ? defaultValue : value;
   }
 }
-

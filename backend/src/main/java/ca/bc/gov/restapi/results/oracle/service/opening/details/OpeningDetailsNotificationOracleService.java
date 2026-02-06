@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
-public class OpeningDetailsNotificationOracleService extends AbstractOpeningDetailsNotificationService {
-    public OpeningDetailsNotificationOracleService(OpeningRepository openingRepository) {
-        super(openingRepository);
-    }
+public class OpeningDetailsNotificationOracleService
+    extends AbstractOpeningDetailsNotificationService {
+  public OpeningDetailsNotificationOracleService(OpeningRepository<?> openingRepository) {
+    super(openingRepository);
+  }
 }

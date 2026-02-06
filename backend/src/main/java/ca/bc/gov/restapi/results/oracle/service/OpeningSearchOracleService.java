@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.common.entity.BaseCodeEntity;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
+import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
@@ -22,11 +22,17 @@ public class OpeningSearchOracleService extends AbstractOpeningSearchService {
 
   public OpeningSearchOracleService(
       OpeningRepository<? extends BaseOpeningEntity> openingRepository,
-      OpenCategoryCodeRepository<? extends BaseCodeEntity> openCategoryCodeRepository,
-      OpeningStatusCodeRepository<? extends BaseCodeEntity> openingStatusCodeRepository,
-      LoggedUserHelper loggedUserHelper, ForestClientApiProvider forestClientApiProvider,
+      OpenCategoryCodeRepository<? extends GenericCodeEntity> openCategoryCodeRepository,
+      OpeningStatusCodeRepository<? extends GenericCodeEntity> openingStatusCodeRepository,
+      LoggedUserHelper loggedUserHelper,
+      ForestClientApiProvider forestClientApiProvider,
       UserOpeningService userOpeningService) {
-    super(openingRepository, openCategoryCodeRepository, openingStatusCodeRepository,
-        loggedUserHelper, forestClientApiProvider, userOpeningService);
+    super(
+        openingRepository,
+        openCategoryCodeRepository,
+        openingStatusCodeRepository,
+        loggedUserHelper,
+        forestClientApiProvider,
+        userOpeningService);
   }
 }

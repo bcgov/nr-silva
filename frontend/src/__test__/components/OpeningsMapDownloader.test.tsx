@@ -1,12 +1,21 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
-import OpeningsMapDownloader from "@/components/OpeningsMapDownloader";
+import OpeningsMapDownloader from "../../components/OpeningsMapDownloader";
 
-// Mock tokml
-vi.mock("tokml", () => ({
+// Mock ol/format/GeoJSON and ol/format/KML
+vi.mock("ol/format/GeoJSON", () => ({
   __esModule: true,
-  default: vi.fn(() => "<kml>mock</kml>"),
+  default: vi.fn(() => ({
+    readFeatures: vi.fn(() => []),
+  })),
+}));
+
+vi.mock("ol/format/KML", () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    writeFeatures: vi.fn(() => "<kml>mock</kml>"),
+  })),
 }));
 
 const mockCreateObjectURL = vi.fn(() => "blob:mock-url");

@@ -6,12 +6,13 @@ import ca.bc.gov.restapi.results.common.service.opening.history.AbstractOpeningS
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Unit Test | Opening Standard Unit History Service | Postgres-only")
-public class OpeningStandardUnitHistoryPostgresServiceTest extends
-    AbstractOpeningStandardUnitHistoryServiceTest<OpeningStandardUnitHistoryPostgresService> {
+public class OpeningStandardUnitHistoryPostgresServiceTest
+    extends AbstractOpeningStandardUnitHistoryServiceTest<
+        OpeningStandardUnitHistoryPostgresService> {
 
   @Override
   protected OpeningStandardUnitHistoryPostgresService createService(
-      OpeningRepository openingRepository, SilvicultureCommentRepository commentRepository) {
+      OpeningRepository<?> openingRepository, SilvicultureCommentRepository commentRepository) {
     return new OpeningStandardUnitHistoryPostgresService(openingRepository, commentRepository);
   }
 }

@@ -5,12 +5,12 @@ import ca.bc.gov.restapi.results.common.service.opening.details.AbstractOpeningD
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Unit Test | Opening Details Notification Service | Legacy(Oracle primary)")
-public class OpeningDetailsNotificationOracleServiceTest extends
-    AbstractOpeningDetailsNotificationServiceTest<OpeningDetailsNotificationOracleService> {
+public class OpeningDetailsNotificationOracleServiceTest
+    extends AbstractOpeningDetailsNotificationServiceTest<OpeningDetailsNotificationOracleService> {
 
-    @Override
-    protected OpeningDetailsNotificationOracleService createService(
-        OpeningRepository openingRepository) {
-        return new OpeningDetailsNotificationOracleService(openingRepository);
-    }
+  @Override
+  protected OpeningDetailsNotificationOracleService createService(
+      OpeningRepository<?> openingRepository) {
+    return new OpeningDetailsNotificationOracleService(openingRepository);
+  }
 }

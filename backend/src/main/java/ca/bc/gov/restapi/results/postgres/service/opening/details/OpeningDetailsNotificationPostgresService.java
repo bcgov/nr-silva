@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 @Service
-public class OpeningDetailsNotificationPostgresService extends
-    AbstractOpeningDetailsNotificationService {
+public class OpeningDetailsNotificationPostgresService
+    extends AbstractOpeningDetailsNotificationService {
 
-  public OpeningDetailsNotificationPostgresService(OpeningRepository openingRepository) {
+  public OpeningDetailsNotificationPostgresService(OpeningRepository<?> openingRepository) {
     super(openingRepository);
   }
 }

@@ -24,14 +24,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("Unit Test | User Opening Search")
 class UserOpeningSearchServiceTest {
 
-  @Mock
-  LoggedUserHelper loggedUserHelper;
+  @Mock LoggedUserHelper loggedUserHelper;
 
-  @Mock
-  UserOpeningRepository userOpeningRepository;
+  @Mock UserOpeningRepository userOpeningRepository;
 
-  @Mock
-  OpeningRepository openingRepository;
+  @Mock OpeningRepository<?> openingRepository;
 
   private UserOpeningService userOpeningService;
 
@@ -40,8 +37,7 @@ class UserOpeningSearchServiceTest {
   @BeforeEach
   void setup() {
     this.userOpeningService =
-        new UserOpeningService(
-            loggedUserHelper, userOpeningRepository, openingRepository);
+        new UserOpeningService(loggedUserHelper, userOpeningRepository, openingRepository);
   }
 
   @Test
@@ -49,7 +45,8 @@ class UserOpeningSearchServiceTest {
   void addUser_FavoriteOpening_happyPath_shouldSucceed() {
     OpeningBaseProjection openingBaseProjection = mock(OpeningBaseProjection.class);
     when(loggedUserHelper.getLoggedUserId()).thenReturn(USER_ID);
-    when(openingRepository.findProjectionById(any())).thenReturn(Optional.of(openingBaseProjection));
+    when(openingRepository.findProjectionById(any()))
+        .thenReturn(Optional.of(openingBaseProjection));
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
     userOpeningService.addUserFavoriteOpening(112233L);
   }
@@ -85,8 +82,8 @@ class UserOpeningSearchServiceTest {
   @DisplayName("List user favourite openings happy path should succeed")
   void listUserFavoriteOpenings_happyPath_shouldSucceed() {
     when(loggedUserHelper.getLoggedUserId()).thenReturn(USER_ID);
-    when(userOpeningRepository.findAllByUserId(any(), any())).thenReturn(
-        List.of(new UserOpeningEntity()));
+    when(userOpeningRepository.findAllByUserId(any(), any()))
+        .thenReturn(List.of(new UserOpeningEntity()));
     userOpeningService.listUserFavoriteOpenings();
   }
 
@@ -94,8 +91,8 @@ class UserOpeningSearchServiceTest {
   @DisplayName("Check for favorites happy path should succeed")
   void checkForFavorites_happyPath_shouldSucceed() {
     when(loggedUserHelper.getLoggedUserId()).thenReturn(USER_ID);
-    when(userOpeningRepository.findAllByUserIdAndOpeningIdIn(any(), any())).thenReturn(
-        List.of(new UserOpeningEntity(USER_ID, 112233L)));
+    when(userOpeningRepository.findAllByUserIdAndOpeningIdIn(any(), any()))
+        .thenReturn(List.of(new UserOpeningEntity(USER_ID, 112233L)));
     assertThat(userOpeningService.checkForFavorites(List.of(112233L)))
         .isNotNull()
         .isNotEmpty()
