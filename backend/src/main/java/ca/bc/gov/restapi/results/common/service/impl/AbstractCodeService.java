@@ -9,64 +9,58 @@ import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.util.CodeConverterUtil;
 import java.util.List;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 
 @Slf4j
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractCodeService implements CodeService {
-  protected abstract GenericCodeRepository<?> getSilvBaseCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getSilvTechniqueCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getSilvMethodCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getSilvObjectiveCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getSilvFundSrceCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getOpenCategoryCodeRepository();
-
-  protected abstract GenericCodeRepository<?> getOpenStatusCodeRepository();
-
-  protected abstract OrgUnitRepository getOrgUnitRepository();
-
-  protected abstract SilvaConfiguration getSilvaConfiguration();
+  protected GenericCodeRepository<?> silvBaseCodeRepository;
+  protected GenericCodeRepository<?> silvTechniqueCodeRepository;
+  protected GenericCodeRepository<?> silvMethodCodeRepository;
+  protected GenericCodeRepository<?> silvObjectiveCodeRepository;
+  protected GenericCodeRepository<?> silvFundSrceCodeRepository;
+  protected GenericCodeRepository<?> openCategoryCodeRepository;
+  protected OrgUnitRepository orgUnitRepository;
+  protected SilvaConfiguration silvaConfiguration;
 
   @Override
   public List<CodeDescriptionDto> getAllSilvBaseCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getSilvBaseCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(silvBaseCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvTechniqueCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getSilvTechniqueCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(silvTechniqueCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvMethodCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getSilvMethodCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(silvMethodCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvObjectiveCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getSilvObjectiveCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(silvObjectiveCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getSilvFundSrceCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(silvFundSrceCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllOpenStatusCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(getOpenStatusCodeRepository().findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(openCategoryCodeRepository.findAll());
   }
 
   @Override
   public List<CodeDescriptionDto> findAllCategories(boolean includeExpired) {
     log.info("Getting all open category codes. Include expired: {}", includeExpired);
     // Prefer converting entity results through the shared converter utility when possible.
-    List<? extends GenericCodeEntity> entities = getOpenCategoryCodeRepository().findAll();
+    List<? extends GenericCodeEntity> entities = openCategoryCodeRepository.findAll();
 
     log.info(
         "Found {} open category codes ({}cluding expired)",
@@ -92,16 +86,14 @@ public abstract class AbstractCodeService implements CodeService {
   public List<CodeDescriptionDto> findAllOrgUnits() {
     log.info("Getting all org units for the search openings");
 
-    if (Objects.isNull(getSilvaConfiguration().getOrgUnits())
-        || getSilvaConfiguration().getOrgUnits().isEmpty()) {
+    if (Objects.isNull(silvaConfiguration.getOrgUnits())
+        || silvaConfiguration.getOrgUnits().isEmpty()) {
       log.warn("No Org Units from the properties file.");
       return List.of();
     }
 
     List<CodeDescriptionDto> orgUnits =
-        getOrgUnitRepository()
-            .findAllByOrgUnitCodeIn(getSilvaConfiguration().getOrgUnits())
-            .stream()
+        orgUnitRepository.findAllByOrgUnitCodeIn(silvaConfiguration.getOrgUnits()).stream()
             .map(
                 orgUnit ->
                     new CodeDescriptionDto(orgUnit.getOrgUnitCode(), orgUnit.getOrgUnitName()))
