@@ -11,6 +11,7 @@ import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
+import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
@@ -39,7 +40,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
   protected final LoggedUserHelper loggedUserHelper;
   protected final ForestClientApiProvider forestClientApiProvider;
   protected final UserOpeningService userOpeningService;
-  protected final AbstractCodeService codeService;
+  protected final CodeService codeService;
 
   /**
    * Exact search for openings with direct value matching.
