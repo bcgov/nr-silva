@@ -1,0 +1,15 @@
+package ca.bc.gov.restapi.results.postgres.entity.code;
+
+import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+import lombok.With;
+import lombok.experimental.SuperBuilder;
+
+/** Entity for silv method codes (Postgres). */
+@SuperBuilder
+@With
+@NoArgsConstructor
+@Entity
+@Table(schema = "silva", name = "silv_method_code")
+@AttributeOverride(name = "code", column = @Column(name = "silv_method_code", length = 5))
+public class SilvMethodCodePostgresEntity extends AbstractCodePostgresEntity {}

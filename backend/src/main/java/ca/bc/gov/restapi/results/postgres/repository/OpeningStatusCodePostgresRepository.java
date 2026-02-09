@@ -1,17 +1,15 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
-import ca.bc.gov.restapi.results.common.repository.OpeningStatusCodeRepository;
-import ca.bc.gov.restapi.results.postgres.entity.code.OpeningStatusCodeEntity;
+import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
+import ca.bc.gov.restapi.results.postgres.entity.code.OpeningStatusCodePostgresEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+/**
+ * Repository interface for CRUD operations and custom queries against the
+ * `silva.opening_status_code` table in PostgreSQL.
+ */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
-public interface OpeningStatusCodePostgresRepository extends OpeningStatusCodeRepository<OpeningStatusCodeEntity> {
-  @Override
-  @NonNull
-  List<OpeningStatusCodeEntity> findAll();
-}
+public interface OpeningStatusCodePostgresRepository
+    extends GenericCodeRepository<OpeningStatusCodePostgresEntity> {}

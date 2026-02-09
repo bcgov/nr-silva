@@ -5,10 +5,11 @@ import ca.bc.gov.restapi.results.common.service.opening.AbstractOpeningTrendsSer
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Unit Test | Opening Trends Service | Legacy(Oracle primary)")
-class OpeningTrendsOracleServiceTest extends AbstractOpeningTrendsServiceTest<OpeningTrendsOracleService> {
+class OpeningTrendsOracleServiceTest
+    extends AbstractOpeningTrendsServiceTest<OpeningTrendsOracleService> {
 
   @Override
-  protected OpeningTrendsOracleService createService(OpeningRepository openingRepository) {
+  protected OpeningTrendsOracleService createService(OpeningRepository<?> openingRepository) {
     return new OpeningTrendsOracleService(openingRepository);
   }
 }

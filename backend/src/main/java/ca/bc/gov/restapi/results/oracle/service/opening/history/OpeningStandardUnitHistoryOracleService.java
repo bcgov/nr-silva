@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
-public class OpeningStandardUnitHistoryOracleService extends AbstractOpeningStandardUnitHistoryService {
+public class OpeningStandardUnitHistoryOracleService
+    extends AbstractOpeningStandardUnitHistoryService {
 
-    public OpeningStandardUnitHistoryOracleService(OpeningRepository openingRepository,
-        SilvicultureCommentRepository commentRepository) {
-        super(openingRepository, commentRepository);
-    }
+  public OpeningStandardUnitHistoryOracleService(
+      OpeningRepository<?> openingRepository, SilvicultureCommentRepository commentRepository) {
+    super(openingRepository, commentRepository);
+  }
 }

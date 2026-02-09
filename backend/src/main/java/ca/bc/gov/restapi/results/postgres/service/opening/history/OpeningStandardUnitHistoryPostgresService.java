@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 @Service
-public class OpeningStandardUnitHistoryPostgresService extends
-    AbstractOpeningStandardUnitHistoryService {
+public class OpeningStandardUnitHistoryPostgresService
+    extends AbstractOpeningStandardUnitHistoryService {
 
-  public OpeningStandardUnitHistoryPostgresService(OpeningRepository openingRepository,
-      SilvicultureCommentRepository commentRepository) {
+  public OpeningStandardUnitHistoryPostgresService(
+      OpeningRepository<?> openingRepository, SilvicultureCommentRepository commentRepository) {
     super(openingRepository, commentRepository);
   }
 }

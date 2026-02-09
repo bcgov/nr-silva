@@ -11,6 +11,56 @@ export class CodesEndpointService {
      * @returns CodeDescriptionDto OK
      * @throws ApiError
      */
+    public static getSilvTechniqueCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-technique',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvObjectiveCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-objective',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvMethodCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-method',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvFundSourceCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-fund-source',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvBaseCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-base',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
     public static getOpeningOrgUnits(): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',

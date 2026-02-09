@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OpeningTrendsPostgresService extends AbstractOpeningTrendsService {
 
-  public OpeningTrendsPostgresService(OpeningRepository openingRepository) {
+  public OpeningTrendsPostgresService(OpeningRepository<?> openingRepository) {
     super(openingRepository);
   }
 }

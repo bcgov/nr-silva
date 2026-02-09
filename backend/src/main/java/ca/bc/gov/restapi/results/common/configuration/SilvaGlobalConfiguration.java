@@ -2,14 +2,10 @@ package ca.bc.gov.restapi.results.common.configuration;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
-import ca.bc.gov.restapi.results.common.dto.opening.*;
-import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
-import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
-import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
-import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityJuvenileDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityPruningDto;
@@ -18,12 +14,13 @@ import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivitySpeciesDetai
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivitySpeciesDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivitySurveyDto;
 import ca.bc.gov.restapi.results.common.dto.comment.CommentDto;
-import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
-import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
-import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeEntity;
-import ca.bc.gov.restapi.results.oracle.entity.code.OpeningStatusCodeEntity;
-import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
-import ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity;
+import ca.bc.gov.restapi.results.common.dto.opening.*;
+import ca.bc.gov.restapi.results.common.enums.AuditActionCodeEnum;
+import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
+import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
+import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
+import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityBaseProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityJuvenileProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityPruningProjection;
@@ -32,7 +29,6 @@ import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivitySurve
 import ca.bc.gov.restapi.results.common.projection.comment.CommentProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesActivitiesProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesDisturbanceProjection;
-import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingSpeciesProjection;
@@ -40,10 +36,14 @@ import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjecti
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewMilestoneProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewOpeningProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneProjection;
+import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
+import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
+import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
+import ca.bc.gov.restapi.results.oracle.entity.ResultsElectronicSubmissionEntity;
+import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeOracleEntity;
+import ca.bc.gov.restapi.results.oracle.entity.code.OpeningStatusCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
-import ca.bc.gov.restapi.results.common.enums.AuditActionCodeEnum;
-import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
-import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
+import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
@@ -86,7 +86,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   OpeningTombstoneDto.class,
   ClientAcronymEntity.class,
   CutBlockOpenAdminEntity.class,
-  OpenCategoryCodeEntity.class,
+  OpenCategoryCodeOracleEntity.class,
   OpeningAttachmentEntity.class,
   OpeningEntity.class,
   OrgUnitEntity.class,
@@ -154,8 +154,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   OpeningActivitySurveyDto.class,
   OpeningCategoryEnum.class,
   OpeningStatusEnum.class,
-  OpenCategoryCodeEntity.class,
-  OpeningStatusCodeEntity.class
+  OpenCategoryCodeOracleEntity.class,
+  OpeningStatusCodeOracleEntity.class
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {

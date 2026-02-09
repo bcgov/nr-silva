@@ -14,10 +14,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class OpeningDetailsTombstonePostgresService extends AbstractOpeningDetailsTombstoneService {
 
-  public OpeningDetailsTombstonePostgresService(OpeningRepository openingRepository,
-      ForestClientService forestClientService, SilvicultureCommentRepository commentRepository,
+  public OpeningDetailsTombstonePostgresService(
+      OpeningRepository<?> openingRepository,
+      ForestClientService forestClientService,
+      SilvicultureCommentRepository commentRepository,
       OpeningDetailsNotificationService openingDetailsNotificationService) {
-    super(openingRepository, forestClientService, commentRepository,
+    super(
+        openingRepository,
+        forestClientService,
+        commentRepository,
         openingDetailsNotificationService);
   }
 }
