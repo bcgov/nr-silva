@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
-import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.util.CodeConverterUtil;
@@ -25,7 +24,7 @@ public abstract class AbstractCodeService implements CodeService {
 
   protected abstract GenericCodeRepository<?> getSilvFundSrceCodeRepository();
 
-  protected abstract OpenCategoryCodeRepository<?> getOpenCategoryCodeRepository();
+  protected abstract GenericCodeRepository<?> getOpenCategoryCodeRepository();
 
   protected abstract OrgUnitRepository getOrgUnitRepository();
 

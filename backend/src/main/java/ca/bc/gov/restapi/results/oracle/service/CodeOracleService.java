@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
-import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleRepository;
@@ -24,7 +23,7 @@ public class CodeOracleService extends AbstractCodeService {
   private final SilvMethodCodeOracleRepository silvMethodCodeRepository;
   private final SilvObjectiveCodeOracleRepository silvObjectiveCodeRepository;
   private final SilvFundSrceCodeOracleRepository silvFundSrceCodeRepository;
-  private final OpenCategoryCodeOracleRepository openCategoryCodeRepository;
+  private final GenericCodeRepository<?> openCategoryCodeRepository;
   private final OrgUnitOracleRepository orgUnitRepository;
   private final SilvaConfiguration silvaConfiguration;
 
@@ -73,7 +72,7 @@ public class CodeOracleService extends AbstractCodeService {
   }
 
   @Override
-  protected OpenCategoryCodeRepository<?> getOpenCategoryCodeRepository() {
+  protected GenericCodeRepository<?> getOpenCategoryCodeRepository() {
     return openCategoryCodeRepository;
   }
 

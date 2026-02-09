@@ -1,14 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
-import ca.bc.gov.restapi.results.common.projection.OpenCategoryCodeProjection;
-import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
+import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodeEntity;
+import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Repository interface for CRUD operations and custom queries against the
@@ -16,13 +13,8 @@ import java.util.List;
  */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
-public interface OpenCategoryCodePostgresRepository extends OpenCategoryCodeRepository<OpenCategoryCodeEntity> {
-  @Override
-  List<OpenCategoryCodeProjection> findAllBy();
-
-  @Override
-  List<OpenCategoryCodeProjection> findAllByExpiryDateAfter(LocalDate now);
-
+public interface OpenCategoryCodePostgresRepository
+    extends GenericCodeRepository<OpenCategoryCodeEntity> {
   @Override
   @NonNull
   List<OpenCategoryCodeEntity> findAll();

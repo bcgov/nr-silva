@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.postgres.service;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.OpeningStatusCodeRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
@@ -18,17 +17,17 @@ import org.springframework.stereotype.Service;
 public class OpeningSearchPostgresService extends AbstractOpeningSearchService {
   public OpeningSearchPostgresService(
       OpeningRepository<? extends BaseOpeningEntity> openingRepository,
-      OpenCategoryCodeRepository<? extends GenericCodeEntity> openCategoryCodeRepository,
       OpeningStatusCodeRepository<? extends GenericCodeEntity> openingStatusCodeRepository,
       LoggedUserHelper loggedUserHelper,
       ForestClientApiProvider forestClientApiProvider,
-      UserOpeningService userOpeningService) {
+      UserOpeningService userOpeningService,
+      CodePostgresService codePostgresService) {
     super(
         openingRepository,
-        openCategoryCodeRepository,
         openingStatusCodeRepository,
         loggedUserHelper,
         forestClientApiProvider,
-        userOpeningService);
+        userOpeningService,
+        codePostgresService);
   }
 }

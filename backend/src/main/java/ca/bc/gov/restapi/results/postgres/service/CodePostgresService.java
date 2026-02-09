@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
-import ca.bc.gov.restapi.results.common.repository.OpenCategoryCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
@@ -73,7 +72,7 @@ public class CodePostgresService extends AbstractCodeService {
   }
 
   @Override
-  protected OpenCategoryCodeRepository<?> getOpenCategoryCodeRepository() {
+  protected GenericCodeRepository<?> getOpenCategoryCodeRepository() {
     return openCategoryCodeRepository;
   }
 
