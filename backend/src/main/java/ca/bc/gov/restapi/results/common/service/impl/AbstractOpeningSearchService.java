@@ -6,12 +6,10 @@ import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
-import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.exception.MaxPageSizeException;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.common.repository.OpeningStatusCodeRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
@@ -38,8 +36,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractOpeningSearchService implements OpeningSearchService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
-  protected final OpeningStatusCodeRepository<? extends GenericCodeEntity>
-      openingStatusCodeRepository;
   protected final LoggedUserHelper loggedUserHelper;
   protected final ForestClientApiProvider forestClientApiProvider;
   protected final UserOpeningService userOpeningService;
@@ -94,12 +90,8 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
         codeService.findAllCategories(true).stream()
             .collect(Collectors.toMap(CodeDescriptionDto::code, Function.identity()));
     final var statusMap =
-        openingStatusCodeRepository.findAll().stream()
-            .collect(
-                Collectors.toMap(
-                    GenericCodeEntity::getCode,
-                    e -> new CodeDescriptionDto(e.getCode(), e.getDescription())));
-
+        codeService.getAllOpenStatusCode().stream()
+            .collect(Collectors.toMap(CodeDescriptionDto::code, Function.identity()));
     return fetchClientAcronyms(
         new PageImpl<>(
             searchResultPage

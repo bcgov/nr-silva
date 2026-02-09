@@ -17,4 +17,6 @@ public interface CodeService {
   List<CodeDescriptionDto> findAllCategories(boolean includeExpired);
 
   List<CodeDescriptionDto> findAllOrgUnits();
+
+  List<CodeDescriptionDto> getAllOpenStatusCode();
 }

@@ -12,4 +12,4 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(schema = "silva", name = "silv_technique_code")
 @AttributeOverride(name = "code", column = @Column(name = "silv_technique_code", length = 2))
-public class SilvTechniqueCodePostgresEntity extends AbstractCodeEntity {}
+public class SilvTechniqueCodePostgresEntity extends AbstractCodePostgresEntity {}

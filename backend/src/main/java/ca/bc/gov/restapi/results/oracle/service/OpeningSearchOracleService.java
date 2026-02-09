@@ -1,10 +1,8 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
 import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
-import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
-import ca.bc.gov.restapi.results.common.repository.OpeningStatusCodeRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractOpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
@@ -21,14 +19,12 @@ public class OpeningSearchOracleService extends AbstractOpeningSearchService {
 
   public OpeningSearchOracleService(
       OpeningRepository<? extends BaseOpeningEntity> openingRepository,
-      OpeningStatusCodeRepository<? extends GenericCodeEntity> openingStatusCodeRepository,
       LoggedUserHelper loggedUserHelper,
       ForestClientApiProvider forestClientApiProvider,
       UserOpeningService userOpeningService,
       CodeOracleService codeOracleService) {
     super(
         openingRepository,
-        openingStatusCodeRepository,
         loggedUserHelper,
         forestClientApiProvider,
         userOpeningService,

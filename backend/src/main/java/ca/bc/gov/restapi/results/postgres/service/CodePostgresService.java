@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.OpeningStatusCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
@@ -24,6 +25,7 @@ public class CodePostgresService extends AbstractCodeService {
   private final SilvObjectiveCodePostgresRepository silvObjectiveCodeRepository;
   private final SilvFundSrceCodePostgresRepository silvFundSrceCodeRepository;
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
+  private final OpeningStatusCodePostgresRepository openingStatusCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
   private final SilvaConfiguration silvaConfiguration;
 
@@ -34,6 +36,7 @@ public class CodePostgresService extends AbstractCodeService {
       SilvObjectiveCodePostgresRepository silvObjectiveCodeRepository,
       SilvFundSrceCodePostgresRepository silvFundSrceCodeRepository,
       OpenCategoryCodePostgresRepository openCategoryCodeRepository,
+      OpeningStatusCodePostgresRepository openingStatusCodeRepository,
       OrgUnitPostgresRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     this.silvBaseCodeRepository = silvBaseCodeRepository;
@@ -42,6 +45,7 @@ public class CodePostgresService extends AbstractCodeService {
     this.silvObjectiveCodeRepository = silvObjectiveCodeRepository;
     this.silvFundSrceCodeRepository = silvFundSrceCodeRepository;
     this.openCategoryCodeRepository = openCategoryCodeRepository;
+    this.openingStatusCodeRepository = openingStatusCodeRepository;
     this.orgUnitRepository = orgUnitRepository;
     this.silvaConfiguration = silvaConfiguration;
   }
@@ -74,6 +78,11 @@ public class CodePostgresService extends AbstractCodeService {
   @Override
   protected GenericCodeRepository<?> getOpenCategoryCodeRepository() {
     return openCategoryCodeRepository;
+  }
+
+  @Override
+  protected GenericCodeRepository<?> getOpenStatusCodeRepository() {
+    return openingStatusCodeRepository;
   }
 
   @Override

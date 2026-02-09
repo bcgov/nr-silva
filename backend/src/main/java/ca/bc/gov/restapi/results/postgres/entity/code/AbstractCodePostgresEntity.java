@@ -23,4 +23,4 @@ import lombok.experimental.SuperBuilder;
       name = "updateTimestamp",
       column = @Column(name = "update_timestamp", nullable = false))
 })
-public abstract class AbstractCodeEntity extends GenericCodeEntity {}
+public abstract class AbstractCodePostgresEntity extends GenericCodeEntity {}

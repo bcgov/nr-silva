@@ -12,4 +12,4 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(schema = "THE", name = "OPENING_STATUS_CODE")
 @AttributeOverride(name = "code", column = @Column(name = "OPENING_STATUS_CODE", length = 3))
-public class OpeningStatusCodeEntity extends AbstractCodeEntity {}
+public class OpeningStatusCodeOracleEntity extends AbstractCodeOracleEntity {}

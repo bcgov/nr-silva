@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.oracle.endpoint;
 
 import ca.bc.gov.restapi.results.common.endpoint.AbstractCodesEndpointIntegrationTest;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
-import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeEntity;
+import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvBaseCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvFundSrceCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.code.SilvMethodCodeOracleEntity;
@@ -101,7 +101,7 @@ class CodesEndpointOracleIntegrationTest extends AbstractCodesEndpointIntegratio
 
     if (openCategoryCodeOracleRepository.findAll().isEmpty()) {
       openCategoryCodeOracleRepository.save(
-          OpenCategoryCodeEntity.builder()
+          OpenCategoryCodeOracleEntity.builder()
               .code("OC1")
               .description("Opening Category 1")
               .effectiveDate(today)

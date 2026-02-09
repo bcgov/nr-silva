@@ -26,6 +26,8 @@ public abstract class AbstractCodeService implements CodeService {
 
   protected abstract GenericCodeRepository<?> getOpenCategoryCodeRepository();
 
+  protected abstract GenericCodeRepository<?> getOpenStatusCodeRepository();
+
   protected abstract OrgUnitRepository getOrgUnitRepository();
 
   protected abstract SilvaConfiguration getSilvaConfiguration();
@@ -53,6 +55,11 @@ public abstract class AbstractCodeService implements CodeService {
   @Override
   public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
     return CodeConverterUtil.toCodeDescriptionDtos(getSilvFundSrceCodeRepository().findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllOpenStatusCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(getOpenStatusCodeRepository().findAll());
   }
 
   @Override

@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.OpeningStatusCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvBaseCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvFundSrceCodeOracleRepository;
@@ -23,7 +24,8 @@ public class CodeOracleService extends AbstractCodeService {
   private final SilvMethodCodeOracleRepository silvMethodCodeRepository;
   private final SilvObjectiveCodeOracleRepository silvObjectiveCodeRepository;
   private final SilvFundSrceCodeOracleRepository silvFundSrceCodeRepository;
-  private final GenericCodeRepository<?> openCategoryCodeRepository;
+  private final OpenCategoryCodeOracleRepository openCategoryCodeRepository;
+  private final OpeningStatusCodeOracleRepository openingStatusCodeRepository;
   private final OrgUnitOracleRepository orgUnitRepository;
   private final SilvaConfiguration silvaConfiguration;
 
@@ -34,6 +36,7 @@ public class CodeOracleService extends AbstractCodeService {
       SilvObjectiveCodeOracleRepository silvObjectiveCodeRepository,
       SilvFundSrceCodeOracleRepository silvFundSrceCodeRepository,
       OpenCategoryCodeOracleRepository openCategoryCodeRepository,
+      OpeningStatusCodeOracleRepository openingStatusCodeRepository,
       OrgUnitOracleRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     this.silvBaseCodeRepository = silvBaseCodeRepository;
@@ -42,6 +45,7 @@ public class CodeOracleService extends AbstractCodeService {
     this.silvObjectiveCodeRepository = silvObjectiveCodeRepository;
     this.silvFundSrceCodeRepository = silvFundSrceCodeRepository;
     this.openCategoryCodeRepository = openCategoryCodeRepository;
+    this.openingStatusCodeRepository = openingStatusCodeRepository;
     this.orgUnitRepository = orgUnitRepository;
     this.silvaConfiguration = silvaConfiguration;
   }
@@ -74,6 +78,11 @@ public class CodeOracleService extends AbstractCodeService {
   @Override
   protected GenericCodeRepository<?> getOpenCategoryCodeRepository() {
     return openCategoryCodeRepository;
+  }
+
+  @Override
+  protected GenericCodeRepository<?> getOpenStatusCodeRepository() {
+    return openingStatusCodeRepository;
   }
 
   @Override

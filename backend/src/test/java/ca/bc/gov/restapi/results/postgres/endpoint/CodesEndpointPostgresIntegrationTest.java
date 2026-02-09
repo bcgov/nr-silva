@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.endpoint.AbstractCodesEndpointIntegrationTest;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
-import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodeEntity;
+import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvBaseCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvFundSrceCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvMethodCodePostgresEntity;
@@ -101,7 +101,7 @@ class CodesEndpointPostgresIntegrationTest extends AbstractCodesEndpointIntegrat
 
     if (openCategoryCodePostgresRepository.findAll().isEmpty()) {
       openCategoryCodePostgresRepository.save(
-          OpenCategoryCodeEntity.builder()
+          OpenCategoryCodePostgresEntity.builder()
               .code("OC1")
               .description("Opening Category 1")
               .effectiveDate(today)

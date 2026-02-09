@@ -12,4 +12,4 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(schema = "THE", name = "SILV_FUND_SRCE_CODE")
 @AttributeOverride(name = "code", column = @Column(name = "SILV_FUND_SRCE_CODE", length = 3))
-public class SilvFundSrceCodeOracleEntity extends AbstractCodeEntity {}
+public class SilvFundSrceCodeOracleEntity extends AbstractCodeOracleEntity {}
