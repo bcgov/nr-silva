@@ -81,6 +81,10 @@ Flyway migrations are determined by the `FLYWAY_ENVIRONMENT` variable.
 ./mvnw clean install -Dflyway-environment=dev -Dserver.primary-db=postgres
 ```
 
+### Loading Test Data on Local PostgreSQL Environment
+
+To load test data into your local PostgreSQL environment, you can use the tools provided in the [`ora2pg/tools/README.md`](../ora2pg/tools/README.md) file. This document provides detailed instructions on combining migration files and loading them into your PostgreSQL database.
+
 ---
 
 ## Notes
