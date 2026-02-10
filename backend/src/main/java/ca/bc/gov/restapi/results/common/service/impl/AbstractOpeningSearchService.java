@@ -93,6 +93,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
     final var statusMap =
         codeService.getAllOpenStatusCode().stream()
             .collect(Collectors.toMap(CodeDescriptionDto::code, Function.identity()));
+
     return fetchClientAcronyms(
         new PageImpl<>(
             searchResultPage

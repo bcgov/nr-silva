@@ -34,6 +34,7 @@ public class CodeOracleService extends AbstractCodeService {
         silvObjectiveCodeRepository,
         silvFundSrceCodeRepository,
         openCategoryCodeRepository,
+        openingStatusCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }
