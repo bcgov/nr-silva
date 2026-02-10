@@ -61,10 +61,11 @@ server:
 
 ### 2. Flyway Migrations
 
-Flyway migrations are environment-specific and determined by the `FLYWAY_ENVIRONMENT` variable.
+Flyway migrations are determined by the `FLYWAY_ENVIRONMENT` variable.
 
-- **Development Migrations**: Located in `src/main/resources/db/migration-dev/`.
-- **Production Migrations**: Located in `src/main/resources/db/migration/`.
+- **Shared/Baseline Migrations**: Located in `src/main/resources/db/migration/`. These migrations are applied in all environments (including `prod` and non-`prod`).
+- **Development-Only Migrations**: Located in `src/main/resources/db/migration-dev/`. For non-`prod` values of `FLYWAY_ENVIRONMENT` (for example, `dev`), Flyway loads migrations from **both** `db/migration/` and `db/migration-dev/`.
+- **Production Environment**: When `FLYWAY_ENVIRONMENT=prod`, only the shared/baseline migrations in `src/main/resources/db/migration/` are applied.
 
 ---
 
