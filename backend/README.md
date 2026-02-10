@@ -22,7 +22,7 @@ This document provides instructions to run the backend service and configure it 
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd nr-silva/backend
+cd <repo-directory>/backend
 ```
 
 ### 2. Set Environment Variables
