@@ -10,7 +10,7 @@ This document provides instructions to run the backend service and configure it 
 2. **Maven**: Install Maven (or use the provided `mvnw` wrapper).
 3. **Databases**:
    - Oracle Database (if using Oracle as the primary database).
-   - PostgreSQL Database (Required even when running Oracle as the primary as it is used to save user preferences.)
+   - PostgreSQL Database (always required; used to store user preferences, even when Oracle is configured as the primary database).
 4. **Environment Variables**:
    - `PRIMARY_DB`: Specifies the primary database (`oracle` or `postgres`).
    - `FLYWAY_ENVIRONMENT`: Specifies the Flyway migration environment (`dev`, `prod`).
