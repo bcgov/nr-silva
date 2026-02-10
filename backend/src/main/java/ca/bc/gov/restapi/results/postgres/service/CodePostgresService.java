@@ -34,6 +34,7 @@ public class CodePostgresService extends AbstractCodeService {
         silvObjectiveCodeRepository,
         silvFundSrceCodeRepository,
         openCategoryCodeRepository,
+        openingStatusCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }
