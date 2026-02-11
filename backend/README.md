@@ -30,7 +30,6 @@ cd <repo-directory>/backend
 #### Example for Oracle:
 ```bash
 export PRIMARY_DB=oracle
-export FLYWAY_ENVIRONMENT=dev
 ```
 
 #### Example for PostgreSQL:
@@ -45,6 +44,8 @@ Using Maven Wrapper:
 ```bash
 ./mvnw spring-boot:run
 ```
+
+**NOTE:** There is no need to set the `FLYWAY_ENVIRONMENT` environment variable when running the Oracle-primary instance, as the goal is to run the backend deployed to the production environment.
 
 ---
 
@@ -73,8 +74,10 @@ Flyway migrations are determined by the `FLYWAY_ENVIRONMENT` variable.
 
 ### Run Tests for Oracle:
 ```bash
-./mvnw clean install -Dflyway-environment=dev -Dserver.primary-db=oracle
+./mvnw clean install -Dserver.primary-db=oracle
 ```
+
+**NOTE:** There is no need to pass the `flyway-environment` property or set the `FLYWAY_ENVIRONMENT` environment variable when running the Oracle tests, as the goal is to run the tests deployed to production.
 
 ### Run Tests for PostgreSQL:
 ```bash
