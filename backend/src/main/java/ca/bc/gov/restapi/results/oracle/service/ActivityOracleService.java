@@ -12,8 +12,7 @@ public class ActivityOracleService extends AbstractActivityService {
 
   public ActivityOracleService(
       ActivityTreatmentUnitOracleRepository activityTreatmentUnitRepository,
-      CodeOracleService codeService,
       ForestClientService forestClientService) {
-    super(activityTreatmentUnitRepository, codeService, forestClientService);
+    super(activityTreatmentUnitRepository, forestClientService);
   }
 }

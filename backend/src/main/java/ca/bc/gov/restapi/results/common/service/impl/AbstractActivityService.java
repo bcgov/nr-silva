@@ -7,7 +7,6 @@ import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.projection.ActivitySearchProjection;
 import ca.bc.gov.restapi.results.common.repository.ActivityTreatmentUnitRepository;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
-import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 public class AbstractActivityService implements ActivityService {
 
   protected ActivityTreatmentUnitRepository activityTreatmentUnitRepository;
-  protected CodeService codeService;
   protected ForestClientService forestClientService;
 
   @Override
@@ -63,98 +61,41 @@ public class AbstractActivityService implements ActivityService {
       clientMap = new HashMap<>();
     }
 
-    // Load all code lookups upfront
-    var codeMaps =
-        new CodeMaps(
-            toCodeMap(codeService.getAllSilvBaseCode()),
-            toCodeMap(codeService.getAllSilvTechniqueCode()),
-            toCodeMap(codeService.getAllSilvMethodCode()),
-            toCodeMap(codeService.getAllSilvFundSrceCode()),
-            toCodeMap(codeService.findAllCategories(true)),
-            toCodeMap(codeService.getAllOpenStatusCode()),
-            toCodeMap(codeService.findAllOrgUnits()));
-
     // Map projections to response DTOs
     var responseDtos =
         projections.stream()
-            .map(projection -> mapToSearchResponse(projection, codeMaps, clientMap))
+            .map(projection -> mapToSearchResponse(projection, clientMap))
             .collect(Collectors.toList());
 
     return new PageImpl<>(responseDtos, pagination, total);
   }
 
-  private Map<String, CodeDescriptionDto> toCodeMap(java.util.List<CodeDescriptionDto> codes) {
-    return codes.stream().collect(Collectors.toMap(CodeDescriptionDto::code, c -> c));
-  }
-
   private ActivitySearchResponseDto mapToSearchResponse(
-      ActivitySearchProjection projection,
-      CodeMaps codeMaps,
-      Map<String, ForestClientDto> clientMap) {
+      ActivitySearchProjection projection, Map<String, ForestClientDto> clientMap) {
 
     return new ActivitySearchResponseDto(
         projection.getActivityId(),
-        mapCode(projection.getBaseCode(), projection.getBaseDescription(), codeMaps.base, "base"),
-        mapCode(
-            projection.getTechniqueCode(),
-            projection.getTechniqueDescription(),
-            codeMaps.technique,
-            "technique"),
-        mapCode(
-            projection.getMethodCode(),
-            projection.getMethodDescription(),
-            codeMaps.method,
-            "method"),
+        mapCode(projection.getBaseCode(), projection.getBaseDescription()),
+        mapCode(projection.getTechniqueCode(), projection.getTechniqueDescription()),
+        mapCode(projection.getMethodCode(), projection.getMethodDescription()),
         projection.getIsComplete() != null && projection.getIsComplete() == 1L,
-        mapCode(
-            projection.getFundingSourceCode(),
-            projection.getFundingSourceDescription(),
-            codeMaps.fundingSource,
-            "funding_source"),
+        mapCode(projection.getFundingSourceCode(), projection.getFundingSourceDescription()),
         projection.getFileId(),
         projection.getCutBlock(),
         projection.getOpeningId(),
         projection.getCuttingPermit(),
         projection.getTreatmentAmountArea(),
         projection.getIntraAgencyNumber(),
-        mapCode(
-            projection.getOpeningCategoryCode(),
-            projection.getOpeningCategoryDescription(),
-            codeMaps.openingCategory,
-            "opening_category"),
-        mapCode(
-            projection.getOrgUnitCode(),
-            projection.getOrgUnitDescription(),
-            codeMaps.orgUnit,
-            "org_unit"),
+        mapCode(projection.getOpeningCategoryCode(), projection.getOpeningCategoryDescription()),
+        mapCode(projection.getOrgUnitCode(), projection.getOrgUnitDescription()),
         clientMap.getOrDefault(projection.getOpeningClientCode(), null),
         projection.getUpdateTimestamp());
   }
 
-  private CodeDescriptionDto mapCode(
-      String code, String description, Map<String, CodeDescriptionDto> codeMap, String codeType) {
+  private CodeDescriptionDto mapCode(String code, String description) {
     if (code == null || code.isBlank()) {
       return null;
     }
-
-    if (description != null && !description.isBlank()) {
-      return new CodeDescriptionDto(code, description);
-    }
-    CodeDescriptionDto lookup = codeMap.get(code);
-    if (lookup == null) {
-      log.warn("Code {} not found in {} code map", code, codeType);
-      return new CodeDescriptionDto(code, null);
-    }
-    return lookup;
+    return new CodeDescriptionDto(code, description);
   }
-
-  // Inner class to group code maps together, reducing parameter passing
-  private record CodeMaps(
-      Map<String, CodeDescriptionDto> base,
-      Map<String, CodeDescriptionDto> technique,
-      Map<String, CodeDescriptionDto> method,
-      Map<String, CodeDescriptionDto> fundingSource,
-      Map<String, CodeDescriptionDto> openingCategory,
-      Map<String, CodeDescriptionDto> openingStatus,
-      Map<String, CodeDescriptionDto> orgUnit) {}
 }
