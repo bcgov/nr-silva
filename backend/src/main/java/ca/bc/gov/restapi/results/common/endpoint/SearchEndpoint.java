@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import ca.bc.gov.restapi.results.common.dto.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
+import ca.bc.gov.restapi.results.common.service.ActivityService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import java.util.List;
@@ -13,7 +15,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchEndpoint {
 
   private final OpeningSearchService openingSearchService;
+
+  private final ActivityService activityService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -125,8 +128,42 @@ public class SearchEndpoint {
   }
 
   @GetMapping("/activities")
-  public String activitySearch(@ParameterObject @ModelAttribute ActivitySearchFiltersDto filters) {
+  public Page<ActivitySearchResponseDto> activitySearch(
+      @RequestParam(value = "bases", required = false) List<String> bases,
+      @RequestParam(value = "techniques", required = false) List<String> techniques,
+      @RequestParam(value = "methods", required = false) List<String> methods,
+      @RequestParam(value = "isComplete", required = false) Boolean isComplete,
+      @RequestParam(value = "objectives", required = false) List<String> objectives,
+      @RequestParam(value = "fundingSources", required = false) List<String> fundingSources,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "openingCategories", required = false) List<String> openingCategories,
+      @RequestParam(value = "fileId", required = false) String fileId,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
 
-    return "";
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            bases,
+            techniques,
+            methods,
+            isComplete,
+            objectives,
+            fundingSources,
+            orgUnits,
+            openingCategories,
+            fileId,
+            clientNumbers,
+            openingStatuses,
+            updateDateStart,
+            updateDateEnd);
+
+    if (!filters.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return activityService.activitySearch(filters, paginationParameters);
   }
 }
