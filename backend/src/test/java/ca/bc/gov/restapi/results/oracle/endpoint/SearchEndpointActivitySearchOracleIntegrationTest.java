@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
- * Integration test for activity search endpoint with Oracle database. Executes all activity
- * search endpoint tests against the Oracle database.
+ * Integration test for activity search endpoint with Oracle database. Executes all activity search
+ * endpoint tests against the Oracle database.
  */
 @DisplayName("Integrated Test | Activity Search Endpoint | Legacy(Oracle primary)")
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "oracle")

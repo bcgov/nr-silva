@@ -1714,9 +1714,7 @@ public class SilvaPostgresQueryConstants {
 						'NOVALUE' IN (:#{#filter.methods}) OR atu.silv_method_code IN (:#{#filter.methods})
 					)
 					AND (
-						:#{#filter.isComplete} IS NULL
-						OR (:#{#filter.isComplete} = TRUE AND atu.atu_completion_date IS NOT NULL)
-						OR (:#{#filter.isComplete} = FALSE AND atu.atu_completion_date IS NULL)
+						CASE WHEN CAST(:#{#filter.isComplete} AS boolean) = true THEN CASE WHEN atu.atu_completion_date IS NOT NULL THEN true ELSE false END ELSE true END
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.objectives})
@@ -1734,7 +1732,7 @@ public class SilvaPostgresQueryConstants {
 						'NOVALUE' IN (:#{#filter.openingCategories}) OR op.open_category_code IN (:#{#filter.openingCategories})
 					)
 					AND (
-						COALESCE(:#{#filter.fileId},'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = :#{#filter.fileId}
+						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
@@ -1744,12 +1742,12 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND (
 						(
-							COALESCE(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND COALESCE(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE' AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
 						)
 						OR
 						(
 							atu.update_timestamp IS NOT NULL
-							AND atu.update_timestamp BETWEEN TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD')
+							AND atu.update_timestamp BETWEEN TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD') AND TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD')
 						)
 					)
 			)

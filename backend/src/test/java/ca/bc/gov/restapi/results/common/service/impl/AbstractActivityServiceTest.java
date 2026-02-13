@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.common.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
@@ -67,8 +66,7 @@ class AbstractActivityServiceTest {
   void activitySearch_emptyProjections_shouldReturnEmptyPage() {
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result).isNotNull();
     assertThat(result.getContent()).isEmpty();
@@ -78,30 +76,31 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map projections to response DTOs")
   void activitySearch_withProjections_shouldMapToResponseDtos() {
-    ActivitySearchProjection projection1 = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        100L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection1 =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            100L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection1);
 
@@ -120,8 +119,7 @@ class AbstractActivityServiceTest {
                     .name("John Doe Test Client")
                     .build()));
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result).isNotNull();
     assertThat(result.getContent()).hasSize(1);
@@ -136,39 +134,37 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map all null codes to null CodeDescriptionDto")
   void activitySearch_withNullCodes_shouldMapToNullDto() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1L,
-        null,
-        null,
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        null,
-        null,
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1L,
+            null,
+            null,
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            null,
+            null,
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
-        .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -182,39 +178,37 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map blank codes to null CodeDescriptionDto")
   void activitySearch_withBlankCodes_shouldMapToNullDto() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "   ",
-        "Description",
-        "",
-        "Technique",
-        "   ",
-        null,
-        1L,
-        "",
-        "FundingSource",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "  ",
-        "Category",
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "   ",
+            "Description",
+            "",
+            "Technique",
+            "   ",
+            null,
+            1L,
+            "",
+            "FundingSource",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "  ",
+            "Category",
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
-        .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -228,60 +222,63 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should gather unique client numbers")
   void activitySearch_shouldGatherUniqueClientNumbers() {
-    ActivitySearchProjection projection1 = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        2L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection1 =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            2L,
+            LocalDateTime.now());
 
-    ActivitySearchProjection projection2 = createMockProjection(
-        2L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        2L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection2 =
+        createMockProjection(
+            2L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            2L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection1, projection2);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(eq(0), eq(1), argThat(list -> list != null && list.size() <= 1)))
+    when(forestClientService.searchByClientNumbers(
+            eq(0), eq(1), argThat(list -> list != null && list.size() <= 1)))
         .thenReturn(
             List.of(
                 ForestClientDto.builder()
@@ -295,8 +292,7 @@ class AbstractActivityServiceTest {
                     .name("John Doe Test Client")
                     .build()));
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(2);
     // Both DTOs should reference the same client since client numbers are unique
@@ -306,39 +302,37 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should handle blank client numbers")
   void activitySearch_withBlankClientNumbers_shouldIgnore() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "   ",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "   ",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
-        .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -348,39 +342,37 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should handle null client numbers")
   void activitySearch_withNullClientNumbers_shouldIgnore() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        null,
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            null,
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
-        .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -390,30 +382,31 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map isComplete correctly when 1")
   void activitySearch_isComplete1_shouldMapToTrue() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
@@ -421,8 +414,7 @@ class AbstractActivityServiceTest {
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
         .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -432,30 +424,31 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map isComplete correctly when 0")
   void activitySearch_isComplete0_shouldMapToFalse() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        0L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            0L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
@@ -463,8 +456,7 @@ class AbstractActivityServiceTest {
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
         .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -474,30 +466,31 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should map isComplete correctly when null")
   void activitySearch_isCompleteNull_shouldMapToFalse() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        null,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            null,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
@@ -505,8 +498,7 @@ class AbstractActivityServiceTest {
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
         .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -517,30 +509,31 @@ class AbstractActivityServiceTest {
   @DisplayName("activitySearch should preserve all response fields")
   void activitySearch_shouldPreserveAllFields() {
     LocalDateTime now = LocalDateTime.now();
-    ActivitySearchProjection projection = createMockProjection(
-        123L,
-        "SU",
-        "Survey",
-        "VISUAL",
-        "Visual",
-        "M1",
-        "Method 1",
-        1L,
-        "PROV",
-        "Provincial",
-        "NW10",
-        "CB1",
-        101017L,
-        "CP001",
-        BigDecimal.valueOf(50.5),
-        "IA001",
-        "CUTBLOCK",
-        "Cut Block",
-        "VIC",
-        "Victoria",
-        "00132184",
-        1L,
-        now);
+    ActivitySearchProjection projection =
+        createMockProjection(
+            123L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            1L,
+            now);
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
@@ -548,8 +541,7 @@ class AbstractActivityServiceTest {
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
         .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(1);
     ActivitySearchResponseDto responseDto = result.getContent().get(0);
@@ -580,26 +572,89 @@ class AbstractActivityServiceTest {
   @Test
   @DisplayName("activitySearch should handle multiple projections with mixed client data")
   void activitySearch_multipleMixedProjections_shouldMapCorrectly() {
-    ActivitySearchProjection projection1 = createMockProjection(
-        1L, "SU", "Survey", "VISUAL", "Visual", "M1", "Method 1", 1L, "PROV", "Provincial",
-        "NW10", "CB1", 101017L, "CP001", BigDecimal.valueOf(50.5), "IA001", "CUTBLOCK",
-        "Cut Block", "VIC", "Victoria", "00132184", 3L, LocalDateTime.now());
+    ActivitySearchProjection projection1 =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            3L,
+            LocalDateTime.now());
 
-    ActivitySearchProjection projection2 = createMockProjection(
-        2L, "PR", "Pruning", "VISUAL", "Visual", "M2", "Method 2", 0L, "FED", "Federal",
-        "NW11", "CB2", 101018L, "CP002", BigDecimal.valueOf(30.0), "IA002", "CUTBLOCK",
-        "Cut Block", "VIC", "Victoria", "00132185", 3L, LocalDateTime.now());
+    ActivitySearchProjection projection2 =
+        createMockProjection(
+            2L,
+            "PR",
+            "Pruning",
+            "VISUAL",
+            "Visual",
+            "M2",
+            "Method 2",
+            0L,
+            "FED",
+            "Federal",
+            "NW11",
+            "CB2",
+            101018L,
+            "CP002",
+            BigDecimal.valueOf(30.0),
+            "IA002",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132185",
+            3L,
+            LocalDateTime.now());
 
-    ActivitySearchProjection projection3 = createMockProjection(
-        3L, "JS", "Juvenile", "VISUAL", "Visual", "M3", "Method 3", 1L, "PROV", "Provincial",
-        "NW12", "CB3", 101019L, "CP003", BigDecimal.valueOf(25.0), "IA003", "CUTBLOCK",
-        "Cut Block", "VIC", "Victoria", "00132184", 3L, LocalDateTime.now());
+    ActivitySearchProjection projection3 =
+        createMockProjection(
+            3L,
+            "JS",
+            "Juvenile",
+            "VISUAL",
+            "Visual",
+            "M3",
+            "Method 3",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW12",
+            "CB3",
+            101019L,
+            "CP003",
+            BigDecimal.valueOf(25.0),
+            "IA003",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            3L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection1, projection2, projection3);
 
     when(activityRepository.activitySearch(testFilters, 0, 10)).thenReturn(projections);
-    when(forestClientService.searchByClientNumbers(eq(0), eq(2), argThat(
-        list -> list != null && list.size() <= 2)))
+    when(forestClientService.searchByClientNumbers(
+            eq(0), eq(2), argThat(list -> list != null && list.size() <= 2)))
         .thenReturn(
             List.of(
                 ForestClientDto.builder()
@@ -623,8 +678,7 @@ class AbstractActivityServiceTest {
                     .name("Test Client 2")
                     .build()));
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getContent()).hasSize(3);
     assertThat(result.getTotalElements()).isEqualTo(3);
@@ -636,16 +690,38 @@ class AbstractActivityServiceTest {
 
     // Second should have different client
     ActivitySearchResponseDto dto2 = result.getContent().get(1);
-    assertThat(dto1.openingClient().clientNumber()).isNotEqualTo(dto2.openingClient().clientNumber());
+    assertThat(dto1.openingClient().clientNumber())
+        .isNotEqualTo(dto2.openingClient().clientNumber());
   }
 
   @Test
   @DisplayName("activitySearch should use correct pagination parameters")
   void activitySearch_shouldUseCorrectPaginationParameters() {
-    ActivitySearchProjection projection = createMockProjection(
-        1L, "SU", "Survey", "VISUAL", "Visual", "M1", "Method 1", 1L, "PROV", "Provincial",
-        "NW10", "CB1", 101017L, "CP001", BigDecimal.valueOf(50.5), "IA001", "CUTBLOCK",
-        "Cut Block", "VIC", "Victoria", "00132184", 100L, LocalDateTime.now());
+    ActivitySearchProjection projection =
+        createMockProjection(
+            1L,
+            "SU",
+            "Survey",
+            "VISUAL",
+            "Visual",
+            "M1",
+            "Method 1",
+            1L,
+            "PROV",
+            "Provincial",
+            "NW10",
+            "CB1",
+            101017L,
+            "CP001",
+            BigDecimal.valueOf(50.5),
+            "IA001",
+            "CUTBLOCK",
+            "Cut Block",
+            "VIC",
+            "Victoria",
+            "00132184",
+            100L,
+            LocalDateTime.now());
 
     List<ActivitySearchProjection> projections = List.of(projection);
 
@@ -653,15 +729,14 @@ class AbstractActivityServiceTest {
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), any()))
         .thenReturn(new ArrayList<>());
 
-    Page<ActivitySearchResponseDto> result =
-        service.activitySearch(testFilters, testPageable);
+    Page<ActivitySearchResponseDto> result = service.activitySearch(testFilters, testPageable);
 
     assertThat(result.getTotalElements()).isEqualTo(100);
     assertThat(result.getNumber()).isEqualTo(0);
     assertThat(result.getSize()).isEqualTo(10);
   }
 
-  // Helper method to create mock projections
+  // Helper method to create projections (concrete implementation to avoid Mockito stubbing)
   private ActivitySearchProjection createMockProjection(
       Long activityId,
       String baseCode,
@@ -686,31 +761,121 @@ class AbstractActivityServiceTest {
       String openingClientCode,
       Long totalCount,
       LocalDateTime updateTimestamp) {
+    return new ActivitySearchProjection() {
+      @Override
+      public Long getActivityId() {
+        return activityId;
+      }
 
-    ActivitySearchProjection projection = mock(ActivitySearchProjection.class);
-    when(projection.getActivityId()).thenReturn(activityId);
-    when(projection.getBaseCode()).thenReturn(baseCode);
-    when(projection.getBaseDescription()).thenReturn(baseDescription);
-    when(projection.getTechniqueCode()).thenReturn(techniqueCode);
-    when(projection.getTechniqueDescription()).thenReturn(techniqueDescription);
-    when(projection.getMethodCode()).thenReturn(methodCode);
-    when(projection.getMethodDescription()).thenReturn(methodDescription);
-    when(projection.getIsComplete()).thenReturn(isComplete);
-    when(projection.getFundingSourceCode()).thenReturn(fundingSourceCode);
-    when(projection.getFundingSourceDescription()).thenReturn(fundingSourceDescription);
-    when(projection.getFileId()).thenReturn(fileId);
-    when(projection.getCutBlock()).thenReturn(cutBlock);
-    when(projection.getOpeningId()).thenReturn(openingId);
-    when(projection.getCuttingPermit()).thenReturn(cuttingPermit);
-    when(projection.getTreatmentAmountArea()).thenReturn(treatmentAmountArea);
-    when(projection.getIntraAgencyNumber()).thenReturn(intraAgencyNumber);
-    when(projection.getOpeningCategoryCode()).thenReturn(openingCategoryCode);
-    when(projection.getOpeningCategoryDescription()).thenReturn(openingCategoryDescription);
-    when(projection.getOrgUnitCode()).thenReturn(orgUnitCode);
-    when(projection.getOrgUnitDescription()).thenReturn(orgUnitDescription);
-    when(projection.getOpeningClientCode()).thenReturn(openingClientCode);
-    when(projection.getTotalCount()).thenReturn(totalCount);
-    when(projection.getUpdateTimestamp()).thenReturn(updateTimestamp);
-    return projection;
+      @Override
+      public String getBaseCode() {
+        return baseCode;
+      }
+
+      @Override
+      public String getBaseDescription() {
+        return baseDescription;
+      }
+
+      @Override
+      public String getTechniqueCode() {
+        return techniqueCode;
+      }
+
+      @Override
+      public String getTechniqueDescription() {
+        return techniqueDescription;
+      }
+
+      @Override
+      public String getMethodCode() {
+        return methodCode;
+      }
+
+      @Override
+      public String getMethodDescription() {
+        return methodDescription;
+      }
+
+      @Override
+      public Long getIsComplete() {
+        return isComplete;
+      }
+
+      @Override
+      public String getFundingSourceCode() {
+        return fundingSourceCode;
+      }
+
+      @Override
+      public String getFundingSourceDescription() {
+        return fundingSourceDescription;
+      }
+
+      @Override
+      public String getFileId() {
+        return fileId;
+      }
+
+      @Override
+      public String getCutBlock() {
+        return cutBlock;
+      }
+
+      @Override
+      public Long getOpeningId() {
+        return openingId;
+      }
+
+      @Override
+      public String getCuttingPermit() {
+        return cuttingPermit;
+      }
+
+      @Override
+      public BigDecimal getTreatmentAmountArea() {
+        return treatmentAmountArea;
+      }
+
+      @Override
+      public String getIntraAgencyNumber() {
+        return intraAgencyNumber;
+      }
+
+      @Override
+      public String getOpeningCategoryCode() {
+        return openingCategoryCode;
+      }
+
+      @Override
+      public String getOpeningCategoryDescription() {
+        return openingCategoryDescription;
+      }
+
+      @Override
+      public String getOrgUnitCode() {
+        return orgUnitCode;
+      }
+
+      @Override
+      public String getOrgUnitDescription() {
+        return orgUnitDescription;
+      }
+
+      @Override
+      public String getOpeningClientCode() {
+        return openingClientCode;
+      }
+
+      @Override
+      public Long getTotalCount() {
+        return totalCount;
+      }
+
+      @Override
+      public LocalDateTime getUpdateTimestamp() {
+        return updateTimestamp;
+      }
+    };
   }
 }

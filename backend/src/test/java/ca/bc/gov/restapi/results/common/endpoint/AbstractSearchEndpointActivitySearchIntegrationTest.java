@@ -32,7 +32,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
       WireMockExtension.newInstance()
           .options(
               wireMockConfig()
-                  .port(10011)
+                  .port(10000)
                   .notifier(new WiremockLogNotifier())
                   .asynchronousResponseEnabled(true)
                   .stubRequestLoggingDisabled(false))
@@ -45,12 +45,15 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
   @DisplayName("GET /api/search/activities with default parameters should succeed")
   void getActivities_withDefaultParameters_shouldSucceed() throws Exception {
     mockMvc
-        .perform(get("/api/search/activities").contentType(MediaType.APPLICATION_JSON))
+        .perform(
+            get("/api/search/activities")
+                .param("bases", "PR")
+                .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
-        .andExpect(jsonPath("$.pageable").exists())
-        .andExpect(jsonPath("$.totalElements").exists())
-        .andExpect(jsonPath("$.totalPages").exists());
+        .andExpect(jsonPath("$.page").exists())
+        .andExpect(jsonPath("$.page.totalElements").exists())
+        .andExpect(jsonPath("$.page.totalPages").exists());
   }
 
   @Test
@@ -63,7 +66,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
-        .andExpect(jsonPath("$.pageable").exists());
+        .andExpect(jsonPath("$.page").exists());
   }
 
   @Test
@@ -109,12 +112,13 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/activities")
+                .param("bases", "PR")
                 .param("page", "0")
                 .param("size", "10")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.pageable.pageNumber").value(0))
-        .andExpect(jsonPath("$.pageable.pageSize").value(10));
+        .andExpect(jsonPath("$.page.number").value(0))
+        .andExpect(jsonPath("$.page.size").value(10));
   }
 
   @Test
@@ -123,6 +127,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/activities")
+                .param("bases", "PR")
                 .param("sort", "silvBaseCode,desc")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -156,7 +161,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
-        .andExpect(jsonPath("$.pageable.pageSize").value(20));
+        .andExpect(jsonPath("$.page.size").value(20));
   }
 
   @Test
@@ -168,7 +173,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
                 .param("fileId", "INVALID_FILE_999999")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.totalElements").value(0));
+        .andExpect(jsonPath("$.page.totalElements").value(0));
   }
 
   @Test
@@ -177,15 +182,14 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/activities")
+                .param("bases", "PR")
                 .param("page", "0")
                 .param("size", "5")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.pageable.pageNumber").exists())
-        .andExpect(jsonPath("$.pageable.pageSize").exists())
-        .andExpect(jsonPath("$.totalElements").exists())
-        .andExpect(jsonPath("$.totalPages").exists())
-        .andExpect(jsonPath("$.number").exists())
-        .andExpect(jsonPath("$.size").exists());
+        .andExpect(jsonPath("$.page.number").exists())
+        .andExpect(jsonPath("$.page.size").exists())
+        .andExpect(jsonPath("$.page.totalElements").exists())
+        .andExpect(jsonPath("$.page.totalPages").exists());
   }
 }

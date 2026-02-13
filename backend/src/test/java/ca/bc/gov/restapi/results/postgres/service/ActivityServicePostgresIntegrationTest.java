@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.common.service.AbstractActivityServiceIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 

@@ -32,7 +32,7 @@ public abstract class AbstractActivityServiceIntegrationTest
       WireMockExtension.newInstance()
           .options(
               wireMockConfig()
-                  .port(10010)
+                  .port(10000)
                   .notifier(new WiremockLogNotifier())
                   .asynchronousResponseEnabled(true)
                   .stubRequestLoggingDisabled(false))
@@ -44,8 +44,9 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search with default filters should succeed")
   void activitySearch_withDefaultFilters_shouldSucceed() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        null, null, null, null, null, null, null, null, null, null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -57,8 +58,9 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search with file ID filter should succeed")
   void activitySearch_withFileIdFilter_shouldSucceed() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -66,7 +68,8 @@ public abstract class AbstractActivityServiceIntegrationTest
     Assertions.assertNotNull(result, "Result should not be null");
     // Verify results are for the specified file
     if (result.hasContent()) {
-      result.getContent()
+      result
+          .getContent()
           .forEach(
               activity ->
                   Assertions.assertEquals(
@@ -77,8 +80,9 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search with base code filter should succeed")
   void activitySearch_withBaseCodeFilter_shouldSucceed() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        List.of("PR"), null, null, null, null, null, null, null, null, null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            List.of("PR"), null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -86,33 +90,33 @@ public abstract class AbstractActivityServiceIntegrationTest
     Assertions.assertNotNull(result, "Result should not be null");
     // If there are results, verify they have the correct base code
     if (result.hasContent()) {
-      result.getContent()
+      result
+          .getContent()
           .forEach(
               activity ->
                   Assertions.assertEquals(
-                      "PR",
-                      activity.base().code(),
-                      "Base code should match filter"));
+                      "PR", activity.base().code(), "Base code should match filter"));
     }
   }
 
   @Test
   @DisplayName("Activity search with multiple filters should succeed")
   void activitySearch_withMultipleFilters_shouldSucceed() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        List.of("PR", "SP"),
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "TFL47",
-        null,
-        null,
-        null,
-        null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            List.of("PR", "SP"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "TFL47",
+            null,
+            null,
+            null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -127,8 +131,10 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageableFirst = PageRequest.of(0, 5);
     Pageable pageableSecond = PageRequest.of(1, 5);
 
-    Page<ActivitySearchResponseDto> resultFirst = activityService.activitySearch(filters, pageableFirst);
-    Page<ActivitySearchResponseDto> resultSecond = activityService.activitySearch(filters, pageableSecond);
+    Page<ActivitySearchResponseDto> resultFirst =
+        activityService.activitySearch(filters, pageableFirst);
+    Page<ActivitySearchResponseDto> resultSecond =
+        activityService.activitySearch(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -139,8 +145,9 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search response DTOs should have all required fields populated")
   void activitySearch_responseDto_shouldHaveAllRequiredFields() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -157,8 +164,9 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search with invalid file ID should return empty results")
   void activitySearch_withInvalidFileId_shouldReturnEmpty() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        null, null, null, null, null, null, null, null, "INVALID_FILE", null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, null, null, null, null, null, null, null, "INVALID_FILE", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -170,22 +178,19 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search should not return duplicate entries")
   void activitySearch_shouldNotReturnDuplicates() {
-    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto(
-        null, null, null, null, null, null, null, null, null, null, null, null, null);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 50);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
 
     if (result.hasContent()) {
-      List<Long> activityIds = result.getContent()
-          .stream()
-          .map(ActivitySearchResponseDto::activityId)
-          .toList();
+      List<Long> activityIds =
+          result.getContent().stream().map(ActivitySearchResponseDto::activityId).toList();
       long uniqueCount = activityIds.stream().distinct().count();
       Assertions.assertEquals(
-          activityIds.size(),
-          uniqueCount,
-          "Activity search should not return duplicate entries");
+          activityIds.size(), uniqueCount, "Activity search should not return duplicate entries");
     }
   }
 }
