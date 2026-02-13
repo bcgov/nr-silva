@@ -98,7 +98,7 @@ public class ActivitySearchFiltersDto {
     return !SilvaConstants.NOVALUE.equals(bases.get(0))
         || !SilvaConstants.NOVALUE.equals(techniques.get(0))
         || !SilvaConstants.NOVALUE.equals(methods.get(0))
-        || (isComplete != null && isComplete)
+        || isComplete != null
         || !SilvaConstants.NOVALUE.equals(objectives.get(0))
         || !SilvaConstants.NOVALUE.equals(fundingSources.get(0))
         || !SilvaConstants.NOVALUE.equals(orgUnits.get(0))
