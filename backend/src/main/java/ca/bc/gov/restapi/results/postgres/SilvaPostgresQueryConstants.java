@@ -1744,10 +1744,22 @@ public class SilvaPostgresQueryConstants {
 						(
 							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE' AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
 						)
-						OR
-						(
+						OR (
 							atu.update_timestamp IS NOT NULL
-							AND atu.update_timestamp BETWEEN TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD') AND TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD')
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
 						)
 					)
 			)

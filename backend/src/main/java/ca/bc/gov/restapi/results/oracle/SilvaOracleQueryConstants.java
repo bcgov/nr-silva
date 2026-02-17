@@ -1759,10 +1759,22 @@ public class SilvaOracleQueryConstants {
             (
               NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE' AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
             )
-            OR
-            (
+            OR (
               atu.UPDATE_TIMESTAMP IS NOT NULL
-              AND atu.UPDATE_TIMESTAMP BETWEEN TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD') AND TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD')
+              AND (
+                (
+                  NVL(:#{#filter.updateDateStart},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(atu.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD')
+                )
+                OR NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              )
+              AND (
+                (
+                  NVL(:#{#filter.updateDateEnd},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(atu.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD') + 1
+                )
+                OR NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+              )
             )
           )
       )
