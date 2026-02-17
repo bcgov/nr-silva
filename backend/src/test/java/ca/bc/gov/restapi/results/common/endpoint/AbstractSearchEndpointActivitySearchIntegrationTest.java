@@ -192,4 +192,13 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
         .andExpect(jsonPath("$.page.totalElements").exists())
         .andExpect(jsonPath("$.page.totalPages").exists());
   }
-}
+
+  @Test
+  @DisplayName("GET /api/search/activities without any filters should return error")
+  void getActivities_withoutAnyFilters_shouldReturnError() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/search/activities")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
