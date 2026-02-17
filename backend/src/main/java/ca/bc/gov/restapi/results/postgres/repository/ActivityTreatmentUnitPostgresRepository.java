@@ -70,5 +70,7 @@ public interface ActivityTreatmentUnitPostgresRepository
   @Override
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.ACTIVITY_SEARCH)
   List<ActivitySearchProjection> activitySearch(
-      ActivitySearchFiltersDto filter, @Param("page") long offset, @Param("size") long size);
+      @Param("filter") ActivitySearchFiltersDto filter,
+      @Param("page") long offset,
+      @Param("size") long size);
 }
