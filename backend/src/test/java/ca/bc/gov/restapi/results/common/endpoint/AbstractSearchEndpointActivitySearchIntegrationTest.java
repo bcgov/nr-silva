@@ -197,8 +197,7 @@ public abstract class AbstractSearchEndpointActivitySearchIntegrationTest
   @DisplayName("GET /api/search/activities without any filters should return error")
   void getActivities_withoutAnyFilters_shouldReturnError() throws Exception {
     mockMvc
-        .perform(
-            get("/api/search/activities")
-                .contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/api/search/activities").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
   }
+}
