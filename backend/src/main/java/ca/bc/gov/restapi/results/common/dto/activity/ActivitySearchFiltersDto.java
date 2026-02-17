@@ -5,14 +5,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.CollectionUtils;
 
 /** This class contains all possible filters when using the Activity Search API. */
 @Getter
 @ToString
-@NoArgsConstructor(force = true)
 public class ActivitySearchFiltersDto {
 
   @Schema(type = "array", nullable = true)
@@ -53,6 +51,14 @@ public class ActivitySearchFiltersDto {
 
   @Schema(type = "string", format = "date", nullable = true)
   private final String updateDateEnd;
+
+  /**
+   * Creates a no-arg instance with all fields set to null, delegating to the all-args constructor
+   * to apply defaults.
+   */
+  public ActivitySearchFiltersDto() {
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
+  }
 
   /** Creates an instance of the activity search filter dto. */
   public ActivitySearchFiltersDto(
