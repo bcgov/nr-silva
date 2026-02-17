@@ -1,0 +1,42 @@
+name: 'Allocate FAM Route Numbers'
+description: 'Finds the next two available FAM routes using bcgov/action-oc-runner'
+inputs:
+  oc_token:
+    required: true
+    description: OpenShift token
+  oc_namespace:
+    required: true
+    description: OpenShift namespace
+  oc_server:
+    required: true
+    description: OpenShift server
+outputs:
+  route1:
+    description: 'First available FAM route number'
+  route2:
+    description: 'Second available FAM route number'
+runs:
+  using: 'composite'
+  steps:
+    - name: Find next two available FAM routes
+      id: allocate
+      uses: bcgov/action-oc-runner@v1.3.0
+      with:
+        oc_namespace: ${{ inputs.oc_namespace }}
+        oc_server: ${{ inputs.oc_server }}
+        oc_token: ${{ inputs.oc_token }}
+        commands: |
+          allocated=$(oc get routes -o json | jq -r '.items[].spec.host' | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
+          used=($(echo "$allocated"))
+          available=()
+          for i in $(seq 0 49); do
+            if [[ ! " ${used[@]} " =~ " $i " ]]; then
+              available+=($i)
+            fi
+          done
+          if [[ ${#available[@]} -lt 2 ]]; then
+            echo "Not enough available routes!" >&2
+            exit 1
+          fi
+          echo "route1=${available[0]}" >> $GITHUB_OUTPUT
+          echo "route2=${available[1]}" >> $GITHUB_OUTPUT
