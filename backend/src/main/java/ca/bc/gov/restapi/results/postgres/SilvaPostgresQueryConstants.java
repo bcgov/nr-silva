@@ -1714,7 +1714,12 @@ public class SilvaPostgresQueryConstants {
 						'NOVALUE' IN (:#{#filter.methods}) OR atu.silv_method_code IN (:#{#filter.methods})
 					)
 					AND (
-						CASE WHEN CAST(:#{#filter.isComplete} AS boolean) = true THEN CASE WHEN atu.atu_completion_date IS NOT NULL THEN true ELSE false END ELSE true END
+						CASE
+							WHEN :#{#filter.isComplete} IS NULL THEN true
+							WHEN CAST(:#{#filter.isComplete} AS boolean) = true THEN (atu.atu_completion_date IS NOT NULL)
+							WHEN CAST(:#{#filter.isComplete} AS boolean) = false THEN (atu.atu_completion_date IS NULL)
+							ELSE true
+						END
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.objectives})

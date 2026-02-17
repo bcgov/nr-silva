@@ -1729,7 +1729,12 @@ public class SilvaOracleQueryConstants {
             'NOVALUE' IN (:#{#filter.methods}) OR atu.SILV_METHOD_CODE IN (:#{#filter.methods})
           )
           AND (
-            DECODE(:#{#filter.isComplete}, 1, CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 1 ELSE 0 END, 1) = 1
+            CASE
+              WHEN :#{#filter.isComplete} IS NULL THEN 1
+              WHEN :#{#filter.isComplete} = true THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 1 ELSE 0 END
+              WHEN :#{#filter.isComplete} = false THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NULL THEN 1 ELSE 0 END
+              ELSE 1
+            END = 1
           )
           AND (
             'NOVALUE' IN (:#{#filter.objectives})
