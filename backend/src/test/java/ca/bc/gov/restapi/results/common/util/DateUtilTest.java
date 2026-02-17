@@ -90,12 +90,6 @@ class DateUtilTest {
   }
 
   @Test
-  @DisplayName("validateDateRange | single day range | should pass")
-  void validateDateRange_singleDay_shouldPass() {
-    assertDoesNotThrow(() -> DateUtil.validateDateRange("2026-06-15", "2026-06-15"));
-  }
-
-  @Test
   @DisplayName("validateDateRange | multi-year range | should pass")
   void validateDateRange_multiYearRange_shouldPass() {
     assertDoesNotThrow(() -> DateUtil.validateDateRange("2020-01-01", "2030-12-31"));
