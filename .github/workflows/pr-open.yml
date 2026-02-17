@@ -42,6 +42,7 @@ jobs:
       oracle_route_number: ${{ steps.allocate.outputs.route1 }}
       postgres_route_number: ${{ steps.allocate.outputs.route2 }}
     steps:
+      - uses: actions/checkout@v6
       - name: Allocate FAM routes
         id: allocate
         uses: ./.github/actions/allocate-fam-routes
