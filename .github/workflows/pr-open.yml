@@ -35,9 +35,32 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
 
+  fam_routes:
+    name: Allocate FAM Routes
+    runs-on: ubuntu-24.04
+    outputs:
+      oracle_route_number: ${{ steps.allocate.outputs.route1 }}
+      postgres_route_number: ${{ steps.allocate.outputs.route2 }}
+    steps:
+      - name: Allocate FAM routes
+        id: allocate
+        uses: ./.github/actions/allocate-fam-routes
+        with:
+          oc_token: ${{ secrets.OC_TOKEN }}
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+
   deploys:
     name: Deploys (${{ github.event.number }})
-    needs: [builds]
+    needs: [builds, fam_routes]
+    strategy:
+      matrix:
+        primary_db: [oracle, postgres]
+        include:
+          - primary_db: oracle
+            fam_route: ${{ needs.fam_routes.outputs.oracle_route_number }}
+          - primary_db: postgres
+            fam_route: ${{ needs.fam_routes.outputs.postgres_route_number }}
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -45,14 +68,15 @@ jobs:
       backend_min_replicas: "1"
       backend_max_replicas: "1"
       backend_flyway_environment: "dev"
-      backend_primary_db: "postgres"
+      backend_primary_db: "${{ matrix.primary_db }}"
+      fam_route: "${{ matrix.fam_route }}"
       triggers: ('backend/' 'common/' 'frontend/')
 
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [builds, deploys]
+    needs: [builds, fam_routes, deploys]
     runs-on: ubuntu-24.04
     steps:
       - run: |
