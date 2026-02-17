@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.util;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,17 +15,23 @@ public class DateUtil {
    *
    * @param start the start date string (yyyy-MM-dd format)
    * @param end the end date string (yyyy-MM-dd format)
-   * @throws ResponseStatusException if end date is before start date
+   * @throws ResponseStatusException if inputs are invalid (bad format) or end date is before start
+   *     date
    */
   public static void validateDateRange(String start, String end) {
     if (start == null || end == null) {
       return;
     }
-    LocalDate startDate = LocalDate.parse(start);
-    LocalDate endDate = LocalDate.parse(end);
-    if (endDate.isBefore(startDate)) {
+    try {
+      LocalDate startDate = LocalDate.parse(start);
+      LocalDate endDate = LocalDate.parse(end);
+      if (endDate.isBefore(startDate)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
+      }
+    } catch (DateTimeParseException e) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
+          HttpStatus.BAD_REQUEST, "Invalid date format. Expected yyyy-MM-dd");
     }
   }
 }
