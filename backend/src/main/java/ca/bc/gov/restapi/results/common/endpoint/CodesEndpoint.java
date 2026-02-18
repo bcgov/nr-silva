@@ -90,4 +90,44 @@ public class CodesEndpoint {
   public List<CodeDescriptionDto> getSilvFundSourceCodes() {
     return codeService.getAllSilvFundSrceCode();
   }
+
+  /**
+   * Get all silv system codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found silv system codes.
+   */
+  @GetMapping("/silv-system")
+  public List<CodeDescriptionDto> getSilvSystemCodes() {
+    return codeService.getAllSilvSystemCode();
+  }
+
+  /**
+   * Get all silv system variant codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found silv system variant codes.
+   */
+  @GetMapping("/silv-system-variant")
+  public List<CodeDescriptionDto> getSilvSystemVariantCodes() {
+    return codeService.getAllSilvSystemVariantCode();
+  }
+
+  /**
+   * Get all silv cut phase codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found silv cut phase codes.
+   */
+  @GetMapping("/silv-cut-phase")
+  public List<CodeDescriptionDto> getSilvCutPhaseCodes() {
+    return codeService.getAllSilvCutPhaseCode();
+  }
+
+  /**
+   * Get all disturbance codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found disturbance codes.
+   */
+  @GetMapping("/disturbance")
+  public List<CodeDescriptionDto> getDisturbanceCodes() {
+    return codeService.getAllDisturbanceCode();
+  }
 }
