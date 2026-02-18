@@ -71,7 +71,8 @@ jobs:
       backend_flyway_environment: "dev"
       backend_primary_db: "${{ matrix.primary_db }}"
       fam_route: "${{ matrix.fam_route }}"
-      triggers: ('backend/' 'common/' 'frontend/')
+      # triggers: ('backend/' 'common/' 'frontend/')
+      triggers: ''
 
   results:
     name: PR Results
