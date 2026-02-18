@@ -68,7 +68,7 @@ permissions: {}
 
 jobs:
   init:
-    name: Deploy (init)
+    name: Deploy (init) - ${{ inputs.backend_primary_db }}
     environment: ${{ inputs.environment }}
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
@@ -125,7 +125,7 @@ jobs:
           triggers: ${{ inputs.triggers }}
 
   deploy:
-    name: Deploy
+    name: Deploy (${{ matrix.name }} - ${{ inputs.backend_primary_db }})
     environment: ${{ inputs.environment }}
     needs: [init]
     runs-on: ubuntu-24.04
