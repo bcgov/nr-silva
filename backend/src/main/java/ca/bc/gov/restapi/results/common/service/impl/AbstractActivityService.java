@@ -22,7 +22,7 @@ import org.springframework.data.domain.Pageable;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractActivityService implements ActivityService {
+public abstract class AbstractActivityService implements ActivityService {
 
   protected ActivityTreatmentUnitRepository activityTreatmentUnitRepository;
   protected ForestClientService forestClientService;
