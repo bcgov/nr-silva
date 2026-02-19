@@ -27,6 +27,7 @@ runs:
         oc_token: ${{ inputs.oc_token }}
         commands: |
           allocated=$(oc get routes -o json | jq -r '.items[].spec.host' | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
+          echo "Allocated routes: $allocated"
           used=($(echo "$allocated"))
           available=()
           for i in $(seq 0 49); do
@@ -40,3 +41,4 @@ runs:
           fi
           echo "route1=${available[0]}" >> $GITHUB_OUTPUT
           echo "route2=${available[1]}" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
