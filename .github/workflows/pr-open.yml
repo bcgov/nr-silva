@@ -59,9 +59,11 @@ jobs:
         primary_db: [oracle, postgres]
         include:
           - primary_db: oracle
-            fam_route: ${{ needs.fam_routes.outputs.oracle_route_number }}
+            fam_route_number: ${{ needs.fam_routes.outputs.oracle_route_number }}
+            instance_name: hybrid
           - primary_db: postgres
-            fam_route: ${{ needs.fam_routes.outputs.postgres_route_number }}
+            fam_route_number: ${{ needs.fam_routes.outputs.postgres_route_number }}
+            instance_name: postgres
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -70,8 +72,8 @@ jobs:
       backend_max_replicas: "1"
       backend_flyway_environment: "dev"
       backend_primary_db: "${{ matrix.primary_db }}"
-      fam_route: "${{ matrix.fam_route }}"
-      # triggers: ('backend/' 'common/' 'frontend/')
+      fam_route_number: "${{ matrix.fam_route_number }}"
+      target: "${{ github.event.number }}-${{ matrix.instance_name }}"
       triggers: ''
 
   results:

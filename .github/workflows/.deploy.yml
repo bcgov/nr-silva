@@ -54,7 +54,7 @@ on:
         type: string
 
       # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
-      fam_route:
+      fam_route_number:
         description: FAM route for frontend; only needed for PR deployments
         required: false
         type: string
@@ -80,8 +80,8 @@ jobs:
         id: route
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            if [ -n "${{ inputs.fam_route }}" ]; then
-              echo "route=${{ inputs.fam_route }}" >> $GITHUB_OUTPUT
+            if [ -n "${{ inputs.fam_route_number }}" ]; then
+              echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
             else
               echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
             fi
@@ -95,8 +95,8 @@ jobs:
           # If not set, use default routes
           if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ inputs.fam_route }}" ]; then
-            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
+          elif [ -n "${{ inputs.fam_route_number }}" ]; then
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend-${{ inputs.backend_primary_db }}.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           else
             echo "allowed_origins=https://${{ github.event.repository.name }}-$(( ${{ inputs.target }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
@@ -137,7 +137,6 @@ jobs:
           - name: database
             file: common/openshift.database.yml
             parameters: -p DB_PVC_SIZE=128Mi
-              -p COMPONENT=${{ github.event_name == 'pull_request' && format('database-{0}', inputs.backend_primary_db) || 'database' }}
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
@@ -152,7 +151,6 @@ jobs:
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
               -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
               -p PRIMARY_DB=${{ inputs.backend_primary_db }}
-              -p COMPONENT=${{ github.event_name == 'pull_request' && format('backend-{0}', inputs.backend_primary_db) || 'backend' }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
@@ -160,7 +158,6 @@ jobs:
             parameters: -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
-              -p COMPONENT=${{ github.event_name == 'pull_request' && format('frontend-{0}', inputs.backend_primary_db) || 'frontend' }}
     steps:
       - uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
         id: deploys
