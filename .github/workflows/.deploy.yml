@@ -80,11 +80,7 @@ jobs:
         id: route
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            if [ -n "${{ inputs.fam_route_number }}" ]; then
-              echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
-            else
-              echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
-            fi
+            echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
           else
             echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
           fi
@@ -95,10 +91,8 @@ jobs:
           # If not set, use default routes
           if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ inputs.fam_route_number }}" ]; then
-            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend-${{ inputs.backend_primary_db }}.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           else
-            echo "allowed_origins=https://${{ github.event.repository.name }}-$(( ${{ inputs.target }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
