@@ -24,11 +24,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.getAllSilvBaseCode();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
     result.forEach(dto -> Assertions.assertNotNull(dto.code()));
@@ -40,11 +36,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.getAllSilvTechniqueCode();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -55,11 +47,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.getAllSilvMethodCode();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -70,11 +58,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.getAllSilvObjectiveCode();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -85,11 +69,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.getAllSilvFundSrceCode();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -100,11 +80,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> baseResults = codeService.getAllSilvBaseCode();
-
-    // Then - verify DTO structure
     baseResults.forEach(
         dto -> {
           Assertions.assertNotNull(dto, "DTO should not be null");
@@ -119,11 +95,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.findAllCategories(false);
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -134,11 +106,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.findAllCategories(true);
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -149,11 +117,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.findAllCategories(false);
-
-    // Then
     Assertions.assertNotNull(result);
     result.forEach(
         dto -> {
@@ -169,11 +133,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
-
-    // Then
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -184,16 +144,56 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-
-    // When
     List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
-
-    // Then
     Assertions.assertNotNull(result);
     result.forEach(
         dto -> {
           Assertions.assertNotNull(dto, "DTO should not be null");
           Assertions.assertNotNull(dto.code(), "Code should not be null");
         });
+  }
+
+  @Test
+  @DisplayName("Get all disturbance codes should return list of DTOs")
+  void getAllDisturbanceCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllDisturbanceCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all silv system codes should return list of DTOs")
+  void getAllSilvSystemCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvSystemCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all silv system variant codes should return list of DTOs")
+  void getAllSilvSystemVariantCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvSystemVariantCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all silv cut phase codes should return list of DTOs")
+  void getAllSilvCutPhaseCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvCutPhaseCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
   }
 }
