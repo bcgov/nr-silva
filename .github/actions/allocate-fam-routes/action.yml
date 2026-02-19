@@ -41,5 +41,12 @@ runs:
             echo "Not enough available routes!" >&2
             exit 1
           fi
-          echo "route1=${available[0]}" >> $GITHUB_OUTPUT
-          echo "route2=${available[1]}" >> $GITHUB_OUTPUT
+          echo "${available[0]}" > route1.txt
+          echo "${available[1]}" > route2.txt
+    
+    - name: Export FAM route outputs
+      id: export
+      shell: bash
+      run: |
+        echo "route1=$(cat route1.txt)" >> $GITHUB_OUTPUT
+        echo "route2=$(cat route2.txt)" >> $GITHUB_OUTPUT
