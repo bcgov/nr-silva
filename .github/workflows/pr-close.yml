@@ -13,11 +13,16 @@ permissions: {}
 
 jobs:
   cleanup:
-    name: Cleanup and Images
+    name: Cleanup and Images - ${{ matrix.name}}
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     strategy:
       matrix:
-        name: [hybrid, postgres]
+        model: [hybrid, postgres]
+        include:
+          - model: hybrid
+            name: "Hybrid (Oracle Primary)"
+          - model: postgres
+            name: "Postgres"
     permissions:
       packages: write
     secrets:
@@ -26,4 +31,4 @@ jobs:
     with:
       cleanup: label
       packages: backend frontend
-      target: ${{ github.event.number }}-${{ matrix.name }}
+      target: ${{ github.event.number }}-${{ matrix.model }}
