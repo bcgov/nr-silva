@@ -15,6 +15,9 @@ jobs:
   cleanup:
     name: Cleanup and Images
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
+    strategy:
+      matrix:
+        name: [hybrid, postgres]
     permissions:
       packages: write
     secrets:
@@ -23,3 +26,4 @@ jobs:
     with:
       cleanup: label
       packages: backend frontend
+      target: ${{ github.event.number }}-${{ matrix.name }}
