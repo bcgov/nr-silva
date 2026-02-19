@@ -51,6 +51,16 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
 
+  log_fam_routes_outputs:
+    name: Log FAM Routes Outputs
+    needs: fam_routes
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Log FAM Route Numbers
+        run: |
+          echo "Oracle Route Number: ${{ needs.fam_routes.outputs.oracle_route_number }}"
+          echo "Postgres Route Number: ${{ needs.fam_routes.outputs.postgres_route_number }}"
+
   deploys:
     name: Deploys (${{ github.event.number }})
     needs: [builds, fam_routes]
