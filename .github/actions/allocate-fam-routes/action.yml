@@ -13,8 +13,10 @@ inputs:
 outputs:
   route1:
     description: 'First available FAM route number'
+    value: ${{ steps.allocate.outputs.route1 }}
   route2:
     description: 'Second available FAM route number'
+    value: ${{ steps.allocate.outputs.route2 }}
 runs:
   using: 'composite'
   steps:
@@ -41,4 +43,3 @@ runs:
           fi
           echo "route1=${available[0]}" >> $GITHUB_OUTPUT
           echo "route2=${available[1]}" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
