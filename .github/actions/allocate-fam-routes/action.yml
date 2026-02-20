@@ -43,12 +43,16 @@ runs:
           fi
           # echo "${available[0]}" > route1.txt
           # echo "${available[1]}" > route2.txt
-          echo "route1=${available[0]}" >> "$GITHUB_OUTPUT"
+          echo "commands=route1=${available[0]},route2=${available[1]}" >> "$GITHUB_OUTPUT"
     
     - name: Export FAM route outputs
       id: export
       shell: bash
       run: |
-        # echo "route1=$(cat route1.txt)" >> $GITHUB_OUTPUT
-        # echo "route2=$(cat route2.txt)" >> $GITHUB_OUTPUT
         echo ${{ steps.allocate.outputs.commands }}
+        route1=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route1=[^,]*' | cut -d'=' -f2)
+        route2=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route2=[^,]*' | cut -d'=' -f2)
+        echo "route1: $route1"
+        echo "route2: $route2"
+        echo "route1=$route1" >> $GITHUB_OUTPUT
+        echo "route2=$route2" >> $GITHUB_OUTPUT
