@@ -35,14 +35,14 @@ runs:
           all_routes="routes.json"
 
           # Find existing hybrid route
-          hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${pr_number}-hybrid-frontend" | head -n1)
+          hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${{ inputs.pr_number }}-hybrid-frontend" | head -n1)
           hybrid_route_num=""
           if [[ -n "$hybrid_route_name" ]]; then
             hybrid_host=$(jq -r ".items[] | select(.metadata.name==\"$hybrid_route_name\") | .spec.host" "$all_routes")
             hybrid_route_num=$(echo "$hybrid_host" | grep -o '[0-9]\+' | head -n1)
           fi
           # Find existing postgres route
-          postgres_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${pr_number}-postgres-frontend" | head -n1)
+          postgres_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${{ inputs.pr_number }}-postgres-frontend" | head -n1)
           postgres_route_num=""
           if [[ -n "$postgres_route_name" ]]; then
             postgres_host=$(jq -r ".items[] | select(.metadata.name==\"$postgres_route_name\") | .spec.host" "$all_routes")
