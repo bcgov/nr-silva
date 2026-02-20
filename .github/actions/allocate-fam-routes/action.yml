@@ -50,7 +50,7 @@ runs:
           fi
 
           if [[ -n "$hybrid_route_num" && -n "$postgres_route_num" ]]; then
-            echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$postgres_route_num"
+            echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
           else
             allocated=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
             echo "Allocated routes: $allocated"
@@ -66,11 +66,11 @@ runs:
               exit 1
             fi
             if [[ -n "$hybrid_route_num" ]]; then
-              echo "commands=route_hybrid=$hybrid_route_num,route_postgres=${available[0]}"
+              echo "commands=route_hybrid=$hybrid_route_num,route_postgres=${available[0]}" >> $GITHUB_OUTPUT
             elif [[ -n "$postgres_route_num" ]]; then
-              echo "commands=route_hybrid=${available[0]},route_postgres=$postgres_route_num"
+              echo "commands=route_hybrid=${available[0]},route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
             else
-              echo "commands=route_hybrid=${available[0]},route_postgres=${available[1]}"
+              echo "commands=route_hybrid=${available[0]},route_postgres=${available[1]}" >> $GITHUB_OUTPUT
             fi
           fi
     
