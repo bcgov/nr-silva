@@ -39,8 +39,8 @@ jobs:
     name: Allocate FAM Routes
     runs-on: ubuntu-24.04
     outputs:
-      oracle_route_number: ${{ steps.allocate.outputs.route1 }}
-      postgres_route_number: ${{ steps.allocate.outputs.route2 }}
+      hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
+      postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
     steps:
       - uses: actions/checkout@v6
       - name: Allocate FAM routes
@@ -50,6 +50,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
+          pr_number: ${{ github.event.number }}
 
   log_fam_routes_outputs:
     name: Log FAM Routes Outputs
@@ -58,7 +59,7 @@ jobs:
     steps:
       - name: Log FAM Route Numbers
         run: |
-          echo "Oracle Route Number: ${{ needs.fam_routes.outputs.oracle_route_number }}"
+          echo "Hybrid Route Number: ${{ needs.fam_routes.outputs.hybrid_route_number }}"
           echo "Postgres Route Number: ${{ needs.fam_routes.outputs.postgres_route_number }}"
 
   deploys:
@@ -69,7 +70,7 @@ jobs:
         primary_db: [oracle, postgres]
         include:
           - primary_db: oracle
-            fam_route_number: ${{ needs.fam_routes.outputs.oracle_route_number }}
+            fam_route_number: ${{ needs.fam_routes.outputs.hybrid_route_number }}
             instance_name: hybrid
           - primary_db: postgres
             fam_route_number: ${{ needs.fam_routes.outputs.postgres_route_number }}

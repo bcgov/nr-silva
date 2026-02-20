@@ -10,49 +10,75 @@ inputs:
   oc_server:
     required: true
     description: OpenShift server
+  pr_number:
+    required: true
+    description: PR number
 outputs:
-  route1:
+  route_hybrid:
     description: 'First available FAM route number'
-    value: ${{ steps.allocate.outputs.route1 }}
-  route2:
+    value: ${{ steps.allocate.export.route_hybrid }}
+  route_postgres:
     description: 'Second available FAM route number'
-    value: ${{ steps.allocate.outputs.route2 }}
+    value: ${{ steps.allocate.export.route_postgres }}
 runs:
   using: 'composite'
   steps:
     - name: Find next two available FAM routes
       id: allocate
-      uses: bcgov/action-oc-runner@feat/genericOutput
+      uses: bcgov/action-oc-runner@1.4.0
       with:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
         commands: |
-          allocated=$(oc get routes -o json | jq -r '.items[].spec.host' | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
-          echo "Allocated routes: $allocated"
-          used=($(echo "$allocated"))
-          available=()
-          for i in $(seq 0 49); do
-            if [[ ! " ${used[@]} " =~ " $i " ]]; then
-              available+=($i)
-            fi
-          done
-          if [[ ${#available[@]} -lt 2 ]]; then
-            echo "Not enough available routes!" >&2
-            exit 1
+          oc get routes -o json > routes.json
+          all_routes="routes.json"
+
+          # Find existing hybrid route
+          hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${pr_number}-hybrid-frontend" | head -n1)
+          hybrid_route_num=""
+          if [[ -n "$hybrid_route_name" ]]; then
+            hybrid_host=$(jq -r ".items[] | select(.metadata.name==\"$hybrid_route_name\") | .spec.host" "$all_routes")
+            hybrid_route_num=$(echo "$hybrid_host" | grep -o '[0-9]\+' | head -n1)
           fi
-          # echo "${available[0]}" > route1.txt
-          # echo "${available[1]}" > route2.txt
-          echo "commands=route1=${available[0]},route2=${available[1]}" >> "$GITHUB_OUTPUT"
+          # Find existing postgres route
+          postgres_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${pr_number}-postgres-frontend" | head -n1)
+          postgres_route_num=""
+          if [[ -n "$postgres_route_name" ]]; then
+            postgres_host=$(jq -r ".items[] | select(.metadata.name==\"$postgres_route_name\") | .spec.host" "$all_routes")
+            postgres_route_num=$(echo "$postgres_host" | grep -o '[0-9]\+' | head -n1)
+          fi
+
+          if [[ -n "$hybrid_route_num" && -n "$postgres_route_num" ]]; then
+            echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$postgres_route_num"
+          else
+            allocated=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
+            echo "Allocated routes: $allocated"
+            used=($(echo "$allocated"))
+            available=()
+            for i in $(seq 0 49); do
+              if [[ ! " ${used[@]} " =~ " $i " ]]; then
+                available+=($i)
+              fi
+            done
+            if [[ ${#available[@]} -lt 2 ]]; then
+              echo "Not enough available routes!" >&2
+              exit 1
+            fi
+            if [[ -n "$hybrid_route_num" ]]; then
+              echo "commands=route_hybrid=$hybrid_route_num,route_postgres=${available[0]}"
+            elif [[ -n "$postgres_route_num" ]]; then
+              echo "commands=route_hybrid=${available[0]},route_postgres=$postgres_route_num"
+            else
+              echo "commands=route_hybrid=${available[0]},route_postgres=${available[1]}"
+            fi
+          fi
     
     - name: Export FAM route outputs
       id: export
       shell: bash
       run: |
-        echo ${{ steps.allocate.outputs.commands }}
-        route1=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route1=[^,]*' | cut -d'=' -f2)
-        route2=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route2=[^,]*' | cut -d'=' -f2)
-        echo "route1: $route1"
-        echo "route2: $route2"
-        echo "route1=$route1" >> $GITHUB_OUTPUT
-        echo "route2=$route2" >> $GITHUB_OUTPUT
+        route_hybrid=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_hybrid=[^,]*' | cut -d'=' -f2)
+        route_postgres=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_postgres=[^,]*' | cut -d'=' -f2)
+        echo "route_hybrid=$route_hybrid" >> $GITHUB_OUTPUT
+        echo "route_postgres=$route_postgres" >> $GITHUB_OUTPUT
