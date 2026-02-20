@@ -13,10 +13,9 @@ import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
 import jakarta.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
         filtersDto);
 
     validatePageSize(pagination);
-    validateEntryDateRange(filtersDto);
+    DateUtil.validateDateRange(filtersDto.getUpdateDateStart(), filtersDto.getUpdateDateEnd());
 
     // Validate mapsheet related fields for Opening Number
     validateMapsheetFields(filtersDto);
@@ -93,6 +92,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
     final var statusMap =
         codeService.getAllOpenStatusCode().stream()
             .collect(Collectors.toMap(CodeDescriptionDto::code, Function.identity()));
+
     return fetchClientAcronyms(
         new PageImpl<>(
             searchResultPage
@@ -244,23 +244,6 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
   private void validatePageSize(Pageable pagination) {
     if (pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
-    }
-  }
-
-  private void validateEntryDateRange(OpeningSearchExactFiltersDto filtersDto) {
-    if (filtersDto.getUpdateDateStart() != null && filtersDto.getUpdateDateEnd() != null) {
-      try {
-        LocalDate start = LocalDate.parse(filtersDto.getUpdateDateStart());
-        LocalDate end = LocalDate.parse(filtersDto.getUpdateDateEnd());
-        if (end.isBefore(start)) {
-          throw new ResponseStatusException(
-              HttpStatus.BAD_REQUEST, "End date must be the same or after start date");
-        }
-      } catch (DateTimeParseException ex) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "Invalid date format for updateDateStart/updateDateEnd. Expected yyyy-MM-dd");
-      }
     }
   }
 

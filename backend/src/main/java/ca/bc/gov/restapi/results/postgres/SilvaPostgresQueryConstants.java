@@ -345,7 +345,7 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN file_type_code ftc ON (pfu.file_type_code = ftc.file_type_code)
 			LEFT JOIN mgmt_unit_type_code mutc ON (pfu.mgmt_unit_type = mutc.mgmt_unit_type_code)
 			WHERE op.opening_id = :openingId""";
- 
+
 	public static final String GET_OPENING_OVERVIEW_MILESTONE =
 			"""
 			SELECT
@@ -1662,5 +1662,135 @@ public class SilvaPostgresQueryConstants {
 					+ SILVICULTURE_SEARCH_CTE_SELECT
 					+ " FROM silviculture_search ORDER BY opening_id DESC "
 					+ PAGINATION;
+
+
+	public static final String ACTIVITY_SEARCH = """
+			WITH activity_search AS (
+				SELECT
+					atu.activity_treatment_unit_id AS activityId,
+					sbc.silv_base_code AS baseCode,
+					sbc.description AS baseDescription,
+					stc.silv_technique_code AS techniqueCode,
+					stc.description AS techniqueDescription,
+					smc.silv_method_code AS methodCode,
+					smc.description AS methodDescription,
+					CASE WHEN atu.atu_completion_date IS NOT NULL THEN 1 ELSE 0 END AS isComplete,
+					sfsc.silv_fund_srce_code AS fundingSourceCode,
+					sfsc.description AS fundingSourceDescription,
+					cboa.forest_file_id AS fileId,
+					cboa.cut_block_id AS cutBlock,
+					atu.opening_id AS openingId,
+					cboa.cutting_permit_id AS cuttingPermit,
+					atu.treatment_amount AS treatmentAmountArea,
+					atu.activity_licensee_id AS intraAgencyNumber,
+					occ.open_category_code AS openingCategoryCode,
+					occ.description AS openingCategoryDescription,
+					ou.org_unit_code AS orgUnitCode,
+					ou.org_unit_name AS orgUnitDescription,
+					ffc.client_number AS openingClientCode,
+					COUNT(*) OVER () AS totalCount,
+					atu.update_timestamp AS updateTimestamp
+				FROM activity_treatment_unit atu
+				LEFT JOIN opening op ON atu.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON atu.org_unit_no = ou.org_unit_no
+				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id AND cboa.cut_block_open_admin_id = (
+					SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
+					WHERE cboa2.opening_id = op.opening_id
+				)
+				LEFT JOIN silv_base_code sbc ON atu.silv_base_code = sbc.silv_base_code
+				LEFT JOIN silv_technique_code stc ON atu.silv_technique_code = stc.silv_technique_code
+				LEFT JOIN silv_method_code smc ON atu.silv_method_code = smc.silv_method_code
+				LEFT JOIN silv_fund_srce_code sfsc ON atu.silv_fund_srce_code = sfsc.silv_fund_srce_code
+				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
+				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+				WHERE
+					(
+						'NOVALUE' IN (:#{#filter.bases}) OR atu.silv_base_code IN (:#{#filter.bases})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.techniques}) OR atu.silv_technique_code IN (:#{#filter.techniques})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.methods}) OR atu.silv_method_code IN (:#{#filter.methods})
+					)
+					AND (
+						CAST(:#{#filter.isComplete} AS boolean) IS NULL
+						OR (CAST(:#{#filter.isComplete} AS boolean) = true AND atu.atu_completion_date IS NOT NULL)
+						OR (CAST(:#{#filter.isComplete} AS boolean) = false AND atu.atu_completion_date IS NULL)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.objectives})
+						OR atu.silv_objective_code_1 IN (:#{#filter.objectives})
+						OR atu.silv_objective_code_2 IN (:#{#filter.objectives})
+						OR atu.silv_objective_code_3 IN (:#{#filter.objectives})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.fundingSources}) OR atu.silv_fund_srce_code IN (:#{#filter.fundingSources})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingCategories}) OR op.open_category_code IN (:#{#filter.openingCategories})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingStatuses}) OR op.opening_status_code IN (:#{#filter.openingStatuses})
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE' AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+						)
+						OR (
+							atu.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+			)
+			SELECT
+				activityId,
+				baseCode,
+				baseDescription,
+				techniqueCode,
+				techniqueDescription,
+				methodCode,
+				methodDescription,
+				isComplete,
+				fundingSourceCode,
+				fundingSourceDescription,
+				fileId,
+				cutBlock,
+				openingId,
+				cuttingPermit,
+				treatmentAmountArea,
+				intraAgencyNumber,
+				openingCategoryCode,
+				openingCategoryDescription,
+				orgUnitCode,
+				orgUnitDescription,
+				openingClientCode,
+				totalCount,
+				updateTimestamp
+			FROM activity_search
+			ORDER BY activityId DESC
+			""" + PAGINATION;
 	}
 
