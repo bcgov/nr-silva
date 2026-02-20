@@ -31,48 +31,20 @@ runs:
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
         commands: |
-          oc get routes -o json > routes.json
-          all_routes="routes.json"
-
-          # Find existing hybrid route
-          hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${{ inputs.pr_number }}-hybrid-frontend" | head -n1)
-          hybrid_route_num=""
-          if [[ -n "$hybrid_route_name" ]]; then
-            hybrid_host=$(jq -r ".items[] | select(.metadata.name==\"$hybrid_route_name\") | .spec.host" "$all_routes")
-            hybrid_route_num=$(echo "$hybrid_host" | grep -o '[0-9]\+' | head -n1)
-          fi
-          # Find existing postgres route
-          postgres_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${{ inputs.pr_number }}-postgres-frontend" | head -n1)
-          postgres_route_num=""
-          if [[ -n "$postgres_route_name" ]]; then
-            postgres_host=$(jq -r ".items[] | select(.metadata.name==\"$postgres_route_name\") | .spec.host" "$all_routes")
-            postgres_route_num=$(echo "$postgres_host" | grep -o '[0-9]\+' | head -n1)
-          fi
-
-          if [[ -n "$hybrid_route_num" && -n "$postgres_route_num" ]]; then
-            echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
-          else
-            allocated=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
-            echo "Allocated routes: $allocated"
-            used=($(echo "$allocated"))
-            available=()
-            for i in $(seq 0 49); do
-              if [[ ! " ${used[@]} " =~ " $i " ]]; then
-                available+=($i)
-              fi
-            done
-            if [[ ${#available[@]} -lt 2 ]]; then
-              echo "Not enough available routes!" >&2
-              exit 1
+          allocated=$(oc get routes -o json | jq -r '.items[].spec.host' | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
+          echo "Allocated routes: $allocated"
+          used=($(echo "$allocated"))
+          available=()
+          for i in $(seq 0 49); do
+            if [[ ! " ${used[@]} " =~ " $i " ]]; then
+              available+=($i)
             fi
-            if [[ -n "$hybrid_route_num" ]]; then
-              echo "commands=route_hybrid=$hybrid_route_num,route_postgres=${available[0]}" >> $GITHUB_OUTPUT
-            elif [[ -n "$postgres_route_num" ]]; then
-              echo "commands=route_hybrid=${available[0]},route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
-            else
-              echo "commands=route_hybrid=${available[0]},route_postgres=${available[1]}" >> $GITHUB_OUTPUT
-            fi
+          done
+          if [[ ${#available[@]} -lt 2 ]]; then
+            echo "Not enough available routes!" >&2
+            exit 1
           fi
+          echo "commands=route_hybrid=${available[0]},route_postgres=${available[1]}" >> "$GITHUB_OUTPUT"
     
     - name: Export FAM route outputs
       id: export
