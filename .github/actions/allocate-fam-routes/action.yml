@@ -22,7 +22,7 @@ runs:
   steps:
     - name: Find next two available FAM routes
       id: allocate
-      uses: bcgov/action-oc-runner@v1.3.0
+      uses: bcgov/action-oc-runner@feat/genericOutput
       with:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
@@ -41,12 +41,14 @@ runs:
             echo "Not enough available routes!" >&2
             exit 1
           fi
-          echo "${available[0]}" > route1.txt
-          echo "${available[1]}" > route2.txt
+          # echo "${available[0]}" > route1.txt
+          # echo "${available[1]}" > route2.txt
+          echo "route1=${available[0]}" >> "$GITHUB_OUTPUT"
     
     - name: Export FAM route outputs
       id: export
       shell: bash
       run: |
-        echo "route1=$(cat route1.txt)" >> $GITHUB_OUTPUT
-        echo "route2=$(cat route2.txt)" >> $GITHUB_OUTPUT
+        # echo "route1=$(cat route1.txt)" >> $GITHUB_OUTPUT
+        # echo "route2=$(cat route2.txt)" >> $GITHUB_OUTPUT
+        echo ${{ steps.allocate.outputs.commands }}
