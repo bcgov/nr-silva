@@ -25,7 +25,7 @@ runs:
   steps:
     - name: Find next two available FAM routes
       id: allocate
-      uses: bcgov/action-oc-runner@1.4.0
+      uses: bcgov/action-oc-runner@v1.4.0
       with:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
