@@ -52,5 +52,7 @@ runs:
       run: |
         route_hybrid=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_hybrid=[^,]*' | cut -d'=' -f2)
         route_postgres=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_postgres=[^,]*' | cut -d'=' -f2)
+        echo "route_hybrid=$route_hybrid"
+        echo "route_postgres=$route_postgres"
         echo "route_hybrid=$route_hybrid" >> $GITHUB_OUTPUT
         echo "route_postgres=$route_postgres" >> $GITHUB_OUTPUT
