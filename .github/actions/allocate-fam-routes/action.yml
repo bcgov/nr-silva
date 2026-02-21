@@ -16,10 +16,10 @@ inputs:
 outputs:
   route_hybrid:
     description: 'First available FAM route number'
-    value: ${{ steps.allocate.export.route_hybrid }}
+    value: ${{ steps.export.outputs.route_hybrid }}
   route_postgres:
     description: 'Second available FAM route number'
-    value: ${{ steps.allocate.export.route_postgres }}
+    value: ${{ steps.export.outputs.route_postgres }}
 runs:
   using: 'composite'
   steps:
@@ -52,7 +52,5 @@ runs:
       run: |
         route_hybrid=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_hybrid=[^,]*' | cut -d'=' -f2)
         route_postgres=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_postgres=[^,]*' | cut -d'=' -f2)
-        echo "route_hybrid=$route_hybrid"
-        echo "route_postgres=$route_postgres"
         echo "route_hybrid=$route_hybrid" >> $GITHUB_OUTPUT
         echo "route_postgres=$route_postgres" >> $GITHUB_OUTPUT
