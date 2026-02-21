@@ -53,6 +53,12 @@ on:
         default: "oracle"
         type: string
 
+      # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
+      fam_route_number:
+        description: FAM route for frontend; only needed for PR deployments
+        required: false
+        type: string
+
     outputs:
       run_tests:
         description: Run Cypress tests if the core apps have changed (excludes sync)
@@ -62,7 +68,7 @@ permissions: {}
 
 jobs:
   init:
-    name: Deploy (init)
+    name: Deploy (init) - ${{ inputs.backend_primary_db }}
     environment: ${{ inputs.environment }}
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
@@ -73,8 +79,8 @@ jobs:
       - name: FAM routing
         id: route
         run: |
-          if [ ${{ github.event_name }} == 'pull_request' ]; then
-            echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
           else
             echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
           fi
@@ -83,10 +89,10 @@ jobs:
         id: allowed_origins
         run: |
           # If not set, use default routes
-          if [ -z ${{ inputs.allowed_origins }} ]; then
-            echo "allowed_origins=https://${{ github.event.repository.name }}-$(( ${{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
-          else
+          if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
+          else
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
@@ -113,7 +119,7 @@ jobs:
           triggers: ${{ inputs.triggers }}
 
   deploy:
-    name: Deploy
+    name: Deploy (${{ matrix.name }} - ${{ inputs.backend_primary_db }})
     environment: ${{ inputs.environment }}
     needs: [init]
     runs-on: ubuntu-24.04
