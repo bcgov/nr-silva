@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.projection.ActivitySearchProjection;
+import ca.bc.gov.restapi.results.common.projection.DisturbanceSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityBaseProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityJuvenileProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityPruningProjection;
@@ -71,6 +73,13 @@ public interface ActivityTreatmentUnitOracleRepository
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.ACTIVITY_SEARCH)
   List<ActivitySearchProjection> activitySearch(
       @Param("filter") ActivitySearchFiltersDto filter,
+      @Param("page") long offset,
+      @Param("size") long size);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.DISTURBANCE_SEARCH)
+  List<DisturbanceSearchProjection> disturbanceSearch(
+      @Param("filter") DisturbanceSearchFilterDto filter,
       @Param("page") long offset,
       @Param("size") long size);
 }

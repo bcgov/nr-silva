@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.common.endpoint;
 
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
@@ -165,5 +167,41 @@ public class SearchEndpoint {
     }
 
     return activityService.activitySearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/disturbances")
+  public Page<DisturbanceSearchResponseDto> disturbanceSearch(
+      @RequestParam(value = "disturbances", required = false) List<String> disturbances,
+      @RequestParam(value = "silvSystems", required = false) List<String> silvSystems,
+      @RequestParam(value = "variants", required = false) List<String> variants,
+      @RequestParam(value = "cutPhases", required = false) List<String> cutPhases,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "openingCategories", required = false) List<String> openingCategories,
+      @RequestParam(value = "fileId", required = false) String fileId,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    DisturbanceSearchFilterDto filters =
+        new DisturbanceSearchFilterDto(
+            disturbances,
+            silvSystems,
+            variants,
+            cutPhases,
+            orgUnits,
+            openingCategories,
+            fileId,
+            clientNumbers,
+            openingStatuses,
+            updateDateStart,
+            updateDateEnd);
+
+    if (!filters.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return activityService.disturbanceSearch(filters, paginationParameters);
   }
 }
