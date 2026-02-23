@@ -13,16 +13,6 @@ concurrency:
 permissions: {}
 
 jobs:
-  init:
-    name: Initialize
-    outputs:
-      mod-tag: ${{ steps.mod-tag.outputs.mod-tag }}
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Get PR Number Mod 50
-        id: mod-tag
-        run: echo "mod-tag=$(( ${{ github.event.workflow_run.pull_requests[0].number }} % 50 ))" >> $GITHUB_OUTPUT
-
   get_routes:
     name: Get PR Routes
     runs-on: ubuntu-24.04
@@ -54,7 +44,7 @@ jobs:
 
   validate:
     name: Validate PR
-    needs: [init, get_routes]
+    needs: [get_routes]
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     permissions:
       pull-requests: write
