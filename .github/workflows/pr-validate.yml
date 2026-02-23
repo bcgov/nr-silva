@@ -6,6 +6,9 @@ on:
       pr_number:
         required: true
         type: string
+      deployment_successful:
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-edit-${{ inputs.pr_number }}
@@ -14,9 +17,28 @@ concurrency:
 permissions: {}
 
 jobs:
+  check_deployment:
+    name: Check Deployment Status
+    runs-on: ubuntu-24.04
+    outputs:
+      should_continue: ${{ steps.check.outputs.should_continue }}
+    steps:
+      - name: Check deployment status
+        id: check
+        run: |
+          if [ "${{ inputs.deployment_successful }}" = "true" ]; then
+            echo "✅ Deployment was successful, proceeding with validation"
+            echo "should_continue=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Deployment failed, skipping route validation"
+            echo "should_continue=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
   get_routes:
     name: Get PR Routes
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: [check_deployment]
+    if: ${{ needs.check_deployment.outputs.should_continue == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -47,7 +69,8 @@ jobs:
 
   validate:
     name: Validate PR
-    needs: [get_routes]
+    needs: [check_deployment, get_routes]
+    if: ${{ needs.check_deployment.outputs.should_continue == 'true' }}
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     permissions:
       pull-requests: write
@@ -61,15 +84,24 @@ jobs:
   results:
     name: Validate Results
     if: always()
-    needs: [validate]
+    needs: [check_deployment, get_routes, validate]
     runs-on: ubuntu-24.04
     steps:
-      - run: |
-          # View results
-          echo "needs.*.result: ${{ toJson(needs.*.result) }}"
-
-      - if: contains(needs.*.result, 'failure')||contains(needs.*.result, 'canceled')
+      - name: Log validation results
         run: |
-          # Job failure found
-          echo "At least one job has failed"
+          echo "Check deployment result: ${{ needs.check_deployment.result }}"
+          echo "Get routes result: ${{ needs.get_routes.result }}"
+          echo "Validate result: ${{ needs.validate.result }}"
+
+      - if: ${{ needs.check_deployment.result == 'failure' }}
+        run: |
+          echo "❌ Validation failed because deployment was not successful"
           exit 1
+
+      - if: contains(needs.*.result, 'failure') && needs.check_deployment.result == 'success'
+        run: |
+          echo "❌ Validation failed during route checking or validation steps"
+          exit 1
+
+      - run: |
+          echo "✅ Validation completed successfully"
