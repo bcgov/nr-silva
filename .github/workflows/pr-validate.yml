@@ -1,11 +1,13 @@
 name: PR Validate
 
 on:
-  pull_request:
-    types: [edited, opened, synchronize, reopened, ready_for_review]
+  workflow_run:
+    workflows: ["PR"]
+    types:
+      - completed
 
 concurrency:
-  group: ${{ github.workflow }}-edit-${{ github.event.number }}
+  group: ${{ github.workflow }}-edit-${{ github.event.workflow_run.pull_requests[0].number }}
   cancel-in-progress: true
 
 permissions: {}
@@ -19,18 +21,49 @@ jobs:
     steps:
       - name: Get PR Number Mod 50
         id: mod-tag
-        run: echo "mod-tag=$(( ${{ github.event.number }} % 50 ))" >> $GITHUB_OUTPUT
+        run: echo "mod-tag=$(( ${{ github.event.workflow_run.pull_requests[0].number }} % 50 ))" >> $GITHUB_OUTPUT
+
+  get_routes:
+    name: Get PR Routes
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Get all PR routes
+        id: oc_routes
+        uses: bcgov/action-oc-runner@v1.4.0
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          commands: |
+            pr_number="${{ github.event.workflow_run.pull_requests[0].number }}"
+            repo_name="${{ github.event.repository.name }}"
+            oc get routes -o json > routes.json
+            for type in hybrid postgres; do
+              for comp in frontend backend; do
+                route_name="${repo_name}-${pr_number}-${type}-${comp}"
+                route_host=$(jq -r ".items[] | select(.metadata.name==\"$route_name\") | .spec.host" routes.json)
+                echo "${type}_${comp}_host=$route_host" >> $GITHUB_OUTPUT
+              done
+            done
+    outputs:
+      hybrid_frontend_host: ${{ steps.oc_routes.outputs.hybrid_frontend_host }}
+      hybrid_backend_host: ${{ steps.oc_routes.outputs.hybrid_backend_host }}
+      postgres_frontend_host: ${{ steps.oc_routes.outputs.postgres_frontend_host }}
+      postgres_backend_host: ${{ steps.oc_routes.outputs.postgres_backend_host }}
 
   validate:
     name: Validate PR
-    needs: [init]
+    needs: [init, get_routes]
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     permissions:
       pull-requests: write
     with:
       markdown_links: |
-        - [Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.apps.silver.devops.gov.bc.ca/actuator/health)
-        - [Frontend](https://${{ github.event.repository.name }}-${{ needs.init.outputs.mod-tag }}-frontend.apps.silver.devops.gov.bc.ca)
+        - [Hybrid Backend](https://${{ needs.get_routes.outputs.hybrid_backend_host }}/actuator/health)
+        - [Hybrid Frontend](https://${{ needs.get_routes.outputs.hybrid_frontend_host }})
+        - [Postgres Backend](https://${{ needs.get_routes.outputs.postgres_backend_host }}/actuator/health)
+        - [Postgres Frontend](https://${{ needs.get_routes.outputs.postgres_frontend_host }})
 
   results:
     name: Validate Results
