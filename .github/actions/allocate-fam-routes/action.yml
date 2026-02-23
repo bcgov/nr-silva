@@ -32,7 +32,6 @@ runs:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
-        verbose: true
         commands: |
           oc get routes -o json > routes.json
           all_routes="routes.json"
