@@ -1,13 +1,14 @@
 name: PR Validate
 
 on:
-  workflow_run:
-    workflows: ["PR"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: string
 
 concurrency:
-  group: ${{ github.workflow }}-edit-${{ github.event.workflow_run.pull_requests[0].number }}
+  group: ${{ github.workflow }}-edit-${{ inputs.pr_number }}
   cancel-in-progress: true
 
 permissions: {}
@@ -22,17 +23,18 @@ jobs:
       - name: Get all PR routes
         id: oc_routes
         uses: bcgov/action-oc-runner@v1.4.0
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          REPO_NAME: ${{ github.event.repository.name }}
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           commands: |
-            pr_number="${{ github.event.workflow_run.pull_requests[0].number }}"
-            repo_name="${{ github.event.repository.name }}"
             oc get routes -o json > routes.json
             for type in hybrid postgres; do
               for comp in frontend backend; do
-                route_name="${repo_name}-${pr_number}-${type}-${comp}"
+                route_name="${REPO_NAME}-${PR_NUMBER}-${type}-${comp}"
                 route_host=$(jq -r ".items[] | select(.metadata.name==\"$route_name\") | .spec.host" routes.json)
                 echo "${type}_${comp}_host=$route_host" >> $GITHUB_OUTPUT
               done

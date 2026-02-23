@@ -93,3 +93,12 @@ jobs:
           # Job failure found
           echo "At least one job has failed"
           exit 1
+  
+  validation:
+    name: Trigger Validation
+    if: success()
+    needs: [results]
+    uses: ./.github/workflows/pr-validate.yml
+    secrets: inherit
+    with:
+      pr_number: ${{ github.event.number }}
