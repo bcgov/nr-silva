@@ -25,7 +25,7 @@ runs:
   steps:
     - name: Find next two available FAM routes
       id: allocate
-      uses: bcgov/action-oc-runner@feat/commands-diagnostics
+      uses: bcgov/action-oc-runner@v1.4.0
       env:
         PR_NUMBER: ${{ inputs.pr_number }}
       with:
@@ -35,7 +35,7 @@ runs:
         verbose: true
         commands: |
           oc get routes -o json > routes.json
-          all_routes="route.json"
+          all_routes="routes.json"
 
           # Find existing hybrid route
           hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${PR_NUMBER}-hybrid-frontend" | head -n1 || true)
