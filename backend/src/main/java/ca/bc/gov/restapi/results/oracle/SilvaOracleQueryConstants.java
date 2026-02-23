@@ -1719,7 +1719,8 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN OPEN_CATEGORY_CODE occ ON op.OPEN_CATEGORY_CODE = occ.OPEN_CATEGORY_CODE
         LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.FOREST_FILE_ID = ffc.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
         WHERE
-          (
+          atu.SILV_BASE_CODE <> 'DN'
+          AND (
             'NOVALUE' IN (:#{#filter.bases}) OR UPPER(atu.SILV_BASE_CODE) IN (:#{#filter.bases})
           )
           AND (
@@ -1731,8 +1732,8 @@ public class SilvaOracleQueryConstants {
           AND (
             CASE
               WHEN :#{#filter.isComplete} IS NULL THEN 1
-              WHEN :#{#filter.isComplete} = true THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 1 ELSE 0 END
-              WHEN :#{#filter.isComplete} = false THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NULL THEN 1 ELSE 0 END
+              WHEN :#{#filter.isComplete} = 1 THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NOT NULL THEN 1 ELSE 0 END
+              WHEN :#{#filter.isComplete} = 0 THEN CASE WHEN atu.ATU_COMPLETION_DATE IS NULL THEN 1 ELSE 0 END
               ELSE 1
             END = 1
           )

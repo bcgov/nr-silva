@@ -1704,7 +1704,8 @@ public class SilvaPostgresQueryConstants {
 				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
 				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
 				WHERE
-					(
+					atu.silv_base_code <> 'DN'
+					AND (
 						'NOVALUE' IN (:#{#filter.bases}) OR UPPER(atu.silv_base_code) IN (:#{#filter.bases})
 					)
 					AND (
