@@ -25,13 +25,14 @@ runs:
   steps:
     - name: Find next two available FAM routes
       id: allocate
-      uses: bcgov/action-oc-runner@v1.4.0
+      uses: bcgov/action-oc-runner@feat/commands-diagnostics
       env:
         PR_NUMBER: ${{ inputs.pr_number }}
       with:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
+        debug_commands: true
         commands: |
           oc get routes -o json > routes.json
           all_routes="routes.json"
