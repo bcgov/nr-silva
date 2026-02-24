@@ -1,110 +1,67 @@
 name: PR Validate
 
 on:
-  workflow_run:
-    workflows: ["PR"]
-    types:
-      - completed
+  pull_request:
+    types: [edited, opened, synchronize, reopened, ready_for_review]
 
 concurrency:
-  group: pr-validate-${{ github.event.workflow_run.pull_requests[0].number }}
+  group: ${{ github.workflow }}-edit-${{ github.event.number }}
   cancel-in-progress: true
 
-permissions:
-  pull-requests: write
-  actions: read
+permissions: {}
 
 jobs:
-  check_workflow:
-    name: Check Workflow Status
-    runs-on: ubuntu-24.04
+  init:
+    name: Initialize
     outputs:
-      should_continue: ${{ steps.check.outputs.should_continue }}
-      pr_number: ${{ steps.check.outputs.pr_number }}
-    steps:
-      - name: Check workflow status
-        id: check
-        run: |
-          echo "Workflow conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "PR numbers: ${{ toJson(github.event.workflow_run.pull_requests) }}"
-          
-          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
-          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          
-          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
-            echo "✅ PR workflow was successful, proceeding with validation"
-            echo "should_continue=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ PR workflow failed or was cancelled, skipping validation"
-            echo "should_continue=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-  get_routes:
-    name: Get PR Routes
-    needs: [check_workflow]
-    if: ${{ needs.check_workflow.outputs.should_continue == 'true' }}
+      hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
+      postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - name: Get all PR routes
-        id: oc_routes
-        uses: bcgov/action-oc-runner@v1.4.0
-        env:
-          PR_NUMBER: ${{ needs.check_workflow.outputs.pr_number }}
-          REPO_NAME: ${{ github.event.repository.name }}
+      - name: Allocate FAM routes
+        id: allocate
+        uses: ./.github/actions/allocate-fam-routes
         with:
+          oc_token: ${{ secrets.OC_TOKEN }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          commands: |
-            oc get routes -o json > routes.json
-            for type in hybrid postgres; do
-              for comp in frontend backend; do
-                route_name="${REPO_NAME}-${PR_NUMBER}-${type}-${comp}"
-                route_host=$(jq -r ".items[] | select(.metadata.name==\"$route_name\") | .spec.host" routes.json)
-                echo "${type}_${comp}_host=$route_host" >> $GITHUB_OUTPUT
-              done
-            done
-    outputs:
-      hybrid_frontend_host: ${{ steps.oc_routes.outputs.hybrid_frontend_host }}
-      hybrid_backend_host: ${{ steps.oc_routes.outputs.hybrid_backend_host }}
-      postgres_frontend_host: ${{ steps.oc_routes.outputs.postgres_frontend_host }}
-      postgres_backend_host: ${{ steps.oc_routes.outputs.postgres_backend_host }}
+          pr_number: ${{ github.event.number }}
 
   validate:
-    name: Validate PR
-    needs: [check_workflow, get_routes]
-    if: ${{ needs.check_workflow.outputs.should_continue == 'true' }}
+    name: Validate PR - ${{ matrix.name }}
+    needs: [init]
+    strategy:
+      matrix:
+        instance: [hybrid, postgres]
+        component: [backend, frontend]
+        include:
+          - instance: hybrid
+            route_number: ${{ needs.init.outputs.hybrid_route_number }}
+            name: "Hybrid (Oracle Primary)"
+          - instance: postgres
+            route_number: ${{ needs.init.outputs.postgres_route_number }}
+            name: "Postgres"
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
+    permissions:
+      pull-requests: write
     with:
       markdown_links: |
-        - [Hybrid Backend](https://${{ needs.get_routes.outputs.hybrid_backend_host }}/actuator/health)
-        - [Hybrid Frontend](https://${{ needs.get_routes.outputs.hybrid_frontend_host }})
-        - [Postgres Backend](https://${{ needs.get_routes.outputs.postgres_backend_host }}/actuator/health)
-        - [Postgres Frontend](https://${{ needs.get_routes.outputs.postgres_frontend_host }})
+        - [${{ matrix.name }} Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-${{ matrix.instance }}-backend.apps.silver.devops.gov.bc.ca/actuator/health)
+        - [${{ matrix.name }} Frontend](https://${{ github.event.repository.name }}-${{ matrix.route_number }}-${{ matrix.instance }}-frontend.apps.silver.devops.gov.bc.ca)
 
   results:
     name: Validate Results
     if: always()
-    needs: [check_workflow, get_routes, validate]
+    needs: [init, validate]
     runs-on: ubuntu-24.04
     steps:
-      - name: Log validation results
-        run: |
-          echo "Check workflow result: ${{ needs.check_workflow.result }}"
-          echo "Get routes result: ${{ needs.get_routes.result }}"
-          echo "Validate result: ${{ needs.validate.result }}"
-
-      - if: ${{ needs.check_workflow.result == 'failure' }}
-        run: |
-          echo "❌ Validation skipped because PR workflow was not successful"
-          exit 1
-
-      - if: contains(needs.*.result, 'failure') && needs.check_workflow.result == 'success'
-        run: |
-          echo "❌ Validation failed during route checking or validation steps"
-          exit 1
-
       - run: |
-          echo "✅ Validation completed successfully"
+          # View results
+          echo "needs.*.result: ${{ toJson(needs.*.result) }}"
+
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'canceled')
+        run: |
+          # Job failure found
+          echo "At least one job has failed"
+          exit 1

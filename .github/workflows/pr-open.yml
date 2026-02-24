@@ -93,3 +93,4 @@ jobs:
           # Job failure found
           echo "At least one job has failed"
           exit 1
+  
