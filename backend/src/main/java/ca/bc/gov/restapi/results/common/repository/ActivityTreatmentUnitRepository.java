@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.common.repository;
 
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.projection.ActivitySearchProjection;
+import ca.bc.gov.restapi.results.common.projection.DisturbanceSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.*;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesActivitiesProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesDisturbanceProjection;
@@ -31,4 +33,7 @@ public interface ActivityTreatmentUnitRepository {
 
   List<ActivitySearchProjection> activitySearch(
       ActivitySearchFiltersDto filters, long offset, long size);
+
+  List<DisturbanceSearchProjection> disturbanceSearch(
+      DisturbanceSearchFilterDto filters, long offset, long size);
 }

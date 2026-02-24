@@ -2,6 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
+import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -83,6 +85,122 @@ export class SearchEndpointService {
                 'mapsheetQuad': mapsheetQuad,
                 'mapsheetSubQuad': mapsheetSubQuad,
                 'openingNumber': openingNumber,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param disturbances
+     * @param silvSystems
+     * @param variants
+     * @param cutPhases
+     * @param orgUnits
+     * @param openingCategories
+     * @param fileId
+     * @param clientNumbers
+     * @param openingStatuses
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelDisturbanceSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static disturbanceSearch(
+        disturbances?: Array<string>,
+        silvSystems?: Array<string>,
+        variants?: Array<string>,
+        cutPhases?: Array<string>,
+        orgUnits?: Array<string>,
+        openingCategories?: Array<string>,
+        fileId?: string,
+        clientNumbers?: Array<string>,
+        openingStatuses?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelDisturbanceSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/disturbances',
+            query: {
+                'disturbances': disturbances,
+                'silvSystems': silvSystems,
+                'variants': variants,
+                'cutPhases': cutPhases,
+                'orgUnits': orgUnits,
+                'openingCategories': openingCategories,
+                'fileId': fileId,
+                'clientNumbers': clientNumbers,
+                'openingStatuses': openingStatuses,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param bases
+     * @param techniques
+     * @param methods
+     * @param isComplete
+     * @param objectives
+     * @param fundingSources
+     * @param orgUnits
+     * @param openingCategories
+     * @param fileId
+     * @param clientNumbers
+     * @param openingStatuses
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelActivitySearchResponseDto OK
+     * @throws ApiError
+     */
+    public static activitySearch(
+        bases?: Array<string>,
+        techniques?: Array<string>,
+        methods?: Array<string>,
+        isComplete?: boolean,
+        objectives?: Array<string>,
+        fundingSources?: Array<string>,
+        orgUnits?: Array<string>,
+        openingCategories?: Array<string>,
+        fileId?: string,
+        clientNumbers?: Array<string>,
+        openingStatuses?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelActivitySearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/activities',
+            query: {
+                'bases': bases,
+                'techniques': techniques,
+                'methods': methods,
+                'isComplete': isComplete,
+                'objectives': objectives,
+                'fundingSources': fundingSources,
+                'orgUnits': orgUnits,
+                'openingCategories': openingCategories,
+                'fileId': fileId,
+                'clientNumbers': clientNumbers,
+                'openingStatuses': openingStatuses,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
                 'page': page,
                 'size': size,
                 'sort': sort,
