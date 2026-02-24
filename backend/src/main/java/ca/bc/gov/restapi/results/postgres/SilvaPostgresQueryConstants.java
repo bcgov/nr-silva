@@ -1692,7 +1692,7 @@ public class SilvaPostgresQueryConstants {
 					atu.update_timestamp AS updateTimestamp
 				FROM activity_treatment_unit atu
 				LEFT JOIN opening op ON atu.opening_id = op.opening_id
-				LEFT JOIN org_unit ou ON atu.org_unit_no = ou.org_unit_no
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
 				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id AND cboa.cut_block_open_admin_id = (
 					SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
 					WHERE cboa2.opening_id = op.opening_id
@@ -1818,7 +1818,7 @@ public class SilvaPostgresQueryConstants {
 					atu.update_timestamp AS updateTimestamp
 				FROM activity_treatment_unit atu
 				LEFT JOIN opening op ON atu.opening_id = op.opening_id
-				LEFT JOIN org_unit ou ON atu.org_unit_no = ou.org_unit_no
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
 				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id AND cboa.cut_block_open_admin_id = (
 					SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
 					WHERE cboa2.opening_id = op.opening_id
