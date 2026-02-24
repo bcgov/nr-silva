@@ -32,6 +32,7 @@ runs:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
+        verbose: true
         commands: |
           # Ensure ConfigMap exists
           if ! oc get configmap fam-route-allocations &>/dev/null; then
