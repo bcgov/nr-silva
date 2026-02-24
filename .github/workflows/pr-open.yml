@@ -81,7 +81,7 @@ jobs:
       triggers: ''
 
   cleanup_configmap:
-    name: Cleanup ConfigMap After Deployment
+    name: Cleanup ConfigMap After Deployment (${{ github.event.number }})
     needs: [fam_routes, deploys]
     if: success()
     runs-on: ubuntu-24.04
