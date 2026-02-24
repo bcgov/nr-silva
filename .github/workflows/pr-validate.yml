@@ -29,26 +29,17 @@ jobs:
           pr_number: ${{ github.event.number }}
 
   validate:
-    name: Validate PR - ${{ matrix.name }}
+    name: Validate PR
     needs: [init]
-    strategy:
-      matrix:
-        instance: [hybrid, postgres]
-        component: [backend, frontend]
-        include:
-          - instance: hybrid
-            route_number: ${{ needs.init.outputs.hybrid_route_number }}
-            name: "Hybrid (Oracle Primary)"
-          - instance: postgres
-            route_number: ${{ needs.init.outputs.postgres_route_number }}
-            name: "Postgres"
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     permissions:
       pull-requests: write
     with:
       markdown_links: |
-        - [${{ matrix.name }} Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-${{ matrix.instance }}-backend.apps.silver.devops.gov.bc.ca/actuator/health)
-        - [${{ matrix.name }} Frontend](https://${{ github.event.repository.name }}-${{ matrix.route_number }}-${{ matrix.instance }}-frontend.apps.silver.devops.gov.bc.ca)
+        - [Hybrid Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-hybrid-backend.apps.silver.devops.gov.bc.ca/actuator/health)
+        - [Hybrid Frontend](https://${{ github.event.repository.name }}-${{ needs.init.outputs.hybrid_route_number }}-frontend.apps.silver.devops.gov.bc.ca)
+        - [Postgres Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-postgres-backend.apps.silver.devops.gov.bc.ca/actuator/health)
+        - [Postgres Frontend](https://${{ github.event.repository.name }}-${{ needs.init.outputs.postgres_route_number }}-frontend.apps.silver.devops.gov.bc.ca)
 
   results:
     name: Validate Results
