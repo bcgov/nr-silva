@@ -155,5 +155,12 @@ runs:
       run: |
         route_hybrid=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_hybrid=[^,]*' | cut -d'=' -f2)
         route_postgres=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_postgres=[^,]*' | cut -d'=' -f2)
+
+        if [[ -z "$route_hybrid" || -z "$route_postgres" ]]; then
+          echo "Error: Failed to extract non-empty route_hybrid and route_postgres from allocate step output." >&2
+          echo "Raw commands output: '${{ steps.allocate.outputs.commands }}'" >&2
+          exit 1
+        fi
+        
         echo "route_hybrid=$route_hybrid" >> $GITHUB_OUTPUT
         echo "route_postgres=$route_postgres" >> $GITHUB_OUTPUT
