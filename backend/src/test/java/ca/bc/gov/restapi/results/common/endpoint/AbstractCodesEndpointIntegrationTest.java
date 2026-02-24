@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +20,6 @@ public abstract class AbstractCodesEndpointIntegrationTest
     extends AbstractTestContainerIntegrationTest {
 
   @Autowired protected MockMvc mockMvc;
-
-  protected abstract void setupTestData();
-
-  @BeforeEach
-  void setup() {
-    this.setupTestData();
-  }
 
   @Test
   @DisplayName("Get silv base codes should return 200 with codes")
@@ -185,6 +177,58 @@ public abstract class AbstractCodesEndpointIntegrationTest
   void getOrgUnits_shouldReturn200() throws Exception {
     mockMvc
         .perform(get("/api/codes/org-units").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get disturbance codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getDisturbanceCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/disturbance").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get silv system codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getSilvSystemCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-system").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get silv system variant codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getSilvSystemVariantCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-system-variant").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get silv cut phase codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getSilvCutPhaseCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-cut-phase").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray())

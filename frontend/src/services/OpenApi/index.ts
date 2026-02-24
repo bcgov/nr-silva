@@ -7,9 +7,11 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { ActivitySearchResponseDto } from './models/ActivitySearchResponseDto';
 export type { CodeDescriptionDto } from './models/CodeDescriptionDto';
 export type { CommentDto } from './models/CommentDto';
 export { Crs } from './models/Crs';
+export type { DisturbanceSearchResponseDto } from './models/DisturbanceSearchResponseDto';
 export type { ExtractedGeoDataDto } from './models/ExtractedGeoDataDto';
 export type { Feature } from './models/Feature';
 export type { FeatureCollection } from './models/FeatureCollection';
@@ -68,6 +70,8 @@ export type { OpeningStockingHistoryLayerDto } from './models/OpeningStockingHis
 export type { OpeningStockingHistoryOverviewDto } from './models/OpeningStockingHistoryOverviewDto';
 export type { OpeningStockingHistorySpeciesDto } from './models/OpeningStockingHistorySpeciesDto';
 export type { Pageable } from './models/Pageable';
+export type { PagedModelActivitySearchResponseDto } from './models/PagedModelActivitySearchResponseDto';
+export type { PagedModelDisturbanceSearchResponseDto } from './models/PagedModelDisturbanceSearchResponseDto';
 export type { PagedModelOpeningDetailsActivitiesActivitiesDto } from './models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 export type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from './models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
 export type { PagedModelOpeningSearchResponseDto } from './models/PagedModelOpeningSearchResponseDto';

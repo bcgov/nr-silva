@@ -9,28 +9,22 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.CollectionUtils;
 
-/** This class contains all possible filters when using the Activity Search API. */
+/** This class contains all possible filters when using the Disturbance Search API. */
 @Getter
 @ToString
-public class ActivitySearchFiltersDto {
+public class DisturbanceSearchFilterDto {
 
   @Schema(type = "array", nullable = true)
-  private final List<String> bases;
+  private final List<String> disturbances;
 
   @Schema(type = "array", nullable = true)
-  private final List<String> techniques;
+  private final List<String> silvSystems;
 
   @Schema(type = "array", nullable = true)
-  private final List<String> methods;
-
-  @Schema(type = "boolean", nullable = true)
-  private final Boolean isComplete;
+  private final List<String> variants;
 
   @Schema(type = "array", nullable = true)
-  private final List<String> objectives;
-
-  @Schema(type = "array", nullable = true)
-  private final List<String> fundingSources;
+  private final List<String> cutPhases;
 
   @Schema(type = "array", nullable = true)
   private final List<String> orgUnits;
@@ -57,18 +51,16 @@ public class ActivitySearchFiltersDto {
    * Creates a no-arg instance with all fields set to null, delegating to the all-args constructor
    * to apply defaults.
    */
-  public ActivitySearchFiltersDto() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
+  public DisturbanceSearchFilterDto() {
+    this(null, null, null, null, null, null, null, null, null, null, null);
   }
 
-  /** Creates an instance of the activity search filter dto. */
-  public ActivitySearchFiltersDto(
-      List<String> bases,
-      List<String> techniques,
-      List<String> methods,
-      Boolean isComplete,
-      List<String> objectives,
-      List<String> fundingSources,
+  /** Creates an instance of the disturbance search filter dto. */
+  public DisturbanceSearchFilterDto(
+      List<String> disturbances,
+      List<String> silvSystems,
+      List<String> variants,
+      List<String> cutPhases,
       List<String> orgUnits,
       List<String> openingCategories,
       String fileId,
@@ -76,16 +68,26 @@ public class ActivitySearchFiltersDto {
       List<String> openingStatuses,
       String updateDateStart,
       String updateDateEnd) {
-    this.bases = !CollectionUtils.isEmpty(bases) ? StringUtil.toUpperCase(bases) : List.of(SilvaConstants.NOVALUE);
-    this.techniques =
-        !CollectionUtils.isEmpty(techniques) ? StringUtil.toUpperCase(techniques) : List.of(SilvaConstants.NOVALUE);
-    this.methods = !CollectionUtils.isEmpty(methods) ? StringUtil.toUpperCase(methods) : List.of(SilvaConstants.NOVALUE);
-    this.isComplete = isComplete;
-    this.objectives =
-        !CollectionUtils.isEmpty(objectives) ? StringUtil.toUpperCase(objectives) : List.of(SilvaConstants.NOVALUE);
-    this.fundingSources =
-        !CollectionUtils.isEmpty(fundingSources) ? StringUtil.toUpperCase(fundingSources) : List.of(SilvaConstants.NOVALUE);
-    this.orgUnits = !CollectionUtils.isEmpty(orgUnits) ? StringUtil.toUpperCase(orgUnits) : List.of(SilvaConstants.NOVALUE);
+    this.disturbances =
+        !CollectionUtils.isEmpty(disturbances)
+            ? StringUtil.toUpperCase(disturbances)
+            : List.of(SilvaConstants.NOVALUE);
+    this.silvSystems =
+        !CollectionUtils.isEmpty(silvSystems)
+            ? StringUtil.toUpperCase(silvSystems)
+            : List.of(SilvaConstants.NOVALUE);
+    this.variants =
+        !CollectionUtils.isEmpty(variants)
+            ? StringUtil.toUpperCase(variants)
+            : List.of(SilvaConstants.NOVALUE);
+    this.cutPhases =
+        !CollectionUtils.isEmpty(cutPhases)
+            ? StringUtil.toUpperCase(cutPhases)
+            : List.of(SilvaConstants.NOVALUE);
+    this.orgUnits =
+        !CollectionUtils.isEmpty(orgUnits)
+            ? StringUtil.toUpperCase(orgUnits)
+            : List.of(SilvaConstants.NOVALUE);
     this.openingCategories =
         !CollectionUtils.isEmpty(openingCategories)
             ? StringUtil.toUpperCase(openingCategories)
@@ -102,12 +104,10 @@ public class ActivitySearchFiltersDto {
   }
 
   public boolean hasAnyFilter() {
-    return !SilvaConstants.NOVALUE.equals(bases.get(0))
-        || !SilvaConstants.NOVALUE.equals(techniques.get(0))
-        || !SilvaConstants.NOVALUE.equals(methods.get(0))
-        || isComplete != null
-        || !SilvaConstants.NOVALUE.equals(objectives.get(0))
-        || !SilvaConstants.NOVALUE.equals(fundingSources.get(0))
+    return !SilvaConstants.NOVALUE.equals(disturbances.get(0))
+        || !SilvaConstants.NOVALUE.equals(silvSystems.get(0))
+        || !SilvaConstants.NOVALUE.equals(variants.get(0))
+        || !SilvaConstants.NOVALUE.equals(cutPhases.get(0))
         || !SilvaConstants.NOVALUE.equals(orgUnits.get(0))
         || !SilvaConstants.NOVALUE.equals(openingCategories.get(0))
         || (fileId != null && !fileId.isBlank())

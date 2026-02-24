@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.projection.ActivitySearchProjection;
+import ca.bc.gov.restapi.results.common.projection.DisturbanceSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.*;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesActivitiesProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesDisturbanceProjection;
@@ -71,6 +73,13 @@ public interface ActivityTreatmentUnitPostgresRepository
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.ACTIVITY_SEARCH)
   List<ActivitySearchProjection> activitySearch(
       @Param("filter") ActivitySearchFiltersDto filter,
+      @Param("page") long offset,
+      @Param("size") long size);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.DISTURBANCE_SEARCH)
+  List<DisturbanceSearchProjection> disturbanceSearch(
+      @Param("filter") DisturbanceSearchFilterDto filter,
       @Param("page") long offset,
       @Param("size") long size);
 }
