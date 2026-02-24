@@ -13,6 +13,9 @@ permissions: {}
 jobs:
   init:
     name: Initialize
+    concurrency:
+      group: fam-routes-global
+      cancel-in-progress: false
     outputs:
       hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
       postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
