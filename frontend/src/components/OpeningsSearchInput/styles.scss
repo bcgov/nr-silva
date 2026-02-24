@@ -4,7 +4,7 @@
 .opening-search-input-grid {
   gap: 1.5rem;
 
-  .bx--css-grid-column {
+  .#{vars.$bcgov-prefix}--css-grid-column {
     align-content: end;
   }
 

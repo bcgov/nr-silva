@@ -168,7 +168,7 @@ const OpeningsSearch = () => {
   };
 
   return (
-    <Grid className="default-grid openings-search-grid">
+    <Grid className="default-grid default-search-grid">
       <Column sm={4} md={8} lg={16}>
         <PageTitle title="Openings Search" />
       </Column>
