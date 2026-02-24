@@ -53,7 +53,7 @@ public abstract class AbstractActivityService implements ActivityService {
             .map(ActivitySearchProjection::getOpeningClientCode)
             .filter(code -> code != null && !code.isBlank())
             .distinct()
-            .collect(Collectors.toList());
+            .toList();
 
     final Map<String, ForestClientDto> clientMap = buildClientMap(clientNumbers);
 
@@ -61,7 +61,7 @@ public abstract class AbstractActivityService implements ActivityService {
     var responseDtos =
         projections.stream()
             .map(projection -> mapActivityToSearchResponse(projection, clientMap))
-            .collect(Collectors.toList());
+            .toList();
 
     return new PageImpl<>(responseDtos, pagination, total);
   }
@@ -89,7 +89,7 @@ public abstract class AbstractActivityService implements ActivityService {
             .map(DisturbanceSearchProjection::getOpeningClientCode)
             .filter(code -> code != null && !code.isBlank())
             .distinct()
-            .collect(Collectors.toList());
+            .toList();
 
     final Map<String, ForestClientDto> clientMap = buildClientMap(clientNumbers);
 
@@ -97,7 +97,7 @@ public abstract class AbstractActivityService implements ActivityService {
     var responseDtos =
         projections.stream()
             .map(projection -> mapDisturbanceToSearchResponse(projection, clientMap))
-            .collect(Collectors.toList());
+            .toList();
 
     return new PageImpl<>(responseDtos, pagination, total);
   }

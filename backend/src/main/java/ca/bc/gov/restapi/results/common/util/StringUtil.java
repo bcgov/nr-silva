@@ -12,12 +12,9 @@ public class StringUtil {
    * Converts all strings in the list to uppercase for case-insensitive matching.
    *
    * @param values the list of strings to convert
-   * @return a new list with all strings converted to uppercase, or null if input is null
+   * @return a new list with all strings converted to uppercase
    */
   public static List<String> toUpperCase(List<String> values) {
-    if (values == null) {
-      return null;
-    }
     return values.stream().map(String::toUpperCase).toList();
   }
 }

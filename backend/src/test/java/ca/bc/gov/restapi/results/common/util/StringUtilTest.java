@@ -80,16 +80,18 @@ class StringUtilTest {
   }
 
   @Test
-  @DisplayName("Convert null list should return null")
-  void toUpperCase_nullList_shouldReturnNull() {
+  @DisplayName("Convert null list should throw NullPointerException")
+  void toUpperCase_nullList_shouldThrowNullPointerException() {
     // Given
     List<String> values = null;
 
-    // When
-    List<String> result = StringUtil.toUpperCase(values);
-
-    // Then
-    assertThat(result).isNull();
+    // When/Then - Should throw NullPointerException
+    try {
+      StringUtil.toUpperCase(values);
+      assertThat(false).as("Should have thrown NullPointerException").isTrue();
+    } catch (NullPointerException e) {
+      assertThat(e).isNotNull();
+    }
   }
 
   @Test
