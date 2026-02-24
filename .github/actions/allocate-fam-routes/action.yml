@@ -90,11 +90,11 @@ runs:
             # Need to allocate new routes - check both deployed and reserved
             
             # Get all deployed route numbers
-            allocated_deployed=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq)
+            allocated_deployed=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq || true)
             
             # Get all reserved route numbers from ConfigMap
-            allocated_reserved_hybrid=$(echo "$reserved_routes" | grep "^hybrid_" | cut -d'_' -f2 | cut -d'=' -f1)
-            allocated_reserved_postgres=$(echo "$reserved_routes" | grep "^postgres_" | cut -d'_' -f2 | cut -d'=' -f1)
+            allocated_reserved_hybrid=$(echo "$reserved_routes" | grep "^hybrid_" | cut -d'_' -f2 | cut -d'=' -f1 || true)
+            allocated_reserved_postgres=$(echo "$reserved_routes" | grep "^postgres_" | cut -d'_' -f2 | cut -d'=' -f1 || true)
             
             # Combine all allocated numbers (deployed + reserved)
             all_allocated=$(echo -e "${allocated_deployed}\n${allocated_reserved_hybrid}\n${allocated_reserved_postgres}" | sort -n | uniq)
