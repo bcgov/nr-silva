@@ -97,7 +97,7 @@ jobs:
   validation:
     name: Trigger Validation
     if: always()
-    needs: [results]
+    needs: [builds, fam_routes, deploys, results]
     uses: ./.github/workflows/pr-validate.yml
     secrets: inherit
     with:
