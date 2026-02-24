@@ -52,7 +52,7 @@ runs:
           hybrid_route_num=""
           if [[ -n "$hybrid_route_name" ]]; then
             hybrid_host=$(jq -r ".items[] | select(.metadata.name==\"$hybrid_route_name\") | .spec.host" "$all_routes")
-            hybrid_route_num=$(echo "$hybrid_host" | grep -o '[0-9]\+' | head -n1)
+            hybrid_route_num=$(echo "$hybrid_host" | grep -oP '(?<=-)[0-9]+(?=-frontend)' | head -n1)
             echo "Found existing deployed hybrid route: $hybrid_route_num"
           fi
 
@@ -61,7 +61,7 @@ runs:
           postgres_route_num=""
           if [[ -n "$postgres_route_name" ]]; then
             postgres_host=$(jq -r ".items[] | select(.metadata.name==\"$postgres_route_name\") | .spec.host" "$all_routes")
-            postgres_route_num=$(echo "$postgres_host" | grep -o '[0-9]\+' | head -n1)
+            postgres_route_num=$(echo "$postgres_host" | grep -oP '(?<=-)[0-9]+(?=-frontend)' | head -n1)
             echo "Found existing deployed postgres route: $postgres_route_num"
           fi
 
