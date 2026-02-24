@@ -35,9 +35,39 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
 
+  fam_routes:
+    name: Allocate FAM Routes
+    concurrency:
+      group: fam-routes-global
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    outputs:
+      hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
+      postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Allocate FAM routes
+        id: allocate
+        uses: ./.github/actions/allocate-fam-routes
+        with:
+          oc_token: ${{ secrets.OC_TOKEN }}
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          pr_number: ${{ github.event.number }}
+
   deploys:
     name: Deploys (${{ github.event.number }})
-    needs: [builds]
+    needs: [builds, fam_routes]
+    strategy:
+      matrix:
+        primary_db: [oracle, postgres]
+        include:
+          - primary_db: oracle
+            fam_route_number: ${{ needs.fam_routes.outputs.hybrid_route_number }}
+            instance_name: hybrid
+          - primary_db: postgres
+            fam_route_number: ${{ needs.fam_routes.outputs.postgres_route_number }}
+            instance_name: postgres
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -45,14 +75,57 @@ jobs:
       backend_min_replicas: "1"
       backend_max_replicas: "1"
       backend_flyway_environment: "dev"
-      backend_primary_db: "postgres"
-      triggers: ('backend/' 'common/' 'frontend/')
+      backend_primary_db: "${{ matrix.primary_db }}"
+      fam_route_number: "${{ matrix.fam_route_number }}"
+      target: "${{ github.event.number }}-${{ matrix.instance_name }}"
+      triggers: ''
+
+  cleanup_configmap:
+    name: Cleanup ConfigMap After Deployment (${{ github.event.number }})
+    needs: [fam_routes, deploys]
+    if: success()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Remove route reservations from ConfigMap
+        uses: bcgov/action-oc-runner@v1.4.0
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          HYBRID_ROUTE: ${{ needs.fam_routes.outputs.hybrid_route_number }}
+          POSTGRES_ROUTE: ${{ needs.fam_routes.outputs.postgres_route_number }}
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          commands: |
+            echo "Deployment successful - removing route reservations from ConfigMap"
+            echo "PR: $PR_NUMBER, Hybrid route: $HYBRID_ROUTE, Postgres route: $POSTGRES_ROUTE"
+            
+            # Check if ConfigMap exists
+            if ! oc get configmap fam-route-allocations &>/dev/null; then
+              echo "ConfigMap fam-route-allocations does not exist, nothing to clean up"
+              exit 0
+            fi
+            
+            # Remove hybrid route reservation
+            if [[ -n "$HYBRID_ROUTE" ]]; then
+              oc patch configmap fam-route-allocations --type merge \
+                -p "{\"data\": {\"hybrid_${HYBRID_ROUTE}\": null}}" || true
+              echo "Removed hybrid route $HYBRID_ROUTE reservation"
+            fi
+            
+            # Remove postgres route reservation
+            if [[ -n "$POSTGRES_ROUTE" ]]; then
+              oc patch configmap fam-route-allocations --type merge \
+                -p "{\"data\": {\"postgres_${POSTGRES_ROUTE}\": null}}" || true
+              echo "Removed postgres route $POSTGRES_ROUTE reservation"
+            fi
 
   results:
     name: PR Results
     if: always()
     # Include all needs that could have failures!
-    needs: [builds, deploys]
+    needs: [builds, fam_routes, deploys]
     runs-on: ubuntu-24.04
     steps:
       - run: |
@@ -64,3 +137,4 @@ jobs:
           # Job failure found
           echo "At least one job has failed"
           exit 1
+  

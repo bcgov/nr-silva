@@ -1,0 +1,166 @@
+name: 'Allocate FAM Route Numbers'
+description: 'Finds the next two available FAM routes using bcgov/action-oc-runner'
+inputs:
+  oc_token:
+    required: true
+    description: OpenShift token
+  oc_namespace:
+    required: true
+    description: OpenShift namespace
+  oc_server:
+    required: true
+    description: OpenShift server
+  pr_number:
+    required: true
+    description: PR number
+outputs:
+  route_hybrid:
+    description: 'First available FAM route number'
+    value: ${{ steps.export.outputs.route_hybrid }}
+  route_postgres:
+    description: 'Second available FAM route number'
+    value: ${{ steps.export.outputs.route_postgres }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Find next two available FAM routes
+      id: allocate
+      uses: bcgov/action-oc-runner@v1.4.0
+      env:
+        PR_NUMBER: ${{ inputs.pr_number }}
+      with:
+        oc_namespace: ${{ inputs.oc_namespace }}
+        oc_server: ${{ inputs.oc_server }}
+        oc_token: ${{ inputs.oc_token }}
+        commands: |
+          # Ensure ConfigMap exists
+          if ! oc get configmap fam-route-allocations &>/dev/null; then
+            oc create configmap fam-route-allocations
+            echo "Created fam-route-allocations ConfigMap"
+          fi
+
+          # Get all deployed routes
+          oc get routes -o json > routes.json
+          all_routes="routes.json"
+
+          # Get reserved routes from ConfigMap
+          oc get configmap fam-route-allocations -o json > configmap.json
+          reserved_routes=$(jq -r '.data // {} | to_entries[] | .key + "=" + .value' configmap.json)
+
+          # Find existing hybrid route for this PR (deployed)
+          hybrid_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${PR_NUMBER}-hybrid-frontend" | head -n1 || true)
+          hybrid_route_num=""
+          if [[ -n "$hybrid_route_name" ]]; then
+            hybrid_host=$(jq -r ".items[] | select(.metadata.name==\"$hybrid_route_name\") | .spec.host" "$all_routes")
+            hybrid_route_num=$(echo "$hybrid_host" | grep -oP '(?<=-)[0-9]+(?=-frontend)' | head -n1)
+            echo "Found existing deployed hybrid route: $hybrid_route_num"
+          fi
+
+          # Find existing postgres route for this PR (deployed)
+          postgres_route_name=$(jq -r '.items[].metadata.name' "$all_routes" | grep "${PR_NUMBER}-postgres-frontend" | head -n1 || true)
+          postgres_route_num=""
+          if [[ -n "$postgres_route_name" ]]; then
+            postgres_host=$(jq -r ".items[] | select(.metadata.name==\"$postgres_route_name\") | .spec.host" "$all_routes")
+            postgres_route_num=$(echo "$postgres_host" | grep -oP '(?<=-)[0-9]+(?=-frontend)' | head -n1)
+            echo "Found existing deployed postgres route: $postgres_route_num"
+          fi
+
+          # Check ConfigMap for reserved routes for this PR
+          if [[ -z "$hybrid_route_num" ]]; then
+            hybrid_reserved=$(echo "$reserved_routes" | grep "^hybrid_.*=$PR_NUMBER" | head -n1 | cut -d'_' -f2 | cut -d'=' -f1 || true)
+            if [[ -n "$hybrid_reserved" ]]; then
+              hybrid_route_num="$hybrid_reserved"
+              echo "Found reserved hybrid route in ConfigMap: $hybrid_route_num"
+            fi
+          fi
+
+          if [[ -z "$postgres_route_num" ]]; then
+            postgres_reserved=$(echo "$reserved_routes" | grep "^postgres_.*=$PR_NUMBER" | head -n1 | cut -d'_' -f2 | cut -d'=' -f1 || true)
+            if [[ -n "$postgres_reserved" ]]; then
+              postgres_route_num="$postgres_reserved"
+              echo "Found reserved postgres route in ConfigMap: $postgres_route_num"
+            fi
+          fi
+
+          # If both routes are found (deployed or reserved), use them
+          if [[ -n "$hybrid_route_num" && -n "$postgres_route_num" ]]; then
+            echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
+          else
+            # Need to allocate new routes - check both deployed and reserved
+            
+            # Get all deployed route numbers
+            allocated_deployed=$(jq -r '.items[].spec.host' "$all_routes" | grep -- '-frontend' | grep -o '[0-9]\+' | sort -n | uniq || true)
+            
+            # Get all reserved route numbers from ConfigMap
+            allocated_reserved_hybrid=$(echo "$reserved_routes" | grep "^hybrid_" | cut -d'_' -f2 | cut -d'=' -f1 || true)
+            allocated_reserved_postgres=$(echo "$reserved_routes" | grep "^postgres_" | cut -d'_' -f2 | cut -d'=' -f1 || true)
+            
+            # Combine all allocated numbers (deployed + reserved)
+            all_allocated=$(echo -e "${allocated_deployed}\n${allocated_reserved_hybrid}\n${allocated_reserved_postgres}" | sort -n | uniq)
+            
+            echo "Deployed routes: $allocated_deployed"
+            echo "Reserved routes (hybrid): $allocated_reserved_hybrid"
+            echo "Reserved routes (postgres): $allocated_reserved_postgres"
+            echo "All allocated: $all_allocated"
+            
+            used=($(echo "$all_allocated"))
+            available=()
+            for i in $(seq 0 49); do
+              if [[ ! " ${used[@]} " =~ " $i " ]]; then
+                available+=($i)
+              fi
+            done
+            
+            # Allocate routes as needed
+            if [[ -n "$hybrid_route_num" ]]; then
+              # Hybrid already exists, only need postgres
+              if [[ ${#available[@]} -lt 1 ]]; then
+                echo "Not enough available routes for postgres!" >&2
+                exit 1
+              fi
+              new_postgres=${available[0]}
+              echo "commands=route_hybrid=$hybrid_route_num,route_postgres=$new_postgres" >> $GITHUB_OUTPUT
+              # Mark new postgres route
+              oc patch configmap fam-route-allocations --type merge -p "{\"data\": {\"postgres_${new_postgres}\": \"$PR_NUMBER\"}}"
+              echo "Marked postgres route $new_postgres for PR $PR_NUMBER"
+            elif [[ -n "$postgres_route_num" ]]; then
+              # Postgres already exists, only need hybrid
+              if [[ ${#available[@]} -lt 1 ]]; then
+                echo "Not enough available routes for hybrid!" >&2
+                exit 1
+              fi
+              new_hybrid=${available[0]}
+              echo "commands=route_hybrid=$new_hybrid,route_postgres=$postgres_route_num" >> $GITHUB_OUTPUT
+              # Mark new hybrid route
+              oc patch configmap fam-route-allocations --type merge -p "{\"data\": {\"hybrid_${new_hybrid}\": \"$PR_NUMBER\"}}"
+              echo "Marked hybrid route $new_hybrid for PR $PR_NUMBER"
+            else
+              # Need both
+              if [[ ${#available[@]} -lt 2 ]]; then
+                echo "Not enough available routes!" >&2
+                exit 1
+              fi
+              new_hybrid=${available[0]}
+              new_postgres=${available[1]}
+              echo "commands=route_hybrid=$new_hybrid,route_postgres=$new_postgres" >> $GITHUB_OUTPUT
+              # Mark both routes
+              oc patch configmap fam-route-allocations --type merge -p "{\"data\": {\"hybrid_${new_hybrid}\": \"$PR_NUMBER\", \"postgres_${new_postgres}\": \"$PR_NUMBER\"}}"
+              echo "Marked hybrid route $new_hybrid and postgres route $new_postgres for PR $PR_NUMBER"
+            fi
+          fi
+    
+    - name: Export FAM route outputs
+      id: export
+      shell: bash
+      run: |
+        route_hybrid=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_hybrid=[^,]*' | cut -d'=' -f2)
+        route_postgres=$(echo "${{ steps.allocate.outputs.commands }}" | grep -o 'route_postgres=[^,]*' | cut -d'=' -f2)
+
+        if [[ -z "$route_hybrid" || -z "$route_postgres" ]]; then
+          echo "Error: Failed to extract non-empty route_hybrid and route_postgres from allocate step output." >&2
+          echo "Raw commands output: '${{ steps.allocate.outputs.commands }}'" >&2
+          exit 1
+        fi
+        
+        echo "route_hybrid=$route_hybrid" >> $GITHUB_OUTPUT
+        echo "route_postgres=$route_postgres" >> $GITHUB_OUTPUT
