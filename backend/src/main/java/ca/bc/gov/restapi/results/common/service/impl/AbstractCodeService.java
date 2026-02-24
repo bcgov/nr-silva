@@ -22,6 +22,10 @@ public abstract class AbstractCodeService implements CodeService {
   protected GenericCodeRepository<?> silvMethodCodeRepository;
   protected GenericCodeRepository<?> silvObjectiveCodeRepository;
   protected GenericCodeRepository<?> silvFundSrceCodeRepository;
+  protected GenericCodeRepository<?> silvSystemCodeRepository;
+  protected GenericCodeRepository<?> silvSystemVariantCodeRepository;
+  protected GenericCodeRepository<?> silvCutPhaseCodeRepository;
+  protected GenericCodeRepository<?> disturbanceCodeRepository;
   protected GenericCodeRepository<?> openCategoryCodeRepository;
   protected GenericCodeRepository<?> openingStatusCodeRepository;
   protected OrgUnitRepository orgUnitRepository;
@@ -50,6 +54,26 @@ public abstract class AbstractCodeService implements CodeService {
   @Override
   public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
     return CodeConverterUtil.toCodeDescriptionDtos(silvFundSrceCodeRepository.findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllSilvSystemCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(silvSystemCodeRepository.findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllSilvSystemVariantCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(silvSystemVariantCodeRepository.findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllSilvCutPhaseCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(silvCutPhaseCodeRepository.findAll());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllDisturbanceCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(disturbanceCodeRepository.findAll());
   }
 
   @Override

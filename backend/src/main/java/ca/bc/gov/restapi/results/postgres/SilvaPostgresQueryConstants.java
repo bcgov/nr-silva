@@ -1692,7 +1692,7 @@ public class SilvaPostgresQueryConstants {
 					atu.update_timestamp AS updateTimestamp
 				FROM activity_treatment_unit atu
 				LEFT JOIN opening op ON atu.opening_id = op.opening_id
-				LEFT JOIN org_unit ou ON atu.org_unit_no = ou.org_unit_no
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
 				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id AND cboa.cut_block_open_admin_id = (
 					SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
 					WHERE cboa2.opening_id = op.opening_id
@@ -1704,14 +1704,15 @@ public class SilvaPostgresQueryConstants {
 				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
 				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
 				WHERE
-					(
-						'NOVALUE' IN (:#{#filter.bases}) OR atu.silv_base_code IN (:#{#filter.bases})
+					atu.silv_base_code <> 'DN'
+					AND (
+						'NOVALUE' IN (:#{#filter.bases}) OR UPPER(atu.silv_base_code) IN (:#{#filter.bases})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.techniques}) OR atu.silv_technique_code IN (:#{#filter.techniques})
+						'NOVALUE' IN (:#{#filter.techniques}) OR UPPER(atu.silv_technique_code) IN (:#{#filter.techniques})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.methods}) OR atu.silv_method_code IN (:#{#filter.methods})
+						'NOVALUE' IN (:#{#filter.methods}) OR UPPER(atu.silv_method_code) IN (:#{#filter.methods})
 					)
 					AND (
 						CAST(:#{#filter.isComplete} AS boolean) IS NULL
@@ -1720,18 +1721,18 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.objectives})
-						OR atu.silv_objective_code_1 IN (:#{#filter.objectives})
-						OR atu.silv_objective_code_2 IN (:#{#filter.objectives})
-						OR atu.silv_objective_code_3 IN (:#{#filter.objectives})
+						OR UPPER(atu.silv_objective_code_1) IN (:#{#filter.objectives})
+						OR UPPER(atu.silv_objective_code_2) IN (:#{#filter.objectives})
+						OR UPPER(atu.silv_objective_code_3) IN (:#{#filter.objectives})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.fundingSources}) OR atu.silv_fund_srce_code IN (:#{#filter.fundingSources})
+						'NOVALUE' IN (:#{#filter.fundingSources}) OR UPPER(atu.silv_fund_srce_code) IN (:#{#filter.fundingSources})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
+						'NOVALUE' IN (:#{#filter.orgUnits}) OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.openingCategories}) OR op.open_category_code IN (:#{#filter.openingCategories})
+						'NOVALUE' IN (:#{#filter.openingCategories}) OR UPPER(op.open_category_code) IN (:#{#filter.openingCategories})
 					)
 					AND (
 						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
@@ -1740,7 +1741,7 @@ public class SilvaPostgresQueryConstants {
 						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.openingStatuses}) OR op.opening_status_code IN (:#{#filter.openingStatuses})
+						'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
 					)
 					AND (
 						(
@@ -1790,7 +1791,118 @@ public class SilvaPostgresQueryConstants {
 				totalCount,
 				updateTimestamp
 			FROM activity_search
-			ORDER BY activityId DESC
+			ORDER BY updateTimestamp DESC
+			""" + PAGINATION;
+
+		public static final String DISTURBANCE_SEARCH = """
+			WITH disturbance_search AS (
+				SELECT
+					atu.activity_treatment_unit_id AS activityId,
+					dc.disturbance_code AS disturbanceCode,
+					dc.description AS baseDescription,
+					ssc.silv_system_code AS silvSystemCode,
+					ssc.description AS silvSystemDescription,
+					ssvc.silv_system_variant_code AS variantCode,
+					ssvc.description AS variantDescription,
+					scpc.silv_cut_phase_code AS cutPhaseCode,
+					scpc.description AS cutPhaseDescription,
+					ou.org_unit_code AS orgUnitCode,
+					ou.org_unit_name AS orgUnitDescription,
+					cboa.forest_file_id AS fileId,
+					cboa.cut_block_id AS cutBlock,
+					atu.opening_id AS openingId,
+					occ.open_category_code AS openingCategoryCode,
+					occ.description AS openingCategoryDescription,
+					ffc.client_number AS openingClientCode,
+					COUNT(*) OVER () AS totalCount,
+					atu.update_timestamp AS updateTimestamp
+				FROM activity_treatment_unit atu
+				LEFT JOIN opening op ON atu.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id AND cboa.cut_block_open_admin_id = (
+					SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
+					WHERE cboa2.opening_id = op.opening_id
+				)
+				LEFT JOIN disturbance_code dc ON atu.disturbance_code = dc.disturbance_code
+				LEFT JOIN silv_system_code ssc ON atu.silv_system_code = ssc.silv_system_code
+				LEFT JOIN silv_system_variant_code ssvc ON atu.silv_system_variant_code = ssvc.silv_system_variant_code
+				LEFT JOIN silv_cut_phase_code scpc ON atu.silv_cut_phase_code = scpc.silv_cut_phase_code
+				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
+				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+				WHERE
+					atu.silv_base_code = 'DN'
+					AND (
+						'NOVALUE' IN (:#{#filter.disturbances}) OR UPPER(atu.disturbance_code) IN (:#{#filter.disturbances})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.silvSystems}) OR UPPER(atu.silv_system_code) IN (:#{#filter.silvSystems})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.variants}) OR UPPER(atu.silv_system_variant_code) IN (:#{#filter.variants})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.cutPhases}) OR UPPER(atu.silv_cut_phase_code) IN (:#{#filter.cutPhases})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits}) OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingCategories}) OR UPPER(op.open_category_code) IN (:#{#filter.openingCategories})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE' AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+						)
+						OR (
+							atu.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND atu.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+			)
+			SELECT
+				activityId,
+				disturbanceCode,
+				baseDescription,
+				silvSystemCode,
+				silvSystemDescription,
+				variantCode,
+				variantDescription,
+				cutPhaseCode,
+				cutPhaseDescription,
+				orgUnitCode,
+				orgUnitDescription,
+				fileId,
+				cutBlock,
+				openingId,
+				openingCategoryCode,
+				openingCategoryDescription,
+				openingClientCode,
+				totalCount,
+				updateTimestamp
+			FROM disturbance_search
+			ORDER BY updateTimestamp DESC
 			""" + PAGINATION;
 	}
 

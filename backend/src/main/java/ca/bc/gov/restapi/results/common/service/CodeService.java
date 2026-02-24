@@ -19,4 +19,12 @@ public interface CodeService {
   List<CodeDescriptionDto> findAllOrgUnits();
 
   List<CodeDescriptionDto> getAllOpenStatusCode();
+
+  List<CodeDescriptionDto> getAllDisturbanceCode();
+
+  List<CodeDescriptionDto> getAllSilvSystemCode();
+
+  List<CodeDescriptionDto> getAllSilvSystemVariantCode();
+
+  List<CodeDescriptionDto> getAllSilvCutPhaseCode();
 }

@@ -4,7 +4,10 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
 import ca.bc.gov.restapi.results.common.projection.ActivitySearchProjection;
+import ca.bc.gov.restapi.results.common.projection.DisturbanceSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.ActivityTreatmentUnitRepository;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
@@ -50,27 +53,56 @@ public abstract class AbstractActivityService implements ActivityService {
             .map(ActivitySearchProjection::getOpeningClientCode)
             .filter(code -> code != null && !code.isBlank())
             .distinct()
-            .collect(Collectors.toList());
+            .toList();
 
-    final Map<String, ForestClientDto> clientMap;
-    if (!clientNumbers.isEmpty()) {
-      List<ForestClientDto> clients =
-          forestClientService.searchByClientNumbers(0, clientNumbers.size(), clientNumbers);
-      clientMap = clients.stream().collect(Collectors.toMap(ForestClientDto::clientNumber, c -> c));
-    } else {
-      clientMap = new HashMap<>();
-    }
+    final Map<String, ForestClientDto> clientMap = buildClientMap(clientNumbers);
 
     // Map projections to response DTOs
     var responseDtos =
         projections.stream()
-            .map(projection -> mapToSearchResponse(projection, clientMap))
-            .collect(Collectors.toList());
+            .map(projection -> mapActivityToSearchResponse(projection, clientMap))
+            .toList();
 
     return new PageImpl<>(responseDtos, pagination, total);
   }
 
-  private ActivitySearchResponseDto mapToSearchResponse(
+  @Override
+  public Page<DisturbanceSearchResponseDto> disturbanceSearch(
+      DisturbanceSearchFilterDto filters, Pageable pagination) {
+    DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
+
+    long offset = pagination.getOffset();
+    long size = pagination.getPageSize();
+
+    List<DisturbanceSearchProjection> projections =
+        activityTreatmentUnitRepository.disturbanceSearch(filters, offset, size);
+
+    long total = 0;
+    if (!projections.isEmpty()) {
+      Long totalCount = projections.get(0).getTotalCount();
+      total = totalCount != null ? totalCount : 0;
+    }
+
+    // Gather unique client numbers and fetch client information
+    List<String> clientNumbers =
+        projections.stream()
+            .map(DisturbanceSearchProjection::getOpeningClientCode)
+            .filter(code -> code != null && !code.isBlank())
+            .distinct()
+            .toList();
+
+    final Map<String, ForestClientDto> clientMap = buildClientMap(clientNumbers);
+
+    // Map projections to response DTOs
+    var responseDtos =
+        projections.stream()
+            .map(projection -> mapDisturbanceToSearchResponse(projection, clientMap))
+            .toList();
+
+    return new PageImpl<>(responseDtos, pagination, total);
+  }
+
+  private ActivitySearchResponseDto mapActivityToSearchResponse(
       ActivitySearchProjection projection, Map<String, ForestClientDto> clientMap) {
 
     return new ActivitySearchResponseDto(
@@ -92,10 +124,37 @@ public abstract class AbstractActivityService implements ActivityService {
         projection.getUpdateTimestamp());
   }
 
+  private DisturbanceSearchResponseDto mapDisturbanceToSearchResponse(
+      DisturbanceSearchProjection projection, Map<String, ForestClientDto> clientMap) {
+
+    return new DisturbanceSearchResponseDto(
+        projection.getActivityId(),
+        mapCode(projection.getDisturbanceCode(), projection.getBaseDescription()),
+        mapCode(projection.getSilvSystemCode(), projection.getSilvSystemDescription()),
+        mapCode(projection.getVariantCode(), projection.getVariantDescription()),
+        mapCode(projection.getCutPhaseCode(), projection.getCutPhaseDescription()),
+        projection.getFileId(),
+        projection.getCutBlock(),
+        projection.getOpeningId(),
+        mapCode(projection.getOpeningCategoryCode(), projection.getOpeningCategoryDescription()),
+        mapCode(projection.getOrgUnitCode(), projection.getOrgUnitDescription()),
+        clientMap.getOrDefault(projection.getOpeningClientCode(), null),
+        projection.getUpdateTimestamp());
+  }
+
   private CodeDescriptionDto mapCode(String code, String description) {
     if (code == null || code.isBlank()) {
       return null;
     }
     return new CodeDescriptionDto(code, description);
+  }
+
+  private Map<String, ForestClientDto> buildClientMap(List<String> clientNumbers) {
+    if (!clientNumbers.isEmpty()) {
+      List<ForestClientDto> clients =
+          forestClientService.searchByClientNumbers(0, clientNumbers.size(), clientNumbers);
+      return clients.stream().collect(Collectors.toMap(ForestClientDto::clientNumber, c -> c));
+    }
+    return new HashMap<>();
   }
 }

@@ -21,6 +21,26 @@ export class CodesEndpointService {
      * @returns CodeDescriptionDto OK
      * @throws ApiError
      */
+    public static getSilvSystemCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-system',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvSystemVariantCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-system-variant',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
     public static getSilvObjectiveCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -45,6 +65,16 @@ export class CodesEndpointService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/codes/silv-fund-source',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvCutPhaseCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-cut-phase',
         });
     }
     /**
@@ -81,6 +111,16 @@ export class CodesEndpointService {
             query: {
                 'includeExpired': includeExpired,
             },
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getDisturbanceCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/disturbance',
         });
     }
 }
