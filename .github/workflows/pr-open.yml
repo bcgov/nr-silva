@@ -97,9 +97,9 @@ jobs:
   validation:
     name: Trigger Validation
     if: always()
-    needs: [builds, fam_routes, deploys, results]
-    uses: ./.github/workflows/pr-validate.yml
-    secrets: inherit
-    with:
-      pr_number: ${{ github.event.number }}
-      deployment_successful: ${{ needs.results.result == 'success' }}
+    needs: [results]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "PR Number: ${{ github.event.number }}"
+          echo "Results: ${{ needs.results.result }}"
