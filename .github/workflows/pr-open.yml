@@ -97,7 +97,6 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          verbose: true
           commands: |
             echo "Deployment successful - removing route reservations from ConfigMap"
             echo "PR: $PR_NUMBER, Hybrid route: $HYBRID_ROUTE, Postgres route: $POSTGRES_ROUTE"

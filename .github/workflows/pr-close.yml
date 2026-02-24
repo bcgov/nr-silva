@@ -25,7 +25,6 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          verbose: true
           commands: |
             echo "Cleaning up route allocations for PR $PR_NUMBER"
             
