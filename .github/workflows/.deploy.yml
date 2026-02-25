@@ -52,6 +52,11 @@ on:
         description: Primary database for backend
         default: "oracle"
         type: string
+      deployment_model:
+        description: Deployment model (hybrid or postgres); determines which database to deploy
+        default: "hybrid"
+        required: false
+        type: string
 
       # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
       fam_route_number:
@@ -68,7 +73,7 @@ permissions: {}
 
 jobs:
   init:
-    name: Deploy (init) - ${{ inputs.backend_primary_db }}
+    name: Deploy (init) - ${{ inputs.deployment_model }}
     environment: ${{ inputs.environment }}
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
@@ -119,7 +124,7 @@ jobs:
           triggers: ${{ inputs.triggers }}
 
   deploy:
-    name: Deploy (${{ matrix.name }} - ${{ inputs.backend_primary_db }})
+    name: Deploy (${{ matrix.name }}) - ${{ inputs.deployment_model }}
     environment: ${{ inputs.environment }}
     needs: [init]
     runs-on: ubuntu-24.04
