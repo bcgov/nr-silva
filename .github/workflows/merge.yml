@@ -29,15 +29,29 @@ jobs:
   deploys-test:
     name: TEST Deploys (${{ needs.init.outputs.pr }})
     needs: [init]
+    strategy:
+      matrix:
+        primary_db: [oracle, postgres]
+        include:
+          - primary_db: oracle
+            allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
+            target_name: test
+            deployment_model: hybrid
+          - primary_db: postgres
+            allowed_origins: https://nr-silva-preview-frontend.apps.silver.devops.gov.bc.ca/
+            target_name: preview
+            deployment_model: postgres
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
       backend_min_replicas: "1"
       backend_max_replicas: "1"
-      allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
+      backend_primary_db: ${{ matrix.primary_db }}
+      allowed_origins: ${{ matrix.allowed_origins }}
       environment: test
       tag: ${{ needs.init.outputs.pr }}
-      target: test
+      target: ${{ matrix.target_name }}
+      deployment_model: ${{ matrix.deployment_model }}
 
   deploys-prod:
     name: PROD Deploys (${{ needs.init.outputs.pr }})
