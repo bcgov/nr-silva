@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Column, Grid, RadioButton, Stack } from '@carbon/react';
 import PageTitle from '@/components/PageTitle';
 import { ActivitySearchRoute } from '@/routes/config';
+import ActivitiesSearchSection from './ActivitiesSearchSection';
+import DisturbancesSearchSection from './DisturbancesSearchSection';
 
 import './styles.scss';
 
@@ -45,9 +47,22 @@ const ActivitySearch = ({ type }: props) => {
               value="disturbances"
               checked={type === 'disturbances'}
               onChange={() => handleSearchTypeChange('disturbances')}
+              disabled
             />
           </div>
         </Stack>
+        <hr className="default-hr-for-radio-btn-tab" />
+      </Column>
+
+      <Column className="full-width-col" sm={4} md={8} lg={16}>
+        {
+          type === 'activities'
+            ? (
+              <ActivitiesSearchSection />
+            ) : (
+              <DisturbancesSearchSection />
+            )
+        }
       </Column>
     </Grid>
   );
