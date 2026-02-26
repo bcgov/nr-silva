@@ -81,9 +81,6 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
-  - name: FLYWAY_ENVIRONMENT
-    description: The Flyway environment to use for database migrations
-    value: "prod"
   - name: PRIMARY_DB
     description: The primary database to use (oracle or postgres)
     value: "oracle"
@@ -166,8 +163,6 @@ objects:
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
-                - name: FLYWAY_ENVIRONMENT
-                  value: ${FLYWAY_ENVIRONMENT}
                 - name: PRIMARY_DB
                   value: ${PRIMARY_DB}
                 - name: DATABASE_HOST
