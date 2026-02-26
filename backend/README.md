@@ -1,6 +1,10 @@
 # Backend Service
 
-This document provides instructions to run the backend service and configure it for different database environments (Oracle and PostgreSQL).
+This document provides instructions to run the backend service and configure it for different database development models.
+
+Currently, we have two models for database development and deployment:
+- Hybrid: Default model that uses Oracle as the primary database and PostgreSQL for metadata.
+- Postgres: The new model that uses only PostgreSQL as the primary database.
 
 ---
 
@@ -11,9 +15,6 @@ This document provides instructions to run the backend service and configure it 
 3. **Databases**:
    - Oracle Database (if using Oracle as the primary database).
    - PostgreSQL Database (always required; used to store user preferences, even when Oracle is configured as the primary database).
-4. **Environment Variables**:
-   - `PRIMARY_DB`: Specifies the primary database (`oracle` or `postgres`).
-   - `FLYWAY_ENVIRONMENT`: Specifies the Flyway migration environment (`dev`, `prod`).
 
 ---
 
@@ -27,7 +28,7 @@ cd <repo-directory>/backend
 
 ### 2. Set Environment Variables
 
-#### Example for Oracle:
+#### Example for Oracle (hybrid model):
 ```bash
 export PRIMARY_DB=oracle
 ```
@@ -35,7 +36,6 @@ export PRIMARY_DB=oracle
 #### Example for PostgreSQL:
 ```bash
 export PRIMARY_DB=postgres
-export FLYWAY_ENVIRONMENT=dev
 ```
 
 ### 3. Run the Application
@@ -44,8 +44,6 @@ Using Maven Wrapper:
 ```bash
 ./mvnw spring-boot:run
 ```
-
-**NOTE:** There is no need to set the `FLYWAY_ENVIRONMENT` environment variable when running the Oracle-primary instance, as the goal is to run the backend deployed to the production environment.
 
 ---
 
@@ -62,11 +60,11 @@ server:
 
 ### 2. Flyway Migrations
 
-Flyway migrations are determined by the `FLYWAY_ENVIRONMENT` variable.
+Flyway migrations are determined by the `PRIMARY_DB` variable that determines the database development model (hybrid vs postgres).
 
-- **Shared/Baseline Migrations**: Located in `src/main/resources/db/migration/`. These migrations are applied in all environments (including `prod` and non-`prod`).
-- **Development-Only Migrations**: Located in `src/main/resources/db/migration-dev/`. For non-`prod` values of `FLYWAY_ENVIRONMENT` (for example, `dev`), Flyway loads migrations from **both** `db/migration/` and `db/migration-dev/`.
-- **Production Environment**: When `FLYWAY_ENVIRONMENT=prod`, only the shared/baseline migrations in `src/main/resources/db/migration/` are applied.
+- **Shared/Baseline Migrations**: Located in `src/main/resources/db/migration/`. These migrations are applied for both hybrid and postgres deployment models.
+- **Postgres-Only Migrations**: Located in `src/main/resources/db/migration-dev/`. For `PRIMARY_DB=postgres`, Flyway loads migrations from **both** `db/migration/` and `db/migration-dev/`.
+- **Production Environment**: When `PRIMARY_DB=oracle`, only the shared/baseline migrations in `src/main/resources/db/migration/` are applied.
 
 ---
 
@@ -77,11 +75,9 @@ Flyway migrations are determined by the `FLYWAY_ENVIRONMENT` variable.
 ./mvnw clean install -Dserver.primary-db=oracle
 ```
 
-**NOTE:** There is no need to pass the `flyway-environment` property or set the `FLYWAY_ENVIRONMENT` environment variable when running the Oracle tests, as the goal is to run the tests deployed to production.
-
 ### Run Tests for PostgreSQL:
 ```bash
-./mvnw clean install -Dflyway-environment=dev -Dserver.primary-db=postgres
+./mvnw clean install -Dserver.primary-db=postgres
 ```
 
 ### Loading Test Data on Local PostgreSQL Environment

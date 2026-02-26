@@ -74,7 +74,6 @@ jobs:
       backend_cpu_request: "30m"
       backend_min_replicas: "1"
       backend_max_replicas: "1"
-      backend_flyway_environment: "dev"
       backend_primary_db: "${{ matrix.primary_db }}"
       fam_route_number: "${{ matrix.fam_route_number }}"
       target: "${{ github.event.number }}-${{ matrix.instance_name }}"
