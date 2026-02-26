@@ -1,7 +1,7 @@
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Column, DatePicker, DatePickerInput, Dropdown, Grid, Tag } from '@carbon/react';
+import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, Tag } from '@carbon/react';
 import API from '@/services/API';
 import { ActivitySearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
@@ -15,6 +15,7 @@ import { API_DATE_FORMAT, DATE_PICKER_FORMAT } from '@/constants';
 import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 
 import './styles.scss';
+import { ChevronDown } from '@carbon/icons-react';
 
 type props = {
   searchParams?: ActivitySearchParams;
@@ -22,6 +23,7 @@ type props = {
 }
 
 const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
+  const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
 
   const silvBaseCodeQuery = useQuery({
     queryKey: ['codes', 'silv-base'],
@@ -248,6 +250,17 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
                 placeholder="yyyy/mm/dd"
               />
             </DatePicker>
+          </Column>
+
+          <Column sm={4} md={8} lg={16}>
+            <Button
+              type="button"
+              renderIcon={ChevronDown}
+              title={`${showMoreFilters ? 'Less' : 'More'}  filters`}
+              kind="tertiary"
+            >
+              More filters
+            </Button>
           </Column>
         </Grid>
       </Column>
