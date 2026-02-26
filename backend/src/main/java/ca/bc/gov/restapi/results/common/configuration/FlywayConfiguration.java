@@ -11,7 +11,8 @@ public class FlywayConfiguration {
   @Bean
   public FlywayConfigurationCustomizer flywayConfigurationCustomizer(Environment env) {
     return configuration -> {
-       String primaryDatabase = env.getProperty("PRIMARY_DB", "oracle");
+      String primaryDatabase = env.getProperty("server.primary-db",
+          env.getProperty("PRIMARY_DB", "oracle"));
        
       if (primaryDatabase.equals("oracle")) {
         configuration.locations("classpath:db/migration");
