@@ -11,12 +11,14 @@ public class FlywayConfiguration {
   @Bean
   public FlywayConfigurationCustomizer flywayConfigurationCustomizer(Environment env) {
     return configuration -> {
-       String environmentName = env.getProperty("FLYWAY_ENVIRONMENT", "prod");
+       String primaryDatabase = env.getProperty("PRIMARY_DB", "oracle");
        
-      if (environmentName.equals("prod")) {
+      if (primaryDatabase.equals("oracle")) {
         configuration.locations("classpath:db/migration");
-      } else {
+      } else if (primaryDatabase.equals("postgres")) {
         configuration.locations("classpath:db/migration", "classpath:db/migration-dev");
+      } else {
+        throw new RuntimeException("Unsupported database: " + primaryDatabase);
       }
     };
   }

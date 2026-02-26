@@ -33,16 +33,15 @@ public abstract class AbstractTestContainerIntegrationTest {
   static final Flyway flywayPostgres;
   static Flyway flywayOracle;
 
-  static final String env = resolveTestProperty("flyway-environment", "FLYWAY_ENVIRONMENT", "prod");
   static final String primaryDb = resolveTestProperty("server.primary-db", "PRIMARY_DB", "oracle");
 
   // Static fields declared like this are instantiated first by the JVM
   static {
     String[] postgresLocations;
-    if ("prod".equals(env)) {
+    if ("oracle".equals(primaryDb)) {
       postgresLocations =
           new String[] {"classpath:db/migration", "classpath:migration/postgres/default"};
-    } else {
+    } else if ("postgres".equals(primaryDb)) {
       postgresLocations =
           new String[] {
             "classpath:db/migration",
@@ -50,6 +49,8 @@ public abstract class AbstractTestContainerIntegrationTest {
             "classpath:migration/postgres/default",
             "classpath:migration/postgres/dev"
           };
+    } else {
+        throw new RuntimeException("Unsupported primary database: " + primaryDb);
     }
 
     postgres =
