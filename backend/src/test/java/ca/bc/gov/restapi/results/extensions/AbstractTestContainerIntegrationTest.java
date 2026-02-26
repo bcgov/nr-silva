@@ -50,7 +50,10 @@ public abstract class AbstractTestContainerIntegrationTest {
             "classpath:migration/postgres/dev"
           };
     } else {
-        throw new RuntimeException("Unsupported primary database: " + primaryDb);
+      throw new IllegalStateException("Unsupported value for primary database configuration " +
+          "(property 'server.primary-db' or env var 'PRIMARY_DB'): '" +
+          primaryDb + "'. Expected one of: oracle, postgres."
+      );
     }
 
     postgres =
