@@ -1,21 +1,23 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, Tag } from '@carbon/react';
+import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, Tag, TextInput } from '@carbon/react';
 import API from '@/services/API';
 import { ActivitySearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
-import { getMultiSelectedCodes } from '@/utils/InputUtils';
+import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
 import { CodeDescriptionDto } from '@/services/OpenApi';
 import CustomMultiSelect from '../CustomMultiSelect';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { useQuery } from '@tanstack/react-query';
 
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT } from '@/constants';
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, INTRA_AGENCY_NUMBER_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
 import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 
 import './styles.scss';
-import { ChevronDown } from '@carbon/icons-react';
+import { ChevronDown, ChevronUp } from '@carbon/icons-react';
+import { FILE_ID_MAX_LENGTH } from '@/constants';
+import ForestClientMultiSelect from '../ForestClientMultiSelect';
 
 type props = {
   searchParams?: ActivitySearchParams;
@@ -24,6 +26,27 @@ type props = {
 
 const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
   const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
+  const hasInitializedMoreFilters = useRef(false);
+
+  // Auto-expand more filters on mount if URL params contain any hidden filter values
+  useEffect(() => {
+    if (hasInitializedMoreFilters.current) return;
+    if (
+      searchParams?.fileId !== undefined ||
+      searchParams?.clientNumbers !== undefined ||
+      searchParams?.openingStatuses !== undefined ||
+      searchParams?.intraAgencyNumber !== undefined
+    ) {
+      setShowMoreFilters(true);
+      hasInitializedMoreFilters.current = true;
+    }
+  }, [searchParams]);
+
+  const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
+  useRefWithSearchParam(fileIdInputRef, searchParams?.fileId);
+
+  const intraAgencyNumberInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
+  useRefWithSearchParam(intraAgencyNumberInputRef, searchParams?.intraAgencyNumber);
 
   const silvBaseCodeQuery = useQuery({
     queryKey: ['codes', 'silv-base'],
@@ -255,13 +278,75 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
           <Column sm={4} md={8} lg={16}>
             <Button
               type="button"
-              renderIcon={ChevronDown}
-              title={`${showMoreFilters ? 'Less' : 'More'}  filters`}
+              renderIcon={showMoreFilters ? ChevronUp : ChevronDown}
+              title={`${showMoreFilters ? 'Fewer' : 'More'} filters`}
               kind="tertiary"
+              onClick={() => setShowMoreFilters(prev => !prev)}
             >
-              More filters
+              {showMoreFilters ? 'Fewer filters' : 'More filters'}
             </Button>
           </Column>
+
+          {/* More filters */}
+          {
+            showMoreFilters
+              ? (
+                <>
+                  {/* File ID */}
+                  <Column sm={4} md={4} lg={6} max={4}>
+                    <TextInput
+                      ref={fileIdInputRef}
+                      id="file-id-input"
+                      name="file-id"
+                      labelText="File ID"
+                      placeholder="Enter file ID"
+                      defaultValue={searchParams?.fileId ?? ''}
+                      onInput={(e) => handleAutoUpperInput(e, FILE_ID_MAX_LENGTH)}
+                      onPaste={(e) => handleAutoUpperPaste(e, FILE_ID_MAX_LENGTH)}
+                      onBlur={(e) => handleSearchFieldChange('fileId', e.target.value ? e.target.value : undefined)}
+                    />
+                  </Column>
+
+                  {/* Client */}
+                  <Column sm={4} md={4} lg={6} max={4}>
+                    <ForestClientMultiSelect
+                      selectedClientNumbers={searchParams?.clientNumbers}
+                      onChange={(clientNumbers) => handleSearchFieldChange('clientNumbers', clientNumbers)}
+                    />
+                  </Column>
+
+                  {/* Opening status */}
+                  <Column sm={4} md={4} lg={6} max={4}>
+                    <CustomMultiSelect
+                      id="status-multiselect"
+                      className="default-search-multi-select"
+                      titleText="Opening status"
+                      placeholder={getMultiSelectPlaceholder('openingStatuses')}
+                      items={OPENING_STATUS_LIST}
+                      itemToString={codeDescriptionToDisplayText}
+                      onChange={handleMultiSelectChange('openingStatuses')}
+                      selectedItems={OPENING_STATUS_LIST.filter(data => searchParams?.openingStatuses?.includes(data.code ?? '')) ?? []}
+                    />
+                  </Column>
+
+                  {/* Intra-agency number */}
+                  <Column sm={4} md={4} lg={6} max={4}>
+                    <TextInput
+                      ref={intraAgencyNumberInputRef}
+                      id="intra-agency-number-input"
+                      name="intra-agency-number"
+                      labelText="Intra-agency number"
+                      placeholder="Enter intra-agency number"
+                      defaultValue={searchParams?.intraAgencyNumber ?? ''}
+                      onInput={(e) => handleAutoUpperInput(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
+                      onPaste={(e) => handleAutoUpperPaste(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
+                      onBlur={(e) => handleSearchFieldChange('intraAgencyNumber', e.target.value ? e.target.value : undefined)}
+                    />
+                  </Column>
+                </>
+              )
+              : null
+          }
         </Grid>
       </Column>
     </Grid>

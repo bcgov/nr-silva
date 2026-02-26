@@ -12,6 +12,7 @@ export type ActivitySearchParams = {
   openingStatuses?: Array<string>;
   updateDateStart?: string;
   updateDateEnd?: string;
+  intraAgencyNumber?: string;
   page?: number;
   size?: number;
   sort?: Array<string>;

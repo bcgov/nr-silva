@@ -52,6 +52,9 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
   const fileId = searchParams.get('fileId');
   if (fileId) params.fileId = fileId;
 
+  const intraAgencyNumber = searchParams.get('intraAgencyNumber');
+  if (intraAgencyNumber) params.intraAgencyNumber = intraAgencyNumber;
+
   const clientNumbers = searchParams.getAll('clientNumbers');
   if (clientNumbers.length > 0) params.clientNumbers = clientNumbers;
 
@@ -118,6 +121,10 @@ export const updateActivitySearchUrlParams = (params?: Partial<ActivitySearchPar
 
   if (params.fileId) {
     searchParams.append('fileId', params.fileId);
+  }
+
+  if (params.intraAgencyNumber) {
+    searchParams.append('intraAgencyNumber', params.intraAgencyNumber);
   }
 
   if (params.clientNumbers && Array.isArray(params.clientNumbers)) {
