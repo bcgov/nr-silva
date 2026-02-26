@@ -47,6 +47,9 @@ public class ActivitySearchFiltersDto {
   @Schema(type = "array", nullable = true)
   private final List<String> openingStatuses;
 
+  @Schema(type = "string")
+  private final String intraAgencyNumber;
+
   @Schema(type = "string", format = "date", nullable = true)
   private final String updateDateStart;
 
@@ -58,7 +61,7 @@ public class ActivitySearchFiltersDto {
    * to apply defaults.
    */
   public ActivitySearchFiltersDto() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
   /** Creates an instance of the activity search filter dto. */
@@ -74,23 +77,40 @@ public class ActivitySearchFiltersDto {
       String fileId,
       List<String> clientNumbers,
       List<String> openingStatuses,
+      String intraAgencyNumber,
       String updateDateStart,
       String updateDateEnd) {
-    this.bases = !CollectionUtils.isEmpty(bases) ? StringUtil.toUpperCase(bases) : List.of(SilvaConstants.NOVALUE);
+    this.bases =
+        !CollectionUtils.isEmpty(bases)
+            ? StringUtil.toUpperCase(bases)
+            : List.of(SilvaConstants.NOVALUE);
     this.techniques =
-        !CollectionUtils.isEmpty(techniques) ? StringUtil.toUpperCase(techniques) : List.of(SilvaConstants.NOVALUE);
-    this.methods = !CollectionUtils.isEmpty(methods) ? StringUtil.toUpperCase(methods) : List.of(SilvaConstants.NOVALUE);
+        !CollectionUtils.isEmpty(techniques)
+            ? StringUtil.toUpperCase(techniques)
+            : List.of(SilvaConstants.NOVALUE);
+    this.methods =
+        !CollectionUtils.isEmpty(methods)
+            ? StringUtil.toUpperCase(methods)
+            : List.of(SilvaConstants.NOVALUE);
     this.isComplete = isComplete;
     this.objectives =
-        !CollectionUtils.isEmpty(objectives) ? StringUtil.toUpperCase(objectives) : List.of(SilvaConstants.NOVALUE);
+        !CollectionUtils.isEmpty(objectives)
+            ? StringUtil.toUpperCase(objectives)
+            : List.of(SilvaConstants.NOVALUE);
     this.fundingSources =
-        !CollectionUtils.isEmpty(fundingSources) ? StringUtil.toUpperCase(fundingSources) : List.of(SilvaConstants.NOVALUE);
-    this.orgUnits = !CollectionUtils.isEmpty(orgUnits) ? StringUtil.toUpperCase(orgUnits) : List.of(SilvaConstants.NOVALUE);
+        !CollectionUtils.isEmpty(fundingSources)
+            ? StringUtil.toUpperCase(fundingSources)
+            : List.of(SilvaConstants.NOVALUE);
+    this.orgUnits =
+        !CollectionUtils.isEmpty(orgUnits)
+            ? StringUtil.toUpperCase(orgUnits)
+            : List.of(SilvaConstants.NOVALUE);
     this.openingCategories =
         !CollectionUtils.isEmpty(openingCategories)
             ? StringUtil.toUpperCase(openingCategories)
             : List.of(SilvaConstants.NOVALUE);
     this.fileId = Objects.isNull(fileId) ? null : fileId.trim();
+    this.intraAgencyNumber = Objects.isNull(intraAgencyNumber) ? null : intraAgencyNumber.trim();
     this.clientNumbers =
         !CollectionUtils.isEmpty(clientNumbers) ? clientNumbers : List.of(SilvaConstants.NOVALUE);
     this.openingStatuses =
@@ -113,6 +133,7 @@ public class ActivitySearchFiltersDto {
         || (fileId != null && !fileId.isBlank())
         || !SilvaConstants.NOVALUE.equals(clientNumbers.get(0))
         || !SilvaConstants.NOVALUE.equals(openingStatuses.get(0))
+        || (intraAgencyNumber != null && !intraAgencyNumber.isBlank())
         || (updateDateStart != null && !updateDateStart.isBlank())
         || (updateDateEnd != null && !updateDateEnd.isBlank());
   }
