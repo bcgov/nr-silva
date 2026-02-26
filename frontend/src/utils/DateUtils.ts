@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { PLACE_HOLDER } from "../constants";
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, PLACE_HOLDER } from "../constants";
 
 export const formatDate = (date: string) => {
   if (date) {
@@ -92,4 +92,37 @@ export const isMidnight = (dateTimeStr: string): boolean => {
   const dt = DateTime.fromISO(dateTimeStr);
   if (!dt.isValid) return false;
   return dt.hour === 0 && dt.minute === 0 && dt.second === 0;
+};
+
+export const getStartMaxDate = (endDate?: string) => {
+  const maxDate = endDate
+    ? DateTime.fromFormat(
+      endDate,
+      API_DATE_FORMAT
+    ).toFormat(DATE_PICKER_FORMAT)
+    : DateTime.now().toFormat(DATE_PICKER_FORMAT);
+
+  return maxDate;
+};
+
+export const getEndMinDate = (startDate?: string) => {
+  const minDate = startDate
+    ? DateTime.fromFormat(
+      startDate,
+      API_DATE_FORMAT
+    ).toFormat(DATE_PICKER_FORMAT)
+    : undefined;
+
+  return minDate;
+};
+
+
+export const getDatePickerValue = (date?: string) => {
+  if (date) {
+    return DateTime.fromFormat(
+      date,
+      API_DATE_FORMAT
+    ).toFormat(DATE_PICKER_FORMAT);
+  }
+  return undefined;
 };

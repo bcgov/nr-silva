@@ -8,43 +8,6 @@
     align-content: end;
   }
 
-  .opening-search-multi-select {
-    input::placeholder {
-      color: var(--#{vars.$bcgov-prefix}-text-primary);
-    }
-  }
-
-  .date-label {
-    @include type.type-style('label-02');
-    margin-bottom: 0.5rem;
-  }
-
-  .date-sub-grid {
-    gap: 1.5rem;
-  }
-
-  #start-date-picker-input-id,
-  #end-date-picker-input-id {
-    inline-size: 100%;
-  }
-
-  .#{vars.$bcgov-prefix}--date-picker {
-    height: 100%;
-    width: 100%;
-
-    .#{vars.$bcgov-prefix}--date-picker-container {
-      width: 100%;
-
-      .#{vars.$bcgov-prefix}--date-picker-input__wrapper {
-        width: 100%;
-
-        span {
-          width: 100%;
-        }
-      }
-    }
-  }
-
   #opening-mapsheet-key-label {
     margin-bottom: 0.5rem;
   }

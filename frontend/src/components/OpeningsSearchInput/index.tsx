@@ -12,6 +12,7 @@ import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils"
 import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "@/services/OpenApi";
 import MapsheetKeyImg from "@/assets/img/opening-mapsheet-key-example.png";
 import useBreakpoint from "@/hooks/UseBreakpoint";
+import { getDatePickerValue, getEndMinDate, getStartMaxDate } from "@/utils/DateUtils";
 import {
   OPENING_ID_MAX_LENGTH,
   FILE_ID_MAX_LENGTH,
@@ -155,29 +156,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     return values && values.length > 0 ? values.join(', ') : defaultText;
   };
 
-
-  const getStartMaxDate = () => {
-    const maxDate = searchParams?.updateDateEnd
-      ? DateTime.fromFormat(
-        searchParams.updateDateEnd,
-        API_DATE_FORMAT
-      ).toFormat(DATE_PICKER_FORMAT)
-      : DateTime.now().toFormat(DATE_PICKER_FORMAT);
-
-    return maxDate;
-  };
-
-  const getEndMinDate = () => {
-    const minDate = searchParams?.updateDateStart
-      ? DateTime.fromFormat(
-        searchParams.updateDateStart,
-        API_DATE_FORMAT
-      ).toFormat(DATE_PICKER_FORMAT)
-      : undefined;
-
-    return minDate;
-  };
-
   const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
     if (!dates) return;
 
@@ -190,17 +168,6 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       isStartDate ? "updateDateStart" : "updateDateEnd",
       formattedDate ? formattedDate : undefined
     );
-  };
-
-  const getDateValue = (isStartDate: boolean) => {
-    const key = isStartDate ? 'updateDateStart' : 'updateDateEnd';
-    if (searchParams?.[key]) {
-      return DateTime.fromFormat(
-        searchParams[key],
-        API_DATE_FORMAT
-      ).toFormat(DATE_PICKER_FORMAT);
-    }
-    return undefined;
   };
 
   return (
@@ -225,7 +192,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           placeholder={getMultiSelectPlaceholder('categories')}
           titleText="Opening category"
           id="category-multi-select"
-          className="opening-search-multi-select"
+          className="default-search-multi-select"
           items={categoryQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('categories')}
@@ -237,7 +204,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
           id="status-multiselect"
-          className="opening-search-multi-select"
+          className="default-search-multi-select"
           titleText="Opening status"
           placeholder={getMultiSelectPlaceholder('openingStatuses')}
           items={OPENING_STATUS_LIST}
@@ -431,7 +398,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
             />
           }
           id="client-multi-select"
-          className="opening-search-multi-select"
+          className="default-search-multi-select"
           items={matchingClients}
           itemToString={getClientLabel}
           onChange={
@@ -454,7 +421,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           placeholder={getMultiSelectPlaceholder('orgUnits')}
           titleText="Org unit"
           id="org-unit-multi-select"
-          className="opening-search-multi-select"
+          className="default-search-multi-select"
           items={orgUnitQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('orgUnits')}
@@ -501,7 +468,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       </Column>
 
       {/* Updated on date range */}
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={16} className="default-search-date-col">
         <label className="date-label">Updated on date range</label>
 
         <Grid className="date-sub-grid">
@@ -512,9 +479,9 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              maxDate={getStartMaxDate()}
+              maxDate={getStartMaxDate(searchParams?.updateDateEnd)}
               onChange={handleDateChange(true)}
-              value={getDateValue(true)}
+              value={getDatePickerValue(searchParams?.updateDateStart)}
             >
               <DatePickerInput
                 id="start-date-picker-input-id"
@@ -532,10 +499,10 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              minDate={getEndMinDate()}
+              minDate={getEndMinDate(searchParams?.updateDateStart)}
               maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
               onChange={handleDateChange(false)}
-              value={getDateValue(false)}
+              value={getDatePickerValue(searchParams?.updateDateEnd)}
             >
               <DatePickerInput
                 id="end-date-picker-input-id"

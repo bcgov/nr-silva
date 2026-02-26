@@ -1,4 +1,4 @@
-
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Column, Grid, RadioButton, Stack } from '@carbon/react';
 import PageTitle from '@/components/PageTitle';
@@ -23,6 +23,13 @@ const ActivitySearch = ({ type }: props) => {
     if (value === type) return;
     navigate(`${ActivitySearchRoute.path}/${value}`);
   }
+
+  useEffect(() => {
+    document.title = `Activities Search - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, []);
 
   return (
     <Grid className="default-grid default-search-grid">

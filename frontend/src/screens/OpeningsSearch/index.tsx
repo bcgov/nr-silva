@@ -61,7 +61,7 @@ const OpeningsSearch = () => {
         ...urlParams,
         page: nextPage,
         size: nextSize,
-      } as OpeningSearchParamsType;
+      };
 
       setSearchParams(paramsWithPagination);
       setCurrPageNumber(nextPage);
