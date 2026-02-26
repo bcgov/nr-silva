@@ -18,7 +18,10 @@ public class FlywayConfiguration {
       } else if (primaryDatabase.equals("postgres")) {
         configuration.locations("classpath:db/migration", "classpath:db/migration-dev");
       } else {
-        throw new RuntimeException("Unsupported database: " + primaryDatabase);
+        throw new IllegalStateException("Unsupported value for primary database configuration " +
+            "(property 'server.primary-db' or env var 'PRIMARY_DB'): '" +
+            primaryDatabase + "'. Expected one of: oracle, postgres."
+        );
       }
     };
   }
