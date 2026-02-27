@@ -1,6 +1,9 @@
 ### Builder
 FROM ghcr.io/graalvm/native-image:22.3.3 AS build
 
+ARG PRIMARY_DB=oracle
+ENV PRIMARY_DB=${PRIMARY_DB}
+
 # Copy
 WORKDIR /app
 COPY pom.xml mvnw ./
