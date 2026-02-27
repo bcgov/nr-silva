@@ -20,6 +20,7 @@ jobs:
       packages: write
     strategy:
       matrix:
+        name: [backend-hybrid, backend-postgres, frontend]
         include:
           - name: backend-hybrid
             package: backend
@@ -30,7 +31,7 @@ jobs:
             triggers: ('backend/')
           - name: backend-postgres
             package: backend
-            tags:
+            tags: |
               ${{ github.event.number }}-postgres
             tag_fallback: latest-postgres
             extra_build_arg: PRIMARY_DB=postgres
