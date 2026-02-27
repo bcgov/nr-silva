@@ -135,6 +135,7 @@ jobs:
           - name: database
             file: common/openshift.database.yml
             parameters: -p DB_PVC_SIZE=128Mi
+              -p TAG=${{ inputs.tag }}
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
@@ -157,6 +158,7 @@ jobs:
             parameters: -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
+              -p TAG=${{ inputs.tag }}
     steps:
       - uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
         id: deploys
@@ -166,6 +168,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }} ${{ matrix.parameters }}
+          parameters: -p ZONE=${{ inputs.target }} ${{ matrix.parameters }}
           timeout: 15m
           triggers: ${{ inputs.triggers }}
