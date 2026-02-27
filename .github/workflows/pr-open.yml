@@ -64,10 +64,10 @@ jobs:
         include:
           - primary_db: oracle
             fam_route_number: ${{ needs.fam_routes.outputs.hybrid_route_number }}
-            instance_name: hybrid
+            deployment_model: hybrid
           - primary_db: postgres
             fam_route_number: ${{ needs.fam_routes.outputs.postgres_route_number }}
-            instance_name: postgres
+            deployment_model: postgres
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -77,7 +77,8 @@ jobs:
       backend_flyway_environment: "dev"
       backend_primary_db: "${{ matrix.primary_db }}"
       fam_route_number: "${{ matrix.fam_route_number }}"
-      target: "${{ github.event.number }}-${{ matrix.instance_name }}"
+      target: "${{ github.event.number }}-${{ matrix.deployment_model }}"
+      deployment_model: ${{ matrix.deployment_model }}
       triggers: ''
 
   cleanup_configmap:
