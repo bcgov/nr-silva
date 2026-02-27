@@ -38,6 +38,8 @@ jobs:
             triggers: ('backend/')
           - name: frontend
             package: frontend
+            tags: |
+              ${{ github.event.number }}
             tag_fallback: latest
             extra_build_arg: ""
             triggers: ('frontend/')
