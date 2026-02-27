@@ -143,6 +143,14 @@ export const updateActivitySearchUrlParams = (params?: Partial<ActivitySearchPar
     searchParams.append('updateDateEnd', params.updateDateEnd);
   }
 
+  if (params.page !== undefined) {
+    searchParams.append('page', String(params.page));
+  }
+
+  if (params.size !== undefined) {
+    searchParams.append('size', String(params.size));
+  }
+
   const queryString = searchParams.toString();
   const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
   window.history.replaceState({}, '', newUrl);

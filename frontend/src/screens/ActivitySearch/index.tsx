@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Column, Grid, RadioButton, Stack } from '@carbon/react';
+import { Column, Grid, Modal, RadioButton, Stack } from '@carbon/react';
 import PageTitle from '@/components/PageTitle';
 import { ActivitySearchRoute } from '@/routes/config';
-import ActivitiesSearchSection from './ActivitiesSearchSection';
-import DisturbancesSearchSection from './DisturbancesSearchSection';
+import ActivitiesSearchSection from '@/components/ActivitySearchSection';
+import { hasActivitySearchFilters, readActivitySearchUrlParams } from '@/components/ActivitySearchSection/utils';
+import DisturbancesSearchSection from '@/components/DisturbancesSearchSection';
 
 import './styles.scss';
 
@@ -13,6 +14,8 @@ type props = {
 }
 
 const ActivitySearch = ({ type }: props) => {
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const navigate = useNavigate();
   if (!type) {
     navigate('/');
@@ -21,8 +24,23 @@ const ActivitySearch = ({ type }: props) => {
 
   const handleSearchTypeChange = (value: props['type']) => {
     if (value === type) return;
+    if (type === 'activities' && hasActivitySearchFilters(readActivitySearchUrlParams())) {
+      setIsConfirmModalOpen(true);
+      return;
+    }
+
     navigate(`${ActivitySearchRoute.path}/${value}`);
-  }
+  };
+
+  const handleConfirmSwitch = () => {
+    const next = type === 'activities' ? 'disturbances' : 'activities';
+    navigate(`${ActivitySearchRoute.path}/${next}`);
+    setIsConfirmModalOpen(false);
+  };
+
+  const handleCancelSwitch = () => {
+    setIsConfirmModalOpen(false);
+  };
 
   useEffect(() => {
     document.title = `Activities Search - Silva`;
@@ -50,7 +68,7 @@ const ActivitySearch = ({ type }: props) => {
             />
             <RadioButton
               id="disturbances-search-radio-button"
-              labelText="Disturbances"
+              labelText="Disturbances - coming soon"
               value="disturbances"
               checked={type === 'disturbances'}
               onChange={() => handleSearchTypeChange('disturbances')}
@@ -71,6 +89,23 @@ const ActivitySearch = ({ type }: props) => {
             )
         }
       </Column>
+      <Modal
+        open={isConfirmModalOpen}
+        className="default-confirm-switch-modal"
+        modalHeading="Switch search type?"
+        primaryButtonText="Proceed"
+        secondaryButtonText="Cancel"
+        onRequestSubmit={handleConfirmSwitch}
+        onRequestClose={handleCancelSwitch}
+        onSecondarySubmit={handleCancelSwitch}
+        danger
+        size="sm"
+      >
+        <p>
+          Switching to a different search type will clear your current search inputs and results.
+          Are you sure you want to continue?
+        </p>
+      </Modal>
     </Grid>
   );
 };

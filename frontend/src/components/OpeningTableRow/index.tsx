@@ -112,7 +112,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
         .map((header) => (
           <TableCell key={header.key} data-testid={`opening-table-cell-${header.key}-${rowData.openingId}`}>
             {header.key !== "actions" ? (
-              <Link className="table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>
+              <Link className="default-table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>
                 {renderCellContent(header.key) ?? PLACE_HOLDER}
               </Link>
             ) : (

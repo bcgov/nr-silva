@@ -448,3 +448,19 @@ ul.default-tab-accordion {
     }
   }
 }
+
+.default-confirm-switch-modal {
+  .#{vars.$bcgov-prefix}--modal-footer {
+    .#{vars.$bcgov-prefix}--btn {
+      block-size: 1rem;
+    }
+  }
+}
+
+.default-table-cell-link-wrapper {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  margin: 0 -1rem; // to remove gaps between cells
+  padding: 0 1rem;
+}

@@ -2,7 +2,8 @@
 
 #activity-status-dropdown {
   .#{vars.$bcgov-prefix}--list-box__menu-item__option {
-    padding: 0.25rem 0 0 0;
+    .#{vars.$bcgov-prefix}--tag {
+      margin-top: -0.25rem;
+    }
   }
-
 }

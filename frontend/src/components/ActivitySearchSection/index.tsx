@@ -1,64 +1,60 @@
 import { useEffect, useState } from "react";
-import PageTitle from "@/components/PageTitle";
-import {
-  Grid,
-  Column,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  Pagination,
-  TableHeader,
-  InlineLoading,
-  Stack,
-  TableToolbarMenu,
-  Checkbox,
-} from "@carbon/react";
-
-import FavOpeningSection from "@/components/FavouriteOpenings/FavOpeningSection";
-import { useQuery } from "@tanstack/react-query";
-import { OpeningSearchParamsType } from "@/types/OpeningTypes";
-import { openingSearch } from "@/services/OpeningSearchService";
-import {
-  readOpeningSearchUrlParams,
-  updateOpeningSearchUrlParams,
-  hasActiveFilters,
-} from "@/utils/OpeningSearchParamsUtils";
-import OpeningsSearchInput from "@/components/OpeningsSearchInput";
-import { CircleDash, Search } from "@carbon/icons-react";
-import OpeningTableRow from "@/components/OpeningTableRow";
-import EmptySection from "@/components/EmptySection";
-import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
+import ActivitySearchInput from "@/components/ActivitySearchSection/ActivitySearchInput";
+import { ActivitySearchParams } from "@/types/ApiType";
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
-import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { CircleDash, Search } from "@carbon/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
-import OpeningsMap from "@/components/OpeningsMap";
 import TableSkeleton from "@/components/TableSkeleton";
+import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
+import EmptySection from "@/components/EmptySection";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
 
-import { defaultSearchTableHeaders } from "./constants";
+import { readActivitySearchUrlParams, updateActivitySearchUrlParams, hasActivitySearchFilters } from "./utils";
+import { defaultActivitySearchTableHeaders } from "./constants";
+import ActivitySearchTableRow from "./ActivitySearchTableRow";
 
-import './styles.scss';
 
-const OpeningsSearch = () => {
-
-  // Draft state: reflects the current form inputs, not yet submitted
-  const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
-
-  // Committed state: what was last submitted; drives the actual API query
-  const [queryParams, setQueryParams] = useState<OpeningSearchParamsType>();
-
-  const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
+const ActivitiesSearchSection = () => {
+  const [searchParams, setSearchParams] = useState<ActivitySearchParams>();
+  const [queryParams, setQueryParams] = useState<ActivitySearchParams>();
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
 
+  const [searchTableHeaders, setSearchTableHeaders] = useState<ActivityHeaderType[]>(() => structuredClone(defaultActivitySearchTableHeaders));
+
+  const activitySearchQuery = useQuery({
+    queryKey: ['search', 'activities', queryParams],
+    queryFn: () => API.SearchEndpointService.activitySearch(
+      queryParams?.bases,
+      queryParams?.techniques,
+      queryParams?.methods,
+      queryParams?.isComplete,
+      queryParams?.objectives,
+      queryParams?.fundingSources,
+      queryParams?.orgUnits,
+      queryParams?.openingCategories,
+      queryParams?.fileId,
+      queryParams?.clientNumbers,
+      queryParams?.openingStatuses,
+      queryParams?.intraAgencyNumber,
+      queryParams?.updateDateStart,
+      queryParams?.updateDateEnd,
+      queryParams?.page,
+      queryParams?.size,
+      queryParams?.sort,
+    ),
+    enabled: !!queryParams,
+  });
+
 
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
-    const urlParams = readOpeningSearchUrlParams();
-    // Apply URL params if there are active filters OR if pagination params exist
-    if (hasActiveFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
+    const urlParams = readActivitySearchUrlParams();
+    if (hasActivitySearchFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
       const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
       const nextSize = urlParams.size ?? PageSizesConfig[0]!;
       const paramsWithPagination = {
@@ -74,23 +70,7 @@ const OpeningsSearch = () => {
     }
   }, []);
 
-  useEffect(() => {
-    document.title = `Openings Search - Silva`;
-    return () => {
-      document.title = "Silva";
-    };
-  }, []);
-
-  const openingSearchQuery = useQuery({
-    queryKey: ['search', 'openings', queryParams],
-    queryFn: () => openingSearch(queryParams),
-    enabled: !!queryParams,
-  });
-
-  /**
-   * Handler to update a single field in searchParams
-   */
-  const handleSearchFieldChange = (field: keyof OpeningSearchParamsType, value: unknown) => {
+  const handleSearchFieldChange = (field: keyof ActivitySearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
       [field]: (value === '' || value === null) ? undefined : value,
@@ -105,17 +85,18 @@ const OpeningsSearch = () => {
       ...(searchParams ?? {}),
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
-    } as OpeningSearchParamsType;
+    } as ActivitySearchParams;
 
-    if (!hasActiveFilters(paramsWithPagination)) {
+    if (!hasActivitySearchFilters(paramsWithPagination)) {
       return;
     }
+
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSearchParams(paramsWithPagination);
     setQueryParams(paramsWithPagination);
     setSelectedOpeningIds([]);
-    updateOpeningSearchUrlParams(paramsWithPagination);
+    updateActivitySearchUrlParams(paramsWithPagination);
   };
 
   /**
@@ -127,39 +108,10 @@ const OpeningsSearch = () => {
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSelectedOpeningIds([]);
-    updateOpeningSearchUrlParams(undefined);
+    updateActivitySearchUrlParams(undefined);
   };
 
-  const handlePagination = (paginationObj: PaginationOnChangeType) => {
-    // Convert to 0 based index
-    const nextPageNum = paginationObj.page - 1;
-    const nextPageSize = paginationObj.pageSize;
-    if (!queryParams) {
-      return;
-    }
-
-    const paramsWithPagination: OpeningSearchParamsType = {
-      ...queryParams,
-      page: nextPageNum,
-      size: nextPageSize,
-    };
-
-    setCurrPageNumber(nextPageNum);
-    setCurrPageSize(nextPageSize);
-    setSelectedOpeningIds([]);
-    setQueryParams(paramsWithPagination);
-    updateOpeningSearchUrlParams(paramsWithPagination);
-  };
-
-  const handleRowSelection = (id: number) => {
-    setSelectedOpeningIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((openingId) => openingId !== id)
-        : [...prev, id]
-    );
-  };
-
-  const toggleColumn = (key: OpendingHeaderKeyType) => {
+  const toggleColumn = (key: ActivityHeaderKeyType) => {
     if (key !== "openingId" && key !== "actions") {
       setSearchTableHeaders((prevHeaders) =>
         prevHeaders.map((header) =>
@@ -171,18 +123,33 @@ const OpeningsSearch = () => {
     }
   };
 
+
+  const handlePagination = (paginationObj: PaginationOnChangeType) => {
+    // Convert to 0 based index
+    const nextPageNum = paginationObj.page - 1;
+    const nextPageSize = paginationObj.pageSize;
+    if (!queryParams) {
+      return;
+    }
+
+    const paramsWithPagination: ActivitySearchParams = {
+      ...queryParams,
+      page: nextPageNum,
+      size: nextPageSize,
+    };
+
+    setCurrPageNumber(nextPageNum);
+    setCurrPageSize(nextPageSize);
+    setSelectedOpeningIds([]);
+    setQueryParams(paramsWithPagination);
+    updateActivitySearchUrlParams(paramsWithPagination);
+  };
+
+
   return (
-    <Grid className="default-grid default-search-grid">
+    <Grid className="default-grid activity-search-section-grid">
       <Column sm={4} md={8} lg={16}>
-        <PageTitle title="Openings Search" />
-      </Column>
-
-      <Column sm={4} md={8} lg={16} className="bookmark-col">
-        <FavOpeningSection />
-      </Column>
-
-      <Column sm={4} md={8} lg={16}>
-        <OpeningsSearchInput searchParams={searchParams} onSearchParamsChange={handleSearchFieldChange} />
+        <ActivitySearchInput searchParams={searchParams} handleSearchFieldChange={handleSearchFieldChange} />
       </Column>
 
       <Column sm={4} md={8} lg={16}>
@@ -201,10 +168,10 @@ const OpeningsSearch = () => {
       </Column>
 
       {
-        hasActiveFilters(queryParams) ? (
+        hasActivitySearchFilters(queryParams) ? (
           <Column className="full-width-col" sm={4} md={8} lg={16}>
             <>
-              {
+              {/* {
                 selectedOpeningIds.length > 0
                   ? (
                     <OpeningsMap
@@ -214,17 +181,17 @@ const OpeningsSearch = () => {
                     />
                   )
                   : null
-              }
+              } */}
               <div className="search-table-banner">
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={activitySearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                      activitySearchQuery.isLoading && !isAuthRefreshInProgress()
                         ? <InlineLoading />
-                        : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
+                        : <p className="search-result-subtitle">{activitySearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
                   </Stack>
                 </Stack>
@@ -260,7 +227,7 @@ const OpeningsSearch = () => {
 
               {/* Table skeleton */}
               {
-                (openingSearchQuery.isLoading || isAuthRefreshInProgress())
+                (activitySearchQuery.isLoading || isAuthRefreshInProgress())
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -271,7 +238,7 @@ const OpeningsSearch = () => {
                   : null
               }
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !activitySearchQuery.isLoading && !isAuthRefreshInProgress()
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
@@ -291,14 +258,14 @@ const OpeningsSearch = () => {
                       </TableHead>
                       <TableBody>
                         {
-                          openingSearchQuery.data?.content?.map((row) => (
-                            <OpeningTableRow
+                          activitySearchQuery.data?.content?.map((row) => (
+                            <ActivitySearchTableRow
                               key={row.openingId}
                               headers={searchTableHeaders}
                               rowData={row}
                               showMap={true}
                               selectedRows={selectedOpeningIds}
-                              handleRowSelection={handleRowSelection}
+                              handleRowSelection={() => { }}
                             />
                           ))
                         }
@@ -310,18 +277,18 @@ const OpeningsSearch = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !activitySearchQuery.isLoading && !isAuthRefreshInProgress()
                   ? (
-                    openingSearchQuery.data?.page?.totalElements &&
-                      openingSearchQuery.data?.page.totalElements > 0 ? (
+                    activitySearchQuery.data?.page?.totalElements &&
+                      activitySearchQuery.data?.page.totalElements > 0 ? (
                       <Pagination
                         className="default-pagination-white"
                         page={currPageNumber + 1}
                         pageSize={currPageSize}
                         pageSizes={PageSizesConfig}
-                        totalItems={openingSearchQuery.data?.page.totalElements}
+                        totalItems={activitySearchQuery.data?.page.totalElements}
                         onChange={handlePagination}
-                        pagesUnknown={openingSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
+                        pagesUnknown={activitySearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
                       <EmptySection
@@ -338,10 +305,8 @@ const OpeningsSearch = () => {
         )
           : null
       }
-
-
-    </Grid >
+    </Grid>
   );
 };
 
-export default OpeningsSearch;
+export default ActivitiesSearchSection;

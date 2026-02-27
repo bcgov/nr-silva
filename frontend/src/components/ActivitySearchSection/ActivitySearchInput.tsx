@@ -1,7 +1,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, Tag, TextInput } from '@carbon/react';
+import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, TextInput } from '@carbon/react';
 import API from '@/services/API';
 import { ActivitySearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
@@ -17,6 +17,7 @@ import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/Date
 import './styles.scss';
 import { ChevronDown, ChevronUp } from '@carbon/icons-react';
 import { FILE_ID_MAX_LENGTH } from '@/constants';
+import { ActivityStatusTag } from '../Tags';
 import ForestClientMultiSelect from '../ForestClientMultiSelect';
 
 type props = {
@@ -93,10 +94,6 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
     return values && values.length > 0 ? values.join(', ') : defaultText;
   };
 
-  const renderActivityStatusTag = (item: { id: string; label: string }) => (
-    <Tag className="default-dropdown-tag" title={item.label} type={item.id === 'complete' ? 'purple' : 'blue'}>{item.label}</Tag>
-  );
-
   const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
     if (!dates) return;
 
@@ -163,13 +160,14 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
           titleText="Activity status"
           label="Choose an option"
           items={[
+            ...(searchParams?.isComplete !== undefined ? [{ id: '', label: '' }] : []),
             { id: 'complete', label: 'Complete' },
             { id: 'planned', label: 'Planned' },
           ]}
-          itemToElement={renderActivityStatusTag}
-          renderSelectedItem={renderActivityStatusTag}
-          onChange={({ selectedItem }) => handleSearchFieldChange('isComplete', selectedItem?.id === 'complete')}
-          selectedItem={searchParams?.isComplete === true ? { id: 'complete', label: 'Complete' } : searchParams?.isComplete === false ? { id: 'planned', label: 'Planned' } : undefined}
+          itemToElement={(item) => item.id === '' ? <span className='empty-dropdown-option'>Clear selected</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
+          renderSelectedItem={(item) => item.id === '' ? <span className='empty-dropdown-option'>Choose an option</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
+          onChange={({ selectedItem }) => handleSearchFieldChange('isComplete', selectedItem?.id === '' ? undefined : selectedItem?.id === 'complete')}
+          selectedItem={searchParams?.isComplete === true ? { id: 'complete', label: 'Complete' } : searchParams?.isComplete === false ? { id: 'planned', label: 'Planned' } : { id: '', label: '' }}
         />
       </Column>
 
