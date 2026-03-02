@@ -39,6 +39,7 @@ jobs:
         with:
           package: ${{ matrix.package }}
           build_context: ${{ matrix.build_context }}
+          build_file: ${{ matrix.build_context }}/Dockerfile
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
           tags: ${{ github.event.number }}
