@@ -15,7 +15,8 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { readActivitySearchUrlParams, updateActivitySearchUrlParams, hasActivitySearchFilters } from "./utils";
 import { defaultActivitySearchTableHeaders } from "./constants";
 import ActivitySearchTableRow from "./ActivitySearchTableRow";
-
+import OpeningsMap from "../OpeningsMap";
+import { mapKinds, MapKindType } from "../../types/MapLayer";
 
 const ActivitiesSearchSection = () => {
   const [searchParams, setSearchParams] = useState<ActivitySearchParams>();
@@ -23,6 +24,9 @@ const ActivitiesSearchSection = () => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
+  const [availableSilvicultureActivityIds, setAvailableSilvicultureActivityIds] = useState<string[]>([]);
+  const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
+  const activityLayerConfig = mapKinds.find((kind) => kind.code === 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW')!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<ActivityHeaderType[]>(() => structuredClone(defaultActivitySearchTableHeaders));
 
@@ -145,6 +149,19 @@ const ActivitiesSearchSection = () => {
     updateActivitySearchUrlParams(paramsWithPagination);
   };
 
+  const handleRowSelection = (openingId: number, activityId: number) => {
+    if (selectedSilvicultureActivityIds.includes(String(activityId))) {
+      setSelectedSilvicultureActivityIds([String(activityId)]);
+      setSelectedOpeningIds([openingId]);
+    } else {
+      setSelectedSilvicultureActivityIds([String(activityId)]);
+      setSelectedOpeningIds([openingId]);
+    }
+  }
+
+  useEffect(() => {
+    console.log(selectedSilvicultureActivityIds)
+  }, [selectedSilvicultureActivityIds]);
 
   return (
     <Grid className="default-grid activity-search-section-grid">
@@ -171,17 +188,22 @@ const ActivitiesSearchSection = () => {
         hasActivitySearchFilters(queryParams) ? (
           <Column className="full-width-col" sm={4} md={8} lg={16}>
             <>
-              {/* {
-                selectedOpeningIds.length > 0
+              {
+                selectedSilvicultureActivityIds.length > 0
                   ? (
                     <OpeningsMap
                       openingIds={selectedOpeningIds}
                       setOpeningPolygonNotFound={() => { }}
                       mapHeight={480}
+                      layerFilter={true}
+                      kind={[activityLayerConfig.code] as MapKindType[]}
+                      isActivitiesMap
+                      setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
+                      selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                     />
                   )
                   : null
-              } */}
+              }
               <div className="search-table-banner">
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
@@ -260,12 +282,12 @@ const ActivitiesSearchSection = () => {
                         {
                           activitySearchQuery.data?.content?.map((row) => (
                             <ActivitySearchTableRow
-                              key={row.openingId}
+                              key={row.activityId}
                               headers={searchTableHeaders}
                               rowData={row}
                               showMap={true}
-                              selectedRows={selectedOpeningIds}
-                              handleRowSelection={() => { }}
+                              selectedRows={selectedSilvicultureActivityIds}
+                              handleRowSelection={handleRowSelection}
                             />
                           ))
                         }

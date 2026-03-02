@@ -71,7 +71,6 @@ const OpeningsMap: React.FC<MapProps> = ({
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
 
   const polygonsToRender = React.useMemo(() => {
-    // if (!isForestCoverMap && !isActivitiesMap) return openings;
     if (isForestCoverMap) {
       const selectedSet = new Set(selectedForestCoverIds);
       return openings.map(fc => ({

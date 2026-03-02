@@ -1,30 +1,42 @@
-import React from "react";
+import { useState } from "react";
 import { Button } from "@carbon/react";
 import { Location, LocationFilled } from "@carbon/icons-react";
 
 import "./styles.scss";
 
 interface SpatialCheckboxProps {
-  rowId: number;
-  selectedRows: number[];
-  handleRowSelection: (rowId: number) => void;
+  spatialType: 'opening' | 'activity';
+  rowId: string;
+  selectedRows: string[];
+  handleRowSelection: (rowId: string) => void;
 }
 
-const SpatialCheckbox: React.FC<SpatialCheckboxProps> = ({
+const SpatialCheckbox = ({
+  spatialType,
   rowId,
   selectedRows,
   handleRowSelection
-}) => (
-  <Button
-    className={selectedRows.includes(rowId) ? 'spatial-checkbox-checked' : 'spatial-checkbox'}
-    hasIconOnly
-    renderIcon={selectedRows.includes(rowId) ? LocationFilled : Location}
-    onClick={() => handleRowSelection(rowId)}
-    iconDescription="Click to view this opening on the map"
-    tooltipPosition="right"
-    kind="ghost"
-    size="sm"
-  />
-);
+}: SpatialCheckboxProps) => {
+  const [isSpatialAvailable, setIsSpatialAvailable] = useState(true);
+
+
+  return (
+    <Button
+      className={selectedRows.includes(rowId) ? 'spatial-checkbox-checked' : 'spatial-checkbox'}
+      hasIconOnly
+      renderIcon={selectedRows.includes(rowId) ? LocationFilled : Location}
+      onClick={() => handleRowSelection(rowId)}
+      iconDescription={
+        isSpatialAvailable
+          ? `Click to view this ${spatialType} on the map`
+          : `Spatial data is not available for this ${spatialType}`
+      }
+      tooltipPosition="right"
+      kind="ghost"
+      size="sm"
+      disabled={!isSpatialAvailable}
+    />
+  );
+};
 
 export default SpatialCheckbox;

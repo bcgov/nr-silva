@@ -17,8 +17,8 @@ type props = {
   headers: ActivityHeaderType[];
   rowData: ActivitySearchResponseDto;
   showMap: boolean;
-  selectedRows: number[];
-  handleRowSelection: (rowId: number) => void;
+  selectedRows: string[];
+  handleRowSelection: (openingId: number, activityId: number) => void;
 }
 
 const ActivitySearchTableRow = ({
@@ -50,9 +50,13 @@ const ActivitySearchTableRow = ({
             {
               showMap ? (
                 <SpatialCheckbox
-                  rowId={rowData.openingId!}
+                  spatialType="activity"
+                  rowId={String(rowData.activityId!)}
                   selectedRows={selectedRows}
-                  handleRowSelection={handleRowSelection}
+                  handleRowSelection={(activityId) => {
+                    console.log(`Selected activity ID: ${activityId}, Opening ID: ${rowData.openingId}`);
+                    handleRowSelection(rowData.openingId!, Number(activityId));
+                  }}
                 />
               ) : null
             }
@@ -60,7 +64,7 @@ const ActivitySearchTableRow = ({
               hasIconOnly
               className="new-tab-button"
               renderIcon={Launch}
-              iconDescription={`Open ${rowData.openingId} in a new tab`}
+              iconDescription={`View activity ${rowData.activityId} in a new tab`}
               tooltipPosition="right"
               size="sm"
               kind="ghost"
@@ -176,11 +180,11 @@ const ActivitySearchTableRow = ({
   };
 
   return (
-    <TableRow className="activity-table-row" data-testid={`activity-table-row-${rowData.openingId}`}>
+    <TableRow className="activity-table-row" data-testid={`activity-table-row-${rowData.activityId}`}>
       {headers
         .filter((header) => header.selected)
         .map((header) => (
-          <TableCell key={header.key} data-testid={`activity-table-cell-${header.key}-${rowData.openingId}`}>
+          <TableCell key={header.key} data-testid={`activity-table-cell-${header.key}-${rowData.activityId}`}>
             {
               header.key !== "actions" ? (
                 <Link className="default-table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>

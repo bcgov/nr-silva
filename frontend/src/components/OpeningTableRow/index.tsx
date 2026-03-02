@@ -21,7 +21,7 @@ interface TableRowComponentProps {
   rowData: OpeningSearchResponseDto;
   showMap: boolean;
   selectedRows: number[];
-  handleRowSelection: (rowId: number) => void;
+  handleRowSelection: (rowId: string | number) => void;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({
@@ -57,6 +57,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
             {
               showMap ? (
                 <SpatialCheckbox
+                  spatialType="opening"
                   rowId={rowData.openingId}
                   selectedRows={selectedRows}
                   handleRowSelection={handleRowSelection}
