@@ -20,41 +20,30 @@ jobs:
       packages: write
     strategy:
       matrix:
-        name: [backend-hybrid, backend-postgres, frontend]
+        package: [backend-hybrid, backend-postgres, frontend]
         include:
-          - name: backend-hybrid
-            package: backend
-            tags: |
-              ${{ github.event.number }}-hybrid
-            tag_fallback: latest-hybrid
+          - package: backend-hybrid
+            build_context: backend
             extra_build_arg: PRIMARY_DB=oracle
             triggers: ('backend/')
-          - name: backend-postgres
-            package: backend
-            tags: |
-              ${{ github.event.number }}-postgres
-            tag_fallback: latest-postgres
+          - package: backend-postgres
+            build_context: backend
             extra_build_arg: PRIMARY_DB=postgres
             triggers: ('backend/')
-          - name: frontend
-            package: frontend
-            tags: |
-              ${{ github.event.number }}
-            tag_fallback: latest
-            extra_build_arg: ""
+          - package: frontend
+            build_context: frontend
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v6
       - uses: bcgov/action-builder-ghcr@2b24ac7f95e6a019064151498660437cca3202c5 # v4.2.1
         with:
           package: ${{ matrix.package }}
-          tags: ${{ matrix.tags }}
-          tag_fallback: ${{ matrix.tag_fallback }}
+          build_context: ${{ matrix.build_context }}
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
-          build_args: |
-            BUILDKIT_INLINE_CACHE=1
-            ${{ matrix.extra_build_arg }}
+          tags: ${{ github.event.number }}
+          tag_fallback: latest
+          build_args: BUILDKIT_INLINE_CACHE=1 ${{ matrix.extra_build_arg }}
 
   fam_routes:
     name: Allocate FAM Routes
