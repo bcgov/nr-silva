@@ -44,7 +44,10 @@ public class FlywayConfiguration {
       if ("postgres".equals(primaryDb)) {
         locations.add("classpath:db/migration-dev");
       } else if (!"oracle".equals(primaryDb)) {
-        throw new RuntimeException("Unsupported primary database: " + primaryDb);
+        throw new IllegalStateException("Unsupported value for primary database configuration " +
+            "(property 'server.primary-db' or env var 'PRIMARY_DB'): '" +
+            primaryDatabase + "'. Expected one of: oracle, postgres."
+        );
       }
 
       configuration

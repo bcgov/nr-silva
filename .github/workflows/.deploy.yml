@@ -44,10 +44,6 @@ on:
         description: Maximum replicas for backend
         default: "5"
         type: string
-      backend_flyway_environment:
-        description: Flyway environment for backend database migrations
-        default: "prod"
-        type: string
       backend_primary_db:
         description: Primary database for backend
         default: "oracle"
@@ -148,7 +144,6 @@ jobs:
               -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
               -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
-              -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
               -p PRIMARY_DB=${{ inputs.backend_primary_db }}
               -p TAG=${{ inputs.tag }}-${{ inputs.deployment_model }}
             verification_path: /actuator/health
