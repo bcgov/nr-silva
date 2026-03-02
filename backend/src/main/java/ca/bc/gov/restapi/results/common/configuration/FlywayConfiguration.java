@@ -51,6 +51,8 @@ public class FlywayConfiguration {
       }
 
       configuration
+          .schemas("silva")
+          .defaultSchema("silva")
           .locations(locations.toArray(String[]::new))
           .resourceProvider(new NativeImageResourceProvider(context, locations));
     };
