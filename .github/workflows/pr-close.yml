@@ -70,19 +70,29 @@ jobs:
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
     strategy:
       matrix:
-        deployment_model: [hybrid, postgres]
+        job: [retag, cleanup_hybrid, cleanup_postgres]
         include:
-          - deployment_model: hybrid
-            name: "Hybrid (Oracle Primary)"
-          - deployment_model: postgres
-            name: "Postgres"
+          - job: retag
+            name: "Retag Images"
+            cleanup: ""
+            packages: "backend backend-postgres frontend"
+            target: ${{ github.event.number }}
+          - job: cleanup_hybrid
+            name: "Hybrid Cleanup"
+            cleanup: label
+            packages: ""
+            target: ${{ github.event.number }}-hybrid
+          - job: cleanup_postgres
+            name: "Postgres Cleanup"
+            cleanup: label
+            packages: ""
+            target: ${{ github.event.number }}-postgres
     permissions:
       packages: write
     secrets:
       oc_namespace: ${{ vars.OC_NAMESPACE }}
       oc_token: ${{ secrets.OC_TOKEN }}
     with:
-      cleanup: label
-      packages: backend frontend
-      target: ${{ github.event.number }}-${{ matrix.deployment_model }}
-      tag_promote: latest-${{ matrix.deployment_model }}
+      cleanup: ${{ matrix.cleanup }}
+      packages: ${{ matrix.packages }}
+      target: ${{ matrix.target }}
