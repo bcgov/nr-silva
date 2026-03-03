@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           triggers: ${{ matrix.triggers }}
           tags: ${{ github.event.number }}
-          tag_fallback: ${{ matrix.package == 'backend-postgres' && github.event.number || 'latest' }}
+          tag_fallback: latest
           build_args: |
             BUILDKIT_INLINE_CACHE=1
             ${{ matrix.extra_build_arg }}
