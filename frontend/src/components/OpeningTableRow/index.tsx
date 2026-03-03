@@ -21,7 +21,7 @@ interface TableRowComponentProps {
   rowData: OpeningSearchResponseDto;
   showMap: boolean;
   selectedRows: number[];
-  handleRowSelection: (rowId: string | number) => void;
+  handleRowSelection: (rowId: number) => void;
 }
 
 const OpeningTableRow: React.FC<TableRowComponentProps> = ({

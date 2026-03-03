@@ -17,8 +17,8 @@ type props = {
   headers: ActivityHeaderType[];
   rowData: ActivitySearchResponseDto;
   showMap: boolean;
-  selectedRows: string[];
-  handleRowSelection: (openingId: number, activityId: number) => void;
+  selectedRows: number[];
+  handleRowSelection: (openingId: number, compoundId: string) => void;
 }
 
 const ActivitySearchTableRow = ({
@@ -51,11 +51,10 @@ const ActivitySearchTableRow = ({
               showMap ? (
                 <SpatialCheckbox
                   spatialType="activity"
-                  rowId={String(rowData.activityId!)}
+                  rowId={rowData.activityId!}
                   selectedRows={selectedRows}
                   handleRowSelection={(activityId) => {
-                    console.log(`Selected activity ID: ${activityId}, Opening ID: ${rowData.openingId}`);
-                    handleRowSelection(rowData.openingId!, Number(activityId));
+                    handleRowSelection(rowData.openingId!, `${activityId}-${rowData.base?.code ?? ''}`);
                   }}
                 />
               ) : null

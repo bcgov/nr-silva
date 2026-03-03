@@ -149,19 +149,10 @@ const ActivitiesSearchSection = () => {
     updateActivitySearchUrlParams(paramsWithPagination);
   };
 
-  const handleRowSelection = (openingId: number, activityId: number) => {
-    if (selectedSilvicultureActivityIds.includes(String(activityId))) {
-      setSelectedSilvicultureActivityIds([String(activityId)]);
-      setSelectedOpeningIds([openingId]);
-    } else {
-      setSelectedSilvicultureActivityIds([String(activityId)]);
-      setSelectedOpeningIds([openingId]);
-    }
+  const handleRowSelection = (openingId: number, compoundId: string) => {
+    setSelectedSilvicultureActivityIds([compoundId]);
+    setSelectedOpeningIds([openingId]);
   }
-
-  useEffect(() => {
-    console.log(selectedSilvicultureActivityIds)
-  }, [selectedSilvicultureActivityIds]);
 
   return (
     <Grid className="default-grid activity-search-section-grid">
@@ -192,6 +183,7 @@ const ActivitiesSearchSection = () => {
                 selectedSilvicultureActivityIds.length > 0
                   ? (
                     <OpeningsMap
+                      key={selectedSilvicultureActivityIds.join(",")}
                       openingIds={selectedOpeningIds}
                       setOpeningPolygonNotFound={() => { }}
                       mapHeight={480}
@@ -200,6 +192,7 @@ const ActivitiesSearchSection = () => {
                       isActivitiesMap
                       setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
                       selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                      selectedDisturbanceIds={[]}
                     />
                   )
                   : null
@@ -286,7 +279,7 @@ const ActivitiesSearchSection = () => {
                               headers={searchTableHeaders}
                               rowData={row}
                               showMap={true}
-                              selectedRows={selectedSilvicultureActivityIds}
+                              selectedRows={selectedSilvicultureActivityIds.map((id) => Number(id.split('-')[0]))}
                               handleRowSelection={handleRowSelection}
                             />
                           ))

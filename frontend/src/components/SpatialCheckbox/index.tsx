@@ -6,9 +6,9 @@ import "./styles.scss";
 
 interface SpatialCheckboxProps {
   spatialType: 'opening' | 'activity';
-  rowId: string;
-  selectedRows: string[];
-  handleRowSelection: (rowId: string) => void;
+  rowId: number;
+  selectedRows: number[];
+  handleRowSelection: (rowId: number) => void;
 }
 
 const SpatialCheckbox = ({
