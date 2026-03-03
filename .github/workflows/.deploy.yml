@@ -52,7 +52,6 @@ on:
         description: Deployment model (hybrid or postgres)
         default: "hybrid"
         type: string
-
       # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
       fam_route_number:
         description: FAM route for frontend; only needed for PR deployments
