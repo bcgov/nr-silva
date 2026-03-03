@@ -247,7 +247,7 @@ const DisturbanceAccordion = ({
                   <>
                     <TableExpandHeader />
                     <TableHeader key="map-header">
-                      <div className="map-header-checkbox-container">
+                      <div className="default-map-header-checkbox-container">
                         <Tooltip
                           label={
                             allSelected ? "Unselect all" : "Select all"

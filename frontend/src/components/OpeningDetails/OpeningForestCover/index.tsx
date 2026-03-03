@@ -503,7 +503,7 @@ const OpeningForestCover = ({
                       <TableRow>
                         <TableExpandHeader />
                         <TableHeader key="map-header">
-                          <div className="map-header-checkbox-container">
+                          <div className="default-map-header-checkbox-container">
                             <Tooltip
                               label={
                                 !isLatestHistory

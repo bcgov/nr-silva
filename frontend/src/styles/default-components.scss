@@ -464,3 +464,9 @@ ul.default-tab-accordion {
   margin: 0 -1rem; // to remove gaps between cells
   padding: 0 1rem;
 }
+
+.default-map-header-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
