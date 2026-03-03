@@ -20,9 +20,9 @@ jobs:
       packages: write
     strategy:
       matrix:
-        package: [backend-hybrid, backend-postgres, frontend]
+        package: [backend, backend-postgres, frontend]
         include:
-          - package: backend-hybrid
+          - package: backend
             build_context: backend
             extra_build_arg: PRIMARY_DB=oracle
             triggers: ('backend/')
