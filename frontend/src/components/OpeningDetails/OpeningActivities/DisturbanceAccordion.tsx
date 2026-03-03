@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 
 import {
   Accordion,
@@ -32,8 +33,8 @@ import { PLACE_HOLDER } from "@/constants";
 import "./styles.scss";
 
 type DisturbanceAccordionProps = {
+  openingId: number;
   data: OpeningDetailsActivitiesDisturbanceDto[],
-  availableDisturbanceIds: string[];
   selectedDisturbanceIds: string[];
   setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -52,13 +53,106 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 )
 
+type DisturbanceRowProps = {
+  openingId: number;
+  row: OpeningDetailsActivitiesDisturbanceDto;
+  index: number;
+  totalRows: number;
+  selectedDisturbanceIds: string[];
+  setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
+  renderCellContent: (
+    data: CodeDescriptionDto | string | number | null,
+    columnKey: string,
+    isLastElement?: boolean
+  ) => React.ReactNode;
+};
+
+const DisturbanceRow = ({
+  openingId,
+  row,
+  index,
+  totalRows,
+  selectedDisturbanceIds,
+  setSelectedDisturbanceIds,
+  renderCellContent,
+}: DisturbanceRowProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const compoundId = `${row.atuId}-DN`;
+  const { isAvailable, isLoading } = usePolygonAvailability(
+    openingId,
+    'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
+    compoundId,
+  );
+  const isSelected = selectedDisturbanceIds.includes(compoundId);
+  const isLastElement = index === totalRows - 1;
+
+  return (
+    <React.Fragment key={row.atuId}>
+      <TableExpandRow
+        aria-label={`Expand row for Activity ID ${row.atuId}`}
+        isExpanded={isExpanded}
+        onExpand={() => setIsExpanded(prev => !prev)}
+      >
+        <TableCell key={"map-select" + row.atuId}>
+          <Tooltip
+            label={
+              isLoading
+                ? "Checking availability..."
+                : !isAvailable
+                  ? "Polygon is not available"
+                  : isSelected
+                    ? "Hide from map"
+                    : "Show on map"
+            }
+            align={!isAvailable ? "right" : "top"}
+          >
+            <span>
+              <Checkbox
+                id={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                data-testid={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                key={`disturbance-map-checkbox-${row.atuId}-${index}`}
+                checked={isSelected}
+                disabled={!isAvailable || isLoading}
+                labelText="Select polygon on map"
+                hideLabel
+                onChange={(_, { checked }) => {
+                  setSelectedDisturbanceIds(ids =>
+                    checked
+                      ? [...ids, compoundId]
+                      : ids.filter(id => id !== compoundId)
+                  );
+                }}
+              />
+            </span>
+          </Tooltip>
+        </TableCell>
+        {
+          DisturbanceTableHeaders.map(header => (
+            <TableCell key={header.key}>
+              {
+                renderCellContent(
+                  row[header.key] as string | number | CodeDescriptionDto | null,
+                  header.key,
+                  isLastElement,
+                )
+              }
+            </TableCell>
+          ))
+        }
+      </TableExpandRow>
+      <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 2}>
+        <DisturbanceDetail detail={row} />
+      </TableExpandedRow>
+    </React.Fragment>
+  );
+};
+
 const DisturbanceAccordion = ({
+  openingId,
   data,
-  availableDisturbanceIds,
   selectedDisturbanceIds,
   setSelectedDisturbanceIds
 }: DisturbanceAccordionProps) => {
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const isCodeDescription = (value: string): boolean => {
@@ -88,19 +182,10 @@ const DisturbanceAccordion = ({
     );
   }, [data, searchTerm]);
 
-  const allAvailableIds = filteredData
-    .map(row => `${row.atuId}-DN`)
-    .filter(id => availableDisturbanceIds.includes(id)) ?? [];
-  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedDisturbanceIds.includes(id));
-  const someSelected = allAvailableIds.some(id => selectedDisturbanceIds.includes(id));
-
-  const handleRowExpand = (activityId: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(activityId)
-        ? prev.filter((id) => id !== activityId)
-        : [...prev, activityId]
-    );
-  };
+  // Select-all: based on all rows on the current filtered page (availability checked per-row)
+  const allOnPage = filteredData.map(row => `${row.atuId}-DN`);
+  const allSelected = allOnPage.length > 0 && allOnPage.every(id => selectedDisturbanceIds.includes(id));
+  const someSelected = allOnPage.some(id => selectedDisturbanceIds.includes(id));
 
   const renderCellContent = (
     data: CodeDescriptionDto | string | number | null,
@@ -165,9 +250,7 @@ const DisturbanceAccordion = ({
                       <div className="map-header-checkbox-container">
                         <Tooltip
                           label={
-                            availableDisturbanceIds.length > 0 ?
-                              allSelected ? "Unselect all" : "Select all"
-                              : "No polygon is available"
+                            allSelected ? "Unselect all" : "Select all"
                           }
                           align="right"
                         >
@@ -177,11 +260,15 @@ const DisturbanceAccordion = ({
                               data-testid="disturbance-map-select-all"
                               checked={allSelected}
                               indeterminate={!allSelected && someSelected}
-                              disabled={allAvailableIds.length === 0}
+                              disabled={allOnPage.length === 0}
                               labelText="Select all polygons on map"
                               hideLabel
                               onChange={(_, { checked }) => {
-                                setSelectedDisturbanceIds(checked ? allAvailableIds : []);
+                                setSelectedDisturbanceIds(ids =>
+                                  checked
+                                    ? [...new Set([...ids, ...allOnPage])]
+                                    : ids.filter(id => !allOnPage.includes(id))
+                                );
                               }}
                             />
                           </span>
@@ -203,71 +290,18 @@ const DisturbanceAccordion = ({
             <TableBody>
               {
                 filteredData.length ? (
-                  filteredData.map((row, index) => {
-                    const isExpanded = expandedRows.includes(row.atuId);
-                    return (
-                      <React.Fragment key={row.atuId}>
-                        <TableExpandRow
-                          aria-label={`Expand row for Activity ID ${row.atuId}`}
-                          isExpanded={isExpanded}
-                          onExpand={() => handleRowExpand(row.atuId)}
-                        >
-                          <TableCell key={"map-select" + row.atuId}>
-                            <Tooltip
-                              label={
-                                !availableDisturbanceIds.includes(`${row.atuId}-DN`)
-                                  ? "Polygon is not available"
-                                  : selectedDisturbanceIds.includes(`${row.atuId}-DN`)
-                                    ? "Hide from map"
-                                    : "Show on map"
-                              }
-                              align={
-                                !availableDisturbanceIds.includes(`${row.atuId}-DN`)
-                                  ? "right"
-                                  : "top"
-                              }
-                            >
-                              <span>
-                                <Checkbox
-                                  id={`disturbance-map-checkbox-${row.atuId}-${index}`}
-                                  data-testid={`disturbance-map-checkbox-${row.atuId}-${index}`}
-                                  key={`disturbance-map-checkbox-${row.atuId}-${index}`}
-                                  checked={selectedDisturbanceIds.includes(`${row.atuId}-DN`)}
-                                  disabled={!availableDisturbanceIds.includes(`${row.atuId}-DN`)}
-                                  labelText="Select polygon on map"
-                                  hideLabel
-                                  onChange={(_, { checked }) => {
-                                    setSelectedDisturbanceIds(ids =>
-                                      checked
-                                        ? [...ids, `${row.atuId}-DN`]
-                                        : ids.filter(id => id !== `${row.atuId}-DN`)
-                                    );
-                                  }}
-                                />
-                              </span>
-
-                            </Tooltip>
-                          </TableCell>
-                          {
-                            DisturbanceTableHeaders.map(header => (
-                              <TableCell key={header.key}>
-                                {
-                                  renderCellContent(
-                                    row[header.key] as string | number | CodeDescriptionDto | null,
-                                    header.key,
-                                    index === filteredData.length - 1,
-                                  )
-                                }
-                              </TableCell>
-                            ))
-                          }
-                        </TableExpandRow>
-                        <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 2}>
-                          <DisturbanceDetail detail={row} />
-                        </TableExpandedRow>
-                      </React.Fragment>
-                    )
-                  })
+                  filteredData.map((row, index) => (
+                    <DisturbanceRow
+                      key={row.atuId}
+                      openingId={openingId}
+                      row={row}
+                      index={index}
+                      totalRows={filteredData.length}
+                      selectedDisturbanceIds={selectedDisturbanceIds}
+                      setSelectedDisturbanceIds={setSelectedDisturbanceIds}
+                      renderCellContent={renderCellContent}
+                    />
+                  ))
                 ) : (
                   <TableRow key="empty-row">
                     <TableCell colSpan={DisturbanceTableHeaders.length + 2}>

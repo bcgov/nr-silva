@@ -8,6 +8,7 @@ import { ActivitySearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
 
 import SpatialCheckbox from "../SpatialCheckbox";
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 
 import "./styles.scss";
 import { ActivityStatusTag } from "../Tags";
@@ -29,6 +30,13 @@ const ActivitySearchTableRow = ({
   handleRowSelection,
 }: props) => {
   const navigate = useNavigate();
+
+  const compoundId = `${rowData.activityId}-${rowData.base?.code ?? ''}`;
+  const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
+    rowData.openingId!,
+    'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
+    compoundId,
+  );
   const openingUrl = OpeningDetailsRoute.path!.replace(
     ":openingId",
     `${rowData.openingId!.toString()}?tab=activities`
@@ -53,6 +61,8 @@ const ActivitySearchTableRow = ({
                   spatialType="activity"
                   rowId={rowData.activityId!}
                   selectedRows={selectedRows}
+                  isAvailable={isAvailable}
+                  isLoading={isAvailabilityLoading}
                   handleRowSelection={(activityId) => {
                     handleRowSelection(rowData.openingId!, `${activityId}-${rowData.base?.code ?? ''}`);
                   }}

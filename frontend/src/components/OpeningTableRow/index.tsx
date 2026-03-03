@@ -10,6 +10,7 @@ import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
 
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import { OpeningStatusTag } from "../Tags";
 import SpatialCheckbox from "../SpatialCheckbox";
 import OpeningBookmarkBtn from "../OpeningBookmarkBtn";
@@ -37,6 +38,12 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
     rowData.openingId.toString()
   );
 
+  const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
+    rowData.openingId,
+    'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
+    showMap ? `${rowData.openingId}` : null,
+  );
+
   const navToOpening = () => {
     navigate(openingUrl)
   }
@@ -61,6 +68,8 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
                   rowId={rowData.openingId}
                   selectedRows={selectedRows}
                   handleRowSelection={handleRowSelection}
+                  isAvailable={isAvailable}
+                  isLoading={isAvailabilityLoading}
                 />
               ) : null
             }

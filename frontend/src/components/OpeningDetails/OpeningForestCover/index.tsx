@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -32,19 +33,101 @@ import "./styles.scss";
 
 type OpeningForestCoverProps = {
   openingId: number;
-  availableForestCoverIds: string[];
-  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds: string[];
   setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
+type ForestCoverRowProps = {
+  openingId: number;
+  row: OpeningForestCoverDto | OpeningForestCoverHistoryDto;
+  idx: number;
+  isLatestHistory: boolean;
+  selectedForestCoverIds: string[];
+  setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  renderCellContent: (row: OpeningForestCoverDto, headerKey: keyof OpeningForestCoverDto) => React.ReactNode;
+};
+
+const ForestCoverRow = ({
+  openingId,
+  row,
+  idx,
+  isLatestHistory,
+  selectedForestCoverIds,
+  setSelectedForestCoverIds,
+  renderCellContent,
+}: ForestCoverRowProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const compoundId = `${row.coverId}-${row.polygonId}`;
+  const { isAvailable, isLoading } = usePolygonAvailability(
+    openingId,
+    'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
+    isLatestHistory ? compoundId : null,
+  );
+  const isSelected = selectedForestCoverIds.includes(compoundId);
+
+  return (
+    <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
+      <TableExpandRow
+        className="opening-forest-cover-table-row"
+        aria-label={`Expand row for Polygon ID ${row.coverId}`}
+        isExpanded={isExpanded}
+        onExpand={() => setIsExpanded(prev => !prev)}
+      >
+        <TableCell key={"map-select" + row.coverId + row.polygonId}>
+          <Tooltip
+            label={
+              !isLatestHistory
+                ? "Polygon is not available on historical data"
+                : isLoading
+                  ? "Checking availability..."
+                  : !isAvailable
+                    ? "Polygon is not available"
+                    : isSelected
+                      ? "Hide from map"
+                      : "Show on map"
+            }
+            align={!isAvailable || !isLatestHistory ? "right" : "top"}
+          >
+            <span>
+              <Checkbox
+                id={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
+                checked={isSelected}
+                disabled={!isAvailable || !isLatestHistory || isLoading}
+                labelText="Select polygon on map"
+                hideLabel
+                onChange={(_, { checked }) => {
+                  setSelectedForestCoverIds(ids =>
+                    checked
+                      ? [...ids, compoundId]
+                      : ids.filter(id => id !== compoundId)
+                  );
+                }}
+              />
+            </span>
+          </Tooltip>
+        </TableCell>
+        {ForestCoverTableHeaders.map((header) => (
+          <TableCell key={String(header.key)} className="default-table-cell">
+            {renderCellContent(row as OpeningForestCoverDto, header.key)}
+          </TableCell>
+        ))}
+      </TableExpandRow>
+      <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 2}>
+        {isExpanded ? <ForestCoverExpandedRow
+          forestCoverId={row.coverId}
+          openingId={openingId}
+          isHistory={!isLatestHistory}
+          archiveDate={!isLatestHistory && "archiveDate" in row ? formatDateTime(row.archiveDate!, 'yyyy-MM-dd') : undefined} /> : null}
+      </TableExpandedRow>
+    </React.Fragment>
+  );
+};
+
 const OpeningForestCover = ({
   openingId,
-  availableForestCoverIds,
-  setAvailableForestCoverIds,
   selectedForestCoverIds,
   setSelectedForestCoverIds }: OpeningForestCoverProps) => {
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
@@ -130,19 +213,10 @@ const OpeningForestCover = ({
     setSearchTerm(undefined);
   };
 
-  const handleRowExpand = (forestCoverId: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(forestCoverId)
-        ? prev.filter((id) => id !== forestCoverId)
-        : [...prev, forestCoverId]
-    );
-  };
-
-  const allAvailableIds = forestCoverSearchQuery.data
-    ?.map(row => `${row.coverId}-${row.polygonId}`)
-    .filter(id => availableForestCoverIds.includes(id)) ?? [];
-  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedForestCoverIds.includes(id));
-  const someSelected = allAvailableIds.some(id => selectedForestCoverIds.includes(id));
+  const allOnPage = (isLatestHistory ? forestCoverSearchQuery.data : forestCoverHistorySearchQuery.data)
+    ?.map(row => `${row.coverId}-${row.polygonId}`) ?? [];
+  const allSelected = allOnPage.length > 0 && allOnPage.every(id => selectedForestCoverIds.includes(id));
+  const someSelected = allOnPage.some(id => selectedForestCoverIds.includes(id));
 
   // Render cell content similar to ActivityAccordion
   const renderCellContent = (
@@ -432,13 +506,9 @@ const OpeningForestCover = ({
                           <div className="map-header-checkbox-container">
                             <Tooltip
                               label={
-                                isLatestHistory
-                                  ? (
-                                    availableForestCoverIds.length > 0
-                                      ? allSelected ? "Unselect all" : "Select all"
-                                      : "No polygon is available"
-                                  )
-                                  : "Polygons not available on history"
+                                !isLatestHistory
+                                  ? "Polygons not available on history"
+                                  : allSelected ? "Unselect all" : "Select all"
                               }
                               align="right"
                               className="forest-cover-map-tooltip"
@@ -449,19 +519,21 @@ const OpeningForestCover = ({
                                   data-testid="forest-cover-map-select-all"
                                   checked={allSelected}
                                   indeterminate={!allSelected && someSelected}
-                                  disabled={allAvailableIds.length === 0 || !isLatestHistory}
+                                  disabled={allOnPage.length === 0 || !isLatestHistory}
                                   labelText="Select all polygons on map"
                                   hideLabel
                                   onChange={(_, { checked }) => {
-                                    setSelectedForestCoverIds(checked ? allAvailableIds : []);
+                                    setSelectedForestCoverIds(ids =>
+                                      checked
+                                        ? [...new Set([...ids, ...allOnPage])]
+                                        : ids.filter(id => !allOnPage.includes(id))
+                                    );
                                   }}
                                 />
-
                               </span>
                             </Tooltip>
                             <span>Map</span>
                           </div>
-
                         </TableHeader>
                         {ForestCoverTableHeaders.map((header) => (
                           <TableHeader key={String(header.key)}>{header.header}</TableHeader>
@@ -469,68 +541,18 @@ const OpeningForestCover = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {forestCoverSearchQueryToUse.data?.map((row: OpeningForestCoverDto | OpeningForestCoverHistoryDto, idx) => {
-                        const isExpanded = expandedRows.includes(row.coverId);
-                        return (
-                          <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
-                            <TableExpandRow
-                              className="opening-forest-cover-table-row"
-                              aria-label={`Expand row for Polygon ID ${row.coverId}`}
-                              isExpanded={isExpanded}
-                              onExpand={() => handleRowExpand(row.coverId)}
-                            >
-                              <TableCell key={"map-select" + row.coverId + row.polygonId}>
-                                <Tooltip
-                                  label={
-                                    isLatestHistory
-                                      ? (
-                                        !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
-                                          ? "Polygon is not available"
-                                          : "Show on map"
-                                      )
-                                      : "Polygon is not available on historical data"
-                                  }
-                                  align={
-                                    !availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)
-                                      ? "right"
-                                      : "top"
-                                  }
-                                >
-                                  <span>
-                                    <Checkbox
-                                      id={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
-                                      key={`forest-cover-map-checkbox-${row.coverId}-${idx}`}
-                                      checked={selectedForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
-                                      disabled={!availableForestCoverIds.includes(`${row.coverId}-${row.polygonId}`)}
-                                      labelText="Select polygon on map"
-                                      hideLabel
-                                      onChange={(_, { checked }) => {
-                                        setSelectedForestCoverIds(ids =>
-                                          checked
-                                            ? [...ids, `${row.coverId}-${row.polygonId}`]
-                                            : ids.filter(id => id !== `${row.coverId}-${row.polygonId}`)
-                                        );
-                                      }}
-                                    />
-                                  </span>
-                                </Tooltip>
-                              </TableCell>
-                              {ForestCoverTableHeaders.map((header) => (
-                                <TableCell key={String(header.key)} className="default-table-cell">
-                                  {renderCellContent(row, header.key)}
-                                </TableCell>
-                              ))}
-                            </TableExpandRow>
-                            <TableExpandedRow className="forest-cover-expanded-row" colSpan={ForestCoverTableHeaders.length + 2}>
-                              {isExpanded ? <ForestCoverExpandedRow
-                                forestCoverId={row.coverId}
-                                openingId={openingId}
-                                isHistory={!isLatestHistory}
-                                archiveDate={!isLatestHistory && "archiveDate" in row ? formatDateTime(row.archiveDate!, 'yyyy-MM-dd') : undefined} /> : null}
-                            </TableExpandedRow>
-                          </React.Fragment>
-                        );
-                      })}
+                      {forestCoverSearchQueryToUse.data?.map((row: OpeningForestCoverDto | OpeningForestCoverHistoryDto, idx) => (
+                        <ForestCoverRow
+                          key={`${row.coverId}-${row.polygonId}-${idx}`}
+                          openingId={openingId}
+                          row={row}
+                          idx={idx}
+                          isLatestHistory={isLatestHistory}
+                          selectedForestCoverIds={selectedForestCoverIds}
+                          setSelectedForestCoverIds={setSelectedForestCoverIds}
+                          renderCellContent={renderCellContent}
+                        />
+                      ))}
                     </TableBody>
                   </Table>
                 )

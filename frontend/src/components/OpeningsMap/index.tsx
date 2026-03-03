@@ -29,11 +29,8 @@ interface MapProps {
   isDetailsPage?: boolean;
   isForestCoverMap?: boolean;
   isActivitiesMap?: boolean;
-  setAvailableForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds?: string[];
-  setAvailableSilvicultureActivityIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedSilvicultureActivityIds?: string[];
-  setAvailableDisturbanceIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedDisturbanceIds?: string[];
 }
 
@@ -46,11 +43,8 @@ const OpeningsMap: React.FC<MapProps> = ({
   isDetailsPage = false,
   isForestCoverMap = false,
   isActivitiesMap = false,
-  setAvailableForestCoverIds,
   selectedForestCoverIds,
-  setAvailableSilvicultureActivityIds,
   selectedSilvicultureActivityIds,
-  setAvailableDisturbanceIds,
   selectedDisturbanceIds,
 }) => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
@@ -72,30 +66,38 @@ const OpeningsMap: React.FC<MapProps> = ({
 
   const polygonsToRender = React.useMemo(() => {
     if (isForestCoverMap) {
+      // Forest cover: show only explicitly selected forest cover polygons
       const selectedSet = new Set(selectedForestCoverIds);
       return openings.map(fc => ({
         ...fc,
         features: fc.features.filter(
           feature =>
-            feature.properties?.FOREST_COVER_ID &&
-            feature.properties?.SILV_POLYGON_NUMBER &&
+            feature.properties?.FOREST_COVER_ID != null &&
+            feature.properties?.SILV_POLYGON_NUMBER != null &&
             selectedSet.has(
               `${feature.properties.FOREST_COVER_ID}-${feature.properties.SILV_POLYGON_NUMBER}`
             )
         ),
       }));
-    } else if (isActivitiesMap && selectedDisturbanceIds && selectedSilvicultureActivityIds) {
-      const selectedSet = new Set([...selectedDisturbanceIds, ...selectedSilvicultureActivityIds]);
+    } else if (isActivitiesMap) {
+      // Activities map: disturbance (DN) and silviculture activities are filtered separately
+      // so each row type can independently control what's shown.
+      const activitySet = new Set(selectedSilvicultureActivityIds ?? []);
+      const disturbanceSet = new Set(selectedDisturbanceIds ?? []);
       return openings.map(fc => ({
         ...fc,
-        features: fc.features.filter(
-          feature =>
-            feature.properties?.ACTIVITY_TREATMENT_UNIT_ID &&
-            feature.properties?.SILV_BASE_CODE &&
-            selectedSet.has(
-              `${feature.properties.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties.SILV_BASE_CODE}`
-            )
-        ),
+        features: fc.features.filter(feature => {
+          const atuId = feature.properties?.ACTIVITY_TREATMENT_UNIT_ID;
+          const baseCode = feature.properties?.SILV_BASE_CODE;
+          if (atuId == null || !baseCode) return false;
+          const compoundId = `${atuId}-${baseCode}`;
+          if (baseCode === 'DN') {
+            // Disturbance polygon: only show if explicitly selected as disturbance
+            return disturbanceSet.has(compoundId);
+          }
+          // Silviculture activity polygon: only show if explicitly selected as activity
+          return activitySet.has(compoundId);
+        }),
       }));
     } else {
       return openings;
@@ -171,40 +173,6 @@ const OpeningsMap: React.FC<MapProps> = ({
     if (allSuccess) {
       setOpenings(mapQueries.map((query) => query.data as FeatureCollection));
 
-      if (isForestCoverMap) {
-        const forestCoverIds: string[] = mapQueries
-          .flatMap((query) => (query.data as FeatureCollection).features)
-          .filter((feature) => feature.properties!.FOREST_COVER_ID && feature.properties!.SILV_POLYGON_NUMBER)
-          .map(
-            (feature) =>
-              `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
-          );
-        if (setAvailableForestCoverIds) {
-          setAvailableForestCoverIds(forestCoverIds);
-        }
-      }
-      else if (isActivitiesMap) {
-        const { activityIds, disturbanceIds } = mapQueries
-          .flatMap((query) => (query.data as FeatureCollection).features)
-          .filter((feature) => feature.geometry &&
-            feature.properties!.ACTIVITY_TREATMENT_UNIT_ID &&
-            feature.properties!.SILV_BASE_CODE)
-          .reduce(
-            (acc, feature) => {
-              const id = `${feature.properties!.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties!.SILV_BASE_CODE}`;
-              if (feature.properties!.SILV_BASE_CODE === "DN") {
-                acc.disturbanceIds.push(id);
-              } else {
-                acc.activityIds.push(id);
-              }
-              return acc;
-            },
-            { activityIds: [] as string[], disturbanceIds: [] as string[] }
-          );
-
-        if (setAvailableDisturbanceIds) setAvailableDisturbanceIds(disturbanceIds);
-        if (setAvailableSilvicultureActivityIds) setAvailableSilvicultureActivityIds(activityIds);
-      }
     } else {
       // Check if there are any errors and extract their IDs
       const errorIds = mapQueries

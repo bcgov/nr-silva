@@ -24,7 +24,6 @@ const ActivitiesSearchSection = () => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
-  const [availableSilvicultureActivityIds, setAvailableSilvicultureActivityIds] = useState<string[]>([]);
   const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
   const activityLayerConfig = mapKinds.find((kind) => kind.code === 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW')!;
 
@@ -190,7 +189,6 @@ const ActivitiesSearchSection = () => {
                       layerFilter={true}
                       kind={[activityLayerConfig.code] as MapKindType[]}
                       isActivitiesMap
-                      setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
                       selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                       selectedDisturbanceIds={[]}
                     />
