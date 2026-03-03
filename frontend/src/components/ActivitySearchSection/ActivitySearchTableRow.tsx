@@ -6,14 +6,13 @@ import { PLACE_HOLDER } from "@/constants";
 import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
 import { ActivitySearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
-
-import SpatialCheckbox from "../SpatialCheckbox";
+import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import SpatialCheckbox from "../SpatialCheckbox";
+import { ActivityStatusTag } from "../Tags";
+
 
 import "./styles.scss";
-import { ActivityStatusTag } from "../Tags";
-import { getClientLabel, getClientSimpleLabel } from "../../utils/ForestClientUtils";
-
 type props = {
   headers: ActivityHeaderType[];
   rowData: ActivitySearchResponseDto;

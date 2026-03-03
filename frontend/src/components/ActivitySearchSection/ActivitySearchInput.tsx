@@ -1,24 +1,23 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
+import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
+import { ChevronDown, ChevronUp } from '@carbon/icons-react';
 import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, TextInput } from '@carbon/react';
 import API from '@/services/API';
 import { ActivitySearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
 import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
 import { CodeDescriptionDto } from '@/services/OpenApi';
-import CustomMultiSelect from '../CustomMultiSelect';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { useQuery } from '@tanstack/react-query';
-
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, INTRA_AGENCY_NUMBER_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
-import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
-
-import './styles.scss';
-import { ChevronDown, ChevronUp } from '@carbon/icons-react';
 import { FILE_ID_MAX_LENGTH } from '@/constants';
 import { ActivityStatusTag } from '../Tags';
+import CustomMultiSelect from '../CustomMultiSelect';
 import ForestClientMultiSelect from '../ForestClientMultiSelect';
+
+import './styles.scss';
 
 type props = {
   searchParams?: ActivitySearchParams;

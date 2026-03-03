@@ -10,13 +10,12 @@ import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import TableSkeleton from "@/components/TableSkeleton";
 import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
 import EmptySection from "@/components/EmptySection";
+import { mapKinds, MapKindType } from "@/types/MapLayer";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-
+import OpeningsMap from "../OpeningsMap";
+import ActivitySearchTableRow from "./ActivitySearchTableRow";
 import { readActivitySearchUrlParams, updateActivitySearchUrlParams, hasActivitySearchFilters } from "./utils";
 import { defaultActivitySearchTableHeaders } from "./constants";
-import ActivitySearchTableRow from "./ActivitySearchTableRow";
-import OpeningsMap from "../OpeningsMap";
-import { mapKinds, MapKindType } from "../../types/MapLayer";
 
 const ActivitiesSearchSection = () => {
   const [searchParams, setSearchParams] = useState<ActivitySearchParams>();
