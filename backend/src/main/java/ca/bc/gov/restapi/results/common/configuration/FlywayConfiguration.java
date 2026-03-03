@@ -34,6 +34,7 @@ public class FlywayConfiguration {
   public FlywayConfigurationCustomizer flywayConfigurationCustomizer(
       Environment env, ApplicationContext context) {
     return configuration -> {
+
       String primaryDb = env.getProperty("PRIMARY_DB",
           env.getProperty("server.primary-db", "oracle"));
       log.info("Configuring Flyway for primary database: {}", primaryDb);
