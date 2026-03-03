@@ -37,6 +37,7 @@ public class FlywayConfiguration {
 
       String primaryDb = env.getProperty("PRIMARY_DB",
           env.getProperty("server.primary-db", "oracle"));
+      
       log.info("Configuring Flyway for primary database: {}", primaryDb);
 
       List<String> locations = new ArrayList<>();
