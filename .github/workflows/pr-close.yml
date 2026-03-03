@@ -67,7 +67,7 @@ jobs:
 
   cleanup:
     name: Cleanup and Images - ${{ matrix.name }}
-    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
+    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@feat/cleanup-name-multi-value
     strategy:
       matrix:
         job: [retag, cleanup_hybrid, cleanup_postgres]
