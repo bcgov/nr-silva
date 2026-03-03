@@ -47,8 +47,6 @@ const OpeningsMap: React.FC<MapProps> = ({
   selectedSilvicultureActivityIds,
   selectedDisturbanceIds,
 }) => {
-  const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
-  const [openings, setOpenings] = useState<FeatureCollection[]>([]);
   const [position, setPosition] = useState<LatLngExpression>([
     48.43737, -123.35883,
   ]);
@@ -62,7 +60,35 @@ const OpeningsMap: React.FC<MapProps> = ({
   const isPopupHoveredRef = useRef(isPopupHovered);
 
   const polygonClickedRef = useRef(false);
+  const openingsRef = useRef<FeatureCollection[]>([]);
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
+
+  /**
+   * Fetch map queries directly from the openingIds prop — no intermediate state
+   * so the queries update in the same render as the prop change.
+   */
+  const mapQueries = getMapQueries(openingIds ?? [], ...kind);
+
+  /**
+   * Derive openings synchronously from query results.
+   * Uses a ref to preserve the last successful data while new queries are loading,
+   * preventing the map from flashing empty during transitions.
+   */
+  const openings: FeatureCollection[] = React.useMemo(() => {
+    if (!openingIds?.length) {
+      openingsRef.current = [];
+      return [];
+    }
+    const allSuccess = mapQueries.length > 0 && mapQueries.every((q) => q.status === "success");
+    if (allSuccess) {
+      openingsRef.current = mapQueries.map((q) => q.data as FeatureCollection);
+    }
+    return openingsRef.current;
+  }, [
+    mapQueries.map((q) => q.status).join(","),
+    openingIds?.join(","),
+    kind?.join(","),
+  ]);
 
   const polygonsToRender = React.useMemo(() => {
     if (isForestCoverMap) {
@@ -111,17 +137,6 @@ const OpeningsMap: React.FC<MapProps> = ({
     openings
   ]);
 
-  /**
-   * This function is used to fetch the map queries based on the selected opening IDs
-   * and the kind of map data.
-   */
-  const mapQueries = getMapQueries(selectedOpeningIds ?? [], ...kind);
-
-  /**
-   * This effect is used to set the map position and zoom level when the component mounts
-   * or when the openingIds prop changes. If no openingIds are provided, it will
-   * attempt to get the user's location.
-   */
   const setUserLocation = async () => {
     const userLocation = await getUserLocation();
     setPosition({ lat: userLocation.lat, lng: userLocation.lng });
@@ -129,12 +144,9 @@ const OpeningsMap: React.FC<MapProps> = ({
   };
 
   /**
-   * This effect is used to set the selected opening IDs when the component mounts
-   * or when the openingIds prop changes. If no openingIds are provided, it will
-   * attempt to get the user's location.
+   * Get user's location when no opening IDs are provided.
    */
   useEffect(() => {
-    setSelectedOpeningIds(openingIds || []);
     if (!openingIds?.length) {
       (async () => await setUserLocation())();
     }
@@ -164,43 +176,23 @@ const OpeningsMap: React.FC<MapProps> = ({
   }, [kindKey, openings]);
 
   /**
-   * This effect is used to update the map with the fetched polygons.
-   * It checks if all queries are successful and updates the openings state
-   * with the fetched data. If there are any errors, it sets the error state.
+   * Report errors from failed map queries to the parent.
    */
   useEffect(() => {
-    const allSuccess = mapQueries.every((query) => query.status === "success");
-    if (allSuccess) {
-      setOpenings(mapQueries.map((query) => query.data as FeatureCollection));
+    const errorIds = mapQueries
+      .filter((query) => query.error)
+      .map(
+        (query) =>
+          (query.error as Error & { cause?: { openingId?: string } }).cause
+            ?.openingId
+      )
+      .filter(Boolean)
+      .map((id) => Number(id));
 
-    } else {
-      // Check if there are any errors and extract their IDs
-      const errorIds = mapQueries
-        .filter((query) => query.error)
-        .map(
-          (query) =>
-            (query.error as Error & { cause?: { openingId?: string } }).cause
-              ?.openingId
-        )
-        .filter(Boolean) // Remove undefined/null values
-        .map((id) => Number(id));
-
-      if (errorIds.length > 0) {
-        setOpeningPolygonNotFound(true, errorIds[0] ?? null);
-      }
+    if (errorIds.length > 0) {
+      setOpeningPolygonNotFound(true, errorIds[0] ?? null);
     }
-  }, [
-    mapQueries.map((query) => query.status).join(","),
-    kind?.join(","),
-    openingIds?.join(","),
-  ]);
-
-  /**
-   * This effect is used to get the user's location when the component mounts.
-   */
-  useEffect(() => {
-    (async () => await setUserLocation())();
-  }, []);
+  }, [mapQueries.map((query) => query.status).join(",")]);
 
   /**
    * This effect is used to update the isPopupHoveredRef when the isPopupHovered state changes.
@@ -358,13 +350,6 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
-          key={
-            isForestCoverMap
-              ? selectedForestCoverIds?.join(",")
-              : isActivitiesMap
-                ? [...(selectedDisturbanceIds ?? []), ...(selectedSilvicultureActivityIds ?? [])].join(",")
-                : undefined
-          }
           polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}

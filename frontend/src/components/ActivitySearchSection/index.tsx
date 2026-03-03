@@ -182,7 +182,6 @@ const ActivitiesSearchSection = () => {
                 selectedSilvicultureActivityIds.length > 0
                   ? (
                     <OpeningsMap
-                      key={selectedSilvicultureActivityIds.join(",")}
                       openingIds={selectedOpeningIds}
                       setOpeningPolygonNotFound={() => { }}
                       mapHeight={480}
