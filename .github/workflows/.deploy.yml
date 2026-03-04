@@ -160,6 +160,6 @@ jobs:
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: ${{ matrix.overwrite }}
-          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }} ${{ matrix.parameters }} 
+          parameters: -p ZONE=${{ inputs.target }} -p TAG=${{ inputs.tag }} ${{ matrix.parameters }}
           timeout: 15m
           triggers: ${{ inputs.triggers }}
