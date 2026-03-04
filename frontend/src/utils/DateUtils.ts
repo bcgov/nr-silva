@@ -95,25 +95,25 @@ export const isMidnight = (dateTimeStr: string): boolean => {
 };
 
 export const getStartMaxDate = (endDate?: string) => {
-  const maxDate = endDate
-    ? DateTime.fromFormat(
-      endDate,
-      API_DATE_FORMAT
-    ).toFormat(DATE_PICKER_FORMAT)
-    : DateTime.now().toFormat(DATE_PICKER_FORMAT);
-
-  return maxDate;
+  if (!endDate) {
+    return DateTime.now().toFormat(DATE_PICKER_FORMAT);
+  }
+  const dt = DateTime.fromFormat(endDate, API_DATE_FORMAT);
+  if (!dt.isValid) {
+    return undefined;
+  }
+  return dt.toFormat(DATE_PICKER_FORMAT);
 };
 
 export const getEndMinDate = (startDate?: string) => {
-  const minDate = startDate
-    ? DateTime.fromFormat(
-      startDate,
-      API_DATE_FORMAT
-    ).toFormat(DATE_PICKER_FORMAT)
-    : undefined;
-
-  return minDate;
+  if (!startDate) {
+    return undefined;
+  }
+  const dt = DateTime.fromFormat(startDate, API_DATE_FORMAT);
+  if (!dt.isValid) {
+    return undefined;
+  }
+  return dt.toFormat(DATE_PICKER_FORMAT);
 };
 
 
