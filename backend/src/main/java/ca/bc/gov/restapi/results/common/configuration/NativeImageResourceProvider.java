@@ -49,7 +49,7 @@ public class NativeImageResourceProvider implements ResourceProvider {
           return wrap(resource);
         }
       } catch (Exception e) {
-        log.debug("Resource '{}' not found in location '{}'", name, location);
+        log.debug("Error accessing resource '{}' in location '{}'; treating as not found", name, location, e);
       }
     }
     return null;
