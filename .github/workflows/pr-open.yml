@@ -32,6 +32,7 @@ jobs:
             triggers: ('backend/')
           - package: frontend
             build_context: frontend
+            extra_build_arg: ''
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v6
