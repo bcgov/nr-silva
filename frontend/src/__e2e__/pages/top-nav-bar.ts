@@ -31,7 +31,19 @@ export class TopNavBar {
   }
 
   async toggleThemeSwitch() {
+    const initialTheme = await this.getCurrentTheme();
     await this.themeToggle.click();
+    // Wait for the theme to actually change
+    await this.page.waitForFunction(() => {
+      const el = document.querySelector('[data-testid="header"] button');
+      if (!el) return false;
+      const classAttr = el.getAttribute('class');
+      if (initialTheme === 'dark') {
+        return classAttr?.includes('off');
+      } else {
+        return classAttr?.includes('on');
+      }
+    });
   }
 
   async getCurrentTheme() {
@@ -52,24 +64,22 @@ export class TopNavBar {
   async openProfileMenu() {
     if (!(await this.isProfileMenuOpen())) {
       await this.profileButton.click();
-      const menuHandle = await this.profileMenu.elementHandle();
-      if (!menuHandle) throw new Error('Profile menu element not found');
-      await this.page.waitForFunction(
-        (el) => el.classList.contains(`${CARBON_CLASS_PREFIX}--header-panel--expanded`),
-        menuHandle
-      );
+      const prefix = CARBON_CLASS_PREFIX;
+      await this.page.waitForFunction(() => {
+        const el = document.querySelector('[aria-label="User Profile Tab"]');
+        return el ? el.classList.contains(`${prefix}--header-panel--expanded`) : false;
+      });
     }
   }
 
   async closeProfileMenu() {
     if (await this.isProfileMenuOpen()) {
       await this.profileButton.click();
-      const menuHandle = await this.profileMenu.elementHandle();
-      if (!menuHandle) throw new Error('Profile menu element not found');
-      await this.page.waitForFunction(
-        (el) => !el.classList.contains(`${CARBON_CLASS_PREFIX}--header-panel--expanded`),
-        menuHandle
-      );
+      const prefix = CARBON_CLASS_PREFIX;
+      await this.page.waitForFunction(() => {
+        const el = document.querySelector('[aria-label="User Profile Tab"]');
+        return el ? !el.classList.contains(`${prefix}--header-panel--expanded`) : true;
+      });
     }
   }
 
