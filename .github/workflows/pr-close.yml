@@ -12,9 +12,70 @@ concurrency:
 permissions: {}
 
 jobs:
+  cleanup_configmap:
+    name: Cleanup FAM Route Allocations
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Remove FAM route allocations for PR
+        uses: bcgov/action-oc-runner@v1.4.0
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          commands: |
+            echo "Cleaning up route allocations for PR $PR_NUMBER"
+            
+            # Check if ConfigMap exists
+            if ! oc get configmap fam-route-allocations &>/dev/null; then
+              echo "ConfigMap fam-route-allocations does not exist, nothing to clean up"
+              exit 0
+            fi
+            
+            # Get current ConfigMap data
+            allocs=$(oc get configmap fam-route-allocations -o json | jq -r '.data // {}')
+            
+            # Build patch to remove entries for this PR
+            patch='{"data": {'
+            first=true
+            
+            for i in $(seq 0 49); do
+              for prefix in hybrid postgres; do
+                key="${prefix}_$i"
+                pr=$(echo "$allocs" | jq -r ".$key // empty")
+                if [[ "$pr" == "$PR_NUMBER" ]]; then
+                  if [ "$first" = false ]; then 
+                    patch="$patch,"
+                  fi
+                  patch="$patch\"$key\": null"
+                  first=false
+                  echo "Removing reservation: $key (PR $PR_NUMBER)"
+                fi
+              done
+            done
+            
+            patch="$patch}}"
+            
+            if [ "$first" = false ]; then
+              oc patch configmap fam-route-allocations --type merge -p "$patch"
+              echo "Successfully removed route reservations for PR $PR_NUMBER"
+            else
+              echo "No route reservations found for PR $PR_NUMBER"
+            fi
+
   cleanup:
-    name: Cleanup and Images
+    name: Cleanup and Images - ${{ matrix.name }}
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
+    strategy:
+      matrix:
+        model: [hybrid, postgres]
+        include:
+          - model: hybrid
+            name: "Hybrid (Oracle Primary)"
+          - model: postgres
+            name: "Postgres"
     permissions:
       packages: write
     secrets:
@@ -23,3 +84,4 @@ jobs:
     with:
       cleanup: label
       packages: backend frontend
+      target: ${{ github.event.number }}-${{ matrix.model }}
