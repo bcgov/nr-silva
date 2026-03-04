@@ -149,6 +149,11 @@ const ActivitiesSearchSection = () => {
   };
 
   const handleRowSelection = (openingId: number, compoundId: string) => {
+    if (selectedSilvicultureActivityIds.includes(compoundId)) {
+      setSelectedSilvicultureActivityIds([]);
+      setSelectedOpeningIds([]);
+      return;
+    }
     setSelectedSilvicultureActivityIds([compoundId]);
     setSelectedOpeningIds([openingId]);
   }
