@@ -23,7 +23,7 @@ export const hasActivitySearchFilters = (params: ActivitySearchParams | undefine
  */
 export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => {
   const searchParams = new URLSearchParams(window.location.search);
-  const params: any = {};
+  const params: Partial<ActivitySearchParams> = {};
 
   const bases = searchParams.getAll('bases');
   if (bases.length > 0) params.bases = bases;
@@ -68,10 +68,20 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
   if (updateDateEnd) params.updateDateEnd = updateDateEnd;
 
   const page = searchParams.get('page');
-  if (page) params.page = parseInt(page, 10);
+  if (page) {
+    const pageNum = parseInt(page, 10);
+    if (Number.isFinite(pageNum)) {
+      params.page = pageNum;
+    }
+  }
 
   const size = searchParams.get('size');
-  if (size) params.size = parseInt(size, 10);
+  if (size) {
+    const sizeNum = parseInt(size, 10);
+    if (Number.isFinite(sizeNum)) {
+      params.size = sizeNum;
+    }
+  }
 
   return params;
 };
