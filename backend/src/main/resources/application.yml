@@ -91,6 +91,8 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+    schemas: silva
+    default-schema: silva
 
 # Actuator and ops
 management:
