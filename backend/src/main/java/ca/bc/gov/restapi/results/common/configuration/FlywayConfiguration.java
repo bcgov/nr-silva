@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
- @ImportRuntimeHints(FlywayRuntimeHints.class)
+@ImportRuntimeHints(FlywayRuntimeHints.class)
 public class FlywayConfiguration {
 
   @Bean
@@ -37,7 +37,6 @@ public class FlywayConfiguration {
 
       String primaryDb = env.getProperty("PRIMARY_DB",
           env.getProperty("server.primary-db", "oracle"));
-      
       log.info("Configuring Flyway for primary database: {}", primaryDb);
 
       List<String> locations = new ArrayList<>();
@@ -56,7 +55,7 @@ public class FlywayConfiguration {
           .schemas("silva")
           .defaultSchema("silva")
           .locations(locations.toArray(String[]::new))
-           .resourceProvider(new NativeImageResourceProvider(context, locations));
+          .resourceProvider(new NativeImageResourceProvider(context, locations));
     };
   }
 }
