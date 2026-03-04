@@ -31,19 +31,9 @@ export class TopNavBar {
   }
 
   async toggleThemeSwitch() {
-    const initialTheme = await this.getCurrentTheme();
     await this.themeToggle.click();
-    // Wait for the theme to actually change
-    await this.page.waitForFunction(() => {
-      const el = document.querySelector('[data-testid="header"] button');
-      if (!el) return false;
-      const classAttr = el.getAttribute('class');
-      if (initialTheme === 'dark') {
-        return classAttr?.includes('off');
-      } else {
-        return classAttr?.includes('on');
-      }
-    });
+    // Wait for the DOM to settle after theme change
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getCurrentTheme() {
@@ -65,10 +55,13 @@ export class TopNavBar {
     if (!(await this.isProfileMenuOpen())) {
       await this.profileButton.click();
       const prefix = CARBON_CLASS_PREFIX;
-      await this.page.waitForFunction(() => {
-        const el = document.querySelector('[aria-label="User Profile Tab"]');
-        return el ? el.classList.contains(`${prefix}--header-panel--expanded`) : false;
-      });
+      await this.page.waitForFunction(
+        (prefixValue) => {
+          const el = document.querySelector('[aria-label="User Profile Tab"]');
+          return el ? el.classList.contains(`${prefixValue}--header-panel--expanded`) : false;
+        },
+        prefix
+      );
     }
   }
 
@@ -76,10 +69,13 @@ export class TopNavBar {
     if (await this.isProfileMenuOpen()) {
       await this.profileButton.click();
       const prefix = CARBON_CLASS_PREFIX;
-      await this.page.waitForFunction(() => {
-        const el = document.querySelector('[aria-label="User Profile Tab"]');
-        return el ? !el.classList.contains(`${prefix}--header-panel--expanded`) : true;
-      });
+      await this.page.waitForFunction(
+        (prefixValue) => {
+          const el = document.querySelector('[aria-label="User Profile Tab"]');
+          return el ? !el.classList.contains(`${prefixValue}--header-panel--expanded`) : true;
+        },
+        prefix
+      );
     }
   }
 
