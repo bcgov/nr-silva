@@ -38,7 +38,7 @@ public class ActivitySearchFiltersDto {
   @Schema(type = "array", nullable = true)
   private final List<String> openingCategories;
 
-  @Schema(type = "string")
+  @Schema(type = "string", nullable = true)
   private final String fileId;
 
   @Schema(type = "array", nullable = true)
@@ -47,7 +47,7 @@ public class ActivitySearchFiltersDto {
   @Schema(type = "array", nullable = true)
   private final List<String> openingStatuses;
 
-  @Schema(type = "string")
+  @Schema(type = "string", nullable = true)
   private final String intraAgencyNumber;
 
   @Schema(type = "string", format = "date", nullable = true)
