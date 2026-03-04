@@ -1,4 +1,4 @@
-# Scripts Documentation 
+# Scripts Documentation
 
 This document describes each script in the `scripts` block of the `package.json` file, including its purpose, when to use it and some explanations regarding pre and post scripts.
 
