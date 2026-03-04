@@ -119,10 +119,10 @@ export const getEndMinDate = (startDate?: string) => {
 
 export const getDatePickerValue = (date?: string) => {
   if (date) {
-    return DateTime.fromFormat(
-      date,
-      API_DATE_FORMAT
-    ).toFormat(DATE_PICKER_FORMAT);
+    const dt = DateTime.fromFormat(date, API_DATE_FORMAT);
+    if (dt.isValid) {
+      return dt.toFormat(DATE_PICKER_FORMAT);
+    }
   }
   return undefined;
 };
