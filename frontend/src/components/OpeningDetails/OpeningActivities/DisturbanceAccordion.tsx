@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 
 import {
   Accordion,
@@ -80,7 +81,7 @@ const DisturbanceRow = ({
   const compoundId = `${row.atuId}-DN`;
   const { isAvailable, isLoading } = usePolygonAvailability(
     openingId,
-    'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
+    MAP_KINDS.activityTreatment,
     compoundId,
   );
   const isSelected = selectedDisturbanceIds.includes(compoundId);

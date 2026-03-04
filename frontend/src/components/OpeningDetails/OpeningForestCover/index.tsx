@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -60,7 +61,7 @@ const ForestCoverRow = ({
   const compoundId = `${row.coverId}-${row.polygonId}`;
   const { isAvailable, isLoading } = usePolygonAvailability(
     openingId,
-    'WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW',
+    MAP_KINDS.forestCoverInventory,
     isLatestHistory ? compoundId : null,
   );
   const isSelected = selectedForestCoverIds.includes(compoundId);

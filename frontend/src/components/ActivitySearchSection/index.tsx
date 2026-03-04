@@ -3,6 +3,7 @@ import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu,
 import ActivitySearchInput from "@/components/ActivitySearchSection/ActivitySearchInput";
 import { ActivitySearchParams } from "@/types/ApiType";
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { CircleDash, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
@@ -24,7 +25,7 @@ const ActivitiesSearchSection = () => {
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
   const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
-  const activityLayerConfig = mapKinds.find((kind) => kind.code === 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW')!;
+  const activityLayerConfig = mapKinds.find((kind) => kind.code === MAP_KINDS.activityTreatment)!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<ActivityHeaderType[]>(() => structuredClone(defaultActivitySearchTableHeaders));
 

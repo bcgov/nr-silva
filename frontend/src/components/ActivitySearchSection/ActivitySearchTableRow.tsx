@@ -3,6 +3,7 @@ import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
 import { ActivitySearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
@@ -33,7 +34,7 @@ const ActivitySearchTableRow = ({
   const compoundId = `${rowData.activityId}-${rowData.base?.code ?? ''}`;
   const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
     rowData.openingId!,
-    'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
+    MAP_KINDS.activityTreatment,
     compoundId,
   );
   const openingUrl = OpeningDetailsRoute.path!.replace(

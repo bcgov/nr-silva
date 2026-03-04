@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import qs from 'qs';
 import {
   Accordion,
   AccordionItem,
@@ -30,21 +29,22 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { PLACE_HOLDER } from "@/constants";
 import API from "@/services/API";
 import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import ActivityDetail from "./ActivityDetail";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 
 import { ActivityTableHeaders, DefaultFilter } from "./constants";
-import { formatLocalDate } from "@/utils/DateUtils";
-import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { ActivityFilterType } from "./definitions";
 import { formatActivityObjective } from "./utils";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 
 import "./styles.scss";
-import { isAuthRefreshInProgress } from "../../../constants/tanstackConfig";
 
 type ActivityAccordionProps = {
   openingId: number;
@@ -92,7 +92,7 @@ const ActivityRow = ({
   const compoundId = `${row.atuId}-${row.base.code}`;
   const { isAvailable, isLoading } = usePolygonAvailability(
     openingId,
-    'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW',
+    MAP_KINDS.activityTreatment,
     compoundId,
   );
   const isSelected = selectedSilvicultureActivityIds.includes(compoundId);

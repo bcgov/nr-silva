@@ -6,6 +6,7 @@ import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
@@ -40,7 +41,7 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
 
   const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
     rowData.openingId,
-    'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
+    MAP_KINDS.opening,
     showMap ? `${rowData.openingId}` : null,
   );
 

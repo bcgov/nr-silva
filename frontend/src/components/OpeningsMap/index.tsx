@@ -10,6 +10,7 @@ import {
 } from "react-leaflet";
 import { Feature, FeatureCollection, Geometry } from "geojson";
 import { getPropertyForFeature, MapKindType, MapLayer } from "@/types/MapLayer";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
@@ -39,7 +40,7 @@ const OpeningsMap: React.FC<MapProps> = ({
   setOpeningPolygonNotFound,
   mapHeight = 480,
   layerFilter = false,
-  kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
+  kind = [MAP_KINDS.opening],
   isDetailsPage = false,
   isForestCoverMap = false,
   isActivitiesMap = false,
