@@ -158,7 +158,6 @@ export class SearchEndpointService {
      * @param fileId
      * @param clientNumbers
      * @param openingStatuses
-     * @param intraAgencyNumber
      * @param updateDateStart
      * @param updateDateEnd
      * @param page Zero-based page index (0..N)
@@ -179,7 +178,6 @@ export class SearchEndpointService {
         fileId?: string,
         clientNumbers?: Array<string>,
         openingStatuses?: Array<string>,
-        intraAgencyNumber?: string,
         updateDateStart?: string,
         updateDateEnd?: string,
         page?: number,
@@ -201,7 +199,6 @@ export class SearchEndpointService {
                 'fileId': fileId,
                 'clientNumbers': clientNumbers,
                 'openingStatuses': openingStatuses,
-                'intraAgencyNumber': intraAgencyNumber,
                 'updateDateStart': updateDateStart,
                 'updateDateEnd': updateDateEnd,
                 'page': page,

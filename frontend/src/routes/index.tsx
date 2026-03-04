@@ -8,8 +8,7 @@ import {
   DashboardRoute,
   OpeningDetailsRoute,
   OpeningsRoute,
-  OpeningsSearchRoute,
-  ActivitySearchRoute,
+  OpeningsSearchRoute
 } from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
@@ -28,8 +27,7 @@ const protectedRouteList: RouteObject[] = [
   OpeningsSearchRoute,
   OpeningsRoute,
   CreateOpeningRoute,
-  OpeningDetailsRoute,
-  ActivitySearchRoute
+  OpeningDetailsRoute
 ] as const;
 
 export const validPaths = protectedRouteList

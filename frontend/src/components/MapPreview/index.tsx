@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { MapContainer, TileLayer, GeoJSON as RLGeoJSON } from "react-leaflet";
-import { geoJSON } from "leaflet";
+import * as L from "leaflet";
 
 type MapPreviewProps = {
   geojson?: GeoJSON.FeatureCollection | null
@@ -14,7 +14,7 @@ const MapPreview = ({ geojson }: MapPreviewProps) => {
   // Fit map to uploaded geometry when it changes and the map is ready
   useEffect(() => {
     if (!geojson || !mapRef.current || !mapReady) return;
-    const temp = geoJSON(geojson);
+    const temp = L.geoJSON(geojson);
     const bounds = temp.getBounds();
     if (bounds && bounds.isValid()) {
       mapRef.current.fitBounds(bounds, { padding: [24, 24] });

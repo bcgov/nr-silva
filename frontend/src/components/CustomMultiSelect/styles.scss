@@ -1,9 +1,7 @@
-@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
-
 // Fix for Carbon FilterableMultiSelect persistent focus styling issue
 // Forces the outline to be removed when the component should not have focus
 .custom-multi-select-wrapper {
-  .#{vars.$bcgov-prefix}--multi-select:not(:focus-within) {
+  .bx--multi-select:not(:focus-within) {
     outline: none !important;
     box-shadow: none !important;
   }

@@ -1,5 +1,4 @@
 import { Locator, Page } from "@playwright/test";
-import { CARBON_CLASS_PREFIX } from "../../constants";
 
 export class TopNavBar {
   readonly page: Page;
@@ -30,6 +29,10 @@ export class TopNavBar {
     return await this.title.textContent();
   }
 
+  async toggleThemeSwitch() {
+    await this.themeToggle.click();
+  }
+
   async getCurrentTheme() {
     const classAtrr = await this.themeToggle.getAttribute('class');
     if (classAtrr?.includes('on')) {
@@ -42,19 +45,17 @@ export class TopNavBar {
 
   async isProfileMenuOpen() {
     const classAttr = await this.profileMenu.getAttribute('class');
-    return classAttr?.includes(`${CARBON_CLASS_PREFIX}--header-panel--expanded`) ?? false;
+    return classAttr?.includes('bx--header-panel--expanded') ?? false;
   }
 
   async openProfileMenu() {
     if (!(await this.isProfileMenuOpen())) {
       await this.profileButton.click();
-      const prefix = CARBON_CLASS_PREFIX;
+      const menuHandle = await this.profileMenu.elementHandle();
+      if (!menuHandle) throw new Error('Profile menu element not found');
       await this.page.waitForFunction(
-        (prefixValue) => {
-          const el = document.querySelector('[aria-label="User Profile Tab"]');
-          return el ? el.classList.contains(`${prefixValue}--header-panel--expanded`) : false;
-        },
-        prefix
+        (el) => el.classList.contains('bx--header-panel--expanded'),
+        menuHandle
       );
     }
   }
@@ -62,13 +63,11 @@ export class TopNavBar {
   async closeProfileMenu() {
     if (await this.isProfileMenuOpen()) {
       await this.profileButton.click();
-      const prefix = CARBON_CLASS_PREFIX;
+      const menuHandle = await this.profileMenu.elementHandle();
+      if (!menuHandle) throw new Error('Profile menu element not found');
       await this.page.waitForFunction(
-        (prefixValue) => {
-          const el = document.querySelector('[aria-label="User Profile Tab"]');
-          return el ? !el.classList.contains(`${prefixValue}--header-panel--expanded`) : true;
-        },
-        prefix
+        (el) => !el.classList.contains('bx--header-panel--expanded'),
+        menuHandle
       );
     }
   }
@@ -83,6 +82,10 @@ export class TopNavBar {
       username: username?.replace(/^.*?:\s*/, '').trim() ?? '',
       email: email?.replace(/^Email:\s*/, '').trim() ?? '',
     };
+  }
+
+  async changeThemeFromMenu() {
+    await this.changeThemeButton.click();
   }
 
   async logout() {

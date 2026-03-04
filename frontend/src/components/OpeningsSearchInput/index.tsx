@@ -1,17 +1,17 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { OpeningSearchParamsType } from "@/types/OpeningTypes";
 import { Checkbox, CheckboxGroup, Column, ComboBox, DatePicker, DatePickerInput, Grid, Stack, TextInput } from "@carbon/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { comboBoxStringFilter, enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from "@/utils/InputUtils";
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST, VALID_MAPSHEET_GRID_LIST, VALID_MAPSHEET_LETTER_LIST, VALID_MAPSHEET_QUAD_LIST } from "@/constants";
 import useRefWithSearchParam from "@/hooks/useRefWithSearchParam";
-import { CodeDescriptionDto } from "@/services/OpenApi";
+import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
+import { CodeDescriptionDto, ForestClientAutocompleteResultDto } from "@/services/OpenApi";
 import MapsheetKeyImg from "@/assets/img/opening-mapsheet-key-example.png";
 import useBreakpoint from "@/hooks/UseBreakpoint";
-import { getDatePickerValue, getEndMinDate, getStartMaxDate } from "@/utils/DateUtils";
 import {
   OPENING_ID_MAX_LENGTH,
   FILE_ID_MAX_LENGTH,
@@ -21,11 +21,10 @@ import {
   TIMBER_MARK_MAX_LENGTH,
   MAPSHEET_SQUARE_MAX_LENGTH,
   OPENING_NUMBER_MAX_LENGTH
-} from "@/constants";
+} from "./constants";
 
 import CustomMultiSelect from "../CustomMultiSelect";
 import TooltipLabel from "../TooltipLabel";
-import ForestClientMultiSelect from "../ForestClientMultiSelect";
 
 import './styles.scss';
 
@@ -36,6 +35,8 @@ type props = {
 }
 const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   const breakpoint = useBreakpoint();
+  const [clientSearchTerm, setClientSearchTerm] = useState<string>('');
+  const [matchingClients, setMatchingClients] = useState<ForestClientAutocompleteResultDto[]>([]);
 
   const openingIdInputRef = useRef<HTMLInputElement>(null); //NUMBER(10,0)
   const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
@@ -48,6 +49,47 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
   const mapsheetSquareInputRef = useRef<HTMLInputElement>(null); //VARCHAR2(3)
   const openingNumberInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(4)
 
+  // Store initial clientNumbers on mount to prefetch only once
+  const initialClientNumbersRef = useRef<string[] | undefined>(undefined);
+  const hasLoadedInitialClientsRef = useRef(false);
+
+  // Capture clientNumbers on first arrival of searchParams
+  useEffect(() => {
+    if (!hasLoadedInitialClientsRef.current && searchParams?.clientNumbers && searchParams.clientNumbers.length > 0) {
+      initialClientNumbersRef.current = searchParams.clientNumbers;
+    }
+  }, [searchParams?.clientNumbers]);
+
+  // Prefetch client data when searchParams contains clientNumbers
+  const initialClientsQuery = useQuery({
+    queryKey: ['forest-clients', 'byClientNumbers', initialClientNumbersRef.current],
+    queryFn: () => API.ForestClientEndpointService.searchByClientNumbers(
+      initialClientNumbersRef.current!,
+      0,
+      initialClientNumbersRef.current!.length
+    ),
+    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbersRef.current && initialClientNumbersRef.current.length > 0),
+  });
+
+  // Merge prefetched clients into matchingClients
+  useEffect(() => {
+    if (initialClientsQuery.data && initialClientsQuery.data.length > 0) {
+      setMatchingClients((prev) => {
+        const existing = prev ?? [];
+        const existingIds = new Set(existing.map((c) => c.id));
+        const toAdd = initialClientsQuery.data
+          .filter((c) => c.clientNumber != null && !existingIds.has(c.clientNumber))
+          .map((c) => ({
+            id: c.clientNumber,
+            acronym: c.acronym,
+            name: c.name,
+          }));
+        return existing.concat(toAdd);
+      });
+      hasLoadedInitialClientsRef.current = true;
+    }
+  }, [initialClientsQuery.data]);
+
   const categoryQuery = useQuery({
     queryKey: ["codes", "opening-categories"],
     queryFn: () => API.CodesEndpointService.getOpeningCategories(),
@@ -57,6 +99,33 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     queryKey: ["codes", "org-units"],
     queryFn: API.CodesEndpointService.getOpeningOrgUnits
   });
+
+  const clientMutation = useMutation({
+    mutationKey: ["forest-clients", "byNameAcronymNumber"],
+    mutationFn: (searchParam: string) => API.ForestClientEndpointService.searchForestClients(searchParam),
+    onSuccess: (data: ForestClientAutocompleteResultDto[] | null) => {
+      if (!data || !Array.isArray(data) || data.length === 0) return;
+
+      setMatchingClients((prev) => {
+        const existing = prev ?? [];
+        const existingIds = new Set(existing.map((c) => c.id));
+        const toAdd = data.filter((c) => c.id != null && !existingIds.has(c.id));
+        return existing.concat(toAdd);
+      });
+    },
+  });
+
+  /* Debounce the API call by 200ms */
+  useEffect(() => {
+    if (clientSearchTerm.length <= 2) return;
+
+    const handler = setTimeout(() => {
+      clientMutation.mutate(clientSearchTerm);
+    }, 200);
+
+    // Clear timeout if user types again
+    return () => clearTimeout(handler);
+  }, [clientSearchTerm]);
 
   // Update text inputs with search params
   useRefWithSearchParam(openingIdInputRef, searchParams?.openingId);
@@ -86,6 +155,29 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     return values && values.length > 0 ? values.join(', ') : defaultText;
   };
 
+
+  const getStartMaxDate = () => {
+    const maxDate = searchParams?.updateDateEnd
+      ? DateTime.fromFormat(
+        searchParams.updateDateEnd,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT)
+      : DateTime.now().toFormat(DATE_PICKER_FORMAT);
+
+    return maxDate;
+  };
+
+  const getEndMinDate = () => {
+    const minDate = searchParams?.updateDateStart
+      ? DateTime.fromFormat(
+        searchParams.updateDateStart,
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT)
+      : undefined;
+
+    return minDate;
+  };
+
   const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
     if (!dates) return;
 
@@ -98,6 +190,17 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       isStartDate ? "updateDateStart" : "updateDateEnd",
       formattedDate ? formattedDate : undefined
     );
+  };
+
+  const getDateValue = (isStartDate: boolean) => {
+    const key = isStartDate ? 'updateDateStart' : 'updateDateEnd';
+    if (searchParams?.[key]) {
+      return DateTime.fromFormat(
+        searchParams[key],
+        API_DATE_FORMAT
+      ).toFormat(DATE_PICKER_FORMAT);
+    }
+    return undefined;
   };
 
   return (
@@ -122,7 +225,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           placeholder={getMultiSelectPlaceholder('categories')}
           titleText="Opening category"
           id="category-multi-select"
-          className="default-search-multi-select"
+          className="opening-search-multi-select"
           items={categoryQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('categories')}
@@ -134,7 +237,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
           id="status-multiselect"
-          className="default-search-multi-select"
+          className="opening-search-multi-select"
           titleText="Opening status"
           placeholder={getMultiSelectPlaceholder('openingStatuses')}
           items={OPENING_STATUS_LIST}
@@ -313,9 +416,35 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
       {/* Client */}
       <Column sm={4} md={4} lg={6} max={4}>
-        <ForestClientMultiSelect
-          selectedClientNumbers={searchParams?.clientNumbers}
-          onChange={(clientNumbers) => onSearchParamsChange('clientNumbers', clientNumbers)}
+        <CustomMultiSelect
+          key={String(hasLoadedInitialClientsRef.current)}
+          placeholder={
+            searchParams?.clientNumbers && searchParams.clientNumbers.length > 0
+              ? searchParams?.clientNumbers.map((num) => getClientSimpleLabel(matchingClients.find((c) => c.id === num))).join(', ')
+              : 'Choose one or more options'
+          }
+          titleText={
+            <TooltipLabel
+              align={(breakpoint === 'sm') ? 'top' : 'top-left'}
+              label="Client"
+              tooltip="Type at least 2 characters to search clients, matching options will be loaded."
+            />
+          }
+          id="client-multi-select"
+          className="opening-search-multi-select"
+          items={matchingClients}
+          itemToString={getClientLabel}
+          onChange={
+            (selected: { selectedItems: ForestClientAutocompleteResultDto[] }) => {
+              const selectedClientNumber = selected.selectedItems.map(item => item.id) as string[];
+              onSearchParamsChange('clientNumbers', selectedClientNumber.length > 0 ? selectedClientNumber : undefined);
+            }
+          }
+          onInputValueChange={(changes) => {
+            setClientSearchTerm(String(changes));
+          }}
+          selectedItems={matchingClients.filter(client => searchParams?.clientNumbers?.includes(client.id ?? '')) ?? []}
+          showSkeleton={initialClientsQuery.isLoading}
         />
       </Column>
 
@@ -325,7 +454,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
           placeholder={getMultiSelectPlaceholder('orgUnits')}
           titleText="Org unit"
           id="org-unit-multi-select"
-          className="default-search-multi-select"
+          className="opening-search-multi-select"
           items={orgUnitQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('orgUnits')}
@@ -372,8 +501,8 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
       </Column>
 
       {/* Updated on date range */}
-      <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
+      <Column sm={4} md={8} lg={16}>
+        <label className="date-label">Updated on date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
@@ -383,9 +512,9 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              maxDate={getStartMaxDate(searchParams?.updateDateEnd)}
+              maxDate={getStartMaxDate()}
               onChange={handleDateChange(true)}
-              value={getDatePickerValue(searchParams?.updateDateStart)}
+              value={getDateValue(true)}
             >
               <DatePickerInput
                 id="start-date-picker-input-id"
@@ -403,10 +532,10 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              minDate={getEndMinDate(searchParams?.updateDateStart)}
+              minDate={getEndMinDate()}
               maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
               onChange={handleDateChange(false)}
-              value={getDatePickerValue(searchParams?.updateDateEnd)}
+              value={getDateValue(false)}
             >
               <DatePickerInput
                 id="end-date-picker-input-id"

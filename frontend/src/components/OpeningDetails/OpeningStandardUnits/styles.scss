@@ -24,8 +24,8 @@
     .opening-standard-unit-header-dropdown-container {
       width: 20%;
 
-      .#{vars.$bcgov-prefix}--dropdown,
-      .#{vars.$bcgov-prefix}--list-box__menu {
+      .bx--dropdown,
+      .bx--list-box__menu {
         background: var(--#{vars.$bcgov-prefix}-layer-02);
       }
     }

@@ -24,8 +24,8 @@
     .opening-forest-cover-header-dropdown-container {
       width: 20%;
 
-      .#{vars.$bcgov-prefix}--dropdown,
-      .#{vars.$bcgov-prefix}--list-box__menu {
+      .bx--dropdown,
+      .bx--list-box__menu {
         background: var(--#{vars.$bcgov-prefix}-layer-02);
       }
     }
@@ -65,7 +65,7 @@
         padding-block: 2rem;
       }
 
-      tr.#{vars.$bcgov-prefix}--expandable-row.forest-cover-expanded-row[data-child-row="true"] td {
+      tr.bx--expandable-row.forest-cover-expanded-row[data-child-row="true"] td {
         padding-inline-end: 2rem;
       }
 
@@ -80,6 +80,12 @@
 
       .forest-cover-expanded-row[data-child-row="true"] td .child-table td {
         padding-inline: 1rem;
+      }
+
+      .map-header-checkbox-container {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
       }
     }
   }

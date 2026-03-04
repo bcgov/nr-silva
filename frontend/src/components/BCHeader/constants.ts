@@ -48,14 +48,6 @@ export const mainActivitiesItems: LeftMenu[] = [
         disabled: false,
         breadcrumb: false
       },
-      {
-        id: 'activity-search',
-        name: 'Activities',
-        icon: 'CropHealth',
-        link: '/activity-search',
-        disabled: false,
-        breadcrumb: false
-      },
     ]
   }
 ];

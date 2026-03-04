@@ -10,7 +10,16 @@ export type MapLayer = {
   layers: string;
   transparent: boolean;
   styles: { name: string, title: string }[];
+  catalogueUrl: string;
+  getCapabilitiesUrl: string;
   filterable: boolean;
+};
+
+export type BaseMapLayer = {
+  name: string;
+  url: string;
+  attribution: string;
+  default: boolean;
 };
 
 export type MapKindType = 'WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW'

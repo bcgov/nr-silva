@@ -1,5 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
 import { MapKindType, MapPositionType } from "@/types/MapLayer";
+import { THREE_HALF_HOURS, THREE_HOURS } from "@/constants/TimeUnits";
 import API from "@/services/API";
 import { defaultLocation } from "./constants";
 
@@ -7,6 +8,8 @@ const queries = (openingIds: number[], ...kinds: MapKindType[]) =>
   openingIds.map((id) => ({
     queryKey: ["opening", "map", id, { kinds }],
     queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id.toString(), kinds.join(",")),
+    staleTime: THREE_HOURS,
+    cacheTime: THREE_HALF_HOURS,
     refetchOnReconnect: false,
   }));
 

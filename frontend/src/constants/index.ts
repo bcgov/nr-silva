@@ -1,6 +1,6 @@
 import { CodeDescriptionDto } from "@/services/OpenApi";
 
-export const CARBON_CLASS_PREFIX = "cds" as const;
+export const CARBON_CLASS_PREFIX = "bx" as const;
 
 export const ACCESS_TOKEN_KEY = "ACCESS_TOKEN" as const;
 
@@ -54,14 +54,3 @@ export const VALID_MAPSHEET_LETTER_LIST = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H
  * Allowed mapsheet quad and sub-quad numbers (0-4)
  */
 export const VALID_MAPSHEET_QUAD_LIST = ['0', '1', '2', '3', '4'];
-
-// Max length constraints for search input fields (based on database column definitions)
-export const OPENING_ID_MAX_LENGTH = 10; // NUMBER(10,0)
-export const FILE_ID_MAX_LENGTH = 10; // VARCHAR2(10)
-export const LICENSEE_OPENING_ID_MAX_LENGTH = 30; // VARCHAR2(30)
-export const CUT_BLOCK_MAX_LENGTH = 10; // VARCHAR2(10)
-export const CUTTING_PERMIT_MAX_LENGTH = 3; // VARCHAR2(3)
-export const TIMBER_MARK_MAX_LENGTH = 10; // VARCHAR2(10)
-export const MAPSHEET_SQUARE_MAX_LENGTH = 3; // VARCHAR2(3)
-export const OPENING_NUMBER_MAX_LENGTH = 4; // VARCHAR2(4)
-export const INTRA_AGENCY_NUMBER_MAX_LENGTH = 10; // VARCHAR2(10)

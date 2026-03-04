@@ -15,7 +15,6 @@ describe("SpatialCheckbox", () => {
   it("renders the checkbox with the tooltip", () => {
     render(
       <SpatialCheckbox
-        spatialType="opening"
         rowId={rowId}
         selectedRows={[]}
         handleRowSelection={handleRowSelectionChanged}
@@ -32,7 +31,6 @@ describe("SpatialCheckbox", () => {
   it("sets the checkbox to 'checked' if rowId is in selectedRows", () => {
     render(
       <SpatialCheckbox
-        spatialType="opening"
         rowId={rowId}
         selectedRows={[rowId]}
         handleRowSelection={handleRowSelectionChanged}
@@ -48,7 +46,6 @@ describe("SpatialCheckbox", () => {
   it("calls handleRowSelectionChanged with rowId when checkbox is toggled", () => {
     render(
       <SpatialCheckbox
-        spatialType="opening"
         rowId={rowId}
         selectedRows={[]}
         handleRowSelection={handleRowSelectionChanged}

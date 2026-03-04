@@ -10,7 +10,6 @@ import {
 } from "react-leaflet";
 import { Feature, FeatureCollection, Geometry } from "geojson";
 import { getPropertyForFeature, MapKindType, MapLayer } from "@/types/MapLayer";
-import { MAP_KINDS } from "@/constants/mapKindConstants";
 import OpeningsMapResizer from "@/components/OpeningsMapResizer";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
 import OpeningsMapFitBound from "@/components/OpeningsMapFitBound";
@@ -30,8 +29,11 @@ interface MapProps {
   isDetailsPage?: boolean;
   isForestCoverMap?: boolean;
   isActivitiesMap?: boolean;
+  setAvailableForestCoverIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds?: string[];
+  setAvailableSilvicultureActivityIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedSilvicultureActivityIds?: string[];
+  setAvailableDisturbanceIds?: React.Dispatch<React.SetStateAction<string[]>>;
   selectedDisturbanceIds?: string[];
 }
 
@@ -40,14 +42,19 @@ const OpeningsMap: React.FC<MapProps> = ({
   setOpeningPolygonNotFound,
   mapHeight = 480,
   layerFilter = false,
-  kind = [MAP_KINDS.opening],
+  kind = ["WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"],
   isDetailsPage = false,
   isForestCoverMap = false,
   isActivitiesMap = false,
+  setAvailableForestCoverIds,
   selectedForestCoverIds,
+  setAvailableSilvicultureActivityIds,
   selectedSilvicultureActivityIds,
+  setAvailableDisturbanceIds,
   selectedDisturbanceIds,
 }) => {
+  const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
+  const [openings, setOpenings] = useState<FeatureCollection[]>([]);
   const [position, setPosition] = useState<LatLngExpression>([
     48.43737, -123.35883,
   ]);
@@ -61,70 +68,35 @@ const OpeningsMap: React.FC<MapProps> = ({
   const isPopupHoveredRef = useRef(isPopupHovered);
 
   const polygonClickedRef = useRef(false);
-  const openingsRef = useRef<FeatureCollection[]>([]);
   const kindKey = Array.isArray(kind) ? kind.join(",") : String(kind);
 
-  /**
-   * Fetch map queries directly from the openingIds prop — no intermediate state
-   * so the queries update in the same render as the prop change.
-   */
-  const mapQueries = getMapQueries(openingIds ?? [], ...kind);
-
-  /**
-   * Derive openings synchronously from query results.
-   * Uses a ref to preserve the last successful data while new queries are loading,
-   * preventing the map from flashing empty during transitions.
-   */
-  const openings: FeatureCollection[] = React.useMemo(() => {
-    if (!openingIds?.length) {
-      openingsRef.current = [];
-      return [];
-    }
-    const allSuccess = mapQueries.length > 0 && mapQueries.every((q) => q.status === "success");
-    if (allSuccess) {
-      openingsRef.current = mapQueries.map((q) => q.data as FeatureCollection);
-    }
-    return openingsRef.current;
-  }, [
-    mapQueries.map((q) => q.status).join(","),
-    openingIds?.join(","),
-    kind?.join(","),
-  ]);
-
   const polygonsToRender = React.useMemo(() => {
+    // if (!isForestCoverMap && !isActivitiesMap) return openings;
     if (isForestCoverMap) {
-      // Forest cover: show only explicitly selected forest cover polygons
       const selectedSet = new Set(selectedForestCoverIds);
       return openings.map(fc => ({
         ...fc,
         features: fc.features.filter(
           feature =>
-            feature.properties?.FOREST_COVER_ID != null &&
-            feature.properties?.SILV_POLYGON_NUMBER != null &&
+            feature.properties?.FOREST_COVER_ID &&
+            feature.properties?.SILV_POLYGON_NUMBER &&
             selectedSet.has(
               `${feature.properties.FOREST_COVER_ID}-${feature.properties.SILV_POLYGON_NUMBER}`
             )
         ),
       }));
-    } else if (isActivitiesMap) {
-      // Activities map: disturbance (DN) and silviculture activities are filtered separately
-      // so each row type can independently control what's shown.
-      const activitySet = new Set(selectedSilvicultureActivityIds ?? []);
-      const disturbanceSet = new Set(selectedDisturbanceIds ?? []);
+    } else if (isActivitiesMap && selectedDisturbanceIds && selectedSilvicultureActivityIds) {
+      const selectedSet = new Set([...selectedDisturbanceIds, ...selectedSilvicultureActivityIds]);
       return openings.map(fc => ({
         ...fc,
-        features: fc.features.filter(feature => {
-          const atuId = feature.properties?.ACTIVITY_TREATMENT_UNIT_ID;
-          const baseCode = feature.properties?.SILV_BASE_CODE;
-          if (atuId == null || !baseCode) return false;
-          const compoundId = `${atuId}-${baseCode}`;
-          if (baseCode === 'DN') {
-            // Disturbance polygon: only show if explicitly selected as disturbance
-            return disturbanceSet.has(compoundId);
-          }
-          // Silviculture activity polygon: only show if explicitly selected as activity
-          return activitySet.has(compoundId);
-        }),
+        features: fc.features.filter(
+          feature =>
+            feature.properties?.ACTIVITY_TREATMENT_UNIT_ID &&
+            feature.properties?.SILV_BASE_CODE &&
+            selectedSet.has(
+              `${feature.properties.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties.SILV_BASE_CODE}`
+            )
+        ),
       }));
     } else {
       return openings;
@@ -138,6 +110,17 @@ const OpeningsMap: React.FC<MapProps> = ({
     openings
   ]);
 
+  /**
+   * This function is used to fetch the map queries based on the selected opening IDs
+   * and the kind of map data.
+   */
+  const mapQueries = getMapQueries(selectedOpeningIds ?? [], ...kind);
+
+  /**
+   * This effect is used to set the map position and zoom level when the component mounts
+   * or when the openingIds prop changes. If no openingIds are provided, it will
+   * attempt to get the user's location.
+   */
   const setUserLocation = async () => {
     const userLocation = await getUserLocation();
     setPosition({ lat: userLocation.lat, lng: userLocation.lng });
@@ -145,9 +128,12 @@ const OpeningsMap: React.FC<MapProps> = ({
   };
 
   /**
-   * Get user's location when no opening IDs are provided.
+   * This effect is used to set the selected opening IDs when the component mounts
+   * or when the openingIds prop changes. If no openingIds are provided, it will
+   * attempt to get the user's location.
    */
   useEffect(() => {
+    setSelectedOpeningIds(openingIds || []);
     if (!openingIds?.length) {
       (async () => await setUserLocation())();
     }
@@ -177,23 +163,77 @@ const OpeningsMap: React.FC<MapProps> = ({
   }, [kindKey, openings]);
 
   /**
-   * Report errors from failed map queries to the parent.
+   * This effect is used to update the map with the fetched polygons.
+   * It checks if all queries are successful and updates the openings state
+   * with the fetched data. If there are any errors, it sets the error state.
    */
   useEffect(() => {
-    const errorIds = mapQueries
-      .filter((query) => query.error)
-      .map(
-        (query) =>
-          (query.error as Error & { cause?: { openingId?: string } }).cause
-            ?.openingId
-      )
-      .filter(Boolean)
-      .map((id) => Number(id));
+    const allSuccess = mapQueries.every((query) => query.status === "success");
+    if (allSuccess) {
+      setOpenings(mapQueries.map((query) => query.data as FeatureCollection));
 
-    if (errorIds.length > 0) {
-      setOpeningPolygonNotFound(true, errorIds[0] ?? null);
+      if (isForestCoverMap) {
+        const forestCoverIds: string[] = mapQueries
+          .flatMap((query) => (query.data as FeatureCollection).features)
+          .filter((feature) => feature.properties!.FOREST_COVER_ID && feature.properties!.SILV_POLYGON_NUMBER)
+          .map(
+            (feature) =>
+              `${feature.properties!.FOREST_COVER_ID}-${feature.properties!.SILV_POLYGON_NUMBER}`
+          );
+        if (setAvailableForestCoverIds) {
+          setAvailableForestCoverIds(forestCoverIds);
+        }
+      }
+      else if (isActivitiesMap) {
+        const { activityIds, disturbanceIds } = mapQueries
+          .flatMap((query) => (query.data as FeatureCollection).features)
+          .filter((feature) => feature.geometry &&
+            feature.properties!.ACTIVITY_TREATMENT_UNIT_ID &&
+            feature.properties!.SILV_BASE_CODE)
+          .reduce(
+            (acc, feature) => {
+              const id = `${feature.properties!.ACTIVITY_TREATMENT_UNIT_ID}-${feature.properties!.SILV_BASE_CODE}`;
+              if (feature.properties!.SILV_BASE_CODE === "DN") {
+                acc.disturbanceIds.push(id);
+              } else {
+                acc.activityIds.push(id);
+              }
+              return acc;
+            },
+            { activityIds: [] as string[], disturbanceIds: [] as string[] }
+          );
+
+        if (setAvailableDisturbanceIds) setAvailableDisturbanceIds(disturbanceIds);
+        if (setAvailableSilvicultureActivityIds) setAvailableSilvicultureActivityIds(activityIds);
+      }
+    } else {
+      // Check if there are any errors and extract their IDs
+      const errorIds = mapQueries
+        .filter((query) => query.error)
+        .map(
+          (query) =>
+            (query.error as Error & { cause?: { openingId?: string } }).cause
+              ?.openingId
+        )
+        .filter(Boolean) // Remove undefined/null values
+        .map((id) => Number(id));
+
+      if (errorIds.length > 0) {
+        setOpeningPolygonNotFound(true, errorIds[0] ?? null);
+      }
     }
-  }, [mapQueries.map((query) => query.status).join(",")]);
+  }, [
+    mapQueries.map((query) => query.status).join(","),
+    kind?.join(","),
+    openingIds?.join(","),
+  ]);
+
+  /**
+   * This effect is used to get the user's location when the component mounts.
+   */
+  useEffect(() => {
+    (async () => await setUserLocation())();
+  }, []);
 
   /**
    * This effect is used to update the isPopupHoveredRef when the isPopupHovered state changes.
@@ -351,6 +391,13 @@ const OpeningsMap: React.FC<MapProps> = ({
 
         {/* Display Opening polygons, if any */}
         <OpeningsMapEntry
+          key={
+            isForestCoverMap
+              ? selectedForestCoverIds?.join(",")
+              : isActivitiesMap
+                ? [...(selectedDisturbanceIds ?? []), ...(selectedSilvicultureActivityIds ?? [])].join(",")
+                : undefined
+          }
           polygons={polygonsToRender}
           hoveredFeature={hoveredFeature}
           setHoveredFeature={setHoveredFeature}

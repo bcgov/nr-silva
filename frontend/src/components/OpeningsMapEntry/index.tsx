@@ -1,34 +1,33 @@
 import React, { useEffect, useState, useRef } from "react";
+import { renderToString } from "react-dom/server";
 import L from "leaflet";
-import { useMapEvents, GeoJSON, Marker } from "react-leaflet";
+import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
 import { Feature, FeatureCollection, Geometry } from "geojson";
 import {
   getStyleForFeature,
+  getPropertyForFeature,
+  getPopupCenter,
   getCenterOfFeatureCollection,
 } from "@/types/MapLayer";
+import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
 import "./styles.scss";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
-  hoveredFeature: Feature<Geometry, unknown> | null;
-  setHoveredFeature: (feature: Feature<Geometry, unknown> | null) => void;
-  selectedFeature: Feature<Geometry, unknown> | null;
-  setSelectedFeature: (feature: Feature<Geometry, unknown> | null) => void;
-  isPopupHoveredRef?: React.RefObject<boolean>;
+  hoveredFeature: Feature<Geometry, any> | null;
+  setHoveredFeature: (feature: Feature<Geometry, any> | null) => void;
+  selectedFeature: Feature<Geometry, any> | null;
+  setSelectedFeature: (feature: Feature<Geometry, any> | null) => void;
+  isPopupHoveredRef?: React.MutableRefObject<boolean>;
 }
 
 const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
+  // State to hold the polygons
+  // This is used to set the map view when the component mounts
+  const [features, setFeatures] = useState<FeatureCollection[]>([]);
   const [zoom, setZoom] = useState<number>(13);
 
   const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
-
-  const hasFeatureProperty = (l: unknown): l is L.Layer & { feature: Feature<Geometry, unknown> } => {
-    return typeof l === 'object' && l !== null && 'feature' in l;
-  };
-
-  const isPathLayer = (l: unknown): l is L.Path => {
-    return typeof l === 'object' && l !== null && 'bringToFront' in l;
-  };
 
   // Get the map instance from react-leaflet
   const map = useMapEvents({
@@ -65,25 +64,58 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
       .map((feature) => feature.id)
       .filter(Boolean)
       .map((id) => String(id))
-      .reduce((_acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
+      .reduce((acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
+
+  /**
+   * Function to get the opening ID from the polygon
+   * This is used to display the opening ID in the popup when a polygon is clicked
+   * @param polygon The polygon to get the opening ID from
+   * @returns The opening ID of the polygon or 0 if not found
+   */
+  const getOpeningIdByCollection = (polygon: FeatureCollection) =>
+    polygon.features
+      .filter(Boolean)
+      .map((feature) => feature.properties?.OPENING_ID)
+      .filter(Boolean)
+      .map((id) => String(id))
+      .map((id) => parseFloat(id))
+      .find((id) => id && id !== 0) ?? 0;
+
+  /**
+   * Function to get the opening ID from the polygon
+   * This is used to display the opening ID in the popup when a polygon is clicked
+   * @param feature The feature to get the opening ID from
+   * @returns The opening ID of the polygon or 0 if not found
+   */
+  const getOpeningIdByFeature = (feature: Feature<Geometry, any>) => {
+    const openingId = feature.properties?.OPENING_ID || "0";
+    return parseFloat(openingId);
+  };
+
+  /**
+   * Effect to set the map view when the component mounts or when the polygons change
+   */
+  useEffect(() => {
+    setFeatures([...polygons]);
+  }, [polygons]);
 
   useEffect(() => {
     if (hoveredFeature) {
       setTimeout(() => {
         map.eachLayer((l: L.Layer) => {
           if (
-            hasFeatureProperty(l) &&
-            l.feature.id === hoveredFeature.id &&
-            isPathLayer(l)
+            (l as any).feature &&
+            (l as any).feature.id === hoveredFeature.id &&
+            (l as L.Path).bringToFront
           ) {
-            l.bringToFront();
+            (l as L.Path).bringToFront();
           }
         });
       }, 0);
     }
   }, [hoveredFeature, selectedFeature, map]);
 
-  const onEachFeature = (feature: Feature<Geometry, unknown>, layer: L.Layer) => {
+  const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
     layer.on({
       mouseover: () => {
         setHoveredFeature(feature);
@@ -123,7 +155,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   return (
     <>
       {zoom > 10 &&
-        polygons.filter(Boolean).map((featureCollection, collectionIndex) =>
+        features.filter(Boolean).map((featureCollection, collectionIndex) =>
           featureCollection.features
             .filter((feature) => feature.geometry)
             .map((feature, featureIndex) => (
@@ -140,13 +172,13 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
                     featureCollection.features.length
                   )
                 }
-                onEachFeature={onEachFeature}
+                onEachFeature={onEachFeature(featureCollection)}
               />
             ))
         )
       }
       {zoom <= 10 &&
-        polygons.filter(Boolean).map((featureCollection, index) =>
+        features.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features
             ?.filter((feature) => feature.geometry)
             .map((feature, fIndex) => (

@@ -1,7 +1,8 @@
 import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from "react";
 import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
-import { parseToken } from "@/services/AuthService";
+import { parseToken, setAuthIdToken } from "@/services/AuthService";
 import { env } from "@/env";
+import { JWT } from "@/types/amplify";
 import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
 import { REDIRECT_KEY, SELECTED_CLIENT_KEY, ACCESS_TOKEN_KEY } from "@/constants";
 import { setCookie } from "@/utils/CookieUtils";
@@ -45,14 +46,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Prefer to fetch full session to read accessToken if present
         const session = await fetchAuthSession();
         const tokens = (session.tokens ?? {}) as { idToken?: any; accessToken?: any };
-        const accessToken = tokens.accessToken?.toString() ?? null;
+        const preferredToken = tokens.accessToken?.toString() ?? tokens.idToken?.toString() ?? null;
 
         // Persist access token for OpenAPI token provider
-        if (accessToken) {
-          setCookie(ACCESS_TOKEN_KEY, accessToken);
+        if (preferredToken) {
+          setCookie(ACCESS_TOKEN_KEY, preferredToken);
         }
 
-        const idToken = tokens.idToken;
+        const idToken = tokens.idToken ?? (preferredToken ? { payload: {} } : undefined);
         if (!mounted) return;
         if (idToken) {
           const parsedUser = parseToken(idToken);
@@ -134,4 +135,43 @@ export const useAuth = (): AuthContextType => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
+};
+
+const loadUserToken = async (): Promise<JWT | undefined> => {
+  if (env.NODE_ENV !== "test") {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    setAuthIdToken(idToken?.toString() ?? null);
+    return idToken;
+  } else {
+    // This is for test only
+    const token = getUserTokenFromCookie();
+    if (token) {
+      const splittedToken = token.split(".")[1];
+      if (splittedToken) {
+        const jwtBody = JSON.parse(atob(splittedToken));
+        return { payload: jwtBody };
+      }
+      throw new Error("Error parsing token");
+    }
+    throw new Error("No token found");
+  }
+};
+
+const getUserTokenFromCookie = (): string | undefined => {
+  const baseCookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
+  const userId = encodeURIComponent(
+    getCookie(`${baseCookieName}.LastAuthUser`)
+  );
+  if (userId) {
+    return getCookie(`${baseCookieName}.${userId}.idToken`);
+  } else {
+    return undefined;
+  }
+};
+
+const getCookie = (name: string): string => {
+  const cookie = document.cookie
+    .split(";")
+    .find((cookieValue) => cookieValue.trim().startsWith(name));
+  return cookie ? cookie.split("=")[1] ?? "" : "";
 };
