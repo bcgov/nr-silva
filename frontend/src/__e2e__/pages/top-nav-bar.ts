@@ -1,4 +1,5 @@
 import { Locator, Page } from "@playwright/test";
+import { CARBON_CLASS_PREFIX } from "../../constants";
 
 export class TopNavBar {
   readonly page: Page;
@@ -45,7 +46,7 @@ export class TopNavBar {
 
   async isProfileMenuOpen() {
     const classAttr = await this.profileMenu.getAttribute('class');
-    return classAttr?.includes('bx--header-panel--expanded') ?? false;
+    return classAttr?.includes(`${CARBON_CLASS_PREFIX}--header-panel--expanded`) ?? false;
   }
 
   async openProfileMenu() {
@@ -54,7 +55,7 @@ export class TopNavBar {
       const menuHandle = await this.profileMenu.elementHandle();
       if (!menuHandle) throw new Error('Profile menu element not found');
       await this.page.waitForFunction(
-        (el) => el.classList.contains('bx--header-panel--expanded'),
+        (el) => el.classList.contains(`${CARBON_CLASS_PREFIX}--header-panel--expanded`),
         menuHandle
       );
     }
@@ -66,7 +67,7 @@ export class TopNavBar {
       const menuHandle = await this.profileMenu.elementHandle();
       if (!menuHandle) throw new Error('Profile menu element not found');
       await this.page.waitForFunction(
-        (el) => !el.classList.contains('bx--header-panel--expanded'),
+        (el) => !el.classList.contains(`${CARBON_CLASS_PREFIX}--header-panel--expanded`),
         menuHandle
       );
     }
