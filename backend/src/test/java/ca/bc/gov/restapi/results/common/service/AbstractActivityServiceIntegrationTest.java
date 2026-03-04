@@ -60,7 +60,7 @@ public abstract class AbstractActivityServiceIntegrationTest
   void activitySearch_withFileIdFilter_shouldSucceed() {
     ActivitySearchFiltersDto filters =
         new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, "TFL47", null, null,null, null, null);
+            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);

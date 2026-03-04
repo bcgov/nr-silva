@@ -165,7 +165,12 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
           ]}
           itemToElement={(item) => item.id === '' ? <span className='empty-dropdown-option'>Clear selected</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
           renderSelectedItem={(item) => item.id === '' ? <span className='empty-dropdown-option'>Choose an option</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
-          onChange={({ selectedItem }) => handleSearchFieldChange('isComplete', selectedItem?.id === '' ? undefined : selectedItem?.id === 'complete')}
+          onChange={({ selectedItem }) =>
+            handleSearchFieldChange(
+              'isComplete',
+              !selectedItem || selectedItem.id === '' ? undefined : selectedItem.id === 'complete'
+            )
+          }
           selectedItem={searchParams?.isComplete === true ? { id: 'complete', label: 'Complete' } : searchParams?.isComplete === false ? { id: 'planned', label: 'Planned' } : { id: '', label: '' }}
         />
       </Column>
