@@ -119,7 +119,12 @@ export class OpeningDetailsPage extends BasePage {
   }
 
   async isMapVisible() {
-    return await this.map.isVisible();
+    try {
+      await this.map.waitFor({ state: 'visible', timeout: 5000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async zoomInMap() {

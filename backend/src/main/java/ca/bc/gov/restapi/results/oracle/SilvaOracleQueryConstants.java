@@ -1697,7 +1697,7 @@ public class SilvaOracleQueryConstants {
           atu.OPENING_ID AS openingId,
           cboa.CUTTING_PERMIT_ID AS cuttingPermit,
           atu.TREATMENT_AMOUNT AS treatmentAmountArea,
-          atu.ACTIVITY_LICENSEE_ID AS intraAgencyNumber,
+          atu.FIA_PROJECT_ID AS intraAgencyNumber,
           occ.OPEN_CATEGORY_CODE AS openingCategoryCode,
           occ.DESCRIPTION AS openingCategoryDescription,
           ou.ORG_UNIT_CODE AS orgUnitCode,
@@ -1760,6 +1760,9 @@ public class SilvaOracleQueryConstants {
           )
           AND (
             'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
+          )
+          AND (
+            NVL(:#{#filter.intraAgencyNumber},'NOVALUE') = 'NOVALUE' OR atu.FIA_PROJECT_ID = :#{#filter.intraAgencyNumber}
           )
           AND (
             (

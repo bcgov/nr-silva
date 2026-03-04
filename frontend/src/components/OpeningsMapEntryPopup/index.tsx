@@ -1,7 +1,8 @@
 import React from "react";
 import OpeningsMapDownloader from "@/components/OpeningsMapDownloader";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { silvicultureStatusCodes } from "@/constants/statusCodes";
-import { formatDate, formatLocalDate } from "@/utils/DateUtils";
+import { formatLocalDate } from "@/utils/DateUtils";
 
 import "./styles.scss";
 
@@ -22,17 +23,17 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
   const renderPopupHeader = (data?: Record<string, any>, openingId?: number) => {
     if (!data) return null;
     switch (data.mapKindType) {
-      case "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW":
+      case MAP_KINDS.opening:
         return <h4 className="map-popup-header">Opening ID: {openingId}</h4>;
-      case "WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW":
+      case MAP_KINDS.standardsUnit:
         return <h4 className="map-popup-header">Standard Unit: {data["standardUnitId"]}</h4>;
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW":
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW":
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW":
+      case MAP_KINDS.forestCoverInventory:
+      case MAP_KINDS.forestCoverReserve:
+      case MAP_KINDS.forestCoverSilviculture:
         return <h4 className="map-popup-header">Polygon ID: {data["polygon"]}</h4>;
-      case "WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW":
+      case MAP_KINDS.cutBlock:
         return <h4 className="map-popup-header">Cut Block: {data["cutBlockId"]}</h4>;
-      case "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW":
+      case MAP_KINDS.activityTreatment:
         return <h4 className="map-popup-header">{`${silvicultureStatusCodes[data["silvBaseCode"]]} (${data["silvBaseCode"]})`}</h4>;
       default:
         return <h4 className="map-popup-header">Opening ID: {openingId}</h4>;
@@ -42,7 +43,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
   const renderPopupContent = (data?: Record<string, any>, openingId?: number) => {
     if (!data) return null;
     switch (data.mapKindType) {
-      case "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW":
+      case MAP_KINDS.opening:
         return (
           <>
             <span><span className="popup-value">Region:&nbsp;</span>{data["region"]}</span>
@@ -50,7 +51,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span><span className="popup-value">Year created:&nbsp;</span>{data["yearCreated"]}</span>
           </>
         );
-      case "WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW":
+      case MAP_KINDS.standardsUnit:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
@@ -59,7 +60,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
           </>
         );
 
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW":
+      case MAP_KINDS.forestCoverInventory:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
@@ -69,14 +70,14 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span>Polygon Area (ha):&nbsp;<span className="popup-value">{data["polygonArea"]}</span></span>
           </>
         );
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_RESERVE_SVW":
+      case MAP_KINDS.forestCoverReserve:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
             <span>Polygon Area (ha):&nbsp;<span className="popup-value">{data["polygonArea"]}</span></span>
           </>
         );
-      case "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_SILV_SVW":
+      case MAP_KINDS.forestCoverSilviculture:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
@@ -86,7 +87,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span>Polygon Area (ha):&nbsp;<span className="popup-value">{data["polygonArea"]}</span></span>
           </>
         );
-      case "WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW":
+      case MAP_KINDS.cutBlock:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
@@ -95,7 +96,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
             <span>Client:&nbsp;<span className="popup-value">{data["client"]}</span></span>
           </>
         );
-      case "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW":
+      case MAP_KINDS.activityTreatment:
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>

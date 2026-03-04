@@ -46,9 +46,7 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search with default filters should succeed")
   void activitySearch_withDefaultFilters_shouldSucceed() {
-    ActivitySearchFiltersDto filters =
-        new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, null, null, null, null, null);
+    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto();
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -62,7 +60,7 @@ public abstract class AbstractActivityServiceIntegrationTest
   void activitySearch_withFileIdFilter_shouldSucceed() {
     ActivitySearchFiltersDto filters =
         new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
+            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -84,7 +82,20 @@ public abstract class AbstractActivityServiceIntegrationTest
   void activitySearch_withBaseCodeFilter_shouldSucceed() {
     ActivitySearchFiltersDto filters =
         new ActivitySearchFiltersDto(
-            List.of("PR"), null, null, null, null, null, null, null, null, null, null, null, null);
+            List.of("PR"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -115,6 +126,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null,
             null,
             "TFL47",
+            null,
             null,
             null,
             null,
@@ -149,7 +161,7 @@ public abstract class AbstractActivityServiceIntegrationTest
   void activitySearch_responseDto_shouldHaveAllRequiredFields() {
     ActivitySearchFiltersDto filters =
         new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null);
+            null, null, null, null, null, null, null, null, "TFL47", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -168,7 +180,20 @@ public abstract class AbstractActivityServiceIntegrationTest
   void activitySearch_withInvalidFileId_shouldReturnEmpty() {
     ActivitySearchFiltersDto filters =
         new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, "INVALID_FILE", null, null, null, null);
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "INVALID_FILE",
+            null,
+            null,
+            null,
+            null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
@@ -180,9 +205,7 @@ public abstract class AbstractActivityServiceIntegrationTest
   @Test
   @DisplayName("Activity search should not return duplicate entries")
   void activitySearch_shouldNotReturnDuplicates() {
-    ActivitySearchFiltersDto filters =
-        new ActivitySearchFiltersDto(
-            null, null, null, null, null, null, null, null, null, null, null, null, null);
+    ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto();
     Pageable pageable = PageRequest.of(0, 50);
 
     Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
