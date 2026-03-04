@@ -30,12 +30,6 @@ export class TopNavBar {
     return await this.title.textContent();
   }
 
-  async toggleThemeSwitch() {
-    await this.themeToggle.click();
-    // Wait for the DOM to settle after theme change
-    await this.page.waitForLoadState('networkidle');
-  }
-
   async getCurrentTheme() {
     const classAtrr = await this.themeToggle.getAttribute('class');
     if (classAtrr?.includes('on')) {
@@ -89,10 +83,6 @@ export class TopNavBar {
       username: username?.replace(/^.*?:\s*/, '').trim() ?? '',
       email: email?.replace(/^Email:\s*/, '').trim() ?? '',
     };
-  }
-
-  async changeThemeFromMenu() {
-    await this.changeThemeButton.click();
   }
 
   async logout() {
