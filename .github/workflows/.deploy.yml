@@ -44,13 +44,15 @@ on:
         description: Maximum replicas for backend
         default: "5"
         type: string
-      backend_flyway_environment:
-        description: Flyway environment for backend database migrations
-        default: "prod"
-        type: string
       backend_primary_db:
         description: Primary database for backend
         default: "oracle"
+        type: string
+
+      # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
+      fam_route_number:
+        description: FAM route for frontend; only needed for PR deployments
+        required: false
         type: string
 
     outputs:
@@ -62,7 +64,7 @@ permissions: {}
 
 jobs:
   init:
-    name: Deploy (init)
+    name: Deploy (init) - ${{ inputs.backend_primary_db }}
     environment: ${{ inputs.environment }}
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
@@ -73,8 +75,8 @@ jobs:
       - name: FAM routing
         id: route
         run: |
-          if [ ${{ github.event_name }} == 'pull_request' ]; then
-            echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
           else
             echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
           fi
@@ -83,10 +85,10 @@ jobs:
         id: allowed_origins
         run: |
           # If not set, use default routes
-          if [ -z ${{ inputs.allowed_origins }} ]; then
-            echo "allowed_origins=https://${{ github.event.repository.name }}-$(( ${{ github.event.number }} % 50 ))-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
-          else
+          if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
+          else
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
@@ -113,7 +115,7 @@ jobs:
           triggers: ${{ inputs.triggers }}
 
   deploy:
-    name: Deploy
+    name: Deploy (${{ matrix.name }} - ${{ inputs.backend_primary_db }})
     environment: ${{ inputs.environment }}
     needs: [init]
     runs-on: ubuntu-24.04
@@ -137,7 +139,6 @@ jobs:
               -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
               -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
-              -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
               -p PRIMARY_DB=${{ inputs.backend_primary_db }}
             verification_path: /actuator/health
           - name: frontend
