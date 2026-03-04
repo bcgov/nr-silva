@@ -16,6 +16,13 @@ type props = {
 const ActivitySearch = ({ type }: props) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
+  useEffect(() => {
+    document.title = `Activities Search - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, []);
+
   const navigate = useNavigate();
   if (!type) {
     navigate('/');
@@ -41,13 +48,6 @@ const ActivitySearch = ({ type }: props) => {
   const handleCancelSwitch = () => {
     setIsConfirmModalOpen(false);
   };
-
-  useEffect(() => {
-    document.title = `Activities Search - Silva`;
-    return () => {
-      document.title = "Silva";
-    };
-  }, []);
 
   return (
     <Grid className="default-grid default-search-grid">

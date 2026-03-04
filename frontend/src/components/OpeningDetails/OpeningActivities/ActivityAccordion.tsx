@@ -407,9 +407,7 @@ const ActivityAccordion = ({
                         <TableHeader key="map-header">
                           <div className="default-map-header-checkbox-container">
                             <Tooltip
-                              label={
-                                allSelected ? "Unselect all" : someSelected ? "Select all" : "Select all"
-                              }
+                              label={allSelected ? "Unselect all" : "Select all"}
                               align="right"
                             >
                               <span>

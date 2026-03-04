@@ -6,10 +6,10 @@ import { ActivitySearchParams } from "@/types/ApiType";
 export const hasActivitySearchFilters = (params: ActivitySearchParams | undefined): boolean => {
   if (!params) return false;
 
-  const excludeKeys = ['page', 'size'];
+  const excludeKeys = new Set(['page', 'size']);
 
   return Object.entries(params).some(([key, value]) => {
-    if (excludeKeys.includes(key)) return false;
+    if (excludeKeys.has(key)) return false;
 
     if (Array.isArray(value)) {
       return value.length > 0;
@@ -69,7 +69,7 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
 
   const page = searchParams.get('page');
   if (page) {
-    const pageNum = parseInt(page, 10);
+    const pageNum = Number.parseInt(page, 10);
     if (Number.isFinite(pageNum)) {
       params.page = pageNum;
     }
@@ -77,7 +77,7 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
 
   const size = searchParams.get('size');
   if (size) {
-    const sizeNum = parseInt(size, 10);
+    const sizeNum = Number.parseInt(size, 10);
     if (Number.isFinite(sizeNum)) {
       params.size = sizeNum;
     }

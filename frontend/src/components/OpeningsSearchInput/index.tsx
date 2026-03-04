@@ -373,7 +373,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
       {/* Updated on date range */}
       <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label">Last updated date range</label>
+        <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
