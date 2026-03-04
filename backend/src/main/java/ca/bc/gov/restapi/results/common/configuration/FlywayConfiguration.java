@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomiz
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.env.Environment;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
-// @ImportRuntimeHints(FlywayRuntimeHints.class)
+ @ImportRuntimeHints(FlywayRuntimeHints.class)
 public class FlywayConfiguration {
 
   @Bean
@@ -54,8 +55,8 @@ public class FlywayConfiguration {
       configuration
           .schemas("silva")
           .defaultSchema("silva")
-          .locations(locations.toArray(String[]::new));
-          // .resourceProvider(new NativeImageResourceProvider(context, locations));
+          .locations(locations.toArray(String[]::new))
+           .resourceProvider(new NativeImageResourceProvider(context, locations));
     };
   }
 }
