@@ -53,7 +53,7 @@ on:
         default: "hybrid"
         type: string
       # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
-      fam_route_number:
+      fam_route:
         description: FAM route for frontend; only needed for PR deployments
         required: false
         type: string
@@ -79,9 +79,18 @@ jobs:
         id: route
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
+            if [ -n "${{ inputs.fam_route }}" ]; then
+              echo "route=${{ inputs.fam_route }}" >> $GITHUB_OUTPUT
+            else
+              echo "FAM route is required for pull request deployments but was not provided."
+              exit 1
+            fi
           else
-            echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
+            if [ -n "${{ inputs.fam_route }}" ]; then
+              echo "route=${{ inputs.fam_route }}" >> $GITHUB_OUTPUT
+            else
+              echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: ALLOWED_ORIGINS
@@ -91,7 +100,7 @@ jobs:
           if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
           else
-            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
