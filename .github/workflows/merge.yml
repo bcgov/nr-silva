@@ -31,6 +31,7 @@ jobs:
     needs: [init]
     strategy:
       matrix:
+        primary_db: [oracle, postgres]
         include:
           - primary_db: oracle
             allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
