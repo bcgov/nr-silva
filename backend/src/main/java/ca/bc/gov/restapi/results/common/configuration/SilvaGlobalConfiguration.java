@@ -6,6 +6,10 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
+import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
+import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityJuvenileDto;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityPruningDto;
@@ -155,7 +159,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   OpeningCategoryEnum.class,
   OpeningStatusEnum.class,
   OpenCategoryCodeOracleEntity.class,
-  OpeningStatusCodeOracleEntity.class
+  OpeningStatusCodeOracleEntity.class,
+  ActivitySearchFiltersDto.class,
+  ActivitySearchResponseDto.class,
+  DisturbanceSearchFilterDto.class,
+  DisturbanceSearchResponseDto.class,
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {

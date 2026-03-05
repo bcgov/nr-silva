@@ -1,4 +1,4 @@
-import { OpeningSearchResponseDto } from "@/services/OpenApi";
+import { ActivitySearchResponseDto, OpeningSearchResponseDto } from "@/services/OpenApi";
 
 export type TableHeaderType<T> = {
   key: T;
@@ -10,3 +10,7 @@ export type TableHeaderType<T> = {
 export type OpendingHeaderKeyType = keyof OpeningSearchResponseDto | 'actions';
 
 export type OpeningHeaderType = TableHeaderType<OpendingHeaderKeyType>;
+
+export type ActivityHeaderKeyType = keyof ActivitySearchResponseDto | 'actions';
+
+export type ActivityHeaderType = TableHeaderType<ActivityHeaderKeyType>;

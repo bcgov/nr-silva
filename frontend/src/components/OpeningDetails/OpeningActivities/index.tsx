@@ -14,20 +14,16 @@ import "./styles.scss";
 
 type OpeningActivitiesProps = {
   openingId: number;
-  availableSilvicultureActivityIds: string[];
   selectedSilvicultureActivityIds: string[];
   setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
-  availableDisturbanceIds: string[];
   selectedDisturbanceIds: string[];
   setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const OpeningActivities = ({
   openingId,
-  availableSilvicultureActivityIds,
   selectedSilvicultureActivityIds,
   setSelectedSilvicultureActivityIds,
-  availableDisturbanceIds,
   selectedDisturbanceIds,
   setSelectedDisturbanceIds
 }: OpeningActivitiesProps) => {
@@ -90,8 +86,8 @@ const OpeningActivities = ({
           ? (
             <Column sm={4} md={8} lg={16}>
               <DisturbanceAccordion
+                openingId={openingId}
                 data={disturbanceQuery.data!.content!}
-                availableDisturbanceIds={availableDisturbanceIds}
                 selectedDisturbanceIds={selectedDisturbanceIds}
                 setSelectedDisturbanceIds={setSelectedDisturbanceIds}
               />
@@ -107,7 +103,6 @@ const OpeningActivities = ({
               <ActivityAccordion
                 openingId={openingId}
                 totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
-                availableSilvicultureActivityIds={availableSilvicultureActivityIds}
                 selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                 setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
               />

@@ -142,6 +142,7 @@ public class SearchEndpoint {
       @RequestParam(value = "fileId", required = false) String fileId,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
       @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "intraAgencyNumber", required = false) String intraAgencyNumber,
       @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
       @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
       @ParameterObject Pageable paginationParameters) {
@@ -159,6 +160,7 @@ public class SearchEndpoint {
             fileId,
             clientNumbers,
             openingStatuses,
+            intraAgencyNumber,
             updateDateStart,
             updateDateEnd);
 
