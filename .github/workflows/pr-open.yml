@@ -74,7 +74,6 @@ jobs:
     needs: [builds, fam_routes]
     strategy:
       matrix:
-        primary_db: [oracle, postgres]
         include:
           - primary_db: oracle
             fam_route: ${{ needs.fam_routes.outputs.hybrid_route_number }}
