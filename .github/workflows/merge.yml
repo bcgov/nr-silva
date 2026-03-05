@@ -54,6 +54,7 @@ jobs:
       tag: ${{ needs.init.outputs.pr }}
       target: ${{ matrix.target }}
       deployment_model: ${{ matrix.deployment_model }}
+      fam_route: ${{ matrix.fam_route }}
 
   deploys-prod:
     name: PROD Deploys (${{ needs.init.outputs.pr }})
