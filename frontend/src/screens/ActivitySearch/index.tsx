@@ -72,7 +72,6 @@ const ActivitySearch = ({ type }: props) => {
               value="disturbances"
               checked={type === 'disturbances'}
               onChange={() => handleSearchTypeChange('disturbances')}
-              disabled
             />
           </div>
         </Stack>

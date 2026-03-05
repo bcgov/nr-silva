@@ -50,7 +50,8 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
 
   const silvBaseCodeQuery = useQuery({
     queryKey: ['codes', 'silv-base'],
-    queryFn: API.CodesEndpointService.getSilvBaseCodes
+    queryFn: API.CodesEndpointService.getSilvBaseCodes,
+    select: (data) => data.filter((code) => code.code !== 'DN') // Code 'DN' is considered as a disturbance
   });
 
   const silvTechniqueCodeQuery = useQuery({
