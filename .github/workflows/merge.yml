@@ -35,12 +35,14 @@ jobs:
         include:
           - primary_db: oracle
             allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
-            target_name: test
+            target: test
             deployment_model: hybrid
+            fam_route: test
           - primary_db: postgres
             allowed_origins: https://nr-silva-preview-frontend.apps.silver.devops.gov.bc.ca/
-            target_name: preview
+            target: test-postgres
             deployment_model: postgres
+            fam_route: preview
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -50,7 +52,7 @@ jobs:
       allowed_origins: ${{ matrix.allowed_origins }}
       environment: test
       tag: ${{ needs.init.outputs.pr }}
-      target: ${{ matrix.target_name }}
+      target: ${{ matrix.target }}
       deployment_model: ${{ matrix.deployment_model }}
 
   deploys-prod:
