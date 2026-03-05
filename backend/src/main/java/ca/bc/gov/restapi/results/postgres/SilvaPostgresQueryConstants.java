@@ -1682,7 +1682,7 @@ public class SilvaPostgresQueryConstants {
 					atu.opening_id AS openingId,
 					cboa.cutting_permit_id AS cuttingPermit,
 					atu.treatment_amount AS treatmentAmountArea,
-					atu.activity_licensee_id AS intraAgencyNumber,
+					atu.fia_project_id AS intraAgencyNumber,
 					occ.open_category_code AS openingCategoryCode,
 					occ.description AS openingCategoryDescription,
 					ou.org_unit_code AS orgUnitCode,
@@ -1742,6 +1742,9 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.intraAgencyNumber} AS text),'NOVALUE') = 'NOVALUE' OR atu.fia_project_id = CAST(:#{#filter.intraAgencyNumber} AS text)
 					)
 					AND (
 						(

@@ -18,11 +18,8 @@ type OpeningSummaryProps = {
   tombstoneObj?: OpeningDetailsTombstoneDto;
   isLoading?: boolean;
   currentTab: number;
-  setAvailableForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedForestCoverIds: string[];
-  setAvailableSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedSilvicultureActivityIds: string[];
-  setAvailableDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedDisturbanceIds: string[];
 };
 
@@ -31,11 +28,8 @@ const OpeningSummary = ({
   tombstoneObj,
   isLoading,
   currentTab,
-  setAvailableForestCoverIds,
   selectedForestCoverIds,
-  setAvailableSilvicultureActivityIds,
   selectedSilvicultureActivityIds,
-  setAvailableDisturbanceIds,
   selectedDisturbanceIds,
 }: OpeningSummaryProps) => {
   const [showMap, setShowMap] = useState<boolean>(true);
@@ -301,11 +295,8 @@ const OpeningSummary = ({
             isDetailsPage={true}
             isForestCoverMap={isForestCoverMap(mapKind(currentTab))}
             isActivitiesMap={isActivitiesMap(mapKind(currentTab))}
-            setAvailableForestCoverIds={setAvailableForestCoverIds}
             selectedForestCoverIds={selectedForestCoverIds}
-            setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
             selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
-            setAvailableDisturbanceIds={setAvailableDisturbanceIds}
             selectedDisturbanceIds={selectedDisturbanceIds}
           />
         </Column>

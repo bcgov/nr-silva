@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import qs from 'qs';
 import {
   Accordion,
   AccordionItem,
@@ -30,25 +29,26 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { PLACE_HOLDER } from "@/constants";
 import API from "@/services/API";
 import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
+import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
+import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import { formatLocalDate } from "@/utils/DateUtils";
+import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
 import ActivityDetail from "./ActivityDetail";
 import EmptySection from "../../EmptySection";
 import TableSkeleton from "../../TableSkeleton";
 
 import { ActivityTableHeaders, DefaultFilter } from "./constants";
-import { formatLocalDate } from "@/utils/DateUtils";
-import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { ActivityFilterType } from "./definitions";
 import { formatActivityObjective } from "./utils";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 
 import "./styles.scss";
-import { isAuthRefreshInProgress } from "../../../constants/tanstackConfig";
 
 type ActivityAccordionProps = {
   openingId: number;
   totalUnfiltered: number;
-  availableSilvicultureActivityIds: string[];
   selectedSilvicultureActivityIds: string[];
   setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
@@ -65,14 +65,107 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
+type ActivityRowProps = {
+  openingId: number;
+  row: OpeningDetailsActivitiesActivitiesDto;
+  index: number;
+  totalRows: number;
+  selectedSilvicultureActivityIds: string[];
+  setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
+  renderCellContent: (
+    data: OpeningDetailsActivitiesActivitiesDto | CodeDescriptionDto | string | number | null,
+    columnKey: string,
+    isLastElement: boolean
+  ) => React.ReactNode;
+};
+
+const ActivityRow = ({
+  openingId,
+  row,
+  index,
+  totalRows,
+  selectedSilvicultureActivityIds,
+  setSelectedSilvicultureActivityIds,
+  renderCellContent,
+}: ActivityRowProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const compoundId = `${row.atuId}-${row.base.code}`;
+  const { isAvailable, isLoading } = usePolygonAvailability(
+    openingId,
+    MAP_KINDS.activityTreatment,
+    compoundId,
+  );
+  const isSelected = selectedSilvicultureActivityIds.includes(compoundId);
+  const isLastElement = index === totalRows - 1;
+
+  return (
+    <React.Fragment key={row.atuId}>
+      <TableExpandRow
+        aria-label={`Expand row for Activity ID ${row.atuId}`}
+        isExpanded={isExpanded}
+        onExpand={() => setIsExpanded(prev => !prev)}
+      >
+        <TableCell key={"map-select" + row.atuId}>
+          <Tooltip
+            label={
+              isLoading
+                ? "Checking availability..."
+                : !isAvailable
+                  ? "Polygon is not available"
+                  : isSelected
+                    ? "Hide from map"
+                    : "Show on map"
+            }
+            align={!isAvailable ? "right" : "top"}
+          >
+            <span>
+              <Checkbox
+                id={`activities-map-checkbox-${row.atuId}-${index}`}
+                data-testid={`activities-map-checkbox-${row.atuId}-${index}`}
+                key={`activities-map-checkbox-${row.atuId}-${index}`}
+                checked={isSelected}
+                disabled={!isAvailable || isLoading}
+                labelText="Select polygon on map"
+                hideLabel
+                onChange={(_, { checked }) => {
+                  setSelectedSilvicultureActivityIds(ids =>
+                    checked
+                      ? [...ids, compoundId]
+                      : ids.filter(id => id !== compoundId)
+                  );
+                }}
+              />
+            </span>
+          </Tooltip>
+        </TableCell>
+        {ActivityTableHeaders.map((header) => (
+          <TableCell key={header.key}>
+            {renderCellContent(
+              header.key === "objective1" ? row : row[header.key],
+              header.key,
+              isLastElement
+            )}
+          </TableCell>
+        ))}
+      </TableExpandRow>
+      <TableExpandedRow colSpan={ActivityTableHeaders.length + 2}>
+        {isExpanded ? (
+          <ActivityDetail
+            activity={row}
+            openingId={openingId}
+          />
+        ) : null}
+      </TableExpandedRow>
+    </React.Fragment>
+  );
+};
+
 const ActivityAccordion = ({
   openingId,
   totalUnfiltered,
-  availableSilvicultureActivityIds,
   selectedSilvicultureActivityIds,
   setSelectedSilvicultureActivityIds
 }: ActivityAccordionProps) => {
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]!);
@@ -98,13 +191,11 @@ const ActivityAccordion = ({
     },
   });
 
-  const allAvailableIds = activityQuery.data?.content ?
-    activityQuery.data?.content
-      .map(row => `${row.atuId}-${row.base.code}`)
-      .filter(id => availableSilvicultureActivityIds.includes(id)) ?? []
-    : [];
-  const allSelected = allAvailableIds.length > 0 && allAvailableIds.every(id => selectedSilvicultureActivityIds.includes(id));
-  const someSelected = allAvailableIds.some(id => selectedSilvicultureActivityIds.includes(id));
+  const someSelected = (activityQuery.data?.content ?? []).some(row =>
+    selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
+  );
+  const allOnPage = (activityQuery.data?.content ?? []).map(row => `${row.atuId}-${row.base.code}`);
+  const allSelected = allOnPage.length > 0 && allOnPage.every(id => selectedSilvicultureActivityIds.includes(id));
 
   const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
     let newDirection: SortDirectionType = 'NONE';
@@ -193,14 +284,6 @@ const ActivityAccordion = ({
       };
     });
     setCurrPageNumber(0);
-  };
-
-  const handleRowExpand = (activityId: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(activityId)
-        ? prev.filter((id) => id !== activityId)
-        : [...prev, activityId]
-    );
   };
 
   const isCodeDescription = (value: string): boolean => {
@@ -322,14 +405,9 @@ const ActivityAccordion = ({
                       <>
                         <TableExpandHeader />
                         <TableHeader key="map-header">
-                          <div className="map-header-checkbox-container">
+                          <div className="default-map-header-checkbox-container">
                             <Tooltip
-                              label=
-                              {
-                                availableSilvicultureActivityIds.length > 0 ?
-                                  allSelected ? "Unselect all" : "Select all"
-                                  : "No polygon is available"
-                              }
+                              label={allSelected ? "Unselect all" : "Select all"}
                               align="right"
                             >
                               <span>
@@ -338,18 +416,21 @@ const ActivityAccordion = ({
                                   data-testid="activities-map-select-all"
                                   checked={allSelected}
                                   indeterminate={!allSelected && someSelected}
-                                  disabled={allAvailableIds.length === 0}
+                                  disabled={allOnPage.length === 0}
                                   labelText="Select all polygons on map"
                                   hideLabel
                                   onChange={(_, { checked }) => {
-                                    setSelectedSilvicultureActivityIds(checked ? allAvailableIds : []);
+                                    setSelectedSilvicultureActivityIds(ids =>
+                                      checked
+                                        ? [...new Set([...ids, ...allOnPage])]
+                                        : ids.filter(id => !allOnPage.includes(id))
+                                    );
                                   }}
                                 />
                               </span>
                             </Tooltip>
                             <span>Map</span>
                           </div>
-
                         </TableHeader>
                         {ActivityTableHeaders.map((header) => (
                           <TableHeader
@@ -367,72 +448,18 @@ const ActivityAccordion = ({
                   </TableHead>
 
                   <TableBody>
-                    {activityQuery.data?.content?.map((row, index) => {
-                      const isExpanded = expandedRows.includes(row.atuId);
-                      return (
-                        <React.Fragment key={row.atuId}>
-                          <TableExpandRow
-                            aria-label={`Expand row for Activity ID ${row.atuId}`}
-                            isExpanded={isExpanded}
-                            onExpand={() => handleRowExpand(row.atuId)}
-                          >
-                            <TableCell key={"map-select" + row.atuId}>
-                              <Tooltip
-                                label={
-                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
-                                    ? "Polygon is not available"
-                                    : selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
-                                      ? "Hide from map"
-                                      : "Show on map"
-                                }
-                                align={
-                                  !availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)
-                                    ? "right"
-                                    : "top"
-                                }
-                              >
-                                <span>
-                                  <Checkbox
-                                    id={`activities-map-checkbox-${row.atuId}-${index}`}
-                                    data-testid={`activities-map-checkbox-${row.atuId}-${index}`}
-                                    key={`activities-map-checkbox-${row.atuId}-${index}`}
-                                    checked={selectedSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
-                                    disabled={!availableSilvicultureActivityIds.includes(`${row.atuId}-${row.base.code}`)}
-                                    labelText="Select polygon on map"
-                                    hideLabel
-                                    onChange={(_, { checked }) => {
-                                      setSelectedSilvicultureActivityIds(ids =>
-                                        checked
-                                          ? [...ids, `${row.atuId}-${row.base.code}`]
-                                          : ids.filter(id => id !== `${row.atuId}-${row.base.code}`)
-                                      );
-                                    }}
-                                  />
-                                </span>
-
-                              </Tooltip>
-                            </TableCell>
-                            {ActivityTableHeaders.map((header) => (
-                              <TableCell key={header.key}>
-                                {renderCellContent(
-                                  header.key === "objective1" ? row : row[header.key],
-                                  header.key,
-                                  index === (activityQuery.data?.content?.length ?? 0) - 1
-                                )}
-                              </TableCell>
-                            ))}
-                          </TableExpandRow>
-                          <TableExpandedRow colSpan={ActivityTableHeaders.length + 2}>
-                            {isExpanded ? (
-                              <ActivityDetail
-                                activity={row}
-                                openingId={openingId}
-                              />
-                            ) : null}
-                          </TableExpandedRow>
-                        </React.Fragment>
-                      );
-                    })}
+                    {activityQuery.data?.content?.map((row, index) => (
+                      <ActivityRow
+                        key={row.atuId}
+                        openingId={openingId}
+                        row={row}
+                        index={index}
+                        totalRows={activityQuery.data?.content?.length ?? 0}
+                        selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                        setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                        renderCellContent={renderCellContent}
+                      />
+                    ))}
                   </TableBody>
                 </Table>
               )

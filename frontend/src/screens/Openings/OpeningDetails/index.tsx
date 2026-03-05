@@ -61,11 +61,8 @@ const OpeningDetails = () => {
   const openingId = param.openingId;
   const isIdirUser = auth.user?.idpProvider === 'IDIR';
 
-  const [availableForestCoverIds, setAvailableForestCoverIds] = useState<string[]>([]);
   const [selectedForestCoverIds, setSelectedForestCoverIds] = useState<string[]>([]);
-  const [availableSilvicultureActivityIds, setAvailableSilvicultureActivityIds] = useState<string[]>([]);
   const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
-  const [availableDisturbanceIds, setAvailableDisturbanceIds] = useState<string[]>([]);
   const [selectedDisturbanceIds, setSelectedDisturbanceIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -155,11 +152,8 @@ const OpeningDetails = () => {
           tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
           isLoading={openingDetailsTombstoneQuery.isLoading || isAuthRefreshInProgress()}
           currentTab={activeTab}
-          setAvailableForestCoverIds={setAvailableForestCoverIds}
           selectedForestCoverIds={selectedForestCoverIds}
-          setAvailableSilvicultureActivityIds={setAvailableSilvicultureActivityIds}
           selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
-          setAvailableDisturbanceIds={setAvailableDisturbanceIds}
           selectedDisturbanceIds={selectedDisturbanceIds}
         />
       </Column>
@@ -224,10 +218,8 @@ const OpeningDetails = () => {
                 <Suspense fallback={<AccordionSkeleton />}>
                   <OpeningActivities
                     openingId={Number(openingId)}
-                    availableSilvicultureActivityIds={availableSilvicultureActivityIds}
                     selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                     setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
-                    availableDisturbanceIds={availableDisturbanceIds}
                     selectedDisturbanceIds={selectedDisturbanceIds}
                     setSelectedDisturbanceIds={setSelectedDisturbanceIds}
                   />
@@ -240,8 +232,6 @@ const OpeningDetails = () => {
                 <Suspense fallback={<TextAreaSkeleton />}>
                   <OpeningForestCover
                     openingId={Number(openingId)}
-                    availableForestCoverIds={availableForestCoverIds}
-                    setAvailableForestCoverIds={setAvailableForestCoverIds}
                     selectedForestCoverIds={selectedForestCoverIds}
                     setSelectedForestCoverIds={setSelectedForestCoverIds}
                   />

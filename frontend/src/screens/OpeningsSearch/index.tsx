@@ -30,7 +30,7 @@ import { CircleDash, Search } from "@carbon/icons-react";
 import OpeningTableRow from "@/components/OpeningTableRow";
 import EmptySection from "@/components/EmptySection";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
-import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
+import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import OpeningsMap from "@/components/OpeningsMap";
@@ -42,8 +42,12 @@ import './styles.scss';
 
 const OpeningsSearch = () => {
 
+  // Draft state: reflects the current form inputs, not yet submitted
   const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
+
+  // Committed state: what was last submitted; drives the actual API query
   const [queryParams, setQueryParams] = useState<OpeningSearchParamsType>();
+
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
@@ -61,7 +65,7 @@ const OpeningsSearch = () => {
         ...urlParams,
         page: nextPage,
         size: nextSize,
-      } as OpeningSearchParamsType;
+      };
 
       setSearchParams(paramsWithPagination);
       setCurrPageNumber(nextPage);
@@ -168,7 +172,7 @@ const OpeningsSearch = () => {
   };
 
   return (
-    <Grid className="default-grid openings-search-grid">
+    <Grid className="default-grid default-search-grid">
       <Column sm={4} md={8} lg={16}>
         <PageTitle title="Openings Search" />
       </Column>
@@ -317,6 +321,7 @@ const OpeningsSearch = () => {
                         pageSizes={PageSizesConfig}
                         totalItems={openingSearchQuery.data?.page.totalElements}
                         onChange={handlePagination}
+                        pagesUnknown={openingSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
                       <EmptySection
