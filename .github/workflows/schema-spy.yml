@@ -3,9 +3,9 @@ name: SchemaSpy
 on:
   push:
     branches: [feat/1177-setup-schemaspy-on-postgresql-database]
-    # paths:
-    #   - "backend/src/main/resources/db/migration/**"
-    #   - "backend/src/main/resources/db/migration-dev/**"
+    paths:
+      - "backend/src/main/resources/db/migration/**"
+      - "backend/src/main/resources/db/migration-dev/**"
   workflow_dispatch:
 
 permissions: {}
