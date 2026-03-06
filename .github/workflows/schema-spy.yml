@@ -12,7 +12,7 @@ permissions: {}
 
 jobs:
   schemaspy:
-    name: Generate DB Documentation
+    name: SchemaSpy
     permissions:
       contents: write
       pages: write
