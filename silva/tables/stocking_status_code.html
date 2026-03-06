@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>stocking_status_code - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>stocking_status_code</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_status_code">stocking_status_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_status_code references stocking_status_code.stocking_status_code via fc_ssc6_fk"><a href='forest_cover.html'>forest_cover</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fc_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_archive.stocking_status_code references stocking_status_code.stocking_status_code via fca_ssc6_fk"><a href='forest_cover_archive.html'>forest_cover_archive</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fca_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_layer.stocking_status_code references stocking_status_code.stocking_status_code via fclr_ssc6_fk"><a href='forest_cover_layer.html'>forest_cover_layer</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fclr_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_layer_archive.stocking_status_code references stocking_status_code.stocking_status_code via fcla_ssc6_fk"><a href='forest_cover_layer_archive.html'>forest_cover_layer_archive</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fcla_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_non_mapped_arc.stocking_status_code references stocking_status_code.stocking_status_code via fcnma1_ssc6_fk"><a href='forest_cover_non_mapped_arc.html'>forest_cover_non_mapped_arc</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fcnma1_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_non_mapped_area.stocking_status_code references stocking_status_code.stocking_status_code via fcnma_ssc6_fk"><a href='forest_cover_non_mapped_area.html'>forest_cover_non_mapped_area</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fcnma_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="opening.prev_stocking_status_code references stocking_status_code.stocking_status_code via o_ssc6_fk"><a href='opening.html'>opening</a><span class='relatedKey'>.prev_stocking_status_code</span></td>
+                                                <td class="constraint detail">o_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A code to describe the previous stand type for the area under the prescription.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="description">description</span></td>
+                                    <td>varchar</td>
+                                    <td>120</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The full description of the code value.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="effective_date">effective_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date the value is available for use.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="expiry_date">expiry_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date the value is lo longer available for use.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time the value was last modified</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> stocking_status_code_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>stocking_status_code</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="741,740,1007,1209">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="381,573,671,1365">
+<area shape="rect" id="node3" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="5,495,337,711">
+<area shape="rect" id="node4" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="393,51,659,520">
+<area shape="rect" id="node5" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1090,533,1394,768">
+<area shape="rect" id="node6" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="722,19,1026,283">
+<area shape="rect" id="node7" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="715,300,1033,535">
+<area shape="rect" id="node8" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1077,948,1407,1153">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/stocking_status_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1115,2095,1383,2183">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="785,2060,1044,2148">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="571,1465,715,1553">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1855,151,1943">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="202,1941,519,2029">
+<area shape="rect" id="node9" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="261,1041,460,1129">
+<area shape="rect" id="node10" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="229,936,493,1024">
+<area shape="rect" id="node11" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="243,1147,479,1235">
+<area shape="rect" id="node13" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="195,421,527,637">
+<area shape="rect" id="node16" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="250,740,471,828">
+<area shape="rect" id="node29" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="257,1568,465,1656">
+<area shape="rect" id="node30" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="241,1357,481,1445">
+<area shape="rect" id="node31" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="239,1463,483,1551">
+<area shape="rect" id="node32" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="262,1673,459,1761">
+<area shape="rect" id="node33" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="251,1779,471,1867">
+<area shape="rect" id="node34" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="251,1252,470,1340">
+<area shape="rect" id="node6" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1161,980,1338,1068">
+<area shape="rect" id="node7" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="806,680,1023,768">
+<area shape="rect" id="node8" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="767,891,1063,979">
+<area shape="rect" id="node12" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="782,1353,1047,1441">
+<area shape="rect" id="node14" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="798,359,1031,447">
+<area shape="rect" id="node15" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="777,785,1052,873">
+<area shape="rect" id="node17" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="1128,501,1371,589">
+<area shape="rect" id="node18" href="forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="1429,535,1756,623">
+<area shape="rect" id="node19" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1462,977,1723,1065">
+<area shape="rect" id="node20" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1481,219,1705,307">
+<area shape="rect" id="node21" href="forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="1115,148,1384,236">
+<area shape="rect" id="node22" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="1447,113,1738,201">
+<area shape="rect" id="node23" href="forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="1817,216,2107,304">
+<area shape="rect" id="node24" href="forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="1801,5,2123,93">
+<area shape="rect" id="node25" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="1433,429,1752,517">
+<area shape="rect" id="node26" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1428,324,1757,412">
+<area shape="rect" id="node27" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="1868,321,2056,409">
+<area shape="rect" id="node28" href="forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="1835,111,2089,199">
+<area shape="rect" id="node35" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="759,1212,1071,1300">
+<area shape="rect" id="node36" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="792,1531,1037,1619">
+<area shape="rect" id="node37" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="783,1672,1047,1760">
+<area shape="rect" id="node38" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="801,1777,1028,1865">
+<area shape="rect" id="node39" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="793,1883,1036,1971">
+<area shape="rect" id="node40" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1143,1353,1356,1441">
+<area shape="rect" id="node41" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1119,1212,1380,1300">
+<area shape="rect" id="node42" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1153,1459,1346,1547">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/stocking_status_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="741,740,1007,1209">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="381,573,671,1365">
+<area shape="rect" id="node3" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="5,495,337,711">
+<area shape="rect" id="node4" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="393,51,659,520">
+<area shape="rect" id="node5" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1090,533,1394,768">
+<area shape="rect" id="node6" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="722,19,1026,283">
+<area shape="rect" id="node7" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="715,300,1033,535">
+<area shape="rect" id="node8" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1077,948,1407,1153">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/stocking_status_code.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1281,23,1549,111">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="918,59,1177,147">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="633,603,777,691">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,694,151,782">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="202,775,519,863">
+<area shape="rect" id="node9" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="261,880,460,968">
+<area shape="rect" id="node10" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="229,986,493,1074">
+<area shape="rect" id="node11" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="243,1091,479,1179">
+<area shape="rect" id="node13" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="195,1723,527,1939">
+<area shape="rect" id="node16" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="250,1196,471,1284">
+<area shape="rect" id="node29" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="257,91,465,179">
+<area shape="rect" id="node30" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="241,618,481,706">
+<area shape="rect" id="node31" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="239,196,483,284">
+<area shape="rect" id="node32" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="262,302,459,390">
+<area shape="rect" id="node33" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="251,407,471,495">
+<area shape="rect" id="node34" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="251,512,470,600">
+<area shape="rect" id="node6" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1327,1123,1504,1211">
+<area shape="rect" id="node7" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="252,1302,469,1390">
+<area shape="rect" id="node8" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="213,1407,509,1495">
+<area shape="rect" id="node12" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="915,907,1180,995">
+<area shape="rect" id="node14" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="244,1618,477,1706">
+<area shape="rect" id="node15" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="223,1512,498,1600">
+<area shape="rect" id="node17" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="584,1355,827,1443">
+<area shape="rect" id="node18" href="forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="884,1336,1211,1424">
+<area shape="rect" id="node19" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1654,1120,1915,1208">
+<area shape="rect" id="node20" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1673,1656,1897,1744">
+<area shape="rect" id="node21" href="forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="571,1835,840,1923">
+<area shape="rect" id="node22" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="902,1763,1193,1851">
+<area shape="rect" id="node23" href="forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="1993,1654,2283,1742">
+<area shape="rect" id="node24" href="forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="1255,1727,1576,1815">
+<area shape="rect" id="node25" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="888,1442,1207,1530">
+<area shape="rect" id="node26" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1620,1551,1949,1639">
+<area shape="rect" id="node27" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="2044,1548,2232,1636">
+<area shape="rect" id="node28" href="forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="1289,1832,1542,1920">
+<area shape="rect" id="node35" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="891,658,1203,746">
+<area shape="rect" id="node36" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="925,164,1170,252">
+<area shape="rect" id="node37" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="915,270,1179,358">
+<area shape="rect" id="node38" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="934,375,1161,463">
+<area shape="rect" id="node39" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="926,480,1169,568">
+<area shape="rect" id="node40" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1309,778,1522,866">
+<area shape="rect" id="node41" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1285,663,1546,751">
+<area shape="rect" id="node42" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1319,902,1512,990">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/stocking_status_code.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

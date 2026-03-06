@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>prov_forest_use - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>prov_forest_use</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>General header information to identify the type of forest land use managed by the Ministry of Forests (eg., timber tenures, grazing tenures, recreation files, forest service roads, etc.). This is the main access point for examining land use information. Recommend that this entity be renamed to FOREST TENURE or FOREST FILE in the future (TF - this needs more analysis to determine what is indentified in this entity - licence, permit, etc and if all rights identified belong here).</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="forest_file_id">forest_file_id</span></td>
+                                    <td>varchar</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="for_client_link.forest_file_id references prov_forest_use.forest_file_id via fcl_pfu_fk"><a href='for_client_link.html'>for_client_link</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">fcl_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_file_client.forest_file_id references prov_forest_use.forest_file_id via ffc_pfu_fk"><a href='forest_file_client.html'>forest_file_client</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">ffc_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="harvest_sale.forest_file_id references prov_forest_use.forest_file_id via hs_pfu_fk"><a href='harvest_sale.html'>harvest_sale</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">hs_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="harvesting_authority.forest_file_id references prov_forest_use.forest_file_id via hva_pfu_fk"><a href='harvesting_authority.html'>harvesting_authority</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">hva_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="hauling_authority.forest_file_id references prov_forest_use.forest_file_id via haa_pfu_fk"><a href='hauling_authority.html'>hauling_authority</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">haa_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="timber_mark.forest_file_id references prov_forest_use.forest_file_id via tm_pfu_fk"><a href='timber_mark.html'>timber_mark</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">tm_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="file_status_st">file_status_st</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.file_status_st references tenure_file_status_code.tenure_file_status_code via pfu_tfscd_fk"><a href='tenure_file_status_code.html'>tenure_file_status_code</a><span class='relatedKey'>.tenure_file_status_code</span></td>
+                                                <td class="constraint detail">pfu_tfscd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The current status of the forest land use, e.g. Pending - Planned, Harvesting - Suspended, Active. This is a subset of timber status code.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="file_status_date">file_status_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date on which the current forest land use status was set.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="file_type_code">file_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.file_type_code references file_type_code.file_type_code via pfu_ftcd_fk"><a href='file_type_code.html'>file_type_code</a><span class='relatedKey'>.file_type_code</span></td>
+                                                <td class="constraint detail">pfu_ftcd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The FTAS code to indicate the type of file, and often synonymous with a tenure or a project.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="forest_region">forest_region</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.forest_region references org_unit.org_unit_no via pfu_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">pfu_ou_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &ldquo;ministry codes&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="bcts_org_unit">bcts_org_unit</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.bcts_org_unit references org_unit.org_unit_no via pfu_bcts_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">pfu_bcts_ou_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &ldquo;ministry codes&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="sb_funded_ind">sb_funded_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;N&#39;::character varying</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicates if the harvest tenure is small business funded.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="district_admin_zone">district_admin_zone</span></td>
+                                    <td>varchar</td>
+                                    <td>4</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>District Admin Zone is a free format field used internally by the districts to group files within a district for reporting purposes. Examples of use are setting the field to a geographic area or to a persons initials. Reports can be pulled off by District Admin Zone to aid work management. This field is not used by all districts.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="mgmt_unit_type">mgmt_unit_type</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.[mgmt_unit_id, mgmt_unit_type] references forest_mgmt_unit.[mgmt_unit_id, mgmt_unit_type_code] via pfu_fmu_fk"><a href='forest_mgmt_unit.html'>forest_mgmt_unit</a><span class='relatedKey'>.mgmt_unit_type_code</span></td>
+                                                <td class="constraint detail">pfu_fmu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The unique identifier for the management unit type.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="mgmt_unit_id">mgmt_unit_id</span></td>
+                                    <td>varchar</td>
+                                    <td>4</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="prov_forest_use.[mgmt_unit_id, mgmt_unit_type] references forest_mgmt_unit.[mgmt_unit_id, mgmt_unit_type_code] via pfu_fmu_fk"><a href='forest_mgmt_unit.html'>forest_mgmt_unit</a><span class='relatedKey'>.mgmt_unit_id</span></td>
+                                                <td class="constraint detail">pfu_fmu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The administrative management unit identifier defined by the ministry for managing the forest tenure, eg. 41 - Dawson Creek TSA.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="revision_count">revision_count</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A count of the number of times an entry in the entity has been modified. Used to validate if the current information displayed on a user&quot;s web browser is the most current.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_userid">entry_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The unique user id of the resource who initially added the entry.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_timestamp">entry_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Timestamp when the event information was entered.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The userid of the individual who last updated this information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time of the last update.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="forest_tenure_guid">forest_tenure_guid</span></td>
+                                    <td>uuid</td>
+                                    <td>2147483647</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>silva.uuid_generate_v4()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A global unique identifier used to globally identified a Forest Tenure (aka, Forest File). It is used for exchanging data between external applications and services.</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> prov_forest_use_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>forest_file_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>pfu_fsc_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>file_status_st</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>pfu_ftcd_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>file_type_code</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>pfu_i2</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>forest_file_id + file_type_code + file_status_st</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>pfu_ou_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>forest_region</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> prov_forest_use_forest_tenure_guid_key</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>forest_tenure_guid</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>avcon_1148331360_sb_fu_001</td>
+                                    <td>((sb_funded_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="752,5,955,328">
+<area shape="rect" id="node2" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="316,801,659,1340">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="39,1353,239,1764">
+<area shape="rect" id="node8" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="5,733,272,851">
+<area shape="rect" id="node9" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="39,875,239,992">
+<area shape="rect" id="node10" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="27,1009,250,1185">
+<area shape="rect" id="node3" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="720,345,987,609">
+<area shape="rect" id="node4" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="744,879,963,1172">
+<area shape="rect" id="node6" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="703,1735,1004,2292">
+<area shape="rect" id="node7" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="725,627,982,861">
+<area shape="rect" id="node11" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="731,1189,976,1717">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/prov_forest_use.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1939,204,2207,292">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="1707,166,1851,254">
+<area shape="rect" id="node3" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,293,509,381">
+<area shape="rect" id="node4" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1301,248,1619,336">
+<area shape="rect" id="node5" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1663,61,1895,149">
+<area shape="rect" id="node33" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1356,90,1564,178">
+<area shape="rect" id="node6" href="client_location.html" target="_top" title="client_location" alt="" coords="1031,320,1227,408">
+<area shape="rect" id="node7" href="forest_client.html" target="_top" title="forest_client" alt="" coords="695,126,874,214">
+<area shape="rect" id="node8" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1383,1309,1537,1397">
+<area shape="rect" id="node9" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="1005,846,1252,934">
+<area shape="rect" id="node10" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1000,1484,1257,1718">
+<area shape="rect" id="node11" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1037,1312,1220,1400">
+<area shape="rect" id="node14" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="613,1742,956,2281">
+<area shape="rect" id="node17" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,1413,259,1501">
+<area shape="rect" id="node23" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="671,1233,899,1321">
+<area shape="rect" id="node24" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="645,917,925,1005">
+<area shape="rect" id="node25" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="619,670,951,758">
+<area shape="rect" id="node26" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="642,776,927,864">
+<area shape="rect" id="node27" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="671,460,898,548">
+<area shape="rect" id="node28" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="667,565,902,653">
+<area shape="rect" id="node29" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="678,1022,891,1110">
+<area shape="rect" id="node30" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="672,1128,897,1216">
+<area shape="rect" id="node31" href="marking_instrument_code.html" target="_top" title="marking_instrument_code" alt="" coords="641,1637,929,1725">
+<area shape="rect" id="node32" href="marking_method_code.html" target="_top" title="marking_method_code" alt="" coords="655,1532,915,1620">
+<area shape="rect" id="node34" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1585,569,1673">
+<area shape="rect" id="node36" href="mark_extension_reason_code.html" target="_top" title="mark_extension_reason_code" alt="" coords="628,1390,941,1478">
+<area shape="rect" id="node12" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1359,353,1561,676">
+<area shape="rect" id="node13" href="file_client_type_code.html" target="_top" title="file_client_type_code" alt="" coords="1007,530,1250,618">
+<area shape="rect" id="node16" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="325,1950,547,2126">
+<area shape="rect" id="node35" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="336,1816,536,1933">
+<area shape="rect" id="node15" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1327,693,1593,957">
+<area shape="rect" id="node18" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1039,2337,1218,2425">
+<area shape="rect" id="node19" href="payment_method_code.html" target="_top" title="payment_method_code" alt="" coords="653,2650,917,2738">
+<area shape="rect" id="node20" href="sb_category_code.html" target="_top" title="sb_category_code" alt="" coords="676,2334,893,2422">
+<area shape="rect" id="node21" href="sale_method_code.html" target="_top" title="sale_method_code" alt="" coords="672,2440,897,2528">
+<area shape="rect" id="node22" href="sale_type_code.html" target="_top" title="sale_type_code" alt="" coords="686,2545,883,2633">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/prov_forest_use.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

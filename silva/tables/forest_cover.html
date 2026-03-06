@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>forest_cover - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>forest_cover</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Describes the opening&quot;s forest cover attributes stratified by Forest Cover Polygon which will satisfy Inventory Program requirements.</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="forest_cover_id">forest_cover_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover_geometry.forest_cover_id references forest_cover.forest_cover_id via fcg_fc_fk"><a href='forest_cover_geometry.html'>forest_cover_geometry</a><span class='relatedKey'>.forest_cover_id</span></td>
+                                                <td class="constraint detail">fcg_fc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_layer.forest_cover_id references forest_cover.forest_cover_id via fclr_fc3_fk"><a href='forest_cover_layer.html'>forest_cover_layer</a><span class='relatedKey'>.forest_cover_id</span></td>
+                                                <td class="constraint detail">fclr_fc3_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="forest_cover_non_mapped_area.forest_cover_id references forest_cover.forest_cover_id via fcnma_fc_fk"><a href='forest_cover_non_mapped_area.html'>forest_cover_non_mapped_area</a><span class='relatedKey'>.forest_cover_id</span></td>
+                                                <td class="constraint detail">fcnma_fc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the forest cover.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="opening_id">opening_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.opening_id references opening.opening_id via fc_o_fk"><a href='opening.html'>opening</a><span class='relatedKey'>.opening_id</span></td>
+                                                <td class="constraint detail">fc_o_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_standard_unit_id">stocking_standard_unit_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via fc_ssu_fk"><a href='stocking_standard_unit.html'>stocking_standard_unit</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">fc_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifing the stocking standards.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="silv_polygon_no">silv_polygon_no</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>An unique number identification derived from the IGDS which is assigned to each forest type island, standards unit, eco-strata or survey strata within the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="silv_polygon_area">silv_polygon_area</span></td>
+                                    <td>numeric</td>
+                                    <td>7,1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The total area occupied by each polygon number or stratified land type. The sum of all areas for a polygon(s) should not be greater than the area of the SU.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="silv_polygon_net_area">silv_polygon_net_area</span></td>
+                                    <td>numeric</td>
+                                    <td>7,1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Net Area of the Polygon (i.e. SILV POLYGON AREA less non-mapped area (FOREST COVER NON MAPPED AREA))</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_class_code">stocking_class_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_class_code references stocking_class_code.stocking_class_code via fc_scc1_fk"><a href='stocking_class_code.html'>stocking_class_code</a><span class='relatedKey'>.stocking_class_code</span></td>
+                                                <td class="constraint detail">fc_scc1_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The stocking class code for the primary tree species in the previous stand (for the area under the prescription).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_status_code">stocking_status_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_status_code references stocking_status_code.stocking_status_code via fc_ssc6_fk"><a href='stocking_status_code.html'>stocking_status_code</a><span class='relatedKey'>.stocking_status_code</span></td>
+                                                <td class="constraint detail">fc_ssc6_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code to describe the previous stand type for the area under the prescription.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_type_code">stocking_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_type_code references stocking_type_code.stocking_type_code via fc_stc3_fk"><a href='stocking_type_code.html'>stocking_type_code</a><span class='relatedKey'>.stocking_type_code</span></td>
+                                                <td class="constraint detail">fc_stc3_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A further classification of the stocking status for the polygon.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="reference_year">reference_year</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The year age and height measurements were recorded.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="reentry_year">reentry_year</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The time to the next harvest (i.e. the next harvest year).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="site_class_code">site_class_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.site_class_code references site_class_code.site_class_code via fc_scc2_fk"><a href='site_class_code.html'>site_class_code</a><span class='relatedKey'>.site_class_code</span></td>
+                                                <td class="constraint detail">fc_scc2_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>This code indicates the quality of the land. Note: This column is not maintained by the system.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="site_index">site_index</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The site index for the primary tree species in the previous stand (for the area under the prescription).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="site_index_source_code">site_index_source_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.site_index_source_code references site_index_source_code.site_index_source_code via fc_sisc_fk"><a href='site_index_source_code.html'>site_index_source_code</a><span class='relatedKey'>.site_index_source_code</span></td>
+                                                <td class="constraint detail">fc_sisc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code describing the source, or origin, of the estimated site index.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_reserve_code">silv_reserve_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.silv_reserve_code references silv_reserve_code.silv_reserve_code via fc_src_fk"><a href='silv_reserve_code.html'>silv_reserve_code</a><span class='relatedKey'>.silv_reserve_code</span></td>
+                                                <td class="constraint detail">fc_src_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code for the type of reserve. Values are group (b), uniform (u) or variable (v).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_reserve_objective_code">silv_reserve_objective_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.silv_reserve_objective_code references silv_reserve_objective_code.silv_reserve_objective_code via fc_sroc_fk"><a href='silv_reserve_objective_code.html'>silv_reserve_objective_code</a><span class='relatedKey'>.silv_reserve_objective_code</span></td>
+                                                <td class="constraint detail">fc_sroc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code used to define the primary reserve objective. ( e.g. Riparian, Wildlife Habitat) .</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="tree_species_code">tree_species_code</span></td>
+                                    <td>varchar</td>
+                                    <td>8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.tree_species_code references tree_species_code.tree_species_code via fc_tsc_fk"><a href='tree_species_code.html'>tree_species_code</a><span class='relatedKey'>.tree_species_code</span></td>
+                                                <td class="constraint detail">fc_tsc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The secondary tree species of Crown timber that was cut, damaged, destroyed or removed without authority</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="tree_cover_pattern_code">tree_cover_pattern_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.tree_cover_pattern_code references tree_cover_pattern_code.tree_cover_pattern_code via fc_tcpc_fk"><a href='tree_cover_pattern_code.html'>tree_cover_pattern_code</a><span class='relatedKey'>.tree_cover_pattern_code</span></td>
+                                                <td class="constraint detail">fc_tcpc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The dispursion of trees over the area.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="results_submission_id">results_submission_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.results_submission_id references results_electronic_submission.results_submission_id via fc_res_fk"><a href='results_electronic_submission.html'>results_electronic_submission</a><span class='relatedKey'>.results_submission_id</span></td>
+                                                <td class="constraint detail">fc_res_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Used to link information about a data submission. A submission may have many rows of Silviculture (Form A), Activities (Form B), and Forest Cover/Milestones (Form C) information. This attribute will be receiving a system generated number from the Electronic Submission Framework.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_userid">entry_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who entered the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_timestamp">entry_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time the information was entered.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who last updated the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time of the last update.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="revision_count">revision_count</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> forest_cover_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>forest_cover_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>fc_o_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>opening_id</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1045,689,1425,1462">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="367,104,656,896">
+<area shape="rect" id="node3" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="5,1118,323,1324">
+<area shape="rect" id="node4" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="742,1021,959,1138">
+<area shape="rect" id="node5" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="703,1156,999,1273">
+<area shape="rect" id="node6" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="64,632,264,749">
+<area shape="rect" id="node7" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="32,766,296,884">
+<area shape="rect" id="node8" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="46,262,282,380">
+<area shape="rect" id="node9" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="700,74,1001,280">
+<area shape="rect" id="node10" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="40,1508,288,1625">
+<area shape="rect" id="node11" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="734,1497,967,1614">
+<area shape="rect" id="node12" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="713,1326,988,1444">
+<area shape="rect" id="node13" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="53,901,275,1018">
+<area shape="rect" id="node14" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1503,692,1765,926">
+<area shape="rect" id="node15" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1482,1321,1786,1556">
+<area shape="rect" id="node16" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1469,1573,1799,1778">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/forest_cover.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1473,12,1741,100">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="1088,104,1347,192">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="835,668,979,756">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,437,151,525">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="435,1069,752,1157">
+<area shape="rect" id="node10" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="494,1612,693,1700">
+<area shape="rect" id="node11" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="461,2061,725,2149">
+<area shape="rect" id="node12" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="475,1265,711,1353">
+<area shape="rect" id="node14" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="469,2199,717,2287">
+<area shape="rect" id="node17" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="483,2304,704,2392">
+<area shape="rect" id="node31" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="489,437,697,525">
+<area shape="rect" id="node32" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="473,543,713,631">
+<area shape="rect" id="node33" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="471,648,715,736">
+<area shape="rect" id="node34" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="495,753,692,841">
+<area shape="rect" id="node35" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="483,859,703,947">
+<area shape="rect" id="node36" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="484,964,703,1052">
+<area shape="rect" id="node6" href="client_location.html" target="_top" title="client_location" alt="" coords="195,755,391,843">
+<area shape="rect" id="node7" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1417,1440,1797,2213">
+<area shape="rect" id="node8" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="1109,1719,1326,1836">
+<area shape="rect" id="node9" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="1069,1853,1365,1971">
+<area shape="rect" id="node13" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="1085,863,1350,951">
+<area shape="rect" id="node15" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="1101,2375,1334,2463">
+<area shape="rect" id="node16" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="1080,2060,1355,2177">
+<area shape="rect" id="node47" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="796,860,1017,948">
+<area shape="rect" id="node18" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="1486,2231,1729,2319">
+<area shape="rect" id="node19" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1875,1221,2137,1456">
+<area shape="rect" id="node20" href="corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="1481,1124,1734,1212">
+<area shape="rect" id="node21" href="data_source_code.html" target="_top" title="data_source_code" alt="" coords="1497,1229,1717,1317">
+<area shape="rect" id="node22" href="feature_classes.html" target="_top" title="feature_classes" alt="" coords="1507,1335,1708,1423">
+<area shape="rect" id="node23" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1894,2480,2118,2568">
+<area shape="rect" id="node24" href="forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="1473,2552,1742,2640">
+<area shape="rect" id="node25" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="1861,2604,2151,2692">
+<area shape="rect" id="node26" href="forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="2231,2488,2520,2576">
+<area shape="rect" id="node27" href="forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="2215,2604,2536,2692">
+<area shape="rect" id="node28" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="1847,2249,2165,2337">
+<area shape="rect" id="node29" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1841,2373,2171,2461">
+<area shape="rect" id="node30" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="2281,2383,2469,2471">
+<area shape="rect" id="node37" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1061,561,1373,649">
+<area shape="rect" id="node38" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="1095,209,1340,297">
+<area shape="rect" id="node39" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1085,315,1349,403">
+<area shape="rect" id="node40" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="1893,1116,2119,1204">
+<area shape="rect" id="node41" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="1096,420,1339,508">
+<area shape="rect" id="node42" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="1474,913,1741,1001">
+<area shape="rect" id="node43" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1501,703,1714,791">
+<area shape="rect" id="node44" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1477,561,1738,649">
+<area shape="rect" id="node45" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1511,808,1704,896">
+<area shape="rect" id="node46" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1491,1019,1724,1107">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/forest_cover.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1045,689,1425,1462">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="367,104,656,896">
+<area shape="rect" id="node3" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="5,1118,323,1324">
+<area shape="rect" id="node4" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="742,1021,959,1138">
+<area shape="rect" id="node5" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="703,1156,999,1273">
+<area shape="rect" id="node6" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="64,632,264,749">
+<area shape="rect" id="node7" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="32,766,296,884">
+<area shape="rect" id="node8" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="46,262,282,380">
+<area shape="rect" id="node9" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="700,74,1001,280">
+<area shape="rect" id="node10" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="40,1508,288,1625">
+<area shape="rect" id="node11" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="734,1497,967,1614">
+<area shape="rect" id="node12" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="713,1326,988,1444">
+<area shape="rect" id="node13" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="53,901,275,1018">
+<area shape="rect" id="node14" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1503,692,1765,926">
+<area shape="rect" id="node15" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1482,1321,1786,1556">
+<area shape="rect" id="node16" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1469,1573,1799,1778">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/forest_cover.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1528,2195,1796,2283">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="1139,1985,1398,2073">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="859,1596,1003,1684">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1556,151,1644">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="435,1345,752,1433">
+<area shape="rect" id="node10" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="494,1135,693,1223">
+<area shape="rect" id="node11" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="461,1240,725,1328">
+<area shape="rect" id="node12" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="475,1029,711,1117">
+<area shape="rect" id="node14" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="469,415,717,503">
+<area shape="rect" id="node17" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="483,789,704,877">
+<area shape="rect" id="node31" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="489,1556,697,1644">
+<area shape="rect" id="node32" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="473,1661,713,1749">
+<area shape="rect" id="node33" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="471,1767,715,1855">
+<area shape="rect" id="node34" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="495,1872,692,1960">
+<area shape="rect" id="node35" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="483,1977,703,2065">
+<area shape="rect" id="node36" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="484,1451,703,1539">
+<area shape="rect" id="node6" href="client_location.html" target="_top" title="client_location" alt="" coords="195,1452,391,1540">
+<area shape="rect" id="node7" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1472,419,1852,1192">
+<area shape="rect" id="node8" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="485,520,702,637">
+<area shape="rect" id="node9" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="445,655,741,772">
+<area shape="rect" id="node13" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="1136,1343,1401,1431">
+<area shape="rect" id="node15" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="477,237,710,325">
+<area shape="rect" id="node16" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="456,895,731,1012">
+<area shape="rect" id="node47" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="820,1340,1041,1428">
+<area shape="rect" id="node18" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="809,643,1052,731">
+<area shape="rect" id="node19" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1930,1667,2191,1901">
+<area shape="rect" id="node20" href="corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="1535,1667,1789,1755">
+<area shape="rect" id="node21" href="data_source_code.html" target="_top" title="data_source_code" alt="" coords="1552,1772,1772,1860">
+<area shape="rect" id="node22" href="feature_classes.html" target="_top" title="feature_classes" alt="" coords="1561,1877,1763,1965">
+<area shape="rect" id="node23" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1949,329,2173,417">
+<area shape="rect" id="node24" href="forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="796,321,1065,409">
+<area shape="rect" id="node25" href="forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="1123,252,1414,340">
+<area shape="rect" id="node26" href="forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="2269,275,2559,363">
+<area shape="rect" id="node27" href="forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="1501,241,1823,329">
+<area shape="rect" id="node28" href="forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="1109,607,1428,695">
+<area shape="rect" id="node29" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1896,39,2225,127">
+<area shape="rect" id="node30" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="2320,380,2508,468">
+<area shape="rect" id="node37" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1113,1703,1425,1791">
+<area shape="rect" id="node38" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="1146,2091,1391,2179">
+<area shape="rect" id="node39" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1137,1880,1401,1968">
+<area shape="rect" id="node40" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="1947,1919,2174,2007">
+<area shape="rect" id="node41" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="1147,2196,1390,2284">
+<area shape="rect" id="node42" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="1529,1315,1795,1403">
+<area shape="rect" id="node43" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1555,1420,1769,1508">
+<area shape="rect" id="node44" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1531,1983,1793,2071">
+<area shape="rect" id="node45" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1565,1525,1759,1613">
+<area shape="rect" id="node46" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1545,1209,1779,1297">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/forest_cover.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

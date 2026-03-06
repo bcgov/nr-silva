@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>activity_treatment_unit - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>activity_treatment_unit</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>An Activity Treatment Unit is a Silvicultural treatment that is performed on a mappable area which deliniates a specific area of land. ATUs may not span opening boundaries but an opening may have more than one ATU associated with it.</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="activity_treatment_unit_id">activity_treatment_unit_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_tu_comment_link.activity_treatment_unit_id references activity_treatment_unit.activity_treatment_unit_id via acl_atu_fk"><a href='activity_tu_comment_link.html'>activity_tu_comment_link</a><span class='relatedKey'>.activity_treatment_unit_id</span></td>
+                                                <td class="constraint detail">acl_atu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="planting_rslt.activity_treatment_unit_id references activity_treatment_unit.activity_treatment_unit_id via pr_atu_fk"><a href='planting_rslt.html'>planting_rslt</a><span class='relatedKey'>.activity_treatment_unit_id</span></td>
+                                                <td class="constraint detail">pr_atu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="silv_relief_application.activity_treatment_unit_id references activity_treatment_unit.activity_treatment_unit_id via sra_atu_fk"><a href='silv_relief_application.html'>silv_relief_application</a><span class='relatedKey'>.activity_treatment_unit_id</span></td>
+                                                <td class="constraint detail">sra_atu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the Activity Treatment Unit.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="activity_tu_seq_no">activity_tu_seq_no</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Internal processing variable used to maintain order of the activity treatment units for a specific opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="org_unit_no">org_unit_no</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.org_unit_no references org_unit.org_unit_no via atu_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">atu_ou_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &ldquo;ministry codes&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="opening_id">opening_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.opening_id references opening.opening_id via atu_o_fk"><a href='opening.html'>opening</a><span class='relatedKey'>.opening_id</span></td>
+                                                <td class="constraint detail">atu_o_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silviculture_project_id">silviculture_project_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silviculture_project_id references silviculture_project.silviculture_project_id via atu_proj_fk"><a href='silviculture_project.html'>silviculture_project</a><span class='relatedKey'>.silviculture_project_id</span></td>
+                                                <td class="constraint detail">atu_proj_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A system generated key which uniquely identifies an occurrence of a Silviculture Project.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="project_unit_id">project_unit_id</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A system generated sequence to uniquely identify each of the units within the project. First activity assigned to the project is unit 1; second is unit 2; and, so on.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_base_code">silv_base_code</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_base_code references silv_base_code.silv_base_code via atu_sbc_fk"><a href='silv_base_code.html'>silv_base_code</a><span class='relatedKey'>.silv_base_code</span></td>
+                                                <td class="constraint detail">atu_sbc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Identifies a primary category of Silviculture Activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_technique_code">silv_technique_code</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_technique_code references silv_technique_code.silv_technique_code via atu_stc_fk"><a href='silv_technique_code.html'>silv_technique_code</a><span class='relatedKey'>.silv_technique_code</span></td>
+                                                <td class="constraint detail">atu_stc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Describes the broad category of technique, used for the base activity (eg.BU = BURN).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_method_code">silv_method_code</span></td>
+                                    <td>varchar</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_method_code references silv_method_code.silv_method_code via atu_smc_fk"><a href='silv_method_code.html'>silv_method_code</a><span class='relatedKey'>.silv_method_code</span></td>
+                                                <td class="constraint detail">atu_smc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Describes the specific machinery or method used for the base activity (eg. SHEAR = hand shears). A code for the method category of silvicultural activity planned.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_objective_code_1">silv_objective_code_1</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_objective_code_1 references silv_objective_code.silv_objective_code via atu_soc1_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc1_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_objective_code_2">silv_objective_code_2</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_objective_code_2 references silv_objective_code.silv_objective_code via atu_soc2_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc2_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_objective_code_3">silv_objective_code_3</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_objective_code_3 references silv_objective_code.silv_objective_code via atu_soc3_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc3_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_fund_srce_code">silv_fund_srce_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_fund_srce_code references silv_fund_srce_code.silv_fund_srce_code via atu_sfsc_fk"><a href='silv_fund_srce_code.html'>silv_fund_srce_code</a><span class='relatedKey'>.silv_fund_srce_code</span></td>
+                                                <td class="constraint detail">atu_sfsc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code indicating which Funding Program will be the primary funding source for silviculture activities on the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_activity_measurement_code">silv_activity_measurement_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_activity_measurement_code references silv_activity_measurement_code.silv_activity_measurement_code via atu_sam_fk"><a href='silv_activity_measurement_code.html'>silv_activity_measurement_code</a><span class='relatedKey'>.silv_activity_measurement_code</span></td>
+                                                <td class="constraint detail">atu_sam_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code indicating the measurement for the Activity</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="activity_licensee_id">activity_licensee_id</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A unique identifier provided by the Licensee to identify the Activity Number.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="treatment_amount">treatment_amount</span></td>
+                                    <td>numeric</td>
+                                    <td>11,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The amount (unit of measure) of work actually completed for the ATU.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="actual_treatment_cost">actual_treatment_cost</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The actual cost incurred to complete the work.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="act_planted_no">act_planted_no</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The actual number seedlings planted for each activity treatment unit. If a planned activity exists, the planned number is defaulted as the actual planted number.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_technique_code">plan_silv_technique_code</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_technique_code references silv_technique_code.silv_technique_code via atu_stc_plnd_fk"><a href='silv_technique_code.html'>silv_technique_code</a><span class='relatedKey'>.silv_technique_code</span></td>
+                                                <td class="constraint detail">atu_stc_plnd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Describes the broad category of technique, used for the base activity (eg.BU = BURN).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_method_code">plan_silv_method_code</span></td>
+                                    <td>varchar</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_method_code references silv_method_code.silv_method_code via atu_smc_plnd_fk"><a href='silv_method_code.html'>silv_method_code</a><span class='relatedKey'>.silv_method_code</span></td>
+                                                <td class="constraint detail">atu_smc_plnd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Describes the specific machinery or method used for the base activity (eg. SHEAR = hand shears). A code for the method category of silvicultural activity planned.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_fund_srce_code">plan_silv_fund_srce_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_fund_srce_code references silv_fund_srce_code.silv_fund_srce_code via atu_sfsc_plnd_fk"><a href='silv_fund_srce_code.html'>silv_fund_srce_code</a><span class='relatedKey'>.silv_fund_srce_code</span></td>
+                                                <td class="constraint detail">atu_sfsc_plnd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code indicating which Funding Program will be the primary funding source for silviculture activities on the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="planned_date">planned_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The century, year and month in which work on the ATU is planned to commence. The Day component of the date will be set to &ldquo;01&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="planned_treatment_amount">planned_treatment_amount</span></td>
+                                    <td>numeric</td>
+                                    <td>11,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The planned amount (unit of measure) of work for the ATU.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="planned_treatment_cost">planned_treatment_cost</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The total cost anticipated to complete the work.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_objective_code_1">plan_silv_objective_code_1</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_objective_code_1 references silv_objective_code.silv_objective_code via atu_soc_plnd1_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc_plnd1_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_objective_code_2">plan_silv_objective_code_2</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_objective_code_2 references silv_objective_code.silv_objective_code via atu_soc_plnd2_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc_plnd2_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="plan_silv_objective_code_3">plan_silv_objective_code_3</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.plan_silv_objective_code_3 references silv_objective_code.silv_objective_code via atu_soc_plnd3_fk"><a href='silv_objective_code.html'>silv_objective_code</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atu_soc_plnd3_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code which defines the silviculture objective for performing the specific (base/technique/method) silvicultural activity.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="target_prepared_spots">target_prepared_spots</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="pruning_min_crown_pct">pruning_min_crown_pct</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="prune_height">prune_height</span></td>
+                                    <td>numeric</td>
+                                    <td>3,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="stems_to_prune">stems_to_prune</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="min_acceptable_density">min_acceptable_density</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The contracted minimum allowable stand density of total countable conifers.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="total_stems_per_ha">total_stems_per_ha</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="inter_tree_target_distance">inter_tree_target_distance</span></td>
+                                    <td>numeric</td>
+                                    <td>3,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="inter_tree_variation">inter_tree_variation</span></td>
+                                    <td>numeric</td>
+                                    <td>3,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="inter_tree_min_distance">inter_tree_min_distance</span></td>
+                                    <td>numeric</td>
+                                    <td>3,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="max_trees_per_plot">max_trees_per_plot</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="max_trees_per_ha">max_trees_per_ha</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="survey_planned_num_plots">survey_planned_num_plots</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="survey_actual_num_plots">survey_actual_num_plots</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="survey_min_plots_per_stratum">survey_min_plots_per_stratum</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_tree_species_code">silv_tree_species_code</span></td>
+                                    <td>varchar</td>
+                                    <td>8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_tree_species_code references silv_tree_species_code.silv_tree_species_code via atu_stsc_fk"><a href='silv_tree_species_code.html'>silv_tree_species_code</a><span class='relatedKey'>.silv_tree_species_code</span></td>
+                                                <td class="constraint detail">atu_stsc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The secondary tree species of Crown timber that was cut, damaged, destroyed or removed without authority</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="atu_start_date">atu_start_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The actual start date of the activity. Currently only pertains to Disturbance activities (SILV BASE CODE = &ldquo;DN&rdquo;)</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="atu_completion_date">atu_completion_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The actual date when the activity is completed.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="results_ind">results_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A system controlled Yes/No flag indicating if activity results have been recorded for the ATU.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="unit_bid_price">unit_bid_price</span></td>
+                                    <td>numeric</td>
+                                    <td>9,2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Contract bid price per unit of work.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="fia_project_id">fia_project_id</span></td>
+                                    <td>varchar</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The Project Id identified for the Forest Investment Account.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="results_submission_id">results_submission_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.results_submission_id references results_electronic_submission.results_submission_id via atu_res_fk"><a href='results_electronic_submission.html'>results_electronic_submission</a><span class='relatedKey'>.results_submission_id</span></td>
+                                                <td class="constraint detail">atu_res_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Used to link information about a data submission. A submission may have many rows of Silviculture (Form A), Activities (Form B), and Forest Cover/Milestones (Form C) information. This attribute will be receiving a system generated number from the Electronic Submission Framework.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="disturbance_code">disturbance_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.disturbance_code references disturbance_code.disturbance_code via atu_dc_fk"><a href='disturbance_code.html'>disturbance_code</a><span class='relatedKey'>.disturbance_code</span></td>
+                                                <td class="constraint detail">atu_dc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A code indicating the reason for the disturbance within the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_system_code">silv_system_code</span></td>
+                                    <td>varchar</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_system_code references silv_system_code.silv_system_code via atu_ssc_fk"><a href='silv_system_code.html'>silv_system_code</a><span class='relatedKey'>.silv_system_code</span></td>
+                                                <td class="constraint detail">atu_ssc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The code signifying the silviculture system that the post logging treatment code is to be applied to. (Ex. &ldquo;B&rdquo; for Basic silviculture).</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_system_variant_code">silv_system_variant_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_system_variant_code references silv_system_variant_code.silv_system_variant_code via atu_ssvc_fk"><a href='silv_system_variant_code.html'>silv_system_variant_code</a><span class='relatedKey'>.silv_system_variant_code</span></td>
+                                                <td class="constraint detail">atu_ssvc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The code for the silvicultural system variant, which further describes the functional attributes of the particular silvicultural system</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="silv_cut_phase_code">silv_cut_phase_code</span></td>
+                                    <td>varchar</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.silv_cut_phase_code references silv_cut_phase_code.silv_cut_phase_code via atu_scpc_fk"><a href='silv_cut_phase_code.html'>silv_cut_phase_code</a><span class='relatedKey'>.silv_cut_phase_code</span></td>
+                                                <td class="constraint detail">atu_scpc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The code for the actual silvicultural system cut phase. The cut phase of a silvicultural system variant describes the function of a harvest to extract merchantable timber and achieve a silviculture treatment.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="cut_block_open_admin_id">cut_block_open_admin_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="activity_treatment_unit.cut_block_open_admin_id references cut_block_open_admin.cut_block_open_admin_id via atu_cboa_fk"><a href='cut_block_open_admin.html'>cut_block_open_admin</a><span class='relatedKey'>.cut_block_open_admin_id</span></td>
+                                                <td class="constraint detail">atu_cboa_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the Cut Block/Opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="disturbance_completed_ind">disturbance_completed_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_userid">entry_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who entered the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_timestamp">entry_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time the information was entered.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who last updated the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time of the last update.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="revision_count">revision_count</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Internal counter used by the system to avoid conflicting updates to the record.</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> activity_treatment_unit_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>activity_treatment_unit_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_atu_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>opening_id + silv_base_code + silv_method_code + silv_technique_code + treatment_amount</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_base_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>silv_base_code + results_ind</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_cboa_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>cut_block_open_admin_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_licensee_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>activity_licensee_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_o_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>opening_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_proj_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>silviculture_project_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>atu_project_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>fia_project_id + results_ind</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1324,181,1744,1981">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="981,1922,1243,2186">
+<area shape="rect" id="node3" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="1003,1249,1221,1366">
+<area shape="rect" id="node4" href="opening.html" target="_top" title="opening" alt="" coords="611,396,900,1188">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,418,205,829">
+<area shape="rect" id="node6" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="995,1010,1229,1128">
+<area shape="rect" id="node7" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="1002,606,1222,724">
+<area shape="rect" id="node8" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="997,741,1227,858">
+<area shape="rect" id="node9" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="993,472,1231,589">
+<area shape="rect" id="node10" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="249,1070,567,1276">
+<area shape="rect" id="node11" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="944,876,1280,993">
+<area shape="rect" id="node12" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="655,157,855,274">
+<area shape="rect" id="node13" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="993,1788,1231,1905">
+<area shape="rect" id="node14" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="1005,1518,1219,1636">
+<area shape="rect" id="node15" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="973,1653,1251,1770">
+<area shape="rect" id="node16" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="985,1384,1239,1501">
+<area shape="rect" id="node17" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="990,60,1234,382">
+<area shape="rect" id="node18" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1791,281,2073,404">
+<area shape="rect" id="node19" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1789,1146,2075,1440">
+<area shape="rect" id="node20" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1788,29,2076,264">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/activity_treatment_unit.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1771,122,2191,1922">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="1429,1628,1688,1716">
+<area shape="rect" id="node3" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="1449,1224,1668,1342">
+<area shape="rect" id="node4" href="opening.html" target="_top" title="opening" alt="" coords="1149,2154,1293,2242">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1611,151,1699">
+<area shape="rect" id="node6" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="1442,816,1675,934">
+<area shape="rect" id="node7" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="1449,682,1669,799">
+<area shape="rect" id="node8" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="1444,951,1673,1068">
+<area shape="rect" id="node9" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="1440,547,1677,664">
+<area shape="rect" id="node10" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="733,2470,1051,2558">
+<area shape="rect" id="node11" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="1391,412,1727,530">
+<area shape="rect" id="node12" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="795,443,989,531">
+<area shape="rect" id="node13" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="1440,1839,1677,1956">
+<area shape="rect" id="node14" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="1451,1359,1666,1476">
+<area shape="rect" id="node15" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="1419,1494,1698,1611">
+<area shape="rect" id="node16" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="1431,2434,1686,2522">
+<area shape="rect" id="node17" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1105,235,1337,323">
+<area shape="rect" id="node22" href="cut_block.html" target="_top" title="cut_block" alt="" coords="815,1539,969,1627">
+<area shape="rect" id="node26" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="793,2787,991,2875">
+<area shape="rect" id="node27" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="760,2894,1024,2982">
+<area shape="rect" id="node28" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="774,2575,1010,2663">
+<area shape="rect" id="node30" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="768,2680,1016,2768">
+<area shape="rect" id="node31" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="781,2364,1003,2452">
+<area shape="rect" id="node35" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="788,1360,996,1448">
+<area shape="rect" id="node36" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="772,2048,1012,2136">
+<area shape="rect" id="node37" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="770,2154,1014,2242">
+<area shape="rect" id="node38" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="793,2259,991,2347">
+<area shape="rect" id="node39" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="782,1838,1002,1926">
+<area shape="rect" id="node40" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="783,1943,1001,2031">
+<area shape="rect" id="node20" href="client_location.html" target="_top" title="client_location" alt="" coords="468,1943,664,2031">
+<area shape="rect" id="node21" href="forest_client.html" target="_top" title="forest_client" alt="" coords="207,1802,386,1890">
+<area shape="rect" id="node51" href="crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="755,232,1029,320">
+<area shape="rect" id="node52" href="silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="757,338,1027,426">
+<area shape="rect" id="node53" href="unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="798,127,986,215">
+<area shape="rect" id="node18" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2237,56,2520,179">
+<area shape="rect" id="node19" href="silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="1095,94,1347,182">
+<area shape="rect" id="node23" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="443,1539,689,1627">
+<area shape="rect" id="node24" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="475,1434,657,1522">
+<area shape="rect" id="node34" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="195,1608,399,1696">
+<area shape="rect" id="node25" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1892,2787,2069,2875">
+<area shape="rect" id="node29" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="1426,2575,1691,2663">
+<area shape="rect" id="node32" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="1465,1734,1653,1822">
+<area shape="rect" id="node33" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="477,1644,655,1732">
+<area shape="rect" id="node41" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1825,2044,2137,2132">
+<area shape="rect" id="node42" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="1436,2046,1681,2134">
+<area shape="rect" id="node43" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1427,235,1691,323">
+<area shape="rect" id="node44" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="1445,2151,1672,2239">
+<area shape="rect" id="node45" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="1437,2292,1680,2380">
+<area shape="rect" id="node46" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2289,2274,2469,2362">
+<area shape="rect" id="node47" href="request_item.html" target="_top" title="request_item" alt="" coords="1889,2327,2073,2415">
+<area shape="rect" id="node48" href="silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="1414,94,1703,182">
+<area shape="rect" id="node49" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2235,1860,2523,2095">
+<area shape="rect" id="node50" href="silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="1832,1939,2129,2027">
+<area shape="rect" id="node54" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1874,2222,2087,2310">
+<area shape="rect" id="node55" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="2248,2112,2509,2200">
+<area shape="rect" id="node56" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1884,2574,2077,2662">
+<area shape="rect" id="node57" href="stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2249,2504,2508,2592">
+<area shape="rect" id="node58" href="stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="1819,2468,2143,2556">
+<area shape="rect" id="node59" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1864,2679,2097,2767">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/activity_treatment_unit.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1324,181,1744,1981">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="981,1922,1243,2186">
+<area shape="rect" id="node3" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="1003,1249,1221,1366">
+<area shape="rect" id="node4" href="opening.html" target="_top" title="opening" alt="" coords="611,396,900,1188">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,418,205,829">
+<area shape="rect" id="node6" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="995,1010,1229,1128">
+<area shape="rect" id="node7" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="1002,606,1222,724">
+<area shape="rect" id="node8" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="997,741,1227,858">
+<area shape="rect" id="node9" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="993,472,1231,589">
+<area shape="rect" id="node10" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="249,1070,567,1276">
+<area shape="rect" id="node11" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="944,876,1280,993">
+<area shape="rect" id="node12" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="655,157,855,274">
+<area shape="rect" id="node13" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="993,1788,1231,1905">
+<area shape="rect" id="node14" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="1005,1518,1219,1636">
+<area shape="rect" id="node15" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="973,1653,1251,1770">
+<area shape="rect" id="node16" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="985,1384,1239,1501">
+<area shape="rect" id="node17" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="990,60,1234,382">
+<area shape="rect" id="node18" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1791,281,2073,404">
+<area shape="rect" id="node19" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1789,1146,2075,1440">
+<area shape="rect" id="node20" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1788,29,2076,264">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/activity_treatment_unit.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1771,146,2191,1946">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="1429,1963,1688,2051">
+<area shape="rect" id="node3" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="1449,1425,1668,1542">
+<area shape="rect" id="node4" href="opening.html" target="_top" title="opening" alt="" coords="1149,2663,1293,2751">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1371,151,1459">
+<area shape="rect" id="node6" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="1442,923,1675,1041">
+<area shape="rect" id="node7" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="1449,789,1669,906">
+<area shape="rect" id="node8" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="1444,1058,1673,1175">
+<area shape="rect" id="node9" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="1440,654,1677,771">
+<area shape="rect" id="node10" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="733,2122,1051,2210">
+<area shape="rect" id="node11" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="1391,519,1727,637">
+<area shape="rect" id="node12" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="795,1042,989,1130">
+<area shape="rect" id="node13" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="1440,1829,1677,1946">
+<area shape="rect" id="node14" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="1451,1559,1666,1677">
+<area shape="rect" id="node15" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="1419,1694,1698,1811">
+<area shape="rect" id="node16" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="1431,2069,1686,2157">
+<area shape="rect" id="node17" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1105,378,1337,466">
+<area shape="rect" id="node22" href="cut_block.html" target="_top" title="cut_block" alt="" coords="815,1315,969,1403">
+<area shape="rect" id="node26" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="793,3122,991,3210">
+<area shape="rect" id="node27" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="760,3227,1024,3315">
+<area shape="rect" id="node28" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="774,2911,1010,2999">
+<area shape="rect" id="node30" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="768,3017,1016,3105">
+<area shape="rect" id="node31" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="781,2806,1003,2894">
+<area shape="rect" id="node36" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="788,1147,996,1235">
+<area shape="rect" id="node37" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="772,2438,1012,2526">
+<area shape="rect" id="node38" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="770,2543,1014,2631">
+<area shape="rect" id="node39" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="793,2649,991,2737">
+<area shape="rect" id="node40" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="782,2227,1002,2315">
+<area shape="rect" id="node41" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="783,2333,1001,2421">
+<area shape="rect" id="node20" href="client_location.html" target="_top" title="client_location" alt="" coords="468,1526,664,1614">
+<area shape="rect" id="node21" href="forest_client.html" target="_top" title="forest_client" alt="" coords="207,1450,386,1538">
+<area shape="rect" id="node53" href="crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="755,481,1029,569">
+<area shape="rect" id="node54" href="silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="757,586,1027,674">
+<area shape="rect" id="node55" href="unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="798,375,986,463">
+<area shape="rect" id="node18" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2237,70,2520,193">
+<area shape="rect" id="node19" href="silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="1095,95,1347,183">
+<area shape="rect" id="node23" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="443,1369,689,1457">
+<area shape="rect" id="node24" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="475,1263,657,1351">
+<area shape="rect" id="node35" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="195,1241,399,1329">
+<area shape="rect" id="node25" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1892,3039,2069,3127">
+<area shape="rect" id="node29" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="1426,2529,1691,2617">
+<area shape="rect" id="node32" href="forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="1099,3047,1342,3135">
+<area shape="rect" id="node33" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="1465,2670,1653,2758">
+<area shape="rect" id="node34" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="477,1158,655,1246">
+<area shape="rect" id="node42" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1403,2174,1715,2262">
+<area shape="rect" id="node43" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="1436,2775,1681,2863">
+<area shape="rect" id="node44" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1427,201,1691,289">
+<area shape="rect" id="node45" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="1445,2917,1672,3005">
+<area shape="rect" id="node46" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="1437,2423,1680,2511">
+<area shape="rect" id="node47" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2289,2071,2469,2159">
+<area shape="rect" id="node48" href="request_item.html" target="_top" title="request_item" alt="" coords="1889,2069,2073,2157">
+<area shape="rect" id="node49" href="results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="1441,342,1676,430">
+<area shape="rect" id="node50" href="silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="1414,95,1703,183">
+<area shape="rect" id="node51" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2235,2182,2523,2417">
+<area shape="rect" id="node52" href="silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="1832,2210,2129,2298">
+<area shape="rect" id="node56" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1874,2634,2087,2722">
+<area shape="rect" id="node57" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1850,2423,2111,2511">
+<area shape="rect" id="node58" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1884,2739,2077,2827">
+<area shape="rect" id="node59" href="stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2249,2585,2508,2673">
+<area shape="rect" id="node60" href="stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="1819,1963,2143,2051">
+<area shape="rect" id="node61" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1864,2529,2097,2617">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/activity_treatment_unit.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

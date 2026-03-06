@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>harvesting_authority - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>harvesting_authority</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Information about the timber cutting permission for a timber tenure.</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="hva_skey">hva_skey</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="cut_block.hva_skey references harvesting_authority.hva_skey via cb_hva_fk"><a href='cut_block.html'>cut_block</a><span class='relatedKey'>.hva_skey</span></td>
+                                                <td class="constraint detail">cb_hva_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Reference from FTA.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="forest_file_id">forest_file_id</span></td>
+                                    <td>varchar</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.forest_file_id references prov_forest_use.forest_file_id via hva_pfu_fk"><a href='prov_forest_use.html'>prov_forest_use</a><span class='relatedKey'>.forest_file_id</span></td>
+                                                <td class="constraint detail">hva_pfu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="cutting_permit_id">cutting_permit_id</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Identifier for a cutting permit associated with a quota type harvesting tenure.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="harvesting_authority_id">harvesting_authority_id</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The licensee provided identifier for non-cp related harvesting tenure. E.g. Fort St. John harvesting authority.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="forest_district">forest_district</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.forest_district references org_unit.org_unit_no via hva_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">hva_ou_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests offices. Values stored here are for the computers use only, and are not to be used by people as &ldquo;ministry codes&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="district_admn_zone">district_admn_zone</span></td>
+                                    <td>varchar</td>
+                                    <td>4</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>District Admin Zone is a free format field used internally by the districts to group files within a district for reporting purposes. Examples of use are setting the field to a geographic area or to a persons initials. Reports can be pulled off by District Admin Zone to aid work management. This field is not used by all districts.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="geographic_district">geographic_district</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.geographic_district references org_unit.org_unit_no via hva_geo_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">hva_geo_ou_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests offices. Values stored here are for the computers use only, and are not to be used by people as &ldquo;ministry codes&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="mgmt_unit_id">mgmt_unit_id</span></td>
+                                    <td>varchar</td>
+                                    <td>4</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The administrative management unit identifier defined by the ministry for managing the forest tenure, eg. 41 - Dawson Creek TSA.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="mgmt_unit_type_code">mgmt_unit_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.mgmt_unit_type_code references mgmt_unit_type_code.mgmt_unit_type_code via hva_mutc_fk"><a href='mgmt_unit_type_code.html'>mgmt_unit_type_code</a><span class='relatedKey'>.mgmt_unit_type_code</span></td>
+                                                <td class="constraint detail">hva_mutc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The unique identifier for the management unit type.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="licence_to_cut_code">licence_to_cut_code</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.licence_to_cut_code references licence_to_cut_code.licence_to_cut_code via hva_ltccd_fk"><a href='licence_to_cut_code.html'>licence_to_cut_code</a><span class='relatedKey'>.licence_to_cut_code</span></td>
+                                                <td class="constraint detail">hva_ltccd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The purpose or reason that the licence to cut was granted, eg., right of way.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="harvest_type_code">harvest_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.harvest_type_code references harvest_type_code.harvest_type_code via hva_htc_fk"><a href='harvest_type_code.html'>harvest_type_code</a><span class='relatedKey'>.harvest_type_code</span></td>
+                                                <td class="constraint detail">hva_htc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Identifies the type of harvesting authority. Valid values include &ldquo;Green&rdquo;, &ldquo;Road&rdquo;, &ldquo;Multi-Mark&rdquo;, and &ldquo;Fort St. John&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="harvest_auth_status_code">harvest_auth_status_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.harvest_auth_status_code references harvest_auth_status_code.harvest_auth_status_code via hva_hasc_fk"><a href='harvest_auth_status_code.html'>harvest_auth_status_code</a><span class='relatedKey'>.harvest_auth_status_code</span></td>
+                                                <td class="constraint detail">hva_hasc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>The after status image of the harvesting authority. The status indicates the point the harvesting authority is at in it&quot;s lifecycle. Examples are: PP - Planning, HA - Harvesting, LC - Logging Complete, and S - Silviculture.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="tenure_term">tenure_term</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Term of the tenure (in months).</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="status_date">status_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date that the harvest authorization status was last updated.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="issue_date">issue_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Date the harvest authorization was issued.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="expiry_date">expiry_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Initial expiry date set upon activation of the harvest authorization.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="extend_date">extend_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Date to which the harvest authorization validity has been extended. Current expiry date.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="extend_count">extend_count</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Count of the number of extensions to the expiry date that the harvest authorization has had.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="harvest_auth_extend_reas_code">harvest_auth_extend_reas_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.harvest_auth_extend_reas_code references harvest_auth_extend_reas_code.harvest_auth_extend_reas_code via hva_haerc_fk"><a href='harvest_auth_extend_reas_code.html'>harvest_auth_extend_reas_code</a><span class='relatedKey'>.harvest_auth_extend_reas_code</span></td>
+                                                <td class="constraint detail">hva_haerc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Code to indicate the reason to extend the life of the timber mark.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="quota_type_code">quota_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.quota_type_code references quota_type_code.quota_type_code via hva_qtc_fk"><a href='quota_type_code.html'>quota_type_code</a><span class='relatedKey'>.quota_type_code</span></td>
+                                                <td class="constraint detail">hva_qtc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>A Timber Supply Area will have volumes assigned to one or more partitions, which are in effect different timber type classifications, or geographic locations. Under each partition are the different apportionments. Examples of Partitions are Conventional</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="crown_lands_region_code">crown_lands_region_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.crown_lands_region_code references crown_lands_region_code.crown_lands_region_code via hva_clrc_fk"><a href='crown_lands_region_code.html'>crown_lands_region_code</a><span class='relatedKey'>.crown_lands_region_code</span></td>
+                                                <td class="constraint detail">hva_clrc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Describes the CROWN LANDS REGION</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="salvage_type_code">salvage_type_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.salvage_type_code references salvage_type_code.salvage_type_code via hva_salvtcd_fk"><a href='salvage_type_code.html'>salvage_type_code</a><span class='relatedKey'>.salvage_type_code</span></td>
+                                                <td class="constraint detail">hva_salvtcd_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Code describing the salvage type.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="cascade_split_code">cascade_split_code</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="harvesting_authority.cascade_split_code references cascade_split_code.cascade_split_code via hva_csc_fk"><a href='cascade_split_code.html'>cascade_split_code</a><span class='relatedKey'>.cascade_split_code</span></td>
+                                                <td class="constraint detail">hva_csc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Code to indicate the administrative split for the timber mark, east or west of the Cascade Mountains, for tracking timber volume information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="catastrophic_ind">catastrophic_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicates if the damage to the stand of timber is catastrophic. Otherwise, it is endemic.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="crown_granted_ind">crown_granted_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicator to signify whether the land that the timber mark pertains to has a verifiable crown grant document.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="cruise_based_ind">cruise_based_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicates whether a cruise was used for billing purposes.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="deciduous_ind">deciduous_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicates whether the timber mark is primarily for harvesting deciduous species. Otherwise, coniferous.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="bcaa_folio_number">bcaa_folio_number</span></td>
+                                    <td>varchar</td>
+                                    <td>23</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>BC Assessment Authority Folio Number for the land that the cutting permit/Timber Mark pertains to, if applicable, or the LTO number. BCAA Folio Numbers are in the format C15 733 06604.140-1-2; the format for LTO numbers is nnn-nnn-nnn.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="location">location</span></td>
+                                    <td>varchar</td>
+                                    <td>100</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Contains the land legal information for the harvest authority. Land legal information indicates where the land is legally located, such as &ldquo;Lot 3 of DL 343, Plan 3422&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="higher_level_plan_reference">higher_level_plan_reference</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Indicates the higher level plan reference for the given harvest authority. E.g. For Fort St. John, this could be &ldquo;Sustainable Forest Management Plan&rdquo;.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="harvest_area">harvest_area</span></td>
+                                    <td>numeric</td>
+                                    <td>11,4</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Identifes the harvest area in hectares for harvesting authorites without spatial.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="retirement_date">retirement_date</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date the harvesting authority was retired from the spatial conflict layer.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="revision_count">revision_count</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A count of the number of times an entry in the entity has been modified. Used to validate if the current information displayed on a user&quot;s web browser is the most current.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_userid">entry_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The unique user id of the resource who initially added the entry.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_timestamp">entry_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Timestamp when the event information was entered.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The userid of the individual who last updated this information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time of the last update.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_waste_assessment_required">is_waste_assessment_required</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;U&#39;::character varying</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A value indicating whether a harvesting Authority record requires waste assessment or not.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_cp_extensn_appl_fee_waived">is_cp_extensn_appl_fee_waived</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;U&#39;::character varying</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A value that is mandatory on extension to indicate if the Extension application fee has been waived.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_cp_extension_appl_fee_paid">is_cp_extension_appl_fee_paid</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;U&#39;::character varying</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A value to show if the extension application fee has been paid.N if IS_EXT_APP_FEE_WAIVED = &ldquo;Y&rdquo;,&ldquo;U&rdquo; otherwise. Not mandatory on extension</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_within_fibre_recovery_zone">is_within_fibre_recovery_zone</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;U&#39;::character varying</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A value to show whether a Cutting Permit is in Fibre Recovery Zones or not. The valid values include: &ldquo;Y&rdquo; it&quot;s within the Fibre Recovery Zones &ldquo;N&rdquo; It&quot;s not within the Fibre Recovery Zones &ldquo;U&rdquo; Unknown.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="harvesting_authority_guid">harvesting_authority_guid</span></td>
+                                    <td>uuid</td>
+                                    <td>2147483647</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>silva.uuid_generate_v4()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Contains Harvesting Authority Global Unique Identifier</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> harvesting_authority_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>hva_skey</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> harvesting_authority_forest_file_id_cutting_permit_id_harve_key</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>forest_file_id + cutting_permit_id + harvesting_authority_id</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> harvesting_authority_harvesting_authority_guid_key</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>harvesting_authority_guid</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>hva_ff_cp_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>forest_file_id + cutting_permit_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>hva_i1</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>forest_file_id + forest_district + harvest_auth_status_code</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>hva_ltccd_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>licence_to_cut_code</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>hva_ou_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>forest_district</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>avcon_1148331360_cruis_000</td>
+                                    <td>((cruise_based_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>avcon_1148331360_decid_000</td>
+                                    <td>((deciduous_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>hva_is_cp_ext_appl_fee_wa_ck</td>
+                                    <td>((is_cp_extensn_appl_fee_waived)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>hva_is_cp_ext_appl_fee_pa_ck</td>
+                                    <td>((is_cp_extension_appl_fee_paid)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>hva_is_within_frz_ck</td>
+                                    <td>((is_within_fibre_recovery_zone)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>avcon_1148331360_catas_000</td>
+                                    <td>((catastrophic_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>hva_is_waste_assess_req_ck</td>
+                                    <td>((is_waste_assessment_required)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>avcon_1148331360_crown_000</td>
+                                    <td>((crown_granted_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1105,381,1397,792">
+<area shape="rect" id="node2" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="625,408,1061,1709">
+<area shape="rect" id="node3" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="301,1495,529,1612">
+<area shape="rect" id="node4" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="275,1225,555,1343">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,215,205,625">
+<area shape="rect" id="node6" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="311,5,519,328">
+<area shape="rect" id="node7" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="249,956,581,1073">
+<area shape="rect" id="node8" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="273,821,558,939">
+<area shape="rect" id="node9" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="302,687,529,804">
+<area shape="rect" id="node10" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="298,552,533,669">
+<area shape="rect" id="node11" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="289,417,542,535">
+<area shape="rect" id="node12" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="309,1091,522,1208">
+<area shape="rect" id="node13" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="303,1360,528,1477">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/harvesting_authority.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,2262,2677,2350">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,2262,2365,2350">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,2274,2019,2362">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,2161,509,2249">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,2198,1787,2286">
+<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,2379,2063,2467">
+<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,1461,1774,1871">
+<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,2358,1732,2446">
+<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,2162,1305,2250">
+<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,2327,869,2415">
+<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,1669,1319,1757">
+<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,1563,1327,1651">
+<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,1879,1360,1967">
+<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,34,1425,1335">
+<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,1774,1355,1862">
+<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,1458,1318,1546">
+<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,1353,1299,1441">
+<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,1706,881,1794">
+<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,919,259,1037">
+<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1343,893,1461">
+<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,994,919,1111">
+<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,705,945,822">
+<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,570,922,687">
+<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,435,893,553">
+<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,301,897,418">
+<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,846,886,963">
+<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1155,892,1273">
+<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1506,569,1594">
+<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,2117,2050,2205">
+<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,1935,1723,2023">
+<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,1651,546,1739">
+<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,1757,531,1845">
+<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,2041,1733,2129">
+<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,2057,1297,2145">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/harvesting_authority.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

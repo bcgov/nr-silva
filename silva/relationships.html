@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="bower/html5shiv/html5shiv.min.js"></script>
+        <script src="bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>All Relationships</h1>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 class="box-title">Diagrams</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom">
+                                <!-- Tabs within a box -->
+                                <h5>By default only columns that are primary keys, foreign keys or indexes are shown.</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#compactDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact</a></li>
+                                    <li class=""><a href="#largeDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large</a></li>
+                                    <li class=""><a href="#compactimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact Implied</a></li>
+                                    <li class=""><a href="#largeimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large Implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="compactDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactRelationshipsDiagram" name="compactRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="2084,3269,2396,3415">
+<area shape="rect" id="node100" href="tables/opening.html" target="_top" title="opening" alt="" coords="1722,2346,2011,3138">
+<area shape="rect" id="node2" href="tables/forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="2472,498,2737,967">
+<area shape="rect" id="node14" href="tables/silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="2092,1173,2388,1290">
+<area shape="rect" id="node15" href="tables/site_class_code.html" target="_top" title="site_class_code" alt="" coords="1400,599,1600,717">
+<area shape="rect" id="node28" href="tables/tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="1389,1449,1611,1566">
+<area shape="rect" id="node29" href="tables/stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="2123,422,2357,539">
+<area shape="rect" id="node54" href="tables/silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="2131,1002,2349,1119">
+<area shape="rect" id="node74" href="tables/site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="1368,734,1632,851">
+<area shape="rect" id="node78" href="tables/stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="1376,346,1624,463">
+<area shape="rect" id="node117" href="tables/tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="2103,1379,2377,1497">
+<area shape="rect" id="node3" href="tables/unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="1400,3862,1600,3979">
+<area shape="rect" id="node4" href="tables/height_class_code.html" target="_top" title="height_class_code" alt="" coords="1390,2917,1610,3034">
+<area shape="rect" id="node5" href="tables/cut_block.html" target="_top" title="cut_block" alt="" coords="1354,5509,1646,5919">
+<area shape="rect" id="node23" href="tables/hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1013,5626,1271,5861">
+<area shape="rect" id="node31" href="tables/harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="991,4506,1293,5063">
+<area shape="rect" id="node34" href="tables/fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="989,6874,1295,6991">
+<area shape="rect" id="node42" href="tables/block_status_code.html" target="_top" title="block_status_code" alt="" coords="1031,6605,1253,6722">
+<area shape="rect" id="node99" href="tables/cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1023,6470,1261,6587">
+<area shape="rect" id="node112" href="tables/reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="994,6739,1290,6857">
+<area shape="rect" id="node127" href="tables/timber_mark.html" target="_top" title="timber_mark" alt="" coords="1019,5081,1265,5609">
+<area shape="rect" id="node6" href="tables/client_location.html" target="_top" title="client_location" alt="" coords="1036,4119,1248,4354">
+<area shape="rect" id="node115" href="tables/org_unit.html" target="_top" title="org_unit" alt="" coords="336,3930,536,4341">
+<area shape="rect" id="node128" href="tables/forest_client.html" target="_top" title="forest_client" alt="" coords="641,3593,918,4062">
+<area shape="rect" id="node7" href="tables/results_audit_action_code.html" target="_top" title="results_audit_action_code" alt="" coords="2098,3433,2382,3550">
+<area shape="rect" id="node8" href="tables/standards_regime.html" target="_top" title="standards_regime" alt="" coords="1721,1635,2013,1811">
+<area shape="rect" id="node110" href="tables/silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="1392,1718,1608,1835">
+<area shape="rect" id="node126" href="tables/standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="1339,1583,1661,1701">
+<area shape="rect" id="node9" href="tables/data_source_code.html" target="_top" title="data_source_code" alt="" coords="2495,5407,2715,5525">
+<area shape="rect" id="node10" href="tables/payment_method_code.html" target="_top" title="payment_method_code" alt="" coords="647,6593,911,6710">
+<area shape="rect" id="node11" href="tables/silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="1365,3557,1635,3674">
+<area shape="rect" id="node12" href="tables/forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="2836,4962,3097,5197">
+<area shape="rect" id="node60" href="tables/forest_cover.html" target="_top" title="forest_cover" alt="" coords="2472,985,2737,1454">
+<area shape="rect" id="node120" href="tables/corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="2478,5273,2731,5390">
+<area shape="rect" id="node122" href="tables/feature_classes.html" target="_top" title="feature_classes" alt="" coords="2477,5079,2732,5255">
+<area shape="rect" id="node13" href="tables/forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="2470,219,2739,337">
+<area shape="rect" id="node16" href="tables/silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="2121,4027,2359,4145">
+<area shape="rect" id="node17" href="tables/tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="1391,2647,1609,2765">
+<area shape="rect" id="node18" href="tables/silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1745,3422,1989,3745">
+<area shape="rect" id="node73" href="tables/silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1396,3186,1604,3333">
+<area shape="rect" id="node102" href="tables/crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="1363,3727,1637,3845">
+<area shape="rect" id="node116" href="tables/silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="1400,3386,1600,3503">
+<area shape="rect" id="node19" href="tables/stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="1382,1146,1618,1263">
+<area shape="rect" id="node20" href="tables/results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="2461,3770,2749,4034">
+<area shape="rect" id="node21" href="tables/opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="1378,3051,1622,3169">
+<area shape="rect" id="node22" href="tables/silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="2125,4566,2355,4683">
+<area shape="rect" id="node76" href="tables/marking_method_code.html" target="_top" title="marking_method_code" alt="" coords="649,5579,909,5697">
+<area shape="rect" id="node103" href="tables/prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="675,5849,883,6171">
+<area shape="rect" id="node119" href="tables/marking_instrument_code.html" target="_top" title="marking_instrument_code" alt="" coords="635,5714,923,5831">
+<area shape="rect" id="node24" href="tables/silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="2072,4431,2408,4549">
+<area shape="rect" id="node25" href="tables/forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="2802,11,3131,217">
+<area shape="rect" id="node26" href="tables/silv_comment_source_code.html" target="_top" title="silv_comment_source_code" alt="" coords="1353,1853,1647,1970">
+<area shape="rect" id="node27" href="tables/forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="2803,4681,3130,4945">
+<area shape="rect" id="node30" href="tables/forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="3176,1303,3497,1538">
+<area shape="rect" id="node80" href="tables/forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="2815,1226,3119,1490">
+<area shape="rect" id="node41" href="tables/quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,4834,886,4951">
+<area shape="rect" id="node51" href="tables/harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,4529,922,4646">
+<area shape="rect" id="node55" href="tables/licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,4259,897,4377">
+<area shape="rect" id="node66" href="tables/mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,5165,259,5282">
+<area shape="rect" id="node105" href="tables/crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,5103,919,5221">
+<area shape="rect" id="node108" href="tables/harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,4394,893,4511">
+<area shape="rect" id="node113" href="tables/cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,4969,893,5086">
+<area shape="rect" id="node118" href="tables/harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,4663,945,4781">
+<area shape="rect" id="node121" href="tables/salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,5238,892,5355">
+<area shape="rect" id="node32" href="tables/file_client_type_code.html" target="_top" title="file_client_type_code" alt="" coords="1021,4371,1263,4489">
+<area shape="rect" id="node33" href="tables/forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="2815,234,3119,469">
+<area shape="rect" id="node35" href="tables/stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="2469,2922,2741,3157">
+<area shape="rect" id="node39" href="tables/stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="2089,2123,2391,2329">
+<area shape="rect" id="node47" href="tables/stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="2121,2927,2359,3045">
+<area shape="rect" id="node101" href="tables/tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="2123,3098,2357,3215">
+<area shape="rect" id="node36" href="tables/fsp_status_code.html" target="_top" title="fsp_status_code" alt="" coords="1398,886,1602,1003">
+<area shape="rect" id="node37" href="tables/sb_category_code.html" target="_top" title="sb_category_code" alt="" coords="671,6458,888,6575">
+<area shape="rect" id="node38" href="tables/planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2824,2405,3109,2698">
+<area shape="rect" id="node61" href="tables/request_item.html" target="_top" title="request_item" alt="" coords="2469,1931,2741,2283">
+<area shape="rect" id="node68" href="tables/silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="2113,3567,2367,3685">
+<area shape="rect" id="node94" href="tables/activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2452,4123,2757,5062">
+<area shape="rect" id="node40" href="tables/sale_type_code.html" target="_top" title="sale_type_code" alt="" coords="679,6323,879,6441">
+<area shape="rect" id="node43" href="tables/stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="2461,3210,2749,3474">
+<area shape="rect" id="node44" href="tables/for_client_link.html" target="_top" title="for_client_link" alt="" coords="1399,4707,1601,5030">
+<area shape="rect" id="node45" href="tables/fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="2094,809,2386,985">
+<area shape="rect" id="node96" href="tables/forest_stewardship_plan.html" target="_top" title="forest_stewardship_plan" alt="" coords="1705,827,2028,1003">
+<area shape="rect" id="node46" href="tables/forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="3215,633,3458,867">
+<area shape="rect" id="node86" href="tables/silv_damage_agent_code.html" target="_top" title="silv_damage_agent_code" alt="" coords="2830,1091,3103,1209">
+<area shape="rect" id="node48" href="tables/stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="2471,1791,2738,1914">
+<area shape="rect" id="node90" href="tables/silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="2109,1615,2371,1791">
+<area shape="rect" id="node49" href="tables/stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="2801,2715,3132,2891">
+<area shape="rect" id="node50" href="tables/forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1367,4426,1633,4690">
+<area shape="rect" id="node52" href="tables/silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="2130,4162,2350,4279">
+<area shape="rect" id="node53" href="tables/stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="2477,2441,2733,2617">
+<area shape="rect" id="node56" href="tables/cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2109,5275,2371,5539">
+<area shape="rect" id="node57" href="tables/cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1736,4737,1997,5001">
+<area shape="rect" id="node98" href="tables/cut_block_client_type_code.html" target="_top" title="cut_block_client_type_code" alt="" coords="1354,4219,1646,4337">
+<area shape="rect" id="node58" href="tables/open_category_code.html" target="_top" title="open_category_code" alt="" coords="1380,2513,1620,2630">
+<area shape="rect" id="node59" href="tables/disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="2131,4737,2349,4854">
+<area shape="rect" id="node82" href="tables/results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1341,3997,1659,4202">
+<area shape="rect" id="node62" href="tables/age_class_code.html" target="_top" title="age_class_code" alt="" coords="1400,2782,1600,2899">
+<area shape="rect" id="node63" href="tables/silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="2456,3563,2753,3681">
+<area shape="rect" id="node64" href="tables/stocking_ecology_archive.html" target="_top" title="stocking_ecology_archive" alt="" coords="3197,2657,3477,2833">
+<area shape="rect" id="node65" href="tables/stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="3541,2850,3865,3055">
+<area shape="rect" id="node71" href="tables/stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="3201,2850,3473,3085">
+<area shape="rect" id="node67" href="tables/sale_method_code.html" target="_top" title="sale_method_code" alt="" coords="667,6189,892,6306">
+<area shape="rect" id="node69" href="tables/forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="325,5966,547,6142">
+<area shape="rect" id="node70" href="tables/forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="3192,234,3481,439">
+<area shape="rect" id="node72" href="tables/tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,5533,569,5650">
+<area shape="rect" id="node75" href="tables/opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="2473,1615,2737,1738">
+<area shape="rect" id="node77" href="tables/opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="2851,5214,3082,5449">
+<area shape="rect" id="node79" href="tables/silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="2123,4297,2357,4414">
+<area shape="rect" id="node81" href="tables/stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="2813,2095,3120,2247">
+<area shape="rect" id="node123" href="tables/stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="2465,2634,2744,2869">
+<area shape="rect" id="node83" href="tables/stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2837,2966,3096,3113">
+<area shape="rect" id="node84" href="tables/file_type_code.html" target="_top" title="file_type_code" alt="" coords="336,5831,536,5949">
+<area shape="rect" id="node85" href="tables/silv_comment_type_code.html" target="_top" title="silv_comment_type_code" alt="" coords="1362,1987,1638,2105">
+<area shape="rect" id="node87" href="tables/activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2825,2265,3108,2387">
+<area shape="rect" id="node88" href="tables/silv_comment_xref.html" target="_top" title="silv_comment_xref" alt="" coords="1735,1841,1998,1987">
+<area shape="rect" id="node89" href="tables/mime_type_code.html" target="_top" title="mime_type_code" alt="" coords="1761,5615,1973,5733">
+<area shape="rect" id="node91" href="tables/storage_files.html" target="_top" title="storage_files" alt="" coords="2129,5779,2351,5897">
+<area shape="rect" id="node92" href="tables/forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="2807,486,3126,721">
+<area shape="rect" id="node93" href="tables/silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="2133,4871,2347,4989">
+<area shape="rect" id="node106" href="tables/silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="2121,5141,2359,5258">
+<area shape="rect" id="node111" href="tables/silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="2101,5006,2379,5123">
+<area shape="rect" id="node95" href="tables/open_viewable_category.html" target="_top" title="open_viewable_category" alt="" coords="1730,3155,2003,3302">
+<area shape="rect" id="node97" href="tables/results_audit_detail.html" target="_top" title="results_audit_detail" alt="" coords="2849,3822,3085,3969">
+<area shape="rect" id="node104" href="tables/mark_extension_reason_code.html" target="_top" title="mark_extension_reason_code" alt="" coords="623,5445,936,5562">
+<area shape="rect" id="node107" href="tables/silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="2460,2301,2749,2423">
+<area shape="rect" id="node109" href="tables/silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="2101,2757,2379,2874">
+<area shape="rect" id="node114" href="tables/silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2823,3570,3111,3805">
+<area shape="rect" id="node124" href="tables/harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1033,6159,1251,6453">
+<area shape="rect" id="node125" href="tables/opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="2113,2346,2367,2493">
+<area shape="rect" id="node129" href="tables/forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="3209,1022,3465,1286">
+<area shape="rect" id="node130" href="tables/opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="2106,5557,2374,5762">
+</map>
+                                        <a name='diagram'><img id="compactDegreeImg" src="diagrams/summary/relationships.real.compact.png" usemap="#compactRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeRelationshipsDiagram" name="largeRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="2084,6367,2396,6812">
+<area shape="rect" id="node100" href="tables/opening.html" target="_top" title="opening" alt="" coords="1722,4824,2011,5915">
+<area shape="rect" id="node2" href="tables/forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="2472,628,2737,1425">
+<area shape="rect" id="node14" href="tables/silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="2092,1700,2388,1911">
+<area shape="rect" id="node15" href="tables/site_class_code.html" target="_top" title="site_class_code" alt="" coords="1400,864,1600,1075">
+<area shape="rect" id="node28" href="tables/tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="1389,2205,1611,2416">
+<area shape="rect" id="node29" href="tables/stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="2123,556,2357,767">
+<area shape="rect" id="node54" href="tables/silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="2131,1436,2349,1647">
+<area shape="rect" id="node74" href="tables/site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="1368,1092,1632,1303">
+<area shape="rect" id="node78" href="tables/stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="1376,480,1624,691">
+<area shape="rect" id="node117" href="tables/tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="2103,2000,2377,2211">
+<area shape="rect" id="node3" href="tables/unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="1400,7985,1600,8196">
+<area shape="rect" id="node4" href="tables/height_class_code.html" target="_top" title="height_class_code" alt="" coords="1390,5643,1610,5853">
+<area shape="rect" id="node5" href="tables/cut_block.html" target="_top" title="cut_block" alt="" coords="1354,10443,1646,11152">
+<area shape="rect" id="node23" href="tables/hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1013,10560,1271,10917">
+<area shape="rect" id="node31" href="tables/harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="991,7963,1293,9259">
+<area shape="rect" id="node34" href="tables/fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="989,12540,1295,12751">
+<area shape="rect" id="node42" href="tables/block_status_code.html" target="_top" title="block_status_code" alt="" coords="1031,12084,1253,12295">
+<area shape="rect" id="node99" href="tables/cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1023,11856,1261,12067">
+<area shape="rect" id="node112" href="tables/reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="994,12312,1290,12523">
+<area shape="rect" id="node127" href="tables/timber_mark.html" target="_top" title="timber_mark" alt="" coords="1019,9276,1265,10543">
+<area shape="rect" id="node6" href="tables/client_location.html" target="_top" title="client_location" alt="" coords="1036,6861,1248,7717">
+<area shape="rect" id="node115" href="tables/org_unit.html" target="_top" title="org_unit" alt="" coords="336,7393,536,7897">
+<area shape="rect" id="node128" href="tables/forest_client.html" target="_top" title="forest_client" alt="" coords="641,6823,918,7532">
+<area shape="rect" id="node7" href="tables/results_audit_action_code.html" target="_top" title="results_audit_action_code" alt="" coords="2098,6121,2382,6332">
+<area shape="rect" id="node8" href="tables/standards_regime.html" target="_top" title="standards_regime" alt="" coords="1721,2764,2013,3591">
+<area shape="rect" id="node110" href="tables/silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="1392,2951,1608,3161">
+<area shape="rect" id="node126" href="tables/standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="1339,2723,1661,2933">
+<area shape="rect" id="node9" href="tables/data_source_code.html" target="_top" title="data_source_code" alt="" coords="2495,10031,2715,10241">
+<area shape="rect" id="node10" href="tables/payment_method_code.html" target="_top" title="payment_method_code" alt="" coords="647,11784,911,11995">
+<area shape="rect" id="node11" href="tables/silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="1365,6597,1635,6808">
+<area shape="rect" id="node12" href="tables/forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="2836,9164,3097,9639">
+<area shape="rect" id="node60" href="tables/forest_cover.html" target="_top" title="forest_cover" alt="" coords="2472,1443,2737,2211">
+<area shape="rect" id="node120" href="tables/corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="2478,9803,2731,10013">
+<area shape="rect" id="node122" href="tables/feature_classes.html" target="_top" title="feature_classes" alt="" coords="2477,9076,2732,9785">
+<area shape="rect" id="node13" href="tables/forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="2470,256,2739,467">
+<area shape="rect" id="node16" href="tables/silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="2121,7085,2359,7296">
+<area shape="rect" id="node17" href="tables/tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="1391,5187,1609,5397">
+<area shape="rect" id="node18" href="tables/silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1745,6369,1989,7020">
+<area shape="rect" id="node73" href="tables/silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1396,6099,1604,6280">
+<area shape="rect" id="node102" href="tables/crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="1363,7757,1637,7968">
+<area shape="rect" id="node116" href="tables/silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="1400,6333,1600,6544">
+<area shape="rect" id="node19" href="tables/stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="1382,1753,1618,1964">
+<area shape="rect" id="node20" href="tables/results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="2461,5921,2749,6367">
+<area shape="rect" id="node21" href="tables/opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="1378,5871,1622,6081">
+<area shape="rect" id="node22" href="tables/silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="2125,7997,2355,8208">
+<area shape="rect" id="node76" href="tables/marking_method_code.html" target="_top" title="marking_method_code" alt="" coords="649,10093,909,10304">
+<area shape="rect" id="node103" href="tables/prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="675,10549,883,11083">
+<area shape="rect" id="node119" href="tables/marking_instrument_code.html" target="_top" title="marking_instrument_code" alt="" coords="635,10321,923,10532">
+<area shape="rect" id="node24" href="tables/silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="2072,7541,2408,7752">
+<area shape="rect" id="node25" href="tables/forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="2802,5,3131,245">
+<area shape="rect" id="node26" href="tables/silv_comment_source_code.html" target="_top" title="silv_comment_source_code" alt="" coords="1353,3768,1647,3979">
+<area shape="rect" id="node27" href="tables/forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="2803,8643,3130,9147">
+<area shape="rect" id="node30" href="tables/forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="3176,1916,3497,2361">
+<area shape="rect" id="node80" href="tables/forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="2815,1684,3119,2247">
+<area shape="rect" id="node41" href="tables/quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,8881,886,9092">
+<area shape="rect" id="node51" href="tables/harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,8389,922,8600">
+<area shape="rect" id="node55" href="tables/licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,7933,897,8144">
+<area shape="rect" id="node66" href="tables/mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,9337,259,9548">
+<area shape="rect" id="node105" href="tables/crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,9337,919,9548">
+<area shape="rect" id="node108" href="tables/harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,8161,893,8372">
+<area shape="rect" id="node113" href="tables/cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,9109,893,9320">
+<area shape="rect" id="node118" href="tables/harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,8617,945,8828">
+<area shape="rect" id="node121" href="tables/salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,9565,892,9776">
+<area shape="rect" id="node32" href="tables/file_client_type_code.html" target="_top" title="file_client_type_code" alt="" coords="1021,7735,1263,7945">
+<area shape="rect" id="node33" href="tables/forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="2815,263,3119,796">
+<area shape="rect" id="node35" href="tables/stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="2469,5139,2741,5760">
+<area shape="rect" id="node39" href="tables/stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="2089,3376,2391,3792">
+<area shape="rect" id="node47" href="tables/stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="2121,5389,2359,5600">
+<area shape="rect" id="node101" href="tables/tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="2123,5617,2357,5828">
+<area shape="rect" id="node36" href="tables/fsp_status_code.html" target="_top" title="fsp_status_code" alt="" coords="1398,1320,1602,1531">
+<area shape="rect" id="node37" href="tables/sb_category_code.html" target="_top" title="sb_category_code" alt="" coords="671,11556,888,11767">
+<area shape="rect" id="node38" href="tables/planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2824,4523,3109,5085">
+<area shape="rect" id="node61" href="tables/request_item.html" target="_top" title="request_item" alt="" coords="2469,2512,2741,3779">
+<area shape="rect" id="node68" href="tables/silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="2113,5845,2367,6056">
+<area shape="rect" id="node94" href="tables/activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2452,7264,2757,9059">
+<area shape="rect" id="node40" href="tables/sale_type_code.html" target="_top" title="sale_type_code" alt="" coords="679,11328,879,11539">
+<area shape="rect" id="node43" href="tables/stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="2461,6384,2749,6771">
+<area shape="rect" id="node44" href="tables/for_client_link.html" target="_top" title="for_client_link" alt="" coords="1399,8513,1601,8988">
+<area shape="rect" id="node45" href="tables/fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="2094,1120,2386,1419">
+<area shape="rect" id="node96" href="tables/forest_stewardship_plan.html" target="_top" title="forest_stewardship_plan" alt="" coords="1705,1120,2028,2064">
+<area shape="rect" id="node46" href="tables/forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="3215,845,3458,1291">
+<area shape="rect" id="node86" href="tables/silv_damage_agent_code.html" target="_top" title="silv_damage_agent_code" alt="" coords="2830,1456,3103,1667">
+<area shape="rect" id="node48" href="tables/stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="2471,2336,2738,2459">
+<area shape="rect" id="node90" href="tables/silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="2109,3809,2371,4167">
+<area shape="rect" id="node49" href="tables/stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="2801,6392,3132,7043">
+<area shape="rect" id="node50" href="tables/forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1367,7324,1633,7740">
+<area shape="rect" id="node52" href="tables/silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="2130,7313,2350,7524">
+<area shape="rect" id="node53" href="tables/stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="2477,3972,2733,4505">
+<area shape="rect" id="node56" href="tables/cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2109,9173,2371,9824">
+<area shape="rect" id="node57" href="tables/cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1736,8261,1997,8677">
+<area shape="rect" id="node98" href="tables/cut_block_client_type_code.html" target="_top" title="cut_block_client_type_code" alt="" coords="1354,8213,1646,8424">
+<area shape="rect" id="node58" href="tables/open_category_code.html" target="_top" title="open_category_code" alt="" coords="1380,4959,1620,5169">
+<area shape="rect" id="node59" href="tables/disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="2131,8261,2349,8472">
+<area shape="rect" id="node82" href="tables/results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1341,6861,1659,7307">
+<area shape="rect" id="node62" href="tables/age_class_code.html" target="_top" title="age_class_code" alt="" coords="1400,5415,1600,5625">
+<area shape="rect" id="node63" href="tables/silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="2456,6788,2753,6999">
+<area shape="rect" id="node64" href="tables/stocking_ecology_archive.html" target="_top" title="stocking_ecology_archive" alt="" coords="3197,6363,3477,6925">
+<area shape="rect" id="node65" href="tables/stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="3541,5203,3865,5619">
+<area shape="rect" id="node71" href="tables/stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="3201,5203,3473,5853">
+<area shape="rect" id="node67" href="tables/sale_method_code.html" target="_top" title="sale_method_code" alt="" coords="667,11100,892,11311">
+<area shape="rect" id="node69" href="tables/forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="325,10755,547,11141">
+<area shape="rect" id="node70" href="tables/forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="3192,263,3481,679">
+<area shape="rect" id="node72" href="tables/tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,10044,569,10255">
+<area shape="rect" id="node75" href="tables/opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="2473,3832,2737,3955">
+<area shape="rect" id="node77" href="tables/opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="2851,9656,3082,10131">
+<area shape="rect" id="node79" href="tables/silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="2123,7769,2357,7980">
+<area shape="rect" id="node81" href="tables/stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="2813,4353,3120,4505">
+<area shape="rect" id="node123" href="tables/stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="2465,4523,2744,5085">
+<area shape="rect" id="node83" href="tables/stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2837,5288,3096,5645">
+<area shape="rect" id="node84" href="tables/file_type_code.html" target="_top" title="file_type_code" alt="" coords="336,10527,536,10737">
+<area shape="rect" id="node85" href="tables/silv_comment_type_code.html" target="_top" title="silv_comment_type_code" alt="" coords="1362,3996,1638,4207">
+<area shape="rect" id="node87" href="tables/activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2825,6252,3108,6375">
+<area shape="rect" id="node88" href="tables/silv_comment_xref.html" target="_top" title="silv_comment_xref" alt="" coords="1735,3868,1998,4020">
+<area shape="rect" id="node89" href="tables/mime_type_code.html" target="_top" title="mime_type_code" alt="" coords="1761,9959,1973,10169">
+<area shape="rect" id="node91" href="tables/storage_files.html" target="_top" title="storage_files" alt="" coords="2129,10275,2351,10749">
+<area shape="rect" id="node92" href="tables/forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="2807,813,3126,1083">
+<area shape="rect" id="node93" href="tables/silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="2133,8489,2347,8700">
+<area shape="rect" id="node106" href="tables/silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="2121,8945,2359,9156">
+<area shape="rect" id="node111" href="tables/silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="2101,8717,2379,8928">
+<area shape="rect" id="node95" href="tables/open_viewable_category.html" target="_top" title="open_viewable_category" alt="" coords="1730,5932,2003,6084">
+<area shape="rect" id="node97" href="tables/results_audit_detail.html" target="_top" title="results_audit_detail" alt="" coords="2849,5907,3085,6235">
+<area shape="rect" id="node104" href="tables/mark_extension_reason_code.html" target="_top" title="mark_extension_reason_code" alt="" coords="623,9865,936,10076">
+<area shape="rect" id="node107" href="tables/silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="2460,7052,2749,7175">
+<area shape="rect" id="node109" href="tables/silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="2101,5009,2379,5220">
+<area shape="rect" id="node114" href="tables/silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2823,7060,3111,7828">
+<area shape="rect" id="node124" href="tables/harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1033,11041,1251,11839">
+<area shape="rect" id="node125" href="tables/opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="2113,4328,2367,4920">
+<area shape="rect" id="node129" href="tables/forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="3209,1395,3465,1899">
+<area shape="rect" id="node130" href="tables/opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="2106,9841,2374,10257">
+</map>
+                                        <a name='diagram'><img id="largeDegreeImg" src="diagrams/summary/relationships.real.large.png" usemap="#largeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="compactimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactImpliedRelationshipsDiagram" name="compactImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="2084,1989,2396,2136">
+<area shape="rect" id="node100" href="tables/opening.html" target="_top" title="opening" alt="" coords="1722,3091,2011,3883">
+<area shape="rect" id="node2" href="tables/forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="2472,4999,2737,5468">
+<area shape="rect" id="node14" href="tables/silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="2092,4932,2388,5049">
+<area shape="rect" id="node15" href="tables/site_class_code.html" target="_top" title="site_class_code" alt="" coords="1400,4989,1600,5107">
+<area shape="rect" id="node19" href="tables/stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="1382,4855,1618,4972">
+<area shape="rect" id="node28" href="tables/tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="1389,5476,1611,5593">
+<area shape="rect" id="node29" href="tables/stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="2123,4663,2357,4780">
+<area shape="rect" id="node54" href="tables/silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="2131,4797,2349,4915">
+<area shape="rect" id="node74" href="tables/site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="1368,5124,1632,5241">
+<area shape="rect" id="node78" href="tables/stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="1376,5259,1624,5376">
+<area shape="rect" id="node82" href="tables/results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1341,2631,1659,2836">
+<area shape="rect" id="node117" href="tables/tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="2103,5139,2377,5256">
+<area shape="rect" id="node3" href="tables/unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="1400,1440,1600,1557">
+<area shape="rect" id="node4" href="tables/height_class_code.html" target="_top" title="height_class_code" alt="" coords="1390,3464,1610,3581">
+<area shape="rect" id="node5" href="tables/cut_block.html" target="_top" title="cut_block" alt="" coords="1354,4427,1646,4837">
+<area shape="rect" id="node23" href="tables/hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1013,4787,1271,5021">
+<area shape="rect" id="node31" href="tables/harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="991,3667,1293,4224">
+<area shape="rect" id="node34" href="tables/fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="989,5443,1295,5560">
+<area shape="rect" id="node42" href="tables/block_status_code.html" target="_top" title="block_status_code" alt="" coords="1031,5173,1253,5291">
+<area shape="rect" id="node99" href="tables/cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1023,5039,1261,5156">
+<area shape="rect" id="node112" href="tables/reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="994,5308,1290,5425">
+<area shape="rect" id="node127" href="tables/timber_mark.html" target="_top" title="timber_mark" alt="" coords="1019,4241,1265,4769">
+<area shape="rect" id="node6" href="tables/client_location.html" target="_top" title="client_location" alt="" coords="1036,3208,1248,3443">
+<area shape="rect" id="node115" href="tables/org_unit.html" target="_top" title="org_unit" alt="" coords="336,2813,536,3224">
+<area shape="rect" id="node128" href="tables/forest_client.html" target="_top" title="forest_client" alt="" coords="641,2331,918,2800">
+<area shape="rect" id="node7" href="tables/results_audit_action_code.html" target="_top" title="results_audit_action_code" alt="" coords="1725,767,2009,884">
+<area shape="rect" id="node8" href="tables/standards_regime.html" target="_top" title="standards_regime" alt="" coords="1721,463,2013,639">
+<area shape="rect" id="node110" href="tables/silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="1392,575,1608,692">
+<area shape="rect" id="node126" href="tables/standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="1339,440,1661,557">
+<area shape="rect" id="node9" href="tables/data_source_code.html" target="_top" title="data_source_code" alt="" coords="2495,5885,2715,6003">
+<area shape="rect" id="node10" href="tables/payment_method_code.html" target="_top" title="payment_method_code" alt="" coords="647,1743,911,1860">
+<area shape="rect" id="node11" href="tables/silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="1365,1135,1635,1252">
+<area shape="rect" id="node12" href="tables/forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="2836,5801,3097,6036">
+<area shape="rect" id="node60" href="tables/forest_cover.html" target="_top" title="forest_cover" alt="" coords="2472,4161,2737,4631">
+<area shape="rect" id="node120" href="tables/corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="2478,5751,2731,5868">
+<area shape="rect" id="node122" href="tables/feature_classes.html" target="_top" title="feature_classes" alt="" coords="2477,5557,2732,5733">
+<area shape="rect" id="node13" href="tables/forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="2470,4792,2739,4909">
+<area shape="rect" id="node16" href="tables/silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="2121,2324,2359,2441">
+<area shape="rect" id="node17" href="tables/tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="1391,3195,1609,3312">
+<area shape="rect" id="node18" href="tables/silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1745,1047,1989,1369">
+<area shape="rect" id="node73" href="tables/silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1396,1844,1604,1991">
+<area shape="rect" id="node102" href="tables/crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="1363,1305,1637,1423">
+<area shape="rect" id="node116" href="tables/silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="1400,964,1600,1081">
+<area shape="rect" id="node20" href="tables/results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="2096,404,2384,668">
+<area shape="rect" id="node21" href="tables/opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="1378,3024,1622,3141">
+<area shape="rect" id="node22" href="tables/silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="2125,2863,2355,2980">
+<area shape="rect" id="node76" href="tables/marking_method_code.html" target="_top" title="marking_method_code" alt="" coords="649,5089,909,5207">
+<area shape="rect" id="node103" href="tables/prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="675,3259,883,3581">
+<area shape="rect" id="node119" href="tables/marking_instrument_code.html" target="_top" title="marking_instrument_code" alt="" coords="635,4955,923,5072">
+<area shape="rect" id="node24" href="tables/silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="2072,2459,2408,2576">
+<area shape="rect" id="node25" href="tables/forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="2802,4125,3131,4331">
+<area shape="rect" id="node26" href="tables/silv_comment_source_code.html" target="_top" title="silv_comment_source_code" alt="" coords="1353,1575,1647,1692">
+<area shape="rect" id="node27" href="tables/forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="2803,5268,3130,5532">
+<area shape="rect" id="node30" href="tables/forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="3176,5113,3497,5348">
+<area shape="rect" id="node80" href="tables/forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="2815,4987,3119,5251">
+<area shape="rect" id="node41" href="tables/quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,4245,886,4363">
+<area shape="rect" id="node51" href="tables/harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,3904,922,4021">
+<area shape="rect" id="node55" href="tables/licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,3635,897,3752">
+<area shape="rect" id="node66" href="tables/mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,3535,259,3652">
+<area shape="rect" id="node105" href="tables/crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,4515,919,4632">
+<area shape="rect" id="node108" href="tables/harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,3769,893,3887">
+<area shape="rect" id="node113" href="tables/cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,4380,893,4497">
+<area shape="rect" id="node118" href="tables/harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,4039,945,4156">
+<area shape="rect" id="node121" href="tables/salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,4685,892,4803">
+<area shape="rect" id="node32" href="tables/file_client_type_code.html" target="_top" title="file_client_type_code" alt="" coords="1021,3496,1263,3613">
+<area shape="rect" id="node33" href="tables/forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="2815,4348,3119,4583">
+<area shape="rect" id="node35" href="tables/stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="2469,1144,2741,1379">
+<area shape="rect" id="node39" href="tables/stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="2089,1085,2391,1291">
+<area shape="rect" id="node47" href="tables/stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="2121,721,2359,839">
+<area shape="rect" id="node101" href="tables/tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="2123,1308,2357,1425">
+<area shape="rect" id="node36" href="tables/fsp_status_code.html" target="_top" title="fsp_status_code" alt="" coords="1398,6184,1602,6301">
+<area shape="rect" id="node37" href="tables/sb_category_code.html" target="_top" title="sb_category_code" alt="" coords="671,1608,888,1725">
+<area shape="rect" id="node38" href="tables/planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2824,2767,3109,3060">
+<area shape="rect" id="node61" href="tables/request_item.html" target="_top" title="request_item" alt="" coords="2469,3317,2741,3669">
+<area shape="rect" id="node68" href="tables/silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="2113,2153,2367,2271">
+<area shape="rect" id="node94" href="tables/activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2452,2361,2757,3300">
+<area shape="rect" id="node40" href="tables/sale_type_code.html" target="_top" title="sale_type_code" alt="" coords="679,1473,879,1591">
+<area shape="rect" id="node43" href="tables/stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="2461,1765,2749,2029">
+<area shape="rect" id="node44" href="tables/for_client_link.html" target="_top" title="for_client_link" alt="" coords="1399,4087,1601,4409">
+<area shape="rect" id="node45" href="tables/fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="2094,6125,2386,6301">
+<area shape="rect" id="node96" href="tables/forest_stewardship_plan.html" target="_top" title="forest_stewardship_plan" alt="" coords="1705,6125,2028,6301">
+<area shape="rect" id="node46" href="tables/forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="3215,4289,3458,4524">
+<area shape="rect" id="node86" href="tables/silv_damage_agent_code.html" target="_top" title="silv_damage_agent_code" alt="" coords="2830,4852,3103,4969">
+<area shape="rect" id="node48" href="tables/stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="2471,1004,2738,1127">
+<area shape="rect" id="node90" href="tables/silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="2109,892,2371,1068">
+<area shape="rect" id="node49" href="tables/stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="2801,311,3132,487">
+<area shape="rect" id="node50" href="tables/forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1367,3805,1633,4069">
+<area shape="rect" id="node52" href="tables/silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="2130,2593,2350,2711">
+<area shape="rect" id="node53" href="tables/stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="2477,1572,2733,1748">
+<area shape="rect" id="node56" href="tables/cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2109,3808,2371,4072">
+<area shape="rect" id="node57" href="tables/cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1736,3900,1997,4164">
+<area shape="rect" id="node98" href="tables/cut_block_client_type_code.html" target="_top" title="cut_block_client_type_code" alt="" coords="1354,3599,1646,3716">
+<area shape="rect" id="node58" href="tables/open_category_code.html" target="_top" title="open_category_code" alt="" coords="1380,2889,1620,3007">
+<area shape="rect" id="node59" href="tables/disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="2131,3033,2349,3151">
+<area shape="rect" id="node62" href="tables/age_class_code.html" target="_top" title="age_class_code" alt="" coords="1400,3329,1600,3447">
+<area shape="rect" id="node63" href="tables/silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="2456,2083,2753,2200">
+<area shape="rect" id="node64" href="tables/stocking_ecology_archive.html" target="_top" title="stocking_ecology_archive" alt="" coords="3197,252,3477,428">
+<area shape="rect" id="node65" href="tables/stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="3541,445,3865,651">
+<area shape="rect" id="node71" href="tables/stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="3201,445,3473,680">
+<area shape="rect" id="node67" href="tables/sale_method_code.html" target="_top" title="sale_method_code" alt="" coords="667,1339,892,1456">
+<area shape="rect" id="node69" href="tables/forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="325,3376,547,3552">
+<area shape="rect" id="node70" href="tables/forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="3192,4541,3481,4747">
+<area shape="rect" id="node72" href="tables/tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,3569,569,3687">
+<area shape="rect" id="node75" href="tables/opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="2473,1432,2737,1555">
+<area shape="rect" id="node77" href="tables/opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="2851,5549,3082,5784">
+<area shape="rect" id="node79" href="tables/silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="2123,2728,2357,2845">
+<area shape="rect" id="node81" href="tables/stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="2813,680,3120,832">
+<area shape="rect" id="node123" href="tables/stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="2465,680,2744,915">
+<area shape="rect" id="node83" href="tables/stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2837,1092,3096,1239">
+<area shape="rect" id="node84" href="tables/file_type_code.html" target="_top" title="file_type_code" alt="" coords="336,3241,536,3359">
+<area shape="rect" id="node85" href="tables/silv_comment_type_code.html" target="_top" title="silv_comment_type_code" alt="" coords="1362,1709,1638,1827">
+<area shape="rect" id="node87" href="tables/activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2825,1256,3108,1379">
+<area shape="rect" id="node88" href="tables/silv_comment_xref.html" target="_top" title="silv_comment_xref" alt="" coords="1735,1387,1998,1533">
+<area shape="rect" id="node89" href="tables/mime_type_code.html" target="_top" title="mime_type_code" alt="" coords="1761,1681,1973,1799">
+<area shape="rect" id="node91" href="tables/storage_files.html" target="_top" title="storage_files" alt="" coords="2129,5587,2351,5704">
+<area shape="rect" id="node92" href="tables/forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="2807,4600,3126,4835">
+<area shape="rect" id="node93" href="tables/silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="2133,3168,2347,3285">
+<area shape="rect" id="node106" href="tables/silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="2121,3437,2359,3555">
+<area shape="rect" id="node111" href="tables/silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="2101,3303,2379,3420">
+<area shape="rect" id="node95" href="tables/open_viewable_category.html" target="_top" title="open_viewable_category" alt="" coords="1730,2927,2003,3073">
+<area shape="rect" id="node97" href="tables/results_audit_detail.html" target="_top" title="results_audit_detail" alt="" coords="2487,340,2723,487">
+<area shape="rect" id="node104" href="tables/mark_extension_reason_code.html" target="_top" title="mark_extension_reason_code" alt="" coords="623,4820,936,4937">
+<area shape="rect" id="node107" href="tables/silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="2460,540,2749,663">
+<area shape="rect" id="node109" href="tables/silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="2101,5,2379,123">
+<area shape="rect" id="node114" href="tables/silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2823,2037,3111,2272">
+<area shape="rect" id="node124" href="tables/harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1033,1520,1251,1813">
+<area shape="rect" id="node125" href="tables/opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="2113,3644,2367,3791">
+<area shape="rect" id="node129" href="tables/stocking_standard_unit_amd.html" target="_top" title="stocking_standard_unit_amd" alt="" coords="2085,140,2395,287">
+<area shape="rect" id="node130" href="tables/forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="3209,4832,3465,5096">
+<area shape="rect" id="node131" href="tables/opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="2106,1623,2374,1828">
+</map>
+                                        <a name='diagram'><img id="compactimpliedDegreeImg" src="diagrams/summary/relationships.implied.compact.png" usemap="#compactImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeImpliedRelationshipsDiagram" name="largeImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="2084,5592,2396,6037">
+<area shape="rect" id="node100" href="tables/opening.html" target="_top" title="opening" alt="" coords="1722,6401,2011,7492">
+<area shape="rect" id="node2" href="tables/forest_cover_archive.html" target="_top" title="forest_cover_archive" alt="" coords="2472,9819,2737,10616">
+<area shape="rect" id="node14" href="tables/silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="2092,9396,2388,9607">
+<area shape="rect" id="node15" href="tables/site_class_code.html" target="_top" title="site_class_code" alt="" coords="1400,7765,1600,7976">
+<area shape="rect" id="node19" href="tables/stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="1382,7537,1618,7748">
+<area shape="rect" id="node28" href="tables/tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="1389,10304,1611,10515">
+<area shape="rect" id="node29" href="tables/stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="2123,9869,2357,10080">
+<area shape="rect" id="node54" href="tables/silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="2131,9165,2349,9376">
+<area shape="rect" id="node74" href="tables/site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="1368,8427,1632,8637">
+<area shape="rect" id="node78" href="tables/stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="1376,8655,1624,8865">
+<area shape="rect" id="node82" href="tables/results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1341,5371,1659,5816">
+<area shape="rect" id="node117" href="tables/tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="2103,9629,2377,9840">
+<area shape="rect" id="node3" href="tables/unit_bid_code.html" target="_top" title="unit_bid_code" alt="" coords="1400,1476,1600,1687">
+<area shape="rect" id="node4" href="tables/height_class_code.html" target="_top" title="height_class_code" alt="" coords="1390,7309,1610,7520">
+<area shape="rect" id="node5" href="tables/cut_block.html" target="_top" title="cut_block" alt="" coords="1354,11307,1646,12016">
+<area shape="rect" id="node23" href="tables/hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1013,10649,1271,11007">
+<area shape="rect" id="node31" href="tables/harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="991,8052,1293,9348">
+<area shape="rect" id="node34" href="tables/fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="989,11872,1295,12083">
+<area shape="rect" id="node42" href="tables/block_status_code.html" target="_top" title="block_status_code" alt="" coords="1031,11416,1253,11627">
+<area shape="rect" id="node99" href="tables/cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1023,11188,1261,11399">
+<area shape="rect" id="node112" href="tables/reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="994,11644,1290,11855">
+<area shape="rect" id="node127" href="tables/timber_mark.html" target="_top" title="timber_mark" alt="" coords="1019,9365,1265,10632">
+<area shape="rect" id="node6" href="tables/client_location.html" target="_top" title="client_location" alt="" coords="1036,6133,1248,6989">
+<area shape="rect" id="node115" href="tables/org_unit.html" target="_top" title="org_unit" alt="" coords="336,6611,536,7115">
+<area shape="rect" id="node128" href="tables/forest_client.html" target="_top" title="forest_client" alt="" coords="641,5035,918,5744">
+<area shape="rect" id="node7" href="tables/results_audit_action_code.html" target="_top" title="results_audit_action_code" alt="" coords="1725,1476,2009,1687">
+<area shape="rect" id="node8" href="tables/standards_regime.html" target="_top" title="standards_regime" alt="" coords="1721,1704,2013,2531">
+<area shape="rect" id="node110" href="tables/silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="1392,2131,1608,2341">
+<area shape="rect" id="node126" href="tables/standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="1339,1903,1661,2113">
+<area shape="rect" id="node9" href="tables/data_source_code.html" target="_top" title="data_source_code" alt="" coords="2495,9591,2715,9801">
+<area shape="rect" id="node10" href="tables/payment_method_code.html" target="_top" title="payment_method_code" alt="" coords="647,7407,911,7617">
+<area shape="rect" id="node11" href="tables/silv_project_status_code.html" target="_top" title="silv_project_status_code" alt="" coords="1365,984,1635,1195">
+<area shape="rect" id="node12" href="tables/forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="2836,8743,3097,9217">
+<area shape="rect" id="node60" href="tables/forest_cover.html" target="_top" title="forest_cover" alt="" coords="2472,7515,2737,8283">
+<area shape="rect" id="node120" href="tables/corp_capture_method.html" target="_top" title="corp_capture_method" alt="" coords="2478,9363,2731,9573">
+<area shape="rect" id="node122" href="tables/feature_classes.html" target="_top" title="feature_classes" alt="" coords="2477,8636,2732,9345">
+<area shape="rect" id="node13" href="tables/forest_cover_layer_code.html" target="_top" title="forest_cover_layer_code" alt="" coords="2470,8372,2739,8583">
+<area shape="rect" id="node16" href="tables/silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="2121,3468,2359,3679">
+<area shape="rect" id="node17" href="tables/tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="1391,6853,1609,7064">
+<area shape="rect" id="node18" href="tables/silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1745,808,1989,1459">
+<area shape="rect" id="node73" href="tables/silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1396,1704,1604,1885">
+<area shape="rect" id="node102" href="tables/crew_contract_hire_code.html" target="_top" title="crew_contract_hire_code" alt="" coords="1363,1248,1637,1459">
+<area shape="rect" id="node116" href="tables/silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="1400,720,1600,931">
+<area shape="rect" id="node20" href="tables/results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="2096,792,2384,1237">
+<area shape="rect" id="node21" href="tables/opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="1378,6625,1622,6836">
+<area shape="rect" id="node22" href="tables/silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="2125,3924,2355,4135">
+<area shape="rect" id="node76" href="tables/marking_method_code.html" target="_top" title="marking_method_code" alt="" coords="649,10495,909,10705">
+<area shape="rect" id="node103" href="tables/prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="675,7743,883,8276">
+<area shape="rect" id="node119" href="tables/marking_instrument_code.html" target="_top" title="marking_instrument_code" alt="" coords="635,10728,923,10939">
+<area shape="rect" id="node24" href="tables/silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="2072,4152,2408,4363">
+<area shape="rect" id="node25" href="tables/forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="2802,7443,3131,7683">
+<area shape="rect" id="node26" href="tables/silv_comment_source_code.html" target="_top" title="silv_comment_source_code" alt="" coords="1353,5,1647,216">
+<area shape="rect" id="node27" href="tables/forest_cover_archive_geometry.html" target="_top" title="forest_cover_archive_geometry" alt="" coords="2803,9235,3130,9739">
+<area shape="rect" id="node30" href="tables/forest_cover_layer_species_arc.html" target="_top" title="forest_cover_layer_species_arc" alt="" coords="3176,10216,3497,10661">
+<area shape="rect" id="node80" href="tables/forest_cover_layer_archive.html" target="_top" title="forest_cover_layer_archive" alt="" coords="2815,9984,3119,10547">
+<area shape="rect" id="node41" href="tables/quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,9541,886,9752">
+<area shape="rect" id="node51" href="tables/harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,8785,922,8996">
+<area shape="rect" id="node55" href="tables/licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,8329,897,8540">
+<area shape="rect" id="node66" href="tables/mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,8145,259,8356">
+<area shape="rect" id="node105" href="tables/crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,9769,919,9980">
+<area shape="rect" id="node108" href="tables/harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,8557,893,8768">
+<area shape="rect" id="node113" href="tables/cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,9241,893,9452">
+<area shape="rect" id="node118" href="tables/harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,9013,945,9224">
+<area shape="rect" id="node121" href="tables/salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,10033,892,10244">
+<area shape="rect" id="node32" href="tables/file_client_type_code.html" target="_top" title="file_client_type_code" alt="" coords="1021,5905,1263,6116">
+<area shape="rect" id="node33" href="tables/forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="2815,7700,3119,8233">
+<area shape="rect" id="node35" href="tables/stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="2469,2273,2741,2895">
+<area shape="rect" id="node39" href="tables/stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="2089,2001,2391,2417">
+<area shape="rect" id="node47" href="tables/stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="2121,2435,2359,2645">
+<area shape="rect" id="node101" href="tables/tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="2123,2663,2357,2873">
+<area shape="rect" id="node36" href="tables/fsp_status_code.html" target="_top" title="fsp_status_code" alt="" coords="1398,10539,1602,10749">
+<area shape="rect" id="node37" href="tables/sb_category_code.html" target="_top" title="sb_category_code" alt="" coords="671,7179,888,7389">
+<area shape="rect" id="node38" href="tables/planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="2824,5843,3109,6405">
+<area shape="rect" id="node61" href="tables/request_item.html" target="_top" title="request_item" alt="" coords="2469,6087,2741,7353">
+<area shape="rect" id="node68" href="tables/silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="2113,6163,2367,6373">
+<area shape="rect" id="node94" href="tables/activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2452,2948,2757,4743">
+<area shape="rect" id="node40" href="tables/sale_type_code.html" target="_top" title="sale_type_code" alt="" coords="679,6951,879,7161">
+<area shape="rect" id="node43" href="tables/stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="2461,4760,2749,5147">
+<area shape="rect" id="node44" href="tables/for_client_link.html" target="_top" title="for_client_link" alt="" coords="1399,5905,1601,6380">
+<area shape="rect" id="node45" href="tables/fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="2094,10480,2386,10779">
+<area shape="rect" id="node96" href="tables/forest_stewardship_plan.html" target="_top" title="forest_stewardship_plan" alt="" coords="1705,10480,2028,11424">
+<area shape="rect" id="node46" href="tables/forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="3215,7641,3458,8087">
+<area shape="rect" id="node86" href="tables/silv_damage_agent_code.html" target="_top" title="silv_damage_agent_code" alt="" coords="2830,9756,3103,9967">
+<area shape="rect" id="node48" href="tables/stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="2471,625,2738,748">
+<area shape="rect" id="node90" href="tables/silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="2109,45,2371,403">
+<area shape="rect" id="node49" href="tables/stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="2801,1569,3132,2220">
+<area shape="rect" id="node50" href="tables/forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1367,7993,1633,8409">
+<area shape="rect" id="node52" href="tables/silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="2130,3696,2350,3907">
+<area shape="rect" id="node53" href="tables/stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="2477,5464,2733,5997">
+<area shape="rect" id="node56" href="tables/cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2109,7101,2371,7752">
+<area shape="rect" id="node57" href="tables/cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1736,11441,1997,11857">
+<area shape="rect" id="node98" href="tables/cut_block_client_type_code.html" target="_top" title="cut_block_client_type_code" alt="" coords="1354,11007,1646,11217">
+<area shape="rect" id="node58" href="tables/open_category_code.html" target="_top" title="open_category_code" alt="" coords="1380,6397,1620,6608">
+<area shape="rect" id="node59" href="tables/disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="2131,4644,2349,4855">
+<area shape="rect" id="node62" href="tables/age_class_code.html" target="_top" title="age_class_code" alt="" coords="1400,7081,1600,7292">
+<area shape="rect" id="node63" href="tables/silv_relief_appl_status_code.html" target="_top" title="silv_relief_appl_status_code" alt="" coords="2456,5164,2753,5375">
+<area shape="rect" id="node64" href="tables/stocking_ecology_archive.html" target="_top" title="stocking_ecology_archive" alt="" coords="3197,1511,3477,2073">
+<area shape="rect" id="node65" href="tables/stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="3541,2091,3865,2507">
+<area shape="rect" id="node71" href="tables/stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="3201,2091,3473,2741">
+<area shape="rect" id="node67" href="tables/sale_method_code.html" target="_top" title="sale_method_code" alt="" coords="667,6723,892,6933">
+<area shape="rect" id="node69" href="tables/forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="325,7948,547,8335">
+<area shape="rect" id="node70" href="tables/forest_cover_layer_species.html" target="_top" title="forest_cover_layer_species" alt="" coords="3192,8104,3481,8520">
+<area shape="rect" id="node72" href="tables/tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,7720,569,7931">
+<area shape="rect" id="node75" href="tables/opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="2473,1345,2737,1468">
+<area shape="rect" id="node77" href="tables/opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="2851,8251,3082,8725">
+<area shape="rect" id="node79" href="tables/silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="2123,4380,2357,4591">
+<area shape="rect" id="node81" href="tables/stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="2813,765,3120,917">
+<area shape="rect" id="node123" href="tables/stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="2465,765,2744,1328">
+<area shape="rect" id="node83" href="tables/stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="2837,3824,3096,4181">
+<area shape="rect" id="node84" href="tables/file_type_code.html" target="_top" title="file_type_code" alt="" coords="336,7492,536,7703">
+<area shape="rect" id="node85" href="tables/silv_comment_type_code.html" target="_top" title="silv_comment_type_code" alt="" coords="1362,233,1638,444">
+<area shape="rect" id="node87" href="tables/activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="2825,1195,3108,1317">
+<area shape="rect" id="node88" href="tables/silv_comment_xref.html" target="_top" title="silv_comment_xref" alt="" coords="1735,104,1998,256">
+<area shape="rect" id="node89" href="tables/mime_type_code.html" target="_top" title="mime_type_code" alt="" coords="1761,3044,1973,3255">
+<area shape="rect" id="node91" href="tables/storage_files.html" target="_top" title="storage_files" alt="" coords="2129,8636,2351,9111">
+<area shape="rect" id="node92" href="tables/forest_cover_non_mapped_arc.html" target="_top" title="forest_cover_non_mapped_arc" alt="" coords="2807,10564,3126,10833">
+<area shape="rect" id="node93" href="tables/silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="2133,4872,2347,5083">
+<area shape="rect" id="node106" href="tables/silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="2121,5328,2359,5539">
+<area shape="rect" id="node111" href="tables/silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="2101,5100,2379,5311">
+<area shape="rect" id="node95" href="tables/open_viewable_category.html" target="_top" title="open_viewable_category" alt="" coords="1730,6232,2003,6384">
+<area shape="rect" id="node97" href="tables/results_audit_detail.html" target="_top" title="results_audit_detail" alt="" coords="2487,280,2723,608">
+<area shape="rect" id="node104" href="tables/mark_extension_reason_code.html" target="_top" title="mark_extension_reason_code" alt="" coords="623,10261,936,10472">
+<area shape="rect" id="node107" href="tables/silv_project_comment_link.html" target="_top" title="silv_project_comment_link" alt="" coords="2460,140,2749,263">
+<area shape="rect" id="node109" href="tables/silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="2101,456,2379,667">
+<area shape="rect" id="node114" href="tables/silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="2823,5057,3111,5825">
+<area shape="rect" id="node124" href="tables/harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1033,7007,1251,7804">
+<area shape="rect" id="node125" href="tables/opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="2113,6401,2367,6993">
+<area shape="rect" id="node129" href="tables/stocking_standard_unit_amd.html" target="_top" title="stocking_standard_unit_amd" alt="" coords="2085,1327,2395,1948">
+<area shape="rect" id="node130" href="tables/forhealth_rslt_archive.html" target="_top" title="forhealth_rslt_archive" alt="" coords="3209,9695,3465,10199">
+<area shape="rect" id="node131" href="tables/opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="2106,2927,2374,3343">
+</map>
+                                        <a name='diagram'><img id="largeimpliedDegreeImg" src="diagrams/summary/relationships.implied.large.png" usemap="#largeImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="bower/pdfmake/pdfmake.min.js"></script>
+        <script src="bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="bower/codemirror/codemirror.js"></script>
+        <script src="bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="relationships.js"></script>
+        <script src="schemaSpy.js"></script>
+    </body>
+</html>

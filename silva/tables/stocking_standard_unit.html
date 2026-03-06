@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>stocking_standard_unit - default.silva</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../../index.html" class="navbar-brand"><b>default</b></a><span class="navbar-brand" style="padding-left: 0">.silva</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>stocking_standard_unit</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Basic Silviculture objective stated in quantifiable terms for a specific area. These are the acceptable standards for reforestation and soil conversation. Also known as SU - Standards Unit.</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="stocking_standard_unit_id">stocking_standard_unit_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="forest_cover.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via fc_ssu_fk"><a href='forest_cover.html'>forest_cover</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">fc_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="stocking_comment_link.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via scl_ssu_fk"><a href='stocking_comment_link.html'>stocking_comment_link</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">scl_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="stocking_ecology.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via se_ssu_fk"><a href='stocking_ecology.html'>stocking_ecology</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">se_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="stocking_layer.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via sl_ssu_fk"><a href='stocking_layer.html'>stocking_layer</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">sl_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="stocking_milestone.stocking_standard_unit_id references stocking_standard_unit.stocking_standard_unit_id via sm_ssu_fk"><a href='stocking_milestone.html'>stocking_milestone</a><span class='relatedKey'>.stocking_standard_unit_id</span></td>
+                                                <td class="constraint detail">sm_ssu_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifing the stocking standards.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="opening_id">opening_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="stocking_standard_unit.opening_id references opening.opening_id via ssu_o_fk"><a href='opening.html'>opening</a><span class='relatedKey'>.opening_id</span></td>
+                                                <td class="constraint detail">ssu_o_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>System generated value uniquely identifying the opening.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="standards_unit_id">standards_unit_id</span></td>
+                                    <td>varchar</td>
+                                    <td>4</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A unique identifier within the opening that identifies the standard unit. At least one standards unit per opening is required.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="standards_regime_id">standards_regime_id</span></td>
+                                    <td>int8</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="stocking_standard_unit.standards_regime_id references standards_regime.standards_regime_id via ssu_sr_fk"><a href='standards_regime.html'>standards_regime</a><span class='relatedKey'>.standards_regime_id</span></td>
+                                                <td class="constraint detail">ssu_sr_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><p>Unique identifier for the STANDARD REGIME entry.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="net_area">net_area</span></td>
+                                    <td>numeric</td>
+                                    <td>7,1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A value in hectares for the net area to be reforested (NAR). The NAR is the total area under the prescription (TAUP) minus the area or no planned reforestation (NPR).</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="max_allow_soil_disturbance_pct">max_allow_soil_disturbance_pct</span></td>
+                                    <td>numeric</td>
+                                    <td>3,1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>This is the maximum soil disturbance. The maximum proportion of the net area to be reforested which will be occupied by soil disturbance, following harvest; or following rehab where required.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="variance_ind">variance_ind</span></td>
+                                    <td>varchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A yes/no indicator indicating if this stocking standard is for a variance or not.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_userid">entry_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who entered the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="entry_timestamp">entry_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time the information was entered.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The USERID of the individual who last updated the information.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
+                                    <td>timestamp</td>
+                                    <td>22</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date and time of the last update.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="revision_count">revision_count</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>Internal counter used by the system to avoid conflicting updates to the record.</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> stocking_standard_unit_pkey</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>stocking_standard_unit_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>ssu_o_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>opening_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>ssu_sr_fk_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>standards_regime_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>ssu_su_i</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>opening_id + standards_unit_id</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="808,5,1073,475">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="7,521,296,1313">
+<area shape="rect" id="node3" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="341,683,757,1104">
+<area shape="rect" id="node8" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="5,1331,297,1507">
+<area shape="rect" id="node4" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="807,685,1074,808">
+<area shape="rect" id="node5" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="813,492,1069,668">
+<area shape="rect" id="node6" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="805,1077,1077,1312">
+<area shape="rect" id="node7" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="801,825,1080,1060">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/stocking_standard_unit.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1363,17,1631,105">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="976,108,1235,196">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="635,1168,779,1256">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,978,151,1066">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="197,797,515,885">
+<area shape="rect" id="node9" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="257,1716,455,1804">
+<area shape="rect" id="node10" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="224,1870,488,1958">
+<area shape="rect" id="node11" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="238,2074,474,2162">
+<area shape="rect" id="node13" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="232,2422,480,2510">
+<area shape="rect" id="node16" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="245,1586,467,1674">
+<area shape="rect" id="node23" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="252,1060,460,1148">
+<area shape="rect" id="node24" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="236,1165,476,1253">
+<area shape="rect" id="node25" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="234,1270,478,1358">
+<area shape="rect" id="node26" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="257,1376,455,1464">
+<area shape="rect" id="node27" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="246,1481,466,1569">
+<area shape="rect" id="node28" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="247,902,465,990">
+<area shape="rect" id="node6" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1408,2081,1585,2169">
+<area shape="rect" id="node7" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="997,1782,1214,1870">
+<area shape="rect" id="node8" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="957,1993,1253,2081">
+<area shape="rect" id="node12" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="897,1130,1313,1552">
+<area shape="rect" id="node14" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="989,2508,1222,2596">
+<area shape="rect" id="node15" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="968,1677,1243,1765">
+<area shape="rect" id="node22" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="561,2242,853,2418">
+<area shape="rect" id="node17" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1714,2078,1975,2166">
+<area shape="rect" id="node18" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1733,2508,1957,2596">
+<area shape="rect" id="node19" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1680,2402,2009,2490">
+<area shape="rect" id="node20" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="2053,2508,2241,2596">
+<area shape="rect" id="node21" href="fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="959,2245,1251,2333">
+<area shape="rect" id="node35" href="silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="248,2310,464,2398">
+<area shape="rect" id="node36" href="standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="195,2205,517,2293">
+<area shape="rect" id="node29" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="949,565,1261,653">
+<area shape="rect" id="node30" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="983,1888,1228,1976">
+<area shape="rect" id="node31" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1365,674,1629,762">
+<area shape="rect" id="node32" href="silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="979,742,1231,830">
+<area shape="rect" id="node33" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="992,213,1219,301">
+<area shape="rect" id="node34" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="984,460,1227,548">
+<area shape="rect" id="node37" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="1363,885,1630,1008">
+<area shape="rect" id="node38" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1390,1354,1603,1442">
+<area shape="rect" id="node39" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1366,569,1627,657">
+<area shape="rect" id="node40" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1400,1026,1593,1114">
+<area shape="rect" id="node41" href="stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="987,920,1224,1008">
+<area shape="rect" id="node42" href="tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="989,1025,1222,1113">
+<area shape="rect" id="node43" href="stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="1715,1024,1974,1112">
+<area shape="rect" id="node44" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1357,317,1636,552">
+<area shape="rect" id="node45" href="silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="966,318,1245,406">
+<area shape="rect" id="node46" href="stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="1691,349,1998,437">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/stocking_standard_unit.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="808,5,1073,475">
+<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="7,521,296,1313">
+<area shape="rect" id="node3" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="341,683,757,1104">
+<area shape="rect" id="node8" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="5,1331,297,1507">
+<area shape="rect" id="node4" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="807,685,1074,808">
+<area shape="rect" id="node5" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="813,492,1069,668">
+<area shape="rect" id="node6" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="805,1077,1077,1312">
+<area shape="rect" id="node7" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="801,825,1080,1060">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/stocking_standard_unit.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1363,1856,1631,1944">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="976,1893,1235,1981">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="635,1755,779,1843">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1815,151,1903">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="197,1212,515,1300">
+<area shape="rect" id="node9" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="257,2353,455,2441">
+<area shape="rect" id="node10" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="224,2107,488,2195">
+<area shape="rect" id="node11" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="238,2248,474,2336">
+<area shape="rect" id="node13" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="232,2616,480,2704">
+<area shape="rect" id="node16" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="245,2001,467,2089">
+<area shape="rect" id="node23" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="252,1896,460,1984">
+<area shape="rect" id="node24" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="236,1317,476,1405">
+<area shape="rect" id="node25" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="234,1423,478,1511">
+<area shape="rect" id="node26" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="257,1528,455,1616">
+<area shape="rect" id="node27" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="246,1633,466,1721">
+<area shape="rect" id="node28" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="247,1739,465,1827">
+<area shape="rect" id="node6" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1408,2321,1585,2409">
+<area shape="rect" id="node7" href="silv_reserve_code.html" target="_top" title="silv_reserve_code" alt="" coords="997,2531,1214,2619">
+<area shape="rect" id="node8" href="silv_reserve_objective_code.html" target="_top" title="silv_reserve_objective_code" alt="" coords="957,2284,1253,2372">
+<area shape="rect" id="node12" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="897,535,1313,956">
+<area shape="rect" id="node14" href="stocking_type_code.html" target="_top" title="stocking_type_code" alt="" coords="989,2708,1222,2796">
+<area shape="rect" id="node15" href="tree_cover_pattern_code.html" target="_top" title="tree_cover_pattern_code" alt="" coords="968,2425,1243,2513">
+<area shape="rect" id="node22" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="561,269,853,445">
+<area shape="rect" id="node17" href="forest_cover_geometry.html" target="_top" title="forest_cover_geometry" alt="" coords="1715,2319,1976,2407">
+<area shape="rect" id="node18" href="forest_cover_layer.html" target="_top" title="forest_cover_layer" alt="" coords="1733,2513,1957,2601">
+<area shape="rect" id="node19" href="forest_cover_non_mapped_area.html" target="_top" title="forest_cover_non_mapped_area" alt="" coords="1681,2708,2010,2796">
+<area shape="rect" id="node20" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="2055,2513,2243,2601">
+<area shape="rect" id="node21" href="fsp_standards_regime_xref.html" target="_top" title="fsp_standards_regime_xref" alt="" coords="959,111,1251,199">
+<area shape="rect" id="node36" href="silv_statute_code.html" target="_top" title="silv_statute_code" alt="" coords="248,368,464,456">
+<area shape="rect" id="node37" href="standards_regime_status_code.html" target="_top" title="standards_regime_status_code" alt="" coords="195,263,517,351">
+<area shape="rect" id="node29" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="949,1187,1261,1275">
+<area shape="rect" id="node30" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="983,1611,1228,1699">
+<area shape="rect" id="node31" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="1365,991,1629,1079">
+<area shape="rect" id="node32" href="silviculture_comment.html" target="_top" title="silviculture_comment" alt="" coords="979,973,1231,1061">
+<area shape="rect" id="node33" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="992,1752,1219,1840">
+<area shape="rect" id="node34" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="984,1999,1227,2087">
+<area shape="rect" id="node35" href="results_audit_event.html" target="_top" title="results_audit_event" alt="" coords="988,216,1223,304">
+<area shape="rect" id="node38" href="stocking_comment_link.html" target="_top" title="stocking_comment_link" alt="" coords="1363,661,1630,784">
+<area shape="rect" id="node39" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1390,495,1603,583">
+<area shape="rect" id="node40" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1366,1113,1627,1201">
+<area shape="rect" id="node41" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1400,1348,1593,1436">
+<area shape="rect" id="node42" href="stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="987,1397,1224,1485">
+<area shape="rect" id="node43" href="tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="989,1292,1222,1380">
+<area shape="rect" id="node44" href="stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="1716,1345,1975,1433">
+<area shape="rect" id="node45" href="stocking_milestone.html" target="_top" title="stocking_milestone" alt="" coords="1357,175,1636,409">
+<area shape="rect" id="node46" href="silv_milestone_type_code.html" target="_top" title="silv_milestone_type_code" alt="" coords="966,5,1245,93">
+<area shape="rect" id="node47" href="stocking_milestone_cmt_link.html" target="_top" title="stocking_milestone_cmt_link" alt="" coords="1692,207,1999,295">
+<area shape="rect" id="node48" href="stocking_standard_unit_amd.html" target="_top" title="stocking_standard_unit_amd" alt="" coords="952,321,1259,409">
+<area shape="rect" id="node49" href="stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="1680,751,2011,839">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/stocking_standard_unit.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>
