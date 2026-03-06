@@ -206,13 +206,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="silviculture_project.[org_unit_no, dist_admin_zone] references silv_admin_zone.[org_unit_no, dist_admin_zone] via proj_saz_fk"><a href='silv_admin_zone.html'>silv_admin_zone</a><span class='relatedKey'>.org_unit_no</span></td>
-                                                <td class="constraint detail">proj_saz_fk</td>
+                                                <td title="silviculture_project.org_unit_no references org_unit.org_unit_no via proj_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">proj_ou_fk</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="silviculture_project.org_unit_no references org_unit.org_unit_no via proj_ou_fk"><a href='org_unit.html'>org_unit</a><span class='relatedKey'>.org_unit_no</span></td>
-                                                <td class="constraint detail">proj_ou_fk</td>
+                                                <td title="silviculture_project.[org_unit_no, dist_admin_zone] references silv_admin_zone.[org_unit_no, dist_admin_zone] via proj_saz_fk"><a href='silv_admin_zone.html'>silv_admin_zone</a><span class='relatedKey'>.org_unit_no</span></td>
+                                                <td class="constraint detail">proj_saz_fk</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
