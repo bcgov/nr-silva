@@ -2,7 +2,7 @@ name: SchemaSpy
 
 on:
   push:
-    branches: [main]
+    branches: [feat/1177-setup-schemaspy-on-postgresql-database]
     paths:
       - "backend/src/main/resources/db/migration/**"
       - "backend/src/main/resources/db/migration-dev/**"
