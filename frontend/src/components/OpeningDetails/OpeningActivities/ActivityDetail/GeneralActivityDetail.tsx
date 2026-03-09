@@ -24,7 +24,7 @@ const GeneralAcitivityDetail = ({ activityDetail, base, isPlanning, isComplex, i
       </Column>
 
       <Column sm={4} md={4} lg={4} xlg={3} max={2}>
-        <CardItem label={`Intra agency n${UNIQUE_CHARACTERS_UNICODE.ORDINAL_INDICATOR}`}
+        <CardItem label={`Inter-agency n${UNIQUE_CHARACTERS_UNICODE.ORDINAL_INDICATOR}`}
           showSkeleton={isLoading}>
           {activityDetail?.intraAgencyNumber}
         </CardItem>

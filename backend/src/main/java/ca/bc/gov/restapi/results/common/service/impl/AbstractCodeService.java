@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.util.CodeConverterUtil;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -33,59 +34,70 @@ public abstract class AbstractCodeService implements CodeService {
 
   @Override
   public List<CodeDescriptionDto> getAllSilvBaseCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvBaseCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvBaseCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvTechniqueCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvTechniqueCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvTechniqueCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvMethodCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvMethodCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvMethodCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvObjectiveCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvObjectiveCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvObjectiveCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvFundSrceCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvFundSrceCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvSystemCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvSystemCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvSystemCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvSystemVariantCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvSystemVariantCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvSystemVariantCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllSilvCutPhaseCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(silvCutPhaseCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvCutPhaseCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllDisturbanceCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(disturbanceCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        disturbanceCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> getAllOpenStatusCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(openingStatusCodeRepository.findAll());
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        openingStatusCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
   public List<CodeDescriptionDto> findAllCategories(boolean includeExpired) {
     log.info("Getting all open category codes. Include expired: {}", includeExpired);
     // Prefer converting entity results through the shared converter utility when possible.
-    List<? extends GenericCodeEntity> entities = openCategoryCodeRepository.findAll();
+    List<? extends GenericCodeEntity> entities =
+        openCategoryCodeRepository.findAllByOrderByExpiryDateDesc();
 
     log.info(
         "Found {} open category codes ({}cluding expired)",
@@ -98,13 +110,7 @@ public abstract class AbstractCodeService implements CodeService {
       return CodeConverterUtil.toCodeDescriptionDtos(filtered);
     }
 
-    return entities.stream()
-        .map(
-            ent ->
-                new CodeDescriptionDto(
-                    ent.getCode(),
-                    ent.isExpired() ? ent.getDescription() + " (Expired)" : ent.getDescription()))
-        .toList();
+    return CodeConverterUtil.toCodeDescriptionDtos(entities);
   }
 
   @Override
@@ -117,11 +123,16 @@ public abstract class AbstractCodeService implements CodeService {
       return List.of();
     }
 
+    LocalDate now = LocalDate.now();
     List<CodeDescriptionDto> orgUnits =
         orgUnitRepository.findAllByOrgUnitCodeIn(silvaConfiguration.getOrgUnits()).stream()
             .map(
-                orgUnit ->
-                    new CodeDescriptionDto(orgUnit.getOrgUnitCode(), orgUnit.getOrgUnitName()))
+                orgUnit -> {
+                  boolean expired = orgUnit.getExpiryDate().isBefore(now);
+                  return new CodeDescriptionDto(
+                      orgUnit.getOrgUnitCode(),
+                      expired ? orgUnit.getOrgUnitName() + " (Expired)" : orgUnit.getOrgUnitName());
+                })
             .toList();
 
     log.info("Found {} org units by codes", orgUnits.size());

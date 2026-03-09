@@ -68,7 +68,7 @@ const ActivitySearch = ({ type }: props) => {
             />
             <RadioButton
               id="disturbances-search-radio-button"
-              labelText="Disturbances - coming soon"
+              labelText="Disturbances"
               value="disturbances"
               checked={type === 'disturbances'}
               onChange={() => handleSearchTypeChange('disturbances')}
