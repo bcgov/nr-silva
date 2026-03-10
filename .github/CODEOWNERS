@@ -2,8 +2,7 @@
 *       @paulushcgcj @craigyu @Abradat
 
 # Matched against directories (e.g. workflows)
-/.github/workflows/ @paulushcgcj @DerekRoberts @craigyu @Abradat
-/frontend @carolinemwood @paulushcgcj @craigyu @Abradat
-/backend @carolinemwood @paulushcgcj @craigyu @Abradat
+/frontend @carolinemwood
+/backend @carolinemwood
 
 # See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
