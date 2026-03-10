@@ -128,7 +128,8 @@ public abstract class AbstractCodeService implements CodeService {
         orgUnitRepository.findAllByOrgUnitCodeIn(silvaConfiguration.getOrgUnits()).stream()
             .map(
                 orgUnit -> {
-                  boolean expired = orgUnit.getExpiryDate().isBefore(now);
+                  boolean expired =
+                      orgUnit.getExpiryDate() != null && orgUnit.getExpiryDate().isBefore(now);
                   return new CodeDescriptionDto(
                       orgUnit.getOrgUnitCode(),
                       expired ? orgUnit.getOrgUnitName() + " (Expired)" : orgUnit.getOrgUnitName());
