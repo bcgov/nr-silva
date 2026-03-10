@@ -63,6 +63,14 @@ parameters:
   - name: JOB_BACKOFF_LIMIT
     description: "The number of attempts to try for a successful job outcome"
     value: "0"
+  - name: CRON_CPU_REQUEST
+    description: "CPU request for CronJob pods"
+    value: "10m"
+    required: true
+  - name: CRON_MEMORY_REQUEST
+    description: "Memory request for CronJob pods"
+    value: "128Mi"
+    required: true
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -240,6 +248,10 @@ objects:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-cron
                   image: postgis/postgis:17-master
+                  resources:
+                    requests:
+                      cpu: ${CRON_CPU_REQUEST}
+                      memory: ${CRON_MEMORY_REQUEST}
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
@@ -335,6 +347,10 @@ objects:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
                   image: postgis/postgis:17-master
+                  resources:
+                    requests:
+                      cpu: ${CRON_CPU_REQUEST}
+                      memory: ${CRON_MEMORY_REQUEST}
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
@@ -430,6 +446,10 @@ objects:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
                   image: postgis/postgis:17-master
+                  resources:
+                    requests:
+                      cpu: ${CRON_CPU_REQUEST}
+                      memory: ${CRON_MEMORY_REQUEST}
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
