@@ -48,7 +48,6 @@ jobs:
     with:
       backend_min_replicas: "1"
       backend_max_replicas: "1"
-      backend_cpu_request: "100m"
       backend_primary_db: ${{ matrix.primary_db }}
       allowed_origins: ${{ matrix.allowed_origins }}
       environment: test
