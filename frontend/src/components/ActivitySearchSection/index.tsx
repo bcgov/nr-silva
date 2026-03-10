@@ -84,11 +84,11 @@ const ActivitiesSearchSection = () => {
    * Trigger search manually
    */
   const handleSearch = () => {
-    const paramsWithPagination = {
-      ...(searchParams ?? {}),
+    const paramsWithPagination: ActivitySearchParams = {
+      ...searchParams,
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
-    } as ActivitySearchParams;
+    };
 
     if (!hasActivitySearchFilters(paramsWithPagination)) {
       return;

@@ -92,11 +92,11 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
     const formattedDate =
       dates.length && dates[0]
         ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
-        : "";
+        : undefined;
 
     onSearchParamsChange(
       isStartDate ? "updateDateStart" : "updateDateEnd",
-      formattedDate ? formattedDate : undefined
+      formattedDate
     );
   };
 

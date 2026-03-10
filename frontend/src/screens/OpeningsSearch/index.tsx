@@ -101,11 +101,11 @@ const OpeningsSearch = () => {
    * Trigger search manually
    */
   const handleSearch = () => {
-    const paramsWithPagination = {
-      ...(searchParams ?? {}),
+    const paramsWithPagination: OpeningSearchParamsType = {
+      ...searchParams,
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
-    } as OpeningSearchParamsType;
+    };
 
     if (!hasActiveFilters(paramsWithPagination)) {
       return;

@@ -100,11 +100,11 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
     const formattedDate =
       dates.length && dates[0]
         ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
-        : "";
+        : undefined;
 
     handleSearchFieldChange(
       isStartDate ? "updateDateStart" : "updateDateEnd",
-      formattedDate ? formattedDate : undefined
+      formattedDate
     );
   };
 

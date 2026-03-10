@@ -11,8 +11,7 @@ import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } fro
 import { CodeDescriptionDto } from '@/services/OpenApi';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { useQuery } from '@tanstack/react-query';
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST } from '@/constants';
-import { FILE_ID_MAX_LENGTH } from '@/constants';
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST, FILE_ID_MAX_LENGTH } from '@/constants';
 import CustomMultiSelect from '../CustomMultiSelect';
 import ForestClientMultiSelect from '../ForestClientMultiSelect';
 
@@ -88,11 +87,11 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
     const formattedDate =
       dates.length && dates[0]
         ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
-        : "";
+        : undefined;
 
     handleSearchFieldChange(
       isStartDate ? "updateDateStart" : "updateDateEnd",
-      formattedDate ? formattedDate : undefined
+      formattedDate
     );
   };
 

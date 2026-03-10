@@ -77,11 +77,11 @@ const DisturbancesSearchSection = () => {
   };
 
   const handleSearch = () => {
-    const paramsWithPagination = {
-      ...(searchParams ?? {}),
+    const paramsWithPagination: DisturbanceSearchParams = {
+      ...searchParams,
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
-    } as DisturbanceSearchParams;
+    };
 
     if (!hasDisturbanceSearchFilters(paramsWithPagination)) {
       return;
