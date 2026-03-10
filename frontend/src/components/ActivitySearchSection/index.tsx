@@ -99,6 +99,7 @@ const ActivitiesSearchSection = () => {
     setSearchParams(paramsWithPagination);
     setQueryParams(paramsWithPagination);
     setSelectedOpeningIds([]);
+    setSelectedSilvicultureActivityIds([]);
     updateActivitySearchUrlParams(paramsWithPagination);
   };
 
