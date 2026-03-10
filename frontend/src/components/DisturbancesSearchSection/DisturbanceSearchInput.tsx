@@ -3,28 +3,25 @@ import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 import { ChevronDown, ChevronUp } from '@carbon/icons-react';
-import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, TextInput } from '@carbon/react';
+import { Button, Column, DatePicker, DatePickerInput, Grid, TextInput } from '@carbon/react';
 import API from '@/services/API';
-import { ActivitySearchParams } from '@/types/ApiType';
+import { DisturbanceSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
 import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
 import { CodeDescriptionDto } from '@/services/OpenApi';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { useQuery } from '@tanstack/react-query';
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, INTRA_AGENCY_NUMBER_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
-import { FILE_ID_MAX_LENGTH } from '@/constants';
-import { ActivityStatusTag } from '../Tags';
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST, FILE_ID_MAX_LENGTH } from '@/constants';
 import CustomMultiSelect from '../CustomMultiSelect';
 import ForestClientMultiSelect from '../ForestClientMultiSelect';
 
-import './styles.scss';
 
 type props = {
-  searchParams?: ActivitySearchParams;
-  handleSearchFieldChange: (field: keyof ActivitySearchParams, value: unknown) => void;
+  searchParams?: DisturbanceSearchParams;
+  handleSearchFieldChange: (field: keyof DisturbanceSearchParams, value: unknown) => void;
 }
 
-const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
+const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
   const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
   const hasInitializedMoreFilters = useRef(false);
 
@@ -34,8 +31,7 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
     if (
       searchParams?.fileId !== undefined ||
       searchParams?.clientNumbers !== undefined ||
-      searchParams?.openingStatuses !== undefined ||
-      searchParams?.intraAgencyNumber !== undefined
+      searchParams?.openingStatuses !== undefined
     ) {
       setShowMoreFilters(true);
       hasInitializedMoreFilters.current = true;
@@ -45,33 +41,24 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
   const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
   useRefWithSearchParam(fileIdInputRef, searchParams?.fileId);
 
-  const intraAgencyNumberInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
-  useRefWithSearchParam(intraAgencyNumberInputRef, searchParams?.intraAgencyNumber);
-
-  const silvBaseCodeQuery = useQuery({
-    queryKey: ['codes', 'silv-base'],
-    queryFn: API.CodesEndpointService.getSilvBaseCodes,
-    select: (data) => data.filter((code) => code.code !== 'DN') // Code 'DN' is considered as a disturbance
+  const disturbanceCodeQuery = useQuery({
+    queryKey: ['codes', 'disturbance'],
+    queryFn: API.CodesEndpointService.getDisturbanceCodes,
   });
 
-  const silvTechniqueCodeQuery = useQuery({
-    queryKey: ['codes', 'silv-technique'],
-    queryFn: API.CodesEndpointService.getSilvTechniqueCodes
+  const silvSystemCodeQuery = useQuery({
+    queryKey: ['codes', 'silv-system'],
+    queryFn: API.CodesEndpointService.getSilvSystemCodes
   });
 
-  const silvMethodCodeQuery = useQuery({
-    queryKey: ['codes', 'silv-method'],
-    queryFn: API.CodesEndpointService.getSilvMethodCodes
+  const silvVariantCodeQuery = useQuery({
+    queryKey: ['codes', 'silv-system-variant'],
+    queryFn: API.CodesEndpointService.getSilvSystemVariantCodes
   });
 
-  const silvObjectiveCodeQuery = useQuery({
-    queryKey: ['codes', 'silv-objective'],
-    queryFn: API.CodesEndpointService.getSilvObjectiveCodes
-  });
-
-  const silvFundSourceCodeQuery = useQuery({
-    queryKey: ['codes', 'silv-fund-source'],
-    queryFn: API.CodesEndpointService.getSilvFundSourceCodes
+  const silvCutPhaseQuery = useQuery({
+    queryKey: ['codes', 'silv-cut-phase'],
+    queryFn: API.CodesEndpointService.getSilvCutPhaseCodes
   });
 
   const orgUnitQuery = useQuery({
@@ -84,12 +71,12 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
     queryFn: () => API.CodesEndpointService.getOpeningCategories(),
   });
 
-  const handleMultiSelectChange = (field: keyof ActivitySearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
+  const handleMultiSelectChange = (field: keyof DisturbanceSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
     const selectedCodes = getMultiSelectedCodes(selected);
     handleSearchFieldChange(field, selectedCodes.length > 0 ? selectedCodes : undefined);
   };
 
-  const getMultiSelectPlaceholder = (field: keyof ActivitySearchParams, defaultText = 'Choose one or more options') => {
+  const getMultiSelectPlaceholder = (field: keyof DisturbanceSearchParams, defaultText = 'Choose one or more options') => {
     const values = searchParams?.[field] as unknown as string[] | undefined;
     return values && values.length > 0 ? values.join(', ') : defaultText;
   };
@@ -110,97 +97,59 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
 
   return (
     <Grid className="default-search-input-grid">
-      {/* Base */}
+      {/* Disturbance */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
-          id="base-multiselect"
+          id="disturbance-multiselect"
           className="default-search-multi-select"
-          titleText="Base"
-          placeholder={getMultiSelectPlaceholder('bases')}
-          items={silvBaseCodeQuery.data ?? []}
+          titleText="Disturbance code"
+          placeholder={getMultiSelectPlaceholder('disturbances')}
+          items={disturbanceCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('bases')}
-          selectedItems={(silvBaseCodeQuery.data ?? []).filter(data => searchParams?.bases?.includes(data.code ?? ''))}
+          onChange={handleMultiSelectChange('disturbances')}
+          selectedItems={(disturbanceCodeQuery.data ?? []).filter(data => searchParams?.disturbances?.includes(data.code ?? ''))}
         />
       </Column>
 
-      {/* Technique */}
+      {/* Silviculture system */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
-          id="technique-multiselect"
+          id="silv-system-multiselect"
           className="default-search-multi-select"
-          titleText="Technique"
-          placeholder={getMultiSelectPlaceholder('techniques')}
-          items={silvTechniqueCodeQuery.data ?? []}
+          titleText="Silviculture system"
+          placeholder={getMultiSelectPlaceholder('silvSystems')}
+          items={silvSystemCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('techniques')}
-          selectedItems={(silvTechniqueCodeQuery.data ?? []).filter(data => searchParams?.techniques?.includes(data.code ?? ''))}
+          onChange={handleMultiSelectChange('silvSystems')}
+          selectedItems={(silvSystemCodeQuery.data ?? []).filter(data => searchParams?.silvSystems?.includes(data.code ?? ''))}
         />
       </Column>
 
-      {/* Method */}
+      {/* Silviculture system variant */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
-          id="method-multiselect"
+          id="silv-system-variant-multiselect"
           className="default-search-multi-select"
-          titleText="Method"
-          placeholder={getMultiSelectPlaceholder('methods')}
-          items={silvMethodCodeQuery.data ?? []}
+          titleText="Variant"
+          placeholder={getMultiSelectPlaceholder('variants')}
+          items={silvVariantCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('methods')}
-          selectedItems={(silvMethodCodeQuery.data ?? []).filter(data => searchParams?.methods?.includes(data.code ?? ''))}
+          onChange={handleMultiSelectChange('variants')}
+          selectedItems={(silvVariantCodeQuery.data ?? []).filter(data => searchParams?.variants?.includes(data.code ?? ''))}
         />
       </Column>
 
-      {/* Activity Status */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <Dropdown
-          key={String(searchParams?.isComplete)}
-          id="activity-status-dropdown"
-          titleText="Activity status"
-          label="Choose an option"
-          items={[
-            ...(searchParams?.isComplete !== undefined ? [{ id: '', label: '' }] : []),
-            { id: 'complete', label: 'Complete' },
-            { id: 'planned', label: 'Planned' },
-          ]}
-          itemToElement={(item) => item.id === '' ? <span className='empty-dropdown-option'>Clear selected</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
-          renderSelectedItem={(item) => item.id === '' ? <span className='empty-dropdown-option'>Choose an option</span> : <ActivityStatusTag isComplete={item.id === 'complete'} />}
-          onChange={({ selectedItem }) =>
-            handleSearchFieldChange(
-              'isComplete',
-              !selectedItem || selectedItem.id === '' ? undefined : selectedItem.id === 'complete'
-            )
-          }
-          selectedItem={searchParams?.isComplete === true ? { id: 'complete', label: 'Complete' } : searchParams?.isComplete === false ? { id: 'planned', label: 'Planned' } : { id: '', label: '' }}
-        />
-      </Column>
-
-      {/* Objectives */}
+      {/* Cut phase */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
-          id="objective-multiselect"
+          id="cut-phase-multiselect"
           className="default-search-multi-select"
-          titleText="Objectives"
-          placeholder={getMultiSelectPlaceholder('objectives')}
-          items={silvObjectiveCodeQuery.data ?? []}
+          titleText="Cut phase"
+          placeholder={getMultiSelectPlaceholder('cutPhases')}
+          items={silvCutPhaseQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('objectives')}
-          selectedItems={(silvObjectiveCodeQuery.data ?? []).filter(data => searchParams?.objectives?.includes(data.code ?? ''))}
-        />
-      </Column>
-
-      {/* Funding Source */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <CustomMultiSelect
-          id="fund-source-multiselect"
-          className="default-search-multi-select"
-          titleText="Funding source"
-          placeholder={getMultiSelectPlaceholder('fundingSources')}
-          items={silvFundSourceCodeQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('fundingSources')}
-          selectedItems={(silvFundSourceCodeQuery.data ?? []).filter(data => searchParams?.fundingSources?.includes(data.code ?? ''))}
+          onChange={handleMultiSelectChange('cutPhases')}
+          selectedItems={(silvCutPhaseQuery.data ?? []).filter(data => searchParams?.cutPhases?.includes(data.code ?? ''))}
         />
       </Column>
 
@@ -332,20 +281,6 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
                     />
                   </Column>
 
-                  {/* Inter-agency number, first named intra agency number, later renamed */}
-                  <Column sm={4} md={4} lg={6} max={4}>
-                    <TextInput
-                      ref={intraAgencyNumberInputRef}
-                      id="inter-agency-number-input"
-                      name="inter-agency-number"
-                      labelText="Inter-agency number"
-                      placeholder="Enter inter-agency number"
-                      defaultValue={searchParams?.intraAgencyNumber ?? ''}
-                      onInput={(e) => handleAutoUpperInput(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
-                      onPaste={(e) => handleAutoUpperPaste(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
-                      onBlur={(e) => handleSearchFieldChange('intraAgencyNumber', e.target.value ? e.target.value : undefined)}
-                    />
-                  </Column>
                 </>
               )
               : null
@@ -356,4 +291,4 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
   );
 };
 
-export default ActivitySearchInput;
+export default DisturbanceSearchInput;

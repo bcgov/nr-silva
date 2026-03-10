@@ -15,5 +15,7 @@ public interface GenericCodeRepository<T extends GenericCodeEntity>
   @Override
   List<T> findAll();
 
+  List<T> findAllByOrderByExpiryDateDesc();
+
   List<T> findAllByExpiryDateAfter(LocalDate now);
 }

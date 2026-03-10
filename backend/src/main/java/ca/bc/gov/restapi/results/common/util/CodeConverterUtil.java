@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 public class CodeConverterUtil {
 
   /**
-   * Convert a list of GenericCodeEntity to CodeDescriptionDto.
+   * Convert a list of GenericCodeEntity to CodeDescriptionDto. Appends " (Expired)" to description
+   * if entity is expired.
    *
    * @param codes List of code entities to convert.
    * @return List of CodeDescriptionDto.
@@ -19,7 +20,13 @@ public class CodeConverterUtil {
   public static List<CodeDescriptionDto> toCodeDescriptionDtos(
       List<? extends GenericCodeEntity> codes) {
     return codes.stream()
-        .map(entity -> new CodeDescriptionDto(entity.getCode(), entity.getDescription()))
+        .map(
+            entity ->
+                new CodeDescriptionDto(
+                    entity.getCode(),
+                    entity.isExpired()
+                        ? entity.getDescription() + " (Expired)"
+                        : entity.getDescription()))
         .toList();
   }
 }

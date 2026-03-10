@@ -120,9 +120,22 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     });
   };
 
+  const totalFeatures = polygons
+    .filter(Boolean)
+    .reduce((sum, fc) => sum + fc.features.filter((f) => f.geometry).length, 0);
+
+  /**
+   * Determines whether features should be rendered as GeoJSON polygons or as tree marker icons.
+   * When multiple polygons are spread far apart, a low zoom level is required to fit them all
+   * in view, causing them to appear too small to be useful as polygons — in that case we fall
+   * back to tree markers. However, a single feature should always render as a polygon regardless
+   * of zoom, since zooming out to fit a large polygon must not incorrectly trigger the marker fallback.
+   */
+  const showAsPolygon = zoom > 10 || totalFeatures <= 1;
+
   return (
     <>
-      {zoom > 10 &&
+      {showAsPolygon &&
         polygons.filter(Boolean).map((featureCollection, collectionIndex) =>
           featureCollection.features
             .filter((feature) => feature.geometry)
@@ -145,7 +158,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
             ))
         )
       }
-      {zoom <= 10 &&
+      {!showAsPolygon &&
         polygons.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features
             ?.filter((feature) => feature.geometry)

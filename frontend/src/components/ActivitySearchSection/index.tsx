@@ -84,11 +84,11 @@ const ActivitiesSearchSection = () => {
    * Trigger search manually
    */
   const handleSearch = () => {
-    const paramsWithPagination = {
-      ...(searchParams ?? {}),
+    const paramsWithPagination: ActivitySearchParams = {
+      ...searchParams,
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
-    } as ActivitySearchParams;
+    };
 
     if (!hasActivitySearchFilters(paramsWithPagination)) {
       return;
@@ -99,6 +99,7 @@ const ActivitiesSearchSection = () => {
     setSearchParams(paramsWithPagination);
     setQueryParams(paramsWithPagination);
     setSelectedOpeningIds([]);
+    setSelectedSilvicultureActivityIds([]);
     updateActivitySearchUrlParams(paramsWithPagination);
   };
 
@@ -111,6 +112,7 @@ const ActivitiesSearchSection = () => {
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSelectedOpeningIds([]);
+    setSelectedSilvicultureActivityIds([]);
     updateActivitySearchUrlParams(undefined);
   };
 

@@ -4,25 +4,23 @@ import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
-import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
-import { ActivitySearchResponseDto } from "@/services/OpenApi";
+import { DisturbanceHeaderKeyType, DisturbanceHeaderType } from "@/types/TableHeader";
+import { DisturbanceSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
 import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import SpatialCheckbox from "../SpatialCheckbox";
-import { ActivityStatusTag } from "../Tags";
 
 
-import "./styles.scss";
 type props = {
-  headers: ActivityHeaderType[];
-  rowData: ActivitySearchResponseDto;
+  headers: DisturbanceHeaderType[];
+  rowData: DisturbanceSearchResponseDto;
   showMap: boolean;
   selectedRows: number[];
   handleRowSelection: (openingId: number, compoundId: string) => void;
 }
 
-const ActivitySearchTableRow = ({
+const DisturbanceSearchTableRow = ({
   headers,
   rowData,
   showMap,
@@ -30,7 +28,7 @@ const ActivitySearchTableRow = ({
   handleRowSelection,
 }: props) => {
 
-  const compoundId = `${rowData.activityId}-${rowData.base?.code ?? ''}`;
+  const compoundId = `${rowData.activityId}-DN`;
   const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
     rowData.openingId!,
     MAP_KINDS.activityTreatment,
@@ -45,7 +43,7 @@ const ActivitySearchTableRow = ({
     window.open(openingUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const renderCellContent = (header: ActivityHeaderKeyType) => {
+  const renderCellContent = (header: DisturbanceHeaderKeyType) => {
     switch (header) {
       case "actions":
         return (
@@ -53,13 +51,13 @@ const ActivitySearchTableRow = ({
             {
               showMap ? (
                 <SpatialCheckbox
-                  spatialType="activity"
+                  spatialType="disturbance"
                   rowId={rowData.activityId!}
                   selectedRows={selectedRows}
                   isAvailable={isAvailable}
                   isLoading={isAvailabilityLoading}
                   handleRowSelection={(activityId) => {
-                    handleRowSelection(rowData.openingId!, `${activityId}-${rowData.base?.code ?? ''}`);
+                    handleRowSelection(rowData.openingId!, `${activityId}-DN`);
                   }}
                 />
               ) : null
@@ -68,7 +66,7 @@ const ActivitySearchTableRow = ({
               hasIconOnly
               className="new-tab-button"
               renderIcon={Launch}
-              iconDescription={`View activity ${rowData.activityId} in a new tab`}
+              iconDescription={`View disturbance ${rowData.activityId} in a new tab`}
               tooltipPosition="right"
               size="sm"
               kind="ghost"
@@ -76,41 +74,46 @@ const ActivitySearchTableRow = ({
             />
           </div>
         );
-      case "base":
-        if (rowData.base) {
+      case "disturbance":
+        if (rowData.disturbance) {
+          return `${rowData.disturbance.code} - ${rowData.disturbance.description}`;
+        }
+        return PLACE_HOLDER;
+      case "silvSystem":
+        if (rowData.silvSystem) {
           return (
             <DefinitionTooltip
               openOnHover
-              definition={rowData.base.description}
+              definition={rowData.silvSystem.description}
               align="right"
             >
-              <span>{rowData.base.code}</span>
+              <span>{rowData.silvSystem.code}</span>
             </DefinitionTooltip>
           );
         }
         return PLACE_HOLDER;
-      case "technique":
-        if (rowData.technique) {
+      case "variant":
+        if (rowData.variant) {
           return (
             <DefinitionTooltip
               openOnHover
-              definition={rowData.technique.description}
+              definition={rowData.variant.description}
               align="right"
             >
-              <span>{rowData.technique.code}</span>
+              <span>{rowData.variant.code}</span>
             </DefinitionTooltip>
           );
         }
         return PLACE_HOLDER;
-      case "method":
-        if (rowData.method) {
+      case "cutPhase":
+        if (rowData.cutPhase) {
           return (
             <DefinitionTooltip
               openOnHover
-              definition={rowData.method.description}
+              definition={rowData.cutPhase.description}
               align="right"
             >
-              <span>{rowData.method.code}</span>
+              <span>{rowData.cutPhase.code}</span>
             </DefinitionTooltip>
           );
         }
@@ -128,19 +131,6 @@ const ActivitySearchTableRow = ({
           );
         }
         return PLACE_HOLDER;
-      case "fundingSource":
-        if (rowData.fundingSource) {
-          return (
-            <DefinitionTooltip
-              openOnHover
-              definition={rowData.fundingSource.description}
-              align="left"
-            >
-              <span>{rowData.fundingSource.code}</span>
-            </DefinitionTooltip>
-          );
-        }
-        return PLACE_HOLDER;
       case "openingClient":
         if (rowData.openingClient) {
           return (
@@ -152,11 +142,6 @@ const ActivitySearchTableRow = ({
               <span>{getClientSimpleLabel(rowData.openingClient)}</span>
             </DefinitionTooltip>
           );
-        }
-        return PLACE_HOLDER;
-      case "isComplete":
-        if (rowData.isComplete !== undefined) {
-          return <ActivityStatusTag isComplete={rowData.isComplete} />
         }
         return PLACE_HOLDER;
       case "openingCategory":
@@ -184,11 +169,11 @@ const ActivitySearchTableRow = ({
   };
 
   return (
-    <TableRow className="activity-table-row" data-testid={`activity-table-row-${rowData.activityId}`}>
+    <TableRow className="disturbance-table-row" data-testid={`disturbance-table-row-${rowData.activityId}`}>
       {headers
         .filter((header) => header.selected)
         .map((header) => (
-          <TableCell key={header.key} data-testid={`activity-table-cell-${header.key}-${rowData.activityId}`}>
+          <TableCell key={header.key} data-testid={`disturbance-table-cell-${header.key}-${rowData.activityId}`}>
             {
               header.key !== "actions" ? (
                 <Link className="default-table-cell-link-wrapper" to={openingUrl}>
@@ -204,4 +189,4 @@ const ActivitySearchTableRow = ({
   );
 };
 
-export default ActivitySearchTableRow;
+export default DisturbanceSearchTableRow;

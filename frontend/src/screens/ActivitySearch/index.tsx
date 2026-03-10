@@ -5,6 +5,7 @@ import PageTitle from '@/components/PageTitle';
 import { ActivitySearchRoute } from '@/routes/config';
 import ActivitiesSearchSection from '@/components/ActivitySearchSection';
 import { hasActivitySearchFilters, readActivitySearchUrlParams } from '@/components/ActivitySearchSection/utils';
+import { hasDisturbanceSearchFilters, readDisturbanceSearchUrlParams } from '@/components/DisturbancesSearchSection/utils';
 import DisturbancesSearchSection from '@/components/DisturbancesSearchSection';
 
 import './styles.scss';
@@ -31,7 +32,10 @@ const ActivitySearch = ({ type }: props) => {
 
   const handleSearchTypeChange = (value: props['type']) => {
     if (value === type) return;
-    if (type === 'activities' && hasActivitySearchFilters(readActivitySearchUrlParams())) {
+    if (
+      (type === 'activities' && hasActivitySearchFilters(readActivitySearchUrlParams())) ||
+      (type === 'disturbances' && hasDisturbanceSearchFilters(readDisturbanceSearchUrlParams()))
+    ) {
       setIsConfirmModalOpen(true);
       return;
     }
@@ -68,11 +72,10 @@ const ActivitySearch = ({ type }: props) => {
             />
             <RadioButton
               id="disturbances-search-radio-button"
-              labelText="Disturbances - coming soon"
+              labelText="Disturbances"
               value="disturbances"
               checked={type === 'disturbances'}
               onChange={() => handleSearchTypeChange('disturbances')}
-              disabled
             />
           </div>
         </Stack>
@@ -98,7 +101,6 @@ const ActivitySearch = ({ type }: props) => {
         onRequestSubmit={handleConfirmSwitch}
         onRequestClose={handleCancelSwitch}
         onSecondarySubmit={handleCancelSwitch}
-        danger
         size="sm"
       >
         <p>
