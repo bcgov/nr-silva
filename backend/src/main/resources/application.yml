@@ -33,7 +33,7 @@ spring:
       maxLifetime: 180000 # 3 minutes
       keepaliveTime: 60000 # 1 minute
       poolName: SilvaOracleConnPool
-      minimumIdle: 1
+      minimumIdle: 0
       maximumPoolSize: 5
       leakDetectionThreshold: 60000
       connection-test-query: SELECT 1 FROM DUAL
