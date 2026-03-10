@@ -102,6 +102,7 @@ const DisturbancesSearchSection = () => {
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSelectedOpeningIds([]);
+    setSelectedDisturbanceIds([]);
     updateDisturbanceSearchUrlParams(undefined);
   };
 

@@ -112,6 +112,7 @@ const ActivitiesSearchSection = () => {
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSelectedOpeningIds([]);
+    setSelectedSilvicultureActivityIds([]);
     updateActivitySearchUrlParams(undefined);
   };
 
