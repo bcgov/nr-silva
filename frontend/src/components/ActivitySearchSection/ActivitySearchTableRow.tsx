@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
@@ -29,7 +29,6 @@ const ActivitySearchTableRow = ({
   selectedRows,
   handleRowSelection,
 }: props) => {
-  const navigate = useNavigate();
 
   const compoundId = `${rowData.activityId}-${rowData.base?.code ?? ''}`;
   const { isAvailable, isLoading: isAvailabilityLoading } = usePolygonAvailability(
@@ -41,10 +40,6 @@ const ActivitySearchTableRow = ({
     ":openingId",
     `${rowData.openingId!.toString()}?tab=activities`
   );
-
-  const navToOpening = () => {
-    navigate(openingUrl)
-  }
 
   const openInNewTab = () => {
     window.open(openingUrl, '_blank', 'noopener,noreferrer');
@@ -196,7 +191,7 @@ const ActivitySearchTableRow = ({
           <TableCell key={header.key} data-testid={`activity-table-cell-${header.key}-${rowData.activityId}`}>
             {
               header.key !== "actions" ? (
-                <Link className="default-table-cell-link-wrapper" onClick={navToOpening} to={openingUrl}>
+                <Link className="default-table-cell-link-wrapper" to={openingUrl}>
                   {renderCellContent(header.key) ?? PLACE_HOLDER}
                 </Link>
               ) : (
