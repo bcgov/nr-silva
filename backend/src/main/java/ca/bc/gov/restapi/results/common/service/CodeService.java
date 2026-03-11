@@ -27,4 +27,10 @@ public interface CodeService {
   List<CodeDescriptionDto> getAllSilvSystemVariantCode();
 
   List<CodeDescriptionDto> getAllSilvCutPhaseCode();
+
+  List<CodeDescriptionDto> getAllSilvDamageAgentCode();
+
+  List<CodeDescriptionDto> getAllStockingStatusCode();
+
+  List<CodeDescriptionDto> getAllStockingTypeCode();
 }

@@ -7,6 +7,9 @@ import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleReposit
 import ca.bc.gov.restapi.results.oracle.repository.OpeningStatusCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvBaseCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvDamageAgentCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.StockingStatusCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.StockingTypeCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvCutPhaseCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvFundSrceCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvMethodCodeOracleRepository;
@@ -33,6 +36,9 @@ public class CodeOracleService extends AbstractCodeService {
       DisturbanceCodeOracleRepository disturbanceCodeRepository,
       OpenCategoryCodeOracleRepository openCategoryCodeRepository,
       OpeningStatusCodeOracleRepository openingStatusCodeRepository,
+      SilvDamageAgentCodeOracleRepository silvDamageAgentCodeRepository,
+      StockingStatusCodeOracleRepository stockingStatusCodeRepository,
+      StockingTypeCodeOracleRepository stockingTypeCodeRepository,
       OrgUnitOracleRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(
@@ -47,6 +53,9 @@ public class CodeOracleService extends AbstractCodeService {
         disturbanceCodeRepository,
         openCategoryCodeRepository,
         openingStatusCodeRepository,
+        silvDamageAgentCodeRepository,
+        stockingStatusCodeRepository,
+        stockingTypeCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }

@@ -7,6 +7,9 @@ import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRep
 import ca.bc.gov.restapi.results.postgres.repository.OpeningStatusCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.SilvDamageAgentCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingStatusCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingTypeCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvCutPhaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -33,6 +36,9 @@ public class CodePostgresService extends AbstractCodeService {
       DisturbanceCodePostgresRepository disturbanceCodeRepository,
       OpenCategoryCodePostgresRepository openCategoryCodeRepository,
       OpeningStatusCodePostgresRepository openingStatusCodeRepository,
+      SilvDamageAgentCodePostgresRepository silvDamageAgentCodeRepository,
+      StockingStatusCodePostgresRepository stockingStatusCodeRepository,
+      StockingTypeCodePostgresRepository stockingTypeCodeRepository,
       OrgUnitPostgresRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(
@@ -47,6 +53,9 @@ public class CodePostgresService extends AbstractCodeService {
         disturbanceCodeRepository,
         openCategoryCodeRepository,
         openingStatusCodeRepository,
+        silvDamageAgentCodeRepository,
+        stockingStatusCodeRepository,
+        stockingTypeCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }
