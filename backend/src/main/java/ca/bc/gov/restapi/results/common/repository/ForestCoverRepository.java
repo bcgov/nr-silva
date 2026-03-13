@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.common.repository;
 
+import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
+import ca.bc.gov.restapi.results.common.projection.ForestCoverSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.cover.*;
 import ca.bc.gov.restapi.results.common.projection.cover.history.*;
 
@@ -42,4 +44,7 @@ public interface ForestCoverRepository {
 
   List<ForestCoverHistoryDetailsDamageProjection> findHistoryByOpeningDetailsDamage(
       Long forestCoverLayerId, String archiveDate);
+
+  List<ForestCoverSearchProjection> forestCoverSearch(
+      ForestCoverSearchFilterDto filters, long offset, long size);
 }

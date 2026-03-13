@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
+import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
+import ca.bc.gov.restapi.results.common.projection.ForestCoverSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.cover.history.*;
 import ca.bc.gov.restapi.results.common.repository.ForestCoverRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
@@ -17,6 +19,7 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -89,5 +92,12 @@ public interface ForestCoverEntityOracleRepository
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_FOREST_COVER_HISTORY_DAMAGE)
   List<ForestCoverHistoryDetailsDamageProjection> findHistoryByOpeningDetailsDamage(
           Long forestCoverLayerId, String archiveDate);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.FOREST_COVER_SEARCH)
+  List<ForestCoverSearchProjection> forestCoverSearch(
+      @Param("filter") ForestCoverSearchFilterDto filter,
+      @Param("page") long offset,
+      @Param("size") long size);
 
 }
