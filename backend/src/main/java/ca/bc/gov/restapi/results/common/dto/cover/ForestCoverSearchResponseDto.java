@@ -19,5 +19,4 @@ public record ForestCoverSearchResponseDto(
     ForestClientDto openingClient,
     LocalDateTime updateTimestamp,
     LocalDateTime regenDueDate,
-    LocalDateTime freeGrowingDueDate
-) {}
+    LocalDateTime freeGrowingDueDate) {}

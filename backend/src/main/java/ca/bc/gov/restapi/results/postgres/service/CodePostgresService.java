@@ -7,16 +7,16 @@ import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRep
 import ca.bc.gov.restapi.results.postgres.repository.OpeningStatusCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.SilvDamageAgentCodePostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.StockingStatusCodePostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.StockingTypeCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvCutPhaseCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.SilvDamageAgentCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvObjectiveCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemVariantCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTechniqueCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingStatusCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingTypeCodePostgresRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 

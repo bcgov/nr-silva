@@ -38,9 +38,7 @@ public abstract class AbstractForestCoverService implements ForestCoverService {
     }
 
     List<ForestCoverSearchResponseDto> responseDtos =
-        projections.stream()
-            .map(this::mapToSearchResponse)
-            .toList();
+        projections.stream().map(this::mapToSearchResponse).toList();
 
     return new PageImpl<>(responseDtos, pagination, total);
   }
@@ -86,5 +84,4 @@ public abstract class AbstractForestCoverService implements ForestCoverService {
     }
     return new CodeDescriptionDto(code, description);
   }
-
 }

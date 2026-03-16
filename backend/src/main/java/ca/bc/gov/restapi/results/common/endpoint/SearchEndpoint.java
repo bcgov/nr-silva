@@ -212,15 +212,14 @@ public class SearchEndpoint {
     return activityService.disturbanceSearch(filters, paginationParameters);
   }
 
-
   @GetMapping("/forest-cover")
   public Page<ForestCoverSearchResponseDto> forestCoverSearch(
       @RequestParam(value = "stockingStatuses", required = false) List<String> stockingStatuses,
       @RequestParam(value = "stockingTypes", required = false) List<String> stockingTypes,
       @RequestParam(value = "damageAgents", required = false) List<String> damageAgents,
-            @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
       @RequestParam(value = "fileId", required = false) String fileId,
-            @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
       @RequestParam(value = "openingCategories", required = false) List<String> openingCategories,
       @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
       @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
@@ -236,8 +235,7 @@ public class SearchEndpoint {
             orgUnits,
             openingCategories,
             updateDateStart,
-            updateDateEnd
-        );
+            updateDateEnd);
 
     if (!filters.hasAnyFilter()) {
       throw new MissingSearchParameterException();

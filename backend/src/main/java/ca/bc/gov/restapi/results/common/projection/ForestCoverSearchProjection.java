@@ -1,5 +1,3 @@
-
-
 package ca.bc.gov.restapi.results.common.projection;
 
 import java.time.LocalDateTime;
@@ -16,7 +14,10 @@ public interface ForestCoverSearchProjection {
   /** Comma-separated damage agent codes aggregated across all layers. */
   String getDamageCodes();
 
-  /** {@code ||}-separated damage agent names aggregated across all layers (aligned with {@link #getDamageCodes()}). */
+  /**
+   * {@code ||}-separated damage agent names aggregated across all layers (aligned with {@link
+   * #getDamageCodes()}).
+   */
   String getDamageNames();
 
   String getStockingTypeCode();

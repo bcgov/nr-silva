@@ -4,14 +4,14 @@ import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.projection.ForestCoverSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.cover.*;
 import ca.bc.gov.restapi.results.common.projection.cover.history.*;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface ForestCoverRepository {
   List<ForestCoverProjection> findByOpeningDetails(Long openingId, String mainSearchTerm);
 
-  List<ForestCoverSpeciesProjection> findByOpeningDetailsSpecies(Long forestCoverId, String coverLayerCode);
+  List<ForestCoverSpeciesProjection> findByOpeningDetailsSpecies(
+      Long forestCoverId, String coverLayerCode);
 
   Optional<ForestCoverPolygonProjection> findByOpeningDetailsPolygon(Long forestCoverId);
 
@@ -19,13 +19,15 @@ public interface ForestCoverRepository {
 
   List<ForestCoverDetailsLayerProjection> findByOpeningDetailsLayer(Long forestCoverId);
 
-  List<ForestCoverDetailedSpeciesProjection> findByOpeningDetailsDetailedSpecies(Long forestCoverLayerId);
+  List<ForestCoverDetailedSpeciesProjection> findByOpeningDetailsDetailedSpecies(
+      Long forestCoverLayerId);
 
   List<ForestCoverDetailsDamageProjection> findByOpeningDetailsDamage(Long forestCoverLayerId);
 
   List<ForestCoverHistoryOverviewProjection> findHistoryOverviewByOpeningId(Long openingId);
 
-  List<ForestCoverHistoryProjection> findHistoryByOpeningDetails(Long openingId, String updateDate, String mainSearchTerm);
+  List<ForestCoverHistoryProjection> findHistoryByOpeningDetails(
+      Long openingId, String updateDate, String mainSearchTerm);
 
   List<ForestCoverHistorySpeciesProjection> findHistoryByOpeningDetailsSpecies(
       Long forestCoverId, String coverLayerCode, String archiveDate);

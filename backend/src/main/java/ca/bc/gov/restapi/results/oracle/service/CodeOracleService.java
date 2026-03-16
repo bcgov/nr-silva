@@ -7,16 +7,16 @@ import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleReposit
 import ca.bc.gov.restapi.results.oracle.repository.OpeningStatusCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OrgUnitOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvBaseCodeOracleRepository;
-import ca.bc.gov.restapi.results.oracle.repository.SilvDamageAgentCodeOracleRepository;
-import ca.bc.gov.restapi.results.oracle.repository.StockingStatusCodeOracleRepository;
-import ca.bc.gov.restapi.results.oracle.repository.StockingTypeCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvCutPhaseCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvDamageAgentCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvFundSrceCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvMethodCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvObjectiveCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvSystemCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvSystemVariantCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvTechniqueCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.StockingStatusCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.StockingTypeCodeOracleRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
