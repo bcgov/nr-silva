@@ -1907,5 +1907,165 @@ public class SilvaPostgresQueryConstants {
 			FROM disturbance_search
 			ORDER BY updateTimestamp DESC
 			""" + PAGINATION;
+
+	public static final String FOREST_COVER_SEARCH =
+			"""
+			WITH filtered_ids AS (
+				SELECT fc.forest_cover_id
+				FROM forest_cover fc
+				LEFT JOIN opening op ON fc.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN cut_block_open_admin cboa
+					ON op.opening_id = cboa.opening_id
+					AND cboa.cut_block_open_admin_id = (
+						SELECT MAX(cboa2.cut_block_open_admin_id)
+						FROM cut_block_open_admin cboa2
+						WHERE cboa2.opening_id = op.opening_id
+					)
+				WHERE
+					(
+						'NOVALUE' IN (:#{#filter.stockingStatuses})
+						OR UPPER(fc.stocking_status_code) IN (:#{#filter.stockingStatuses})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.stockingTypes})
+						OR UPPER(fc.stocking_type_code) IN (:#{#filter.stockingTypes})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.damageAgents})
+						OR EXISTS (
+							SELECT 1
+							FROM forest_cover_layer fcl2
+							JOIN forhealth_rslt fhr2 ON fhr2.forest_cover_layer_id = fcl2.forest_cover_layer_id
+							WHERE fcl2.forest_cover_id = fc.forest_cover_id
+							AND UPPER(fhr2.silv_damage_agent_code) IN (:#{#filter.damageAgents})
+						)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingStatuses})
+						OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE'
+						OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits})
+						OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingCategories})
+						OR UPPER(op.open_category_code) IN (:#{#filter.openingCategories})
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+						)
+						OR (
+							fc.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND fc.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND fc.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+			),
+			unique_damage AS (
+				SELECT DISTINCT
+					fcl.forest_cover_id,
+					fhr.silv_damage_agent_code,
+					sdac.description AS damage_name
+				FROM filtered_ids fi
+				JOIN forest_cover_layer fcl ON fcl.forest_cover_id = fi.forest_cover_id
+				JOIN forhealth_rslt fhr ON fhr.forest_cover_layer_id = fcl.forest_cover_layer_id
+				LEFT JOIN silv_damage_agent_code sdac ON sdac.silv_damage_agent_code = fhr.silv_damage_agent_code
+				WHERE fhr.silv_damage_agent_code IS NOT NULL
+			),
+			damage_agg AS (
+				SELECT
+					forest_cover_id,
+					STRING_AGG(silv_damage_agent_code, ',' ORDER BY silv_damage_agent_code) AS damage_codes,
+					STRING_AGG(damage_name, '||' ORDER BY silv_damage_agent_code) AS damage_names
+				FROM unique_damage
+				GROUP BY forest_cover_id
+			),
+			forest_cover_search AS (
+				SELECT
+					fc.forest_cover_id AS forestCoverId,
+					TRIM(fc.silv_polygon_no) AS polygonId,
+					ssu.standards_unit_id AS standardUnitId,
+					da.damage_codes AS damageCodes,
+					da.damage_names AS damageNames,
+					fc.stocking_type_code AS stockingTypeCode,
+					stc.description AS stockingTypeName,
+					fc.stocking_status_code AS stockingStatusCode,
+					ssc.description AS stockingStatusName,
+					cboa.forest_file_id AS fileId,
+					fc.opening_id AS openingId,
+					op.open_category_code AS openingCategoryCode,
+					occ.description AS openingCategoryName,
+					ou.org_unit_code AS orgUnitCode,
+					ou.org_unit_name AS orgUnitName,
+					fc.update_timestamp AS updateTimestamp,
+					sm_rg.due_late_date AS regenDueDate,
+					sm_fg.due_late_date AS freeGrowingDueDate,
+					COUNT(*) OVER () AS totalCount
+				FROM forest_cover fc
+				JOIN filtered_ids fi ON fc.forest_cover_id = fi.forest_cover_id
+				LEFT JOIN opening op ON fc.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN stocking_status_code ssc ON ssc.stocking_status_code = fc.stocking_status_code
+				LEFT JOIN stocking_type_code stc ON stc.stocking_type_code = fc.stocking_type_code
+				LEFT JOIN stocking_standard_unit ssu ON ssu.stocking_standard_unit_id = fc.stocking_standard_unit_id
+				LEFT JOIN stocking_milestone sm_rg
+					ON sm_rg.stocking_standard_unit_id = fc.stocking_standard_unit_id
+					AND sm_rg.silv_milestone_type_code = 'RG'
+				LEFT JOIN stocking_milestone sm_fg
+					ON sm_fg.stocking_standard_unit_id = fc.stocking_standard_unit_id
+					AND sm_fg.silv_milestone_type_code = 'FG'
+				LEFT JOIN cut_block_open_admin cboa
+					ON op.opening_id = cboa.opening_id
+					AND cboa.cut_block_open_admin_id = (
+						SELECT MAX(cboa2.cut_block_open_admin_id)
+						FROM cut_block_open_admin cboa2
+						WHERE cboa2.opening_id = op.opening_id
+					)
+				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
+				LEFT JOIN damage_agg da ON da.forest_cover_id = fc.forest_cover_id
+			)
+			SELECT
+				forestCoverId,
+				polygonId,
+				standardUnitId,
+				damageCodes,
+				damageNames,
+				stockingTypeCode,
+				stockingTypeName,
+				stockingStatusCode,
+				stockingStatusName,
+				fileId,
+				openingId,
+				openingCategoryCode,
+				openingCategoryName,
+				orgUnitCode,
+				orgUnitName,
+				updateTimestamp,
+				regenDueDate,
+				freeGrowingDueDate,
+				totalCount
+			FROM forest_cover_search
+			ORDER BY updateTimestamp DESC
+			""" + PAGINATION;
 	}
 
