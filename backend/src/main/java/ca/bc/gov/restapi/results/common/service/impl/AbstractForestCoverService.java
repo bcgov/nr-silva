@@ -55,7 +55,6 @@ public abstract class AbstractForestCoverService implements ForestCoverService {
         projection.getOpeningId(),
         mapCode(projection.getOpeningCategoryCode(), projection.getOpeningCategoryName()),
         mapCode(projection.getOrgUnitCode(), projection.getOrgUnitName()),
-        null,
         projection.getUpdateTimestamp(),
         projection.getRegenDueDate(),
         projection.getFreeGrowingDueDate());
