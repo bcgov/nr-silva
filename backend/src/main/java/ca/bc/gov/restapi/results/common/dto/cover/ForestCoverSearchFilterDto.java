@@ -90,13 +90,13 @@ public class ForestCoverSearchFilterDto {
   }
 
   public boolean hasAnyFilter() {
-    return !SilvaConstants.NOVALUE.equals(stockingStatuses.get(0))
-        || !SilvaConstants.NOVALUE.equals(stockingTypes.get(0))
-        || !SilvaConstants.NOVALUE.equals(damageAgents.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingStatuses.get(0))
+    return StringUtil.isFilterSet(stockingStatuses)
+        || StringUtil.isFilterSet(stockingTypes)
+        || StringUtil.isFilterSet(damageAgents)
+        || StringUtil.isFilterSet(openingStatuses)
         || (fileId != null && !fileId.isBlank())
-        || !SilvaConstants.NOVALUE.equals(orgUnits.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingCategories.get(0))
+        || StringUtil.isFilterSet(orgUnits)
+        || StringUtil.isFilterSet(openingCategories)
         || (updateDateStart != null && !updateDateStart.isBlank())
         || (updateDateEnd != null && !updateDateEnd.isBlank());
   }

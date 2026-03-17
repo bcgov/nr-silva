@@ -104,15 +104,15 @@ public class DisturbanceSearchFilterDto {
   }
 
   public boolean hasAnyFilter() {
-    return !SilvaConstants.NOVALUE.equals(disturbances.get(0))
-        || !SilvaConstants.NOVALUE.equals(silvSystems.get(0))
-        || !SilvaConstants.NOVALUE.equals(variants.get(0))
-        || !SilvaConstants.NOVALUE.equals(cutPhases.get(0))
-        || !SilvaConstants.NOVALUE.equals(orgUnits.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingCategories.get(0))
+    return StringUtil.isFilterSet(disturbances)
+        || StringUtil.isFilterSet(silvSystems)
+        || StringUtil.isFilterSet(variants)
+        || StringUtil.isFilterSet(cutPhases)
+        || StringUtil.isFilterSet(orgUnits)
+        || StringUtil.isFilterSet(openingCategories)
         || (fileId != null && !fileId.isBlank())
-        || !SilvaConstants.NOVALUE.equals(clientNumbers.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingStatuses.get(0))
+        || StringUtil.isFilterSet(clientNumbers)
+        || StringUtil.isFilterSet(openingStatuses)
         || (updateDateStart != null && !updateDateStart.isBlank())
         || (updateDateEnd != null && !updateDateEnd.isBlank());
   }
