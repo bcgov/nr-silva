@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
+import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -85,6 +86,55 @@ export class SearchEndpointService {
                 'mapsheetQuad': mapsheetQuad,
                 'mapsheetSubQuad': mapsheetSubQuad,
                 'openingNumber': openingNumber,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param stockingStatuses
+     * @param stockingTypes
+     * @param damageAgents
+     * @param openingStatuses
+     * @param fileId
+     * @param orgUnits
+     * @param openingCategories
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelForestCoverSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static forestCoverSearch(
+        stockingStatuses?: Array<string>,
+        stockingTypes?: Array<string>,
+        damageAgents?: Array<string>,
+        openingStatuses?: Array<string>,
+        fileId?: string,
+        orgUnits?: Array<string>,
+        openingCategories?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelForestCoverSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/forest-cover',
+            query: {
+                'stockingStatuses': stockingStatuses,
+                'stockingTypes': stockingTypes,
+                'damageAgents': damageAgents,
+                'openingStatuses': openingStatuses,
+                'fileId': fileId,
+                'orgUnits': orgUnits,
+                'openingCategories': openingCategories,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
                 'page': page,
                 'size': size,
                 'sort': sort,

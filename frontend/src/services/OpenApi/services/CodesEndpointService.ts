@@ -11,6 +11,26 @@ export class CodesEndpointService {
      * @returns CodeDescriptionDto OK
      * @throws ApiError
      */
+    public static getStockingTypeCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/stocking-type',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getStockingStatusCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/stocking-status',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
     public static getSilvTechniqueCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -65,6 +85,16 @@ export class CodesEndpointService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/codes/silv-fund-source',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
+    public static getSilvDamageAgentCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-damage-agent',
         });
     }
     /**
