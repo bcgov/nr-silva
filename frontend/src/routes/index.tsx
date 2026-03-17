@@ -45,6 +45,9 @@ export const protectedRoutes: RouteObject[] = [
   // Catch-all route for unmatched paths
   {
     path: "*",
-    element: <ErrorHandling />
+    errorElement: <ErrorHandling />,
+    loader: () => {
+      throw new Response("Not Found", { status: 404 });
+    }
   }
 ] as const;
