@@ -12,29 +12,4 @@
   .label {
     text-transform: uppercase;
   }
-
-  .value {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.125rem;
-    text-transform: uppercase;
-    font-weight: 700;
-
-    &.postgres {
-      background-color: colors.$green-60;
-      color: colors.$white;
-
-      &:hover {
-        background-color: colors.$green-50;
-      }
-    }
-
-    &.hybrid {
-      background-color: colors.$blue-60;
-      color: colors.$white;
-
-      &:hover {
-        background-color: colors.$blue-50;
-      }
-    }
-  }
 }

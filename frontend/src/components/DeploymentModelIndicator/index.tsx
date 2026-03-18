@@ -4,6 +4,7 @@ import {
   getDeploymentModel,
   getDeploymentModelDisplayName
 } from '@/constants/deploymentModel';
+import { Tag } from '@carbon/react';
 
 import "./styles.scss";
 
@@ -29,12 +30,9 @@ const DeploymentModelIndicator: React.FC = () => {
   return (
     <div className="indicator">
       <span className="label">DB:</span>
-      <span
-        className={`value ${deploymentModel}`}
-        title={`Deployment Model: ${displayName}`}
-      >
+      <Tag type={deploymentModel === 'postgres' ? 'green' : 'blue'}>
         {displayName}
-      </span>
+      </Tag>
     </div>
   );
 };
