@@ -39,7 +39,7 @@ describe('ErrorHandling', () => {
       </MemoryRouter>
     );
 
-    expect(getByText('Unauthorized')).toBeDefined();
+    expect(getByText('Access Denied')).toBeDefined();
   });
 
   it('should display Page Not Found when error status is 404', () => {
@@ -65,7 +65,7 @@ describe('ErrorHandling', () => {
       </MemoryRouter>
     );
 
-    expect(getByText('Oops! Something went wrong')).toBeDefined();
+    expect(getByText('Oops! Something Went Wrong')).toBeDefined();
   });
 
   it('should display default error message when error is not a route error response', () => {
@@ -78,6 +78,6 @@ describe('ErrorHandling', () => {
       </MemoryRouter>
     );
 
-    expect(getByText('Oops! Something went wrong')).toBeDefined();
+    expect(getByText('Oops! Something Went Wrong')).toBeDefined();
   });
 });
