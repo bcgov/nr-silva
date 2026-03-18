@@ -84,7 +84,7 @@ const MyProfile = () => {
         </ul>
         {env.VITE_ZONE?.toLowerCase() !== 'prod' && (
           <ul>
-            <li className="deployment-indicator-bottom">
+            <li>
               <DeploymentModelIndicator />
             </li>
           </ul>
