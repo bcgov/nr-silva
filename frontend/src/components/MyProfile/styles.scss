@@ -20,6 +20,10 @@
   }
 
   .account-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
     a {
       width: 100%;
       font-weight: bold;
