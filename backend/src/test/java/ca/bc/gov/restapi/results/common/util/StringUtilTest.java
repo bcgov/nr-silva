@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.common.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -153,5 +154,44 @@ class StringUtilTest {
     // Then
     assertThat(result).hasSize(3);
     assertThat(result).containsExactly("", " ", "TEST");
+  }
+
+  @Test
+  @DisplayName("isFilterSet | exactly [NOVALUE] | should return false")
+  void isFilterSet_singleNovalue_shouldReturnFalse() {
+    assertThat(StringUtil.isFilterSet(List.of(SilvaConstants.NOVALUE))).isFalse();
+  }
+
+  @Test
+  @DisplayName("isFilterSet | single real value | should return true")
+  void isFilterSet_singleRealValue_shouldReturnTrue() {
+    assertThat(StringUtil.isFilterSet(List.of("APP"))).isTrue();
+  }
+
+  @Test
+  @DisplayName("isFilterSet | multiple real values | should return true")
+  void isFilterSet_multipleRealValues_shouldReturnTrue() {
+    assertThat(StringUtil.isFilterSet(List.of("APP", "AMD"))).isTrue();
+  }
+
+  @Test
+  @DisplayName("isFilterSet | NOVALUE plus real value | should return true")
+  void isFilterSet_novaleAndRealValue_shouldReturnTrue() {
+    // A caller that supplies NOVALUE alongside a real value must not be blocked
+    assertThat(StringUtil.isFilterSet(List.of(SilvaConstants.NOVALUE, "APP"))).isTrue();
+  }
+
+  @Test
+  @DisplayName("isFilterSet | real value plus NOVALUE | should return true")
+  void isFilterSet_realValueAndNovalue_shouldReturnTrue() {
+    assertThat(StringUtil.isFilterSet(List.of("APP", SilvaConstants.NOVALUE))).isTrue();
+  }
+
+  @Test
+  @DisplayName("isFilterSet | multiple NOVALUE entries | should return true")
+  void isFilterSet_multipleNovalues_shouldReturnTrue() {
+    // Two NOVALUEs means the caller explicitly sent the string twice — treat as set
+    assertThat(StringUtil.isFilterSet(List.of(SilvaConstants.NOVALUE, SilvaConstants.NOVALUE)))
+        .isTrue();
   }
 }

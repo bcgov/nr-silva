@@ -241,4 +241,61 @@ public abstract class AbstractCodesEndpointIntegrationTest
   void getOrgUnits_noAuth_shouldReturn401() throws Exception {
     mockMvc.perform(get("/api/codes/org-units")).andExpect(status().isUnauthorized());
   }
+
+  @Test
+  @DisplayName("Get silv damage agent codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getSilvDamageAgentCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-damage-agent").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get silv damage agent codes without auth should return 401")
+  void getSilvDamageAgentCodes_noAuth_shouldReturn401() throws Exception {
+    mockMvc.perform(get("/api/codes/silv-damage-agent")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Get stocking status codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getStockingStatusCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/stocking-status").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get stocking status codes without auth should return 401")
+  void getStockingStatusCodes_noAuth_shouldReturn401() throws Exception {
+    mockMvc.perform(get("/api/codes/stocking-status")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Get stocking type codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getStockingTypeCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/stocking-type").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get stocking type codes without auth should return 401")
+  void getStockingTypeCodes_noAuth_shouldReturn401() throws Exception {
+    mockMvc.perform(get("/api/codes/stocking-type")).andExpect(status().isUnauthorized());
+  }
 }

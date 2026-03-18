@@ -122,17 +122,17 @@ public class ActivitySearchFiltersDto {
   }
 
   public boolean hasAnyFilter() {
-    return !SilvaConstants.NOVALUE.equals(bases.get(0))
-        || !SilvaConstants.NOVALUE.equals(techniques.get(0))
-        || !SilvaConstants.NOVALUE.equals(methods.get(0))
+    return StringUtil.isFilterSet(bases)
+        || StringUtil.isFilterSet(techniques)
+        || StringUtil.isFilterSet(methods)
         || isComplete != null
-        || !SilvaConstants.NOVALUE.equals(objectives.get(0))
-        || !SilvaConstants.NOVALUE.equals(fundingSources.get(0))
-        || !SilvaConstants.NOVALUE.equals(orgUnits.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingCategories.get(0))
+        || StringUtil.isFilterSet(objectives)
+        || StringUtil.isFilterSet(fundingSources)
+        || StringUtil.isFilterSet(orgUnits)
+        || StringUtil.isFilterSet(openingCategories)
         || (fileId != null && !fileId.isBlank())
-        || !SilvaConstants.NOVALUE.equals(clientNumbers.get(0))
-        || !SilvaConstants.NOVALUE.equals(openingStatuses.get(0))
+        || StringUtil.isFilterSet(clientNumbers)
+        || StringUtil.isFilterSet(openingStatuses)
         || (intraAgencyNumber != null && !intraAgencyNumber.isBlank())
         || (updateDateStart != null && !updateDateStart.isBlank())
         || (updateDateEnd != null && !updateDateEnd.isBlank());

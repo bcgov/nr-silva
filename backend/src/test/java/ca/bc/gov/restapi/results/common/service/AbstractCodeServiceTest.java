@@ -196,4 +196,81 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
+
+  @Test
+  @DisplayName("Get all silv damage agent codes should return list of DTOs")
+  void getAllSilvDamageAgentCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvDamageAgentCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all silv damage agent codes should return valid DTOs")
+  void getAllSilvDamageAgentCode_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvDamageAgentCode();
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+          Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
+        });
+  }
+
+  @Test
+  @DisplayName("Get all stocking status codes should return list of DTOs")
+  void getAllStockingStatusCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllStockingStatusCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all stocking status codes should return valid DTOs")
+  void getAllStockingStatusCode_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllStockingStatusCode();
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+          Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
+        });
+  }
+
+  @Test
+  @DisplayName("Get all stocking type codes should return list of DTOs")
+  void getAllStockingTypeCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllStockingTypeCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all stocking type codes should return valid DTOs")
+  void getAllStockingTypeCode_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllStockingTypeCode();
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+        });
+  }
 }

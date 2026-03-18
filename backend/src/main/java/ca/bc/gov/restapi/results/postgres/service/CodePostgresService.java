@@ -8,12 +8,15 @@ import ca.bc.gov.restapi.results.postgres.repository.OpeningStatusCodePostgresRe
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvCutPhaseCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.SilvDamageAgentCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvObjectiveCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemVariantCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTechniqueCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingStatusCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.StockingTypeCodePostgresRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,9 @@ public class CodePostgresService extends AbstractCodeService {
       DisturbanceCodePostgresRepository disturbanceCodeRepository,
       OpenCategoryCodePostgresRepository openCategoryCodeRepository,
       OpeningStatusCodePostgresRepository openingStatusCodeRepository,
+      SilvDamageAgentCodePostgresRepository silvDamageAgentCodeRepository,
+      StockingStatusCodePostgresRepository stockingStatusCodeRepository,
+      StockingTypeCodePostgresRepository stockingTypeCodeRepository,
       OrgUnitPostgresRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(
@@ -47,6 +53,9 @@ public class CodePostgresService extends AbstractCodeService {
         disturbanceCodeRepository,
         openCategoryCodeRepository,
         openingStatusCodeRepository,
+        silvDamageAgentCodeRepository,
+        stockingStatusCodeRepository,
+        stockingTypeCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }
