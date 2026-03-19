@@ -5,7 +5,9 @@ import { useThemePreference } from '@/utils/ThemePreference';
 import PanelSectionName from '@/components/PanelSectionName';
 import DistrictSelection from '@/components/DistrictSelection';
 import Avatar from '@/components/Avatar';
+import DeploymentModelIndicator from '@/components/DeploymentModelIndicator';
 import { useAuth } from '@/contexts/AuthProvider';
+import { env } from '@/env';
 
 import './styles.scss';
 
@@ -80,6 +82,13 @@ const MyProfile = () => {
             Log out
           </SideNavLink>
         </ul>
+        {env.VITE_ZONE?.toLowerCase() !== 'prod' && (
+          <ul>
+            <li>
+              <DeploymentModelIndicator />
+            </li>
+          </ul>
+        )}
       </nav>
     </div>
   );

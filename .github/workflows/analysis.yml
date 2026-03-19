@@ -303,7 +303,7 @@ jobs:
             npx playwright install chromium
             npm run coverage
           dir: frontend
-          node_version: "20"
+          node_version: "24"
           sonar_args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=nr-silva-frontend
