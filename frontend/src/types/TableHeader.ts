@@ -1,4 +1,8 @@
-import { ActivitySearchResponseDto, DisturbanceSearchResponseDto, OpeningSearchResponseDto } from "@/services/OpenApi";
+import {
+  ActivitySearchResponseDto, DisturbanceSearchResponseDto, ForestCoverSearchResponseDto,
+  OpeningSearchResponseDto
+}
+  from "@/services/OpenApi";
 
 export type TableHeaderType<T> = {
   key: T;
@@ -18,3 +22,7 @@ export type ActivityHeaderType = TableHeaderType<ActivityHeaderKeyType>;
 export type DisturbanceHeaderKeyType = keyof DisturbanceSearchResponseDto | 'actions';
 
 export type DisturbanceHeaderType = TableHeaderType<DisturbanceHeaderKeyType>;
+
+export type ForestCoverHeaderKeyType = keyof ForestCoverSearchResponseDto | 'actions';
+
+export type ForestCoverHeaderType = TableHeaderType<ForestCoverHeaderKeyType>;

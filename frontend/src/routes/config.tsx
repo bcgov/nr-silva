@@ -7,6 +7,7 @@ import LoginClientSelection from "@/screens/LoginClientSelection";
 import CreateOpening from "@/screens/CreateOpening";
 import OpeningsSearch from "@/screens/OpeningsSearch";
 import ActivitySearch from "@/screens/ActivitySearch";
+import ForestCoverSearch from "@/screens/ForestCoverSearch";
 
 export const DashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -39,7 +40,6 @@ export const ClientSelectionRoute: RouteObject = {
   element: <LoginClientSelection />
 }
 
-
 export const ActivitySearchRoute: RouteObject = {
   path: "/activity-search",
   element: <SideLayout pageContent={<Outlet />} />,
@@ -61,4 +61,9 @@ export const ActivitySearchRoute: RouteObject = {
       element: <Navigate to="/activity-search/activities" replace />,
     },
   ],
+}
+
+export const ForestCoverSearchRoute: RouteObject = {
+  path: "/forest-cover-search",
+  element: <SideLayout pageContent={<ForestCoverSearch />} />,
 }

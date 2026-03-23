@@ -33,4 +33,19 @@ export type DisturbanceSearchParams = {
   page?: number;
   size?: number;
   sort?: Array<string>;
-}
+};
+
+export type ForestCoverSearchParams = {
+  stockingStatuses?: Array<string>;
+  stockingTypes?: Array<string>;
+  damageAgents?: Array<string>;
+  openingStatuses?: Array<string>;
+  fileId?: string;
+  orgUnits?: Array<string>;
+  openingCategories?: Array<string>;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  page?: number;
+  size: number;
+  sort?: Array<string>;
+};

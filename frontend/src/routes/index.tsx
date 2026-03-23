@@ -10,6 +10,7 @@ import {
   OpeningsRoute,
   OpeningsSearchRoute,
   ActivitySearchRoute,
+  ForestCoverSearchRoute
 } from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
@@ -29,7 +30,8 @@ const protectedRouteList: RouteObject[] = [
   OpeningsRoute,
   CreateOpeningRoute,
   OpeningDetailsRoute,
-  ActivitySearchRoute
+  ActivitySearchRoute,
+  ForestCoverSearchRoute
 ] as const;
 
 export const validPaths = protectedRouteList
