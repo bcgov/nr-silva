@@ -7,15 +7,14 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { ForestCoverHeaderKeyType, ForestCoverHeaderType } from "@/types/TableHeader";
 import { ForestCoverSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
-import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
+import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import SpatialCheckbox from "../SpatialCheckbox";
-import { ActivityStatusTag, StockingStatusTag } from "../Tags";
-
+import { StockingStatusTag } from "../Tags";
+import { DAMAGE_AGENT_DISPLAY_LIMIT } from "./constants";
 
 import "./styles.scss";
-import { codeDescriptionToDisplayText } from "../../utils/multiSelectUtils";
-import { DAMAGE_AGENT_DISPLAY_LIMIT } from "./constants";
+
 type props = {
   headers: ForestCoverHeaderType[];
   rowData: ForestCoverSearchResponseDto;
@@ -48,13 +47,13 @@ const ForestCoverSearchTableRow = ({
   };
 
   const createDamageAgentsTooltip = (agents: typeof rowData.damageAgents) => (
-    <div>
+    <Stack gap={2}>
       {agents?.map((agent) => (
-        <div key={agent.code}>
+        <div key={agent.code} className="damage-agent-tooltip-item">
           <span>{codeDescriptionToDisplayText(agent)}</span>
         </div>
       ))}
-    </div>
+    </Stack>
   );
 
   const renderCellContent = (header: ForestCoverHeaderKeyType) => {
@@ -108,6 +107,7 @@ const ForestCoverSearchTableRow = ({
 
           return (
             <DefinitionTooltip
+              className="damage-agents-tooltip"
               openOnHover
               definition={createDamageAgentsTooltip(rowData.damageAgents)}
               align="right"
@@ -119,6 +119,7 @@ const ForestCoverSearchTableRow = ({
           // Show "x agents" when more than 3
           return (
             <DefinitionTooltip
+              className="damage-agents-tooltip"
               openOnHover
               definition={createDamageAgentsTooltip(rowData.damageAgents)}
               align="right"

@@ -153,7 +153,7 @@ const ForestCoverSearchSection = () => {
   };
 
   return (
-    <Grid className="default-grid">
+    <Grid className="default-grid forest-cover-search-section">
       <Column sm={4} md={8} lg={16}>
         <ForestCoverSearchInput searchParams={searchParams} handleSearchFieldChange={handleSearchFieldChange} />
       </Column>

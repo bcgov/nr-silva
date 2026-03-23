@@ -1,5 +1,5 @@
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { DateTime } from 'luxon';
 import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 import { Column, DatePicker, DatePickerInput, Grid, TextInput } from '@carbon/react';
@@ -13,7 +13,6 @@ import { useQuery } from '@tanstack/react-query';
 import { API_DATE_FORMAT, DATE_PICKER_FORMAT, FILE_ID_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
 
 import CustomMultiSelect from '../CustomMultiSelect';
-
 
 import './styles.scss';
 
