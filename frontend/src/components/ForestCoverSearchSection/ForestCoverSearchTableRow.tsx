@@ -173,7 +173,10 @@ const ForestCoverSearchTableRow = ({
           );
         }
         return PLACE_HOLDER;
-
+      case "regenDueDate":
+        return formatLocalDate(rowData.regenDueDate, true);
+      case "freeGrowingDueDate":
+        return formatLocalDate(rowData.freeGrowingDueDate, true);
       case "updateTimestamp":
         return formatLocalDate(rowData.updateTimestamp, true);
       default:
