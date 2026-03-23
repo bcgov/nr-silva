@@ -40,6 +40,9 @@ parameters:
   - name: LOG_LEVEL
     description: Caddy logging level DEBUG, INFO, WARN, ERROR, PANIC, and FATAL (https://github.com/caddyserver/caddy/blob/master/logging.go)
     value: "info"
+  - name: DEPLOYMENT_MODEL
+    description: Deployment model (hybrid for Oracle, postgres for PostgreSQL)
+    value: "hybrid"
   - name: RANDOM_EXPRESSION
     description: Random expression to make sure deployments update
     from: "[a-zA-Z0-9]{32}"
@@ -78,6 +81,8 @@ objects:
                   value: "https://${NAME}-${ZONE}-backend.${DOMAIN}"
                 - name: VITE_ZONE
                   value: "${ZONE}"
+                - name: VITE_DEPLOYMENT_MODEL
+                  value: "${DEPLOYMENT_MODEL}"
                 - name: RANDOM_EXPRESSION
                   value: ${RANDOM_EXPRESSION}
                 - name: VITE_USER_POOLS_WEB_CLIENT_ID

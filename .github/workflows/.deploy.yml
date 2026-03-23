@@ -160,6 +160,7 @@ jobs:
             parameters: -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
+              -p DEPLOYMENT_MODEL=${{ inputs.deployment_model }}
     steps:
       - uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
         id: deploys

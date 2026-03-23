@@ -42,3 +42,33 @@ You can now use `CodeDescriptionDto` for type-safe API responses or variables in
 
 **Tip:**  
 Re-run `npm run generate:openapi` whenever your backend API changes to keep your types up to date.
+
+## Deployment Model Configuration
+
+The frontend supports multiple backend database configurations via the `VITE_DEPLOYMENT_MODEL` environment variable.
+
+### Available Models
+
+- **hybrid** (default): Indicates that the backend is using Oracle database as the primary datasource.
+- **postgres**: Indicates that the backend is using PostgreSQL database as the primary datasource.
+
+### Configuration
+
+Set the deployment model in your `.env` file:
+
+```
+VITE_DEPLOYMENT_MODEL=hybrid
+# or
+VITE_DEPLOYMENT_MODEL=postgres
+```
+
+### Debug Component
+
+A debug component (`DeploymentModelIndicator`) displays the current deployment model. This component:
+- Shows "Hybrid Model" or "Postgres Model"
+- Is **only visible in non-production environments** (dev, test, PR deployments)
+- Is **hidden in production**
+
+To integrate this component into the app layout, import it from `src/components/DeploymentModelIndicator`.
+
+---
