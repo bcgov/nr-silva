@@ -148,7 +148,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
       </Column>
 
       {/* Org Unit */}
-      < Column sm={4} md={4} lg={6} max={4} >
+      <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
           id="org-unit-multiselect"
           className="default-search-multi-select"
@@ -162,7 +162,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
       </Column >
 
       {/* Opening Categories */}
-      < Column sm={4} md={4} lg={6} max={4} >
+      <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
           placeholder={getMultiSelectPlaceholder('openingCategories')}
           titleText="Opening category"

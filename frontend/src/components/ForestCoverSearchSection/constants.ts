@@ -7,7 +7,7 @@ export const defaultForestCoverSearchTableHeaders: ForestCoverHeaderType[] = [
   { key: 'openingId', header: 'Opening ID', selected: true },
   { key: 'fileId', header: 'File ID', selected: false },
   { key: 'forestCoverId', header: 'Forest cover', selected: true },
-  { key: 'damageAgents', header: 'Damanging agent type', selected: true },
+  { key: 'damageAgents', header: 'Damaging agent type', selected: true },
   { key: 'stockingType', header: 'Stocking type', selected: true },
   { key: 'stockingStatus', header: 'Stocking status', selected: true },
   { key: 'openingCategory', header: 'Opening category', selected: false },

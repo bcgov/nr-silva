@@ -46,6 +46,6 @@ export type ForestCoverSearchParams = {
   updateDateStart?: string;
   updateDateEnd?: string;
   page?: number;
-  size: number;
+  size?: number;
   sort?: Array<string>;
 };

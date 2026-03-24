@@ -89,7 +89,7 @@ const ForestCoverSearchTableRow = ({
         );
       case "forestCoverId":
         return (
-          <Stack gap={2}>
+          <Stack gap={1} className="forest-cover-id-cell">
             <span>Polygon ID: {rowData.polygonId ?? PLACE_HOLDER}</span>
             <span>Standard unit: {rowData.standardUnitId ?? PLACE_HOLDER}</span>
           </Stack>
