@@ -36,6 +36,7 @@ export type DisturbanceSearchParams = {
 };
 
 export type ForestCoverSearchParams = {
+  openingId?: number;
   stockingStatuses?: Array<string>;
   stockingTypes?: Array<string>;
   damageAgents?: Array<string>;

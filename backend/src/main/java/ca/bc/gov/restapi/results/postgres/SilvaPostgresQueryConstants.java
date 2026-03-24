@@ -1957,6 +1957,9 @@ public class SilvaPostgresQueryConstants {
 				WHERE
 					'NOVALUE' IN (:#{#filter.damageAgents})
 					AND (
+						COALESCE(:#{#filter.openingId}, 0) = 0 OR fc.opening_id = :#{#filter.openingId}
+					)
+					AND (
 						'NOVALUE' IN (:#{#filter.stockingStatuses})
 						OR UPPER(fc.stocking_status_code) IN (:#{#filter.stockingStatuses})
 					)
@@ -2021,6 +2024,9 @@ public class SilvaPostgresQueryConstants {
 				WHERE
 					'NOVALUE' NOT IN (:#{#filter.damageAgents})
 					AND fhr.silv_damage_agent_code IN (:#{#filter.damageAgents})
+					AND (
+						COALESCE(:#{#filter.openingId}, 0) = 0 OR fc.opening_id = :#{#filter.openingId}
+					)
 					AND (
 						'NOVALUE' IN (:#{#filter.stockingStatuses})
 						OR UPPER(fc.stocking_status_code) IN (:#{#filter.stockingStatuses})

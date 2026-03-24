@@ -6,11 +6,11 @@ import { Column, DatePicker, DatePickerInput, Grid, TextInput } from '@carbon/re
 import API from '@/services/API';
 import { ForestCoverSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
-import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
+import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
 import { CodeDescriptionDto } from '@/services/OpenApi';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { useQuery } from '@tanstack/react-query';
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, FILE_ID_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
+import { API_DATE_FORMAT, DATE_PICKER_FORMAT, FILE_ID_MAX_LENGTH, OPENING_ID_MAX_LENGTH, OPENING_STATUS_LIST } from '@/constants';
 
 import CustomMultiSelect from '../CustomMultiSelect';
 
@@ -23,6 +23,7 @@ type props = {
 
 const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
   const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
+  const openingIdInputRef = useRef<HTMLInputElement>(null);
   useRefWithSearchParam(fileIdInputRef, searchParams?.fileId);
 
   const stockingTypeQuery = useQuery({
@@ -130,6 +131,20 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('openingStatuses')}
           selectedItems={OPENING_STATUS_LIST.filter(data => searchParams?.openingStatuses?.includes(data.code ?? '')) ?? []}
+        />
+      </Column>
+
+      {/* Opening ID */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <TextInput
+          ref={openingIdInputRef}
+          id="opening-id-input"
+          name="opening-id"
+          labelText="Opening ID"
+          placeholder="Enter opening ID"
+          onBlur={(e) => handleSearchFieldChange('openingId', e.target.value ? Number(e.target.value) : undefined)}
+          onKeyDown={(e) => enforceNumberInputOnKeyDown(e, OPENING_ID_MAX_LENGTH)}
+          onPaste={(e) => enforceNumberInputOnPaste(openingIdInputRef.current, e, OPENING_ID_MAX_LENGTH)}
         />
       </Column>
 

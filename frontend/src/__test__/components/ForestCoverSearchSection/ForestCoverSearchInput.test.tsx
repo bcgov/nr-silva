@@ -82,6 +82,8 @@ vi.mock('../../../utils/InputUtils', () => ({
     e.preventDefault();
     e.target.value = paste.toUpperCase().slice(0, maxLength);
   }),
+  enforceNumberInputOnKeyDown: vi.fn(),
+  enforceNumberInputOnPaste: vi.fn(),
   getMultiSelectedCodes: vi.fn((selected) =>
     selected.selectedItems.map((item: any) => item.code)
   ),
@@ -114,6 +116,7 @@ describe('ForestCoverSearchInput', () => {
       expect(screen.getByText('Stocking type')).toBeInTheDocument();
       expect(screen.getByText('Damaging agent type')).toBeInTheDocument();
       expect(screen.getByText('Opening status')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter opening ID')).toBeInTheDocument();
       expect(screen.getByText('File ID')).toBeInTheDocument();
       expect(screen.getByText('Org unit')).toBeInTheDocument();
       expect(screen.getByText('Opening category')).toBeInTheDocument();
@@ -178,6 +181,63 @@ describe('ForestCoverSearchInput', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('multiselect-opening-status-multiselect')).toBeInTheDocument();
+    });
+  });
+
+  it('renders Opening ID text input', async () => {
+    const { wrapper } = renderWithProviders();
+    render(
+      <ForestCoverSearchInput
+        searchParams={undefined}
+        handleSearchFieldChange={mockHandleSearchFieldChange}
+      />,
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Enter opening ID')).toBeInTheDocument();
+    });
+  });
+
+  it('calls handleSearchFieldChange with openingId as number on blur', async () => {
+    const { wrapper } = renderWithProviders();
+    const user = userEvent.setup();
+
+    render(
+      <ForestCoverSearchInput
+        searchParams={undefined}
+        handleSearchFieldChange={mockHandleSearchFieldChange}
+      />,
+      { wrapper }
+    );
+
+    const openingIdInput = screen.getByPlaceholderText('Enter opening ID');
+    await user.type(openingIdInput, '12345');
+    await user.tab();
+
+    await waitFor(() => {
+      expect(mockHandleSearchFieldChange).toHaveBeenCalledWith('openingId', 12345);
+    });
+  });
+
+  it('calls handleSearchFieldChange with undefined when opening ID is cleared', async () => {
+    const { wrapper } = renderWithProviders();
+    const user = userEvent.setup();
+
+    render(
+      <ForestCoverSearchInput
+        searchParams={undefined}
+        handleSearchFieldChange={mockHandleSearchFieldChange}
+      />,
+      { wrapper }
+    );
+
+    const openingIdInput = screen.getByPlaceholderText('Enter opening ID');
+    await user.click(openingIdInput);
+    await user.tab();
+
+    await waitFor(() => {
+      expect(mockHandleSearchFieldChange).toHaveBeenCalledWith('openingId', undefined);
     });
   });
 

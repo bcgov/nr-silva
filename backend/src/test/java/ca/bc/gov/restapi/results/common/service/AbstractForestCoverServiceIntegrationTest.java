@@ -43,7 +43,8 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   @DisplayName("Forest cover search with file ID filter should succeed")
   void forestCoverSearch_withFileIdFilter_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
-        new ForestCoverSearchFilterDto(null, null, null, null, "TFL47", null, null, null, null);
+        new ForestCoverSearchFilterDto(
+            null, null, null, null, null, "TFL47", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -63,7 +64,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withOpeningStatusFilter_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, List.of("APP"), null, null, null, null, null);
+            null, null, null, null, List.of("APP"), null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -77,7 +78,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withMultipleOpeningStatuses_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, List.of("APP", "AMD"), null, null, null, null, null);
+            null, null, null, null, List.of("APP", "AMD"), null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -91,7 +92,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withOrgUnitFilter_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, null, List.of("DCR"), null, null, null);
+            null, null, null, null, null, null, List.of("DCR"), null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -105,7 +106,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withMultipleOrgUnits_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, null, List.of("DCR", "DND"), null, null, null);
+            null, null, null, null, null, null, List.of("DCR", "DND"), null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -119,7 +120,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withOpeningCategoryFilter_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, null, null, List.of("FTML"), null, null);
+            null, null, null, null, null, null, null, List.of("FTML"), null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -133,7 +134,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withUpdateDateRange_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, null, null, null, "2020-01-01", "2024-12-31");
+            null, null, null, null, null, null, null, null, "2020-01-01", "2024-12-31");
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -164,7 +165,8 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   @DisplayName("Forest cover search response DTOs should have all required fields populated")
   void forestCoverSearch_responseDto_shouldHaveAllRequiredFields() {
     ForestCoverSearchFilterDto filters =
-        new ForestCoverSearchFilterDto(null, null, null, null, "TFL47", null, null, null, null);
+        new ForestCoverSearchFilterDto(
+            null, null, null, null, null, "TFL47", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -184,7 +186,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withInvalidFileId_shouldReturnEmpty() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, "INVALID_FILE_999999", null, null, null, null);
+            null, null, null, null, null, "INVALID_FILE_999999", null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
@@ -219,7 +221,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withInvalidDateRange_shouldThrowException() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, null, null, null, null, "2024-12-31", "2020-01-01");
+            null, null, null, null, null, null, null, null, "2024-12-31", "2020-01-01");
     Pageable pageable = PageRequest.of(0, 10);
 
     Assertions.assertThrows(
@@ -233,7 +235,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
   void forestCoverSearch_withCombinedFilters_shouldSucceed() {
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
-            null, null, null, List.of("APP"), "TFL47", List.of("DCR"), null, null, null);
+            null, null, null, null, List.of("APP"), "TFL47", List.of("DCR"), null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =

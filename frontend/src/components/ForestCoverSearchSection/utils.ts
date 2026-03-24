@@ -40,6 +40,14 @@ export const readForestCoverSearchUrlParams = (): Partial<ForestCoverSearchParam
   const fileId = searchParams.get('fileId');
   if (fileId) params.fileId = fileId;
 
+  const openingId = searchParams.get('openingId');
+  if (openingId) {
+    const openingIdNum = Number.parseInt(openingId, 10);
+    if (Number.isFinite(openingIdNum)) {
+      params.openingId = openingIdNum;
+    }
+  }
+
   const orgUnits = searchParams.getAll('orgUnits');
   if (orgUnits.length > 0) params.orgUnits = orgUnits;
 
@@ -100,6 +108,10 @@ export const updateForestCoverSearchUrlParams = (params?: Partial<ForestCoverSea
 
   if (params.fileId) {
     searchParams.append('fileId', params.fileId);
+  }
+
+  if (params.openingId !== undefined) {
+    searchParams.append('openingId', String(params.openingId));
   }
 
   if (params.orgUnits && Array.isArray(params.orgUnits)) {

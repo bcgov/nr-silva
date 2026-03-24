@@ -93,6 +93,7 @@ export class SearchEndpointService {
         });
     }
     /**
+     * @param openingId
      * @param stockingStatuses
      * @param stockingTypes
      * @param damageAgents
@@ -109,6 +110,7 @@ export class SearchEndpointService {
      * @throws ApiError
      */
     public static forestCoverSearch(
+        openingId?: number,
         stockingStatuses?: Array<string>,
         stockingTypes?: Array<string>,
         damageAgents?: Array<string>,
@@ -126,6 +128,7 @@ export class SearchEndpointService {
             method: 'GET',
             url: '/api/search/forest-cover',
             query: {
+                'openingId': openingId,
                 'stockingStatuses': stockingStatuses,
                 'stockingTypes': stockingTypes,
                 'damageAgents': damageAgents,
