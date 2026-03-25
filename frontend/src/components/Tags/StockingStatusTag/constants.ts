@@ -16,7 +16,7 @@ export const codeColorMap: Record<CodeType, keyof typeof TYPES> = {
   IMM: "green",      // Immature
   L: "blue",         // Lake
   M: "green",        // Meadow
-  MAT: "green",      // Mature
+  MAT: "teal",       // Mature
   NC: "gray",        // Non-commercial
   NF: "gray",        // Non-forest
   NP: "red",         // Non-productive
