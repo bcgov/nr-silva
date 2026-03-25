@@ -8,7 +8,9 @@ import {
   DashboardRoute,
   OpeningDetailsRoute,
   OpeningsRoute,
-  OpeningsSearchRoute
+  OpeningsSearchRoute,
+  ActivitySearchRoute,
+  ForestCoverSearchRoute
 } from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
@@ -27,7 +29,9 @@ const protectedRouteList: RouteObject[] = [
   OpeningsSearchRoute,
   OpeningsRoute,
   CreateOpeningRoute,
-  OpeningDetailsRoute
+  OpeningDetailsRoute,
+  ActivitySearchRoute,
+  ForestCoverSearchRoute
 ] as const;
 
 export const validPaths = protectedRouteList
@@ -43,6 +47,9 @@ export const protectedRoutes: RouteObject[] = [
   // Catch-all route for unmatched paths
   {
     path: "*",
-    element: <ErrorHandling />
+    errorElement: <ErrorHandling />,
+    loader: () => {
+      throw new Response("Not Found", { status: 404 });
+    }
   }
 ] as const;

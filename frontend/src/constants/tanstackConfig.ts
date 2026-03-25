@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-query";
 import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
-import { env } from "@/env";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { JWT } from "@/types/amplify";
@@ -32,7 +31,7 @@ async function refreshAccessToken(): Promise<string | null> {
     const session = await fetchAuthSession();
     const tokens = (session.tokens ?? {}) as { idToken?: string; accessToken?: string; refreshToken?: string };
 
-    const newAccess = tokens.accessToken?.toString() ?? tokens.idToken?.toString() ?? null;
+    const newAccess = tokens.accessToken?.toString() ?? null;
 
     if (newAccess) {
       setCookie(ACCESS_TOKEN_KEY, newAccess);

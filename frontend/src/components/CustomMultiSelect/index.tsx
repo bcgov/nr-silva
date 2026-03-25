@@ -27,6 +27,18 @@ const RenderSkeleton = (): ReactElement => {
 };
 
 /**
+ * Preserves the order of items from the original array.
+ * This prevents Carbon's FilterableMultiSelect from alphabetically sorting items.
+ *
+ * @template ItemType The type of the items
+ * @param items The items to sort
+ * @returns The items in their original order
+ */
+const noSortItems = <ItemType,>(items: readonly ItemType[]): ItemType[] => {
+  return [...items];
+};
+
+/**
  * Renders the FilterableMultiSelect component.
  *
  * @template ItemType The type of the items in the multi-select.
@@ -37,6 +49,7 @@ const RenderSkeleton = (): ReactElement => {
 const RenderMultiSelect = <ItemType,>({
   selectionFeedback = "top-after-reopen",
   onChange,
+  sortItems = noSortItems,
   ...props
 }: CustomMultiSelectProps<ItemType>): ReactElement => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -87,7 +100,7 @@ const RenderMultiSelect = <ItemType,>({
 
   return (
     <div ref={wrapperRef} className="custom-multi-select-wrapper">
-      <FilterableMultiSelect {...props} onChange={deferredOnChange} selectionFeedback={selectionFeedback} />
+      <FilterableMultiSelect {...props} onChange={deferredOnChange} selectionFeedback={selectionFeedback} sortItems={sortItems} />
     </div>
   );
 };
@@ -95,6 +108,7 @@ const RenderMultiSelect = <ItemType,>({
 /**
  * A custom multi-select component based on Carbon's `FilterableMultiSelect`.
  * It conditionally renders a skeleton loader (`TextInputSkeleton`) if `showSkeleton` is true.
+ * By default, it preserves the order of items from the server instead of sorting alphabetically.
  *
  * @template ItemType The type of the items in the multi-select.
  *

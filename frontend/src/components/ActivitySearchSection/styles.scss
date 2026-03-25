@@ -1,0 +1,9 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+#activity-status-dropdown {
+  .#{vars.$bcgov-prefix}--list-box__menu-item__option {
+    .#{vars.$bcgov-prefix}--tag {
+      margin-top: -0.25rem;
+    }
+  }
+}

@@ -44,17 +44,16 @@ on:
         description: Maximum replicas for backend
         default: "5"
         type: string
-      backend_flyway_environment:
-        description: Flyway environment for backend database migrations
-        default: "prod"
-        type: string
       backend_primary_db:
         description: Primary database for backend
         default: "oracle"
         type: string
-
+      deployment_model:
+        description: Deployment model (hybrid or postgres)
+        default: "hybrid"
+        type: string
       # FAM route: only used for PR deploys, not needed for test/prod since those use static routes
-      fam_route_number:
+      fam_route:
         description: FAM route for frontend; only needed for PR deployments
         required: false
         type: string
@@ -68,7 +67,7 @@ permissions: {}
 
 jobs:
   init:
-    name: Deploy (init) - ${{ inputs.backend_primary_db }}
+    name: Deploy (init) - ${{ inputs.deployment_model }}
     environment: ${{ inputs.environment }}
     outputs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
@@ -80,9 +79,18 @@ jobs:
         id: route
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "route=${{ inputs.fam_route_number }}" >> $GITHUB_OUTPUT
+            if [ -n "${{ inputs.fam_route }}" ]; then
+              echo "route=${{ inputs.fam_route }}" >> $GITHUB_OUTPUT
+            else
+              echo "FAM route is required for pull request deployments but was not provided."
+              exit 1
+            fi
           else
-            echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
+            if [ -n "${{ inputs.fam_route }}" ]; then
+              echo "route=${{ inputs.fam_route }}" >> $GITHUB_OUTPUT
+            else
+              echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: ALLOWED_ORIGINS
@@ -92,7 +100,7 @@ jobs:
           if [ -n "${{ inputs.allowed_origins }}" ]; then
             echo "allowed_origins=${{ inputs.allowed_origins }}" >> $GITHUB_OUTPUT
           else
-            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route_number }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
+            echo "allowed_origins=https://${{ github.event.repository.name }}-${{ inputs.fam_route }}-frontend.apps.silver.devops.gov.bc.ca" >> $GITHUB_OUTPUT
           fi
 
       - name: OpenShift Init
@@ -119,7 +127,7 @@ jobs:
           triggers: ${{ inputs.triggers }}
 
   deploy:
-    name: Deploy (${{ matrix.name }} - ${{ inputs.backend_primary_db }})
+    name: Deploy (${{ matrix.name }}) - ${{ inputs.deployment_model }}
     environment: ${{ inputs.environment }}
     needs: [init]
     runs-on: ubuntu-24.04
@@ -130,7 +138,7 @@ jobs:
         include:
           - name: database
             file: common/openshift.database.yml
-            parameters: -p DB_PVC_SIZE=128Mi
+            parameters: -p DB_PVC_SIZE=256Mi
             overwrite: false
           - name: backend
             file: backend/openshift.deploy.yml
@@ -143,8 +151,8 @@ jobs:
               -p CPU_REQUEST=${{ inputs.backend_cpu_request }}
               -p MIN_REPLICAS=${{ inputs.backend_min_replicas }}
               -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
-              -p FLYWAY_ENVIRONMENT=${{ inputs.backend_flyway_environment }}
               -p PRIMARY_DB=${{ inputs.backend_primary_db }}
+              -p BACKEND_PACKAGE_IMAGE=${{ (inputs.deployment_model == 'hybrid' && 'backend') || 'backend-postgres' }}
             verification_path: /actuator/health
           - name: frontend
             file: frontend/openshift.deploy.yml
@@ -152,6 +160,7 @@ jobs:
             parameters: -p MIN_REPLICAS=1
               -p MAX_REPLICAS=1
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
+              -p DEPLOYMENT_MODEL=${{ inputs.deployment_model }}
     steps:
       - uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
         id: deploys

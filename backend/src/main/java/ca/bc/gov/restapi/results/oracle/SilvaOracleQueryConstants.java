@@ -1697,7 +1697,7 @@ public class SilvaOracleQueryConstants {
           atu.OPENING_ID AS openingId,
           cboa.CUTTING_PERMIT_ID AS cuttingPermit,
           atu.TREATMENT_AMOUNT AS treatmentAmountArea,
-          atu.ACTIVITY_LICENSEE_ID AS intraAgencyNumber,
+          atu.FIA_PROJECT_ID AS intraAgencyNumber,
           occ.OPEN_CATEGORY_CODE AS openingCategoryCode,
           occ.DESCRIPTION AS openingCategoryDescription,
           ou.ORG_UNIT_CODE AS orgUnitCode,
@@ -1760,6 +1760,9 @@ public class SilvaOracleQueryConstants {
           )
           AND (
             'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
+          )
+          AND (
+            NVL(:#{#filter.intraAgencyNumber},'NOVALUE') = 'NOVALUE' OR atu.FIA_PROJECT_ID = :#{#filter.intraAgencyNumber}
           )
           AND (
             (
@@ -1922,6 +1925,260 @@ public class SilvaOracleQueryConstants {
         totalCount,
         updateTimestamp
       FROM disturbance_search
+      ORDER BY updateTimestamp DESC
+      """
+          + PAGINATION;
+
+  /**
+   * Searches for forest cover records matching the provided filter criteria, returning one row per
+   * matching FOREST_COVER with aggregated damage agent codes and names.
+   *
+   * <p>Query logic steps:
+   *
+   * <p>1. filtered_ids — Two mutually exclusive UNION ALL branches determine which FOREST_COVER_IDs
+   * pass the filter. Oracle's bind-variable peeking eliminates the inactive branch at parse time. -
+   * Branch 1 (no damage agent filter): drives from FOREST_COVER, joining OPENING, ORG_UNIT, and
+   * CUT_BLOCK_OPEN_ADMIN to apply stocking status/type, opening status/category, org unit, file ID,
+   * and date range filters. - Branch 2 (damage agent filter active): drives from FORHEALTH_RSLT
+   * with an indexed scan on SILV_DAMAGE_AGENT_CODE, then joins inward through FOREST_COVER_LAYER to
+   * FOREST_COVER. The same stocking/opening/org unit/date filters are applied on this
+   * already-narrow set.
+   *
+   * <p>2. unique_damage — For each FOREST_COVER_ID from filtered_ids, collects all distinct damage
+   * agent codes and descriptions across every layer (FOREST_COVER_LAYER + FORHEALTH_RSLT). Handles
+   * both single-layer and multi-layer forest cover polygons.
+   *
+   * <p>3. damage_agg — Aggregates per-layer damage agent rows into a single comma-separated code
+   * string and pipe-separated name string per FOREST_COVER_ID using LISTAGG.
+   *
+   * <p>4. forest_cover_search — Joins filtered IDs back to FOREST_COVER and enriches each row with
+   * stocking status/type descriptions, org unit, file ID, opening category, standards unit,
+   * regen/free-growing milestone dates, and aggregated damage data. A window function computes the
+   * total matching row count for pagination metadata.
+   *
+   * <p>5. Final SELECT — Returns the page of results ordered by UPDATE_TIMESTAMP DESC, with
+   * limit/offset applied via the PAGINATION constant.
+   */
+  public static final String FOREST_COVER_SEARCH =
+      """
+      WITH filtered_ids AS (
+        -- Branch 1: no damage agent filter — drive from FOREST_COVER with other filters
+        SELECT fc.FOREST_COVER_ID
+        FROM FOREST_COVER fc
+        LEFT JOIN OPENING op ON fc.OPENING_ID = op.OPENING_ID
+        LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa
+          ON op.OPENING_ID = cboa.OPENING_ID
+          AND cboa.CUT_BLOCK_OPEN_ADMIN_ID = (
+            SELECT MAX(cboa2.CUT_BLOCK_OPEN_ADMIN_ID)
+            FROM CUT_BLOCK_OPEN_ADMIN cboa2
+            WHERE cboa2.OPENING_ID = op.OPENING_ID
+          )
+        WHERE
+          'NOVALUE' IN (:#{#filter.damageAgents})
+          AND (
+            NVL(:#{#filter.openingId}, 0) = 0 OR fc.OPENING_ID = :#{#filter.openingId}
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.stockingStatuses})
+            OR UPPER(fc.STOCKING_STATUS_CODE) IN (:#{#filter.stockingStatuses})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.stockingTypes})
+            OR UPPER(fc.STOCKING_TYPE_CODE) IN (:#{#filter.stockingTypes})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.openingStatuses})
+            OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
+          )
+          AND (
+            NVL(:#{#filter.fileId},'NOVALUE') = 'NOVALUE'
+            OR cboa.FOREST_FILE_ID = :#{#filter.fileId}
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.orgUnits})
+            OR UPPER(ou.ORG_UNIT_CODE) IN (:#{#filter.orgUnits})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.openingCategories})
+            OR UPPER(op.OPEN_CATEGORY_CODE) IN (:#{#filter.openingCategories})
+          )
+          AND (
+            (
+              NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+            )
+            OR (
+              fc.UPDATE_TIMESTAMP IS NOT NULL
+              AND (
+                (
+                  NVL(:#{#filter.updateDateStart},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(fc.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD')
+                )
+                OR NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              )
+              AND (
+                (
+                  NVL(:#{#filter.updateDateEnd},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(fc.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD') + 1
+                )
+                OR NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+              )
+            )
+          )
+        UNION ALL
+        -- Branch 2: damage agent filter active — drive from FORHEALTH_RSLT inward
+        SELECT DISTINCT fc.FOREST_COVER_ID
+        FROM FORHEALTH_RSLT fhr
+        JOIN FOREST_COVER_LAYER fcl ON fcl.FOREST_COVER_LAYER_ID = fhr.FOREST_COVER_LAYER_ID
+        JOIN FOREST_COVER fc ON fc.FOREST_COVER_ID = fcl.FOREST_COVER_ID
+        LEFT JOIN OPENING op ON fc.OPENING_ID = op.OPENING_ID
+        LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa
+          ON op.OPENING_ID = cboa.OPENING_ID
+          AND cboa.CUT_BLOCK_OPEN_ADMIN_ID = (
+            SELECT MAX(cboa2.CUT_BLOCK_OPEN_ADMIN_ID)
+            FROM CUT_BLOCK_OPEN_ADMIN cboa2
+            WHERE cboa2.OPENING_ID = op.OPENING_ID
+          )
+        WHERE
+          'NOVALUE' NOT IN (:#{#filter.damageAgents})
+          AND fhr.SILV_DAMAGE_AGENT_CODE IN (:#{#filter.damageAgents})
+          AND (
+            NVL(:#{#filter.openingId}, 0) = 0 OR fc.OPENING_ID = :#{#filter.openingId}
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.stockingStatuses})
+            OR UPPER(fc.STOCKING_STATUS_CODE) IN (:#{#filter.stockingStatuses})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.stockingTypes})
+            OR UPPER(fc.STOCKING_TYPE_CODE) IN (:#{#filter.stockingTypes})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.openingStatuses})
+            OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
+          )
+          AND (
+            NVL(:#{#filter.fileId},'NOVALUE') = 'NOVALUE'
+            OR cboa.FOREST_FILE_ID = :#{#filter.fileId}
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.orgUnits})
+            OR UPPER(ou.ORG_UNIT_CODE) IN (:#{#filter.orgUnits})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.openingCategories})
+            OR UPPER(op.OPEN_CATEGORY_CODE) IN (:#{#filter.openingCategories})
+          )
+          AND (
+            (
+              NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+            )
+            OR (
+              fc.UPDATE_TIMESTAMP IS NOT NULL
+              AND (
+                (
+                  NVL(:#{#filter.updateDateStart},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(fc.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD')
+                )
+                OR NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              )
+              AND (
+                (
+                  NVL(:#{#filter.updateDateEnd},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(fc.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD') + 1
+                )
+                OR NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+              )
+            )
+          )
+      ),
+      unique_damage AS (
+        SELECT DISTINCT
+          fcl.FOREST_COVER_ID,
+          fhr.SILV_DAMAGE_AGENT_CODE,
+          sdac.DESCRIPTION AS damage_name
+        FROM filtered_ids fi
+        JOIN FOREST_COVER_LAYER fcl ON fcl.FOREST_COVER_ID = fi.FOREST_COVER_ID
+        JOIN FORHEALTH_RSLT fhr ON fhr.FOREST_COVER_LAYER_ID = fcl.FOREST_COVER_LAYER_ID
+        LEFT JOIN SILV_DAMAGE_AGENT_CODE sdac ON sdac.SILV_DAMAGE_AGENT_CODE = fhr.SILV_DAMAGE_AGENT_CODE
+        WHERE fhr.SILV_DAMAGE_AGENT_CODE IS NOT NULL
+      ),
+      damage_agg AS (
+        SELECT
+          FOREST_COVER_ID,
+          LISTAGG(SILV_DAMAGE_AGENT_CODE, ',') WITHIN GROUP (ORDER BY SILV_DAMAGE_AGENT_CODE) AS damage_codes,
+          LISTAGG(damage_name, '||') WITHIN GROUP (ORDER BY SILV_DAMAGE_AGENT_CODE) AS damage_names
+        FROM unique_damage
+        GROUP BY FOREST_COVER_ID
+      ),
+      forest_cover_search AS (
+        SELECT
+          fc.FOREST_COVER_ID AS forestCoverId,
+          TRIM(fc.SILV_POLYGON_NO) AS polygonId,
+          ssu.STANDARDS_UNIT_ID AS standardUnitId,
+          da.damage_codes AS damageCodes,
+          da.damage_names AS damageNames,
+          fc.STOCKING_TYPE_CODE AS stockingTypeCode,
+          stc.DESCRIPTION AS stockingTypeName,
+          fc.STOCKING_STATUS_CODE AS stockingStatusCode,
+          ssc.DESCRIPTION AS stockingStatusName,
+          cboa.FOREST_FILE_ID AS fileId,
+          fc.OPENING_ID AS openingId,
+          op.OPEN_CATEGORY_CODE AS openingCategoryCode,
+          occ.DESCRIPTION AS openingCategoryName,
+          ou.ORG_UNIT_CODE AS orgUnitCode,
+          ou.ORG_UNIT_NAME AS orgUnitName,
+          fc.UPDATE_TIMESTAMP AS updateTimestamp,
+          sm_rg.DUE_LATE_DATE AS regenDueDate,
+          sm_fg.DUE_LATE_DATE AS freeGrowingDueDate,
+          COUNT(*) OVER () AS totalCount
+        FROM FOREST_COVER fc
+        JOIN filtered_ids fi ON fc.FOREST_COVER_ID = fi.FOREST_COVER_ID
+        LEFT JOIN OPENING op ON fc.OPENING_ID = op.OPENING_ID
+        LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+        LEFT JOIN STOCKING_STATUS_CODE ssc ON ssc.STOCKING_STATUS_CODE = fc.STOCKING_STATUS_CODE
+        LEFT JOIN STOCKING_TYPE_CODE stc ON stc.STOCKING_TYPE_CODE = fc.STOCKING_TYPE_CODE
+        LEFT JOIN STOCKING_STANDARD_UNIT ssu ON ssu.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+        LEFT JOIN STOCKING_MILESTONE sm_rg
+          ON sm_rg.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+          AND sm_rg.SILV_MILESTONE_TYPE_CODE = 'RG'
+        LEFT JOIN STOCKING_MILESTONE sm_fg
+          ON sm_fg.STOCKING_STANDARD_UNIT_ID = fc.STOCKING_STANDARD_UNIT_ID
+          AND sm_fg.SILV_MILESTONE_TYPE_CODE = 'FG'
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa
+          ON op.OPENING_ID = cboa.OPENING_ID
+          AND cboa.CUT_BLOCK_OPEN_ADMIN_ID = (
+            SELECT MAX(cboa2.CUT_BLOCK_OPEN_ADMIN_ID)
+            FROM CUT_BLOCK_OPEN_ADMIN cboa2
+            WHERE cboa2.OPENING_ID = op.OPENING_ID
+          )
+        LEFT JOIN OPEN_CATEGORY_CODE occ ON op.OPEN_CATEGORY_CODE = occ.OPEN_CATEGORY_CODE
+        LEFT JOIN damage_agg da ON da.FOREST_COVER_ID = fc.FOREST_COVER_ID
+      )
+      SELECT
+        forestCoverId,
+        polygonId,
+        standardUnitId,
+        damageCodes,
+        damageNames,
+        stockingTypeCode,
+        stockingTypeName,
+        stockingStatusCode,
+        stockingStatusName,
+        fileId,
+        openingId,
+        openingCategoryCode,
+        openingCategoryName,
+        orgUnitCode,
+        orgUnitName,
+        updateTimestamp,
+        regenDueDate,
+        freeGrowingDueDate,
+        totalCount
+      FROM forest_cover_search
       ORDER BY updateTimestamp DESC
       """
           + PAGINATION;

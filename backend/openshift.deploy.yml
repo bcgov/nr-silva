@@ -81,12 +81,12 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
-  - name: FLYWAY_ENVIRONMENT
-    description: The Flyway environment to use for database migrations
-    value: "prod"
   - name: PRIMARY_DB
     description: The primary database to use (oracle or postgres)
     value: "oracle"
+  - name: BACKEND_PACKAGE_IMAGE
+    description: Backend package to pull from registry
+    value: backend
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -146,7 +146,7 @@ objects:
                   memory: ${MEMORY_REQUEST}
           containers:
             - name: ${NAME}-${ZONE}-${COMPONENT}
-              image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
+              image: ${REGISTRY}/${ORG}/${NAME}/${BACKEND_PACKAGE_IMAGE}:${TAG}
               imagePullPolicy: Always
               volumeMounts:
                 - name: ${NAME}-${ZONE}-certs
@@ -166,8 +166,6 @@ objects:
                   value: ${DB_POOL_MAX_LIFETIME}
                 - name: RESULTS_ENV_OPENSEARCH
                   value: ${RESULTS_ENV_OPENSEARCH}
-                - name: FLYWAY_ENVIRONMENT
-                  value: ${FLYWAY_ENVIRONMENT}
                 - name: PRIMARY_DB
                   value: ${PRIMARY_DB}
                 - name: DATABASE_HOST

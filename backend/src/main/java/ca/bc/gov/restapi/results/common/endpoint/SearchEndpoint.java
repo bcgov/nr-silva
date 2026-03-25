@@ -4,10 +4,13 @@ import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
+import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import java.util.List;
@@ -30,6 +33,8 @@ public class SearchEndpoint {
   private final OpeningSearchService openingSearchService;
 
   private final ActivityService activityService;
+
+  private final ForestCoverService forestCoverService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -142,6 +147,7 @@ public class SearchEndpoint {
       @RequestParam(value = "fileId", required = false) String fileId,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
       @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "intraAgencyNumber", required = false) String intraAgencyNumber,
       @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
       @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
       @ParameterObject Pageable paginationParameters) {
@@ -159,6 +165,7 @@ public class SearchEndpoint {
             fileId,
             clientNumbers,
             openingStatuses,
+            intraAgencyNumber,
             updateDateStart,
             updateDateEnd);
 
@@ -203,5 +210,39 @@ public class SearchEndpoint {
     }
 
     return activityService.disturbanceSearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/forest-cover")
+  public Page<ForestCoverSearchResponseDto> forestCoverSearch(
+      @RequestParam(value = "openingId", required = false) Long openingId,
+      @RequestParam(value = "stockingStatuses", required = false) List<String> stockingStatuses,
+      @RequestParam(value = "stockingTypes", required = false) List<String> stockingTypes,
+      @RequestParam(value = "damageAgents", required = false) List<String> damageAgents,
+      @RequestParam(value = "openingStatuses", required = false) List<String> openingStatuses,
+      @RequestParam(value = "fileId", required = false) String fileId,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "openingCategories", required = false) List<String> openingCategories,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(
+            openingId,
+            stockingStatuses,
+            stockingTypes,
+            damageAgents,
+            openingStatuses,
+            fileId,
+            orgUnits,
+            openingCategories,
+            updateDateStart,
+            updateDateEnd);
+
+    if (!filters.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return forestCoverService.forestCoverSearch(filters, paginationParameters);
   }
 }

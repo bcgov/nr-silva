@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Remove FAM route allocations for PR
-        uses: bcgov/action-oc-runner@v1.4.0
+        uses: bcgov/action-oc-runner@57a28c38359c93e43edf609d35b9a3f50a070131 # v1.4.0
         env:
           PR_NUMBER: ${{ github.event.number }}
         with:
@@ -66,16 +66,8 @@ jobs:
             fi
 
   cleanup:
-    name: Cleanup and Images - ${{ matrix.name }}
-    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@6d695dd755fa9255ea4bde335890516beb6f95e4 # v1.0.1
-    strategy:
-      matrix:
-        model: [hybrid, postgres]
-        include:
-          - model: hybrid
-            name: "Hybrid (Oracle Primary)"
-          - model: postgres
-            name: "Postgres"
+    name: Cleanup and Images
+    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-close.yml@ca6579bdadf383a2513397081f963889b92823a4 # v1.1.0
     permissions:
       packages: write
     secrets:
@@ -83,5 +75,5 @@ jobs:
       oc_token: ${{ secrets.OC_TOKEN }}
     with:
       cleanup: label
-      packages: backend frontend
-      target: ${{ github.event.number }}-${{ matrix.model }}
+      packages: backend backend-postgres frontend
+      cleanup_name: ${{ github.event.repository.name }}-${{ github.event.number }}-hybrid ${{ github.event.repository.name }}-${{ github.event.number }}-postgres

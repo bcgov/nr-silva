@@ -130,4 +130,34 @@ public class CodesEndpoint {
   public List<CodeDescriptionDto> getDisturbanceCodes() {
     return codeService.getAllDisturbanceCode();
   }
+
+  /**
+   * Get all silv damage agent codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found silv damage agent codes.
+   */
+  @GetMapping("/silv-damage-agent")
+  public List<CodeDescriptionDto> getSilvDamageAgentCodes() {
+    return codeService.getAllSilvDamageAgentCode();
+  }
+
+  /**
+   * Get all stocking status codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found stocking status codes.
+   */
+  @GetMapping("/stocking-status")
+  public List<CodeDescriptionDto> getStockingStatusCodes() {
+    return codeService.getAllStockingStatusCode();
+  }
+
+  /**
+   * Get all stocking type codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found stocking type codes.
+   */
+  @GetMapping("/stocking-type")
+  public List<CodeDescriptionDto> getStockingTypeCodes() {
+    return codeService.getAllStockingTypeCode();
+  }
 }

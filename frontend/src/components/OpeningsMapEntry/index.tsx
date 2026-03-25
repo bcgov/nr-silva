@@ -1,33 +1,34 @@
 import React, { useEffect, useState, useRef } from "react";
-import { renderToString } from "react-dom/server";
 import L from "leaflet";
-import { useMapEvents, Popup, GeoJSON, Marker } from "react-leaflet";
+import { useMapEvents, GeoJSON, Marker } from "react-leaflet";
 import { Feature, FeatureCollection, Geometry } from "geojson";
 import {
   getStyleForFeature,
-  getPropertyForFeature,
-  getPopupCenter,
   getCenterOfFeatureCollection,
 } from "@/types/MapLayer";
-import OpeningsMapEntryPopup from "@/components/OpeningsMapEntryPopup";
 import "./styles.scss";
 
 interface OpeningsMapEntryProps {
   polygons: FeatureCollection[];
-  hoveredFeature: Feature<Geometry, any> | null;
-  setHoveredFeature: (feature: Feature<Geometry, any> | null) => void;
-  selectedFeature: Feature<Geometry, any> | null;
-  setSelectedFeature: (feature: Feature<Geometry, any> | null) => void;
-  isPopupHoveredRef?: React.MutableRefObject<boolean>;
+  hoveredFeature: Feature<Geometry, unknown> | null;
+  setHoveredFeature: (feature: Feature<Geometry, unknown> | null) => void;
+  selectedFeature: Feature<Geometry, unknown> | null;
+  setSelectedFeature: (feature: Feature<Geometry, unknown> | null) => void;
+  isPopupHoveredRef?: React.RefObject<boolean>;
 }
 
 const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
-  // State to hold the polygons
-  // This is used to set the map view when the component mounts
-  const [features, setFeatures] = useState<FeatureCollection[]>([]);
   const [zoom, setZoom] = useState<number>(13);
 
   const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
+
+  const hasFeatureProperty = (l: unknown): l is L.Layer & { feature: Feature<Geometry, unknown> } => {
+    return typeof l === 'object' && l !== null && 'feature' in l;
+  };
+
+  const isPathLayer = (l: unknown): l is L.Path => {
+    return typeof l === 'object' && l !== null && 'bringToFront' in l;
+  };
 
   // Get the map instance from react-leaflet
   const map = useMapEvents({
@@ -64,58 +65,25 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
       .map((feature) => feature.id)
       .filter(Boolean)
       .map((id) => String(id))
-      .reduce((acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
-
-  /**
-   * Function to get the opening ID from the polygon
-   * This is used to display the opening ID in the popup when a polygon is clicked
-   * @param polygon The polygon to get the opening ID from
-   * @returns The opening ID of the polygon or 0 if not found
-   */
-  const getOpeningIdByCollection = (polygon: FeatureCollection) =>
-    polygon.features
-      .filter(Boolean)
-      .map((feature) => feature.properties?.OPENING_ID)
-      .filter(Boolean)
-      .map((id) => String(id))
-      .map((id) => parseFloat(id))
-      .find((id) => id && id !== 0) ?? 0;
-
-  /**
-   * Function to get the opening ID from the polygon
-   * This is used to display the opening ID in the popup when a polygon is clicked
-   * @param feature The feature to get the opening ID from
-   * @returns The opening ID of the polygon or 0 if not found
-   */
-  const getOpeningIdByFeature = (feature: Feature<Geometry, any>) => {
-    const openingId = feature.properties?.OPENING_ID || "0";
-    return parseFloat(openingId);
-  };
-
-  /**
-   * Effect to set the map view when the component mounts or when the polygons change
-   */
-  useEffect(() => {
-    setFeatures([...polygons]);
-  }, [polygons]);
+      .reduce((_acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
 
   useEffect(() => {
     if (hoveredFeature) {
       setTimeout(() => {
         map.eachLayer((l: L.Layer) => {
           if (
-            (l as any).feature &&
-            (l as any).feature.id === hoveredFeature.id &&
-            (l as L.Path).bringToFront
+            hasFeatureProperty(l) &&
+            l.feature.id === hoveredFeature.id &&
+            isPathLayer(l)
           ) {
-            (l as L.Path).bringToFront();
+            l.bringToFront();
           }
         });
       }, 0);
     }
   }, [hoveredFeature, selectedFeature, map]);
 
-  const onEachFeature = (featureCollection: FeatureCollection) => (feature: Feature<Geometry, any>, layer: L.Layer) => {
+  const onEachFeature = (feature: Feature<Geometry, unknown>, layer: L.Layer) => {
     layer.on({
       mouseover: () => {
         setHoveredFeature(feature);
@@ -152,10 +120,23 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     });
   };
 
+  const totalFeatures = polygons
+    .filter(Boolean)
+    .reduce((sum, fc) => sum + fc.features.filter((f) => f.geometry).length, 0);
+
+  /**
+   * Determines whether features should be rendered as GeoJSON polygons or as tree marker icons.
+   * When multiple polygons are spread far apart, a low zoom level is required to fit them all
+   * in view, causing them to appear too small to be useful as polygons — in that case we fall
+   * back to tree markers. However, a single feature should always render as a polygon regardless
+   * of zoom, since zooming out to fit a large polygon must not incorrectly trigger the marker fallback.
+   */
+  const showAsPolygon = zoom > 10 || totalFeatures <= 1;
+
   return (
     <>
-      {zoom > 10 &&
-        features.filter(Boolean).map((featureCollection, collectionIndex) =>
+      {showAsPolygon &&
+        polygons.filter(Boolean).map((featureCollection, collectionIndex) =>
           featureCollection.features
             .filter((feature) => feature.geometry)
             .map((feature, featureIndex) => (
@@ -172,13 +153,13 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
                     featureCollection.features.length
                   )
                 }
-                onEachFeature={onEachFeature(featureCollection)}
+                onEachFeature={onEachFeature}
               />
             ))
         )
       }
-      {zoom <= 10 &&
-        features.filter(Boolean).map((featureCollection, index) =>
+      {!showAsPolygon &&
+        polygons.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features
             ?.filter((feature) => feature.geometry)
             .map((feature, fIndex) => (
