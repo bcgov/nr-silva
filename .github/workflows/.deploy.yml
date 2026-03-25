@@ -169,7 +169,6 @@ jobs:
             -p MAX_REPLICAS=${{ inputs.backend_max_replicas }}
             -p PRIMARY_DB=${{ inputs.backend_primary_db }}
             -p BACKEND_PACKAGE_IMAGE=${{ (inputs.deployment_model == 'hybrid' && 'backend') || 'backend-postgres' }}
-          verification_path: /actuator/health
           timeout: 15m
           triggers: ${{ inputs.triggers }}
 
