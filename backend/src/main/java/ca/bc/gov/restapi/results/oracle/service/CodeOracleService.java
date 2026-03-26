@@ -15,6 +15,7 @@ import ca.bc.gov.restapi.results.oracle.repository.SilvObjectiveCodeOracleReposi
 import ca.bc.gov.restapi.results.oracle.repository.SilvSystemCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvSystemVariantCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.SilvTechniqueCodeOracleRepository;
+import ca.bc.gov.restapi.results.oracle.repository.SilvTreeSpeciesCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.StockingStatusCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.StockingTypeCodeOracleRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,6 +40,7 @@ public class CodeOracleService extends AbstractCodeService {
       SilvDamageAgentCodeOracleRepository silvDamageAgentCodeRepository,
       StockingStatusCodeOracleRepository stockingStatusCodeRepository,
       StockingTypeCodeOracleRepository stockingTypeCodeRepository,
+      SilvTreeSpeciesCodeOracleRepository silvTreeSpeciesCodeRepository,
       OrgUnitOracleRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(
@@ -56,6 +58,7 @@ public class CodeOracleService extends AbstractCodeService {
         silvDamageAgentCodeRepository,
         stockingStatusCodeRepository,
         stockingTypeCodeRepository,
+        silvTreeSpeciesCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }

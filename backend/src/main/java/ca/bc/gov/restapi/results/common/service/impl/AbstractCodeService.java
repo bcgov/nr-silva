@@ -32,6 +32,7 @@ public abstract class AbstractCodeService implements CodeService {
   protected GenericCodeRepository<?> silvDamageAgentCodeRepository;
   protected GenericCodeRepository<?> stockingStatusCodeRepository;
   protected GenericCodeRepository<?> stockingTypeCodeRepository;
+  protected GenericCodeRepository<?> silvTreeSpeciesCodeRepository;
   protected OrgUnitRepository orgUnitRepository;
   protected SilvaConfiguration silvaConfiguration;
 
@@ -111,6 +112,12 @@ public abstract class AbstractCodeService implements CodeService {
   public List<CodeDescriptionDto> getAllStockingTypeCode() {
     return CodeConverterUtil.toCodeDescriptionDtos(
         stockingTypeCodeRepository.findAllByOrderByExpiryDateDesc());
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllSilvTreeSpeciesCode() {
+    return CodeConverterUtil.toCodeDescriptionDtos(
+        silvTreeSpeciesCodeRepository.findAllByOrderByExpiryDateDesc());
   }
 
   @Override
