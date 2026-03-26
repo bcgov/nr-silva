@@ -298,4 +298,35 @@ public abstract class AbstractCodesEndpointIntegrationTest
   void getStockingTypeCodes_noAuth_shouldReturn401() throws Exception {
     mockMvc.perform(get("/api/codes/stocking-type")).andExpect(status().isUnauthorized());
   }
+
+  @Test
+  @DisplayName("Get silv tree species codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getSilvTreeSpeciesCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-tree-species").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
+  }
+
+  @Test
+  @DisplayName("Get silv tree species codes without auth should return 401")
+  void getSilvTreeSpeciesCodes_noAuth_shouldReturn401() throws Exception {
+    mockMvc.perform(get("/api/codes/silv-tree-species")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Get silv tree species codes should return valid JSON array")
+  @WithMockUser(roles = "user_read")
+  void getSilvTreeSpeciesCodes_shouldReturnValidJsonArray() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/silv-tree-species"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$[*].code").isArray())
+        .andExpect(jsonPath("$[*].description").isArray());
+  }
 }
