@@ -2089,4 +2089,177 @@ public class SilvaOracleQueryConstants {
       ORDER BY updateTimestamp DESC
       """
           + PAGINATION;
+
+  public static final String STANDARD_UNIT_SEARCH =
+      """
+      WITH filtered_ssu AS (
+        SELECT
+          ssu.STOCKING_STANDARD_UNIT_ID,
+          ssu.UPDATE_TIMESTAMP,
+          COUNT(*) OVER () AS totalCount
+        FROM STOCKING_STANDARD_UNIT ssu
+        LEFT JOIN OPENING op ON ssu.OPENING_ID = op.OPENING_ID
+        LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+        LEFT JOIN STOCKING_ECOLOGY se ON se.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa
+          ON op.OPENING_ID = cboa.OPENING_ID
+          AND cboa.OPENING_PRIME_LICENCE_IND = 'Y'
+        LEFT JOIN FOREST_FILE_CLIENT ffc
+          ON ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID
+          AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
+        WHERE
+          (
+            NVL(:#{#filter.standardsUnitId},'NOVALUE') = 'NOVALUE'
+            OR UPPER(ssu.STANDARDS_UNIT_ID) = UPPER(:#{#filter.standardsUnitId})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.preferredSpecies})
+            OR EXISTS (
+              SELECT 1
+              FROM STOCKING_LAYER sl2
+              JOIN STOCKING_LAYER_SPECIES sls2 ON sls2.STOCKING_LAYER_ID = sl2.STOCKING_LAYER_ID
+              WHERE sl2.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+              AND sls2.PREFERRED_IND = 'Y'
+              AND UPPER(sls2.SILV_TREE_SPECIES_CODE) IN (:#{#filter.preferredSpecies})
+            )
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.orgUnits})
+            OR UPPER(ou.ORG_UNIT_CODE) IN (:#{#filter.orgUnits})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.clientNumbers})
+            OR UPPER(ffc.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
+          )
+          AND (
+            NVL(:#{#filter.bgcZone},'NOVALUE') = 'NOVALUE'
+            OR UPPER(se.BGC_ZONE_CODE) = :#{#filter.bgcZone}
+          )
+          AND (
+            NVL(:#{#filter.bgcSubZone},'NOVALUE') = 'NOVALUE'
+            OR UPPER(se.BGC_SUBZONE_CODE) = :#{#filter.bgcSubZone}
+          )
+          AND (
+            NVL(:#{#filter.bgcVariant},'NOVALUE') = 'NOVALUE'
+            OR UPPER(se.BGC_VARIANT) = :#{#filter.bgcVariant}
+          )
+          AND (
+            NVL(:#{#filter.bgcPhase},'NOVALUE') = 'NOVALUE'
+            OR UPPER(se.BGC_PHASE) = :#{#filter.bgcPhase}
+          )
+          AND (
+            NVL(:#{#filter.becSiteSeries},'NOVALUE') = 'NOVALUE'
+            OR se.BEC_SITE_SERIES = :#{#filter.becSiteSeries}
+          )
+          AND (
+            NVL(:#{#filter.becSeral},'NOVALUE') = 'NOVALUE'
+            OR UPPER(se.BEC_SERAL) = :#{#filter.becSeral}
+          )
+          AND (
+            (
+              NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+            )
+            OR (
+              ssu.UPDATE_TIMESTAMP IS NOT NULL
+              AND (
+                (
+                  NVL(:#{#filter.updateDateStart},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(ssu.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD')
+                )
+                OR NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+              )
+              AND (
+                (
+                  NVL(:#{#filter.updateDateEnd},'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(ssu.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD') + 1
+                )
+                OR NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+              )
+            )
+          )
+      ),
+      paged_ids AS (
+        SELECT STOCKING_STANDARD_UNIT_ID, totalCount
+        FROM filtered_ssu
+        ORDER BY UPDATE_TIMESTAMP DESC NULLS LAST
+        OFFSET :page ROWS FETCH NEXT :size ROWS ONLY
+      ),
+      preferred_species AS (
+        SELECT DISTINCT
+          sl.STOCKING_STANDARD_UNIT_ID,
+          sls.SILV_TREE_SPECIES_CODE,
+          stsc.DESCRIPTION AS species_name
+        FROM paged_ids pi
+        JOIN STOCKING_LAYER sl ON sl.STOCKING_STANDARD_UNIT_ID = pi.STOCKING_STANDARD_UNIT_ID
+        JOIN STOCKING_LAYER_SPECIES sls ON sls.STOCKING_LAYER_ID = sl.STOCKING_LAYER_ID
+        LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON stsc.SILV_TREE_SPECIES_CODE = sls.SILV_TREE_SPECIES_CODE
+        WHERE sls.PREFERRED_IND = 'Y'
+      ),
+      species_agg AS (
+        SELECT
+          STOCKING_STANDARD_UNIT_ID,
+          LISTAGG(SILV_TREE_SPECIES_CODE, ',') WITHIN GROUP (ORDER BY SILV_TREE_SPECIES_CODE) AS species_codes,
+          LISTAGG(species_name, '||') WITHIN GROUP (ORDER BY SILV_TREE_SPECIES_CODE) AS species_names
+        FROM preferred_species
+        GROUP BY STOCKING_STANDARD_UNIT_ID
+      ),
+      layer_summary AS (
+        SELECT
+          sl.STOCKING_STANDARD_UNIT_ID,
+          COUNT(*) AS total_layer,
+          MAX(sl.TARGET_STOCKING) AS target_wellspaced_trees
+        FROM STOCKING_LAYER sl
+        JOIN paged_ids pi ON sl.STOCKING_STANDARD_UNIT_ID = pi.STOCKING_STANDARD_UNIT_ID
+        GROUP BY sl.STOCKING_STANDARD_UNIT_ID
+      )
+      SELECT
+        ssu.STOCKING_STANDARD_UNIT_ID AS stockingStandardUnitId,
+        ssu.OPENING_ID AS openingId,
+        cboa.FOREST_FILE_ID AS fileId,
+        cboa.CUT_BLOCK_ID AS cutBlock,
+        cboa.CUTTING_PERMIT_ID AS cuttingPermit,
+        ssu.STANDARDS_UNIT_ID AS standardsUnitId,
+        ssu.NET_AREA AS netArea,
+        sm_rg.LATE_OFFSET_YEARS AS regenDelayYears,
+        sm_fg.EARLY_OFFSET_YEARS AS freeGrowingEarlyYears,
+        sm_fg.LATE_OFFSET_YEARS AS freeGrowingLateYears,
+        ls.total_layer AS totalLayer,
+        ls.target_wellspaced_trees AS targetWellSpacedTrees,
+        sa.species_codes AS preferredSpeciesCodes,
+        sa.species_names AS preferredSpeciesNames,
+        se.BGC_ZONE_CODE AS bgcZone,
+        se.BGC_SUBZONE_CODE AS bgcSubZone,
+        se.BGC_VARIANT AS bgcVariant,
+        se.BGC_PHASE AS bgcPhase,
+        se.BEC_SITE_SERIES AS becSiteSeries,
+        se.BEC_SITE_TYPE AS becSiteType,
+        se.BEC_SERAL AS becSeral,
+        ou.ORG_UNIT_CODE AS orgUnitCode,
+        ou.ORG_UNIT_NAME AS orgUnitName,
+        ffc.CLIENT_NUMBER AS clientNumber,
+        ffc.CLIENT_LOCN_CODE AS clientLocation,
+        ssu.UPDATE_TIMESTAMP AS updateTimestamp,
+        pi.totalCount
+      FROM STOCKING_STANDARD_UNIT ssu
+      JOIN paged_ids pi ON ssu.STOCKING_STANDARD_UNIT_ID = pi.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN OPENING op ON ssu.OPENING_ID = op.OPENING_ID
+      LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+      LEFT JOIN STOCKING_ECOLOGY se ON se.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN STOCKING_MILESTONE sm_rg
+        ON sm_rg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+        AND sm_rg.SILV_MILESTONE_TYPE_CODE = 'RG'
+      LEFT JOIN STOCKING_MILESTONE sm_fg
+        ON sm_fg.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+        AND sm_fg.SILV_MILESTONE_TYPE_CODE = 'FG'
+      LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa
+        ON op.OPENING_ID = cboa.OPENING_ID
+        AND cboa.OPENING_PRIME_LICENCE_IND = 'Y'
+      LEFT JOIN FOREST_FILE_CLIENT ffc
+        ON ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID
+        AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
+      LEFT JOIN layer_summary ls ON ls.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+      LEFT JOIN species_agg sa ON sa.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+      ORDER BY ssu.UPDATE_TIMESTAMP DESC NULLS LAST
+      """;
 }

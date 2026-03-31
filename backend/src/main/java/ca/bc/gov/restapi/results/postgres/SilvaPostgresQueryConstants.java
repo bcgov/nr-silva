@@ -2067,5 +2067,39 @@ public class SilvaPostgresQueryConstants {
 			FROM forest_cover_search
 			ORDER BY updateTimestamp DESC
 			""" + PAGINATION;
+
+	// TODO: Implement Postgres standard unit search query
+	public static final String STANDARD_UNIT_SEARCH =
+			"""
+			SELECT
+				NULL::bigint AS stockingStandardUnitId,
+				NULL::bigint AS openingId,
+				NULL::text   AS fileId,
+				NULL::text   AS cutBlock,
+				NULL::text   AS cuttingPermit,
+				NULL::bigint AS standardsUnitId,
+				NULL::bigint AS netArea,
+				NULL::int    AS regenDelayYears,
+				NULL::int    AS freeGrowingEarlyYears,
+				NULL::int    AS freeGrowingLateYears,
+				NULL::int    AS totalLayer,
+				NULL::bigint AS targetWellSpacedTrees,
+				NULL::text   AS preferredSpeciesCodes,
+				NULL::text   AS preferredSpeciesNames,
+				NULL::text   AS bgcZone,
+				NULL::text   AS bgcSubZone,
+				NULL::text   AS bgcVariant,
+				NULL::text   AS bgcPhase,
+				NULL::text   AS becSiteSeries,
+				NULL::text   AS becSiteType,
+				NULL::text   AS becSeral,
+				NULL::text   AS orgUnitCode,
+				NULL::text   AS orgUnitName,
+				NULL::text   AS clientNumber,
+				NULL::text   AS clientLocation,
+				NULL::timestamp AS updateTimestamp,
+				0::bigint    AS totalCount
+			WHERE 1 = 0
+			""";
 	}
 
