@@ -2068,38 +2068,177 @@ public class SilvaPostgresQueryConstants {
 			ORDER BY updateTimestamp DESC
 			""" + PAGINATION;
 
-	// TODO: Implement Postgres standard unit search query
 	public static final String STANDARD_UNIT_SEARCH =
 			"""
+			WITH filtered_ssu AS (
+				SELECT
+					ssu.stocking_standard_unit_id,
+					ssu.update_timestamp,
+					COUNT(*) OVER () AS totalCount
+				FROM stocking_standard_unit ssu
+				LEFT JOIN opening op ON ssu.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN stocking_ecology se ON se.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+				LEFT JOIN cut_block_open_admin cboa
+					ON op.opening_id = cboa.opening_id
+					AND cboa.opening_prime_licence_ind = 'Y'
+				LEFT JOIN forest_file_client ffc
+					ON ffc.forest_file_id = cboa.forest_file_id
+					AND ffc.forest_file_client_type_code = 'A'
+				WHERE
+					(
+						COALESCE(CAST(:#{#filter.standardsUnitId} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(ssu.standards_unit_id) = UPPER(CAST(:#{#filter.standardsUnitId} AS text))
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.preferredSpecies})
+						OR EXISTS (
+							SELECT 1
+							FROM stocking_layer sl2
+							JOIN stocking_layer_species sls2 ON sls2.stocking_layer_id = sl2.stocking_layer_id
+							WHERE sl2.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+							AND sls2.preferred_ind = 'Y'
+							AND UPPER(sls2.silv_tree_species_code) IN (:#{#filter.preferredSpecies})
+						)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits})
+						OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.clientNumbers})
+						OR UPPER(ffc.client_number) IN (:#{#filter.clientNumbers})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.bgcZone} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(se.bgc_zone_code) = UPPER(CAST(:#{#filter.bgcZone} AS text))
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.bgcSubZone} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(se.bgc_subzone_code) = UPPER(CAST(:#{#filter.bgcSubZone} AS text))
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.bgcVariant} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(se.bgc_variant) = UPPER(CAST(:#{#filter.bgcVariant} AS text))
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.bgcPhase} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(se.bgc_phase) = UPPER(CAST(:#{#filter.bgcPhase} AS text))
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE'
+						OR se.bec_site_series = CAST(:#{#filter.becSiteSeries} AS text)
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE'
+						OR UPPER(se.bec_seral) = UPPER(CAST(:#{#filter.becSeral} AS text))
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+						)
+						OR (
+							ssu.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND ssu.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND ssu.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+			),
+			paged_ids AS (
+				SELECT stocking_standard_unit_id, totalCount
+				FROM filtered_ssu
+				ORDER BY update_timestamp DESC NULLS LAST
+				OFFSET :page LIMIT :size
+			),
+			preferred_species AS (
+				SELECT DISTINCT
+					sl.stocking_standard_unit_id,
+					sls.silv_tree_species_code,
+					stsc.description AS species_name
+				FROM paged_ids pi
+				JOIN stocking_layer sl ON sl.stocking_standard_unit_id = pi.stocking_standard_unit_id
+				JOIN stocking_layer_species sls ON sls.stocking_layer_id = sl.stocking_layer_id
+				LEFT JOIN silv_tree_species_code stsc ON stsc.silv_tree_species_code = sls.silv_tree_species_code
+				WHERE sls.preferred_ind = 'Y'
+			),
+			species_agg AS (
+				SELECT
+					stocking_standard_unit_id,
+					STRING_AGG(silv_tree_species_code, ',' ORDER BY silv_tree_species_code) AS species_codes,
+					STRING_AGG(species_name, '||' ORDER BY silv_tree_species_code) AS species_names
+				FROM preferred_species
+				GROUP BY stocking_standard_unit_id
+			),
+			layer_summary AS (
+				SELECT
+					sl.stocking_standard_unit_id,
+					COUNT(*) AS total_layer,
+					MAX(sl.target_stocking) AS target_wellspaced_trees
+				FROM stocking_layer sl
+				JOIN paged_ids pi ON sl.stocking_standard_unit_id = pi.stocking_standard_unit_id
+				GROUP BY sl.stocking_standard_unit_id
+			)
 			SELECT
-				NULL::bigint AS stockingStandardUnitId,
-				NULL::bigint AS openingId,
-				NULL::text   AS fileId,
-				NULL::text   AS cutBlock,
-				NULL::text   AS cuttingPermit,
-				NULL::bigint AS standardsUnitId,
-				NULL::bigint AS netArea,
-				NULL::int    AS regenDelayYears,
-				NULL::int    AS freeGrowingEarlyYears,
-				NULL::int    AS freeGrowingLateYears,
-				NULL::int    AS totalLayer,
-				NULL::bigint AS targetWellSpacedTrees,
-				NULL::text   AS preferredSpeciesCodes,
-				NULL::text   AS preferredSpeciesNames,
-				NULL::text   AS bgcZone,
-				NULL::text   AS bgcSubZone,
-				NULL::text   AS bgcVariant,
-				NULL::text   AS bgcPhase,
-				NULL::text   AS becSiteSeries,
-				NULL::text   AS becSiteType,
-				NULL::text   AS becSeral,
-				NULL::text   AS orgUnitCode,
-				NULL::text   AS orgUnitName,
-				NULL::text   AS clientNumber,
-				NULL::text   AS clientLocation,
-				NULL::timestamp AS updateTimestamp,
-				0::bigint    AS totalCount
-			WHERE 1 = 0
+				ssu.stocking_standard_unit_id AS stockingStandardUnitId,
+				ssu.opening_id AS openingId,
+				cboa.forest_file_id AS fileId,
+				cboa.cut_block_id AS cutBlock,
+				cboa.cutting_permit_id AS cuttingPermit,
+				ssu.standards_unit_id AS standardsUnitId,
+				ssu.net_area AS netArea,
+				sm_rg.late_offset_years AS regenDelayYears,
+				sm_fg.early_offset_years AS freeGrowingEarlyYears,
+				sm_fg.late_offset_years AS freeGrowingLateYears,
+				ls.total_layer AS totalLayer,
+				ls.target_wellspaced_trees AS targetWellSpacedTrees,
+				sa.species_codes AS preferredSpeciesCodes,
+				sa.species_names AS preferredSpeciesNames,
+				se.bgc_zone_code AS bgcZone,
+				se.bgc_subzone_code AS bgcSubZone,
+				se.bgc_variant AS bgcVariant,
+				se.bgc_phase AS bgcPhase,
+				se.bec_site_series AS becSiteSeries,
+				se.bec_site_type AS becSiteType,
+				se.bec_seral AS becSeral,
+				ou.org_unit_code AS orgUnitCode,
+				ou.org_unit_name AS orgUnitName,
+				ffc.client_number AS clientNumber,
+				ffc.client_locn_code AS clientLocation,
+				ssu.update_timestamp AS updateTimestamp,
+				pi.totalCount
+			FROM stocking_standard_unit ssu
+			JOIN paged_ids pi ON ssu.stocking_standard_unit_id = pi.stocking_standard_unit_id
+			LEFT JOIN opening op ON ssu.opening_id = op.opening_id
+			LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+			LEFT JOIN stocking_ecology se ON se.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+			LEFT JOIN stocking_milestone sm_rg
+				ON sm_rg.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+				AND sm_rg.silv_milestone_type_code = 'RG'
+			LEFT JOIN stocking_milestone sm_fg
+				ON sm_fg.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+				AND sm_fg.silv_milestone_type_code = 'FG'
+			LEFT JOIN cut_block_open_admin cboa
+				ON op.opening_id = cboa.opening_id
+				AND cboa.opening_prime_licence_ind = 'Y'
+			LEFT JOIN forest_file_client ffc
+				ON ffc.forest_file_id = cboa.forest_file_id
+				AND ffc.forest_file_client_type_code = 'A'
+			LEFT JOIN layer_summary ls ON ls.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+			LEFT JOIN species_agg sa ON sa.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+			ORDER BY ssu.update_timestamp DESC NULLS LAST
 			""";
 	}
 
