@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.CollectionUtils;
@@ -84,15 +83,20 @@ public class StandardUnitSearchFilterDto {
         !CollectionUtils.isEmpty(clientNumbers)
             ? StringUtil.toUpperCase(clientNumbers)
             : List.of(SilvaConstants.NOVALUE);
-    this.bgcZone = Objects.isNull(bgcZone) ? null : bgcZone.trim().toUpperCase();
-    this.bgcSubZone = Objects.isNull(bgcSubZone) ? null : bgcSubZone.trim().toUpperCase();
-    this.bgcVariant = Objects.isNull(bgcVariant) ? null : bgcVariant.trim().toUpperCase();
-    this.bgcPhase = Objects.isNull(bgcPhase) ? null : bgcPhase.trim().toUpperCase();
-    this.becSiteSeries = Objects.isNull(becSiteSeries) ? null : becSiteSeries.trim();
-    this.becSiteType = Objects.isNull(becSiteType) ? null : becSiteType.trim();
-    this.becSeral = Objects.isNull(becSeral) ? null : becSeral.trim().toUpperCase();
-    this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
-    this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
+    this.bgcZone = StringUtil.nullIfBlank(bgcZone == null ? null : bgcZone.trim().toUpperCase());
+    this.bgcSubZone =
+        StringUtil.nullIfBlank(bgcSubZone == null ? null : bgcSubZone.trim().toUpperCase());
+    this.bgcVariant =
+        StringUtil.nullIfBlank(bgcVariant == null ? null : bgcVariant.trim().toUpperCase());
+    this.bgcPhase = StringUtil.nullIfBlank(bgcPhase == null ? null : bgcPhase.trim().toUpperCase());
+    this.becSiteSeries =
+        StringUtil.nullIfBlank(becSiteSeries == null ? null : becSiteSeries.trim());
+    this.becSiteType = StringUtil.nullIfBlank(becSiteType == null ? null : becSiteType.trim());
+    this.becSeral = StringUtil.nullIfBlank(becSeral == null ? null : becSeral.trim().toUpperCase());
+    this.updateDateStart =
+        StringUtil.nullIfBlank(updateDateStart == null ? null : updateDateStart.trim());
+    this.updateDateEnd =
+        StringUtil.nullIfBlank(updateDateEnd == null ? null : updateDateEnd.trim());
   }
 
   public boolean hasAnyFilter() {
