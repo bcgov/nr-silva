@@ -18,6 +18,7 @@ export type { FeatureCollection } from './models/FeatureCollection';
 export type { ForestClientAutocompleteResultDto } from './models/ForestClientAutocompleteResultDto';
 export type { ForestClientDto } from './models/ForestClientDto';
 export { ForestClientLocationDto } from './models/ForestClientLocationDto';
+export type { ForestCoverSearchResponseDto } from './models/ForestCoverSearchResponseDto';
 export type { GeoJsonObject } from './models/GeoJsonObject';
 export type { GeoMetaDataDto } from './models/GeoMetaDataDto';
 export type { GeometryCollection } from './models/GeometryCollection';
@@ -72,13 +73,16 @@ export type { OpeningStockingHistorySpeciesDto } from './models/OpeningStockingH
 export type { Pageable } from './models/Pageable';
 export type { PagedModelActivitySearchResponseDto } from './models/PagedModelActivitySearchResponseDto';
 export type { PagedModelDisturbanceSearchResponseDto } from './models/PagedModelDisturbanceSearchResponseDto';
+export type { PagedModelForestCoverSearchResponseDto } from './models/PagedModelForestCoverSearchResponseDto';
 export type { PagedModelOpeningDetailsActivitiesActivitiesDto } from './models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 export type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from './models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
 export type { PagedModelOpeningSearchResponseDto } from './models/PagedModelOpeningSearchResponseDto';
+export type { PagedModelStandardUnitSearchResponseDto } from './models/PagedModelStandardUnitSearchResponseDto';
 export type { PageMetadata } from './models/PageMetadata';
 export type { Point } from './models/Point';
 export type { Polygon } from './models/Polygon';
 export type { SimplePageDto } from './models/SimplePageDto';
+export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchResponseDto';
 export type { TenureDto } from './models/TenureDto';
 
 export { CodesEndpointService } from './services/CodesEndpointService';

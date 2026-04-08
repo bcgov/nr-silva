@@ -4,11 +4,74 @@
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
+import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
+import type { PagedModelStandardUnitSearchResponseDto } from '../models/PagedModelStandardUnitSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SearchEndpointService {
+    /**
+     * @param standardsRegimeId
+     * @param preferredSpecies
+     * @param orgUnits
+     * @param clientNumbers
+     * @param bgcZone
+     * @param bgcSubZone
+     * @param bgcVariant
+     * @param bgcPhase
+     * @param becSiteSeries
+     * @param becSiteType
+     * @param becSeral
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelStandardUnitSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static standardUnitSearch(
+        standardsRegimeId?: number,
+        preferredSpecies?: Array<string>,
+        orgUnits?: Array<string>,
+        clientNumbers?: Array<string>,
+        bgcZone?: string,
+        bgcSubZone?: string,
+        bgcVariant?: string,
+        bgcPhase?: string,
+        becSiteSeries?: string,
+        becSiteType?: string,
+        becSeral?: string,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelStandardUnitSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/standard-unit',
+            query: {
+                'standardsRegimeId': standardsRegimeId,
+                'preferredSpecies': preferredSpecies,
+                'orgUnits': orgUnits,
+                'clientNumbers': clientNumbers,
+                'bgcZone': bgcZone,
+                'bgcSubZone': bgcSubZone,
+                'bgcVariant': bgcVariant,
+                'bgcPhase': bgcPhase,
+                'becSiteSeries': becSiteSeries,
+                'becSiteType': becSiteType,
+                'becSeral': becSeral,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
     /**
      * @param openingId
      * @param categories
@@ -85,6 +148,55 @@ export class SearchEndpointService {
                 'mapsheetQuad': mapsheetQuad,
                 'mapsheetSubQuad': mapsheetSubQuad,
                 'openingNumber': openingNumber,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param stockingStatuses
+     * @param stockingTypes
+     * @param damageAgents
+     * @param openingStatuses
+     * @param fileId
+     * @param orgUnits
+     * @param openingCategories
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelForestCoverSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static forestCoverSearch(
+        stockingStatuses?: Array<string>,
+        stockingTypes?: Array<string>,
+        damageAgents?: Array<string>,
+        openingStatuses?: Array<string>,
+        fileId?: string,
+        orgUnits?: Array<string>,
+        openingCategories?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelForestCoverSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/forest-cover',
+            query: {
+                'stockingStatuses': stockingStatuses,
+                'stockingTypes': stockingTypes,
+                'damageAgents': damageAgents,
+                'openingStatuses': openingStatuses,
+                'fileId': fileId,
+                'orgUnits': orgUnits,
+                'openingCategories': openingCategories,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
                 'page': page,
                 'size': size,
                 'sort': sort,
