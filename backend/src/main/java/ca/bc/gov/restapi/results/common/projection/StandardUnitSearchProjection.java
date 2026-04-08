@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.projection;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /** Projection interface used for standard unit search native queries. */
@@ -18,17 +19,17 @@ public interface StandardUnitSearchProjection {
 
   String getStandardsUnitId();
 
+  Long getStandardsRegimeId();
+
+  LocalDateTime getStandardsRegimeExpiryDate();
+
   BigDecimal getNetArea();
 
-  Integer getRegenDelayYears();
+  LocalDate getRegenDueDate();
 
-  Integer getFreeGrowingEarlyYears();
-
-  Integer getFreeGrowingLateYears();
+  LocalDate getFreeGrowingDueDate();
 
   Integer getTotalLayer();
-
-  Integer getTargetWellSpacedTrees();
 
   /** Comma-separated preferred species codes aggregated across layers. */
   String getPreferredSpeciesCodes();

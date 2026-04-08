@@ -2087,8 +2087,8 @@ public class SilvaPostgresQueryConstants {
 					AND ffc.forest_file_client_type_code = 'A'
 				WHERE
 					(
-						COALESCE(CAST(:#{#filter.standardsUnitId} AS text),'NOVALUE') = 'NOVALUE'
-						OR UPPER(ssu.standards_unit_id) = UPPER(CAST(:#{#filter.standardsUnitId} AS text))
+						:#{#filter.standardsRegimeId} IS NULL
+						OR ssu.standards_regime_id = :#{#filter.standardsRegimeId}
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.preferredSpecies})
@@ -2128,6 +2128,10 @@ public class SilvaPostgresQueryConstants {
 					AND (
 						COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE'
 						OR se.bec_site_series = CAST(:#{#filter.becSiteSeries} AS text)
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.becSiteType} AS text),'NOVALUE') = 'NOVALUE'
+						OR se.bec_site_type = CAST(:#{#filter.becSiteType} AS text)
 					)
 					AND (
 						COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE'
@@ -2185,8 +2189,7 @@ public class SilvaPostgresQueryConstants {
 			layer_summary AS (
 				SELECT
 					sl.stocking_standard_unit_id,
-					COUNT(*) AS total_layer,
-					MAX(sl.target_stocking) AS target_wellspaced_trees
+					COUNT(*) AS total_layer
 				FROM stocking_layer sl
 				JOIN paged_ids pi ON sl.stocking_standard_unit_id = pi.stocking_standard_unit_id
 				GROUP BY sl.stocking_standard_unit_id
@@ -2198,12 +2201,12 @@ public class SilvaPostgresQueryConstants {
 				cboa.cut_block_id AS cutBlock,
 				cboa.cutting_permit_id AS cuttingPermit,
 				ssu.standards_unit_id AS standardsUnitId,
+				ssu.standards_regime_id AS standardsRegimeId,
+				sr.expiry_date AS standardsRegimeExpiryDate,
 				ssu.net_area AS netArea,
-				sm_rg.late_offset_years AS regenDelayYears,
-				sm_fg.early_offset_years AS freeGrowingEarlyYears,
-				sm_fg.late_offset_years AS freeGrowingLateYears,
+				sm_rg.due_late_date AS regenDueDate,
+				sm_fg.due_late_date AS freeGrowingDueDate,
 				ls.total_layer AS totalLayer,
-				ls.target_wellspaced_trees AS targetWellSpacedTrees,
 				sa.species_codes AS preferredSpeciesCodes,
 				sa.species_names AS preferredSpeciesNames,
 				se.bgc_zone_code AS bgcZone,
@@ -2236,6 +2239,7 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN forest_file_client ffc
 				ON ffc.forest_file_id = cboa.forest_file_id
 				AND ffc.forest_file_client_type_code = 'A'
+			LEFT JOIN standards_regime sr ON sr.standards_regime_id = ssu.standards_regime_id
 			LEFT JOIN layer_summary ls ON ls.stocking_standard_unit_id = ssu.stocking_standard_unit_id
 			LEFT JOIN species_agg sa ON sa.stocking_standard_unit_id = ssu.stocking_standard_unit_id
 			ORDER BY ssu.update_timestamp DESC NULLS LAST

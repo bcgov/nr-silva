@@ -2109,8 +2109,8 @@ public class SilvaOracleQueryConstants {
           AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
         WHERE
           (
-            NVL(:#{#filter.standardsUnitId},'NOVALUE') = 'NOVALUE'
-            OR UPPER(ssu.STANDARDS_UNIT_ID) = UPPER(:#{#filter.standardsUnitId})
+            :#{#filter.standardsRegimeId} IS NULL
+            OR ssu.STANDARDS_REGIME_ID = :#{#filter.standardsRegimeId}
           )
           AND (
             'NOVALUE' IN (:#{#filter.preferredSpecies})
@@ -2150,6 +2150,10 @@ public class SilvaOracleQueryConstants {
           AND (
             NVL(:#{#filter.becSiteSeries},'NOVALUE') = 'NOVALUE'
             OR se.BEC_SITE_SERIES = :#{#filter.becSiteSeries}
+          )
+          AND (
+            NVL(:#{#filter.becSiteType},'NOVALUE') = 'NOVALUE'
+            OR se.BEC_SITE_TYPE = :#{#filter.becSiteType}
           )
           AND (
             NVL(:#{#filter.becSeral},'NOVALUE') = 'NOVALUE'
@@ -2207,8 +2211,7 @@ public class SilvaOracleQueryConstants {
       layer_summary AS (
         SELECT
           sl.STOCKING_STANDARD_UNIT_ID,
-          COUNT(*) AS total_layer,
-          MAX(sl.TARGET_STOCKING) AS target_wellspaced_trees
+          COUNT(*) AS total_layer
         FROM STOCKING_LAYER sl
         JOIN paged_ids pi ON sl.STOCKING_STANDARD_UNIT_ID = pi.STOCKING_STANDARD_UNIT_ID
         GROUP BY sl.STOCKING_STANDARD_UNIT_ID
@@ -2220,12 +2223,12 @@ public class SilvaOracleQueryConstants {
         cboa.CUT_BLOCK_ID AS cutBlock,
         cboa.CUTTING_PERMIT_ID AS cuttingPermit,
         ssu.STANDARDS_UNIT_ID AS standardsUnitId,
+        ssu.STANDARDS_REGIME_ID AS standardsRegimeId,
+        sr.EXPIRY_DATE AS standardsRegimeExpiryDate,
         ssu.NET_AREA AS netArea,
-        sm_rg.LATE_OFFSET_YEARS AS regenDelayYears,
-        sm_fg.EARLY_OFFSET_YEARS AS freeGrowingEarlyYears,
-        sm_fg.LATE_OFFSET_YEARS AS freeGrowingLateYears,
+        sm_rg.DUE_LATE_DATE AS regenDueDate,
+        sm_fg.DUE_LATE_DATE AS freeGrowingDueDate,
         ls.total_layer AS totalLayer,
-        ls.target_wellspaced_trees AS targetWellSpacedTrees,
         sa.species_codes AS preferredSpeciesCodes,
         sa.species_names AS preferredSpeciesNames,
         se.BGC_ZONE_CODE AS bgcZone,
@@ -2258,6 +2261,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_FILE_CLIENT ffc
         ON ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID
         AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
+      LEFT JOIN STANDARDS_REGIME sr ON sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID
       LEFT JOIN layer_summary ls ON ls.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
       LEFT JOIN species_agg sa ON sa.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
       ORDER BY ssu.UPDATE_TIMESTAMP DESC NULLS LAST

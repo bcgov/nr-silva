@@ -14,8 +14,8 @@ import org.springframework.util.CollectionUtils;
 @ToString
 public class StandardUnitSearchFilterDto {
 
-  @Schema(type = "string", nullable = true)
-  private final String standardsUnitId; // VARCHAR2(4)
+  @Schema(type = "integer", format = "int64", nullable = true)
+  private final Long standardsRegimeId;
 
   @Schema(type = "array", nullable = true)
   private final List<String> preferredSpecies;
@@ -42,6 +42,9 @@ public class StandardUnitSearchFilterDto {
   private final String becSiteSeries;
 
   @Schema(type = "string", nullable = true)
+  private final String becSiteType; // aka Site Phase
+
+  @Schema(type = "string", nullable = true)
   private final String becSeral;
 
   @Schema(type = "string", format = "date", nullable = true)
@@ -51,11 +54,11 @@ public class StandardUnitSearchFilterDto {
   private final String updateDateEnd;
 
   public StandardUnitSearchFilterDto() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
   public StandardUnitSearchFilterDto(
-      String standardsUnitId,
+      Long standardsRegimeId,
       List<String> preferredSpecies,
       List<String> orgUnits,
       List<String> clientNumbers,
@@ -64,10 +67,11 @@ public class StandardUnitSearchFilterDto {
       String bgcVariant,
       String bgcPhase,
       String becSiteSeries,
+      String becSiteType,
       String becSeral,
       String updateDateStart,
       String updateDateEnd) {
-    this.standardsUnitId = Objects.isNull(standardsUnitId) ? null : standardsUnitId.trim();
+    this.standardsRegimeId = standardsRegimeId;
     this.preferredSpecies =
         !CollectionUtils.isEmpty(preferredSpecies)
             ? StringUtil.toUpperCase(preferredSpecies)
@@ -85,13 +89,14 @@ public class StandardUnitSearchFilterDto {
     this.bgcVariant = Objects.isNull(bgcVariant) ? null : bgcVariant.trim().toUpperCase();
     this.bgcPhase = Objects.isNull(bgcPhase) ? null : bgcPhase.trim().toUpperCase();
     this.becSiteSeries = Objects.isNull(becSiteSeries) ? null : becSiteSeries.trim();
+    this.becSiteType = Objects.isNull(becSiteType) ? null : becSiteType.trim();
     this.becSeral = Objects.isNull(becSeral) ? null : becSeral.trim().toUpperCase();
     this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
     this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
   }
 
   public boolean hasAnyFilter() {
-    return (standardsUnitId != null && !standardsUnitId.isBlank())
+    return standardsRegimeId != null
         || StringUtil.isFilterSet(preferredSpecies)
         || StringUtil.isFilterSet(orgUnits)
         || StringUtil.isFilterSet(clientNumbers)
@@ -100,6 +105,7 @@ public class StandardUnitSearchFilterDto {
         || (bgcVariant != null && !bgcVariant.isBlank())
         || (bgcPhase != null && !bgcPhase.isBlank())
         || (becSiteSeries != null && !becSiteSeries.isBlank())
+        || (becSiteType != null && !becSiteType.isBlank())
         || (becSeral != null && !becSeral.isBlank())
         || (updateDateStart != null && !updateDateStart.isBlank())
         || (updateDateEnd != null && !updateDateEnd.isBlank());

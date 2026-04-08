@@ -25,11 +25,11 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   @Autowired protected StandardUnitService standardUnitService;
 
   @Test
-  @DisplayName("Standard unit search with standardsUnitId filter should succeed")
-  void standardUnitSearch_withStandardsUnitIdFilter_shouldSucceed() {
+  @DisplayName("Standard unit search with standardsRegimeId filter should succeed")
+  void standardUnitSearch_withStandardsRegimeIdFilter_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            "A", null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -45,7 +45,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withBgcZoneFilter_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            null, null, null, null, "CWH", null, null, null, null, null, null, null);
+            null, null, null, null, "CWH", null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -59,7 +59,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withOrgUnitFilter_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            null, null, List.of("DAS"), null, null, null, null, null, null, null, null, null);
+            null, null, List.of("DAS"), null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -84,6 +84,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
             null,
             null,
             null,
+            null,
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
@@ -98,7 +99,19 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withClientNumbersFilter_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            null, null, null, List.of("00010002"), null, null, null, null, null, null, null, null);
+            null,
+            null,
+            null,
+            List.of("00010002"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -112,7 +125,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withPreferredSpeciesFilter_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            null, List.of("CW"), null, null, null, null, null, null, null, null, null, null);
+            null, List.of("CW"), null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -126,7 +139,19 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withUpdateDateRange_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, "2005-01-01", "2025-12-31");
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "2005-01-01",
+            "2025-12-31");
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -140,7 +165,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withPagination_shouldReturnCorrectPageNumbers() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            "A", null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageableFirst = PageRequest.of(0, 5);
     Pageable pageableSecond = PageRequest.of(1, 5);
 
@@ -160,7 +185,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_responseDto_shouldHaveRequiredFields() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            "A", null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -171,16 +196,18 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
       Assertions.assertNotNull(dto.stockingStandardUnitId(), "SSU ID should not be null");
       Assertions.assertNotNull(dto.openingId(), "Opening ID should not be null");
       Assertions.assertNotNull(dto.standardsUnitId(), "Standards unit ID should not be null");
+      Assertions.assertNotNull(dto.standardsRegimeId(), "Standards regime ID should not be null");
       Assertions.assertNotNull(dto.preferredSpecies(), "Preferred species list should not be null");
     }
   }
 
   @Test
-  @DisplayName("Standard unit search with non-matching filter should return empty results")
-  void standardUnitSearch_withNonMatchingFilter_shouldReturnEmpty() {
+  @DisplayName(
+      "Standard unit search with non-matching standardsRegimeId should return empty results")
+  void standardUnitSearch_withNonMatchingStandardsRegimeId_shouldReturnEmpty() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            "ZZZZ", null, null, null, null, null, null, null, null, null, null, null);
+            999999999L, null, null, null, null, null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -188,7 +215,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(
-        result.hasContent(), "Result should be empty for non-matching standardsUnitId");
+        result.hasContent(), "Result should be empty for non-matching standardsRegimeId");
   }
 
   @Test
@@ -196,7 +223,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
   void standardUnitSearch_withCombinedFilters_shouldSucceed() {
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            "A", null, null, null, "CWH", null, null, null, null, null, null, null);
+            36109L, null, null, null, "CWH", null, null, null, null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
@@ -205,5 +232,19 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(
         result.getNumberOfElements() >= 0, "Result should have non-negative count");
+  }
+
+  @Test
+  @DisplayName("Standard unit search with becSiteType filter should succeed")
+  void standardUnitSearch_withBecSiteTypeFilter_shouldSucceed() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            null, null, null, null, null, null, null, null, null, "01", null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StandardUnitSearchResponseDto> result =
+        standardUnitService.standardUnitSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
   }
 }

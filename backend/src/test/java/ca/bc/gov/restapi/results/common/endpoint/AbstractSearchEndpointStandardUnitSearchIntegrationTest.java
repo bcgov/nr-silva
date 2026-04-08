@@ -26,12 +26,12 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   @Autowired protected MockMvc mockMvc;
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with standardsUnitId filter should succeed")
-  void getStandardUnit_withStandardsUnitIdFilter_shouldSucceed() throws Exception {
+  @DisplayName("GET /api/search/standard-unit with standardsRegimeId filter should succeed")
+  void getStandardUnit_withStandardsRegimeIdFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "A")
+                .param("standardsRegimeId", "36109")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
@@ -90,6 +90,18 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
+  @DisplayName("GET /api/search/standard-unit with becSiteType filter should succeed")
+  void getStandardUnit_withBecSiteTypeFilter_shouldSucceed() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/search/standard-unit")
+                .param("becSiteType", "01")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content").isArray());
+  }
+
+  @Test
   @DisplayName("GET /api/search/standard-unit with preferred species filter should succeed")
   void getStandardUnit_withPreferredSpeciesFilter_shouldSucceed() throws Exception {
     mockMvc
@@ -120,7 +132,7 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "A")
+                .param("standardsRegimeId", "36109")
                 .param("page", "0")
                 .param("size", "10")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -135,12 +147,16 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "A")
+                .param("standardsRegimeId", "36109")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content[0].stockingStandardUnitId").exists())
         .andExpect(jsonPath("$.content[0].openingId").exists())
         .andExpect(jsonPath("$.content[0].standardsUnitId").exists())
+        .andExpect(jsonPath("$.content[0].standardsRegimeId").exists())
+        .andExpect(jsonPath("$.content[0].isStandardsRegimeExpired").exists())
+        .andExpect(jsonPath("$.content[0].regenDueDate").exists())
+        .andExpect(jsonPath("$.content[0].freeGrowingDueDate").exists())
         .andExpect(jsonPath("$.content[0].preferredSpecies").isArray());
   }
 
@@ -150,7 +166,7 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "A")
+                .param("standardsRegimeId", "36109")
                 .param("bgcZone", "CWH")
                 .param("page", "0")
                 .param("size", "20")
@@ -161,12 +177,13 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with invalid standardsUnitId should return empty")
-  void getStandardUnit_withInvalidStandardsUnitId_shouldReturnEmpty() throws Exception {
+  @DisplayName(
+      "GET /api/search/standard-unit with non-matching standardsRegimeId should return empty")
+  void getStandardUnit_withNonMatchingStandardsRegimeId_shouldReturnEmpty() throws Exception {
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "ZZZZ")
+                .param("standardsRegimeId", "999999999")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.page.totalElements").value(0));
@@ -178,7 +195,7 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
     mockMvc
         .perform(
             get("/api/search/standard-unit")
-                .param("standardsUnitId", "A")
+                .param("standardsRegimeId", "36109")
                 .param("page", "0")
                 .param("size", "5")
                 .contentType(MediaType.APPLICATION_JSON))

@@ -251,7 +251,7 @@ public class SearchEndpoint {
 
   @GetMapping("/standard-unit")
   public Page<StandardUnitSearchResponseDto> standardUnitSearch(
-      @RequestParam(value = "standardsUnitId", required = false) String standardsUnitId,
+      @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
       @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
       @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
@@ -260,6 +260,7 @@ public class SearchEndpoint {
       @RequestParam(value = "bgcVariant", required = false) String bgcVariant,
       @RequestParam(value = "bgcPhase", required = false) String bgcPhase,
       @RequestParam(value = "becSiteSeries", required = false) String becSiteSeries,
+      @RequestParam(value = "becSiteType", required = false) String becSiteType,
       @RequestParam(value = "becSeral", required = false) String becSeral,
       @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
       @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
@@ -267,7 +268,7 @@ public class SearchEndpoint {
 
     StandardUnitSearchFilterDto filters =
         new StandardUnitSearchFilterDto(
-            standardsUnitId,
+            standardsRegimeId,
             preferredSpecies,
             orgUnits,
             clientNumbers,
@@ -276,6 +277,7 @@ public class SearchEndpoint {
             bgcVariant,
             bgcPhase,
             becSiteSeries,
+            becSiteType,
             becSeral,
             updateDateStart,
             updateDateEnd);

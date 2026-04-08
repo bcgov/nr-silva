@@ -9,6 +9,10 @@ import ca.bc.gov.restapi.results.common.repository.StandardUnitRepository;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
+import ca.bc.gov.restapi.results.common.util.StringUtil;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +27,8 @@ import org.springframework.data.domain.Pageable;
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractStandardUnitService implements StandardUnitService {
+
+  private static final ZoneId VANCOUVER = ZoneId.of("America/Vancouver");
 
   protected StandardUnitRepository standardUnitRepository;
   protected ForestClientService forestClientService;
@@ -65,28 +71,35 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
     return new StandardUnitSearchResponseDto(
         projection.getStockingStandardUnitId(),
         projection.getOpeningId(),
-        projection.getFileId(),
-        projection.getCutBlock(),
-        projection.getCuttingPermit(),
-        projection.getStandardsUnitId(),
+        StringUtil.nullIfBlank(projection.getFileId()),
+        StringUtil.nullIfBlank(projection.getCutBlock()),
+        StringUtil.nullIfBlank(projection.getCuttingPermit()),
+        StringUtil.nullIfBlank(projection.getStandardsUnitId()),
+        projection.getStandardsRegimeId(),
+        isRegimeExpired(projection.getStandardsRegimeExpiryDate()),
         projection.getNetArea(),
-        projection.getRegenDelayYears(),
-        projection.getFreeGrowingEarlyYears(),
-        projection.getFreeGrowingLateYears(),
+        projection.getRegenDueDate(),
+        projection.getFreeGrowingDueDate(),
         projection.getTotalLayer(),
-        projection.getTargetWellSpacedTrees(),
         parsePreferredSpecies(
             projection.getPreferredSpeciesCodes(), projection.getPreferredSpeciesNames()),
-        projection.getBgcZone(),
-        projection.getBgcSubZone(),
-        projection.getBgcVariant(),
-        projection.getBgcPhase(),
-        projection.getBecSiteSeries(),
-        projection.getBecSiteType(),
-        projection.getBecSeral(),
+        StringUtil.nullIfBlank(projection.getBgcZone()),
+        StringUtil.nullIfBlank(projection.getBgcSubZone()),
+        StringUtil.nullIfBlank(projection.getBgcVariant()),
+        StringUtil.nullIfBlank(projection.getBgcPhase()),
+        StringUtil.nullIfBlank(projection.getBecSiteSeries()),
+        StringUtil.nullIfBlank(projection.getBecSiteType()),
+        StringUtil.nullIfBlank(projection.getBecSeral()),
         mapCode(projection.getOrgUnitCode(), projection.getOrgUnitName()),
         clientMap.getOrDefault(projection.getClientNumber(), null),
         projection.getUpdateTimestamp());
+  }
+
+  private boolean isRegimeExpired(LocalDateTime expiryDate) {
+    if (expiryDate == null) {
+      return false;
+    }
+    return expiryDate.toLocalDate().isBefore(LocalDate.now(VANCOUVER));
   }
 
   private List<CodeDescriptionDto> parsePreferredSpecies(String codes, String names) {
