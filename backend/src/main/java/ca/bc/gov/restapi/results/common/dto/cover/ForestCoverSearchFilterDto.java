@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.CollectionUtils;
@@ -81,7 +80,7 @@ public class ForestCoverSearchFilterDto {
         !CollectionUtils.isEmpty(openingStatuses)
             ? StringUtil.toUpperCase(openingStatuses)
             : List.of(SilvaConstants.NOVALUE);
-    this.fileId = Objects.isNull(fileId) ? null : fileId.trim();
+    this.fileId = StringUtil.nullIfBlank(fileId == null ? null : fileId.trim());
     this.orgUnits =
         !CollectionUtils.isEmpty(orgUnits)
             ? StringUtil.toUpperCase(orgUnits)
@@ -90,8 +89,10 @@ public class ForestCoverSearchFilterDto {
         !CollectionUtils.isEmpty(openingCategories)
             ? StringUtil.toUpperCase(openingCategories)
             : List.of(SilvaConstants.NOVALUE);
-    this.updateDateStart = Objects.isNull(updateDateStart) ? null : updateDateStart.trim();
-    this.updateDateEnd = Objects.isNull(updateDateEnd) ? null : updateDateEnd.trim();
+    this.updateDateStart =
+        StringUtil.nullIfBlank(updateDateStart == null ? null : updateDateStart.trim());
+    this.updateDateEnd =
+        StringUtil.nullIfBlank(updateDateEnd == null ? null : updateDateEnd.trim());
   }
 
   public boolean hasAnyFilter() {

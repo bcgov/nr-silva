@@ -273,4 +273,30 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
           Assertions.assertNotNull(dto.code(), "Code should not be null");
         });
   }
+
+  @Test
+  @DisplayName("Get all silv tree species codes should return list of DTOs")
+  void getAllSilvTreeSpeciesCode_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvTreeSpeciesCode();
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Get all silv tree species codes should return valid DTOs")
+  void getAllSilvTreeSpeciesCode_shouldReturnValidDtos() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.getAllSilvTreeSpeciesCode();
+    result.forEach(
+        dto -> {
+          Assertions.assertNotNull(dto, "DTO should not be null");
+          Assertions.assertNotNull(dto.code(), "Code should not be null");
+          Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
+        });
+  }
 }

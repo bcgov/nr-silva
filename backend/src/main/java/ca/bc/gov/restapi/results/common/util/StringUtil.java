@@ -20,6 +20,17 @@ public class StringUtil {
   }
 
   /**
+   * Returns {@code null} when the given string is {@code null} or contains only whitespace;
+   * otherwise returns the original value unchanged.
+   *
+   * @param value the string to inspect
+   * @return {@code null} if blank, otherwise {@code value}
+   */
+  public static String nullIfBlank(String value) {
+    return (value == null || value.isBlank()) ? null : value;
+  }
+
+  /**
    * Returns {@code true} when the list contains real filter values — i.e., it is not the sentinel
    * singleton {@code [NOVALUE]} substituted when no values were supplied by the caller.
    *
