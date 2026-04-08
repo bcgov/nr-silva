@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
+import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { PagedModelStandardUnitSearchResponseDto } from '../models/PagedModelStandardUnitSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -154,6 +155,7 @@ export class SearchEndpointService {
         });
     }
     /**
+     * @param openingId
      * @param stockingStatuses
      * @param stockingTypes
      * @param damageAgents
@@ -170,6 +172,7 @@ export class SearchEndpointService {
      * @throws ApiError
      */
     public static forestCoverSearch(
+        openingId?: number,
         stockingStatuses?: Array<string>,
         stockingTypes?: Array<string>,
         damageAgents?: Array<string>,
@@ -187,6 +190,7 @@ export class SearchEndpointService {
             method: 'GET',
             url: '/api/search/forest-cover',
             query: {
+                'openingId': openingId,
                 'stockingStatuses': stockingStatuses,
                 'stockingTypes': stockingTypes,
                 'damageAgents': damageAgents,
