@@ -2265,7 +2265,7 @@ public class SilvaPostgresQueryConstants {
 				SELECT DISTINCT
 					sl.stocking_standard_unit_id,
 					sls.silv_tree_species_code,
-					stsc.description AS species_name
+					COALESCE(stsc.description, '') AS species_name
 				FROM paged_ids pi
 				JOIN stocking_layer sl ON sl.stocking_standard_unit_id = pi.stocking_standard_unit_id
 				JOIN stocking_layer_species sls ON sls.stocking_layer_id = sl.stocking_layer_id

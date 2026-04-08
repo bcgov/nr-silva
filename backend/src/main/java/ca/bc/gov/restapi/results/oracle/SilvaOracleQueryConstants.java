@@ -2286,7 +2286,7 @@ public class SilvaOracleQueryConstants {
         SELECT DISTINCT
           sl.STOCKING_STANDARD_UNIT_ID,
           sls.SILV_TREE_SPECIES_CODE,
-          stsc.DESCRIPTION AS species_name
+          COALESCE(stsc.DESCRIPTION, '') AS species_name
         FROM paged_ids pi
         JOIN STOCKING_LAYER sl ON sl.STOCKING_STANDARD_UNIT_ID = pi.STOCKING_STANDARD_UNIT_ID
         JOIN STOCKING_LAYER_SPECIES sls ON sls.STOCKING_LAYER_ID = sl.STOCKING_LAYER_ID
