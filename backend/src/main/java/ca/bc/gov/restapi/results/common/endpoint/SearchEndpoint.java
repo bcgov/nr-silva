@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
@@ -12,6 +14,7 @@ import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterExceptio
 import ca.bc.gov.restapi.results.common.service.ActivityService;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
+import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,8 @@ public class SearchEndpoint {
   private final ActivityService activityService;
 
   private final ForestCoverService forestCoverService;
+
+  private final StandardUnitService standardUnitService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -244,5 +249,45 @@ public class SearchEndpoint {
     }
 
     return forestCoverService.forestCoverSearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/standard-unit")
+  public Page<StandardUnitSearchResponseDto> standardUnitSearch(
+      @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
+      @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "bgcZone", required = false) String bgcZone,
+      @RequestParam(value = "bgcSubZone", required = false) String bgcSubZone,
+      @RequestParam(value = "bgcVariant", required = false) String bgcVariant,
+      @RequestParam(value = "bgcPhase", required = false) String bgcPhase,
+      @RequestParam(value = "becSiteSeries", required = false) String becSiteSeries,
+      @RequestParam(value = "becSiteType", required = false) String becSiteType,
+      @RequestParam(value = "becSeral", required = false) String becSeral,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            standardsRegimeId,
+            preferredSpecies,
+            orgUnits,
+            clientNumbers,
+            bgcZone,
+            bgcSubZone,
+            bgcVariant,
+            bgcPhase,
+            becSiteSeries,
+            becSiteType,
+            becSeral,
+            updateDateStart,
+            updateDateEnd);
+
+    if (!filters.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return standardUnitService.standardUnitSearch(filters, paginationParameters);
   }
 }

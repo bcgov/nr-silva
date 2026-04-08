@@ -31,6 +31,16 @@ export class CodesEndpointService {
      * @returns CodeDescriptionDto OK
      * @throws ApiError
      */
+    public static getSilvTreeSpeciesCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/codes/silv-tree-species',
+        });
+    }
+    /**
+     * @returns CodeDescriptionDto OK
+     * @throws ApiError
+     */
     public static getSilvTechniqueCodes(): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',

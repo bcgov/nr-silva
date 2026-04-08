@@ -33,4 +33,6 @@ public interface CodeService {
   List<CodeDescriptionDto> getAllStockingStatusCode();
 
   List<CodeDescriptionDto> getAllStockingTypeCode();
+
+  List<CodeDescriptionDto> getAllSilvTreeSpeciesCode();
 }

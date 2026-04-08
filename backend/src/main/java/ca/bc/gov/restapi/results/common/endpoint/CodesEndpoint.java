@@ -160,4 +160,14 @@ public class CodesEndpoint {
   public List<CodeDescriptionDto> getStockingTypeCodes() {
     return codeService.getAllStockingTypeCode();
   }
+
+  /**
+   * Get all silv tree species codes.
+   *
+   * @return List of {@link CodeDescriptionDto} with found silv tree species codes.
+   */
+  @GetMapping("/silv-tree-species")
+  public List<CodeDescriptionDto> getSilvTreeSpeciesCodes() {
+    return codeService.getAllSilvTreeSpeciesCode();
+  }
 }

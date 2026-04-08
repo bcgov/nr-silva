@@ -157,6 +157,42 @@ class StringUtilTest {
   }
 
   @Test
+  @DisplayName("nullIfBlank | null value | should return null")
+  void nullIfBlank_nullValue_shouldReturnNull() {
+    assertThat(StringUtil.nullIfBlank(null)).isNull();
+  }
+
+  @Test
+  @DisplayName("nullIfBlank | empty string | should return null")
+  void nullIfBlank_emptyString_shouldReturnNull() {
+    assertThat(StringUtil.nullIfBlank("")).isNull();
+  }
+
+  @Test
+  @DisplayName("nullIfBlank | whitespace only | should return null")
+  void nullIfBlank_whitespaceOnly_shouldReturnNull() {
+    assertThat(StringUtil.nullIfBlank("   ")).isNull();
+  }
+
+  @Test
+  @DisplayName("nullIfBlank | single space | should return null")
+  void nullIfBlank_singleSpace_shouldReturnNull() {
+    assertThat(StringUtil.nullIfBlank(" ")).isNull();
+  }
+
+  @Test
+  @DisplayName("nullIfBlank | non-blank value | should return original value")
+  void nullIfBlank_nonBlankValue_shouldReturnOriginalValue() {
+    assertThat(StringUtil.nullIfBlank("hello")).isEqualTo("hello");
+  }
+
+  @Test
+  @DisplayName("nullIfBlank | value with surrounding spaces | should return original value")
+  void nullIfBlank_valueWithSurroundingSpaces_shouldReturnOriginalValue() {
+    assertThat(StringUtil.nullIfBlank("  hello  ")).isEqualTo("  hello  ");
+  }
+
+  @Test
   @DisplayName("isFilterSet | exactly [NOVALUE] | should return false")
   void isFilterSet_singleNovalue_shouldReturnFalse() {
     assertThat(StringUtil.isFilterSet(List.of(SilvaConstants.NOVALUE))).isFalse();

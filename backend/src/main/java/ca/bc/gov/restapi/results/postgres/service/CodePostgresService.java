@@ -15,6 +15,7 @@ import ca.bc.gov.restapi.results.postgres.repository.SilvObjectiveCodePostgresRe
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvSystemVariantCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTechniqueCodePostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.StockingStatusCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.StockingTypeCodePostgresRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,6 +40,7 @@ public class CodePostgresService extends AbstractCodeService {
       SilvDamageAgentCodePostgresRepository silvDamageAgentCodeRepository,
       StockingStatusCodePostgresRepository stockingStatusCodeRepository,
       StockingTypeCodePostgresRepository stockingTypeCodeRepository,
+      SilvTreeSpeciesCodePostgresRepository silvTreeSpeciesCodeRepository,
       OrgUnitPostgresRepository orgUnitRepository,
       SilvaConfiguration silvaConfiguration) {
     super(
@@ -56,6 +58,7 @@ public class CodePostgresService extends AbstractCodeService {
         silvDamageAgentCodeRepository,
         stockingStatusCodeRepository,
         stockingTypeCodeRepository,
+        silvTreeSpeciesCodeRepository,
         orgUnitRepository,
         silvaConfiguration);
   }
