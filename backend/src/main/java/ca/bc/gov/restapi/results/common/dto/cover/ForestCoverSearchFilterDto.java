@@ -14,6 +14,9 @@ import org.springframework.util.CollectionUtils;
 @ToString
 public class ForestCoverSearchFilterDto {
 
+  @Schema(type = "integer", format = "int64", nullable = true)
+  private final Long openingId;
+
   @Schema(type = "array", nullable = true)
   private final List<String> stockingStatuses;
 
@@ -46,11 +49,12 @@ public class ForestCoverSearchFilterDto {
    * to apply defaults.
    */
   public ForestCoverSearchFilterDto() {
-    this(null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null);
   }
 
   /** Creates an instance of the forest cover search filter dto. */
   public ForestCoverSearchFilterDto(
+      Long openingId,
       List<String> stockingStatuses,
       List<String> stockingTypes,
       List<String> damageAgents,
@@ -60,6 +64,7 @@ public class ForestCoverSearchFilterDto {
       List<String> openingCategories,
       String updateDateStart,
       String updateDateEnd) {
+    this.openingId = openingId;
     this.stockingStatuses =
         !CollectionUtils.isEmpty(stockingStatuses)
             ? StringUtil.toUpperCase(stockingStatuses)
@@ -90,7 +95,8 @@ public class ForestCoverSearchFilterDto {
   }
 
   public boolean hasAnyFilter() {
-    return StringUtil.isFilterSet(stockingStatuses)
+    return openingId != null
+        || StringUtil.isFilterSet(stockingStatuses)
         || StringUtil.isFilterSet(stockingTypes)
         || StringUtil.isFilterSet(damageAgents)
         || StringUtil.isFilterSet(openingStatuses)

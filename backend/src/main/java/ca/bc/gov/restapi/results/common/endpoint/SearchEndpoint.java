@@ -219,6 +219,7 @@ public class SearchEndpoint {
 
   @GetMapping("/forest-cover")
   public Page<ForestCoverSearchResponseDto> forestCoverSearch(
+      @RequestParam(value = "openingId", required = false) Long openingId,
       @RequestParam(value = "stockingStatuses", required = false) List<String> stockingStatuses,
       @RequestParam(value = "stockingTypes", required = false) List<String> stockingTypes,
       @RequestParam(value = "damageAgents", required = false) List<String> damageAgents,
@@ -232,6 +233,7 @@ public class SearchEndpoint {
 
     ForestCoverSearchFilterDto filters =
         new ForestCoverSearchFilterDto(
+            openingId,
             stockingStatuses,
             stockingTypes,
             damageAgents,

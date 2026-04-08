@@ -4,7 +4,7 @@ import { Location, LocationFilled } from "@carbon/icons-react";
 import "./styles.scss";
 
 interface SpatialCheckboxProps {
-  spatialType: 'opening' | 'activity' | 'disturbance';
+  spatialType: 'opening' | 'activity' | 'disturbance' | 'forestCover';
   rowId: number;
   selectedRows: number[];
   handleRowSelection: (rowId: number) => void;

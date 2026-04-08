@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
-import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { PagedModelStandardUnitSearchResponseDto } from '../models/PagedModelStandardUnitSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';

@@ -1908,9 +1908,41 @@ public class SilvaPostgresQueryConstants {
 			ORDER BY updateTimestamp DESC
 			""" + PAGINATION;
 
+	/**
+	 * Searches for forest cover records matching the provided filter criteria, returning one row per
+	 * matching forest_cover with aggregated damage agent codes and names.
+	 *
+	 * Query logic steps:
+	 *
+	 * 1. filtered_ids — Two mutually exclusive UNION ALL branches determine which forest_cover_ids
+	 *    pass the filter. Postgres evaluates the constant guards at plan time to exclude the inactive
+	 *    branch entirely.
+	 *    - Branch 1 (no damage agent filter): drives from forest_cover, joining opening, org_unit,
+	 *      and cut_block_open_admin to apply stocking status/type, opening status/category, org unit,
+	 *      file ID, and date range filters.
+	 *    - Branch 2 (damage agent filter active): drives from forhealth_rslt with an indexed scan on
+	 *      silv_damage_agent_code, then joins inward through forest_cover_layer to forest_cover.
+	 *      The same stocking/opening/org unit/date filters are applied on this already-narrow set.
+	 *
+	 * 2. unique_damage — For each forest_cover_id from filtered_ids, collects all distinct damage
+	 *    agent codes and descriptions across every layer (forest_cover_layer + forhealth_rslt).
+	 *    Handles both single-layer and multi-layer forest cover polygons.
+	 *
+	 * 3. damage_agg — Aggregates per-layer damage agent rows into a single comma-separated code
+	 *    string and pipe-separated name string per forest_cover_id using STRING_AGG.
+	 *
+	 * 4. forest_cover_search — Joins filtered IDs back to forest_cover and enriches each row with
+	 *    stocking status/type descriptions, org unit, file ID, opening category, standards unit,
+	 *    regen/free-growing milestone dates, and aggregated damage data. A window function computes
+	 *    the total matching row count for pagination metadata.
+	 *
+	 * 5. Final SELECT — Returns the page of results ordered by update_timestamp DESC, with
+	 *    limit/offset applied via the PAGINATION constant.
+	 */
 	public static final String FOREST_COVER_SEARCH =
 			"""
 			WITH filtered_ids AS (
+				-- Branch 1: no damage agent filter — drive from forest_cover with other filters
 				SELECT fc.forest_cover_id
 				FROM forest_cover fc
 				LEFT JOIN opening op ON fc.opening_id = op.opening_id
@@ -1923,7 +1955,11 @@ public class SilvaPostgresQueryConstants {
 						WHERE cboa2.opening_id = op.opening_id
 					)
 				WHERE
-					(
+					'NOVALUE' IN (:#{#filter.damageAgents})
+					AND (
+						COALESCE(:#{#filter.openingId}, 0) = 0 OR fc.opening_id = :#{#filter.openingId}
+					)
+					AND (
 						'NOVALUE' IN (:#{#filter.stockingStatuses})
 						OR UPPER(fc.stocking_status_code) IN (:#{#filter.stockingStatuses})
 					)
@@ -1932,14 +1968,72 @@ public class SilvaPostgresQueryConstants {
 						OR UPPER(fc.stocking_type_code) IN (:#{#filter.stockingTypes})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.damageAgents})
-						OR EXISTS (
-							SELECT 1
-							FROM forest_cover_layer fcl2
-							JOIN forhealth_rslt fhr2 ON fhr2.forest_cover_layer_id = fcl2.forest_cover_layer_id
-							WHERE fcl2.forest_cover_id = fc.forest_cover_id
-							AND UPPER(fhr2.silv_damage_agent_code) IN (:#{#filter.damageAgents})
+						'NOVALUE' IN (:#{#filter.openingStatuses})
+						OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
+					)
+					AND (
+						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE'
+						OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits})
+						OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.openingCategories})
+						OR UPPER(op.open_category_code) IN (:#{#filter.openingCategories})
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
 						)
+						OR (
+							fc.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+									AND fc.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+									AND fc.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+				UNION ALL
+				-- Branch 2: damage agent filter active — drive from forhealth_rslt inward
+				SELECT DISTINCT fc.forest_cover_id
+				FROM forhealth_rslt fhr
+				JOIN forest_cover_layer fcl ON fcl.forest_cover_layer_id = fhr.forest_cover_layer_id
+				JOIN forest_cover fc ON fc.forest_cover_id = fcl.forest_cover_id
+				LEFT JOIN opening op ON fc.opening_id = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN cut_block_open_admin cboa
+					ON op.opening_id = cboa.opening_id
+					AND cboa.cut_block_open_admin_id = (
+						SELECT MAX(cboa2.cut_block_open_admin_id)
+						FROM cut_block_open_admin cboa2
+						WHERE cboa2.opening_id = op.opening_id
+					)
+				WHERE
+					'NOVALUE' NOT IN (:#{#filter.damageAgents})
+					AND fhr.silv_damage_agent_code IN (:#{#filter.damageAgents})
+					AND (
+						COALESCE(:#{#filter.openingId}, 0) = 0 OR fc.opening_id = :#{#filter.openingId}
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.stockingStatuses})
+						OR UPPER(fc.stocking_status_code) IN (:#{#filter.stockingStatuses})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.stockingTypes})
+						OR UPPER(fc.stocking_type_code) IN (:#{#filter.stockingTypes})
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.openingStatuses})
