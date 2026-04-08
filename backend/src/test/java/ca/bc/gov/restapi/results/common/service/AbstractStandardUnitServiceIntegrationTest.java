@@ -1,13 +1,18 @@
 package ca.bc.gov.restapi.results.common.service;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +26,18 @@ import org.springframework.data.domain.Pageable;
 @WithMockJwt(value = "ttester")
 public abstract class AbstractStandardUnitServiceIntegrationTest
     extends AbstractTestContainerIntegrationTest {
+
+  @RegisterExtension
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Autowired protected StandardUnitService standardUnitService;
 

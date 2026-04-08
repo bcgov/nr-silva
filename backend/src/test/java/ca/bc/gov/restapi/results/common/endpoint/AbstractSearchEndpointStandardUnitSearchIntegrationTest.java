@@ -1,13 +1,17 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -22,6 +26,18 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Integrated Test | Standard Unit Search Endpoint | Contract")
 public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
     extends AbstractTestContainerIntegrationTest {
+
+  @RegisterExtension
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10000)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Autowired protected MockMvc mockMvc;
 

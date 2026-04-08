@@ -2087,7 +2087,7 @@ public class SilvaPostgresQueryConstants {
 					AND ffc.forest_file_client_type_code = 'A'
 				WHERE
 					(
-						:#{#filter.standardsRegimeId} IS NULL
+						COALESCE(CAST(:#{#filter.standardsRegimeId} AS text),'NOVALUE') = 'NOVALUE'
 						OR ssu.standards_regime_id = :#{#filter.standardsRegimeId}
 					)
 					AND (
