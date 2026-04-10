@@ -30,7 +30,7 @@ const renderMilestoneStatusTag = (milestones: OpeningDetailsStockingDetailsMiles
 };
 
 /**
- * The accordion title component used specifically for standard units.
+ * The accordion title component used specifically for standards units.
  */
 const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
 
@@ -52,13 +52,13 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
         }
       </div>
       <div className="accordion-title-bottom">
-        {/* No standard unit id or FSP id */}
+        {/* No standards unit id or FSP id */}
         {
           (!standardUnit.stocking.srid && !standardUnit.stocking.fspId)
             ? 'Manual stocking requirement'
             : null
         }
-        {/* Has standard unit id but no FSP id */}
+        {/* Has standards unit id but no FSP id */}
         {
           (standardUnit.stocking.srid && !standardUnit.stocking.fspId)
             ? (
@@ -70,7 +70,7 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
             )
             : null
         }
-        {/* Has standard unit id AND FSP id */}
+        {/* Has standards unit id AND FSP id */}
         {
           (standardUnit.stocking.srid && standardUnit.stocking.fspId)
             ? (

@@ -34,7 +34,7 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
   protected ForestClientService forestClientService;
 
   @Override
-  public Page<StandardUnitSearchResponseDto> standardUnitSearch(
+  public Page<StandardUnitSearchResponseDto> standardsUnitSearch(
       StandardUnitSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 
@@ -42,7 +42,7 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
     long size = pagination.getPageSize();
 
     List<StandardUnitSearchProjection> projections =
-        standardUnitRepository.standardUnitSearch(filters, offset, size);
+        standardUnitRepository.standardsUnitSearch(filters, offset, size);
 
     long total = 0;
     if (!projections.isEmpty()) {

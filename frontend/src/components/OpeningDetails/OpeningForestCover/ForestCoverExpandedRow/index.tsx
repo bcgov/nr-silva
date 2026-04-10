@@ -63,7 +63,7 @@ const ForestCoverExpandedRow = ({ forestCoverId, openingId, isHistory = false, a
           )
           : null
       }
-    </Grid >
+    </Grid>
   );
 };
 

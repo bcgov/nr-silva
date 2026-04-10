@@ -331,7 +331,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
           }
         </TableContainer>
       </Column>
-    </Grid >
+    </Grid>
   );
 };
 

@@ -10,7 +10,7 @@ export const OpeningDetailBreadCrumbs: BreadCrumbType[] = [
 export const OpeningDetailsTabs = [
   'overview',
   'tenure-identification',
-  'standard-units',
+  'standards-units',
   'activities',
   'forest-cover',
   'attachments'

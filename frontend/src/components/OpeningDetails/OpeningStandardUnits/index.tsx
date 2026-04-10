@@ -193,15 +193,15 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
   return (
     <>
       <Modal
-        className="opening-standard-units-history-modal"
-        data-testid="opening-standard-units-history-modal"
+        className="opening-standards-units-history-modal"
+        data-testid="opening-standards-units-history-modal"
         open={isHistoryModalOpen}
-        modalHeading="Standard units history overview"
+        modalHeading="Standards units history overview"
         onRequestClose={() => setIsHistoryModalOpen(false)}
         passiveModal={true}
         size="lg"
       >
-        <div className="opening-standard-units-history-modal-content">
+        <div className="opening-standards-units-history-modal-content">
           <TableContainer>
             <Table>
               <TableHead>
@@ -238,11 +238,11 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
           </TableContainer>
         </div>
       </Modal>
-      <Grid className="opening-standard-units-grid default-grid">
+      <Grid className="opening-standards-units-grid default-grid">
         <Column sm={4} md={8} lg={16}>
-          <div className="opening-standard-units-header-container">
+          <div className="opening-standards-units-header-container">
 
-            <div className="opening-standard-units-header-title-container">
+            <div className="opening-standards-units-header-title-container">
 
               <h3 className="default-tab-content-title">
                 {
@@ -254,7 +254,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                         ? stockingUnitsQuery.data.length
                         : "No"
                         }
-            ${pluralize("standard unit", stockingUnitsQuery.data?.length)}
+            ${pluralize("standards unit", stockingUnitsQuery.data?.length)}
             in the opening area`}</>
                 }
               </h3>
@@ -426,7 +426,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                               <span>Ministry default</span>
                             </>
                           ) : null}
-                          {/* Has standard unit id AND FSP id */}
+                          {/* Has standards unit id AND FSP id */}
                           {standardUnit.stocking.srid &&
                             standardUnit.stocking.fspId ? (
                             <>

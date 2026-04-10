@@ -251,8 +251,8 @@ public class SearchEndpoint {
     return forestCoverService.forestCoverSearch(filters, paginationParameters);
   }
 
-  @GetMapping("/standard-unit")
-  public Page<StandardUnitSearchResponseDto> standardUnitSearch(
+  @GetMapping("/standards-unit")
+  public Page<StandardUnitSearchResponseDto> standardsUnitSearch(
       @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
       @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
       @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
@@ -288,6 +288,6 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return standardUnitService.standardUnitSearch(filters, paginationParameters);
+    return standardUnitService.standardsUnitSearch(filters, paginationParameters);
   }
 }

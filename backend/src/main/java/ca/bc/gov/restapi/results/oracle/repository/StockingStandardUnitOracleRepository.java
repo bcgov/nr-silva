@@ -19,7 +19,7 @@ public interface StockingStandardUnitOracleRepository
 
   @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.STANDARD_UNIT_SEARCH)
-  List<StandardUnitSearchProjection> standardUnitSearch(
+  List<StandardUnitSearchProjection> standardsUnitSearch(
       @Param("filter") StandardUnitSearchFilterDto filters,
       @Param("page") long offset,
       @Param("size") long size);

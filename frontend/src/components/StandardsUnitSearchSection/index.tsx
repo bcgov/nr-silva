@@ -1,64 +1,65 @@
 import { useEffect, useState } from "react";
-import PageTitle from "@/components/PageTitle";
-import {
-  Grid,
-  Column,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  Pagination,
-  TableHeader,
-  InlineLoading,
-  Stack,
-  TableToolbarMenu,
-  Checkbox,
-} from "@carbon/react";
-
-import FavOpeningSection from "@/components/FavouriteOpenings/FavOpeningSection";
-import { useQuery } from "@tanstack/react-query";
-import { OpeningSearchParamsType } from "@/types/OpeningTypes";
-import { openingSearch } from "@/services/OpeningSearchService";
-import {
-  readOpeningSearchUrlParams,
-  updateOpeningSearchUrlParams,
-  hasActiveFilters,
-} from "@/utils/OpeningSearchParamsUtils";
-import OpeningsSearchInput from "@/components/OpeningsSearchInput";
-import { CircleDash, Search } from "@carbon/icons-react";
-import OpeningTableRow from "@/components/OpeningTableRow";
-import EmptySection from "@/components/EmptySection";
-import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
+import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
+import StandardsUnitSearchInput from "./StandardsUnitSearchInput";
+import { StandardsUnitSearchParams } from "@/types/ApiType";
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
-import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import { MAP_KINDS } from "@/constants/mapKindConstants";
+import { CircleDash, Search } from "@carbon/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
-import OpeningsMap from "@/components/OpeningsMap";
 import TableSkeleton from "@/components/TableSkeleton";
+import { StandardsUnitHeaderKeyType, StandardsUnitHeaderType } from "@/types/TableHeader";
+import EmptySection from "@/components/EmptySection";
+import { MapKindType } from "@/types/MapLayer";
+import { PaginationOnChangeType } from "@/types/GeneralTypes";
+import OpeningsMap from "../OpeningsMap";
+import StandardsUnitSearchTableRow from "./StandardsUnitSearchTableRow";
+import { readStandardsUnitSearchUrlParams, updateStandardsUnitSearchUrlParams, hasStandardsUnitSearchFilters } from "./utils";
+import { defaultStandardsUnitSearchTableHeaders } from "./constants";
 
-import { defaultSearchTableHeaders } from "./constants";
+import "./styles.scss";
 
-import './styles.scss';
 
-const OpeningsSearch = () => {
-
-  // Draft state: reflects the current form inputs, not yet submitted
-  const [searchParams, setSearchParams] = useState<OpeningSearchParamsType>();
-
-  // Committed state: what was last submitted; drives the actual API query
-  const [queryParams, setQueryParams] = useState<OpeningSearchParamsType>();
-
-  const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
+const StandardsUnitSearchSection = () => {
+  const [searchParams, setSearchParams] = useState<StandardsUnitSearchParams>();
+  const [queryParams, setQueryParams] = useState<StandardsUnitSearchParams>();
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
+  const [selectedStandardsUnitIds, setSelectedStandardsUnitIds] = useState<string[]>([]);
 
+  const standardsUnitKinds = [MAP_KINDS.standardsUnit] as MapKindType[];
+
+  const [searchTableHeaders, setSearchTableHeaders] = useState<StandardsUnitHeaderType[]>(() => structuredClone(defaultStandardsUnitSearchTableHeaders));
+
+  const standardsUnitSearchQuery = useQuery({
+    queryKey: ['search', 'standards-unit', queryParams],
+    queryFn: () => API.SearchEndpointService.standardsUnitSearch(
+      queryParams?.standardsRegimeId,
+      queryParams?.preferredSpecies,
+      queryParams?.orgUnits,
+      queryParams?.clientNumbers,
+      queryParams?.bgcZone,
+      queryParams?.bgcSubZone,
+      queryParams?.bgcVariant,
+      queryParams?.bgcPhase,
+      queryParams?.becSiteSeries,
+      queryParams?.becSiteType,
+      queryParams?.becSeral,
+      queryParams?.updateDateStart,
+      queryParams?.updateDateEnd,
+      queryParams?.page,
+      queryParams?.size ?? 20,
+      queryParams?.sort,
+    ),
+    enabled: !!queryParams,
+  });
 
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
-    const urlParams = readOpeningSearchUrlParams();
-    // Apply URL params if there are active filters OR if pagination params exist
-    if (hasActiveFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
+    const urlParams = readStandardsUnitSearchUrlParams();
+    if (hasStandardsUnitSearchFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
       const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
       const nextSize = urlParams.size ?? PageSizesConfig[0]!;
       const paramsWithPagination = {
@@ -74,92 +75,44 @@ const OpeningsSearch = () => {
     }
   }, []);
 
-  useEffect(() => {
-    document.title = `Openings Search - Silva`;
-    return () => {
-      document.title = "Silva";
-    };
-  }, []);
-
-  const openingSearchQuery = useQuery({
-    queryKey: ['search', 'openings', queryParams],
-    queryFn: () => openingSearch(queryParams),
-    enabled: !!queryParams,
-  });
-
-  /**
-   * Handler to update a single field in searchParams
-   */
-  const handleSearchFieldChange = (field: keyof OpeningSearchParamsType, value: unknown) => {
+  const handleSearchFieldChange = (field: keyof StandardsUnitSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
       [field]: (value === '' || value === null) ? undefined : value,
-    }));
+    } as StandardsUnitSearchParams));
   };
 
-  /**
-   * Trigger search manually
-   */
   const handleSearch = () => {
-    const paramsWithPagination: OpeningSearchParamsType = {
+    const paramsWithPagination: StandardsUnitSearchParams = {
       ...searchParams,
       page: DEFAULT_PAGE_NUM,
       size: PageSizesConfig[0]!,
     };
 
-    if (!hasActiveFilters(paramsWithPagination)) {
+    if (!hasStandardsUnitSearchFilters(paramsWithPagination)) {
       return;
     }
+
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSearchParams(paramsWithPagination);
     setQueryParams(paramsWithPagination);
     setSelectedOpeningIds([]);
-    updateOpeningSearchUrlParams(paramsWithPagination);
+    setSelectedStandardsUnitIds([]);
+    updateStandardsUnitSearchUrlParams(paramsWithPagination);
   };
 
-  /**
-   * Reset all search params
-   */
   const handleReset = () => {
     setSearchParams(undefined);
     setQueryParams(undefined);
     setCurrPageNumber(DEFAULT_PAGE_NUM);
     setCurrPageSize(PageSizesConfig[0]!);
     setSelectedOpeningIds([]);
-    updateOpeningSearchUrlParams(undefined);
+    setSelectedStandardsUnitIds([]);
+    updateStandardsUnitSearchUrlParams(undefined);
   };
 
-  const handlePagination = (paginationObj: PaginationOnChangeType) => {
-    // Convert to 0 based index
-    const nextPageNum = paginationObj.page - 1;
-    const nextPageSize = paginationObj.pageSize;
-    if (!queryParams) {
-      return;
-    }
-
-    const paramsWithPagination: OpeningSearchParamsType = {
-      ...queryParams,
-      page: nextPageNum,
-      size: nextPageSize,
-    };
-
-    setCurrPageNumber(nextPageNum);
-    setCurrPageSize(nextPageSize);
-    setSelectedOpeningIds([]);
-    setQueryParams(paramsWithPagination);
-    updateOpeningSearchUrlParams(paramsWithPagination);
-  };
-
-  const handleRowSelection = (id: number) => {
-    setSelectedOpeningIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((openingId) => openingId !== id)
-        : [...prev, id]
-    );
-  };
-
-  const toggleColumn = (key: OpendingHeaderKeyType) => {
+  const toggleColumn = (key: StandardsUnitHeaderKeyType) => {
     if (key !== "openingId" && key !== "actions") {
       setSearchTableHeaders((prevHeaders) =>
         prevHeaders.map((header) =>
@@ -171,18 +124,41 @@ const OpeningsSearch = () => {
     }
   };
 
+  const handlePagination = (paginationObj: PaginationOnChangeType) => {
+    // Convert to 0 based index
+    const nextPageNum = paginationObj.page - 1;
+    const nextPageSize = paginationObj.pageSize;
+    if (!queryParams) {
+      return;
+    }
+
+    const paramsWithPagination: StandardsUnitSearchParams = {
+      ...queryParams,
+      page: nextPageNum,
+      size: nextPageSize,
+    };
+
+    setCurrPageNumber(nextPageNum);
+    setCurrPageSize(nextPageSize);
+    setSelectedOpeningIds([]);
+    setQueryParams(paramsWithPagination);
+    updateStandardsUnitSearchUrlParams(paramsWithPagination);
+  };
+
+  const handleRowSelection = (openingId: number, compoundId: string) => {
+    if (selectedStandardsUnitIds.includes(compoundId)) {
+      setSelectedStandardsUnitIds([]);
+      setSelectedOpeningIds([]);
+      return;
+    }
+    setSelectedStandardsUnitIds([compoundId]);
+    setSelectedOpeningIds([openingId]);
+  };
+
   return (
-    <Grid className="default-grid default-search-grid">
+    <Grid className="default-grid standards-unit-search-section">
       <Column sm={4} md={8} lg={16}>
-        <PageTitle title="Openings Search" />
-      </Column>
-
-      <Column sm={4} md={8} lg={16} className="bookmark-col">
-        <FavOpeningSection />
-      </Column>
-
-      <Column sm={4} md={8} lg={16}>
-        <OpeningsSearchInput searchParams={searchParams} onSearchParamsChange={handleSearchFieldChange} />
+        <StandardsUnitSearchInput searchParams={searchParams} handleSearchFieldChange={handleSearchFieldChange} />
       </Column>
 
       <Column sm={4} md={8} lg={16}>
@@ -201,16 +177,23 @@ const OpeningsSearch = () => {
       </Column>
 
       {
-        hasActiveFilters(queryParams) ? (
+        hasStandardsUnitSearchFilters(queryParams) ? (
           <Column className="full-width-col" sm={4} md={8} lg={16}>
             <>
               {
-                selectedOpeningIds.length > 0
+                selectedStandardsUnitIds.length > 0
                   ? (
                     <OpeningsMap
                       openingIds={selectedOpeningIds}
                       setOpeningPolygonNotFound={() => { }}
                       mapHeight={480}
+                      layerFilter={true}
+                      kind={standardsUnitKinds}
+                      isStandardsUnitMap
+                      selectedStandardsUnitIds={selectedStandardsUnitIds}
+                      selectedForestCoverIds={[]}
+                      selectedSilvicultureActivityIds={[]}
+                      selectedDisturbanceIds={[]}
                     />
                   )
                   : null
@@ -219,12 +202,12 @@ const OpeningsSearch = () => {
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={standardsUnitSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                      standardsUnitSearchQuery.isLoading && !isAuthRefreshInProgress()
                         ? <InlineLoading />
-                        : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
+                        : <p className="search-result-subtitle">{standardsUnitSearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
                   </Stack>
                 </Stack>
@@ -260,7 +243,7 @@ const OpeningsSearch = () => {
 
               {/* Table skeleton */}
               {
-                (openingSearchQuery.isLoading || isAuthRefreshInProgress())
+                (standardsUnitSearchQuery.isLoading || isAuthRefreshInProgress())
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -271,11 +254,11 @@ const OpeningsSearch = () => {
                   : null
               }
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !standardsUnitSearchQuery.isLoading && !isAuthRefreshInProgress()
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
-                      aria-label="Opening search table"
+                      aria-label="Standards unit search table"
                       useZebraStyles
                     >
                       <TableHead>
@@ -291,13 +274,13 @@ const OpeningsSearch = () => {
                       </TableHead>
                       <TableBody>
                         {
-                          openingSearchQuery.data?.content?.map((row) => (
-                            <OpeningTableRow
-                              key={row.openingId}
+                          standardsUnitSearchQuery.data?.content?.map((row) => (
+                            <StandardsUnitSearchTableRow
+                              key={row.stockingStandardUnitId}
                               headers={searchTableHeaders}
                               rowData={row}
                               showMap={true}
-                              selectedRows={selectedOpeningIds}
+                              selectedRows={selectedStandardsUnitIds.map((id) => Number(id))}
                               handleRowSelection={handleRowSelection}
                             />
                           ))
@@ -310,18 +293,18 @@ const OpeningsSearch = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !standardsUnitSearchQuery.isLoading && !isAuthRefreshInProgress()
                   ? (
-                    openingSearchQuery.data?.page?.totalElements &&
-                      openingSearchQuery.data?.page.totalElements > 0 ? (
+                    standardsUnitSearchQuery.data?.page?.totalElements &&
+                      standardsUnitSearchQuery.data?.page.totalElements > 0 ? (
                       <Pagination
                         className="default-pagination-white"
                         page={currPageNumber + 1}
                         pageSize={currPageSize}
                         pageSizes={PageSizesConfig}
-                        totalItems={openingSearchQuery.data?.page.totalElements}
+                        totalItems={standardsUnitSearchQuery.data?.page.totalElements}
                         onChange={handlePagination}
-                        pagesUnknown={openingSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
+                        pagesUnknown={standardsUnitSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
                       <EmptySection
@@ -338,10 +321,9 @@ const OpeningsSearch = () => {
         )
           : null
       }
-
-
     </Grid>
   );
 };
 
-export default OpeningsSearch;
+export default StandardsUnitSearchSection;
+

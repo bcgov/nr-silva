@@ -5,6 +5,6 @@ import ca.bc.gov.restapi.results.common.projection.StandardUnitSearchProjection;
 import java.util.List;
 
 public interface StandardUnitRepository {
-  List<StandardUnitSearchProjection> standardUnitSearch(
+  List<StandardUnitSearchProjection> standardsUnitSearch(
       StandardUnitSearchFilterDto filters, long offset, long size);
 }

@@ -15,7 +15,7 @@ const CardTitle = ({ title, id, subtitle }: CardTitleProps) => (
     </h3>
     {
       subtitle
-        ? <h5 className="card-subtitle" >{subtitle}</h5>
+        ? <h5 className="card-subtitle">{subtitle}</h5>
         : null
     }
   </section>

@@ -8,6 +8,7 @@ import CreateOpening from "@/screens/CreateOpening";
 import OpeningsSearch from "@/screens/OpeningsSearch";
 import ActivitySearch from "@/screens/ActivitySearch";
 import ForestCoverSearch from "@/screens/ForestCoverSearch";
+import StandardsUnitSearch from "../screens/StandardsUnitSearch";
 
 export const DashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -66,4 +67,9 @@ export const ActivitySearchRoute: RouteObject = {
 export const ForestCoverSearchRoute: RouteObject = {
   path: "/forest-cover-search",
   element: <SideLayout pageContent={<ForestCoverSearch />} />,
+}
+
+export const StandardsUnitSearchRoute: RouteObject = {
+  path: "/standards-unit-search",
+  element: <SideLayout pageContent={<StandardsUnitSearch />} />,
 }

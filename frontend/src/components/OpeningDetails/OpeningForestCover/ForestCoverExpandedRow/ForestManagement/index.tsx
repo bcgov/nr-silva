@@ -15,7 +15,7 @@ type ForestManagementProps = {
 const Title = () => (
   <Column sm={4} md={8} lg={16}>
     <h2 className="details-title">Forest management</h2>
-  </Column >
+  </Column>
 );
 
 const ForestManagement = ({

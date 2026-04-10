@@ -175,7 +175,7 @@ const OpeningDetails = () => {
               Tenure identification
             </Tab>
             <Tab renderIcon={() => <Development size={16} />}>
-              Standard units
+              Standards units
             </Tab>
             <Tab renderIcon={() => <CropHealth size={16} />}>Activities</Tab>
             <Tab renderIcon={() => <VegetationAsset size={16} />}>Forest cover</Tab>

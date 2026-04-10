@@ -100,7 +100,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
         <TooltipLabel
           align={breakpoint === 'sm' ? 'top' : 'top-left'}
           label="Client"
-          tooltip="Type at least 2 characters to search clients, matching options will be loaded."
+          tooltip="Type at least 3 characters to search clients, matching options will be loaded."
         />
       }
       id="client-multi-select"

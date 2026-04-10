@@ -287,7 +287,7 @@ const CreateOpening = () => {
           </Column>
         </Grid>
       </Modal>
-    </Grid >
+    </Grid>
   );
 };
 

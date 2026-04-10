@@ -166,7 +166,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
             )
         }
       </Column>
-    </Grid >
+    </Grid>
   );
 };
 
