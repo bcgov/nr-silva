@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
 import ForestCoverSearchInput from "./ForestCoverSearchInput";
 import { ForestCoverSearchParams } from "@/types/ApiType";
@@ -16,6 +16,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import OpeningsMap from "../OpeningsMap";
 import ForestCoverSearchTableRow from "./ForestCoverSearchTableRow";
 import { readForestCoverSearchUrlParams, updateForestCoverSearchUrlParams, hasForestCoverSearchFilters } from "./utils";
+import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
 import { defaultForestCoverSearchTableHeaders } from "./constants";
 
 const ForestCoverSearchSection = () => {
@@ -33,6 +34,8 @@ const ForestCoverSearchSection = () => {
   ] as MapKindType[];
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<ForestCoverHeaderType[]>(() => structuredClone(defaultForestCoverSearchTableHeaders));
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
 
   const forestCoverSearchQuery = useQuery({
     queryKey: ['search', 'forest-cover', queryParams],
@@ -73,6 +76,8 @@ const ForestCoverSearchSection = () => {
     }
   }, []);
 
+  useScrollToSearchResults(resultsRef, shouldScrollRef, forestCoverSearchQuery.isLoading, forestCoverSearchQuery.data);
+
   const handleSearchFieldChange = (field: keyof ForestCoverSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -98,6 +103,7 @@ const ForestCoverSearchSection = () => {
     setSelectedOpeningIds([]);
     setSelectedForestCoverIds([]);
     updateForestCoverSearchUrlParams(paramsWithPagination);
+    shouldScrollRef.current = true;
   };
 
   const handleReset = () => {
@@ -195,7 +201,7 @@ const ForestCoverSearchSection = () => {
                   )
                   : null
               }
-              <div className="search-table-banner">
+              <div className="search-table-banner" ref={resultsRef}>
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 

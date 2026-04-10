@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
 import StandardsUnitSearchInput from "./StandardsUnitSearchInput";
 import { StandardsUnitSearchParams } from "@/types/ApiType";
@@ -16,6 +16,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import OpeningsMap from "../OpeningsMap";
 import StandardsUnitSearchTableRow from "./StandardsUnitSearchTableRow";
 import { readStandardsUnitSearchUrlParams, updateStandardsUnitSearchUrlParams, hasStandardsUnitSearchFilters } from "./utils";
+import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
 import { defaultStandardsUnitSearchTableHeaders } from "./constants";
 
 import "./styles.scss";
@@ -28,6 +29,8 @@ const StandardsUnitSearchSection = () => {
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
   const [selectedStandardsUnitIds, setSelectedStandardsUnitIds] = useState<string[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
 
   const standardsUnitKinds = [MAP_KINDS.standardsUnit] as MapKindType[];
 
@@ -75,6 +78,8 @@ const StandardsUnitSearchSection = () => {
     }
   }, []);
 
+  useScrollToSearchResults(resultsRef, shouldScrollRef, standardsUnitSearchQuery.isLoading, standardsUnitSearchQuery.data);
+
   const handleSearchFieldChange = (field: keyof StandardsUnitSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -100,6 +105,7 @@ const StandardsUnitSearchSection = () => {
     setSelectedOpeningIds([]);
     setSelectedStandardsUnitIds([]);
     updateStandardsUnitSearchUrlParams(paramsWithPagination);
+    shouldScrollRef.current = true;
   };
 
   const handleReset = () => {
@@ -198,7 +204,7 @@ const StandardsUnitSearchSection = () => {
                   )
                   : null
               }
-              <div className="search-table-banner">
+              <div className="search-table-banner" ref={resultsRef}>
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 

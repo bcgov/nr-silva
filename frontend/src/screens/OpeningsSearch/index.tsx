@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import {
   Grid,
@@ -35,6 +35,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import OpeningsMap from "@/components/OpeningsMap";
 import TableSkeleton from "@/components/TableSkeleton";
+import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
 
 import { defaultSearchTableHeaders } from "./constants";
 
@@ -50,6 +51,8 @@ const OpeningsSearch = () => {
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<OpeningHeaderType[]>(() => structuredClone(defaultSearchTableHeaders));
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
 
@@ -87,6 +90,8 @@ const OpeningsSearch = () => {
     enabled: !!queryParams,
   });
 
+  useScrollToSearchResults(resultsRef, shouldScrollRef, openingSearchQuery.isLoading, openingSearchQuery.data);
+
   /**
    * Handler to update a single field in searchParams
    */
@@ -116,6 +121,7 @@ const OpeningsSearch = () => {
     setQueryParams(paramsWithPagination);
     setSelectedOpeningIds([]);
     updateOpeningSearchUrlParams(paramsWithPagination);
+    shouldScrollRef.current = true;
   };
 
   /**
@@ -215,7 +221,7 @@ const OpeningsSearch = () => {
                   )
                   : null
               }
-              <div className="search-table-banner">
+              <div className="search-table-banner" ref={resultsRef}>
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 

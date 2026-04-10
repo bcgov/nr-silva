@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
 import ActivitySearchInput from "@/components/ActivitySearchSection/ActivitySearchInput";
 import { ActivitySearchParams } from "@/types/ApiType";
@@ -16,6 +16,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import OpeningsMap from "../OpeningsMap";
 import ActivitySearchTableRow from "./ActivitySearchTableRow";
 import { readActivitySearchUrlParams, updateActivitySearchUrlParams, hasActivitySearchFilters } from "./utils";
+import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
 import { defaultActivitySearchTableHeaders } from "./constants";
 
 const ActivitiesSearchSection = () => {
@@ -25,6 +26,8 @@ const ActivitiesSearchSection = () => {
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
   const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
   const activityLayerConfig = mapKinds.find((kind) => kind.code === MAP_KINDS.activityTreatment)!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<ActivityHeaderType[]>(() => structuredClone(defaultActivitySearchTableHeaders));
@@ -73,6 +76,8 @@ const ActivitiesSearchSection = () => {
     }
   }, []);
 
+  useScrollToSearchResults(resultsRef, shouldScrollRef, activitySearchQuery.isLoading, activitySearchQuery.data);
+
   const handleSearchFieldChange = (field: keyof ActivitySearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -101,6 +106,7 @@ const ActivitiesSearchSection = () => {
     setSelectedOpeningIds([]);
     setSelectedSilvicultureActivityIds([]);
     updateActivitySearchUrlParams(paramsWithPagination);
+    shouldScrollRef.current = true;
   };
 
   /**
@@ -201,7 +207,7 @@ const ActivitiesSearchSection = () => {
                   )
                   : null
               }
-              <div className="search-table-banner">
+              <div className="search-table-banner" ref={resultsRef}>
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
