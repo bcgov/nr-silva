@@ -31,6 +31,7 @@ const StandardsUnitSearchSection = () => {
   const [selectedStandardsUnitIds, setSelectedStandardsUnitIds] = useState<string[]>([]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
 
   const standardsUnitKinds = [MAP_KINDS.standardsUnit] as MapKindType[];
 
@@ -78,7 +79,7 @@ const StandardsUnitSearchSection = () => {
     }
   }, []);
 
-  useScrollToSearchResults(resultsRef, shouldScrollRef, standardsUnitSearchQuery.isLoading, standardsUnitSearchQuery.data);
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, standardsUnitSearchQuery.isLoading, standardsUnitSearchQuery.data, standardsUnitSearchQuery.data?.page?.totalElements);
 
   const handleSearchFieldChange = (field: keyof StandardsUnitSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
@@ -147,6 +148,7 @@ const StandardsUnitSearchSection = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
+    setSelectedStandardsUnitIds([]);
     setQueryParams(paramsWithPagination);
     updateStandardsUnitSearchUrlParams(paramsWithPagination);
   };
@@ -313,11 +315,13 @@ const StandardsUnitSearchSection = () => {
                         pagesUnknown={standardsUnitSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null

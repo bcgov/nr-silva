@@ -28,6 +28,7 @@ const ActivitiesSearchSection = () => {
   const [selectedSilvicultureActivityIds, setSelectedSilvicultureActivityIds] = useState<string[]>([]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
   const activityLayerConfig = mapKinds.find((kind) => kind.code === MAP_KINDS.activityTreatment)!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<ActivityHeaderType[]>(() => structuredClone(defaultActivitySearchTableHeaders));
@@ -76,7 +77,7 @@ const ActivitiesSearchSection = () => {
     }
   }, []);
 
-  useScrollToSearchResults(resultsRef, shouldScrollRef, activitySearchQuery.isLoading, activitySearchQuery.data);
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, activitySearchQuery.isLoading, activitySearchQuery.data, activitySearchQuery.data?.page?.totalElements);
 
   const handleSearchFieldChange = (field: keyof ActivitySearchParams, value: unknown) => {
     setSearchParams((prev) => ({
@@ -152,6 +153,7 @@ const ActivitiesSearchSection = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
+    setSelectedSilvicultureActivityIds([]);
     setQueryParams(paramsWithPagination);
     updateActivitySearchUrlParams(paramsWithPagination);
   };
@@ -316,11 +318,13 @@ const ActivitiesSearchSection = () => {
                         pagesUnknown={activitySearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null

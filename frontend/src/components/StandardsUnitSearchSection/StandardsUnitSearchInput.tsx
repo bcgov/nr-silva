@@ -144,9 +144,9 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
           name="bgc-zone"
           labelText="BGC zone"
           placeholder="Enter BGC zone"
-          onBlur={(e) => handleSearchFieldChange('bgcZone', e.target.value ? e.target.value : undefined)}
-          onKeyDown={(e) => handleAutoUpperInput(e, BGC_ZONE_MAX_LENGTH)}
+          onInput={(e) => handleAutoUpperInput(e, BGC_ZONE_MAX_LENGTH)}
           onPaste={(e) => handleAutoUpperPaste(e, BGC_ZONE_MAX_LENGTH)}
+          onBlur={(e) => handleSearchFieldChange('bgcZone', e.target.value ? e.target.value : undefined)}
         />
       </Column>
 

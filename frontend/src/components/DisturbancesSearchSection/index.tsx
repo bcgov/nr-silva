@@ -28,6 +28,7 @@ const DisturbancesSearchSection = () => {
   const [selectedDisturbanceIds, setSelectedDisturbanceIds] = useState<string[]>([]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
   const disturbanceLayerConfig = mapKinds.find((kind) => kind.code === MAP_KINDS.activityTreatment)!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<DisturbanceHeaderType[]>(() => structuredClone(defaultDisturbanceSearchTableHeaders));
@@ -72,7 +73,7 @@ const DisturbancesSearchSection = () => {
     }
   }, []);
 
-  useScrollToSearchResults(resultsRef, shouldScrollRef, disturbanceSearchQuery.isLoading, disturbanceSearchQuery.data);
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, disturbanceSearchQuery.isLoading, disturbanceSearchQuery.data, disturbanceSearchQuery.data?.page?.totalElements);
 
   const handleSearchFieldChange = (field: keyof DisturbanceSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
@@ -141,6 +142,7 @@ const DisturbancesSearchSection = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
+    setSelectedDisturbanceIds([]);
     setQueryParams(paramsWithPagination);
     updateDisturbanceSearchUrlParams(paramsWithPagination);
   };
@@ -305,11 +307,13 @@ const DisturbancesSearchSection = () => {
                         pagesUnknown={disturbanceSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null

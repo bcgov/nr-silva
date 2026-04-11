@@ -53,6 +53,7 @@ const OpeningsSearch = () => {
   const [selectedOpeningIds, setSelectedOpeningIds] = useState<number[]>([]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
 
@@ -90,7 +91,7 @@ const OpeningsSearch = () => {
     enabled: !!queryParams,
   });
 
-  useScrollToSearchResults(resultsRef, shouldScrollRef, openingSearchQuery.isLoading, openingSearchQuery.data);
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, openingSearchQuery.isLoading, openingSearchQuery.data, openingSearchQuery.data?.page?.totalElements);
 
   /**
    * Handler to update a single field in searchParams
@@ -330,11 +331,13 @@ const OpeningsSearch = () => {
                         pagesUnknown={openingSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null

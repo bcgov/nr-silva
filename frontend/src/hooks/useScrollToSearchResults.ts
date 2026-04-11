@@ -4,16 +4,19 @@ const SCROLL_OFFSET_PX = 48;
 
 const useScrollToSearchResults = (
   resultsRef: RefObject<HTMLDivElement | null>,
+  emptyRef: RefObject<HTMLDivElement | null>,
   shouldScrollRef: RefObject<boolean>,
   isLoading: boolean,
   data: unknown,
+  totalElements: number | undefined,
 ) => {
   useEffect(() => {
     if (!isLoading && data && shouldScrollRef.current) {
       shouldScrollRef.current = false;
-      if (resultsRef.current) {
+      const target = (totalElements ?? 0) > 0 ? resultsRef.current : emptyRef.current;
+      if (target) {
         window.scrollTo({
-          top: resultsRef.current.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX,
+          top: target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX,
           behavior: 'smooth',
         });
       }

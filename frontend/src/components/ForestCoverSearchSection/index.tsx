@@ -36,6 +36,7 @@ const ForestCoverSearchSection = () => {
   const [searchTableHeaders, setSearchTableHeaders] = useState<ForestCoverHeaderType[]>(() => structuredClone(defaultForestCoverSearchTableHeaders));
   const resultsRef = useRef<HTMLDivElement>(null);
   const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
 
   const forestCoverSearchQuery = useQuery({
     queryKey: ['search', 'forest-cover', queryParams],
@@ -76,7 +77,7 @@ const ForestCoverSearchSection = () => {
     }
   }, []);
 
-  useScrollToSearchResults(resultsRef, shouldScrollRef, forestCoverSearchQuery.isLoading, forestCoverSearchQuery.data);
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, forestCoverSearchQuery.isLoading, forestCoverSearchQuery.data, forestCoverSearchQuery.data?.page?.totalElements);
 
   const handleSearchFieldChange = (field: keyof ForestCoverSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
@@ -145,6 +146,7 @@ const ForestCoverSearchSection = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
+    setSelectedForestCoverIds([]);
     setQueryParams(paramsWithPagination);
     updateForestCoverSearchUrlParams(paramsWithPagination);
   };
@@ -310,11 +312,13 @@ const ForestCoverSearchSection = () => {
                         pagesUnknown={forestCoverSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null
