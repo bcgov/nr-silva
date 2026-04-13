@@ -132,7 +132,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       }));
     } else if (isStandardsUnitMap) {
       // Standards unit map: show only explicitly selected standards unit polygons
-      const selectedSet = new Set(selectedStandardsUnitIds);
+      const selectedSet = new Set(selectedStandardsUnitIds ?? []);
       return openings.map(fc => ({
         ...fc,
         features: fc.features.filter(

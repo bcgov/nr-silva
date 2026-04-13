@@ -8,7 +8,7 @@ import CreateOpening from "@/screens/CreateOpening";
 import OpeningsSearch from "@/screens/OpeningsSearch";
 import ActivitySearch from "@/screens/ActivitySearch";
 import ForestCoverSearch from "@/screens/ForestCoverSearch";
-import StandardsUnitSearch from "../screens/StandardsUnitSearch";
+import StandardsUnitSearch from "@/screens/StandardsUnitSearch";
 
 export const DashboardRoute: RouteObject = {
   path: "/dashboard",

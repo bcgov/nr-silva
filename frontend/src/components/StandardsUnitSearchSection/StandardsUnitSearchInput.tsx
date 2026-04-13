@@ -49,7 +49,7 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
   const becSitePhaseInputRef = useRef<HTMLInputElement>(null);
   useRefWithSearchParam(becSitePhaseInputRef, searchParams?.becSiteType);
 
-  const prefferedSpeciesQuery = useQuery({
+  const preferredSpeciesQuery = useQuery({
     queryKey: ["codes", "silv-tree-species"],
     queryFn: API.CodesEndpointService.getSilvTreeSpeciesCodes,
   });
@@ -106,10 +106,10 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
           titleText="Preferred species"
           id="preferred-species-multi-select"
           className="default-search-multi-select"
-          items={prefferedSpeciesQuery.data ?? []}
+          items={preferredSpeciesQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('preferredSpecies')}
-          selectedItems={prefferedSpeciesQuery.data?.filter(data => searchParams?.preferredSpecies?.includes(data.code ?? '')) ?? []}
+          selectedItems={preferredSpeciesQuery.data?.filter(data => searchParams?.preferredSpecies?.includes(data.code ?? '')) ?? []}
         />
       </Column>
 
