@@ -127,7 +127,7 @@ const DistrictSelection = ({ simpleView }: DistrictSelectionProps) => {
             </>
           )
       }
-    </Grid >
+    </Grid>
   )
 }
 

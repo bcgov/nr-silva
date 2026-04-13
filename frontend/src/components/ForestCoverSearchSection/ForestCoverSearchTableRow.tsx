@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip, Stack } from "@carbon/react";
 import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
-import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
+import { PLACE_HOLDER } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { ForestCoverHeaderKeyType, ForestCoverHeaderType } from "@/types/TableHeader";
 import { ForestCoverSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
-import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import SpatialCheckbox from "../SpatialCheckbox";
 import { StockingStatusTag } from "../Tags";
+import StackedTooltip from "../StackedTooltip";
 import { DAMAGE_AGENT_DISPLAY_LIMIT } from "./constants";
 
 import "./styles.scss";
@@ -46,16 +46,6 @@ const ForestCoverSearchTableRow = ({
     window.open(openingUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const createDamageAgentsTooltip = (agents: typeof rowData.damageAgents) => (
-    <Stack gap={2}>
-      {agents?.map((agent) => (
-        <div key={agent.code} className="damage-agent-tooltip-item">
-          <span>{codeDescriptionToDisplayText(agent)}</span>
-        </div>
-      ))}
-    </Stack>
-  );
-
   const renderCellContent = (header: ForestCoverHeaderKeyType) => {
     switch (header) {
       case "actions":
@@ -64,7 +54,7 @@ const ForestCoverSearchTableRow = ({
             {
               showMap ? (
                 <SpatialCheckbox
-                  spatialType="forestCover"
+                  spatialType="forest cover"
                   rowId={rowData.forestCoverId!}
                   selectedRows={selectedRows}
                   isAvailable={isAvailable}
@@ -91,7 +81,7 @@ const ForestCoverSearchTableRow = ({
         return (
           <Stack gap={1} className="forest-cover-id-cell">
             <span>Polygon ID: {rowData.polygonId ?? PLACE_HOLDER}</span>
-            <span>Standard unit: {rowData.standardUnitId ?? PLACE_HOLDER}</span>
+            <span>Standards unit: {rowData.standardUnitId ?? PLACE_HOLDER}</span>
           </Stack>
         );
       case "damageAgents":
@@ -99,35 +89,13 @@ const ForestCoverSearchTableRow = ({
           return PLACE_HOLDER;
         }
 
-        if (rowData.damageAgents.length <= DAMAGE_AGENT_DISPLAY_LIMIT) {
-          // Show up to 3 agents with codes separated by bullet
-          const displayCodes = rowData.damageAgents
-            .map(agent => agent.code)
-            .join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
-
-          return (
-            <DefinitionTooltip
-              className="damage-agents-tooltip"
-              openOnHover
-              definition={createDamageAgentsTooltip(rowData.damageAgents)}
-              align="right"
-            >
-              <span>{displayCodes}</span>
-            </DefinitionTooltip>
-          );
-        } else {
-          // Show "x agents" when more than 3
-          return (
-            <DefinitionTooltip
-              className="damage-agents-tooltip"
-              openOnHover
-              definition={createDamageAgentsTooltip(rowData.damageAgents)}
-              align="right"
-            >
-              <span>{rowData.damageAgents.length} agents</span>
-            </DefinitionTooltip>
-          );
-        }
+        return (
+          <StackedTooltip
+            items={rowData.damageAgents}
+            unit="agents"
+            displayLimit={DAMAGE_AGENT_DISPLAY_LIMIT}
+          />
+        );
       case "stockingType":
         if (rowData.stockingType) {
           return (

@@ -50,7 +50,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(
@@ -66,7 +66,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -80,7 +80,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -106,7 +106,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -132,7 +132,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -146,7 +146,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -172,7 +172,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -187,9 +187,9 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageableSecond = PageRequest.of(1, 5);
 
     Page<StandardUnitSearchResponseDto> resultFirst =
-        standardUnitService.standardUnitSearch(filters, pageableFirst);
+        standardUnitService.standardsUnitSearch(filters, pageableFirst);
     Page<StandardUnitSearchResponseDto> resultSecond =
-        standardUnitService.standardUnitSearch(filters, pageableSecond);
+        standardUnitService.standardsUnitSearch(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -206,7 +206,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     if (result.hasContent()) {
       StandardUnitSearchResponseDto dto = result.getContent().get(0);
@@ -228,7 +228,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(
@@ -244,7 +244,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(
@@ -260,7 +260,7 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StandardUnitSearchResponseDto> result =
-        standardUnitService.standardUnitSearch(filters, pageable);
+        standardUnitService.standardsUnitSearch(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }

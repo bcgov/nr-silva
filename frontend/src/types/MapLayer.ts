@@ -84,7 +84,7 @@ export const mapKinds: LayerConfiguration[] = [
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
-        'polygonType': 'Standard Unit',
+        'polygonType': 'Standards Unit',
         'ssid': properties?.STOCKING_STANDARD_UNIT_ID,
         'standardUnitId': properties?.STANDARDS_UNIT_ID,
         'netArea': properties?.NET_AREA,

@@ -70,7 +70,7 @@ const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
       <Column sm={4} md={8} lg={16}>
         <Grid className="default-card-section-grid">
           <Column className="standard-unit-card-title-col" sm={4} md={8} lg={16}>
-            <h5>{`Standard unit: ${overviewObj?.milestones.standardsUnitId ?? PLACE_HOLDER}`}</h5>
+            <h5>{`Standards unit: ${overviewObj?.milestones.standardsUnitId ?? PLACE_HOLDER}`}</h5>
           </Column>
 
           <Column sm={4} md={8} lg={16}>

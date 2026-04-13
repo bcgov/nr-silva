@@ -57,8 +57,16 @@ export const mainActivitiesItems: LeftMenu[] = [
         breadcrumb: false
       },
       {
+        id: 'standards-unit-search',
+        name: 'Standards units',
+        icon: 'Development',
+        link: '/standards-unit-search',
+        disabled: false,
+        breadcrumb: false
+      },
+      {
         id: 'forest-cover-search',
-        name: 'Forest cover',
+        name: 'Forest covers',
         icon: 'VegetationAsset',
         link: '/forest-cover-search',
         disabled: false,

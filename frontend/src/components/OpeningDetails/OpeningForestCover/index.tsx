@@ -230,7 +230,7 @@ const OpeningForestCover = ({
           <div className="opening-forest-cover-cell-multiple-lines">
             <span>Polygon ID: {row.polygonId}</span>
             <span>
-              Standard unit: {row.standardUnitId ?? PLACE_HOLDER}
+              Standards unit: {row.standardUnitId ?? PLACE_HOLDER}
             </span>
             <span>
               Unmapped area: {row.unmappedArea.code ? codeDescriptionToDisplayText(row.unmappedArea) : PLACE_HOLDER}
@@ -499,7 +499,7 @@ const OpeningForestCover = ({
                     rowCount={10}
                   />
                 ) : (
-                  <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table" >
+                  <Table className="default-zebra-table forest-cover-table" aria-label="Forest cover table">
                     <TableHead>
                       <TableRow>
                         <TableExpandHeader />

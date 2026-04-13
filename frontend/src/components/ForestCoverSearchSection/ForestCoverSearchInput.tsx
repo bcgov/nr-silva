@@ -77,7 +77,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
   };
 
   return (
-    <Grid className="default-search-input-grid" >
+    <Grid className="default-search-input-grid">
       {/* Stocking Statuses */}
       <Column sm={4} md={4} lg={6} max={4}>
         <CustomMultiSelect
@@ -174,7 +174,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
           onChange={handleMultiSelectChange('orgUnits')}
           selectedItems={(orgUnitQuery.data ?? []).filter(data => searchParams?.orgUnits?.includes(data.code ?? ''))}
         />
-      </Column >
+      </Column>
 
       {/* Opening Categories */}
       <Column sm={4} md={4} lg={6} max={4}>
@@ -188,10 +188,10 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
           onChange={handleMultiSelectChange('openingCategories')}
           selectedItems={categoryQuery.data?.filter(data => searchParams?.openingCategories?.includes(data.code ?? '')) ?? []}
         />
-      </Column >
+      </Column>
 
       {/* Updated on date range */}
-      < Column sm={4} md={8} lg={16} className="default-search-date-col" >
+      <Column sm={4} md={8} lg={16} className="default-search-date-col">
         <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
 
         <Grid className="date-sub-grid">
@@ -236,8 +236,8 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
             </DatePicker>
           </Column>
         </Grid>
-      </Column >
-    </Grid >
+      </Column>
+    </Grid>
   );
 };
 

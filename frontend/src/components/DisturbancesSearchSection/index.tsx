@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Column, Checkbox, Grid, Button, Stack, InlineLoading, TableToolbarMenu, Table, TableRow, TableHead, TableBody, TableHeader, Pagination } from "@carbon/react";
 import { DisturbanceSearchParams } from "@/types/ApiType";
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
@@ -15,6 +15,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import OpeningsMap from "../OpeningsMap";
 import DisturbanceSearchTableRow from "./DisturbanceSearchTableRow";
 import { readDisturbanceSearchUrlParams, updateDisturbanceSearchUrlParams, hasDisturbanceSearchFilters } from "./utils";
+import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
 import { defaultDisturbanceSearchTableHeaders } from "./constants";
 import DisturbanceSearchInput from "./DisturbanceSearchInput";
 
@@ -25,6 +26,9 @@ const DisturbancesSearchSection = () => {
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => PageSizesConfig[0]!);
   const [selectedDisturbanceIds, setSelectedDisturbanceIds] = useState<string[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
+  const emptyResultsRef = useRef<HTMLDivElement>(null);
   const disturbanceLayerConfig = mapKinds.find((kind) => kind.code === MAP_KINDS.activityTreatment)!;
 
   const [searchTableHeaders, setSearchTableHeaders] = useState<DisturbanceHeaderType[]>(() => structuredClone(defaultDisturbanceSearchTableHeaders));
@@ -69,6 +73,8 @@ const DisturbancesSearchSection = () => {
     }
   }, []);
 
+  useScrollToSearchResults(resultsRef, emptyResultsRef, shouldScrollRef, disturbanceSearchQuery.isLoading, disturbanceSearchQuery.data, disturbanceSearchQuery.data?.page?.totalElements);
+
   const handleSearchFieldChange = (field: keyof DisturbanceSearchParams, value: unknown) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -94,6 +100,7 @@ const DisturbancesSearchSection = () => {
     setSelectedOpeningIds([]);
     setSelectedDisturbanceIds([]);
     updateDisturbanceSearchUrlParams(paramsWithPagination);
+    shouldScrollRef.current = true;
   };
 
   const handleReset = () => {
@@ -135,6 +142,7 @@ const DisturbancesSearchSection = () => {
     setCurrPageNumber(nextPageNum);
     setCurrPageSize(nextPageSize);
     setSelectedOpeningIds([]);
+    setSelectedDisturbanceIds([]);
     setQueryParams(paramsWithPagination);
     updateDisturbanceSearchUrlParams(paramsWithPagination);
   };
@@ -190,7 +198,7 @@ const DisturbancesSearchSection = () => {
                   )
                   : null
               }
-              <div className="search-table-banner">
+              <div className="search-table-banner" ref={resultsRef}>
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
@@ -299,11 +307,13 @@ const DisturbancesSearchSection = () => {
                         pagesUnknown={disturbanceSearchQuery.data?.page.totalElements > MAX_PAGINATION_PAGES * currPageSize}
                       />
                     ) : (
-                      <EmptySection
-                        pictogram="UserSearch"
-                        title="No results"
-                        description="Consider adjusting your search term(s) and try again."
-                      />
+                      <div ref={emptyResultsRef}>
+                        <EmptySection
+                          pictogram="UserSearch"
+                          title="No results"
+                          description="Consider adjusting your search term(s) and try again."
+                        />
+                      </div>
                     )
                   )
                   : null

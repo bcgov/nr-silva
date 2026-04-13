@@ -86,7 +86,7 @@ describe('ForestCoverSearchTableRow', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the polygon and standard unit IDs in the forest cover cell', () => {
+  it('renders the polygon and standards unit IDs in the forest cover cell', () => {
     const { wrapper } = renderWithProviders();
     render(
       <table>

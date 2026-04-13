@@ -30,9 +30,11 @@ interface MapProps {
   isDetailsPage?: boolean;
   isForestCoverMap?: boolean;
   isActivitiesMap?: boolean;
+  isStandardsUnitMap?: boolean;
   selectedForestCoverIds?: string[];
   selectedSilvicultureActivityIds?: string[];
   selectedDisturbanceIds?: string[];
+  selectedStandardsUnitIds?: string[];
 }
 
 const OpeningsMap: React.FC<MapProps> = ({
@@ -44,9 +46,11 @@ const OpeningsMap: React.FC<MapProps> = ({
   isDetailsPage = false,
   isForestCoverMap = false,
   isActivitiesMap = false,
+  isStandardsUnitMap = false,
   selectedForestCoverIds,
   selectedSilvicultureActivityIds,
   selectedDisturbanceIds,
+  selectedStandardsUnitIds,
 }) => {
   const [position, setPosition] = useState<LatLngExpression>([
     48.43737, -123.35883,
@@ -126,15 +130,28 @@ const OpeningsMap: React.FC<MapProps> = ({
           return activitySet.has(compoundId);
         }),
       }));
+    } else if (isStandardsUnitMap) {
+      // Standards unit map: show only explicitly selected standards unit polygons
+      const selectedSet = new Set(selectedStandardsUnitIds ?? []);
+      return openings.map(fc => ({
+        ...fc,
+        features: fc.features.filter(
+          feature =>
+            feature.properties?.STOCKING_STANDARD_UNIT_ID != null &&
+            selectedSet.has(`${feature.properties.STOCKING_STANDARD_UNIT_ID}`)
+        ),
+      }));
     } else {
       return openings;
     }
   }, [
     isForestCoverMap,
     isActivitiesMap,
+    isStandardsUnitMap,
     selectedForestCoverIds,
     selectedSilvicultureActivityIds,
     selectedDisturbanceIds,
+    selectedStandardsUnitIds,
     openings
   ]);
 
@@ -252,6 +269,18 @@ const OpeningsMap: React.FC<MapProps> = ({
       {isForestCoverMap && selectedForestCoverIds && selectedForestCoverIds?.length > 0 && (
         <div className="opening-map-selected-message">
           Showing selected forest cover polygons
+        </div>
+      )}
+
+      {isStandardsUnitMap && selectedStandardsUnitIds?.length === 0 && (
+        <div className="opening-map-empty-message">
+          No standards unit polygon is selected and displayed. Select from the table to show on map.
+        </div>
+      )}
+
+      {isStandardsUnitMap && selectedStandardsUnitIds && selectedStandardsUnitIds?.length > 0 && (
+        <div className="opening-map-selected-message">
+          Showing selected standards unit polygon
         </div>
       )}
 

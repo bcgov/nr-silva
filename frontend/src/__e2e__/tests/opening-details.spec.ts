@@ -143,7 +143,7 @@ test.describe('Opening Details', () => {
     expect(await openingDetailsPage.getCurrentActiveTab()).toBe('Tenure identification');
 
     await openingDetailsPage.clickStandardUnitsTab();
-    expect(await openingDetailsPage.getCurrentActiveTab()).toBe('Standard units');
+    expect(await openingDetailsPage.getCurrentActiveTab()).toBe('Standards units');
 
     await openingDetailsPage.clickActivitiesTab();
     expect(await openingDetailsPage.getCurrentActiveTab()).toBe('Activities');

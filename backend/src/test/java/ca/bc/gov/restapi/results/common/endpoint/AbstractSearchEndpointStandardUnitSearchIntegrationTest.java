@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * Abstract integration test for standard unit search endpoints. Defines test contract for all
- * SearchEndpoint standardUnitSearch implementations (Postgres and Oracle).
+ * SearchEndpoint standardsUnitSearch implementations (Postgres and Oracle).
  */
 @WithMockJwt(value = "ttester")
 @AutoConfigureMockMvc
@@ -42,11 +42,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   @Autowired protected MockMvc mockMvc;
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with standardsRegimeId filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with standardsRegimeId filter should succeed")
   void getStandardUnit_withStandardsRegimeIdFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "36109")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -57,11 +57,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with bgcZone filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with bgcZone filter should succeed")
   void getStandardUnit_withBgcZoneFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("bgcZone", "CWH")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -69,11 +69,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with org unit filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with org unit filter should succeed")
   void getStandardUnit_withOrgUnitFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("orgUnits", "DAS")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -81,11 +81,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with multiple org units should succeed")
+  @DisplayName("GET /api/search/standards-unit with multiple org units should succeed")
   void getStandardUnit_withMultipleOrgUnits_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("orgUnits", "DAS")
                 .param("orgUnits", "TWO")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -94,11 +94,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with client number filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with client number filter should succeed")
   void getStandardUnit_withClientNumberFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("clientNumbers", "00010002")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -106,11 +106,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with becSiteType filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with becSiteType filter should succeed")
   void getStandardUnit_withBecSiteTypeFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("becSiteType", "01")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -118,11 +118,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with preferred species filter should succeed")
+  @DisplayName("GET /api/search/standards-unit with preferred species filter should succeed")
   void getStandardUnit_withPreferredSpeciesFilter_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("preferredSpecies", "CW")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -130,11 +130,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with update date range should succeed")
+  @DisplayName("GET /api/search/standards-unit with update date range should succeed")
   void getStandardUnit_withUpdateDateRange_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("updateDateStart", "2005-01-01")
                 .param("updateDateEnd", "2025-12-31")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -143,11 +143,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with pagination should succeed")
+  @DisplayName("GET /api/search/standards-unit with pagination should succeed")
   void getStandardUnit_withPagination_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "36109")
                 .param("page", "0")
                 .param("size", "10")
@@ -158,11 +158,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit response should contain required fields")
+  @DisplayName("GET /api/search/standards-unit response should contain required fields")
   void getStandardUnit_response_shouldContainRequiredFields() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "36109")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -177,11 +177,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit with combined filters should succeed")
+  @DisplayName("GET /api/search/standards-unit with combined filters should succeed")
   void getStandardUnit_withCombinedFilters_shouldSucceed() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "36109")
                 .param("bgcZone", "CWH")
                 .param("page", "0")
@@ -194,11 +194,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
 
   @Test
   @DisplayName(
-      "GET /api/search/standard-unit with non-matching standardsRegimeId should return empty")
+      "GET /api/search/standards-unit with non-matching standardsRegimeId should return empty")
   void getStandardUnit_withNonMatchingStandardsRegimeId_shouldReturnEmpty() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "999999999")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -206,11 +206,11 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit response should have pagination metadata")
+  @DisplayName("GET /api/search/standards-unit response should have pagination metadata")
   void getStandardUnit_response_shouldHavePaginationMetadata() throws Exception {
     mockMvc
         .perform(
-            get("/api/search/standard-unit")
+            get("/api/search/standards-unit")
                 .param("standardsRegimeId", "36109")
                 .param("page", "0")
                 .param("size", "5")
@@ -223,10 +223,10 @@ public abstract class AbstractSearchEndpointStandardUnitSearchIntegrationTest
   }
 
   @Test
-  @DisplayName("GET /api/search/standard-unit without any filters should return error")
+  @DisplayName("GET /api/search/standards-unit without any filters should return error")
   void getStandardUnit_withoutAnyFilters_shouldReturnError() throws Exception {
     mockMvc
-        .perform(get("/api/search/standard-unit").contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/api/search/standards-unit").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
   }
 }

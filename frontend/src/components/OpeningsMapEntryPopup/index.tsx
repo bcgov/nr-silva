@@ -26,7 +26,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
       case MAP_KINDS.opening:
         return <h4 className="map-popup-header">Opening ID: {openingId}</h4>;
       case MAP_KINDS.standardsUnit:
-        return <h4 className="map-popup-header">Standard Unit: {data["standardUnitId"]}</h4>;
+        return <h4 className="map-popup-header">Standards Unit: {data["standardUnitId"]}</h4>;
       case MAP_KINDS.forestCoverInventory:
       case MAP_KINDS.forestCoverReserve:
       case MAP_KINDS.forestCoverSilviculture:

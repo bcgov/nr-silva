@@ -50,3 +50,22 @@ export type ForestCoverSearchParams = {
   size?: number;
   sort?: Array<string>;
 };
+
+export type StandardsUnitSearchParams = {
+  standardsRegimeId?: number;
+  preferredSpecies?: Array<string>;
+  orgUnits?: Array<string>;
+  clientNumbers?: Array<string>;
+  bgcZone?: string;
+  bgcSubZone?: string;
+  bgcVariant?: string;
+  bgcPhase?: string;
+  becSiteSeries?: string;
+  becSiteType?: string;
+  becSeral?: string;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  page?: number;
+  size?: number;
+  sort?: Array<string>;
+};

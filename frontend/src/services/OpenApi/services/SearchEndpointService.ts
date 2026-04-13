@@ -31,7 +31,7 @@ export class SearchEndpointService {
      * @returns PagedModelStandardUnitSearchResponseDto OK
      * @throws ApiError
      */
-    public static standardUnitSearch(
+    public static standardsUnitSearch(
         standardsRegimeId?: number,
         preferredSpecies?: Array<string>,
         orgUnits?: Array<string>,
@@ -51,7 +51,7 @@ export class SearchEndpointService {
     ): CancelablePromise<PagedModelStandardUnitSearchResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/search/standard-unit',
+            url: '/api/search/standards-unit',
             query: {
                 'standardsRegimeId': standardsRegimeId,
                 'preferredSpecies': preferredSpecies,

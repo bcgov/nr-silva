@@ -70,7 +70,7 @@ export class OpeningDetailsPage extends BasePage {
 
     this.overviewTabButton = page.getByRole('tab', { name: 'Overview' });
     this.tenureIndentificationTabButton = page.getByRole('tab', { name: 'Tenure Identification' });
-    this.standardUnitsTabButton = page.getByRole('tab', { name: 'Standard Units' });
+    this.standardUnitsTabButton = page.getByRole('tab', { name: 'Standards Units' });
     this.activitiesTabButton = page.getByRole('tab', { name: 'Activities' });
     this.forestCoverTabButton = page.getByRole('tab', { name: 'Forest Cover' });
 
@@ -84,11 +84,11 @@ export class OpeningDetailsPage extends BasePage {
     this.tenureIdentificationTableSearchInput = this.tenureIdentificationSection.getByRole('searchbox', { name: 'Filter table' });
     this.tenureIdentificationSearchButton = this.tenureIdentificationSection.getByRole('button', { name: 'Search' });
 
-    // Standard Units Section
-    this.standardUnitsSection = page.getByRole('tabpanel', { name: 'Standard units' });
-    this.standaardUnitsAccordions = this.standardUnitsSection.locator('.opening-standard-units-grid');
+    // Standards Units Section
+    this.standardUnitsSection = page.getByRole('tabpanel', { name: 'Standards units' });
+    this.standaardUnitsAccordions = this.standardUnitsSection.locator('.opening-standards-units-grid');
     this.standardUnitsHistoryModalLink = this.standardUnitsSection.getByTestId('view-history-overview-link');
-    this.standardUnitsHistoryModal = this.standardUnitsSection.getByTestId('opening-standard-units-history-modal');
+    this.standardUnitsHistoryModal = this.standardUnitsSection.getByTestId('opening-standards-units-history-modal');
     this.standardUnitsActionDropdown = this.standardUnitsSection.getByTestId('ssu-history-action-dropdown');
 
     // Activities Section
@@ -166,7 +166,7 @@ export class OpeningDetailsPage extends BasePage {
       return 'Tenure identification';
     }
     else if (await this.standardUnitsTabButton.getAttribute('aria-selected') === 'true') {
-      return 'Standard units';
+      return 'Standards units';
     }
     else if (await this.activitiesTabButton.getAttribute('aria-selected') === 'true') {
       return 'Activities';

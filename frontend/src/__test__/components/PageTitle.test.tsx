@@ -8,7 +8,7 @@ describe("PageTitle Component", () => {
   const mockBreadCrumbs = [
     { name: "Dashboard", path: "/" },
     { name: "Opening", path: "/opening" },
-    { name: "Standard Units", path: "/standard-units" },
+    { name: "Standards Units", path: "/standards-units" },
   ];
 
   it("renders the title correctly", () => {
@@ -33,7 +33,7 @@ describe("PageTitle Component", () => {
     );
 
     const openingCrumb = screen.getByText(/Opening/i);
-    const standardUnitsCrumb = screen.getByText(/Standard Units/i);
+    const standardUnitsCrumb = screen.getByText(/Standards Units/i);
 
     expect(openingCrumb).toBeInTheDocument();
     expect(standardUnitsCrumb).toBeInTheDocument();

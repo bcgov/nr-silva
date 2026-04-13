@@ -42,7 +42,7 @@ describe('OpeningsMapEntryPopup', () => {
         }}
       />
     );
-    expect(screen.getByText(/Standard Unit:\s*SU-001/)).toBeInTheDocument();
+    expect(screen.getByText(/Standards Unit:\s*SU-001/)).toBeInTheDocument();
     expect(screen.getByText(/Opening ID:/)).toBeInTheDocument();
     expect(screen.getByText(/SSID:/)).toBeInTheDocument();
     expect(screen.getByText(/Net area \(ha\):/)).toBeInTheDocument();
