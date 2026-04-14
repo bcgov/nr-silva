@@ -8,9 +8,8 @@ const retUrlString = ZONE === 'prod'
 
 const logoutDomain = ZONE === 'prod' ? 'https://logon7.gov.bc.ca' : 'https://logontest7.gov.bc.ca';
 
-const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim()
-  ? env.VITE_REDIRECT_SIGN_OUT
-  : [
+const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim() ||
+  [
     `${logoutDomain}/clp-cgi/logoff.cgi`,
     '?retnow=1',
     `&returl=${retUrlString}`,
