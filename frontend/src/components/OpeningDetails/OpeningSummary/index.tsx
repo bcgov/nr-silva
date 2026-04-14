@@ -5,11 +5,12 @@ import { Launch, Location } from "@carbon/icons-react";
 import { OpeningDetailsTombstoneDto } from "@/services/OpenApi";
 import { mapKinds, MapKindType } from "@/types/MapLayer";
 import { CardItem } from "@/components/Card";
-import { getClientLabel } from "@/utils/ForestClientUtils";
+import { getClientLabel, getClientNameAcronym } from "@/utils/ForestClientUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { OpeningStatusTag } from "@/components/Tags";
 import OpeningsMap from "@/components/OpeningsMap";
 import { getJasperReportLink } from "@/utils/UrlUtils";
+import { PLACE_HOLDER } from "@/constants";
 
 import "./styles.scss";
 
@@ -169,13 +170,13 @@ const OpeningSummary = ({
           id="client-card-item"
           label="Client"
           showSkeleton={isLoading}
-          tooltipText={tombstoneObj?.client?.clientName}
+          tooltipText={tombstoneObj?.client?.clientName ?? PLACE_HOLDER}
         >
           {getClientLabel(
             {
               id: tombstoneObj?.client.clientNumber ?? "",
               name: "",
-              acronym: tombstoneObj?.client.acronym ?? "",
+              acronym: tombstoneObj?.client.acronym ?? getClientNameAcronym(tombstoneObj?.client?.clientName) ?? "",
             },
             true
           )}

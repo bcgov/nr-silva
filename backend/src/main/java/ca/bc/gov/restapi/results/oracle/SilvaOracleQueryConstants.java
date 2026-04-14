@@ -22,8 +22,8 @@ public class SilvaOracleQueryConstants {
         ,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
         ,ou.org_unit_code as org_unit_code
         ,ou.org_unit_name as org_unit_name
-        ,ffc.client_number as client_number
-        ,ffc.client_locn_code as client_location
+        ,COALESCE(cbcr.client_number, cbco.client_number, ffc.client_number) as client_number
+        ,COALESCE(cbcr.client_locn_code, cbco.client_locn_code, ffc.client_locn_code) as client_location
         ,to_char(smrg.due_late_date, 'YYYY-MM-DD') as regen_delay_date
         ,to_char(smfg.due_early_date, 'YYYY-MM-DD') AS early_free_growing_date
         ,to_char(smfg.due_late_date, 'YYYY-MM-DD') AS late_free_growing_date
@@ -45,7 +45,7 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN silv_relief_application sra ON (atu.activity_treatment_unit_id = sra.activity_treatment_unit_id and sra.silv_relief_appl_status_code = 'APP') -- This is ours
         LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
         LEFT JOIN cut_block_client cbcr ON (cbcr.cut_block_client_type_code = 'R' AND cbcr.cb_skey = cboa.cb_skey)
-        LEFT JOIN cut_block_client cbco ON (cbcr.cut_block_client_type_code = 'O' AND cbcr.cb_skey = cboa.cb_skey)
+        LEFT JOIN cut_block_client cbco ON (cbco.cut_block_client_type_code = 'O' AND cbco.cb_skey = cboa.cb_skey)
       """;
 
   public static final String SILVICULTURE_SEARCH_WHERE_CLAUSE =
@@ -212,7 +212,7 @@ public class SilvaOracleQueryConstants {
               'NOVALUE' in (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
           )
           AND (
-              'NOVALUE' in (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+              'NOVALUE' in (:#{#filter.clientNumbers}) OR COALESCE(cbcr.client_number, cbco.client_number, ffc.client_number) IN (:#{#filter.clientNumbers})
           )
           AND (
               NVL(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR op.ENTRY_USERID = :#{#filter.requestUserId}
@@ -307,7 +307,7 @@ public class SilvaOracleQueryConstants {
         ou.ORG_UNIT_NAME,
         op.OPEN_CATEGORY_CODE,
         occ.DESCRIPTION AS open_category_name,
-        ffc.CLIENT_NUMBER AS client, -- load details FROM FCApi
+        COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) AS client, -- R > O > A priority
         cboa.FOREST_FILE_ID AS file_id,
         cboa.CUT_BLOCK_ID,
         cboa.CUTTING_PERMIT_ID,
@@ -322,6 +322,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = op.ADMIN_DISTRICT_NO
       LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON (cboa.OPENING_ID = op.OPENING_ID AND cboa.opening_prime_licence_ind = 'Y')
       LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+      LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+      LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
       LEFT JOIN OPEN_CATEGORY_CODE occ ON (occ.OPEN_CATEGORY_CODE = op.OPEN_CATEGORY_CODE)
       LEFT JOIN OPENING_STATUS_CODE osc ON osc.OPENING_STATUS_CODE = op.OPENING_STATUS_CODE
       WHERE op.OPENING_ID = :openingId""";
@@ -1702,7 +1704,7 @@ public class SilvaOracleQueryConstants {
           occ.DESCRIPTION AS openingCategoryDescription,
           ou.ORG_UNIT_CODE AS orgUnitCode,
           ou.ORG_UNIT_NAME AS orgUnitDescription,
-          ffc.CLIENT_NUMBER AS openingClientCode,
+          COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) AS openingClientCode,
           COUNT(*) OVER () AS totalCount,
           atu.UPDATE_TIMESTAMP AS updateTimestamp
         FROM ACTIVITY_TREATMENT_UNIT atu
@@ -1718,6 +1720,8 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN SILV_FUND_SRCE_CODE sfsc ON atu.SILV_FUND_SRCE_CODE = sfsc.SILV_FUND_SRCE_CODE
         LEFT JOIN OPEN_CATEGORY_CODE occ ON op.OPEN_CATEGORY_CODE = occ.OPEN_CATEGORY_CODE
         LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.FOREST_FILE_ID = ffc.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
         WHERE
           atu.SILV_BASE_CODE <> 'DN'
           AND (
@@ -1756,7 +1760,7 @@ public class SilvaOracleQueryConstants {
             NVL(:#{#filter.fileId},'NOVALUE') = 'NOVALUE' OR cboa.FOREST_FILE_ID = :#{#filter.fileId}
           )
           AND (
-            'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.CLIENT_NUMBER IN (:#{#filter.clientNumbers})
+            'NOVALUE' IN (:#{#filter.clientNumbers}) OR COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
           )
           AND (
             'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
@@ -1836,7 +1840,7 @@ public class SilvaOracleQueryConstants {
           atu.OPENING_ID AS openingId,
           occ.OPEN_CATEGORY_CODE AS openingCategoryCode,
           occ.DESCRIPTION AS openingCategoryDescription,
-          ffc.CLIENT_NUMBER AS openingClientCode,
+          COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) AS openingClientCode,
           COUNT(*) OVER () AS totalCount,
           atu.UPDATE_TIMESTAMP AS updateTimestamp
         FROM ACTIVITY_TREATMENT_UNIT atu
@@ -1852,6 +1856,8 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN SILV_CUT_PHASE_CODE scpc ON atu.SILV_CUT_PHASE_CODE = scpc.SILV_CUT_PHASE_CODE
         LEFT JOIN OPEN_CATEGORY_CODE occ ON op.OPEN_CATEGORY_CODE = occ.OPEN_CATEGORY_CODE
         LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.FOREST_FILE_ID = ffc.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
         WHERE
           atu.SILV_BASE_CODE = 'DN'
           AND (
@@ -1876,7 +1882,7 @@ public class SilvaOracleQueryConstants {
             NVL(:#{#filter.fileId},'NOVALUE') = 'NOVALUE' OR cboa.FOREST_FILE_ID = :#{#filter.fileId}
           )
           AND (
-            'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.CLIENT_NUMBER IN (:#{#filter.clientNumbers})
+            'NOVALUE' IN (:#{#filter.clientNumbers}) OR COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
           )
           AND (
             'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.OPENING_STATUS_CODE) IN (:#{#filter.openingStatuses})
@@ -2200,6 +2206,8 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN FOREST_FILE_CLIENT ffc
           ON ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID
           AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
         WHERE
           (
             :#{#filter.standardsRegimeId} IS NULL
@@ -2222,7 +2230,7 @@ public class SilvaOracleQueryConstants {
           )
           AND (
             'NOVALUE' IN (:#{#filter.clientNumbers})
-            OR UPPER(ffc.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
+            OR UPPER(COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER)) IN (:#{#filter.clientNumbers})
           )
           AND (
             NVL(:#{#filter.bgcZone},'NOVALUE') = 'NOVALUE'
@@ -2333,8 +2341,8 @@ public class SilvaOracleQueryConstants {
         se.BEC_SERAL AS becSeral,
         ou.ORG_UNIT_CODE AS orgUnitCode,
         ou.ORG_UNIT_NAME AS orgUnitName,
-        ffc.CLIENT_NUMBER AS clientNumber,
-        ffc.CLIENT_LOCN_CODE AS clientLocation,
+        COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) AS clientNumber,
+        COALESCE(cbc_r.CLIENT_LOCN_CODE, cbc_o.CLIENT_LOCN_CODE, ffc.CLIENT_LOCN_CODE) AS clientLocation,
         ssu.UPDATE_TIMESTAMP AS updateTimestamp,
         pi.totalCount
       FROM STOCKING_STANDARD_UNIT ssu
@@ -2354,6 +2362,8 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN FOREST_FILE_CLIENT ffc
         ON ffc.FOREST_FILE_ID = cboa.FOREST_FILE_ID
         AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A'
+      LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+      LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
       LEFT JOIN STANDARDS_REGIME sr ON sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID
       LEFT JOIN layer_summary ls ON ls.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
       LEFT JOIN species_agg sa ON sa.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
