@@ -1,23 +1,24 @@
 import { env } from './env';
 
-const ZONE = env.VITE_ZONE!.toLowerCase();
-const redirectUri = window.location.origin;
+const ZONE = env.VITE_ZONE ? env.VITE_ZONE.toLowerCase() : 'dev';
+const retUrlEnv = ZONE !== 'prod' && ZONE !== 'test' ? 'dev' : ZONE;
 
-const isProd = ZONE === 'prod';
+const retUrlString = ZONE === 'prod'
+  ? 'https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout'
+  : `https://${retUrlEnv}.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
 
-const logoutDomain = isProd
-  ? 'https://logon7.gov.bc.ca'
-  : 'https://logontest7.gov.bc.ca';
-
-const returnUrlHost = isProd
-  ? 'loginproxy'
-  : 'dev.loginproxy';
-
-const retUrl = `https://${returnUrlHost}.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
+const logoutDomain = ZONE === 'prod' ? 'https://logon7.gov.bc.ca' : 'https://logontest7.gov.bc.ca';
 
 const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim()
   ? env.VITE_REDIRECT_SIGN_OUT
-  : `${logoutDomain}/clp-cgi/logoff.cgi?retnow=1&returl=${retUrl}?redirect_uri=${redirectUri}/`;
+  : [
+    `${logoutDomain}/clp-cgi/logoff.cgi`,
+    '?retnow=1',
+    `&returl=${retUrlString}`,
+    `?redirect_uri=${window.location.origin}/`
+  ].join('');
+
+const redirectUri = window.location.origin;
 
 const verificationMethods: 'code' | 'token' = 'code';
 
