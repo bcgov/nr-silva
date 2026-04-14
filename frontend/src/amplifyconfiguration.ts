@@ -1,23 +1,22 @@
 import { env } from './env';
 
-const ZONE = env.VITE_ZONE!.toLowerCase();
+const ZONE = env.VITE_ZONE ? env.VITE_ZONE.toLowerCase() : 'dev';
+
+const retUrlString = ZONE === 'prod'
+  ? 'https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout'
+  : 'https://test.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout';
+
+const logoutDomain = ZONE === 'prod' ? 'https://logon7.gov.bc.ca' : 'https://logontest7.gov.bc.ca';
+
+const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim() ||
+  [
+    `${logoutDomain}/clp-cgi/logoff.cgi`,
+    '?retnow=1',
+    `&returl=${retUrlString}`,
+    `?redirect_uri=${window.location.origin}/`
+  ].join('');
+
 const redirectUri = window.location.origin;
-
-const isProd = ZONE === 'prod';
-
-const logoutDomain = isProd
-  ? 'https://logon7.gov.bc.ca'
-  : 'https://logontest7.gov.bc.ca';
-
-const returnUrlHost = isProd
-  ? 'loginproxy'
-  : 'dev.loginproxy';
-
-const retUrl = `https://${returnUrlHost}.gov.bc.ca/auth/realms/standard/protocol/openid-connect/logout`;
-
-const redirectSignOut = env.VITE_REDIRECT_SIGN_OUT?.trim()
-  ? env.VITE_REDIRECT_SIGN_OUT
-  : `${logoutDomain}/clp-cgi/logoff.cgi?retnow=1&returl=${retUrl}?redirect_uri=${redirectUri}/`;
 
 const verificationMethods: 'code' | 'token' = 'code';
 
