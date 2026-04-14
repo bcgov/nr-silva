@@ -176,7 +176,7 @@ const OpeningSummary = ({
             {
               id: tombstoneObj?.client.clientNumber ?? "",
               name: "",
-              acronym: tombstoneObj?.client.acronym ?? getClientNameAcronym(tombstoneObj?.client?.clientName) ?? "",
+              acronym: tombstoneObj?.client.acronym ?? getClientNameAcronym(tombstoneObj?.client?.clientName),
             },
             true
           )}
