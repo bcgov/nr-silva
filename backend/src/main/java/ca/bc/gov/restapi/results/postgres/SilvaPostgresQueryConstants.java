@@ -22,8 +22,8 @@ public class SilvaPostgresQueryConstants {
 		,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
 		,ou.org_unit_code as org_unit_code
 		,ou.org_unit_name as org_unit_name
-		,ffc.client_number as client_number
-		,ffc.client_locn_code as client_location
+		,COALESCE(cbcr.client_number, cbco.client_number, ffc.client_number) as client_number
+		,COALESCE(cbcr.client_locn_code, cbco.client_locn_code, ffc.client_locn_code) as client_location
 		,to_char(smrg.due_late_date, 'YYYY-MM-DD') as regen_delay_date
 		,to_char(smfg.due_early_date, 'YYYY-MM-DD') AS early_free_growing_date
 		,to_char(smfg.due_late_date, 'YYYY-MM-DD') AS late_free_growing_date
@@ -44,7 +44,7 @@ public class SilvaPostgresQueryConstants {
 		LEFT JOIN silv_relief_application sra ON (atu.activity_treatment_unit_id = sra.activity_treatment_unit_id and sra.silv_relief_appl_status_code = 'APP') -- This is ours
 		LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
 		LEFT JOIN cut_block_client cbcr ON (cbcr.cut_block_client_type_code = 'R' AND cbcr.cb_skey = cboa.cb_skey)
-		LEFT JOIN cut_block_client cbco ON (cbcr.cut_block_client_type_code = 'O' AND cbcr.cb_skey = cboa.cb_skey)
+		LEFT JOIN cut_block_client cbco ON (cbco.cut_block_client_type_code = 'O' AND cbco.cb_skey = cboa.cb_skey)
   """;
 
   public static final String SILVICULTURE_SEARCH_WHERE_CLAUSE =
@@ -210,7 +210,7 @@ public class SilvaPostgresQueryConstants {
                     'NOVALUE' in (:#{#filter.orgUnits}) OR ou.org_unit_code IN (:#{#filter.orgUnits})
                 )
                 AND (
-                    'NOVALUE' in (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+                    'NOVALUE' in (:#{#filter.clientNumbers}) OR COALESCE(cbcr.client_number, cbco.client_number, ffc.client_number) IN (:#{#filter.clientNumbers})
                 )
                 AND (
                     COALESCE(:#{#filter.requestUserId},'NOVALUE') = 'NOVALUE' OR op.ENTRY_USERID = :#{#filter.requestUserId}
@@ -306,7 +306,7 @@ public class SilvaPostgresQueryConstants {
 		ou.org_unit_name,
 		op.open_category_code,
 		occ.description AS open_category_name,
-		ffc.client_number AS client, -- load details FROM FCApi
+		COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) AS client, -- R > O > A priority
 		cboa.forest_file_id AS file_id,
 		cboa.cut_block_id,
 		cboa.cutting_permit_id,
@@ -321,6 +321,8 @@ public class SilvaPostgresQueryConstants {
 	LEFT JOIN org_unit ou ON ou.org_unit_no = op.admin_district_no
 	LEFT JOIN cut_block_open_admin cboa ON (cboa.opening_id = op.opening_id AND cboa.opening_prime_licence_ind = 'Y')
 	LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+	LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+	LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
 	LEFT JOIN open_category_code occ ON (occ.open_category_code = op.open_category_code)
 	LEFT JOIN opening_status_code osc ON osc.opening_status_code = op.opening_status_code
 	WHERE op.opening_id = :openingId
@@ -1687,7 +1689,7 @@ public class SilvaPostgresQueryConstants {
 					occ.description AS openingCategoryDescription,
 					ou.org_unit_code AS orgUnitCode,
 					ou.org_unit_name AS orgUnitDescription,
-					ffc.client_number AS openingClientCode,
+					COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) AS openingClientCode,
 					COUNT(*) OVER () AS totalCount,
 					atu.update_timestamp AS updateTimestamp
 				FROM activity_treatment_unit atu
@@ -1703,6 +1705,8 @@ public class SilvaPostgresQueryConstants {
 				LEFT JOIN silv_fund_srce_code sfsc ON atu.silv_fund_srce_code = sfsc.silv_fund_srce_code
 				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
 				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+				LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+				LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
 				WHERE
 					atu.silv_base_code <> 'DN'
 					AND (
@@ -1738,7 +1742,7 @@ public class SilvaPostgresQueryConstants {
 						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+						'NOVALUE' IN (:#{#filter.clientNumbers}) OR COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) IN (:#{#filter.clientNumbers})
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
@@ -1816,7 +1820,7 @@ public class SilvaPostgresQueryConstants {
 					atu.opening_id AS openingId,
 					occ.open_category_code AS openingCategoryCode,
 					occ.description AS openingCategoryDescription,
-					ffc.client_number AS openingClientCode,
+					COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) AS openingClientCode,
 					COUNT(*) OVER () AS totalCount,
 					atu.update_timestamp AS updateTimestamp
 				FROM activity_treatment_unit atu
@@ -1832,6 +1836,8 @@ public class SilvaPostgresQueryConstants {
 				LEFT JOIN silv_cut_phase_code scpc ON atu.silv_cut_phase_code = scpc.silv_cut_phase_code
 				LEFT JOIN open_category_code occ ON op.open_category_code = occ.open_category_code
 				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+				LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+				LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
 				WHERE
 					atu.silv_base_code = 'DN'
 					AND (
@@ -1856,7 +1862,7 @@ public class SilvaPostgresQueryConstants {
 						COALESCE(CAST(:#{#filter.fileId} AS text),'NOVALUE') = 'NOVALUE' OR cboa.forest_file_id = CAST(:#{#filter.fileId} AS text)
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.clientNumbers}) OR ffc.client_number IN (:#{#filter.clientNumbers})
+						'NOVALUE' IN (:#{#filter.clientNumbers}) OR COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) IN (:#{#filter.clientNumbers})
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.openingStatuses}) OR UPPER(op.opening_status_code) IN (:#{#filter.openingStatuses})
@@ -2179,6 +2185,8 @@ public class SilvaPostgresQueryConstants {
 				LEFT JOIN forest_file_client ffc
 					ON ffc.forest_file_id = cboa.forest_file_id
 					AND ffc.forest_file_client_type_code = 'A'
+				LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+				LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
 				WHERE
 					(
 						COALESCE(CAST(:#{#filter.standardsRegimeId} AS text),'NOVALUE') = 'NOVALUE'
@@ -2201,7 +2209,7 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.clientNumbers})
-						OR UPPER(ffc.client_number) IN (:#{#filter.clientNumbers})
+						OR UPPER(COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number)) IN (:#{#filter.clientNumbers})
 					)
 					AND (
 						COALESCE(CAST(:#{#filter.bgcZone} AS text),'NOVALUE') = 'NOVALUE'
@@ -2312,8 +2320,8 @@ public class SilvaPostgresQueryConstants {
 				se.bec_seral AS becSeral,
 				ou.org_unit_code AS orgUnitCode,
 				ou.org_unit_name AS orgUnitName,
-				ffc.client_number AS clientNumber,
-				ffc.client_locn_code AS clientLocation,
+				COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) AS clientNumber,
+				COALESCE(cbc_r.client_locn_code, cbc_o.client_locn_code, ffc.client_locn_code) AS clientLocation,
 				ssu.update_timestamp AS updateTimestamp,
 				pi.totalCount
 			FROM stocking_standard_unit ssu
@@ -2333,6 +2341,8 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN forest_file_client ffc
 				ON ffc.forest_file_id = cboa.forest_file_id
 				AND ffc.forest_file_client_type_code = 'A'
+			LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+			LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
 			LEFT JOIN standards_regime sr ON sr.standards_regime_id = ssu.standards_regime_id
 			LEFT JOIN layer_summary ls ON ls.stocking_standard_unit_id = ssu.stocking_standard_unit_id
 			LEFT JOIN species_agg sa ON sa.stocking_standard_unit_id = ssu.stocking_standard_unit_id
