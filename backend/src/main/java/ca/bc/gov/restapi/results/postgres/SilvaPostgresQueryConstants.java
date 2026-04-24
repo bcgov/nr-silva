@@ -392,6 +392,112 @@ public class SilvaPostgresQueryConstants {
 			OR spcl.silviculture_project_id = :projectId
 			ORDER BY comment_date DESC""";
 
+	public static final String COMMENT_SEARCH =
+			"""
+			WITH comment_search AS (
+				SELECT
+					COALESCE(ocl.opening_id, atu.opening_id, ssu.opening_id, ssu_m.opening_id) AS openingId,
+					CASE
+						WHEN atcl.activity_treatment_unit_id IS NOT NULL THEN 'ACTIVITIES'
+						WHEN scl.stocking_standard_unit_id IS NOT NULL THEN 'STANDARDS_UNIT'
+						WHEN smcl.stocking_standard_unit_id IS NOT NULL THEN 'MILESTONE'
+						WHEN ocl.opening_id IS NOT NULL AND sc.silv_comment_type_code = 'FORCOVER' THEN 'FOREST_COVER'
+						WHEN ocl.opening_id IS NOT NULL THEN 'OPENING'
+						ELSE NULL
+					END AS commentLocation,
+					CASE
+						WHEN atcl.activity_treatment_unit_id IS NOT NULL AND atu.silv_base_code = 'DN' THEN 'DISTURBANCE'
+						WHEN atcl.activity_treatment_unit_id IS NOT NULL THEN 'ACTIVITY'
+						ELSE NULL
+					END AS activityKind,
+					sc.comment_text AS commentText,
+					sc.update_timestamp AS updateTimestamp,
+					COUNT(*) OVER () AS totalCount
+				FROM silviculture_comment sc
+				LEFT JOIN opening_comment_link ocl ON sc.silviculture_comment_id = ocl.silviculture_comment_id
+				LEFT JOIN activity_tu_comment_link atcl ON sc.silviculture_comment_id = atcl.silviculture_comment_id
+				LEFT JOIN activity_treatment_unit atu ON atcl.activity_treatment_unit_id = atu.activity_treatment_unit_id
+				LEFT JOIN stocking_comment_link scl ON sc.silviculture_comment_id = scl.silviculture_comment_id
+				LEFT JOIN stocking_standard_unit ssu ON scl.stocking_standard_unit_id = ssu.stocking_standard_unit_id
+				LEFT JOIN stocking_milestone_cmt_link smcl ON sc.silviculture_comment_id = smcl.silviculture_comment_id
+				LEFT JOIN stocking_standard_unit ssu_m ON smcl.stocking_standard_unit_id = ssu_m.stocking_standard_unit_id
+				LEFT JOIN opening op ON COALESCE(ocl.opening_id, atu.opening_id, ssu.opening_id, ssu_m.opening_id) = op.opening_id
+				LEFT JOIN org_unit ou ON op.admin_district_no = ou.org_unit_no
+				LEFT JOIN cut_block_open_admin cboa ON op.opening_id = cboa.opening_id
+					AND cboa.cut_block_open_admin_id = (
+						SELECT MAX(cut_block_open_admin_id) FROM cut_block_open_admin cboa2
+						WHERE cboa2.opening_id = op.opening_id
+					)
+				LEFT JOIN forest_file_client ffc ON (cboa.forest_file_id = ffc.forest_file_id AND ffc.forest_file_client_type_code = 'A')
+				LEFT JOIN cut_block_client cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+				LEFT JOIN cut_block_client cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
+				WHERE
+					(
+						ocl.opening_id IS NOT NULL
+						OR atcl.activity_treatment_unit_id IS NOT NULL
+						OR scl.stocking_standard_unit_id IS NOT NULL
+						OR smcl.stocking_standard_unit_id IS NOT NULL
+					)
+					AND UPPER(sc.comment_text) LIKE '%' || UPPER(CAST(:#{#filter.searchTerm} AS text)) || '%'
+					AND (
+						COALESCE(CAST(:#{#filter.commentLocationValue} AS text), 'NOVALUE') = 'NOVALUE'
+						OR (
+							CAST(:#{#filter.commentLocationValue} AS text) = 'OPENING'
+							AND ocl.opening_id IS NOT NULL
+							AND sc.silv_comment_type_code = 'GENERAL'
+						)
+						OR (
+							CAST(:#{#filter.commentLocationValue} AS text) = 'FOREST_COVER'
+							AND ocl.opening_id IS NOT NULL
+							AND sc.silv_comment_type_code = 'FORCOVER'
+						)
+						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'STANDARDS_UNIT' AND scl.stocking_standard_unit_id IS NOT NULL)
+						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'MILESTONE' AND smcl.stocking_standard_unit_id IS NOT NULL)
+						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'ACTIVITIES' AND atcl.activity_treatment_unit_id IS NOT NULL)
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.clientNumbers})
+						OR COALESCE(cbc_r.client_number, cbc_o.client_number, ffc.client_number) IN (:#{#filter.clientNumbers})
+					)
+					AND (
+						'NOVALUE' IN (:#{#filter.orgUnits})
+						OR UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+					)
+					AND (
+						(
+							COALESCE(CAST(:#{#filter.updateDateStart} AS text), 'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text), 'NOVALUE') = 'NOVALUE'
+						)
+						OR (
+							sc.update_timestamp IS NOT NULL
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateStart} AS text), 'NOVALUE') != 'NOVALUE'
+									AND sc.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text), 'YYYY-MM-DD')
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateStart} AS text), 'NOVALUE') = 'NOVALUE'
+							)
+							AND (
+								(
+									COALESCE(CAST(:#{#filter.updateDateEnd} AS text), 'NOVALUE') != 'NOVALUE'
+									AND sc.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text), 'YYYY-MM-DD') + INTERVAL '1 day'
+								)
+								OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text), 'NOVALUE') = 'NOVALUE'
+							)
+						)
+					)
+			)
+			SELECT
+				openingId,
+				commentLocation,
+				activityKind,
+				commentText,
+				updateTimestamp,
+				totalCount
+			FROM comment_search
+			ORDER BY updateTimestamp DESC
+			""" + PAGINATION;
+
 	public static final String GET_OPENING_SS =
 			"""
 			SELECT

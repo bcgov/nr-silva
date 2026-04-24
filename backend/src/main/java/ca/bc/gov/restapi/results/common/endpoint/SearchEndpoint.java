@@ -6,12 +6,16 @@ import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResultDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.enums.CommentLocationCode;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
+import ca.bc.gov.restapi.results.common.service.CommentSearchService;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
@@ -40,6 +44,8 @@ public class SearchEndpoint {
   private final ForestCoverService forestCoverService;
 
   private final StandardUnitService standardUnitService;
+
+  private final CommentSearchService commentSearchService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -289,5 +295,23 @@ public class SearchEndpoint {
     }
 
     return standardUnitService.standardsUnitSearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/comments")
+  public Page<CommentSearchResultDto> commentSearch(
+      @RequestParam(value = "searchTerm") String searchTerm,
+      @RequestParam(value = "commentLocation", required = false)
+          CommentLocationCode commentLocation,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    CommentSearchFilterDto filter =
+        new CommentSearchFilterDto(
+            searchTerm, commentLocation, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
+
+    return commentSearchService.searchComments(filter, paginationParameters);
   }
 }
