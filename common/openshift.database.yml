@@ -354,6 +354,8 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
+                      echo "Refreshing collation versions to prevent mismatch errors" &&
+                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c "ALTER DATABASE template1 REFRESH COLLATION VERSION; ALTER DATABASE \"${POSTGRES_DB}\" REFRESH COLLATION VERSION;" &&
                       echo "Creating test database" &&
                       psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db TEMPLATE template0;' &&
                       echo "Test database created, Restoring backup" &&
