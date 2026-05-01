@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record CommentSearchResultDto(
+public record CommentSearchResponseDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) Long openingId,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) CommentLocationCode commentLocation,
     @Schema(

@@ -7,7 +7,7 @@ import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchFilterDto;
-import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResultDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
@@ -302,7 +302,7 @@ public class SearchEndpoint {
   }
 
   @GetMapping("/comments")
-  public Page<CommentSearchResultDto> commentSearch(
+  public Page<CommentSearchResponseDto> commentSearch(
       @NotBlank @Size(min = 3) @RequestParam(value = "searchTerm") String searchTerm,
       @RequestParam(value = "commentLocation", required = false)
           CommentLocationCode commentLocation,

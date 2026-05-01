@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CommentSearchResultDto } from './CommentSearchResultDto';
+import type { CommentSearchResponseDto } from './CommentSearchResponseDto';
 import type { PageMetadata } from './PageMetadata';
-export type PagedModelCommentSearchResultDto = {
-    content?: Array<CommentSearchResultDto>;
+export type PagedModelCommentSearchResponseDto = {
+    content?: Array<CommentSearchResponseDto>;
     page?: PageMetadata;
 };
 

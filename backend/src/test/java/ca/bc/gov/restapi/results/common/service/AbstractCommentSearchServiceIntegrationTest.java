@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchFilterDto;
-import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResultDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.CommentLocationCode;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
@@ -32,7 +32,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("good", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getTotalElements() >= 1, "Should find at least one comment");
@@ -45,7 +45,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("ZZZNOMATCHZZZXXX999", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getTotalElements());
@@ -58,7 +58,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("far", CommentLocationCode.OPENING, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     result
@@ -78,7 +78,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("far", CommentLocationCode.ACTIVITIES, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(0, result.getTotalElements());
@@ -91,10 +91,10 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("good", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertFalse(result.getContent().isEmpty(), "Expected at least one result");
-    CommentSearchResultDto first = result.getContent().get(0);
+    CommentSearchResponseDto first = result.getContent().get(0);
     Assertions.assertNotNull(first.openingId(), "openingId should not be null");
     Assertions.assertNotNull(first.commentLocation(), "commentLocation should not be null");
     Assertions.assertNotNull(first.commentText(), "commentText should not be null");
@@ -106,7 +106,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
     CommentSearchFilterDto filter = new CommentSearchFilterDto("far", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 1);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().size() <= 1, "Page size should be respected");
@@ -121,7 +121,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("far", null, null, List.of("DAS"), null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
   }
@@ -133,7 +133,7 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
         new CommentSearchFilterDto("far", null, null, null, "2010-01-01", "2030-12-31");
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<CommentSearchResultDto> result = commentSearchService.searchComments(filter, pageable);
+    Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
 
     Assertions.assertNotNull(result);
   }

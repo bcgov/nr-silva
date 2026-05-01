@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
-import type { PagedModelCommentSearchResultDto } from '../models/PagedModelCommentSearchResultDto';
+import type { PagedModelCommentSearchResponseDto } from '../models/PagedModelCommentSearchResponseDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
 import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
@@ -272,7 +272,7 @@ export class SearchEndpointService {
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @returns PagedModelCommentSearchResultDto OK
+     * @returns PagedModelCommentSearchResponseDto OK
      * @throws ApiError
      */
     public static commentSearch(
@@ -285,7 +285,7 @@ export class SearchEndpointService {
         page?: number,
         size: number = 20,
         sort?: Array<string>,
-    ): CancelablePromise<PagedModelCommentSearchResultDto> {
+    ): CancelablePromise<PagedModelCommentSearchResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/search/comments',

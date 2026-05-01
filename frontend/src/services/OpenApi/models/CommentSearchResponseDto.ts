@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CommentSearchResultDto = {
+export type CommentSearchResponseDto = {
     openingId: number;
-    commentLocation: CommentSearchResultDto.commentLocation;
-    activityKind?: CommentSearchResultDto.activityKind;
+    commentLocation: CommentSearchResponseDto.commentLocation;
+    activityKind?: CommentSearchResponseDto.activityKind;
     commentText: string | null;
     updateTimestamp?: string | null;
 };
-export namespace CommentSearchResultDto {
+export namespace CommentSearchResponseDto {
     export enum commentLocation {
         STANDARDS_UNIT = 'STANDARDS_UNIT',
         OPENING = 'OPENING',

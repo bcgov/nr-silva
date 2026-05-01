@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.common.service.impl;
 
 import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchFilterDto;
-import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResultDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.ActivityKindCode;
 import ca.bc.gov.restapi.results.common.enums.CommentLocationCode;
 import ca.bc.gov.restapi.results.common.projection.comment.CommentSearchProjection;
@@ -24,7 +24,7 @@ public class CommentSearchServiceImpl implements CommentSearchService {
   private final SilvicultureCommentRepository commentRepository;
 
   @Override
-  public Page<CommentSearchResultDto> searchComments(
+  public Page<CommentSearchResponseDto> searchComments(
       CommentSearchFilterDto filter, Pageable pageable) {
     DateUtil.validateDateRange(filter.getUpdateDateStart(), filter.getUpdateDateEnd());
 
@@ -40,12 +40,12 @@ public class CommentSearchServiceImpl implements CommentSearchService {
       total = totalCount != null ? totalCount : 0;
     }
 
-    List<CommentSearchResultDto> results = projections.stream().map(this::toDto).toList();
+    List<CommentSearchResponseDto> results = projections.stream().map(this::toDto).toList();
 
     return new PageImpl<>(results, pageable, total);
   }
 
-  private CommentSearchResultDto toDto(CommentSearchProjection projection) {
+  private CommentSearchResponseDto toDto(CommentSearchProjection projection) {
     CommentLocationCode location =
         projection.getCommentLocation() != null
             ? CommentLocationCode.valueOf(projection.getCommentLocation())
@@ -56,7 +56,7 @@ public class CommentSearchServiceImpl implements CommentSearchService {
             ? ActivityKindCode.valueOf(projection.getActivityKind())
             : null;
 
-    return new CommentSearchResultDto(
+    return new CommentSearchResponseDto(
         projection.getOpeningId(),
         location,
         activityKind,
