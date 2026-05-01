@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +74,13 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
   public ProblemDetail handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
     log.warn("Access denied: {}", ex.getMessage());
     return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ProblemDetail handleConstraintViolation(
+      ConstraintViolationException exception, WebRequest request) {
+    log.warn("Constraint violation: {}", exception.getMessage());
+    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
   /**
