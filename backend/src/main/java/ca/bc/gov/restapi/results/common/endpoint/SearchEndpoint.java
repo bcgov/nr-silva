@@ -20,17 +20,21 @@ import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController("oracleSearchEndpoint")
 @RequestMapping("/api/search")
 @RequiredArgsConstructor
@@ -299,7 +303,7 @@ public class SearchEndpoint {
 
   @GetMapping("/comments")
   public Page<CommentSearchResultDto> commentSearch(
-      @RequestParam(value = "searchTerm") String searchTerm,
+      @NotBlank @Size(min = 3) @RequestParam(value = "searchTerm") String searchTerm,
       @RequestParam(value = "commentLocation", required = false)
           CommentLocationCode commentLocation,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,

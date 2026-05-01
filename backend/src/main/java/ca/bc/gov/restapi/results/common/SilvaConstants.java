@@ -1,9 +1,8 @@
 package ca.bc.gov.restapi.results.common;
 
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 /** This class holds properties used for the application configuration. */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -11,6 +10,7 @@ public class SilvaConstants {
 
   public static final Integer MAX_PAGE_SIZE = 500;
   public static final Integer MAX_PAGE_SIZE_OPENING_SEARCH = 2000;
+  public static final Integer MIN_SEARCH_TERM_LENGTH = 3;
 
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";

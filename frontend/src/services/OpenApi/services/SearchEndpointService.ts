@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PagedModelActivitySearchResponseDto } from '../models/PagedModelActivitySearchResponseDto';
+import type { PagedModelCommentSearchResultDto } from '../models/PagedModelCommentSearchResultDto';
 import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedModelDisturbanceSearchResponseDto';
 import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
@@ -253,6 +254,46 @@ export class SearchEndpointService {
                 'fileId': fileId,
                 'clientNumbers': clientNumbers,
                 'openingStatuses': openingStatuses,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param searchTerm
+     * @param commentLocation
+     * @param clientNumbers
+     * @param orgUnits
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelCommentSearchResultDto OK
+     * @throws ApiError
+     */
+    public static commentSearch(
+        searchTerm: string,
+        commentLocation?: 'STANDARDS_UNIT' | 'OPENING' | 'MILESTONE' | 'ACTIVITIES' | 'FOREST_COVER',
+        clientNumbers?: Array<string>,
+        orgUnits?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelCommentSearchResultDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/comments',
+            query: {
+                'searchTerm': searchTerm,
+                'commentLocation': commentLocation,
+                'clientNumbers': clientNumbers,
+                'orgUnits': orgUnits,
                 'updateDateStart': updateDateStart,
                 'updateDateEnd': updateDateEnd,
                 'page': page,

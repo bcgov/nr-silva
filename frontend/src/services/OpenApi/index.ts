@@ -10,6 +10,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { ActivitySearchResponseDto } from './models/ActivitySearchResponseDto';
 export type { CodeDescriptionDto } from './models/CodeDescriptionDto';
 export type { CommentDto } from './models/CommentDto';
+export { CommentSearchResultDto } from './models/CommentSearchResultDto';
 export { Crs } from './models/Crs';
 export type { DisturbanceSearchResponseDto } from './models/DisturbanceSearchResponseDto';
 export type { ExtractedGeoDataDto } from './models/ExtractedGeoDataDto';
@@ -72,6 +73,7 @@ export type { OpeningStockingHistoryOverviewDto } from './models/OpeningStocking
 export type { OpeningStockingHistorySpeciesDto } from './models/OpeningStockingHistorySpeciesDto';
 export type { Pageable } from './models/Pageable';
 export type { PagedModelActivitySearchResponseDto } from './models/PagedModelActivitySearchResponseDto';
+export type { PagedModelCommentSearchResultDto } from './models/PagedModelCommentSearchResultDto';
 export type { PagedModelDisturbanceSearchResponseDto } from './models/PagedModelDisturbanceSearchResponseDto';
 export type { PagedModelForestCoverSearchResponseDto } from './models/PagedModelForestCoverSearchResponseDto';
 export type { PagedModelOpeningDetailsActivitiesActivitiesDto } from './models/PagedModelOpeningDetailsActivitiesActivitiesDto';
