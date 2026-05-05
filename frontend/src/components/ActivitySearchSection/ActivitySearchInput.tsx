@@ -341,8 +341,8 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
                       labelText="Inter-agency number"
                       placeholder="Enter inter-agency number"
                       defaultValue={searchParams?.intraAgencyNumber ?? ''}
-                      onInput={(e) => handleAutoUpperInput(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
-                      onPaste={(e) => handleAutoUpperPaste(e, INTRA_AGENCY_NUMBER_MAX_LENGTH)}
+                      onInput={(e) => handleAutoUpperInput(e, INTRA_AGENCY_NUMBER_MAX_LENGTH, true)}
+                      onPaste={(e) => handleAutoUpperPaste(e, INTRA_AGENCY_NUMBER_MAX_LENGTH, true)}
                       onBlur={(e) => handleSearchFieldChange('intraAgencyNumber', e.target.value ? e.target.value : undefined)}
                     />
                   </Column>

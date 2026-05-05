@@ -721,7 +721,7 @@ public class SilvaPostgresQueryConstants {
 						WHEN pr.climate_based_seed_xfer_ind = 'Y' THEN 'true'
 						ELSE 'false'
 					END AS cbst,
-					pr.request_skey AS request_id,
+					NULL AS request_id,
 					COALESCE(pr.seedlot_number,pr.veg_lot_id) AS lot,
 					pr.bid_price_per_tree AS bid_price_per_tree
 				FROM planting_rslt pr

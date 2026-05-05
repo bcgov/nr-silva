@@ -1,10 +1,10 @@
 package ca.bc.gov.restapi.results.common.service;
 
+import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
 import ca.bc.gov.restapi.results.common.provider.ForestClientApiProvider;
-import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +29,10 @@ public class ForestClientService {
    */
   public Optional<ForestClientDto> getClientByNumber(String clientNumber) {
     log.info("Received client number to fetch {}", clientNumber);
+
+    if (StringUtils.isBlank(clientNumber)) {
+      return Optional.empty();
+    }
 
     String fixedNumber = checkClientNumber(clientNumber);
     if (!fixedNumber.equals(clientNumber)) {
@@ -90,6 +94,10 @@ public class ForestClientService {
    */
   public Optional<ForestClientLocationDto> getClientLocation(
       String clientNumber, String locationCode) {
+    if (StringUtils.isBlank(clientNumber)) {
+      return Optional.empty();
+    }
+
     String fixedNumber = checkClientNumber(clientNumber);
     log.info("Fetching location {} for client number {}", locationCode, fixedNumber);
     if (!fixedNumber.equals(clientNumber)) {

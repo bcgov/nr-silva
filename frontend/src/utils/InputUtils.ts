@@ -155,8 +155,9 @@ export const getMultiSelectedCodes = (selected: { selectedItems: Array<any> }) =
  * uncontrolled text inputs.
  * @param e - The input form event
  * @param {number} [maxLen] - Optional maximum length constraint.
+ * @param {boolean} [allowWhitespace=false] - Whether to preserve spaces.
  */
-export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>, maxLen?: number) => {
+export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>, maxLen?: number, allowWhitespace = false) => {
   const el = e.currentTarget;
   const orig = el.value ?? "";
   let pos = el.selectionStart ?? orig.length;
@@ -164,7 +165,7 @@ export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>, maxLen?: nu
   const out: string[] = [];
   for (let i = 0; i < orig.length; i++) {
     const ch = orig.charAt(i);
-    if (ch === ' ') {
+    if (ch === ' ' && !allowWhitespace) {
       // remove space; if the removed character is before the caret, shift caret left
       if (i < pos) pos--;
       continue;
@@ -192,14 +193,15 @@ export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>, maxLen?: nu
  * Preserves the caret after the inserted text. Use as an `onPaste` handler.
  * @param e - The clipboard event for the paste
  * @param {number} [maxLen] - Optional maximum length constraint.
+ * @param {boolean} [allowWhitespace=false] - Whether to preserve spaces.
  */
-export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>, maxLen?: number) => {
+export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>, maxLen?: number, allowWhitespace = false) => {
   e.preventDefault();
   const raw = (e.clipboardData?.getData('text') ?? '');
   const out: string[] = [];
   for (let i = 0; i < raw.length; i++) {
     const ch = raw.charAt(i);
-    if (ch === ' ') continue;
+    if (ch === ' ' && !allowWhitespace) continue;
     out.push(ch);
   }
   let paste = out.join('').toUpperCase();

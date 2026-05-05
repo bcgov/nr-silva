@@ -11,19 +11,18 @@ import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsActivitiesService;
 import ca.bc.gov.restapi.results.common.util.PaginationUtil;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractOpeningDetailsActivitiesService implements
-    OpeningDetailsActivitiesService {
+public abstract class AbstractOpeningDetailsActivitiesService
+    implements OpeningDetailsActivitiesService {
   protected final ActivityTreatmentUnitRepository activityRepository;
   protected final ForestClientService forestClientService;
   protected final SilvicultureCommentRepository commentRepository;
@@ -156,84 +155,102 @@ public abstract class AbstractOpeningDetailsActivitiesService implements
             getComments(atuId));
 
     return switch (baseProjection.getKind()) {
-      case "DS" -> new OpeningActivitySpeciesDto(baseDto)
-          .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
-                  .map(
-                      projection ->
-                          new OpeningActivitySpeciesDetailsDto(
-                              new CodeDescriptionDto(
-                                  projection.getSpeciesCode(), projection.getSpeciesName()),
-                              projection.getPlantedNumber(),
-                              projection.getNumberBeyondTransferLimit(),
-                              projection.isCbst(),
-                              null,
-                              projection.getLot(),
-                              null))
-                  .toList());
+      case "DS" -> {
+        var dto = new OpeningActivitySpeciesDto(baseDto);
+        dto.setSpecies(
+            activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+                .map(
+                    projection ->
+                        new OpeningActivitySpeciesDetailsDto(
+                            new CodeDescriptionDto(
+                                projection.getSpeciesCode(), projection.getSpeciesName()),
+                            projection.getPlantedNumber(),
+                            projection.getNumberBeyondTransferLimit(),
+                            projection.isCbst(),
+                            null,
+                            projection.getLot(),
+                            null))
+                .toList());
+        yield dto;
+      }
 
-      case "JS" -> activityRepository
-          .getOpeningActivityJS(openingId, atuId)
-          .map(
-              projection ->
-                  new OpeningActivityJuvenileDto(baseDto)
-                      .withTargetIntertreeDistance(projection.getTargetIntertreeDistance())
-                      .withAllowableVariationDistance(projection.getAllowableVariationDistance())
-                      .withAllowableTreePerLot(projection.getAllowableTreePerLot())
-                      .withSpacingPerHa(projection.getSpacingPerHa())
-                      .withTotalPlanting(null))
-          .orElse(new OpeningActivityJuvenileDto(baseDto));
+      case "JS" -> {
+        var dto = new OpeningActivityJuvenileDto(baseDto);
+        dto.setTotalPlanting(null);
+        activityRepository
+            .getOpeningActivityJS(openingId, atuId)
+            .ifPresent(
+                projection -> {
+                  dto.setTargetIntertreeDistance(projection.getTargetIntertreeDistance());
+                  dto.setAllowableVariationDistance(projection.getAllowableVariationDistance());
+                  dto.setAllowableTreePerLot(projection.getAllowableTreePerLot());
+                  dto.setSpacingPerHa(projection.getSpacingPerHa());
+                });
+        yield dto;
+      }
 
-      case "PL" -> new OpeningActivitySpeciesDto(baseDto)
-          .withSpecies(
-              activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
-                  .map(
-                      projection ->
-                          new OpeningActivitySpeciesDetailsDto(
-                              new CodeDescriptionDto(
-                                  projection.getSpeciesCode(), projection.getSpeciesName()),
-                              projection.getPlantedNumber(),
-                              projection.getNumberBeyondTransferLimit(),
-                              projection.isCbst(),
-                              projection.getRequestId(),
-                              projection.getLot(),
-                              projection.getBidPricePerTree()))
-                  .toList());
+      case "PL" -> {
+        var dto = new OpeningActivitySpeciesDto(baseDto);
+        dto.setSpecies(
+            activityRepository.getOpeningActivitySpecies(openingId, atuId).stream()
+                .map(
+                    projection ->
+                        new OpeningActivitySpeciesDetailsDto(
+                            new CodeDescriptionDto(
+                                projection.getSpeciesCode(), projection.getSpeciesName()),
+                            projection.getPlantedNumber(),
+                            projection.getNumberBeyondTransferLimit(),
+                            projection.isCbst(),
+                            projection.getRequestId(),
+                            projection.getLot(),
+                            projection.getBidPricePerTree()))
+                .toList());
+        yield dto;
+      }
 
-      case "PR" -> activityRepository
-          .getOpeningActivityPR(openingId, atuId)
-          .map(
-              projection ->
-                  new OpeningActivityPruningDto(baseDto)
-                      .withTotalStemsPerHa(projection.getTotalStemsPerHa())
-                      .withStemsPerHaToPrune(projection.getStemsPerHaToPrune())
-                      .withTargetIntertreeDistance(projection.getTargetIntertreeDistance())
-                      .withMinimumIntertreeDistance(projection.getMinimumIntertreeDistance())
-                      .withHeightAboveGround(projection.getHeightAboveGround())
-                      .withMinimumLiveCrown(projection.getMinimumLiveCrown())
-                      .withTotalPlanting(null))
-          .orElse(new OpeningActivityPruningDto(baseDto));
+      case "PR" -> {
+        var dto = new OpeningActivityPruningDto(baseDto);
+        dto.setTotalPlanting(null);
+        activityRepository
+            .getOpeningActivityPR(openingId, atuId)
+            .ifPresent(
+                projection -> {
+                  dto.setTotalStemsPerHa(projection.getTotalStemsPerHa());
+                  dto.setStemsPerHaToPrune(projection.getStemsPerHaToPrune());
+                  dto.setTargetIntertreeDistance(projection.getTargetIntertreeDistance());
+                  dto.setMinimumIntertreeDistance(projection.getMinimumIntertreeDistance());
+                  dto.setHeightAboveGround(projection.getHeightAboveGround());
+                  dto.setMinimumLiveCrown(projection.getMinimumLiveCrown());
+                });
+        yield dto;
+      }
 
-      case "SP" -> activityRepository
-          .getOpeningActivitySP(openingId, atuId)
-          .map(
-              projection ->
-                  new OpeningActivitySitePrepDto(baseDto)
-                      .withTargetSpot(projection)
-                      .withTotalPlanting(null))
-          .orElse(new OpeningActivitySitePrepDto(baseDto));
+      case "SP" -> {
+        var dto = new OpeningActivitySitePrepDto(baseDto);
+        dto.setTotalPlanting(null);
+        activityRepository
+            .getOpeningActivitySP(openingId, atuId)
+            .ifPresent(projection -> dto.setTargetSpot(projection));
+        yield dto;
+      }
 
-      case "SU" -> activityRepository
-          .getOpeningActivitySU(openingId, atuId)
-          .map(
-              projection ->
-                  new OpeningActivitySurveyDto(baseDto)
-                      .withPlotsCount(projection.getPlotsCount())
-                      .withSurveyMinPlotsPerStratum(projection.getSurveyMinPlotsPerStratum())
-                      .withTotalPlanting(null))
-          .orElse(new OpeningActivitySurveyDto(baseDto));
+      case "SU" -> {
+        var dto = new OpeningActivitySurveyDto(baseDto);
+        dto.setTotalPlanting(null);
+        activityRepository
+            .getOpeningActivitySU(openingId, atuId)
+            .ifPresent(
+                projection -> {
+                  dto.setPlotsCount(projection.getPlotsCount());
+                  dto.setSurveyMinPlotsPerStratum(projection.getSurveyMinPlotsPerStratum());
+                });
+        yield dto;
+      }
 
-      default -> baseDto.withTotalPlanting(null);
+      default -> {
+        baseDto.setTotalPlanting(null);
+        yield baseDto;
+      }
     };
   }
 
