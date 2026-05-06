@@ -125,8 +125,6 @@ class ForestClientServiceTest {
   @DisplayName("No client number should return empty")
   void shouldGetEmptyWhenNoClientNumber(String clientNumber) {
 
-    when(forestClientApiProvider.fetchClientByNumber("00000000")).thenReturn(Optional.empty());
-
     Optional<ForestClientDto> clientDtoOptional =
         forestClientService.getClientByNumber(clientNumber);
 
