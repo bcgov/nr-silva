@@ -153,4 +153,4 @@ frontend/src/__e2e__/auth/user.*.json
 
 .copilot
 
-nr-results
+nr-*
