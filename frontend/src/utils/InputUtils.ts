@@ -150,9 +150,9 @@ export const getMultiSelectedCodes = (selected: { selectedItems: Array<any> }) =
 
 
 /**
- * Transform the current input value to upper-case, remove space characters,
- * and preserve the caret position. Use as an `onInput` handler on
- * uncontrolled text inputs.
+ * Transform the current input value to upper-case and preserve the caret
+ * position. Spaces are removed unless `allowWhitespace` is true. Use as an
+ * `onInput` handler on uncontrolled text inputs.
  * @param e - The input form event
  * @param {number} [maxLen] - Optional maximum length constraint.
  * @param {boolean} [allowWhitespace=false] - Whether to preserve spaces.
@@ -189,8 +189,9 @@ export const handleAutoUpperInput = (e: FormEvent<HTMLInputElement>, maxLen?: nu
 
 /**
  * Handle paste into an uncontrolled input by inserting an upper-case version
- * of the pasted text with spaces removed, at the current caret position.
- * Preserves the caret after the inserted text. Use as an `onPaste` handler.
+ * of the pasted text at the current caret position. Spaces in the pasted text
+ * are removed unless `allowWhitespace` is true. Preserves the caret after the
+ * inserted text. Use as an `onPaste` handler.
  * @param e - The clipboard event for the paste
  * @param {number} [maxLen] - Optional maximum length constraint.
  * @param {boolean} [allowWhitespace=false] - Whether to preserve spaces.
