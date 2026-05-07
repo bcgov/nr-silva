@@ -1,22 +1,23 @@
 package ca.bc.gov.restapi.results.common.dto.activity;
 
-import java.util.List;
-
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
 import ca.bc.gov.restapi.results.common.dto.comment.CommentDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.Data;
-import lombok.With;
 
 @Data
-@With
 public class OpeningActivityBaseDto {
 
-  @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"string", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   String licenseeActivityId;
 
-  @Schema(types = {"string", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"string", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   String intraAgencyNumber;
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -25,26 +26,35 @@ public class OpeningActivityBaseDto {
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   ForestClientLocationDto activityLocation;
 
-  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   Float plannedAmount;
 
-  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   Float treatedAmount;
 
-  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   Float plannedCost;
 
-  @Schema(types = {"number", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"number", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   Float actualCost;
 
-  @Schema(types = {"integer", "null"}, requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(
+      types = {"integer", "null"},
+      requiredMode = Schema.RequiredMode.REQUIRED)
   Long totalPlanting;
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   List<CommentDto> comments;
 
-  public OpeningActivityBaseDto() {
-  }
+  public OpeningActivityBaseDto() {}
 
   public OpeningActivityBaseDto(
       String licenseeActivityId,
@@ -56,8 +66,7 @@ public class OpeningActivityBaseDto {
       Float plannedCost,
       Float actualCost,
       Long totalPlanting,
-      List<CommentDto> comments
-  ) {
+      List<CommentDto> comments) {
     this.licenseeActivityId = licenseeActivityId;
     this.intraAgencyNumber = intraAgencyNumber;
     this.activityClient = activityClient;
