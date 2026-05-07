@@ -45,6 +45,26 @@ INSERT INTO silva.forest_cover (forest_cover_id, opening_id, stocking_standard_u
 INSERT INTO silva.stocking_event_history (stocking_event_history_id, opening_id, opening_amendment_id, opening_amendment_number, results_audit_action_code, submitted_userid, results_submission_id, amend_event_timestamp, entry_userid, entry_timestamp, revision_count) VALUES
 	 (1742359,1796497,1796497,NULL,'COR','IDIR\JZAHND',2423178,TIMESTAMP'2025-03-26 13:55:49','IDIR\JZAHND',TIMESTAMP'2025-03-26 13:55:49',1);
 
+-- SPAR_REQUEST seed row — mirrors the Oracle V2.0.3 seed (REQUEST_SKEY=1, ORG_UNIT_NO=1 → code 'DAS')
+-- Expected request_id: '2026DAS0001'
+INSERT INTO silva.spar_request (
+	request_skey, request_type_code, sowing_year, request_year,
+	org_unit_no, request_sequence, spr_request_status_code,
+	latitude_degrees, latitude_minutes, longitude_degrees, longitude_minutes,
+	qty_seedlings_rqst, rqst_changed_ind, invoicing_exception_ind,
+	entry_userid, entry_timestamp, update_userid, update_timestamp, revision_count
+) VALUES (
+	1, 'TFG', 2026, 2026,
+	1, 1, 'APP',
+	49, 0, 120, 0,
+	100, 'N', 'N',
+	'IDIR\JZAHND', TIMESTAMP '2026-01-01 00:00:00', 'IDIR\JZAHND', TIMESTAMP '2026-01-01 00:00:00', 1
+);
+
+-- PLANTING_RSLT row for the PL activity (4184319), referencing the above SPAR_REQUEST row
+INSERT INTO silva.planting_rslt (activity_treatment_unit_id, results_ind, plant_rslt_seq_no, silv_tree_species_code, number_planted, planted_no_beyond_xfer_limit, bid_price_per_tree, seedlot_number, veg_lot_id, request_skey, item_id, entry_userid, entry_timestamp, update_userid, update_timestamp, revision_count, climate_based_seed_xfer_ind) VALUES
+	(4184319, 'Y', 1, 'AC', 500, 0, 0.25, '12345', NULL, 1, NULL, 'IDIR\JZAHND', TIMESTAMP '2025-03-26 14:46:44', 'IDIR\JZAHND', TIMESTAMP '2025-03-26 14:46:44', 1, 'N');
+
 INSERT INTO silva.results_audit_event (results_audit_event_id, opening_id, standards_regime_id, silviculture_project_id, results_audit_action_code, action_date, description, user_id, email_sent_ind, xml_submission_id, opening_amendment_number, entry_userid, entry_timestamp) VALUES
 	 (5934357,1796497,NULL,NULL,'UPD',TIMESTAMP'2025-03-26 13:23:14','Opening/Tenure Online Entry',NULL,'N',NULL,NULL,'IDIR\JZAHND',TIMESTAMP'2025-03-26 13:23:14'),
 	 (5934511,1796497,NULL,NULL,'COR',TIMESTAMP'2025-03-26 13:55:49','Stocking information modified.',NULL,'Y',2423178,NULL,'IDIR\JZAHND',TIMESTAMP'2025-03-26 13:55:49'),
