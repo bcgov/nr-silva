@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.common.dto.opening.history;
 
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsBecDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.With;
 
 @With
@@ -20,10 +21,7 @@ public record OpeningStockingHistoryDetailsDto(
         Long srid,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean defaultMof,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean manualEntry,
-    @Schema(
-            types = {"integer", "null"},
-            requiredMode = Schema.RequiredMode.REQUIRED)
-        Long fspId,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<Long> possibleFspIds,
     @Schema(
             types = {"number", "null"},
             requiredMode = Schema.RequiredMode.REQUIRED)

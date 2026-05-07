@@ -9,62 +9,67 @@ import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsStockingService;
+import java.util.List;
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 
-import java.util.List;
-import java.util.function.Function;
-
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractOpeningDetailsStockingService implements OpeningDetailsStockingService {
+public abstract class AbstractOpeningDetailsStockingService
+    implements OpeningDetailsStockingService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
 
   @Override
   public List<OpeningDetailsStockingDto> getOpeningStockingDetails(Long openingId) {
     return openingRepository.getOpeningStockingDetailsByOpeningId(openingId).stream()
-        .map(getDetails())
+        .map(projection -> getDetails(projection, openingRepository))
         .map(detailsDto -> getMilestones(detailsDto.stocking().ssuId()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
         .map(getComments())
         .toList();
   }
-  private static Function<OpeningStockingDetailsProjection, OpeningDetailsStockingDto>
-  getDetails() {
-    return projection -> {
-      OpeningDetailsBecDto bec =
-          new OpeningDetailsBecDto(
-              projection.getBecZoneCode(),
-              projection.getBecSubzoneCode(),
-              projection.getBecVariant(),
-              projection.getBecPhase(),
-              projection.getBecSiteSeries(),
-              projection.getBecSiteType(),
-              projection.getBecSeral());
 
-      OpeningDetailsStockingDetailsDto stockingDetails =
-          new OpeningDetailsStockingDetailsDto(
-              projection.getStockingStandardUnit(),
-              projection.getSsuid(),
-              projection.getSrid(),
-              BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
-              BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
-              projection.getFspId(),
-              projection.getNetArea(),
-              projection.getSoilDisturbancePercent(),
-              bec,
-              projection.getRegenDelay(),
-              projection.getFreeGrowingLate(),
-              projection.getFreeGrowingEarly(),
-              projection.getAdditionalStandards(),
-              null);
+  private static OpeningDetailsStockingDto getDetails(
+      OpeningStockingDetailsProjection projection,
+      OpeningRepository<? extends BaseOpeningEntity> repository) {
+    OpeningDetailsBecDto bec =
+        new OpeningDetailsBecDto(
+            projection.getBecZoneCode(),
+            projection.getBecSubzoneCode(),
+            projection.getBecVariant(),
+            projection.getBecPhase(),
+            projection.getBecSiteSeries(),
+            projection.getBecSiteType(),
+            projection.getBecSeral());
 
-      return new OpeningDetailsStockingDto(stockingDetails, List.of(), List.of(), null, List.of());
-    };
+    List<Long> possibleFspIds =
+        projection.getSrid() != null
+            ? repository.getOpeningStockingFspIdsByStandardsRegimeId(projection.getSrid())
+            : List.of();
+
+    OpeningDetailsStockingDetailsDto stockingDetails =
+        new OpeningDetailsStockingDetailsDto(
+            projection.getStockingStandardUnit(),
+            projection.getSsuid(),
+            projection.getSrid(),
+            BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
+            BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
+            possibleFspIds,
+            projection.getNetArea(),
+            projection.getSoilDisturbancePercent(),
+            bec,
+            projection.getRegenDelay(),
+            projection.getFreeGrowingLate(),
+            projection.getFreeGrowingEarly(),
+            projection.getAdditionalStandards(),
+            null);
+
+    return new OpeningDetailsStockingDto(stockingDetails, List.of(), List.of(), null, List.of());
   }
 
   private Function<OpeningDetailsStockingDto, OpeningDetailsStockingDto> getLayer(Long openingId) {
@@ -162,5 +167,4 @@ public abstract class AbstractOpeningDetailsStockingService implements OpeningDe
         .map(OpeningDetailsCommentConverter.mapComments())
         .toList();
   }
-
 }

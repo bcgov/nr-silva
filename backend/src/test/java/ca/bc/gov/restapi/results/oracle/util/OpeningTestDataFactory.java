@@ -275,11 +275,6 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getFspId() {
-        return null;
-      }
-
-      @Override
       public Float getNetArea() {
         return 25.5F;
       }

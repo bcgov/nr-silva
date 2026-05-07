@@ -12,8 +12,6 @@ public interface OpeningStockingDetailsProjection {
 
   Boolean getManualEntry();
 
-  Long getFspId();
-
   Float getNetArea();
 
   Float getSoilDisturbancePercent();
