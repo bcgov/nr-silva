@@ -1001,8 +1001,8 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>hva_is_cp_ext_appl_fee_wa_ck</td>
-                                    <td>((is_cp_extensn_appl_fee_waived)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                    <td>hva_is_waste_assess_req_ck</td>
+                                    <td>((is_waste_assessment_required)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
                                     <td>avcon_1148331360_decid_000</td>
@@ -1013,6 +1013,10 @@
                                     <td>((catastrophic_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
+                                    <td>hva_is_cp_ext_appl_fee_pa_ck</td>
+                                    <td>((is_cp_extension_appl_fee_paid)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
                                     <td>avcon_1148331360_crown_000</td>
                                     <td>((crown_granted_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
@@ -1021,16 +1025,12 @@
                                     <td>((cruise_based_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
-                                    <td>hva_is_waste_assess_req_ck</td>
-                                    <td>((is_waste_assessment_required)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                    <td>hva_is_cp_ext_appl_fee_wa_ck</td>
+                                    <td>((is_cp_extensn_appl_fee_waived)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
                                     <td>hva_is_within_frz_ck</td>
                                     <td>((is_within_fibre_recovery_zone)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
-                                </tr>
-                                <tr>
-                                    <td>hva_is_cp_ext_appl_fee_pa_ck</td>
-                                    <td>((is_cp_extension_appl_fee_paid)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1051,6 +1051,8 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
@@ -1109,6 +1111,64 @@
 <area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,2057,1297,2145">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/harvesting_authority.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1105,381,1397,792">
+<area shape="rect" id="node2" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="625,408,1061,1709">
+<area shape="rect" id="node3" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="301,1495,529,1612">
+<area shape="rect" id="node4" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="275,1225,555,1343">
+<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,215,205,625">
+<area shape="rect" id="node6" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="311,5,519,328">
+<area shape="rect" id="node7" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="249,956,581,1073">
+<area shape="rect" id="node8" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="273,821,558,939">
+<area shape="rect" id="node9" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="302,687,529,804">
+<area shape="rect" id="node10" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="298,552,533,669">
+<area shape="rect" id="node11" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="289,417,542,535">
+<area shape="rect" id="node12" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="309,1091,522,1208">
+<area shape="rect" id="node13" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="303,1360,528,1477">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/harvesting_authority.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,193,2677,281">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,302,2365,390">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,212,2019,300">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,410,509,498">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,177,1787,265">
+<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,317,2063,405">
+<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,2024,1774,2434">
+<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,282,1732,370">
+<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,358,1305,446">
+<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,408,869,496">
+<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,2354,1319,2442">
+<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,2249,1327,2337">
+<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,2565,1360,2653">
+<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,542,1425,1844">
+<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,2460,1355,2548">
+<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,2144,1318,2232">
+<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,1861,1299,1949">
+<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,1866,881,1954">
+<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,1190,259,1308">
+<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1644,893,1761">
+<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,1374,919,1492">
+<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,1105,945,1222">
+<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,970,922,1088">
+<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,836,893,953">
+<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,701,897,818">
+<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,1240,886,1357">
+<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1509,892,1626">
+<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1960,569,2048">
+<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,422,2050,510">
+<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,545,1723,633">
+<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,1749,546,1837">
+<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,1854,531,1942">
+<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,440,1733,528">
+<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,1966,1297,2054">
+<area shape="rect" id="node35" href="spar_request.html" target="_top" title="spar_request" alt="" coords="2145,70,2327,158">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/harvesting_authority.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

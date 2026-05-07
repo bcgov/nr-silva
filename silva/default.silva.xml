@@ -1773,6 +1773,7 @@
             <child column="opening_id" foreignKey="ocl_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_comment_link"/>
             <child column="opening_id" foreignKey="og_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_geometry"/>
             <child column="opening_id" foreignKey="ols_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_land_status"/>
+            <child column="opening_id" foreignKey="spr_sr1_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="spar_request"/>
             <child column="opening_id" foreignKey="se_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_ecology"/>
             <child column="opening_id" foreignKey="seh_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_event_history"/>
             <child column="opening_id" foreignKey="sl_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer"/>
@@ -2032,6 +2033,7 @@
             <child column="org_unit_no" foreignKey="res_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="results_electronic_submission"/>
             <child column="org_unit_no" foreignKey="saz_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
             <child column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="silviculture_project"/>
+            <child column="org_unit_no" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="spar_request"/>
             <child column="forest_district" foreignKey="tm_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
             <child column="geographic_distrct" foreignKey="tfalling_geographically_wit_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
          </column>
@@ -2867,8 +2869,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="fiscal_year" nullable="false" remarks="The fiscal year in which the project commenced, or, in the case of a planned project, is expected to commence. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
-            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
             <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
+            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="project_sequence" nullable="false" remarks="A one to four character identifier that is meaningful to the user and assists in distinguishing one Project from another within the same SILV BASE CODE, FISCAL YEAR, ORG UNIT CODE. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="4" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="project_location" nullable="true" remarks="A comment regarding the general location of the project." size="30" type="varchar" typeCode="12"/>
@@ -2948,6 +2950,119 @@
          <primaryKey column="site_index_source_code" sequenceNumberInPK="1"/>
          <index name="site_index_source_code_pkey" unique="true">
             <column ascending="true" name="site_index_source_code"/>
+         </index>
+      </table>
+      <table name="spar_request" remarks="A request for silviculture services from the Seed Planning and Registry (SPAR) system." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="request_skey" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_type_code" nullable="false" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sowing_year" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="request_year" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="org_unit_no" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="org_unit_no" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="org_unit"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="request_sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="spr_request_status_code" nullable="false" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="rqst_cli_number" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="rqst_cli_locn_cd" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="dist_admin_zone" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="intended_use_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="method_of_payment_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="required_by_date" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="priority_date" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="authorization_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="srvc_cli_number" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="srvc_cli_locn_cd" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="vegetation_code" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="genetic_a_spz_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="genetic_b_spz_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="elevation_site_max" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="elevation_site_min" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="nad_datum_code" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="utm_zone" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="utm_easting" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="utm_northing" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="latitude_degrees" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="latitude_minutes" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="latitude_seconds" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="longitude_degrees" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="longitude_minutes" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="longitude_seconds" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="seed_coast_area_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="mapsheet_grid" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="mapsheet_letter" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="35" name="mapsheet_square" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="36" name="mapsheet_quad" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="37" name="mapsheet_sub_quad" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="38" name="opening_number" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="39" name="seedling_stock_type_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="40" name="seedling_container_code" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="41" name="seedling_stock_age_code" nullable="true" remarks="" size="6" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="42" name="planting_year" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="43" name="planting_day" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="44" name="planting_season_code" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="1" id="45" name="qty_seedlings_rqst" nullable="false" remarks="" size="6" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="46" name="lot_cli_number" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="47" name="lot_cli_locn_cd" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="48" name="lot_ownership_code" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="49" name="crown_land_ind" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="50" name="spar_request_regulation_code" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="51" name="spr_tenure_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="52" name="spar_fund_srce_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="53" name="nursry_cli_number" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="54" name="nursry_cli_locn_cd" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="55" name="intended_use_locn" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="56" name="authorized_by_prsn" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="57" name="client_reference" nullable="true" remarks="" size="25" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="58" name="bgc_zone_code" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="59" name="bgc_subzone_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="60" name="variant" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="61" name="opening_id" nullable="true" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="opening_id" foreignKey="spr_sr1_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="62" name="rqst_changed_ind" nullable="false" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="63" name="batch_job_id" nullable="true" remarks="" size="8" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="64" name="batch_update_ts" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="65" name="approved_userid" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="66" name="approved_timestamp" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="67" name="request_comment" nullable="true" remarks="" size="2000" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="68" name="lot_crown_private_ind" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="69" name="invoicing_exception_ind" nullable="false" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="70" name="invoicing_exception_comment" nullable="true" remarks="" size="2000" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="71" name="invoicing_exception_userid" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="72" name="invoicing_exception_date" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="73" name="client_po_number" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="74" name="field_contact_name" nullable="true" remarks="" size="40" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="75" name="field_contact_email_and_phone" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="76" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="77" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="78" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="79" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="80" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="request_skey" sequenceNumberInPK="1"/>
+         <index name="spar_request_pkey" unique="true">
+            <column ascending="true" name="request_skey"/>
+         </index>
+         <index name="i1$_spar_request" unique="true">
+            <column ascending="true" name="request_type_code"/>
+            <column ascending="true" name="sowing_year"/>
+            <column ascending="true" name="request_year"/>
+            <column ascending="true" name="org_unit_no"/>
+            <column ascending="true" name="request_sequence"/>
+         </index>
+         <index name="i4$_spar_request" unique="false">
+            <column ascending="true" name="sowing_year"/>
+            <column ascending="true" name="org_unit_no"/>
+            <column ascending="true" name="request_sequence"/>
+         </index>
+         <index name="i7$_spar_request" unique="false">
+            <column ascending="true" name="org_unit_no"/>
+         </index>
+         <index name="i8$_spar_request" unique="false">
+            <column ascending="true" name="spr_request_status_code"/>
+            <column ascending="true" name="request_skey"/>
+         </index>
+         <index name="spr_sr1_o_fk_i" unique="false">
+            <column ascending="true" name="opening_id"/>
          </index>
       </table>
       <table name="standards_regime" remarks="" schema="silva" type="TABLE">

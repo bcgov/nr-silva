@@ -155,7 +155,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="prev_tree_spp2_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">prev_tree_spp2_code</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="results_submission_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">results_submission_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">13 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
     </TABLE>>
     URL="opening.html"
     target="_top"

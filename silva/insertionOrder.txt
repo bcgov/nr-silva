@@ -107,6 +107,7 @@ open_viewable_category
 opening_attachment
 opening_comment_link
 silv_project_comment_link
+spar_request
 stocking_comment_link
 stocking_ecology
 stocking_ecology_archive

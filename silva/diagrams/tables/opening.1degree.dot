@@ -37,6 +37,7 @@ digraph "oneDegreeRelationshipsDiagram" {
   "opening_land_status":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "results_electronic_submission":"org_unit_no":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "silv_admin_zone":"org_unit_no":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
+  "spar_request":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_ecology":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_ecology":"stocking_standard_unit_id":w -> "stocking_standard_unit":"stocking_standard_unit_id":e [arrowhead=none dir=back arrowtail=teeodot];
   "stocking_event_history":"opening_amendment_id":w -> "opening_amendment_history":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -217,7 +218,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="update_userid" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">update_userid</TD></TR></TABLE></TD><TD PORT="update_userid.type" ALIGN="LEFT">varchar[30]</TD></TR>
       <TR><TD PORT="update_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">update_timestamp</TD></TR></TABLE></TD><TD PORT="update_timestamp.type" ALIGN="LEFT">timestamp[22]</TD></TR>
       <TR><TD PORT="revision_count" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">revision_count</TD></TR></TABLE></TD><TD PORT="revision_count.type" ALIGN="LEFT">int4[10]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">13 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
     </TABLE>>
     URL="opening.html"
     target="_top"
@@ -377,6 +378,25 @@ digraph "oneDegreeRelationshipsDiagram" {
     URL="site_index_source_code.html"
     target="_top"
     tooltip="site_index_source_code"
+  ];
+  "spar_request" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="77" HEIGHT="16"><B>spar_request</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="request_skey" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">request_skey</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="request_type_code" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">request_type_code</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="sowing_year" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">sowing_year</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="request_year" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">request_year</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="org_unit_no" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">org_unit_no</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="request_sequence" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">request_sequence</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="spr_request_status_code" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">spr_request_status_code</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="opening_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="185" HEIGHT="16">opening_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="spar_request.html"
+    target="_top"
+    tooltip="spar_request"
   ];
   "stocking_class_code" [
    label=<
