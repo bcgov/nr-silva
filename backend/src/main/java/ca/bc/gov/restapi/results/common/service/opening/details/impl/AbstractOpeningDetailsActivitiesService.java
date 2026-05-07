@@ -228,9 +228,7 @@ public abstract class AbstractOpeningDetailsActivitiesService
       case "SP" -> {
         var dto = new OpeningActivitySitePrepDto(baseDto);
         dto.setTotalPlanting(null);
-        activityRepository
-            .getOpeningActivitySP(openingId, atuId)
-            .ifPresent(projection -> dto.setTargetSpot(projection));
+        activityRepository.getOpeningActivitySP(openingId, atuId).ifPresent(dto::setTargetSpot);
         yield dto;
       }
 
