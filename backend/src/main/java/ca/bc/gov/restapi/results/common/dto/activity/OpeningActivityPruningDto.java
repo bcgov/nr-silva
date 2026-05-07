@@ -1,14 +1,10 @@
 package ca.bc.gov.restapi.results.common.dto.activity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.With;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@With
-@AllArgsConstructor
 public class OpeningActivityPruningDto extends OpeningActivityBaseDto {
 
   private Float totalStemsPerHa;
@@ -21,5 +17,4 @@ public class OpeningActivityPruningDto extends OpeningActivityBaseDto {
   public OpeningActivityPruningDto(OpeningActivityBaseDto base) {
     super(base);
   }
-
 }

@@ -473,8 +473,9 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.licenseeActivityId").isEmpty())
+        .andExpect(jsonPath("$.licenseeActivityId").value("2141"))
         .andExpect(jsonPath("$.species").isArray())
+        .andExpect(jsonPath("$.species[0].requestId").value("2026DAS0001"))
         .andReturn();
   }
 

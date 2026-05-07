@@ -726,11 +726,17 @@ public class SilvaOracleQueryConstants {
       		WHEN pr.CLIMATE_BASED_SEED_XFER_IND = 'Y' THEN 'true'
       		ELSE 'false'
       	END AS cbst,
-      	pr.REQUEST_SKEY AS request_id,
+      	CASE
+      		WHEN pr.REQUEST_SKEY IS NOT NULL
+      		THEN TO_CHAR(sr.SOWING_YEAR) || ou.ORG_UNIT_CODE || LPAD(TO_CHAR(sr.REQUEST_SEQUENCE), 4, '0')
+      		ELSE NULL
+      	END AS request_id,
       	NVL(pr.SEEDLOT_NUMBER,pr.VEG_LOT_ID) AS lot,
       	pr.BID_PRICE_PER_TREE AS bid_price_per_tree
       FROM PLANTING_RSLT pr
       LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON stsc.SILV_TREE_SPECIES_CODE = pr.SILV_TREE_SPECIES_CODE
+      LEFT JOIN SPAR_REQUEST sr ON sr.REQUEST_SKEY = pr.REQUEST_SKEY
+      LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = sr.ORG_UNIT_NO
       WHERE pr.ACTIVITY_TREATMENT_UNIT_ID =:atuId""";
 
   public static final String GET_OPENING_ACTIVITY_JS =

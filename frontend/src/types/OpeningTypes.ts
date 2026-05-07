@@ -26,7 +26,7 @@ export type OpeningActivitySpeciesDetailsDto = {
   plantedNumber: number | null,
   numberBeyondTransferLimit: number | null,
   cbst: boolean | null,
-  requestId: number | null,
+  requestId: string | null,
   lot: number | null,
   bidPricePerTree: number | null,
 };

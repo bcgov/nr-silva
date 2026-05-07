@@ -6,6 +6,6 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | Opening Details Notification Service | Postgres-only")
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
-public class OpeningDetailsNotificationPostgresServiceIntegrationTest extends
-    AbstractOpeningDetailsNotificationServiceIntegrationTest<OpeningDetailsNotificationPostgresService> {
-}
+public class OpeningDetailsNotificationPostgresServiceIntegrationTest
+    extends AbstractOpeningDetailsNotificationServiceIntegrationTest<
+        OpeningDetailsNotificationPostgresService> {}

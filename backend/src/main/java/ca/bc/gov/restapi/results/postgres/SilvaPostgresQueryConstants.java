@@ -721,11 +721,17 @@ public class SilvaPostgresQueryConstants {
 						WHEN pr.climate_based_seed_xfer_ind = 'Y' THEN 'true'
 						ELSE 'false'
 					END AS cbst,
-					pr.request_skey AS request_id,
+					CASE
+						WHEN pr.request_skey IS NOT NULL
+						THEN CAST(sr.sowing_year AS text) || ou.org_unit_code || LPAD(CAST(sr.request_sequence AS text), 4, '0')
+						ELSE NULL
+					END AS request_id,
 					COALESCE(pr.seedlot_number,pr.veg_lot_id) AS lot,
 					pr.bid_price_per_tree AS bid_price_per_tree
 				FROM planting_rslt pr
 				LEFT JOIN silv_tree_species_code stsc ON stsc.silv_tree_species_code = pr.silv_tree_species_code
+				LEFT JOIN spar_request sr ON sr.request_skey = pr.request_skey
+				LEFT JOIN org_unit ou ON ou.org_unit_no = sr.org_unit_no
 				WHERE pr.activity_treatment_unit_id =:atuId""";
 
 		public static final String GET_OPENING_ACTIVITY_JS =
