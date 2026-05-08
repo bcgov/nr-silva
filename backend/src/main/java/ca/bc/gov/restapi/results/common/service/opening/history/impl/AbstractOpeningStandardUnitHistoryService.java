@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -256,6 +257,7 @@ public abstract class AbstractOpeningStandardUnitHistoryService
               BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
               BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
               List.of(),
+              StringUtils.trimToNull(projection.getStandardsObjective()),
               projection.getNetArea(),
               projection.getSoilDisturbancePercent(),
               bec,

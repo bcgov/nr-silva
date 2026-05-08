@@ -10,7 +10,8 @@ export type OpeningDetailsStockingDetailsDto = {
     srid: number | null;
     defaultMof: boolean;
     manualEntry: boolean;
-    fspId: number | null;
+    possibleFspIds: Array<number>;
+    standardsObjective: string | null;
     netArea: number | null;
     soilDisturbancePercent: number | null;
     bec: OpeningDetailsBecDto;

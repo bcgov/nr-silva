@@ -347,6 +347,11 @@ public class OpeningTestDataFactory {
             + " easterly slopes where pre-harvest stand composition of Fd is >20% by"
             + " merchantable volume.";
       }
+
+      @Override
+      public String getStandardsObjective() {
+        return null;
+      }
     };
   }
 

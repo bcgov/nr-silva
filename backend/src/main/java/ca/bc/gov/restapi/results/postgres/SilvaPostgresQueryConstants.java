@@ -412,7 +412,8 @@ public class SilvaPostgresQueryConstants {
 				sr.regen_delay_offset_yrs AS regen_delay,
 				sr.free_growing_late_offset_yrs AS free_growing_late,
 				sr.free_growing_early_offset_yrs AS free_growing_early,
-				sr.additional_standards
+				sr.additional_standards,
+				sr.standards_objective AS standards_objective
 			FROM stocking_standard_unit ssu
 			LEFT JOIN stocking_ecology se ON (se.opening_id = ssu.opening_id AND se.stocking_standard_unit_id = ssu.stocking_standard_unit_id)
 			LEFT JOIN standards_regime sr ON (sr.standards_regime_id = ssu.standards_regime_id)
@@ -1366,6 +1367,7 @@ public class SilvaPostgresQueryConstants {
 				ssu.free_growing_late_offset_yrs AS free_growing_late,
 				ssu.free_growing_early_offset_yrs AS free_growing_early,
 				sr.additional_standards,
+				sr.standards_objective AS standards_objective,
 				ssu.amendment_rationale_comment AS amendment_comment
 			FROM stocking_standard_unit_archive ssu
 			LEFT JOIN stocking_ecology_archive se ON (se.opening_id = ssu.opening_id AND se.stocking_standard_unit_id = ssu.stocking_standard_unit_id AND se.stocking_event_history_id = ssu.stocking_event_history_id)

@@ -23,6 +23,10 @@ public record OpeningStockingHistoryDetailsDto(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean manualEntry,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<Long> possibleFspIds,
     @Schema(
+            types = {"string", "null"},
+            requiredMode = Schema.RequiredMode.REQUIRED)
+        String standardsObjective,
+    @Schema(
             types = {"number", "null"},
             requiredMode = Schema.RequiredMode.REQUIRED)
         Float netArea,
