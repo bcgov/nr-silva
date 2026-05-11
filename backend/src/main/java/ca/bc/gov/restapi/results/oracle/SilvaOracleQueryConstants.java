@@ -401,7 +401,6 @@ public class SilvaOracleQueryConstants {
         ssu.STANDARDS_REGIME_ID as srid,
       	CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
       	CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-      	fsp.fsp_id,
       	ssu.net_area,
       	ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
       	se.BGC_ZONE_CODE AS bec_zone_code,
@@ -414,12 +413,11 @@ public class SilvaOracleQueryConstants {
       	sr.REGEN_DELAY_OFFSET_YRS AS regen_delay,
       	sr.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
       	sr.FREE_GROWING_EARLY_OFFSET_YRS AS free_growing_early,
-      	sr.ADDITIONAL_STANDARDS
+      	sr.ADDITIONAL_STANDARDS,
+      	sr.STANDARDS_OBJECTIVE AS standards_objective
       FROM STOCKING_STANDARD_UNIT ssu
       LEFT JOIN STOCKING_ECOLOGY se ON (se.OPENING_ID = ssu.OPENING_ID AND SE.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID)
       LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
       WHERE ssu.OPENING_ID = :openingId
       ORDER BY ssu.standards_unit_id""";
 
@@ -504,6 +502,20 @@ public class SilvaOracleQueryConstants {
       )
       AND (sm.SILV_MILESTONE_TYPE_CODE = 'FG' OR sm.SILV_MILESTONE_TYPE_CODE = 'RG')
     """;
+
+  public static final String GET_OPENING_SS_FSP_IDS =
+      """
+      SELECT DISTINCT fsp_id
+      FROM FSP_STANDARDS_REGIME_XREF
+      WHERE standards_regime_id = :standardsRegimeId
+      ORDER BY fsp_id""";
+
+  public static final String GET_OPENING_SS_FSP_IDS_BY_REGIMES =
+      """
+      SELECT standards_regime_id, fsp_id
+      FROM FSP_STANDARDS_REGIME_XREF
+      WHERE standards_regime_id IN (:standardsRegimeIds)
+      ORDER BY standards_regime_id, fsp_id""";
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
       """
@@ -726,11 +738,17 @@ public class SilvaOracleQueryConstants {
       		WHEN pr.CLIMATE_BASED_SEED_XFER_IND = 'Y' THEN 'true'
       		ELSE 'false'
       	END AS cbst,
-      	pr.REQUEST_SKEY AS request_id,
+      	CASE
+      		WHEN pr.REQUEST_SKEY IS NOT NULL
+      		THEN TO_CHAR(sr.SOWING_YEAR) || ou.ORG_UNIT_CODE || LPAD(TO_CHAR(sr.REQUEST_SEQUENCE), 4, '0')
+      		ELSE NULL
+      	END AS request_id,
       	NVL(pr.SEEDLOT_NUMBER,pr.VEG_LOT_ID) AS lot,
       	pr.BID_PRICE_PER_TREE AS bid_price_per_tree
       FROM PLANTING_RSLT pr
       LEFT JOIN SILV_TREE_SPECIES_CODE stsc ON stsc.SILV_TREE_SPECIES_CODE = pr.SILV_TREE_SPECIES_CODE
+      LEFT JOIN SPAR_REQUEST sr ON sr.REQUEST_SKEY = pr.REQUEST_SKEY
+      LEFT JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = sr.ORG_UNIT_NO
       WHERE pr.ACTIVITY_TREATMENT_UNIT_ID =:atuId""";
 
   public static final String GET_OPENING_ACTIVITY_JS =
@@ -1355,7 +1373,6 @@ public class SilvaOracleQueryConstants {
         ssu.STANDARDS_REGIME_ID as srid,
           CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
           CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-          fsp.fsp_id,
           ssu.net_area,
           ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
           se.BGC_ZONE_CODE AS bec_zone_code,
@@ -1369,12 +1386,11 @@ public class SilvaOracleQueryConstants {
           ssu.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
           ssu.FREE_GROWING_EARLY_OFFSET_YRS AS free_growing_early,
           sr.ADDITIONAL_STANDARDS,
+          sr.STANDARDS_OBJECTIVE AS standards_objective,
           ssu.AMENDMENT_RATIONALE_COMMENT AS amendment_comment
       FROM STOCKING_STANDARD_UNIT_ARCHIVE ssu
       LEFT JOIN STOCKING_ECOLOGY_ARCHIVE se ON (se.OPENING_ID = ssu.OPENING_ID AND se.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND se.STOCKING_EVENT_HISTORY_ID = ssu.STOCKING_EVENT_HISTORY_ID)
       LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
       WHERE ssu.OPENING_ID = :openingId
       AND ssu.STOCKING_EVENT_HISTORY_ID = :eventHistoryId
       ORDER BY ssu.standards_unit_id

@@ -1,16 +1,9 @@
 package ca.bc.gov.restapi.results.oracle.repository;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningFspIdByRegimeProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingMilestoneProjection;
@@ -29,11 +22,14 @@ import ca.bc.gov.restapi.results.common.projection.opening.history.OpeningStocki
 import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleQueryConstants;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-/**
- * This interface allows the service to fetch and save data into the database.
- */
-
+/** This interface allows the service to fetch and save data into the database. */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity> {
@@ -54,10 +50,7 @@ public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity
       @Param("size") long size);
 
   @Override
-  @Query(
-      nativeQuery = true,
-      value = SilvaOracleQueryConstants.OPENING_TRENDS_QUERY
-  )
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.OPENING_TRENDS_QUERY)
   List<OpeningTrendsProjection> getOpeningTrends(
       String startDate, String endDate, List<String> statusList, List<String> orgUnitList);
 
@@ -99,29 +92,38 @@ public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity
       Long openingId);
 
   @Override
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_LIST)
+  @Query(
+      nativeQuery = true,
+      value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_LIST)
   List<OpeningStockingHistoryProjection> getOpeningStandardUnitHistoryByOpeningId(Long openingId);
 
   @Override
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_WITH_COMPARISON_LIST)
-  List<OpeningStockingHistoryDetailsWithComparisonProjection> getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
-      Long openingId,
-      Long historyId
-  );
+  @Query(
+      nativeQuery = true,
+      value =
+          SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_WITH_COMPARISON_LIST)
+  List<OpeningStockingHistoryDetailsWithComparisonProjection>
+      getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
+          Long openingId, Long historyId);
 
   @Override
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS_WITH_COMPARISON)
-  List<OpeningStockingHistoryLayerWithComparisonProjection> getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
-      Long openingId,
-      Long historyId
-  );
+  @Query(
+      nativeQuery = true,
+      value =
+          SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_LAYERS_WITH_COMPARISON)
+  List<OpeningStockingHistoryLayerWithComparisonProjection>
+      getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
+          Long openingId, Long historyId);
 
   @Override
-  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES_WITH_COMPARISON)
-  List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
-      Long openingId,
-      Long historyId
-  );
+  @Query(
+      nativeQuery = true,
+      value =
+          SilvaOracleQueryConstants
+              .GET_OPENING_STANDARD_UNIT_HISTORY_DETAIL_SPECIES_WITH_COMPARISON)
+  List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection>
+      getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
+          Long openingId, Long historyId);
 
   @Override
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_ARCHIVE)
@@ -140,4 +142,14 @@ public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity
   List<OpeningStockingLayerHistoryProjection>
       getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(
           Long openingId, Long eventHistoryId, Long ssuId);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_FSP_IDS)
+  List<Long> getOpeningStockingFspIdsByStandardsRegimeId(
+      @Param("standardsRegimeId") Long standardsRegimeId);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_FSP_IDS_BY_REGIMES)
+  List<OpeningFspIdByRegimeProjection> getOpeningStockingFspIdsByStandardsRegimeIds(
+      @Param("standardsRegimeIds") List<Long> standardsRegimeIds);
 }

@@ -400,7 +400,6 @@ public class SilvaPostgresQueryConstants {
 				ssu.standards_regime_id as srid,
 				CASE WHEN COALESCE(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
 				CASE WHEN COALESCE(ssu.stocking_standard_unit_id, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-				fsp.fsp_id,
 				ssu.net_area,
 				ssu.max_allow_soil_disturbance_pct AS soil_disturbance_percent,
 				se.bgc_zone_code AS bec_zone_code,
@@ -413,12 +412,11 @@ public class SilvaPostgresQueryConstants {
 				sr.regen_delay_offset_yrs AS regen_delay,
 				sr.free_growing_late_offset_yrs AS free_growing_late,
 				sr.free_growing_early_offset_yrs AS free_growing_early,
-				sr.additional_standards
+				sr.additional_standards,
+				sr.standards_objective AS standards_objective
 			FROM stocking_standard_unit ssu
 			LEFT JOIN stocking_ecology se ON (se.opening_id = ssu.opening_id AND se.stocking_standard_unit_id = ssu.stocking_standard_unit_id)
 			LEFT JOIN standards_regime sr ON (sr.standards_regime_id = ssu.standards_regime_id)
-			LEFT JOIN fsp_standards_regime_xref fspxref ON (fspxref.standards_regime_id = ssu.standards_regime_id)
-			LEFT JOIN forest_stewardship_plan fsp ON (fsp.fsp_id = fspxref.fsp_id AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
 			WHERE ssu.opening_id = :openingId
 			ORDER BY ssu.standards_unit_id""";
 
@@ -502,6 +500,20 @@ public class SilvaPostgresQueryConstants {
 				OR sm.due_late_date BETWEEN CURRENT_TIMESTAMP AND (CURRENT_TIMESTAMP + INTERVAL '12 months')
 			)
 			AND (sm.silv_milestone_type_code = 'FG' OR sm.silv_milestone_type_code = 'RG')""";
+
+		public static final String GET_OPENING_SS_FSP_IDS =
+				"""
+				SELECT DISTINCT fsp_id
+				FROM fsp_standards_regime_xref
+				WHERE standards_regime_id = :standardsRegimeId
+				ORDER BY fsp_id""";
+
+		public static final String GET_OPENING_SS_FSP_IDS_BY_REGIMES =
+				"""
+				SELECT standards_regime_id, fsp_id
+				FROM fsp_standards_regime_xref
+				WHERE standards_regime_id IN (:standardsRegimeIds)
+				ORDER BY standards_regime_id, fsp_id""";
 
 		public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
 				"""
@@ -721,11 +733,17 @@ public class SilvaPostgresQueryConstants {
 						WHEN pr.climate_based_seed_xfer_ind = 'Y' THEN 'true'
 						ELSE 'false'
 					END AS cbst,
-					pr.request_skey AS request_id,
+					CASE
+						WHEN pr.request_skey IS NOT NULL
+						THEN CAST(sr.sowing_year AS text) || ou.org_unit_code || LPAD(CAST(sr.request_sequence AS text), 4, '0')
+						ELSE NULL
+					END AS request_id,
 					COALESCE(pr.seedlot_number,pr.veg_lot_id) AS lot,
 					pr.bid_price_per_tree AS bid_price_per_tree
 				FROM planting_rslt pr
 				LEFT JOIN silv_tree_species_code stsc ON stsc.silv_tree_species_code = pr.silv_tree_species_code
+				LEFT JOIN spar_request sr ON sr.request_skey = pr.request_skey
+				LEFT JOIN org_unit ou ON ou.org_unit_no = sr.org_unit_no
 				WHERE pr.activity_treatment_unit_id =:atuId""";
 
 		public static final String GET_OPENING_ACTIVITY_JS =
@@ -1343,30 +1361,28 @@ public class SilvaPostgresQueryConstants {
 					ssu.standards_regime_id as srid,
 						CASE WHEN COALESCE(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
 						CASE WHEN COALESCE(ssu.stocking_standard_unit_id, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-						fsp.fsp_id,
-						ssu.net_area,
-						ssu.max_allow_soil_disturbance_pct AS soil_disturbance_percent,
-						se.bgc_zone_code AS bec_zone_code,
-						se.bgc_subzone_code AS bec_subzone_code,
-						se.bgc_variant AS bec_variant,
-						se.bgc_phase AS bec_phase,
-						se.bec_site_series AS bec_site_series,
-						se.bec_site_type AS bec_site_type,
-						se.bec_seral AS bec_seral,
-						ssu.regen_delay_offset_yrs AS regen_delay,
-						ssu.free_growing_late_offset_yrs AS free_growing_late,
-						ssu.free_growing_early_offset_yrs AS free_growing_early,
-						sr.additional_standards,
-						ssu.amendment_rationale_comment AS amendment_comment
-				FROM stocking_standard_unit_archive ssu
-				LEFT JOIN stocking_ecology_archive se ON (se.opening_id = ssu.opening_id AND se.stocking_standard_unit_id = ssu.stocking_standard_unit_id AND se.stocking_event_history_id = ssu.stocking_event_history_id)
-				LEFT JOIN standards_regime sr ON (sr.standards_regime_id = ssu.standards_regime_id)
-				LEFT JOIN fsp_standards_regime_xref fspxref ON (fspxref.standards_regime_id = ssu.standards_regime_id)
-				LEFT JOIN forest_stewardship_plan fsp ON (fsp.fsp_id = fspxref.fsp_id AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
-				WHERE ssu.opening_id = :openingId
-				AND ssu.stocking_event_history_id = :eventHistoryId
-				ORDER BY ssu.standards_unit_id
-				""";
+				ssu.net_area,
+				ssu.max_allow_soil_disturbance_pct AS soil_disturbance_percent,
+				se.bgc_zone_code AS bec_zone_code,
+				se.bgc_subzone_code AS bec_subzone_code,
+				se.bgc_variant AS bec_variant,
+				se.bgc_phase AS bec_phase,
+				se.bec_site_series AS bec_site_series,
+				se.bec_site_type AS bec_site_type,
+				se.bec_seral AS bec_seral,
+				ssu.regen_delay_offset_yrs AS regen_delay,
+				ssu.free_growing_late_offset_yrs AS free_growing_late,
+				ssu.free_growing_early_offset_yrs AS free_growing_early,
+				sr.additional_standards,
+				sr.standards_objective AS standards_objective,
+				ssu.amendment_rationale_comment AS amendment_comment
+			FROM stocking_standard_unit_archive ssu
+			LEFT JOIN stocking_ecology_archive se ON (se.opening_id = ssu.opening_id AND se.stocking_standard_unit_id = ssu.stocking_standard_unit_id AND se.stocking_event_history_id = ssu.stocking_event_history_id)
+			LEFT JOIN standards_regime sr ON (sr.standards_regime_id = ssu.standards_regime_id)
+			WHERE ssu.opening_id = :openingId
+			AND ssu.stocking_event_history_id = :eventHistoryId
+			ORDER BY ssu.standards_unit_id
+			""";
 
 		public static final String GET_OPENING_SS_SPECIES_ARCHIVE =
 				"""

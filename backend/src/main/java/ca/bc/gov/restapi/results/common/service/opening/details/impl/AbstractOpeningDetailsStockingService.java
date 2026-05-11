@@ -9,32 +9,64 @@ import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsStockingService;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.List;
-import java.util.function.Function;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractOpeningDetailsStockingService implements OpeningDetailsStockingService {
+public abstract class AbstractOpeningDetailsStockingService
+    implements OpeningDetailsStockingService {
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
 
   @Override
   public List<OpeningDetailsStockingDto> getOpeningStockingDetails(Long openingId) {
-    return openingRepository.getOpeningStockingDetailsByOpeningId(openingId).stream()
-        .map(getDetails())
+    List<OpeningStockingDetailsProjection> projections =
+        openingRepository.getOpeningStockingDetailsByOpeningId(openingId);
+
+    // Batch-fetch all FSP IDs by distinct regimes to avoid per-row DB calls
+    Map<Long, List<Long>> fspIdsByRegime = batchFetchFspIdsByRegimes(projections);
+
+    return projections.stream()
+        .map(getDetails(fspIdsByRegime))
         .map(detailsDto -> getMilestones(detailsDto.stocking().ssuId()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
         .map(getComments())
         .toList();
   }
-  private static Function<OpeningStockingDetailsProjection, OpeningDetailsStockingDto>
-  getDetails() {
+
+  private Map<Long, List<Long>> batchFetchFspIdsByRegimes(
+      List<OpeningStockingDetailsProjection> projections) {
+    List<Long> distinctRegimeIds =
+        projections.stream()
+            .map(OpeningStockingDetailsProjection::getSrid)
+            .filter(srid -> srid != null)
+            .distinct()
+            .toList();
+
+    if (distinctRegimeIds.isEmpty()) {
+      return Map.of();
+    }
+
+    return openingRepository
+        .getOpeningStockingFspIdsByStandardsRegimeIds(distinctRegimeIds)
+        .stream()
+        .collect(
+            Collectors.groupingBy(
+                projection -> projection.getStandardsRegimeId(),
+                Collectors.mapping(projection -> projection.getFspId(), Collectors.toList())));
+  }
+
+  private Function<OpeningStockingDetailsProjection, OpeningDetailsStockingDto> getDetails(
+      Map<Long, List<Long>> fspIdsByRegime) {
     return projection -> {
       OpeningDetailsBecDto bec =
           new OpeningDetailsBecDto(
@@ -46,6 +78,11 @@ public abstract class AbstractOpeningDetailsStockingService implements OpeningDe
               projection.getBecSiteType(),
               projection.getBecSeral());
 
+      List<Long> possibleFspIds =
+          projection.getSrid() != null
+              ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
+              : List.of();
+
       OpeningDetailsStockingDetailsDto stockingDetails =
           new OpeningDetailsStockingDetailsDto(
               projection.getStockingStandardUnit(),
@@ -53,7 +90,8 @@ public abstract class AbstractOpeningDetailsStockingService implements OpeningDe
               projection.getSrid(),
               BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
               BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
-              projection.getFspId(),
+              possibleFspIds,
+              StringUtils.trimToNull(projection.getStandardsObjective()),
               projection.getNetArea(),
               projection.getSoilDisturbancePercent(),
               bec,
@@ -162,5 +200,4 @@ public abstract class AbstractOpeningDetailsStockingService implements OpeningDe
         .map(OpeningDetailsCommentConverter.mapComments())
         .toList();
   }
-
 }
