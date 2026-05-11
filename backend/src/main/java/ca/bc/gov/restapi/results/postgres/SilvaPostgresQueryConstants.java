@@ -512,7 +512,7 @@ public class SilvaPostgresQueryConstants {
 				"""
 				SELECT standards_regime_id, fsp_id
 				FROM fsp_standards_regime_xref
-				WHERE standards_regime_id = ANY(:standardsRegimeIds)
+				WHERE standards_regime_id IN (:standardsRegimeIds)
 				ORDER BY standards_regime_id, fsp_id""";
 
 		public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
