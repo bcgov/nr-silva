@@ -35,7 +35,7 @@ public abstract class AbstractOpeningDetailsStockingService
     Map<Long, List<Long>> fspIdsByRegime = batchFetchFspIdsByRegimes(projections);
 
     return projections.stream()
-        .map(projection -> getDetails(projection, fspIdsByRegime))
+        .map(getDetails(fspIdsByRegime))
         .map(detailsDto -> getMilestones(detailsDto.stocking().ssuId()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
@@ -65,42 +65,44 @@ public abstract class AbstractOpeningDetailsStockingService
                 Collectors.mapping(projection -> projection.getFspId(), Collectors.toList())));
   }
 
-  private static OpeningDetailsStockingDto getDetails(
-      OpeningStockingDetailsProjection projection, Map<Long, List<Long>> fspIdsByRegime) {
-    OpeningDetailsBecDto bec =
-        new OpeningDetailsBecDto(
-            projection.getBecZoneCode(),
-            projection.getBecSubzoneCode(),
-            projection.getBecVariant(),
-            projection.getBecPhase(),
-            projection.getBecSiteSeries(),
-            projection.getBecSiteType(),
-            projection.getBecSeral());
+  private Function<OpeningStockingDetailsProjection, OpeningDetailsStockingDto> getDetails(
+      Map<Long, List<Long>> fspIdsByRegime) {
+    return projection -> {
+      OpeningDetailsBecDto bec =
+          new OpeningDetailsBecDto(
+              projection.getBecZoneCode(),
+              projection.getBecSubzoneCode(),
+              projection.getBecVariant(),
+              projection.getBecPhase(),
+              projection.getBecSiteSeries(),
+              projection.getBecSiteType(),
+              projection.getBecSeral());
 
-    List<Long> possibleFspIds =
-        projection.getSrid() != null
-            ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
-            : List.of();
+      List<Long> possibleFspIds =
+          projection.getSrid() != null
+              ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
+              : List.of();
 
-    OpeningDetailsStockingDetailsDto stockingDetails =
-        new OpeningDetailsStockingDetailsDto(
-            projection.getStockingStandardUnit(),
-            projection.getSsuid(),
-            projection.getSrid(),
-            BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
-            BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
-            possibleFspIds,
-            StringUtils.trimToNull(projection.getStandardsObjective()),
-            projection.getNetArea(),
-            projection.getSoilDisturbancePercent(),
-            bec,
-            projection.getRegenDelay(),
-            projection.getFreeGrowingLate(),
-            projection.getFreeGrowingEarly(),
-            projection.getAdditionalStandards(),
-            null);
+      OpeningDetailsStockingDetailsDto stockingDetails =
+          new OpeningDetailsStockingDetailsDto(
+              projection.getStockingStandardUnit(),
+              projection.getSsuid(),
+              projection.getSrid(),
+              BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
+              BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
+              possibleFspIds,
+              StringUtils.trimToNull(projection.getStandardsObjective()),
+              projection.getNetArea(),
+              projection.getSoilDisturbancePercent(),
+              bec,
+              projection.getRegenDelay(),
+              projection.getFreeGrowingLate(),
+              projection.getFreeGrowingEarly(),
+              projection.getAdditionalStandards(),
+              null);
 
-    return new OpeningDetailsStockingDto(stockingDetails, List.of(), List.of(), null, List.of());
+      return new OpeningDetailsStockingDto(stockingDetails, List.of(), List.of(), null, List.of());
+    };
   }
 
   private Function<OpeningDetailsStockingDto, OpeningDetailsStockingDto> getLayer(Long openingId) {
