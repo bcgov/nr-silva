@@ -510,6 +510,13 @@ public class SilvaOracleQueryConstants {
       WHERE standards_regime_id = :standardsRegimeId
       ORDER BY fsp_id""";
 
+  public static final String GET_OPENING_SS_FSP_IDS_BY_REGIMES =
+      """
+      SELECT standards_regime_id, fsp_id
+      FROM FSP_STANDARDS_REGIME_XREF
+      WHERE standards_regime_id IN (:standardsRegimeIds)
+      ORDER BY standards_regime_id, fsp_id""";
+
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
       """
       SELECT

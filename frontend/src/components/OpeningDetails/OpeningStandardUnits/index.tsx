@@ -640,7 +640,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                         </TableContainer>
                       </Column>
 
-                      {/* Addtional standards */}
+                      {/* Additional standards */}
                       <Column sm={4} md={8} lg={16}>
                         <CardItem label="Additional standards">
                           {standardUnit.stocking.additionalStandards}

@@ -11,7 +11,9 @@ import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetail
 import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardUnitHistoryService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,14 +56,41 @@ public abstract class AbstractOpeningStandardUnitHistoryService
   @Override
   public List<OpeningStockingHistoryDto> getOpeningStockingHistoryList(
       Long openingId, Long eventHistoryId) {
-    return openingRepository
-        .getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(openingId, eventHistoryId)
-        .stream()
-        .map(getDetails())
+    List<OpeningStockingHistoryDetailsProjection> projections =
+        openingRepository.getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(
+            openingId, eventHistoryId);
+
+    // Batch-fetch FSP IDs by distinct regimes
+    Map<Long, List<Long>> fspIdsByRegime = batchFetchFspIdsByRegimes(projections);
+
+    return projections.stream()
+        .map(getDetails(fspIdsByRegime))
         .map(getSpecies(openingId, eventHistoryId))
         .map(getLayer(openingId, eventHistoryId))
         .map(getComments())
         .toList();
+  }
+
+  private <T extends OpeningStockingHistoryDetailsProjection>
+      Map<Long, List<Long>> batchFetchFspIdsByRegimes(List<T> projections) {
+    List<Long> distinctRegimeIds =
+        projections.stream()
+            .map(OpeningStockingHistoryDetailsProjection::getSrid)
+            .filter(srid -> srid != null)
+            .distinct()
+            .toList();
+
+    if (distinctRegimeIds.isEmpty()) {
+      return Map.of();
+    }
+
+    return openingRepository
+        .getOpeningStockingFspIdsByStandardsRegimeIds(distinctRegimeIds)
+        .stream()
+        .collect(
+            Collectors.groupingBy(
+                projection -> projection.getStandardsRegimeId(),
+                Collectors.mapping(projection -> projection.getFspId(), Collectors.toList())));
   }
 
   @Override
@@ -237,7 +266,7 @@ public abstract class AbstractOpeningStandardUnitHistoryService
   }
 
   private static Function<OpeningStockingHistoryDetailsProjection, OpeningStockingHistoryDto>
-      getDetails() {
+      getDetails(Map<Long, List<Long>> fspIdsByRegime) {
     return projection -> {
       OpeningDetailsBecDto bec =
           new OpeningDetailsBecDto(
@@ -249,6 +278,11 @@ public abstract class AbstractOpeningStandardUnitHistoryService
               projection.getBecSiteType(),
               projection.getBecSeral());
 
+      List<Long> possibleFspIds =
+          projection.getSrid() != null
+              ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
+              : List.of();
+
       OpeningStockingHistoryDetailsDto detailsDto =
           new OpeningStockingHistoryDetailsDto(
               projection.getStockingStandardUnit(),
@@ -256,7 +290,7 @@ public abstract class AbstractOpeningStandardUnitHistoryService
               projection.getSrid(),
               BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
               BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
-              List.of(),
+              possibleFspIds,
               StringUtils.trimToNull(projection.getStandardsObjective()),
               projection.getNetArea(),
               projection.getSoilDisturbancePercent(),

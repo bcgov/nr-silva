@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.oracle.repository;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningFspIdByRegimeProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingMilestoneProjection;
@@ -146,4 +147,9 @@ public interface OpeningOracleRepository extends OpeningRepository<OpeningEntity
   @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_FSP_IDS)
   List<Long> getOpeningStockingFspIdsByStandardsRegimeId(
       @Param("standardsRegimeId") Long standardsRegimeId);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaOracleQueryConstants.GET_OPENING_SS_FSP_IDS_BY_REGIMES)
+  List<OpeningFspIdByRegimeProjection> getOpeningStockingFspIdsByStandardsRegimeIds(
+      @Param("standardsRegimeIds") List<Long> standardsRegimeIds);
 }

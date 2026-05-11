@@ -52,7 +52,7 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
         }
       </div>
       <div className="accordion-title-bottom">
-        <p>SSID {standardUnit.stocking.srid}</p>
+        <p>{standardUnit.stocking.srid ? `SSID: ${standardUnit.stocking.srid}` : 'Manual stocking requirement'}</p>
         <VerticalDivider />
         <p>
           {standardUnit.stocking.standardsObjective ? `Objective: ${standardUnit.stocking.standardsObjective}` : 'No objective'}

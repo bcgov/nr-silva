@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.entity.BaseOpeningEntity;
 import ca.bc.gov.restapi.results.common.projection.OpeningTrendsProjection;
 import ca.bc.gov.restapi.results.common.projection.SilvicultureSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningBaseProjection;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningFspIdByRegimeProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingDetailsProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingLayerProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningStockingMilestoneProjection;
@@ -92,6 +93,9 @@ public interface OpeningRepository<T extends BaseOpeningEntity> extends JpaRepos
 
   List<Long> getOpeningStockingFspIdsByStandardsRegimeId(
       @Param("standardsRegimeId") Long standardsRegimeId);
+
+  List<OpeningFspIdByRegimeProjection> getOpeningStockingFspIdsByStandardsRegimeIds(
+      @Param("standardsRegimeIds") List<Long> standardsRegimeIds);
 
   Optional<OpeningBaseProjection> findProjectionById(Long openingId);
 

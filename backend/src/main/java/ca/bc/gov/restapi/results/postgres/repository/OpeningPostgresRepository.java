@@ -137,4 +137,9 @@ public interface OpeningPostgresRepository extends OpeningRepository<OpeningEnti
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.GET_OPENING_SS_FSP_IDS)
   List<Long> getOpeningStockingFspIdsByStandardsRegimeId(
       @Param("standardsRegimeId") Long standardsRegimeId);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.GET_OPENING_SS_FSP_IDS_BY_REGIMES)
+  List<OpeningFspIdByRegimeProjection> getOpeningStockingFspIdsByStandardsRegimeIds(
+      @Param("standardsRegimeIds") List<Long> standardsRegimeIds);
 }

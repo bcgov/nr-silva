@@ -10,7 +10,9 @@ import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository
 import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsStockingService;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +28,14 @@ public abstract class AbstractOpeningDetailsStockingService
 
   @Override
   public List<OpeningDetailsStockingDto> getOpeningStockingDetails(Long openingId) {
-    return openingRepository.getOpeningStockingDetailsByOpeningId(openingId).stream()
-        .map(projection -> getDetails(projection, openingRepository))
+    List<OpeningStockingDetailsProjection> projections =
+        openingRepository.getOpeningStockingDetailsByOpeningId(openingId);
+
+    // Batch-fetch all FSP IDs by distinct regimes to avoid per-row DB calls
+    Map<Long, List<Long>> fspIdsByRegime = batchFetchFspIdsByRegimes(projections);
+
+    return projections.stream()
+        .map(projection -> getDetails(projection, fspIdsByRegime))
         .map(detailsDto -> getMilestones(detailsDto.stocking().ssuId()).apply(detailsDto))
         .map(getSpecies(openingId))
         .map(getLayer(openingId))
@@ -35,9 +43,30 @@ public abstract class AbstractOpeningDetailsStockingService
         .toList();
   }
 
+  private Map<Long, List<Long>> batchFetchFspIdsByRegimes(
+      List<OpeningStockingDetailsProjection> projections) {
+    List<Long> distinctRegimeIds =
+        projections.stream()
+            .map(OpeningStockingDetailsProjection::getSrid)
+            .filter(srid -> srid != null)
+            .distinct()
+            .toList();
+
+    if (distinctRegimeIds.isEmpty()) {
+      return Map.of();
+    }
+
+    return openingRepository
+        .getOpeningStockingFspIdsByStandardsRegimeIds(distinctRegimeIds)
+        .stream()
+        .collect(
+            Collectors.groupingBy(
+                projection -> projection.getStandardsRegimeId(),
+                Collectors.mapping(projection -> projection.getFspId(), Collectors.toList())));
+  }
+
   private static OpeningDetailsStockingDto getDetails(
-      OpeningStockingDetailsProjection projection,
-      OpeningRepository<? extends BaseOpeningEntity> repository) {
+      OpeningStockingDetailsProjection projection, Map<Long, List<Long>> fspIdsByRegime) {
     OpeningDetailsBecDto bec =
         new OpeningDetailsBecDto(
             projection.getBecZoneCode(),
@@ -50,7 +79,7 @@ public abstract class AbstractOpeningDetailsStockingService
 
     List<Long> possibleFspIds =
         projection.getSrid() != null
-            ? repository.getOpeningStockingFspIdsByStandardsRegimeId(projection.getSrid())
+            ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
             : List.of();
 
     OpeningDetailsStockingDetailsDto stockingDetails =
