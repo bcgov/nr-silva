@@ -142,7 +142,7 @@ objects:
                 claimName: ${NAME}-${ZONE}-${COMPONENT}-${POSTGIS_VERSION}
           containers:
             - name: ${NAME}-${ZONE}
-              image: postgis/postgis:17-master
+              image: postgis/postgis:17-3.5
               ports:
                 - containerPort: 5432
                   protocol: TCP
@@ -247,7 +247,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-cron
-                  image: postgis/postgis:17-master
+                  image: postgis/postgis:17-3.5
                   resources:
                     requests:
                       cpu: ${CRON_CPU_REQUEST}
@@ -346,7 +346,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
-                  image: postgis/postgis:17-master
+                  image: postgis/postgis:17-3.5
                   resources:
                     requests:
                       cpu: ${CRON_CPU_REQUEST}
@@ -354,8 +354,10 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
+                      echo "Refreshing collation versions to prevent mismatch errors" &&
+                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c "ALTER DATABASE template1 REFRESH COLLATION VERSION; ALTER DATABASE \"${POSTGRES_DB}\" REFRESH COLLATION VERSION;" &&
                       echo "Creating test database" &&
-                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db;' &&
+                      psql -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d ${POSTGRES_DB} -c 'CREATE DATABASE backup_test_db TEMPLATE template0;' &&
                       echo "Test database created, Restoring backup" &&
                       pg_restore -U ${POSTGRES_USER} -h ${NAME}-${ZONE}-${COMPONENT} -d backup_test_db ${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump &&
                       echo "Backup restored, running checksum" &&
@@ -445,7 +447,7 @@ objects:
             spec:
               containers:
                 - name: ${NAME}-${ZONE}-${COMPONENT}-verify
-                  image: postgis/postgis:17-master
+                  image: postgis/postgis:17-3.5
                   resources:
                     requests:
                       cpu: ${CRON_CPU_REQUEST}

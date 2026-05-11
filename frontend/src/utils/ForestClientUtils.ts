@@ -86,3 +86,19 @@ export const getClientSimpleLabel = (
   }
   return PLACE_HOLDER;
 }
+
+/**
+ * Generates an acronym from a client name by taking the first letter of each word.
+ *
+ * @param clientName - The full client name (e.g., "TAAN FOREST LIMITED PARTNERSHIP").
+ * @returns The acronym (e.g., "TFLP"), or an empty string if clientName is empty.
+ */
+export const getClientNameAcronym = (clientName?: string | null): string => {
+  if (!clientName) return '';
+
+  return clientName
+    .split(' ')
+    .filter(word => word.length > 0)
+    .map(word => word.charAt(0).toUpperCase())
+    .join('');
+};

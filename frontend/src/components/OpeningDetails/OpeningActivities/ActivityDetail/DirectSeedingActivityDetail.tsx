@@ -13,7 +13,7 @@ import { CodeDescriptionDto } from "@/services/OpenApi";
 
 const DirectSeedingActivityDetail = ({ activityDetail, isLoading }: ActivityDetailProps) => {
   const renderCellContent = (
-    data: CodeDescriptionDto | number | boolean | null,
+    data: CodeDescriptionDto | string | number | boolean | null,
     columnKey: string,
   ) => {
     if (!data) { return PLACE_HOLDER; }

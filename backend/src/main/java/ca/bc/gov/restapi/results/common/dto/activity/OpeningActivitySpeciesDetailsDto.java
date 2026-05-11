@@ -7,9 +7,6 @@ public record OpeningActivitySpeciesDetailsDto(
     Long plantedNumber,
     Long numberBeyondTransferLimit,
     boolean cbst,
-    Long requestId,
+    String requestId,
     Long lot,
-    Float bidPricePerTree
-) {
-
-}
+    Float bidPricePerTree) {}
