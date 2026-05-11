@@ -5,7 +5,8 @@
       "ssid": 101419,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": null,
+      "possibleFspIds": [],
+      "standardsObjective": null,
       "netArea": 13.3,
       "soilDisturbancePercent": 10.0,
       "bec": {
@@ -81,7 +82,7 @@
       "ssid": 101420,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": null,
+      "possibleFspIds": [], "standardsObjective": null,
       "netArea": 10.1,
       "soilDisturbancePercent": 10.0,
       "bec": {
@@ -157,7 +158,7 @@
       "ssid": 101421,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": null,
+      "possibleFspIds": [], "standardsObjective": null,
       "netArea": 10.5,
       "soilDisturbancePercent": 5.0,
       "bec": {
@@ -233,7 +234,7 @@
       "ssid": 101422,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": null,
+      "possibleFspIds": [], "standardsObjective": null,
       "netArea": 1.9,
       "soilDisturbancePercent": 10.0,
       "bec": {

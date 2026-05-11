@@ -12,6 +12,7 @@ type TooltipLabelProps = {
   id?: string;
   align?: PopoverAlignment;
   autoAlign?: boolean;
+  useLabel02?: boolean;
 }
 
 const TooltipLabel = ({
@@ -21,10 +22,15 @@ const TooltipLabel = ({
   className,
   id,
   align,
-  autoAlign
+  autoAlign,
+  useLabel02
 }: TooltipLabelProps) => (
   <div className={`silva-tooltip-label ${className ?? ''}`} id={id}>
-    <label className="default-label" htmlFor={htmlFor}>{label}</label>
+    <label
+      className={`${useLabel02 ? 'default-label-02' : 'default-label'}`}
+      htmlFor={htmlFor}>
+      {label}
+    </label>
 
     <Tooltip label={tooltip} align={align} autoAlign={autoAlign}>
       <Information />
