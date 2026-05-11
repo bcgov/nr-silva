@@ -10,6 +10,7 @@ import {
   Link,
   Modal,
   SkeletonText,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -35,19 +36,18 @@ import API from "@/services/API";
 import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto, OpeningStockingHistoryDto, OpeningStockingHistoryOverviewDto } from "@/services/OpenApi";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
+import TooltipLabel from "@/components/TooltipLabel";
+import { StockingStandardMilestoneStatusTag } from "@/components/Tags";
 import AcoordionTitle from "./AccordionTitle";
 import CardItem from "../../Card/CardItem";
 import { CardTitle } from "../../Card";
 import VerticalDivider from "../../VerticalDivider";
 import Comments from "../../Comments";
-import StockingStandardMilestoneStatusTag from "../../Tags/StockingStandardMilestoneStatusTag";
 
 import SpeciesTooltipList from "./SpeciesTooltipList";
 import { HistoryOverviewTableHeaders, LayerHeaderConfig } from "./constants";
 import { countUniqueSpeciesByCode, isSingleLayer } from "./utils";
 import "./styles.scss";
-
-
 
 type OpeningStandardUnitsProps = {
   openingId: number;
@@ -413,38 +413,24 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                       <Column sm={4} md={8} lg={16}>
                         <CardTitle title="Stocking standard" />
                         <div className="stocking-standard-links">
-                          {/* No standard regime id or FSP id */}
-                          {!standardUnit.stocking.srid && !standardUnit.stocking.fspId
-                            ? "Manual stocking requirement"
-                            : null}
-                          {/* Has standard regime id but no FSP id */}
-                          {standardUnit.stocking.srid &&
-                            !standardUnit.stocking.fspId ? (
-                            <>
-                              {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
-                              <VerticalDivider />
-                              <span>Ministry default</span>
-                            </>
-                          ) : null}
-                          {/* Has standards unit id AND FSP id */}
-                          {standardUnit.stocking.srid &&
-                            standardUnit.stocking.fspId ? (
-                            <>
-                              {`SSID ${standardUnit.stocking.srid}, Stocking objective`}
-                              <VerticalDivider />
-                              {
-                                <a
-                                  className="fsp-link"
-                                  href={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${standardUnit.stocking.fspId}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {`FSP ID ${standardUnit.stocking.fspId}`}{" "}
-                                  <LaunchIcon />
-                                </a>
-                              }
-                            </>
-                          ) : null}
+                          {/* No standard regime id */}
+                          {
+                            standardUnit.stocking.srid
+                              ? null
+                              : "Manual stocking requirement"
+                          }
+
+                          {/* Has standard regime id */}
+                          {
+                            standardUnit.stocking.srid ? (
+                              <>
+                                {`SSID ${standardUnit.stocking.srid}`}
+                                <VerticalDivider />
+                                {standardUnit.stocking.standardsObjective ? `Objective: ${standardUnit.stocking.standardsObjective}` : 'No objective'}
+                              </>
+                            )
+                              : null
+                          }
                         </div>
                       </Column>
 
@@ -654,10 +640,64 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                         </TableContainer>
                       </Column>
 
+                      {/* Addtional standards */}
                       <Column sm={4} md={8} lg={16}>
                         <CardItem label="Additional standards">
                           {standardUnit.stocking.additionalStandards}
                         </CardItem>
+                      </Column>
+
+                      {/* FSP IDs */}
+                      <Column sm={4} md={8} lg={16}>
+                        {
+                          standardUnit.stocking.possibleFspIds.length > 0
+                            ? (
+                              <Stack gap={4}>
+                                <Stack orientation="horizontal" gap={2}>
+                                  {
+                                    standardUnit.stocking.possibleFspIds.length > 1
+                                      ? (
+                                        <TooltipLabel
+                                          htmlFor="fsp-ids-tooltip"
+                                          label="Associated FSP IDs"
+                                          tooltip={
+                                            `
+                                        This standards unit follows a stocking standard that may be shared by more than one Forest Stewardship Plan (FSP).
+                                        All FSPs linked to the same stocking standard are listed here. One of these is likely the FSP that applies to this standards unit,
+                                        but a direct link between this specific unit and a single FSP is not recorded in the system.
+                                      `
+                                          }
+                                          useLabel02
+                                        />
+                                      )
+                                      : <span className="default-label-02">FSP ID</span>
+                                  }
+                                </Stack>
+
+                                <div className="fsp-links-container">
+                                  {standardUnit.stocking.possibleFspIds.map(id => (
+                                    <a
+                                      key={id}
+                                      className="fsp-link"
+                                      href={`https://apps.nrs.gov.bc.ca/ext/fsp/indexAction.do?fsp_id=${id}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {`FSP ID ${id}`}{" "}
+                                      <LaunchIcon />
+                                    </a>
+                                  ))}
+                                </div>
+                              </Stack>
+                            )
+                            : (
+                              <Stack gap={2}>
+                                <span className="default-label-02">FSP ID</span>
+                                <span>{PLACE_HOLDER}</span>
+                              </Stack>
+
+                            )
+                        }
                       </Column>
                     </Grid>
                   </AccordionItem>

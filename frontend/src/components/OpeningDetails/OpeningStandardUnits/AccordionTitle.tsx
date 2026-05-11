@@ -55,9 +55,7 @@ const AcoordionTitle = ({ standardUnit }: AcoordionTitleProp) => {
         <p>SSID {standardUnit.stocking.srid}</p>
         <VerticalDivider />
         <p>
-          {
-            standardUnit.stocking.standardsObjective ?? PLACE_HOLDER
-          }
+          {standardUnit.stocking.standardsObjective ? `Objective: ${standardUnit.stocking.standardsObjective}` : 'No objective'}
         </p>
       </div>
     </div>
