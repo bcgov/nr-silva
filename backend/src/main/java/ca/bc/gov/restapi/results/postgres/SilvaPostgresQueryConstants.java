@@ -410,6 +410,8 @@ public class SilvaPostgresQueryConstants {
 						WHEN atcl.activity_treatment_unit_id IS NOT NULL THEN 'ACTIVITY'
 						ELSE NULL
 					END AS activityKind,
+					atcl.activity_treatment_unit_id AS activityTreatmentUnitId,
+					COALESCE(scl.stocking_standard_unit_id, smcl.stocking_standard_unit_id) AS standardsUnitId,
 					sc.comment_text AS commentText,
 					sc.update_timestamp AS updateTimestamp,
 					COUNT(*) OVER () AS totalCount
