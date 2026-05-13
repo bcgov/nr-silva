@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
@@ -303,7 +304,10 @@ public class SearchEndpoint {
 
   @GetMapping("/comments")
   public Page<CommentSearchResponseDto> commentSearch(
-      @NotBlank @Size(min = 3) @RequestParam(value = "searchTerm") String searchTerm,
+      @NotBlank
+          @Size(min = SilvaConstants.MIN_SEARCH_TERM_LENGTH)
+          @RequestParam(value = "searchTerm")
+          String searchTerm,
       @RequestParam(value = "commentLocation", required = false)
           CommentLocationCode commentLocation,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
