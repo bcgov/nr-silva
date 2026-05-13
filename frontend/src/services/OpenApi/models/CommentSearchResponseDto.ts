@@ -6,6 +6,8 @@ export type CommentSearchResponseDto = {
     openingId: number;
     commentLocation: CommentSearchResponseDto.commentLocation;
     activityKind?: CommentSearchResponseDto.activityKind;
+    activityTreatmentUnitId?: number | null;
+    standardsUnitId?: number | null;
     commentText: string | null;
     updateTimestamp?: string | null;
 };
