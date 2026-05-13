@@ -491,6 +491,8 @@ public class SilvaPostgresQueryConstants {
 				openingId,
 				commentLocation,
 				activityKind,
+				activityTreatmentUnitId,
+				standardsUnitId,
 				commentText,
 				updateTimestamp,
 				totalCount

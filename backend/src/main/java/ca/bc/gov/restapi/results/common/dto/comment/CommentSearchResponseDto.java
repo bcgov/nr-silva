@@ -15,6 +15,14 @@ public record CommentSearchResponseDto(
             nullable = true)
         ActivityKindCode activityKind,
     @Schema(
+            types = {"integer", "null"},
+            nullable = true)
+        Long activityTreatmentUnitId,
+    @Schema(
+            types = {"integer", "null"},
+            nullable = true)
+        Long standardsUnitId,
+    @Schema(
             types = {"string", "null"},
             requiredMode = Schema.RequiredMode.REQUIRED)
         String commentText,

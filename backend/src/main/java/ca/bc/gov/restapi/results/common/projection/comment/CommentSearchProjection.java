@@ -11,6 +11,10 @@ public interface CommentSearchProjection {
 
   String getActivityKind();
 
+  Long getActivityTreatmentUnitId();
+
+  Long getStandardsUnitId();
+
   String getCommentText();
 
   LocalDateTime getUpdateTimestamp();

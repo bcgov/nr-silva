@@ -64,11 +64,17 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
     result
         .getContent()
         .forEach(
-            dto ->
-                Assertions.assertEquals(
-                    CommentLocationCode.OPENING,
-                    dto.commentLocation(),
-                    "All results should have OPENING location"));
+            dto -> {
+              Assertions.assertEquals(
+                  CommentLocationCode.OPENING,
+                  dto.commentLocation(),
+                  "All results should have OPENING location");
+              Assertions.assertNull(
+                  dto.activityTreatmentUnitId(),
+                  "OPENING comments should not have activityTreatmentUnitId");
+              Assertions.assertNull(
+                  dto.standardsUnitId(), "OPENING comments should not have standardsUnitId");
+            });
   }
 
   @Test
