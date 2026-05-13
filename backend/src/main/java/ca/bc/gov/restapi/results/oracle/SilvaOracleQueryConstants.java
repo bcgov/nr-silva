@@ -500,7 +500,7 @@ public class SilvaOracleQueryConstants {
         updateTimestamp,
         totalCount
       FROM comment_search
-      ORDER BY updateTimestamp DESC
+      ORDER BY updateTimestamp DESC NULLS LAST
       """
           + PAGINATION;
 

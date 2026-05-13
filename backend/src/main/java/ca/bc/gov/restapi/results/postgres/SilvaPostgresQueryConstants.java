@@ -497,7 +497,7 @@ public class SilvaPostgresQueryConstants {
 				updateTimestamp,
 				totalCount
 			FROM comment_search
-			ORDER BY updateTimestamp DESC
+			ORDER BY updateTimestamp DESC NULLS LAST
 			""" + PAGINATION;
 
 	public static final String GET_OPENING_SS =
