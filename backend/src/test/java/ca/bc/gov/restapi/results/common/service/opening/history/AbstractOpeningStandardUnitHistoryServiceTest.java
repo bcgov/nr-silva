@@ -945,7 +945,6 @@ public abstract class AbstractOpeningStandardUnitHistoryServiceTest<
     when(detailsProjection.getSrid()).thenReturn(300L);
     when(detailsProjection.getDefaultMof()).thenReturn(true);
     when(detailsProjection.getManualEntry()).thenReturn(false);
-    when(detailsProjection.getFspId()).thenReturn(400L);
     when(detailsProjection.getNetArea()).thenReturn(50.0f);
     when(detailsProjection.getSoilDisturbancePercent()).thenReturn(5.0f);
     when(detailsProjection.getBecZoneCode()).thenReturn("CWH");
@@ -960,6 +959,7 @@ public abstract class AbstractOpeningStandardUnitHistoryServiceTest<
     when(detailsProjection.getFreeGrowingEarly()).thenReturn(5L);
     when(detailsProjection.getAdditionalStandards()).thenReturn("Additional");
     when(detailsProjection.getAmendmentComment()).thenReturn("Comment");
+    when(detailsProjection.getStandardsObjective()).thenReturn(null);
 
     OpeningStockingLayerHistoryProjection layerProjection =
         mock(OpeningStockingLayerHistoryProjection.class);
@@ -1020,7 +1020,8 @@ public abstract class AbstractOpeningStandardUnitHistoryServiceTest<
     Assertions.assertEquals(300L, details.srid());
     Assertions.assertTrue(details.defaultMof());
     Assertions.assertFalse(details.manualEntry());
-    Assertions.assertEquals(400L, details.fspId());
+    Assertions.assertEquals(List.of(), details.possibleFspIds());
+    Assertions.assertNull(details.standardsObjective());
     Assertions.assertEquals(50.0f, details.netArea());
     Assertions.assertEquals(5.0f, details.soilDisturbancePercent());
     Assertions.assertEquals("CWH", details.bec().becZoneCode());

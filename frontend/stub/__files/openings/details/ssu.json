@@ -5,7 +5,7 @@
       "ssid": 2333293,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": 93,
+      "possibleFspIds": [93], "standardsObjective": null,
       "netArea": 22.0,
       "soilDisturbancePercent": 10.0,
       "bec": {
@@ -83,7 +83,7 @@
       "ssid": 2333294,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": 93,
+      "possibleFspIds": [93], "standardsObjective": null,
       "netArea": 3.4,
       "soilDisturbancePercent": 10.0,
       "bec": {
@@ -161,7 +161,7 @@
       "ssid": 2333295,
       "defaultMof": false,
       "manualEntry": false,
-      "fspId": 93,
+      "possibleFspIds": [93], "standardsObjective": null,
       "netArea": 1.2,
       "soilDisturbancePercent": 10.0,
       "bec": {

@@ -275,11 +275,6 @@ public class OpeningTestDataFactory {
       }
 
       @Override
-      public Long getFspId() {
-        return null;
-      }
-
-      @Override
       public Float getNetArea() {
         return 25.5F;
       }
@@ -351,6 +346,11 @@ public class OpeningTestDataFactory {
             + " species on steep southerly aspects (SE to SW) or on southerly, westerly and"
             + " easterly slopes where pre-harvest stand composition of Fd is >20% by"
             + " merchantable volume.";
+      }
+
+      @Override
+      public String getStandardsObjective() {
+        return null;
       }
     };
   }

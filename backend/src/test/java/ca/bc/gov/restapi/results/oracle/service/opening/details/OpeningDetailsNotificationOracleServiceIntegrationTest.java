@@ -6,6 +6,6 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 @DisplayName("Integrated Test | Opening Details Notification Service | Legacy(Oracle primary)")
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "oracle")
-public class OpeningDetailsNotificationOracleServiceIntegrationTest extends
-    AbstractOpeningDetailsNotificationServiceIntegrationTest<OpeningDetailsNotificationOracleService> {
-}
+public class OpeningDetailsNotificationOracleServiceIntegrationTest
+    extends AbstractOpeningDetailsNotificationServiceIntegrationTest<
+        OpeningDetailsNotificationOracleService> {}
