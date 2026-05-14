@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthProvider";
 import { ThemePreference } from "../../utils/ThemePreference";
-import { mainActivitiesItems } from "../../components/BCHeader/constants";
+import { getMainActivitiesItems } from "../../components/BCHeader/constants";
 import { PreferenceProvider } from "../../contexts/PreferenceProvider";
 
 vi.mock("../../services/TestService", () => ({
@@ -83,14 +83,14 @@ describe("BCHeader", async () => {
 
   it("renders the correct menu item names", async () => {
     await renderComponent();
-    mainActivitiesItems.forEach((item) => {
+    getMainActivitiesItems().forEach((item) => {
       expect(screen.getByText(item.name)).toBeInTheDocument();
     });
   });
 
   it("renders sub menu items", async () => {
     await renderComponent();
-    const subMenuItem = mainActivitiesItems[0].items[0]; // Assuming the first item has sub items
+    const subMenuItem = getMainActivitiesItems()[0].items[0]; // Assuming the first item has sub items
     const menuItem = screen.getByText(subMenuItem.name);
     act(() => fireEvent.click(menuItem));
     subMenuItem.subItems?.forEach((subSubItem) => {

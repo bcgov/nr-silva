@@ -1,4 +1,8 @@
 import * as Icons from '@carbon/icons-react';
+import {
+  DashboardRoute, OpeningsRoute, OpeningsSearchRoute, ActivitySearchRoute,
+  StandardsUnitSearchRoute, ForestCoverSearchRoute, CommentSearchRoute
+} from '@/routes/config';
 
 export type LeftMenuItem = {
   id: string;
@@ -15,7 +19,7 @@ export type LeftMenu = {
   items: LeftMenuItem[];
 }
 
-export const mainActivitiesItems: LeftMenu[] = [
+export const getMainActivitiesItems = (): LeftMenu[] => [
   {
     name: 'Main activities',
     items: [
@@ -23,7 +27,7 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'dashboard',
         name: 'Dashboard',
         icon: 'Dashboard',
-        link: '/dashboard',
+        link: DashboardRoute.path!,
         disabled: false,
         breadcrumb: false
       },
@@ -31,7 +35,7 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'openings',
         name: 'Openings',
         icon: 'MapBoundaryVegetation',
-        link: '/openings',
+        link: OpeningsRoute.path!,
         disabled: false,
         breadcrumb: false,
       }
@@ -44,7 +48,7 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'openings-search',
         name: 'Openings',
         icon: 'MapBoundaryVegetation',
-        link: '/openings-search',
+        link: OpeningsSearchRoute.path!,
         disabled: false,
         breadcrumb: false
       },
@@ -52,7 +56,7 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'activity-search',
         name: 'Activities',
         icon: 'CropHealth',
-        link: '/activity-search',
+        link: ActivitySearchRoute.path!,
         disabled: false,
         breadcrumb: false
       },
@@ -60,7 +64,7 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'standards-unit-search',
         name: 'Standards units',
         icon: 'Development',
-        link: '/standards-unit-search',
+        link: StandardsUnitSearchRoute.path!,
         disabled: false,
         breadcrumb: false
       },
@@ -68,7 +72,15 @@ export const mainActivitiesItems: LeftMenu[] = [
         id: 'forest-cover-search',
         name: 'Forest covers',
         icon: 'VegetationAsset',
-        link: '/forest-cover-search',
+        link: ForestCoverSearchRoute.path!,
+        disabled: false,
+        breadcrumb: false
+      },
+      {
+        id: 'comment-search',
+        name: 'Comments',
+        icon: 'Chat',
+        link: CommentSearchRoute.path!,
         disabled: false,
         breadcrumb: false
       }

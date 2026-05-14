@@ -12,6 +12,7 @@ const OpeningsSearch = lazy(() => import('@/screens/OpeningsSearch'));
 const ActivitySearch = lazy(() => import('@/screens/ActivitySearch'));
 const ForestCoverSearch = lazy(() => import('@/screens/ForestCoverSearch'));
 const StandardsUnitSearch = lazy(() => import('@/screens/StandardsUnitSearch'));
+const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
 
 const PageLoader = () => <Loading withOverlay={false} />;
 
@@ -76,4 +77,9 @@ export const ForestCoverSearchRoute: RouteObject = {
 export const StandardsUnitSearchRoute: RouteObject = {
   path: "/standards-unit-search",
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><StandardsUnitSearch /></Suspense>} />,
+}
+
+export const CommentSearchRoute: RouteObject = {
+  path: "/comment-search",
+  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CommentSearch /></Suspense>} />,
 }

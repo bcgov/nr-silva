@@ -69,3 +69,15 @@ export type StandardsUnitSearchParams = {
   size?: number;
   sort?: Array<string>;
 };
+
+export type CommentSearchParams = {
+  searchTerm?: string;
+  commentLocation?: string;
+  clientNumbers?: Array<string>;
+  orgUnits?: Array<string>;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  page?: number;
+  size?: number;
+  sort?: Array<string>;
+};
