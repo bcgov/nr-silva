@@ -129,7 +129,7 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
               value={getDatePickerValue(searchParams?.updateDateStart)}
             >
               <DatePickerInput
-                id="comment-start-date-picker-input"
+                id="start-date-picker-input-id"
                 size="md"
                 labelText="Start Date"
                 placeholder="yyyy/mm/dd"
@@ -148,7 +148,7 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
               value={getDatePickerValue(searchParams?.updateDateEnd)}
             >
               <DatePickerInput
-                id="comment-end-date-picker-input"
+                id="end-date-picker-input-id"
                 size="md"
                 labelText="End Date"
                 placeholder="yyyy/mm/dd"

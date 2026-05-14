@@ -277,7 +277,7 @@ export class SearchEndpointService {
      */
     public static commentSearch(
         searchTerm: string,
-        commentLocation?: 'STANDARDS_UNIT' | 'OPENING' | 'MILESTONE' | 'ACTIVITIES' | 'FOREST_COVER',
+        commentLocation?: Array<'STANDARDS_UNIT' | 'OPENING' | 'MILESTONE' | 'ACTIVITIES' | 'FOREST_COVER'>,
         clientNumbers?: Array<string>,
         orgUnits?: Array<string>,
         updateDateStart?: string,

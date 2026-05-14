@@ -18,7 +18,7 @@ public class CommentSearchFilterDto {
   private final String searchTerm;
 
   @Schema(nullable = true)
-  private final CommentLocationCode commentLocation;
+  private final List<CommentLocationCode> commentLocations;
 
   @Schema(type = "array", nullable = true)
   private final List<String> clientNumbers;
@@ -34,13 +34,13 @@ public class CommentSearchFilterDto {
 
   public CommentSearchFilterDto(
       String searchTerm,
-      CommentLocationCode commentLocation,
+      List<CommentLocationCode> commentLocations,
       List<String> clientNumbers,
       List<String> orgUnits,
       String updateDateStart,
       String updateDateEnd) {
     this.searchTerm = searchTerm;
-    this.commentLocation = commentLocation;
+    this.commentLocations = commentLocations;
     this.clientNumbers =
         !CollectionUtils.isEmpty(clientNumbers)
             ? StringUtil.toUpperCase(clientNumbers)
@@ -54,10 +54,13 @@ public class CommentSearchFilterDto {
   }
 
   /**
-   * Returns the commentLocation as a string for use in SpEL expressions in native queries. Returns
-   * "NOVALUE" when no location filter is specified.
+   * Returns the commentLocations as a list of strings for use in SpEL expressions in native
+   * queries. Returns ["NOVALUE"] when no location filter is specified.
    */
-  public String getCommentLocationValue() {
-    return commentLocation != null ? commentLocation.name() : SilvaConstants.NOVALUE;
+  public List<String> getCommentLocationValues() {
+    if (commentLocations == null || commentLocations.isEmpty()) {
+      return List.of(SilvaConstants.NOVALUE);
+    }
+    return commentLocations.stream().map(CommentLocationCode::name).toList();
   }
 }
