@@ -36,7 +36,7 @@ const CommentSearchSection = () => {
     queryFn: () =>
       API.SearchEndpointService.commentSearch(
         queryParams!.searchTerm!,
-        queryParams?.commentLocation as Parameters<typeof API.SearchEndpointService.commentSearch>[1],
+        queryParams?.commentLocation as Parameters<typeof API.SearchEndpointService.commentSearch>[1] ?? undefined,
         queryParams?.clientNumbers,
         queryParams?.orgUnits,
         queryParams?.updateDateStart,

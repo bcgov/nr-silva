@@ -72,7 +72,7 @@ export type StandardsUnitSearchParams = {
 
 export type CommentSearchParams = {
   searchTerm?: string;
-  commentLocation?: string;
+  commentLocation?: Array<string>;
   clientNumbers?: Array<string>;
   orgUnits?: Array<string>;
   updateDateStart?: string;

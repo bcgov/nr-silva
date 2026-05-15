@@ -19,8 +19,8 @@ export const readCommentSearchUrlParams = (): Partial<CommentSearchParams> => {
   const searchTerm = searchParams.get('searchTerm');
   if (searchTerm) params.searchTerm = searchTerm;
 
-  const commentLocation = searchParams.get('commentLocation');
-  if (commentLocation) params.commentLocation = commentLocation;
+  const commentLocation = searchParams.getAll('commentLocation');
+  if (commentLocation.length > 0) params.commentLocation = commentLocation;
 
   const clientNumbers = searchParams.getAll('clientNumbers');
   if (clientNumbers.length > 0) params.clientNumbers = clientNumbers;
@@ -61,8 +61,8 @@ export const updateCommentSearchUrlParams = (params?: Partial<CommentSearchParam
     searchParams.append('searchTerm', params.searchTerm);
   }
 
-  if (params.commentLocation) {
-    searchParams.append('commentLocation', params.commentLocation);
+  if (params.commentLocation && Array.isArray(params.commentLocation)) {
+    params.commentLocation.forEach((v) => searchParams.append('commentLocation', v));
   }
 
   if (params.clientNumbers && Array.isArray(params.clientNumbers)) {

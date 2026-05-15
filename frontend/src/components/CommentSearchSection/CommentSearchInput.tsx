@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { DateTime } from 'luxon';
-import { Column, DatePicker, DatePickerInput, Grid, Select, SelectItem, TextInput } from '@carbon/react';
+import { Column, DatePicker, DatePickerInput, Grid, TextInput } from '@carbon/react';
 import API from '@/services/API';
 import { CommentSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
@@ -39,9 +39,9 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
         : null
     : null;
 
-  const handleOrgUnitChange = (selected: { selectedItems: CodeDescriptionDto[] }) => {
+  const handleMultiSelectChange = (field: keyof CommentSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
     const codes = getMultiSelectedCodes(selected);
-    handleSearchFieldChange('orgUnits', codes.length > 0 ? codes : undefined);
+    handleSearchFieldChange(field, codes.length > 0 ? codes : undefined);
   };
 
   const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
@@ -73,19 +73,25 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
 
       {/* Comment Location */}
       <Column sm={4} md={4} lg={6} max={4}>
-        <Select
-          id="comment-location-select"
-          labelText="Comment location"
-          value={searchParams?.commentLocation ?? ''}
-          onChange={(e) =>
-            handleSearchFieldChange('commentLocation', e.target.value || undefined)
+        <CustomMultiSelect
+          id="comment-location-multiselect"
+          className="default-search-multi-select"
+          titleText="Comment location"
+          placeholder={
+            searchParams?.commentLocation?.length
+              ? COMMENT_LOCATION_LIST
+                .filter((item) => searchParams.commentLocation!.includes(item.code ?? ''))
+                .map((item) => item.description ?? item.code ?? '')
+                .join(', ')
+              : 'Choose one or more options'
           }
-        >
-          <SelectItem value="" text="All locations" />
-          {COMMENT_LOCATION_LIST.map((item) => (
-            <SelectItem key={item.code} value={item.code ?? ''} text={item.description ?? ''} />
-          ))}
-        </Select>
+          items={COMMENT_LOCATION_LIST}
+          itemToString={(item) => item?.description ?? item?.code ?? ''}
+          onChange={handleMultiSelectChange('commentLocation')}
+          selectedItems={COMMENT_LOCATION_LIST.filter((item) =>
+            searchParams?.commentLocation?.includes(item.code ?? '')
+          )}
+        />
       </Column>
 
       {/* Client */}
@@ -105,7 +111,7 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
           placeholder="Choose one or more options"
           items={orgUnitQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleOrgUnitChange}
+          onChange={handleMultiSelectChange('orgUnits')}
           selectedItems={(orgUnitQuery.data ?? []).filter((item) =>
             searchParams?.orgUnits?.includes(item.code ?? '')
           )}
