@@ -412,6 +412,7 @@ public class SilvaPostgresQueryConstants {
 					END AS activityKind,
 					atcl.activity_treatment_unit_id AS activityTreatmentUnitId,
 					COALESCE(scl.stocking_standard_unit_id, smcl.stocking_standard_unit_id) AS standardsUnitId,
+					COALESCE(ssu.standards_unit_id, ssu_m.standards_unit_id) AS standardsUnitName,
 					sc.comment_text AS commentText,
 					sc.update_timestamp AS updateTimestamp,
 					COUNT(*) OVER () AS totalCount
@@ -495,6 +496,7 @@ public class SilvaPostgresQueryConstants {
 				activityKind,
 				activityTreatmentUnitId,
 				standardsUnitId,
+				standardsUnitName,
 				commentText,
 				updateTimestamp,
 				totalCount

@@ -10,11 +10,13 @@ import './styles.scss';
 type OpeningBookmarkBtnProps = {
   openingId?: number;
   tooltipPosition?: ButtonTooltipPosition;
+  btnSize?: "md" | "sm" | "lg" | "xl" | "2xl";
+  className?: string;
 }
 
 const BookmarkFilledIcon = () => <BookmarkFilled className="bookmark-filled-icon" data-testid="bookmark-filled-icon" />;
 
-const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookmarkBtnProps) => {
+const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top', btnSize = 'md', className }: OpeningBookmarkBtnProps) => {
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites"],
     queryFn: () => API.OpeningEndpointService.getFavorites()
@@ -66,13 +68,13 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top' }: OpeningBookm
     <Button
       data-testid={`actionable-bookmark-button-${openingId}`}
       id={`actionable-bookmark-button-${openingId}`}
-      className="actionable-bookmark-button"
+      className={`actionable-bookmark-button ${className ?? ''}`}
       hasIconOnly
       iconDescription={`${openingFavouriteQuery.data?.includes(openingId) ? 'Unb' : 'B'}ookmark ${openingId}`}
       kind="ghost"
       onClick={handleFavouriteChange}
       renderIcon={openingFavouriteQuery.data?.includes(openingId) ? BookmarkFilledIcon : BookmarkAdd}
-      size="md"
+      size={btnSize}
       tooltipPosition={tooltipPosition}
     />
   );

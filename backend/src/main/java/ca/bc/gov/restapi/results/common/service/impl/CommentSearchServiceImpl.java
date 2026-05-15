@@ -62,6 +62,7 @@ public class CommentSearchServiceImpl implements CommentSearchService {
         activityKind,
         projection.getActivityTreatmentUnitId(),
         projection.getStandardsUnitId(),
+        projection.getStandardsUnitName(),
         projection.getCommentText(),
         projection.getUpdateTimestamp());
   }

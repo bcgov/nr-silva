@@ -1,5 +1,62 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
 
 .comment-search-section {
   padding-top: 0;
+}
+
+
+.comment-search-card-container {
+  padding: 1.25rem 1rem;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--bx-layer-hover-01);
+  }
+
+  &--shaded {
+    background-color: var(--bx-layer-01);
+
+    &:hover {
+      background-color: var(--bx-layer-hover-01);
+    }
+  }
+
+  .comment-search-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: -0.25rem;
+
+
+    .bookmark-title-tag {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+
+      .bookmark-and-title {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        .opening-id-title {
+          @include type.type-style('body-02');
+        }
+      }
+    }
+
+    .comment-date {
+      @include type.type-style('body-01');
+    }
+  }
+
+
+  .comment-search-comment-row {
+    @include type.type-style('body-01');
+    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+
+    strong {
+      font-weight: 700;
+    }
+  }
 }

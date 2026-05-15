@@ -413,6 +413,7 @@ public class SilvaOracleQueryConstants {
           END AS activityKind,
           atcl.ACTIVITY_TREATMENT_UNIT_ID AS activityTreatmentUnitId,
           COALESCE(scl.STOCKING_STANDARD_UNIT_ID, smcl.STOCKING_STANDARD_UNIT_ID) AS standardsUnitId,
+          COALESCE(ssu.STANDARDS_UNIT_ID, ssu_m.STANDARDS_UNIT_ID) AS standardsUnitName,
           sc.COMMENT_TEXT AS commentText,
           sc.UPDATE_TIMESTAMP AS updateTimestamp,
           COUNT(*) OVER () AS totalCount
@@ -496,6 +497,7 @@ public class SilvaOracleQueryConstants {
         activityKind,
         activityTreatmentUnitId,
         standardsUnitId,
+        standardsUnitName,
         commentText,
         updateTimestamp,
         totalCount

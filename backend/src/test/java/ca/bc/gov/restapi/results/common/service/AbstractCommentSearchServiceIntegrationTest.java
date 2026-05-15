@@ -75,6 +75,8 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
                   "OPENING comments should not have activityTreatmentUnitId");
               Assertions.assertNull(
                   dto.standardsUnitId(), "OPENING comments should not have standardsUnitId");
+              Assertions.assertNull(
+                  dto.standardsUnitName(), "OPENING comments should not have standardsUnitName");
             });
   }
 

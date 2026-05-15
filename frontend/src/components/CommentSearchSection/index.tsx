@@ -9,7 +9,7 @@ import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "@/components/EmptySection";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import CommentSearchCard from "@/components/CommentSearchCard";
+import CommentSearchCard from "./CommentSearchCard";
 import { readCommentSearchUrlParams, updateCommentSearchUrlParams, hasCommentSearchFilters } from "./utils";
 import { COMMENT_KEYWORD_MIN_LENGTH, COMMENT_KEYWORD_MAX_LENGTH } from "./constants";
 import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
@@ -190,7 +190,7 @@ const CommentSearchSection = () => {
               commentSearchQuery.data.page.totalElements > 0 ? (
               <>
                 {commentSearchQuery.data?.content?.map((comment, idx) => (
-                  <CommentSearchCard key={`${comment.openingId}-${idx}`} comment={comment} />
+                  <CommentSearchCard key={`${comment.openingId}-${idx}`} commentDto={comment} keyword={queryParams?.searchTerm ?? ''} index={idx} />
                 ))}
                 <Pagination
                   className="default-pagination-white"
