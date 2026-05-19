@@ -31,7 +31,7 @@ import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-import Comments from "../../Comments";
+
 import { CardContainer, CardItem } from "../../Card";
 
 type OpeningForestCoverProps = {

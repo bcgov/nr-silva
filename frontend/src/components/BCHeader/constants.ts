@@ -1,8 +1,13 @@
 import * as Icons from '@carbon/icons-react';
 import {
-  DashboardRoute, OpeningsRoute, OpeningsSearchRoute, ActivitySearchRoute,
-  StandardsUnitSearchRoute, ForestCoverSearchRoute, CommentSearchRoute
-} from '@/routes/config';
+  DASHBOARD_PATH,
+  OPENINGS_PATH,
+  OPENINGS_SEARCH_PATH,
+  ACTIVITY_SEARCH_PATH,
+  FOREST_COVER_SEARCH_PATH,
+  STANDARDS_UNIT_SEARCH_PATH,
+  COMMENT_SEARCH_PATH,
+} from '@/routes/paths';
 
 export type LeftMenuItem = {
   id: string;
@@ -27,7 +32,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'dashboard',
         name: 'Dashboard',
         icon: 'Dashboard',
-        link: DashboardRoute.path!,
+        link: DASHBOARD_PATH,
         disabled: false,
         breadcrumb: false
       },
@@ -35,7 +40,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'openings',
         name: 'Openings',
         icon: 'MapBoundaryVegetation',
-        link: OpeningsRoute.path!,
+        link: OPENINGS_PATH,
         disabled: false,
         breadcrumb: false,
       }
@@ -48,7 +53,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'openings-search',
         name: 'Openings',
         icon: 'MapBoundaryVegetation',
-        link: OpeningsSearchRoute.path!,
+        link: OPENINGS_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       },
@@ -56,7 +61,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'activity-search',
         name: 'Activities',
         icon: 'CropHealth',
-        link: ActivitySearchRoute.path!,
+        link: ACTIVITY_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       },
@@ -64,7 +69,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'standards-unit-search',
         name: 'Standards units',
         icon: 'Development',
-        link: StandardsUnitSearchRoute.path!,
+        link: STANDARDS_UNIT_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       },
@@ -72,7 +77,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'forest-cover-search',
         name: 'Forest covers',
         icon: 'VegetationAsset',
-        link: ForestCoverSearchRoute.path!,
+        link: FOREST_COVER_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       },
@@ -80,7 +85,7 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         id: 'comment-search',
         name: 'Comments',
         icon: 'Chat',
-        link: CommentSearchRoute.path!,
+        link: COMMENT_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       }

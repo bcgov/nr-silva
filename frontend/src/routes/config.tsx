@@ -3,6 +3,15 @@ import { type RouteObject, Outlet, Navigate } from "react-router-dom";
 import { Loading } from "@carbon/react";
 import SideLayout from '@/layouts/SideLayout';
 import LoginClientSelection from "@/screens/LoginClientSelection";
+import {
+  DASHBOARD_PATH,
+  OPENINGS_PATH,
+  OPENINGS_SEARCH_PATH,
+  ACTIVITY_SEARCH_PATH,
+  FOREST_COVER_SEARCH_PATH,
+  STANDARDS_UNIT_SEARCH_PATH,
+  COMMENT_SEARCH_PATH,
+} from './paths';
 
 const Dashboard = lazy(() => import('@/screens/Dashboard'));
 const Openings = lazy(() => import('@/screens/Openings'));
@@ -17,17 +26,17 @@ const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
 const PageLoader = () => <Loading withOverlay={false} />;
 
 export const DashboardRoute: RouteObject = {
-  path: "/dashboard",
+  path: DASHBOARD_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><Dashboard /></Suspense>} />
 }
 
 export const OpeningsRoute: RouteObject = {
-  path: "/openings",
+  path: OPENINGS_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><Openings /></Suspense>} />,
 }
 
 export const OpeningsSearchRoute: RouteObject = {
-  path: "/openings-search",
+  path: OPENINGS_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><OpeningsSearch /></Suspense>} />,
 }
 
@@ -47,7 +56,7 @@ export const ClientSelectionRoute: RouteObject = {
 }
 
 export const ActivitySearchRoute: RouteObject = {
-  path: "/activity-search",
+  path: ACTIVITY_SEARCH_PATH,
   element: <SideLayout pageContent={<Outlet />} />,
   children: [
     {
@@ -70,16 +79,16 @@ export const ActivitySearchRoute: RouteObject = {
 }
 
 export const ForestCoverSearchRoute: RouteObject = {
-  path: "/forest-cover-search",
+  path: FOREST_COVER_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><ForestCoverSearch /></Suspense>} />,
 }
 
 export const StandardsUnitSearchRoute: RouteObject = {
-  path: "/standards-unit-search",
+  path: STANDARDS_UNIT_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><StandardsUnitSearch /></Suspense>} />,
 }
 
 export const CommentSearchRoute: RouteObject = {
-  path: "/comment-search",
+  path: COMMENT_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CommentSearch /></Suspense>} />,
 }
