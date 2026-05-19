@@ -21,7 +21,7 @@ import EmptySection from "@/components/EmptySection";
 import { StockingStatusTag } from "@/components/Tags";
 import { MAX_SEARCH_LENGTH } from "@/constants/tableConstants";
 import API from "@/services/API";
-import { OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
+import { OpeningDetailsOverviewDto, OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { formatDateTime, isMidnight } from "@/utils/DateUtils";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
@@ -31,11 +31,14 @@ import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
+import Comments from "../../Comments";
+import { CardContainer, CardItem } from "../../Card";
 
 type OpeningForestCoverProps = {
   openingId: number;
   selectedForestCoverIds: string[];
   setSelectedForestCoverIds: React.Dispatch<React.SetStateAction<string[]>>;
+  overviewObj?: OpeningDetailsOverviewDto;
 };
 
 type ForestCoverRowProps = {
@@ -128,7 +131,9 @@ const ForestCoverRow = ({
 const OpeningForestCover = ({
   openingId,
   selectedForestCoverIds,
-  setSelectedForestCoverIds }: OpeningForestCoverProps) => {
+  setSelectedForestCoverIds,
+  overviewObj
+}: OpeningForestCoverProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
@@ -570,6 +575,20 @@ const OpeningForestCover = ({
                 : null
             }
           </TableContainer>
+        </Column>
+
+        <Column sm={4} md={8} lg={16}>
+          <CardContainer>
+            <Column sm={4} md={8} lg={16}>
+              <CardItem label="Comments">
+                {
+                  overviewObj?.opening.comments.filter((comment) => comment.commentType.code === "FORCOVER").map((comment, index) => (
+                    <div key={index} className="comment-text-row">{comment.commentText}</div>
+                  ))
+                }
+              </CardItem>
+            </Column>
+          </CardContainer>
         </Column>
       </Grid>
     </>

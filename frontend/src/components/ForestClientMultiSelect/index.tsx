@@ -106,7 +106,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
             label="Client"
             tooltip="Type at least 3 characters to search clients, matching options will be loaded."
           />
-          {clientMutation.isPending && <InlineLoading />}
+          {clientMutation.isPending ? <InlineLoading className='client-loading' /> : null}
         </div>
       }
       id="client-multi-select"

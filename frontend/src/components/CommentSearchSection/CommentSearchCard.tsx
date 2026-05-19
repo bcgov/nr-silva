@@ -90,7 +90,7 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
             <div className='bookmark-and-title'>
               <OpeningBookmarkBtn openingId={commentDto.openingId} tooltipPosition="right" btnSize="sm" className="comment-search-bookmark-btn" />
               <Link className='opening-id-title default-plain-link' to={getLinkPath()} target='_blank' rel="noopener noreferrer">
-                {`Opening ID: ${commentDto.openingId}`}
+                {`Opening ID ${commentDto.openingId}`}
               </Link>
             </div>
             <CommentLocationTag location={commentDto.commentLocation} activityKind={commentDto.activityKind} size="sm" suffixText={getSuffixText()} />

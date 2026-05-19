@@ -11,6 +11,7 @@ import {
   AccordionSkeleton,
 } from "@carbon/react";
 import { AxiosError } from "axios";
+import { useAuth } from "@/contexts/AuthProvider";
 import {
   MapBoundaryVegetation,
   Development,
@@ -52,7 +53,6 @@ const OpeningAttachment = lazy(
 );
 
 import "./styles.scss";
-import { useAuth } from "../../../contexts/AuthProvider";
 
 const OpeningDetails = () => {
   const param = useParams();
@@ -234,6 +234,7 @@ const OpeningDetails = () => {
                     openingId={Number(openingId)}
                     selectedForestCoverIds={selectedForestCoverIds}
                     setSelectedForestCoverIds={setSelectedForestCoverIds}
+                    overviewObj={openingDetailsTombstoneQuery.data?.overview}
                   />
                 </Suspense>
               ) : null}

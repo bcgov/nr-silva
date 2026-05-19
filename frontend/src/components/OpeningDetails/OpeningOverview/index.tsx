@@ -7,9 +7,9 @@ import { OpeningDetailsOverviewDto } from "@/services/OpenApi";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
+import Comments from "@/components/Comments";
 
 import "./styles.scss";
-import Comments from "../../Comments";
 
 type OpeningOverviewProps = {
   isLoading?: boolean
@@ -53,7 +53,7 @@ const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
           </Column>
           <Column sm={4} md={8} lg={16}>
             <CardItem label="Comment" showSkeleton={isLoading}>
-              <Comments comments={overviewObj?.opening.comments ?? []} />
+              <Comments comments={overviewObj?.opening.comments.filter((comment) => comment.commentType.code !== "FORCOVER") ?? []} />
             </CardItem>
           </Column>
         </Grid>
