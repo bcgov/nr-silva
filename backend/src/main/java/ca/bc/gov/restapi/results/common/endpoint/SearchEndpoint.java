@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.endpoint;
 import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
@@ -21,6 +22,7 @@ import ca.bc.gov.restapi.results.common.service.CommentSearchService;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
+import ca.bc.gov.restapi.results.common.service.StockingStandardsService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -52,6 +54,8 @@ public class SearchEndpoint {
   private final StandardUnitService standardUnitService;
 
   private final CommentSearchService commentSearchService;
+
+  private final StockingStandardsService stockingStandardsService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -344,12 +348,13 @@ public class SearchEndpoint {
       @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
       @ParameterObject Pageable paginationParameters) {
 
-    StandardUnitSearchFilterDto filters =
-        new StandardUnitSearchFilterDto(
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
             standardsRegimeId,
             preferredSpecies,
             orgUnits,
             clientNumbers,
+            fspId,
             bgcZone,
             bgcSubZone,
             bgcVariant,
@@ -364,6 +369,6 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return standardUnitService.standardsUnitSearch(filters, paginationParameters);
+    return stockingStandardsService.stockingStandardsSearch(filters, paginationParameters);
   }
 }

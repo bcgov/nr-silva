@@ -10,7 +10,7 @@ public record StockingStandardsSearchResponseDto(
         isExpired, // determined by comparing the current date to the standards regime's expiry_date
     String standardsObjective,
     List<CodeDescriptionDto> preferredSpecies,
-    String fspId,
+    List<String> fspIds,
     String bgcZone,
     String bgcSubZone,
     String bgcVariant,
@@ -18,6 +18,6 @@ public record StockingStandardsSearchResponseDto(
     String becSiteSeries,
     String becSiteType, // aka Site Phase
     String becSeral,
-    CodeDescriptionDto orgUnit,
-    ForestClientDto standardsRegimeClient,
+    List<CodeDescriptionDto> orgUnits,
+    List<ForestClientDto> clients,
     LocalDateTime updateTimestamp) {}

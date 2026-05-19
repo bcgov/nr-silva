@@ -25,14 +25,13 @@ import { OpeningDetailsOverviewDto, OpeningForestCoverDto, OpeningForestCoverHis
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { formatDateTime, isMidnight } from "@/utils/DateUtils";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import { CardContainer, CardItem } from "@/components/Card";
 
 import { EXPAND_PROMPT, ForestCoverTableHeaders, HistoryOverviewTableHeaders } from "./constants";
 import { formatForestCoverSpeciesArray } from "./utils";
 import ForestCoverExpandedRow from "./ForestCoverExpandedRow";
 
 import "./styles.scss";
-
-import { CardContainer, CardItem } from "../../Card";
 
 type OpeningForestCoverProps = {
   openingId: number;
@@ -582,9 +581,18 @@ const OpeningForestCover = ({
             <Column sm={4} md={8} lg={16}>
               <CardItem label="Comments">
                 {
-                  overviewObj?.opening.comments.filter((comment) => comment.commentType.code === "FORCOVER").map((comment, index) => (
-                    <div key={index} className="comment-text-row">{comment.commentText}</div>
-                  ))
+                  (() => {
+                    const forCoverComments = overviewObj?.opening.comments.filter((comment) => comment.commentType.code === "FORCOVER") ?? [];
+                    return forCoverComments.length === 0
+                      ? (
+                        <p>{PLACE_HOLDER}</p>
+                      )
+                      : (
+                        forCoverComments.map((comment, index) => (
+                          <div key={index} className="comment-text-row">{comment.commentText}</div>
+                        ))
+                      );
+                  })()
                 }
               </CardItem>
             </Column>
