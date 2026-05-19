@@ -20,9 +20,10 @@ type Props = {
   searchParams?: CommentSearchParams;
   handleSearchFieldChange: (field: keyof CommentSearchParams, value: unknown) => void;
   showValidation?: boolean;
+  onSearch?: () => void;
 };
 
-const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidation }: Props) => {
+const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidation, onSearch }: Props) => {
   const searchTermInputRef = useRef<HTMLInputElement>(null);
   useRefWithSearchParam(searchTermInputRef, searchParams?.searchTerm);
 
@@ -68,6 +69,11 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
           onChange={(e) =>
             handleSearchFieldChange('searchTerm', e.target.value || undefined)
           }
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onSearch?.();
+            }
+          }}
         />
       </Column>
 

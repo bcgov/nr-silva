@@ -4,10 +4,9 @@ import { Stack } from '@carbon/react';
 import OpeningBookmarkBtn from '../OpeningBookmarkBtn';
 import { CommentLocationTag } from '@/components/Tags';
 import { formatLocalDate } from '@/utils/DateUtils';
-
-import './styles.scss';
 import { Link } from 'react-router-dom';
 
+import './styles.scss';
 
 type Props = {
   keyword: string;
@@ -94,7 +93,7 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
                 {`Opening ID: ${commentDto.openingId}`}
               </Link>
             </div>
-            <CommentLocationTag location={commentDto.commentLocation} size="sm" suffixText={getSuffixText()} />
+            <CommentLocationTag location={commentDto.commentLocation} activityKind={commentDto.activityKind} size="sm" suffixText={getSuffixText()} />
           </div>
 
           <div className='comment-date'>

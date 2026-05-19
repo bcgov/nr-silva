@@ -136,6 +136,7 @@ const CommentSearchSection = () => {
           searchParams={searchParams}
           handleSearchFieldChange={handleSearchFieldChange}
           showValidation={showValidation}
+          onSearch={handleSearch}
         />
       </Column>
 
@@ -171,10 +172,10 @@ const CommentSearchSection = () => {
               <Stack
                 className="search-result-sub-title-section"
                 orientation="horizontal"
-                gap={commentSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}
+                gap={commentSearchQuery.isLoading || isAuthRefreshInProgress() ? 4 : 2}
               >
                 <p className="search-result-subtitle">Total search results:</p>
-                {commentSearchQuery.isLoading && !isAuthRefreshInProgress() ? (
+                {commentSearchQuery.isLoading || isAuthRefreshInProgress() ? (
                   <InlineLoading />
                 ) : (
                   <p className="search-result-subtitle">

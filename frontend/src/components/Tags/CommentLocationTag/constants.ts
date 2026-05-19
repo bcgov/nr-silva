@@ -18,3 +18,8 @@ export const locationColorMap: Record<CommentLocationType, keyof typeof TYPES> =
   FOREST_COVER: 'cyan',
   unknown: 'gray',
 };
+
+export const activityKindColorMap: Record<CommentSearchResponseDto.activityKind, keyof typeof TYPES> = {
+  [CommentSearchResponseDto.activityKind.ACTIVITY]: 'green',
+  [CommentSearchResponseDto.activityKind.DISTURBANCE]: 'purple',
+};

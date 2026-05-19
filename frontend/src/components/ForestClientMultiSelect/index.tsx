@@ -1,11 +1,14 @@
 import { useRef, useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { InlineLoading } from '@carbon/react';
 import API from '@/services/API';
 import { ForestClientAutocompleteResultDto } from '@/services/OpenApi';
 import CustomMultiSelect from '../CustomMultiSelect';
 import TooltipLabel from '../TooltipLabel';
 import { getClientLabel, getClientSimpleLabel } from '@/utils/ForestClientUtils';
 import useBreakpoint from '@/hooks/UseBreakpoint';
+
+import './styles.scss';
 
 type ForestClientMultiSelectProps = {
   selectedClientNumbers?: string[];
@@ -97,11 +100,14 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
           : 'Choose one or more options'
       }
       titleText={
-        <TooltipLabel
-          align={breakpoint === 'sm' ? 'top' : 'top-left'}
-          label="Client"
-          tooltip="Type at least 3 characters to search clients, matching options will be loaded."
-        />
+        <div className="forest-client-label">
+          <TooltipLabel
+            align={breakpoint === 'sm' ? 'top' : 'top-left'}
+            label="Client"
+            tooltip="Type at least 3 characters to search clients, matching options will be loaded."
+          />
+          {clientMutation.isPending && <InlineLoading />}
+        </div>
       }
       id="client-multi-select"
       className="default-search-multi-select"
