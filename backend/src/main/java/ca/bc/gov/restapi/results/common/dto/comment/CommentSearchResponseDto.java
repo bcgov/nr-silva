@@ -24,6 +24,10 @@ public record CommentSearchResponseDto(
         Long standardsUnitId,
     @Schema(
             types = {"string", "null"},
+            nullable = true)
+        String standardsUnitName,
+    @Schema(
+            types = {"string", "null"},
             requiredMode = Schema.RequiredMode.REQUIRED)
         String commentText,
     @Schema(

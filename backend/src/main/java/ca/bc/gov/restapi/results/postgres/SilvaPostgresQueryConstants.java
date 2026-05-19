@@ -412,6 +412,7 @@ public class SilvaPostgresQueryConstants {
 					END AS activityKind,
 					atcl.activity_treatment_unit_id AS activityTreatmentUnitId,
 					COALESCE(scl.stocking_standard_unit_id, smcl.stocking_standard_unit_id) AS standardsUnitId,
+					COALESCE(ssu.standards_unit_id, ssu_m.standards_unit_id) AS standardsUnitName,
 					sc.comment_text AS commentText,
 					sc.update_timestamp AS updateTimestamp,
 					COUNT(*) OVER () AS totalCount
@@ -442,20 +443,20 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND UPPER(sc.comment_text) LIKE '%' || UPPER(CAST(:#{#filter.searchTerm} AS text)) || '%'
 					AND (
-						COALESCE(CAST(:#{#filter.commentLocationValue} AS text), 'NOVALUE') = 'NOVALUE'
+						'NOVALUE' IN (:#{#filter.commentLocationValues})
 						OR (
-							CAST(:#{#filter.commentLocationValue} AS text) = 'OPENING'
+							'OPENING' IN (:#{#filter.commentLocationValues})
 							AND ocl.opening_id IS NOT NULL
 							AND sc.silv_comment_type_code = 'GENERAL'
 						)
 						OR (
-							CAST(:#{#filter.commentLocationValue} AS text) = 'FOREST_COVER'
+							'FOREST_COVER' IN (:#{#filter.commentLocationValues})
 							AND ocl.opening_id IS NOT NULL
 							AND sc.silv_comment_type_code = 'FORCOVER'
 						)
-						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'STANDARDS_UNIT' AND scl.stocking_standard_unit_id IS NOT NULL)
-						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'MILESTONE' AND smcl.stocking_standard_unit_id IS NOT NULL)
-						OR (CAST(:#{#filter.commentLocationValue} AS text) = 'ACTIVITIES' AND atcl.activity_treatment_unit_id IS NOT NULL)
+						OR ('STANDARDS_UNIT' IN (:#{#filter.commentLocationValues}) AND scl.stocking_standard_unit_id IS NOT NULL)
+						OR ('MILESTONE' IN (:#{#filter.commentLocationValues}) AND smcl.stocking_standard_unit_id IS NOT NULL)
+						OR ('ACTIVITIES' IN (:#{#filter.commentLocationValues}) AND atcl.activity_treatment_unit_id IS NOT NULL)
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.clientNumbers})
@@ -495,6 +496,7 @@ public class SilvaPostgresQueryConstants {
 				activityKind,
 				activityTreatmentUnitId,
 				standardsUnitId,
+				standardsUnitName,
 				commentText,
 				updateTimestamp,
 				totalCount

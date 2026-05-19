@@ -55,7 +55,8 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
   @DisplayName("Comment search with commentLocation=OPENING should return OPENING results")
   void commentSearch_withCommentLocationOpening_shouldReturnOpeningResults() {
     CommentSearchFilterDto filter =
-        new CommentSearchFilterDto("far", CommentLocationCode.OPENING, null, null, null, null);
+        new CommentSearchFilterDto(
+            "far", List.of(CommentLocationCode.OPENING), null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);
@@ -74,6 +75,8 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
                   "OPENING comments should not have activityTreatmentUnitId");
               Assertions.assertNull(
                   dto.standardsUnitId(), "OPENING comments should not have standardsUnitId");
+              Assertions.assertNull(
+                  dto.standardsUnitName(), "OPENING comments should not have standardsUnitName");
             });
   }
 
@@ -81,7 +84,8 @@ public abstract class AbstractCommentSearchServiceIntegrationTest
   @DisplayName("Comment search with commentLocation=ACTIVITIES should return empty for test data")
   void commentSearch_withCommentLocationActivities_shouldReturnEmpty() {
     CommentSearchFilterDto filter =
-        new CommentSearchFilterDto("far", CommentLocationCode.ACTIVITIES, null, null, null, null);
+        new CommentSearchFilterDto(
+            "far", List.of(CommentLocationCode.ACTIVITIES), null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<CommentSearchResponseDto> result = commentSearchService.searchComments(filter, pageable);

@@ -305,11 +305,13 @@ public class SearchEndpoint {
   @GetMapping("/comments")
   public Page<CommentSearchResponseDto> commentSearch(
       @NotBlank
-          @Size(min = SilvaConstants.MIN_SEARCH_TERM_LENGTH)
+          @Size(
+              min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
+              max = SilvaConstants.MAX_COMMENT_SEARCH_TERM_LEN)
           @RequestParam(value = "searchTerm")
           String searchTerm,
       @RequestParam(value = "commentLocation", required = false)
-          CommentLocationCode commentLocation,
+          List<CommentLocationCode> commentLocations,
       @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
       @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
       @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
@@ -318,7 +320,7 @@ public class SearchEndpoint {
 
     CommentSearchFilterDto filter =
         new CommentSearchFilterDto(
-            searchTerm, commentLocation, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
+            searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
 
     return commentSearchService.searchComments(filter, paginationParameters);
   }

@@ -12,8 +12,8 @@ const Comments = ({ comments }: CommentProps) => {
         {
           comments.map((comment, index) =>
             comment.commentText ? (
-              <li key={index}>
-                {comment.commentText}
+              <li key={`${comment.commentType.code?.toLocaleLowerCase()}-${index}`}>
+                {`${comment.commentType.description}: ${comment.commentText}`}
               </li>
             ) : null
           )

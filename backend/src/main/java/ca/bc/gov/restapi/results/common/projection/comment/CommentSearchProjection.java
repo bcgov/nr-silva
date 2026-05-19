@@ -15,6 +15,8 @@ public interface CommentSearchProjection {
 
   Long getStandardsUnitId();
 
+  String getStandardsUnitName();
+
   String getCommentText();
 
   LocalDateTime getUpdateTimestamp();

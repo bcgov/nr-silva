@@ -474,3 +474,12 @@ ul.default-tab-accordion {
   align-items: center;
   gap: 0.25rem;
 }
+
+.default-plain-link {
+  color: var(--#{vars.$bcgov-prefix}-text-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -65,6 +65,20 @@ public abstract class AbstractSearchEndpointCommentSearchIntegrationTest
   }
 
   @Test
+  @DisplayName("GET /api/search/comments with multiple commentLocations should succeed")
+  void commentSearch_withMultipleCommentLocations_shouldSucceed() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/search/comments")
+                .param("searchTerm", "far")
+                .param("commentLocation", "OPENING")
+                .param("commentLocation", "ACTIVITIES")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content").isArray());
+  }
+
+  @Test
   @DisplayName(
       "GET /api/search/comments with commentLocation=ACTIVITIES and no match should return empty")
   void commentSearch_withCommentLocationActivities_withNoData_shouldReturnEmpty() throws Exception {
