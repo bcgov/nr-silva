@@ -19,7 +19,7 @@ import RightPanelTitle from "../RightPanelTitle";
 import ThemeToggle from "../ThemeToggle";
 import MyProfile from "../MyProfile";
 import UserButton from "./UserButton";
-import { LeftMenuItem, mainActivitiesItems } from "./constants";
+import { LeftMenuItem, getMainActivitiesItems } from "./constants";
 
 import "./styles.scss";
 
@@ -194,7 +194,7 @@ function BCHeader(): React.JSX.Element {
             className="bcheaderwside-sidenav"
           >
             <SideNavItems>
-              {mainActivitiesItems.map((item) => (
+              {getMainActivitiesItems().map((item) => (
                 <div key={item.name}>
                   <label className="side-nav-category-name">{item.name}</label>
                   {item.items.map((subItem) => renderSideNavItem(subItem))}

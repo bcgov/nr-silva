@@ -38,13 +38,6 @@
       padding-inline: 3.25rem 2rem;
     }
 
-    .fsp-link {
-      display: flex;
-      flex-direction: row;
-      column-gap: 0.25rem;
-      align-items: center;
-    }
-
     .standard-unit-content-grid {
       width: 100%;
       row-gap: 2rem;
@@ -110,5 +103,24 @@
         margin-top: 0.25rem;
       }
     }
+  }
+}
+
+.fsp-links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.fsp-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }

@@ -393,6 +393,119 @@ public class SilvaOracleQueryConstants {
       OR spcl.SILVICULTURE_PROJECT_ID = :projectId
       ORDER BY COMMENT_DATE DESC""";
 
+  public static final String COMMENT_SEARCH =
+      """
+      WITH comment_search AS (
+        SELECT
+          COALESCE(ocl.OPENING_ID, atu.OPENING_ID, ssu.OPENING_ID, ssu_m.OPENING_ID) AS openingId,
+          CASE
+            WHEN atcl.ACTIVITY_TREATMENT_UNIT_ID IS NOT NULL THEN 'ACTIVITIES'
+            WHEN scl.STOCKING_STANDARD_UNIT_ID IS NOT NULL THEN 'STANDARDS_UNIT'
+            WHEN smcl.STOCKING_STANDARD_UNIT_ID IS NOT NULL THEN 'MILESTONE'
+            WHEN ocl.OPENING_ID IS NOT NULL AND sc.SILV_COMMENT_TYPE_CODE = 'FORCOVER' THEN 'FOREST_COVER'
+            WHEN ocl.OPENING_ID IS NOT NULL THEN 'OPENING'
+            ELSE NULL
+          END AS commentLocation,
+          CASE
+            WHEN atcl.ACTIVITY_TREATMENT_UNIT_ID IS NOT NULL AND atu.SILV_BASE_CODE = 'DN' THEN 'DISTURBANCE'
+            WHEN atcl.ACTIVITY_TREATMENT_UNIT_ID IS NOT NULL THEN 'ACTIVITY'
+            ELSE NULL
+          END AS activityKind,
+          atcl.ACTIVITY_TREATMENT_UNIT_ID AS activityTreatmentUnitId,
+          COALESCE(scl.STOCKING_STANDARD_UNIT_ID, smcl.STOCKING_STANDARD_UNIT_ID) AS standardsUnitId,
+          COALESCE(ssu.STANDARDS_UNIT_ID, ssu_m.STANDARDS_UNIT_ID) AS standardsUnitName,
+          sc.COMMENT_TEXT AS commentText,
+          sc.UPDATE_TIMESTAMP AS updateTimestamp,
+          COUNT(*) OVER () AS totalCount
+        FROM SILVICULTURE_COMMENT sc
+        LEFT JOIN OPENING_COMMENT_LINK ocl ON sc.SILVICULTURE_COMMENT_ID = ocl.SILVICULTURE_COMMENT_ID
+        LEFT JOIN ACTIVITY_TU_COMMENT_LINK atcl ON sc.SILVICULTURE_COMMENT_ID = atcl.SILVICULTURE_COMMENT_ID
+        LEFT JOIN ACTIVITY_TREATMENT_UNIT atu ON atcl.ACTIVITY_TREATMENT_UNIT_ID = atu.ACTIVITY_TREATMENT_UNIT_ID
+        LEFT JOIN STOCKING_COMMENT_LINK scl ON sc.SILVICULTURE_COMMENT_ID = scl.SILVICULTURE_COMMENT_ID
+        LEFT JOIN STOCKING_STANDARD_UNIT ssu ON scl.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID
+        LEFT JOIN STOCKING_MILESTONE_CMT_LINK smcl ON sc.SILVICULTURE_COMMENT_ID = smcl.SILVICULTURE_COMMENT_ID
+        LEFT JOIN STOCKING_STANDARD_UNIT ssu_m ON smcl.STOCKING_STANDARD_UNIT_ID = ssu_m.STOCKING_STANDARD_UNIT_ID
+        LEFT JOIN OPENING op ON COALESCE(ocl.OPENING_ID, atu.OPENING_ID, ssu.OPENING_ID, ssu_m.OPENING_ID) = op.OPENING_ID
+        LEFT JOIN ORG_UNIT ou ON op.ADMIN_DISTRICT_NO = ou.ORG_UNIT_NO
+        LEFT JOIN CUT_BLOCK_OPEN_ADMIN cboa ON op.OPENING_ID = cboa.OPENING_ID
+          AND cboa.CUT_BLOCK_OPEN_ADMIN_ID = (
+            SELECT MAX(CUT_BLOCK_OPEN_ADMIN_ID) FROM CUT_BLOCK_OPEN_ADMIN cboa2
+            WHERE cboa2.OPENING_ID = op.OPENING_ID
+          )
+        LEFT JOIN FOREST_FILE_CLIENT ffc ON (cboa.FOREST_FILE_ID = ffc.FOREST_FILE_ID AND ffc.FOREST_FILE_CLIENT_TYPE_CODE = 'A')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_r ON (cbc_r.cb_skey = cboa.cb_skey AND cbc_r.cut_block_client_type_code = 'R')
+        LEFT JOIN CUT_BLOCK_CLIENT cbc_o ON (cbc_o.cb_skey = cboa.cb_skey AND cbc_o.cut_block_client_type_code = 'O')
+        WHERE
+          (
+            ocl.OPENING_ID IS NOT NULL
+            OR atcl.ACTIVITY_TREATMENT_UNIT_ID IS NOT NULL
+            OR scl.STOCKING_STANDARD_UNIT_ID IS NOT NULL
+            OR smcl.STOCKING_STANDARD_UNIT_ID IS NOT NULL
+          )
+          AND UPPER(sc.COMMENT_TEXT) LIKE '%' || UPPER(:#{#filter.searchTerm}) || '%'
+          AND (
+            'NOVALUE' IN (:#{#filter.commentLocationValues})
+            OR (
+              'OPENING' IN (:#{#filter.commentLocationValues})
+              AND ocl.OPENING_ID IS NOT NULL
+              AND sc.SILV_COMMENT_TYPE_CODE = 'GENERAL'
+            )
+            OR (
+              'FOREST_COVER' IN (:#{#filter.commentLocationValues})
+              AND ocl.OPENING_ID IS NOT NULL
+              AND sc.SILV_COMMENT_TYPE_CODE = 'FORCOVER'
+            )
+            OR ('STANDARDS_UNIT' IN (:#{#filter.commentLocationValues}) AND scl.STOCKING_STANDARD_UNIT_ID IS NOT NULL)
+            OR ('MILESTONE' IN (:#{#filter.commentLocationValues}) AND smcl.STOCKING_STANDARD_UNIT_ID IS NOT NULL)
+            OR ('ACTIVITIES' IN (:#{#filter.commentLocationValues}) AND atcl.ACTIVITY_TREATMENT_UNIT_ID IS NOT NULL)
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.clientNumbers})
+            OR COALESCE(cbc_r.CLIENT_NUMBER, cbc_o.CLIENT_NUMBER, ffc.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.orgUnits})
+            OR UPPER(ou.ORG_UNIT_CODE) IN (:#{#filter.orgUnits})
+          )
+          AND (
+            (
+              NVL(:#{#filter.updateDateStart}, 'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.updateDateEnd}, 'NOVALUE') = 'NOVALUE'
+            )
+            OR (
+              sc.UPDATE_TIMESTAMP IS NOT NULL
+              AND (
+                (
+                  NVL(:#{#filter.updateDateStart}, 'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(sc.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
+                )
+                OR NVL(:#{#filter.updateDateStart}, 'NOVALUE') = 'NOVALUE'
+              )
+              AND (
+                (
+                  NVL(:#{#filter.updateDateEnd}, 'NOVALUE') != 'NOVALUE'
+                  AND TRUNC(sc.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd}, 'YYYY-MM-DD') + 1
+                )
+                OR NVL(:#{#filter.updateDateEnd}, 'NOVALUE') = 'NOVALUE'
+              )
+            )
+          )
+      )
+      SELECT
+        openingId,
+        commentLocation,
+        activityKind,
+        activityTreatmentUnitId,
+        standardsUnitId,
+        standardsUnitName,
+        commentText,
+        updateTimestamp,
+        totalCount
+      FROM comment_search
+      ORDER BY updateTimestamp DESC NULLS LAST
+      """
+          + PAGINATION;
+
   public static final String GET_OPENING_SS =
       """
       SELECT
@@ -401,7 +514,6 @@ public class SilvaOracleQueryConstants {
         ssu.STANDARDS_REGIME_ID as srid,
       	CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
       	CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-      	fsp.fsp_id,
       	ssu.net_area,
       	ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
       	se.BGC_ZONE_CODE AS bec_zone_code,
@@ -414,12 +526,11 @@ public class SilvaOracleQueryConstants {
       	sr.REGEN_DELAY_OFFSET_YRS AS regen_delay,
       	sr.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
       	sr.FREE_GROWING_EARLY_OFFSET_YRS AS free_growing_early,
-      	sr.ADDITIONAL_STANDARDS
+      	sr.ADDITIONAL_STANDARDS,
+      	sr.STANDARDS_OBJECTIVE AS standards_objective
       FROM STOCKING_STANDARD_UNIT ssu
       LEFT JOIN STOCKING_ECOLOGY se ON (se.OPENING_ID = ssu.OPENING_ID AND SE.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID)
       LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
       WHERE ssu.OPENING_ID = :openingId
       ORDER BY ssu.standards_unit_id""";
 
@@ -504,6 +615,20 @@ public class SilvaOracleQueryConstants {
       )
       AND (sm.SILV_MILESTONE_TYPE_CODE = 'FG' OR sm.SILV_MILESTONE_TYPE_CODE = 'RG')
     """;
+
+  public static final String GET_OPENING_SS_FSP_IDS =
+      """
+      SELECT DISTINCT fsp_id
+      FROM FSP_STANDARDS_REGIME_XREF
+      WHERE standards_regime_id = :standardsRegimeId
+      ORDER BY fsp_id""";
+
+  public static final String GET_OPENING_SS_FSP_IDS_BY_REGIMES =
+      """
+      SELECT standards_regime_id, fsp_id
+      FROM FSP_STANDARDS_REGIME_XREF
+      WHERE standards_regime_id IN (:standardsRegimeIds)
+      ORDER BY standards_regime_id, fsp_id""";
 
   public static final String GET_OPENING_ACTIVITIES_DISTURBANCE =
       """
@@ -1361,7 +1486,6 @@ public class SilvaOracleQueryConstants {
         ssu.STANDARDS_REGIME_ID as srid,
           CASE WHEN NVL(sr.mof_default_standard_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS default_mof,
           CASE WHEN NVL(ssu.STOCKING_STANDARD_UNIT_ID, 0) = 0 THEN 'true' ELSE 'false' END AS manual_entry,
-          fsp.fsp_id,
           ssu.net_area,
           ssu.MAX_ALLOW_SOIL_DISTURBANCE_PCT AS soil_disturbance_percent,
           se.BGC_ZONE_CODE AS bec_zone_code,
@@ -1375,12 +1499,11 @@ public class SilvaOracleQueryConstants {
           ssu.FREE_GROWING_LATE_OFFSET_YRS AS free_growing_late,
           ssu.FREE_GROWING_EARLY_OFFSET_YRS AS free_growing_early,
           sr.ADDITIONAL_STANDARDS,
+          sr.STANDARDS_OBJECTIVE AS standards_objective,
           ssu.AMENDMENT_RATIONALE_COMMENT AS amendment_comment
       FROM STOCKING_STANDARD_UNIT_ARCHIVE ssu
       LEFT JOIN STOCKING_ECOLOGY_ARCHIVE se ON (se.OPENING_ID = ssu.OPENING_ID AND se.STOCKING_STANDARD_UNIT_ID = ssu.STOCKING_STANDARD_UNIT_ID AND se.STOCKING_EVENT_HISTORY_ID = ssu.STOCKING_EVENT_HISTORY_ID)
       LEFT JOIN STANDARDS_REGIME sr ON (sr.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FSP_STANDARDS_REGIME_XREF fspxref ON (fspxref.STANDARDS_REGIME_ID = ssu.STANDARDS_REGIME_ID)
-      LEFT JOIN FOREST_STEWARDSHIP_PLAN fsp ON (fsp.FSP_ID = fspxref.FSP_ID AND fsp.fsp_amendment_number = fspxref.fsp_amendment_number)
       WHERE ssu.OPENING_ID = :openingId
       AND ssu.STOCKING_EVENT_HISTORY_ID = :eventHistoryId
       ORDER BY ssu.standards_unit_id

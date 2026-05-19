@@ -290,6 +290,10 @@ ul.default-tab-accordion {
   @include type.type-style('label-01');
 }
 
+.default-label-02 {
+  @include type.type-style('label-02');
+}
+
 .default-file-uploader-item {
   max-inline-size: 100%;
 }
@@ -469,4 +473,13 @@ ul.default-tab-accordion {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+.default-plain-link {
+  color: var(--#{vars.$bcgov-prefix}-text-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }

@@ -9,19 +9,21 @@ import ca.bc.gov.restapi.results.common.repository.OpeningRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetailsCommentConverter;
 import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardUnitHistoryService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.function.Function;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractOpeningStandardUnitHistoryService implements
-    OpeningStandardUnitHistoryService {
+public abstract class AbstractOpeningStandardUnitHistoryService
+    implements OpeningStandardUnitHistoryService {
 
   protected final OpeningRepository<? extends BaseOpeningEntity> openingRepository;
   protected final SilvicultureCommentRepository commentRepository;
@@ -29,183 +31,208 @@ public abstract class AbstractOpeningStandardUnitHistoryService implements
   @Override
   public List<OpeningStockingHistoryOverviewDto> getStandardUnitOverviewHistoryList(
       Long openingId) {
-    List<OpeningStockingHistoryProjection> projections = openingRepository
-        .getOpeningStandardUnitHistoryByOpeningId(openingId);
+    List<OpeningStockingHistoryProjection> projections =
+        openingRepository.getOpeningStandardUnitHistoryByOpeningId(openingId);
 
     if (projections.isEmpty()) {
       return List.of();
     }
 
-    LocalDateTime maxTimestamp = projections.stream()
-        .map(OpeningStockingHistoryProjection::getEventTimestamp)
-        .max(LocalDateTime::compareTo)
-        .orElse(null);
+    LocalDateTime maxTimestamp =
+        projections.stream()
+            .map(OpeningStockingHistoryProjection::getEventTimestamp)
+            .max(LocalDateTime::compareTo)
+            .orElse(null);
 
-    LocalDateTime minTimestamp = projections.stream()
-        .map(OpeningStockingHistoryProjection::getEventTimestamp)
-        .min(LocalDateTime::compareTo)
-        .orElse(null);
+    LocalDateTime minTimestamp =
+        projections.stream()
+            .map(OpeningStockingHistoryProjection::getEventTimestamp)
+            .min(LocalDateTime::compareTo)
+            .orElse(null);
 
-    return projections
-        .stream()
-        .map(toOverviewDto(maxTimestamp, minTimestamp))
-        .toList();
+    return projections.stream().map(toOverviewDto(maxTimestamp, minTimestamp)).toList();
   }
 
   @Override
-  public List<OpeningStockingHistoryDto> getOpeningStockingHistoryList(Long openingId,
-      Long eventHistoryId) {
-    return openingRepository.getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId
-            (openingId, eventHistoryId)
-        .stream()
-        .map(getDetails())
+  public List<OpeningStockingHistoryDto> getOpeningStockingHistoryList(
+      Long openingId, Long eventHistoryId) {
+    List<OpeningStockingHistoryDetailsProjection> projections =
+        openingRepository.getOpeningStockingHistoryDetailsByOpeningIdAndEventHistoryId(
+            openingId, eventHistoryId);
+
+    // Batch-fetch FSP IDs by distinct regimes
+    Map<Long, List<Long>> fspIdsByRegime = batchFetchFspIdsByRegimes(projections);
+
+    return projections.stream()
+        .map(getDetails(fspIdsByRegime))
         .map(getSpecies(openingId, eventHistoryId))
         .map(getLayer(openingId, eventHistoryId))
         .map(getComments())
         .toList();
   }
 
+  private <T extends OpeningStockingHistoryDetailsProjection>
+      Map<Long, List<Long>> batchFetchFspIdsByRegimes(List<T> projections) {
+    List<Long> distinctRegimeIds =
+        projections.stream()
+            .map(OpeningStockingHistoryDetailsProjection::getSrid)
+            .filter(srid -> srid != null)
+            .distinct()
+            .toList();
+
+    if (distinctRegimeIds.isEmpty()) {
+      return Map.of();
+    }
+
+    return openingRepository
+        .getOpeningStockingFspIdsByStandardsRegimeIds(distinctRegimeIds)
+        .stream()
+        .collect(
+            Collectors.groupingBy(
+                projection -> projection.getStandardsRegimeId(),
+                Collectors.mapping(projection -> projection.getFspId(), Collectors.toList())));
+  }
+
   @Override
   public List<OpeningStockingHistoryWithComparisonDto> getStandardUnitHistoryDetailsWithComparison(
       Long openingId, Long stockingEventHistoryId) {
-    List<OpeningStockingHistoryDetailsWithComparisonProjection> suDetailProjections = openingRepository
-        .getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+    List<OpeningStockingHistoryDetailsWithComparisonProjection> suDetailProjections =
+        openingRepository.getOpeningStandardUnitHistoryDetailsWithComparisonByOpeningIdAndHistoryId(
+            openingId, stockingEventHistoryId);
 
     if (suDetailProjections.isEmpty()) {
       return List.of();
     }
 
-    List<OpeningStockingHistoryLayerWithComparisonProjection> layerDetailProjections = openingRepository
-        .getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+    List<OpeningStockingHistoryLayerWithComparisonProjection> layerDetailProjections =
+        openingRepository
+            .getOpeningStandardUnitHistoryLayerDetailsWithComparisonByOpeningIdAndHistoryId(
+                openingId, stockingEventHistoryId);
 
-    List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> layerSpeciesProjections = openingRepository
-        .getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(openingId, stockingEventHistoryId);
+    List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> layerSpeciesProjections =
+        openingRepository
+            .getOpeningStandardUnitHistoryLayerSpeciesDetailsWithComparisonByOpeningIdAndHistoryId(
+                openingId, stockingEventHistoryId);
 
-    return suDetailProjections
-        .stream()
+    return suDetailProjections.stream()
         .map(addDetailsWithComparison())
         .map(addLayersWithComparison(layerDetailProjections, layerSpeciesProjections))
         .toList();
   }
 
-  private Function<OpeningStockingHistoryProjection, OpeningStockingHistoryOverviewDto> toOverviewDto(
-      LocalDateTime maxTimestamp, LocalDateTime minTimestamp) {
-    return projection -> new OpeningStockingHistoryOverviewDto(
-        projection.getStockingEventHistoryId(),
-        projection.getAmendmentNumber(),
-        projection.getEventTimestamp(),
-        projection.getSuCount(),
-        projection.getTotalNar(),
-        new CodeDescriptionDto(
-            projection.getAuditActionCode(),
-            projection.getAuditActionDescription()
-        ),
-        projection.getEsfSubmissionId(),
-        projection.getSubmittedByUserId(),
-        projection.getApprovedByUserId(),
-        projection.getEventTimestamp().equals(maxTimestamp),
-        projection.getEventTimestamp().equals(minTimestamp)
-    );
+  private Function<OpeningStockingHistoryProjection, OpeningStockingHistoryOverviewDto>
+      toOverviewDto(LocalDateTime maxTimestamp, LocalDateTime minTimestamp) {
+    return projection ->
+        new OpeningStockingHistoryOverviewDto(
+            projection.getStockingEventHistoryId(),
+            projection.getAmendmentNumber(),
+            projection.getEventTimestamp(),
+            projection.getSuCount(),
+            projection.getTotalNar(),
+            new CodeDescriptionDto(
+                projection.getAuditActionCode(), projection.getAuditActionDescription()),
+            projection.getEsfSubmissionId(),
+            projection.getSubmittedByUserId(),
+            projection.getApprovedByUserId(),
+            projection.getEventTimestamp().equals(maxTimestamp),
+            projection.getEventTimestamp().equals(minTimestamp));
   }
 
-  private Function<OpeningStockingHistoryDetailsWithComparisonProjection, OpeningStockingHistoryWithComparisonDto> addDetailsWithComparison() {
+  private Function<
+          OpeningStockingHistoryDetailsWithComparisonProjection,
+          OpeningStockingHistoryWithComparisonDto>
+      addDetailsWithComparison() {
     return projection -> {
-      OpeningStockingHistoryDetailsWithComparisonDto
-          detailsDto = new OpeningStockingHistoryDetailsWithComparisonDto(
-          projection.getStockingStandardUnitId(),
-          projection.getStandardsUnitId(),
-          projection.getOldRegimeId(),
-          projection.getNewRegimeId(),
-          projection.getOldNetArea(),
-          projection.getNewNetArea(),
-          projection.getOldMaxSoilDisturbance(),
-          projection.getNewMaxSoilDisturbance(),
-          projection.getOldVarianceIndicator(),
-          projection.getNewVarianceIndicator(),
-          projection.getOldRegenObligationIndicator(),
-          projection.getNewRegenObligationIndicator(),
-          projection.getOldNoRegenEarlyOffsetYears(),
-          projection.getNewNoRegenEarlyOffsetYears(),
-          projection.getOldNoRegenLateOffsetYears(),
-          projection.getNewNoRegenLateOffsetYears(),
-          projection.getOldRegenOffsetYears(),
-          projection.getNewRegenOffsetYears(),
-          projection.getOldFreeGrowingEarlyOffsetYears(),
-          projection.getNewFreeGrowingEarlyOffsetYears(),
-          projection.getOldFreeGrowingLateOffsetYears(),
-          projection.getNewFreeGrowingLateOffsetYears(),
-          projection.getOldBgcZone(),
-          projection.getNewBgcZone(),
-          projection.getOldBgcSubzone(),
-          projection.getNewBgcSubzone(),
-          projection.getOldBgcVariant(),
-          projection.getNewBgcVariant(),
-          projection.getOldBgcPhase(),
-          projection.getNewBgcPhase(),
-          projection.getOldBecSiteSeries(),
-          projection.getNewBecSiteSeries(),
-          projection.getOldBecSiteType(),
-          projection.getNewBecSiteType(),
-          projection.getOldBecSeral(),
-          projection.getNewBecSeral()
-      );
+      OpeningStockingHistoryDetailsWithComparisonDto detailsDto =
+          new OpeningStockingHistoryDetailsWithComparisonDto(
+              projection.getStockingStandardUnitId(),
+              projection.getStandardsUnitId(),
+              projection.getOldRegimeId(),
+              projection.getNewRegimeId(),
+              projection.getOldNetArea(),
+              projection.getNewNetArea(),
+              projection.getOldMaxSoilDisturbance(),
+              projection.getNewMaxSoilDisturbance(),
+              projection.getOldVarianceIndicator(),
+              projection.getNewVarianceIndicator(),
+              projection.getOldRegenObligationIndicator(),
+              projection.getNewRegenObligationIndicator(),
+              projection.getOldNoRegenEarlyOffsetYears(),
+              projection.getNewNoRegenEarlyOffsetYears(),
+              projection.getOldNoRegenLateOffsetYears(),
+              projection.getNewNoRegenLateOffsetYears(),
+              projection.getOldRegenOffsetYears(),
+              projection.getNewRegenOffsetYears(),
+              projection.getOldFreeGrowingEarlyOffsetYears(),
+              projection.getNewFreeGrowingEarlyOffsetYears(),
+              projection.getOldFreeGrowingLateOffsetYears(),
+              projection.getNewFreeGrowingLateOffsetYears(),
+              projection.getOldBgcZone(),
+              projection.getNewBgcZone(),
+              projection.getOldBgcSubzone(),
+              projection.getNewBgcSubzone(),
+              projection.getOldBgcVariant(),
+              projection.getNewBgcVariant(),
+              projection.getOldBgcPhase(),
+              projection.getNewBgcPhase(),
+              projection.getOldBecSiteSeries(),
+              projection.getNewBecSiteSeries(),
+              projection.getOldBecSiteType(),
+              projection.getNewBecSiteType(),
+              projection.getOldBecSeral(),
+              projection.getNewBecSeral());
 
-      return new OpeningStockingHistoryWithComparisonDto(
-          detailsDto,
-          List.of()
-      );
+      return new OpeningStockingHistoryWithComparisonDto(detailsDto, List.of());
     };
   }
 
-  private Function<OpeningStockingHistoryWithComparisonDto, OpeningStockingHistoryWithComparisonDto> addLayersWithComparison(
-      List<OpeningStockingHistoryLayerWithComparisonProjection> allLayers,
-      List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies
-  ) {
-    return dto -> dto.withLayers(
-        allLayers.stream()
-            .filter(layer -> layer.getSsuId().equals(dto.standardUnit().stockingStandardUnitId()))
-            .map(createLayerWithComparisonDto(allSpecies))
-            .toList()
-    );
+  private Function<OpeningStockingHistoryWithComparisonDto, OpeningStockingHistoryWithComparisonDto>
+      addLayersWithComparison(
+          List<OpeningStockingHistoryLayerWithComparisonProjection> allLayers,
+          List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies) {
+    return dto ->
+        dto.withLayers(
+            allLayers.stream()
+                .filter(
+                    layer -> layer.getSsuId().equals(dto.standardUnit().stockingStandardUnitId()))
+                .map(createLayerWithComparisonDto(allSpecies))
+                .toList());
   }
 
-  private Function<OpeningStockingHistoryLayerWithComparisonProjection, OpeningStockingHistoryLayerWithComparisonDto> createLayerWithComparisonDto(
-      List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies
-  ) {
+  private Function<
+          OpeningStockingHistoryLayerWithComparisonProjection,
+          OpeningStockingHistoryLayerWithComparisonDto>
+      createLayerWithComparisonDto(
+          List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies) {
     return layer -> {
-      OpeningStockingHistoryLayerWithComparisonDto
-          layerDto = new OpeningStockingHistoryLayerWithComparisonDto(
-          layer.getOldLayerId(),
-          layer.getNewLayerId(),
-          new CodeDescriptionDto(
-              layer.getOldStockingLayerCode(),
-              layer.getOldStockingLayerDescription()
-          ),
-          new CodeDescriptionDto(
-              layer.getNewStockingLayerCode(),
-              layer.getNewStockingLayerDescription()
-          ),
-          layer.getOldMinHorizontalDistance(),
-          layer.getNewMinHorizontalDistance(),
-          layer.getOldMinPerfStockingStandard(),
-          layer.getNewMinPerfStockingStandard(),
-          layer.getOldMinStockingStandard(),
-          layer.getNewMinStockingStandard(),
-          layer.getOldMinPostSpacing(),
-          layer.getNewMinPostSpacing(),
-          layer.getOldResidualBasalArea(),
-          layer.getNewResidualBasalArea(),
-          layer.getOldTargetWellSpacedTrees(),
-          layer.getNewTargetWellSpacedTrees(),
-          layer.getOldHeightRelativeToComp(),
-          layer.getNewHeightRelativeToComp(),
-          layer.getOldMaxConifer(),
-          layer.getNewMaxConifer(),
-          layer.getOldMaxPostSpacing(),
-          layer.getNewMaxPostSpacing(),
-          List.of(),
-          List.of()
-      );
+      OpeningStockingHistoryLayerWithComparisonDto layerDto =
+          new OpeningStockingHistoryLayerWithComparisonDto(
+              layer.getOldLayerId(),
+              layer.getNewLayerId(),
+              new CodeDescriptionDto(
+                  layer.getOldStockingLayerCode(), layer.getOldStockingLayerDescription()),
+              new CodeDescriptionDto(
+                  layer.getNewStockingLayerCode(), layer.getNewStockingLayerDescription()),
+              layer.getOldMinHorizontalDistance(),
+              layer.getNewMinHorizontalDistance(),
+              layer.getOldMinPerfStockingStandard(),
+              layer.getNewMinPerfStockingStandard(),
+              layer.getOldMinStockingStandard(),
+              layer.getNewMinStockingStandard(),
+              layer.getOldMinPostSpacing(),
+              layer.getNewMinPostSpacing(),
+              layer.getOldResidualBasalArea(),
+              layer.getNewResidualBasalArea(),
+              layer.getOldTargetWellSpacedTrees(),
+              layer.getNewTargetWellSpacedTrees(),
+              layer.getOldHeightRelativeToComp(),
+              layer.getNewHeightRelativeToComp(),
+              layer.getOldMaxConifer(),
+              layer.getNewMaxConifer(),
+              layer.getOldMaxPostSpacing(),
+              layer.getNewMaxPostSpacing(),
+              List.of(),
+              List.of());
 
       return layerDto
           .withPreferredSpecies(
@@ -219,28 +246,27 @@ public abstract class AbstractOpeningStandardUnitHistoryService implements
       Long stockingLayerId,
       Boolean isPreferred,
       List<OpeningStockingHistoryLayerSpeciesWithComparisonProjection> allSpecies) {
-    return allSpecies
-        .stream()
-        .filter(species ->
-            stockingLayerId.equals(species.getNewStockingLayerId()) && isPreferred.equals(species.getNewPreferredInd()))
-        .map(species -> new OpeningStockingHistorySpeciesWithComparisonDto(
-            species.getOldLayerCode(),
-            species.getNewLayerCode(),
-            new CodeDescriptionDto(
-                species.getOldSpeciesCode(),
-                species.getOldSpeciesDescription()
-            ),
-            new CodeDescriptionDto(
-                species.getNewSpeciesCode(),
-                species.getNewSpeciesDescription()
-            ),
-            species.getOldMinHeight(),
-            species.getNewMinHeight()
-        ))
+    return allSpecies.stream()
+        .filter(
+            species ->
+                stockingLayerId.equals(species.getNewStockingLayerId())
+                    && isPreferred.equals(species.getNewPreferredInd()))
+        .map(
+            species ->
+                new OpeningStockingHistorySpeciesWithComparisonDto(
+                    species.getOldLayerCode(),
+                    species.getNewLayerCode(),
+                    new CodeDescriptionDto(
+                        species.getOldSpeciesCode(), species.getOldSpeciesDescription()),
+                    new CodeDescriptionDto(
+                        species.getNewSpeciesCode(), species.getNewSpeciesDescription()),
+                    species.getOldMinHeight(),
+                    species.getNewMinHeight()))
         .toList();
   }
 
-  private static Function<OpeningStockingHistoryDetailsProjection, OpeningStockingHistoryDto> getDetails() {
+  private static Function<OpeningStockingHistoryDetailsProjection, OpeningStockingHistoryDto>
+      getDetails(Map<Long, List<Long>> fspIdsByRegime) {
     return projection -> {
       OpeningDetailsBecDto bec =
           new OpeningDetailsBecDto(
@@ -252,6 +278,11 @@ public abstract class AbstractOpeningStandardUnitHistoryService implements
               projection.getBecSiteType(),
               projection.getBecSeral());
 
+      List<Long> possibleFspIds =
+          projection.getSrid() != null
+              ? fspIdsByRegime.getOrDefault(projection.getSrid(), List.of())
+              : List.of();
+
       OpeningStockingHistoryDetailsDto detailsDto =
           new OpeningStockingHistoryDetailsDto(
               projection.getStockingStandardUnit(),
@@ -259,7 +290,8 @@ public abstract class AbstractOpeningStandardUnitHistoryService implements
               projection.getSrid(),
               BooleanUtils.toBooleanDefaultIfNull(projection.getDefaultMof(), false),
               BooleanUtils.toBooleanDefaultIfNull(projection.getManualEntry(), false),
-              projection.getFspId(),
+              possibleFspIds,
+              StringUtils.trimToNull(projection.getStandardsObjective()),
               projection.getNetArea(),
               projection.getSoilDisturbancePercent(),
               bec,
@@ -267,51 +299,57 @@ public abstract class AbstractOpeningStandardUnitHistoryService implements
               projection.getFreeGrowingLate(),
               projection.getFreeGrowingEarly(),
               projection.getAdditionalStandards(),
-              projection.getAmendmentComment()
-          );
+              projection.getAmendmentComment());
 
       return new OpeningStockingHistoryDto(detailsDto, List.of(), List.of(), null, List.of());
     };
   }
 
   private Function<OpeningStockingHistoryDto, OpeningStockingHistoryDto> getLayer(
-      Long openingId,
-      Long eventHistoryId) {
+      Long openingId, Long eventHistoryId) {
     return detailsDto ->
         detailsDto.withLayers(
-            openingRepository.getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(
+            openingRepository
+                .getOpeningStockingLayerHistoryByOpeningIdAndEventHistoryId(
                     openingId, eventHistoryId, detailsDto.stocking().ssuId())
                 .stream()
-                .map(layer ->
-                    new OpeningStockingHistoryLayerDto(
-                        new CodeDescriptionDto(layer.getLayerCode(), layer.getLayerName()),
-                        layer.getMinWellspacedTrees(),
-                        layer.getMinPreferredWellspacedTrees(),
-                        layer.getMinHorizontalDistanceWellspacedTrees(),
-                        layer.getTargetWellspacedTrees(),
-                        layer.getMinResidualBasalArea(),
-                        layer.getMinPostspacingDensity(),
-                        layer.getMaxPostspacingDensity(),
-                        layer.getMaxConiferous(),
-                        layer.getHeightRelativeToComp()))
-                .toList()
-        );
+                .map(
+                    layer ->
+                        new OpeningStockingHistoryLayerDto(
+                            new CodeDescriptionDto(layer.getLayerCode(), layer.getLayerName()),
+                            layer.getMinWellspacedTrees(),
+                            layer.getMinPreferredWellspacedTrees(),
+                            layer.getMinHorizontalDistanceWellspacedTrees(),
+                            layer.getTargetWellspacedTrees(),
+                            layer.getMinResidualBasalArea(),
+                            layer.getMinPostspacingDensity(),
+                            layer.getMaxPostspacingDensity(),
+                            layer.getMaxConiferous(),
+                            layer.getHeightRelativeToComp()))
+                .toList());
   }
 
   private Function<OpeningStockingHistoryDto, OpeningStockingHistoryDto> getSpecies(
-      Long openingId,
-      Long eventHistoryId) {
+      Long openingId, Long eventHistoryId) {
     return detailsDto ->
         detailsDto
-            .withAcceptableSpecies(getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, false, detailsDto))
-            .withPreferredSpecies(getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, true, detailsDto));
+            .withAcceptableSpecies(
+                getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, false, detailsDto))
+            .withPreferredSpecies(
+                getOpeningStockingSpeciesHistoryDto(openingId, eventHistoryId, true, detailsDto));
   }
 
   private List<OpeningStockingHistorySpeciesDto> getOpeningStockingSpeciesHistoryDto(
-      Long openingId, Long eventHistoryId, boolean preferred, OpeningStockingHistoryDto detailsDto) {
+      Long openingId,
+      Long eventHistoryId,
+      boolean preferred,
+      OpeningStockingHistoryDto detailsDto) {
     return openingRepository
         .getOpeningStockingSpeciesHistoryByOpeningIdAndEventHistoryId(
-            openingId, eventHistoryId, BooleanUtils.toString(preferred, "Y", "N"), detailsDto.stocking().ssuId())
+            openingId,
+            eventHistoryId,
+            BooleanUtils.toString(preferred, "Y", "N"),
+            detailsDto.stocking().ssuId())
         .stream()
         .map(
             species ->

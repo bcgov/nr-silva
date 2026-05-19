@@ -11,7 +11,8 @@ import {
   OpeningsSearchRoute,
   ActivitySearchRoute,
   ForestCoverSearchRoute,
-  StandardsUnitSearchRoute
+  StandardsUnitSearchRoute,
+  CommentSearchRoute
 } from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
@@ -33,7 +34,8 @@ const protectedRouteList: RouteObject[] = [
   OpeningDetailsRoute,
   ActivitySearchRoute,
   ForestCoverSearchRoute,
-  StandardsUnitSearchRoute
+  StandardsUnitSearchRoute,
+  CommentSearchRoute
 ] as const;
 
 export const validPaths = protectedRouteList

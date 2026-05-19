@@ -36,11 +36,21 @@ export class DashboardPage extends BasePage {
   }
 
   async isOpeningSubmissionsTrendSectionVisible() {
-    return await this.openingSubmissionsTrendSection.isVisible();
+    try {
+      await this.openingSubmissionsTrendSection.waitFor({ state: 'visible', timeout: 10000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async isFavouritesSectionVisible() {
-    return await this.favouritesSection.isVisible();
+    try {
+      await this.favouritesSection.waitFor({ state: 'visible', timeout: 10000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async isMapVisible() {

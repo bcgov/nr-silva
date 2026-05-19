@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
@@ -7,27 +8,35 @@ import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
+import ca.bc.gov.restapi.results.common.enums.CommentLocationCode;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
+import ca.bc.gov.restapi.results.common.service.CommentSearchService;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController("oracleSearchEndpoint")
 @RequestMapping("/api/search")
 @RequiredArgsConstructor
@@ -41,6 +50,8 @@ public class SearchEndpoint {
   private final ForestCoverService forestCoverService;
 
   private final StandardUnitService standardUnitService;
+
+  private final CommentSearchService commentSearchService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -290,6 +301,29 @@ public class SearchEndpoint {
     }
 
     return standardUnitService.standardsUnitSearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/comments")
+  public Page<CommentSearchResponseDto> commentSearch(
+      @NotBlank
+          @Size(
+              min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
+              max = SilvaConstants.MAX_COMMENT_SEARCH_TERM_LEN)
+          @RequestParam(value = "searchTerm")
+          String searchTerm,
+      @RequestParam(value = "commentLocation", required = false)
+          List<CommentLocationCode> commentLocations,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    CommentSearchFilterDto filter =
+        new CommentSearchFilterDto(
+            searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
+
+    return commentSearchService.searchComments(filter, paginationParameters);
   }
 
   @GetMapping("/stocking-standards")

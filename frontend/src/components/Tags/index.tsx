@@ -4,3 +4,5 @@ export { default as ActivityStatusTag } from './ActivityStatusTag';
 export { default as CutBlockStatusTag } from './CutBlockStatusTag';
 export { default as OpeningStatusTag } from './OpeningStatusTag';
 export { default as StockingStatusTag } from './StockingStatusTag';
+export { default as StockingStandardMilestoneStatusTag } from './StockingStandardMilestoneStatusTag';
+export { default as CommentLocationTag } from './CommentLocationTag';
