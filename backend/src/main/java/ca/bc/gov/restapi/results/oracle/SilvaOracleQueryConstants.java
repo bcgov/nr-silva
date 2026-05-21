@@ -2679,24 +2679,30 @@ public class SilvaOracleQueryConstants {
       ),
       orgunit_agg AS (
         SELECT
-          srou.STANDARDS_REGIME_ID,
-          LISTAGG(ou.ORG_UNIT_CODE, ',')
-            WITHIN GROUP (ORDER BY ou.ORG_UNIT_CODE) AS org_unit_codes,
-          LISTAGG(ou.ORG_UNIT_NAME, '||')
-            WITHIN GROUP (ORDER BY ou.ORG_UNIT_CODE) AS org_unit_names
-        FROM paged_ids pi
-        JOIN STANDARDS_REGIME_ORG_UNIT srou ON srou.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
-        JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = srou.ORG_UNIT_NO
-        GROUP BY srou.STANDARDS_REGIME_ID
+          STANDARDS_REGIME_ID,
+          LISTAGG(ORG_UNIT_CODE, ',')
+            WITHIN GROUP (ORDER BY ORG_UNIT_CODE) AS org_unit_codes,
+          LISTAGG(ORG_UNIT_NAME, '||')
+            WITHIN GROUP (ORDER BY ORG_UNIT_CODE) AS org_unit_names
+        FROM (
+          SELECT DISTINCT pi.STANDARDS_REGIME_ID, ou.ORG_UNIT_CODE, ou.ORG_UNIT_NAME
+          FROM paged_ids pi
+          JOIN STANDARDS_REGIME_ORG_UNIT srou ON srou.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
+          JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = srou.ORG_UNIT_NO
+        ) ou_dedup
+        GROUP BY STANDARDS_REGIME_ID
       ),
       client_agg AS (
         SELECT
-          src.STANDARDS_REGIME_ID,
-          LISTAGG(src.CLIENT_NUMBER, ',')
-            WITHIN GROUP (ORDER BY src.CLIENT_NUMBER) AS client_numbers
-        FROM paged_ids pi
-        JOIN STANDARDS_REGIME_CLIENT src ON src.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
-        GROUP BY src.STANDARDS_REGIME_ID
+          STANDARDS_REGIME_ID,
+          LISTAGG(CLIENT_NUMBER, ',')
+            WITHIN GROUP (ORDER BY CLIENT_NUMBER) AS client_numbers
+        FROM (
+          SELECT DISTINCT pi.STANDARDS_REGIME_ID, src2.CLIENT_NUMBER
+          FROM paged_ids pi
+          JOIN STANDARDS_REGIME_CLIENT src2 ON src2.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
+        ) client_dedup
+        GROUP BY STANDARDS_REGIME_ID
       ),
       first_site_series AS (
         SELECT
