@@ -113,7 +113,7 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
       String code = codeArr[i].trim();
       String name = i < nameArr.length ? nameArr[i].trim() : null;
       if (!code.isBlank()) {
-        result.add(new CodeDescriptionDto(code, name));
+        result.add(new CodeDescriptionDto(code, StringUtil.nullIfBlank(name)));
       }
     }
     return result;

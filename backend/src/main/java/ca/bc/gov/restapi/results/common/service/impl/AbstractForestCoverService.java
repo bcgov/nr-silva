@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.common.projection.ForestCoverSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.ForestCoverRepository;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
+import ca.bc.gov.restapi.results.common.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -71,7 +72,7 @@ public abstract class AbstractForestCoverService implements ForestCoverService {
       String code = codeArr[i].trim();
       String name = i < nameArr.length ? nameArr[i].trim() : null;
       if (!code.isBlank()) {
-        result.add(new CodeDescriptionDto(code, name));
+        result.add(new CodeDescriptionDto(code, StringUtil.nullIfBlank(name)));
       }
     }
     return result;
