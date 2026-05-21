@@ -2645,13 +2645,11 @@ public class SilvaOracleQueryConstants {
         ORDER BY UPDATE_TIMESTAMP DESC NULLS LAST
         OFFSET :page ROWS FETCH NEXT :size ROWS ONLY
       ),
-      species_agg AS (
-        SELECT
+      distinct_species AS (
+        SELECT DISTINCT
           srl.STANDARDS_REGIME_ID,
-          LISTAGG(DISTINCT srls.SILV_TREE_SPECIES_CODE, ',')
-            WITHIN GROUP (ORDER BY srls.SILV_TREE_SPECIES_CODE) AS species_codes,
-          LISTAGG(COALESCE(stsc.DESCRIPTION, ''), '||')
-            WITHIN GROUP (ORDER BY srls.SILV_TREE_SPECIES_CODE) AS species_names
+          srls.SILV_TREE_SPECIES_CODE,
+          COALESCE(stsc.DESCRIPTION, '') AS species_name
         FROM paged_ids pi
         JOIN STANDARDS_REGIME_LAYER srl ON srl.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
         JOIN STANDARDS_REGIME_LAYER_SPECIES srls
@@ -2659,7 +2657,16 @@ public class SilvaOracleQueryConstants {
         LEFT JOIN SILV_TREE_SPECIES_CODE stsc
           ON stsc.SILV_TREE_SPECIES_CODE = srls.SILV_TREE_SPECIES_CODE
         WHERE srls.PREFERRED_IND = 'Y'
-        GROUP BY srl.STANDARDS_REGIME_ID
+      ),
+      species_agg AS (
+        SELECT
+          STANDARDS_REGIME_ID,
+          LISTAGG(SILV_TREE_SPECIES_CODE, ',')
+            WITHIN GROUP (ORDER BY SILV_TREE_SPECIES_CODE) AS species_codes,
+          LISTAGG(species_name, '||')
+            WITHIN GROUP (ORDER BY SILV_TREE_SPECIES_CODE) AS species_names
+        FROM distinct_species
+        GROUP BY STANDARDS_REGIME_ID
       ),
       fsp_agg AS (
         SELECT
