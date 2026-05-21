@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   isRouteErrorResponse,
   useRouteError,
@@ -25,15 +25,19 @@ const ErrorHandling: React.FC = () => {
   const error = useRouteError();
   const navigate = useNavigate();
 
-  // When a lazy-loaded chunk 404s after a new deployment, auto-reload once to
-  // pick up the fresh bundle. A sessionStorage flag prevents infinite loops if
-  // the reload itself doesn't resolve the error.
-  if (isChunkLoadError(error)) {
-    if (!sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+  const chunkError = isChunkLoadError(error);
+  const alreadyAttempted = sessionStorage.getItem(CHUNK_RELOAD_KEY) === '1';
+
+  // Keep render pure — side effects (sessionStorage write + reload) run after commit.
+  useEffect(() => {
+    if (chunkError && !alreadyAttempted) {
       sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
       window.location.reload();
-      return null;
     }
+  }, [chunkError, alreadyAttempted]);
+
+  if (chunkError && !alreadyAttempted) {
+    return null;
   }
 
   const GoHomeBtn = () => (
