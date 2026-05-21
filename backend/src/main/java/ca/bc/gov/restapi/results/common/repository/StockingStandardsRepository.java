@@ -1,0 +1,10 @@
+package ca.bc.gov.restapi.results.common.repository;
+
+import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
+import ca.bc.gov.restapi.results.common.projection.StockingStandardsSearchProjection;
+import java.util.List;
+
+public interface StockingStandardsRepository {
+  List<StockingStandardsSearchProjection> stockingStandardsSearch(
+      StockingStandardsSearchFilterDto filters, long offset, long size);
+}

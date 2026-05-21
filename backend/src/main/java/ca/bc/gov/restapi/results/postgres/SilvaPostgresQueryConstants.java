@@ -2476,5 +2476,266 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN species_agg sa ON sa.stocking_standard_unit_id = ssu.stocking_standard_unit_id
 			ORDER BY ssu.update_timestamp DESC NULLS LAST
 			""";
+
+	public static final String STOCKING_STANDARDS_SEARCH =
+			"""
+			WITH filtered_sr AS (
+				SELECT
+					sr.standards_regime_id,
+					sr.update_timestamp,
+					COUNT(*) OVER () AS totalCount
+				FROM standards_regime sr
+				WHERE
+					sr.standards_regime_id = :#{#filter.standardsRegimeId}
+					OR (
+						COALESCE(CAST(:#{#filter.standardsRegimeId} AS text),'NOVALUE') = 'NOVALUE'
+						AND (
+							'NOVALUE' IN (:#{#filter.preferredSpecies})
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_layer srl
+								JOIN standards_regime_layer_species srls
+									ON srls.standards_regime_layer_id = srl.standards_regime_layer_id
+								WHERE srl.standards_regime_id = sr.standards_regime_id
+								AND srls.preferred_ind = 'Y'
+								AND UPPER(srls.silv_tree_species_code) IN (:#{#filter.preferredSpecies})
+							)
+						)
+						AND (
+							'NOVALUE' IN (:#{#filter.orgUnits})
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_org_unit srou
+								JOIN org_unit ou ON ou.org_unit_no = srou.org_unit_no
+								WHERE srou.standards_regime_id = sr.standards_regime_id
+								AND UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+							)
+						)
+						AND (
+							'NOVALUE' IN (:#{#filter.clientNumbers})
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_client src2
+								WHERE src2.standards_regime_id = sr.standards_regime_id
+								AND UPPER(src2.client_number) IN (:#{#filter.clientNumbers})
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.fspId} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM fsp_standards_regime_xref fsrx
+								WHERE fsrx.standards_regime_id = sr.standards_regime_id
+								AND CAST(fsrx.fsp_id AS text) = :#{#filter.fspId}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.bgcZone} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND UPPER(srss.bgc_zone_code) = :#{#filter.bgcZone}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.bgcSubZone} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND UPPER(srss.bgc_subzone_code) = :#{#filter.bgcSubZone}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.bgcVariant} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND UPPER(srss.bgc_variant) = :#{#filter.bgcVariant}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.bgcPhase} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND UPPER(srss.bgc_phase) = :#{#filter.bgcPhase}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND srss.bec_site_series = :#{#filter.becSiteSeries}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.becSiteType} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND srss.bec_site_type = :#{#filter.becSiteType}
+							)
+						)
+						AND (
+							COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE'
+							OR EXISTS (
+								SELECT 1
+								FROM standards_regime_site_series srss
+								WHERE srss.standards_regime_id = sr.standards_regime_id
+								AND UPPER(srss.bec_seral) = :#{#filter.becSeral}
+							)
+						)
+						AND (
+							(
+								COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+								AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+							)
+							OR (
+								sr.update_timestamp IS NOT NULL
+								AND (
+									(
+										COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
+										AND sr.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+									)
+									OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+								)
+								AND (
+									(
+										COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+										AND sr.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+									)
+									OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+								)
+							)
+						)
+					)
+			),
+			paged_ids AS (
+				SELECT standards_regime_id, totalCount
+				FROM filtered_sr
+				ORDER BY update_timestamp DESC NULLS LAST
+				OFFSET :page LIMIT :size
+			),
+			preferred_species AS (
+				SELECT DISTINCT
+					srl.standards_regime_id,
+					srls.silv_tree_species_code,
+					COALESCE(stsc.description, '') AS species_name
+				FROM paged_ids pi
+				JOIN standards_regime_layer srl ON srl.standards_regime_id = pi.standards_regime_id
+				JOIN standards_regime_layer_species srls
+					ON srls.standards_regime_layer_id = srl.standards_regime_layer_id
+				LEFT JOIN silv_tree_species_code stsc
+					ON stsc.silv_tree_species_code = srls.silv_tree_species_code
+				WHERE srls.preferred_ind = 'Y'
+			),
+			species_agg AS (
+				SELECT
+					standards_regime_id,
+					STRING_AGG(silv_tree_species_code, ',' ORDER BY silv_tree_species_code) AS species_codes,
+					STRING_AGG(species_name, '||' ORDER BY silv_tree_species_code) AS species_names
+				FROM preferred_species
+				GROUP BY standards_regime_id
+			),
+			fsp_agg AS (
+				SELECT
+					standards_regime_id,
+					STRING_AGG(CAST(fsp_id AS text), ',' ORDER BY fsp_id) AS fsp_ids
+				FROM (
+					SELECT DISTINCT pi.standards_regime_id, fsrx.fsp_id
+					FROM paged_ids pi
+					JOIN fsp_standards_regime_xref fsrx ON fsrx.standards_regime_id = pi.standards_regime_id
+				) fsp_dedup
+				GROUP BY standards_regime_id
+			),
+			orgunit_agg AS (
+				SELECT
+					standards_regime_id,
+					STRING_AGG(org_unit_code, ',' ORDER BY org_unit_code) AS org_unit_codes,
+					STRING_AGG(org_unit_name, '||' ORDER BY org_unit_code) AS org_unit_names
+				FROM (
+					SELECT DISTINCT pi.standards_regime_id, ou.org_unit_code, ou.org_unit_name
+					FROM paged_ids pi
+					JOIN standards_regime_org_unit srou ON srou.standards_regime_id = pi.standards_regime_id
+					JOIN org_unit ou ON ou.org_unit_no = srou.org_unit_no
+				) ou_dedup
+				GROUP BY standards_regime_id
+			),
+			client_agg AS (
+				SELECT
+					standards_regime_id,
+					STRING_AGG(client_number, ',' ORDER BY client_number) AS client_numbers
+				FROM (
+					SELECT DISTINCT pi.standards_regime_id, src2.client_number
+					FROM paged_ids pi
+					JOIN standards_regime_client src2 ON src2.standards_regime_id = pi.standards_regime_id
+				) client_dedup
+				GROUP BY standards_regime_id
+			),
+			first_site_series AS (
+				SELECT
+					standards_regime_id,
+					bgc_zone_code,
+					bgc_subzone_code,
+					bgc_variant,
+					bgc_phase,
+					bec_site_series,
+					bec_site_type,
+					bec_seral
+				FROM (
+					SELECT
+						srss.standards_regime_id,
+						srss.bgc_zone_code,
+						srss.bgc_subzone_code,
+						srss.bgc_variant,
+						srss.bgc_phase,
+						srss.bec_site_series,
+						srss.bec_site_type,
+						srss.bec_seral,
+						ROW_NUMBER() OVER (
+							PARTITION BY srss.standards_regime_id
+							ORDER BY srss.standard_regime_site_series_id ASC
+						) AS rn
+					FROM standards_regime_site_series srss
+					JOIN paged_ids pi ON pi.standards_regime_id = srss.standards_regime_id
+				) ranked
+				WHERE rn = 1
+			)
+			SELECT
+				sr.standards_regime_id      AS standardsRegimeId,
+				sr.standards_regime_name    AS standardsRegimeName,
+				sr.expiry_date              AS expiryDate,
+				sr.standards_objective      AS standardsObjective,
+				sa.species_codes            AS preferredSpeciesCodes,
+				sa.species_names            AS preferredSpeciesNames,
+				fa.fsp_ids                  AS fspIds,
+				fss.bgc_zone_code           AS bgcZone,
+				fss.bgc_subzone_code        AS bgcSubZone,
+				fss.bgc_variant             AS bgcVariant,
+				fss.bgc_phase               AS bgcPhase,
+				fss.bec_site_series         AS becSiteSeries,
+				fss.bec_site_type           AS becSiteType,
+				fss.bec_seral               AS becSeral,
+				oa.org_unit_codes           AS orgUnitCodes,
+				oa.org_unit_names           AS orgUnitNames,
+				ca.client_numbers           AS clientNumbers,
+				sr.update_timestamp         AS updateTimestamp,
+				pi.totalCount
+			FROM standards_regime sr
+			JOIN paged_ids pi ON pi.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN species_agg sa ON sa.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN fsp_agg fa ON fa.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN orgunit_agg oa ON oa.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN client_agg ca ON ca.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN first_site_series fss ON fss.standards_regime_id = sr.standards_regime_id
+			ORDER BY sr.update_timestamp DESC NULLS LAST
+			""";
 	}
 

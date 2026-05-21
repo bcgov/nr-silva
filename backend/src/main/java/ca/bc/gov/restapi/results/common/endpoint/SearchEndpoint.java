@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.common.endpoint;
 import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
@@ -20,6 +22,7 @@ import ca.bc.gov.restapi.results.common.service.CommentSearchService;
 import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
+import ca.bc.gov.restapi.results.common.service.StockingStandardsService;
 import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -51,6 +54,8 @@ public class SearchEndpoint {
   private final StandardUnitService standardUnitService;
 
   private final CommentSearchService commentSearchService;
+
+  private final StockingStandardsService stockingStandardsService;
 
   /**
    * Exact search for Openings with direct value matching on provided filters.
@@ -323,5 +328,47 @@ public class SearchEndpoint {
             searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
 
     return commentSearchService.searchComments(filter, paginationParameters);
+  }
+
+  @GetMapping("/stocking-standards")
+  public Page<StockingStandardsSearchResponseDto> stockingStandardsSearch(
+      @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
+      @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "fspId", required = false) String fspId,
+      @RequestParam(value = "bgcZone", required = false) String bgcZone,
+      @RequestParam(value = "bgcSubZone", required = false) String bgcSubZone,
+      @RequestParam(value = "bgcVariant", required = false) String bgcVariant,
+      @RequestParam(value = "bgcPhase", required = false) String bgcPhase,
+      @RequestParam(value = "becSiteSeries", required = false) String becSiteSeries,
+      @RequestParam(value = "becSiteType", required = false) String becSiteType,
+      @RequestParam(value = "becSeral", required = false) String becSeral,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            standardsRegimeId,
+            preferredSpecies,
+            orgUnits,
+            clientNumbers,
+            fspId,
+            bgcZone,
+            bgcSubZone,
+            bgcVariant,
+            bgcPhase,
+            becSiteSeries,
+            becSiteType,
+            becSeral,
+            updateDateStart,
+            updateDateEnd);
+
+    if (!filters.hasAnyFilter()) {
+      throw new MissingSearchParameterException();
+    }
+
+    return stockingStandardsService.stockingStandardsSearch(filters, paginationParameters);
   }
 }

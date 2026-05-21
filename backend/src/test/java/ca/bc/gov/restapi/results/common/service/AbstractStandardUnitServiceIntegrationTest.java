@@ -264,4 +264,103 @@ public abstract class AbstractStandardUnitServiceIntegrationTest
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
+
+  @Test
+  @DisplayName("Standard unit search with bgcSubZone filter should succeed")
+  void standardUnitSearch_withBgcSubZoneFilter_shouldSucceed() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            null, null, null, null, null, "wm", null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StandardUnitSearchResponseDto> result =
+        standardUnitService.standardsUnitSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Standard unit search with becSeral filter should succeed")
+  void standardUnitSearch_withBecSeralFilter_shouldSucceed() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            null, null, null, null, null, null, null, null, null, null, "CL", null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StandardUnitSearchResponseDto> result =
+        standardUnitService.standardsUnitSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Standard unit search with multiple preferred species should succeed")
+  void standardUnitSearch_withMultiplePreferredSpecies_shouldSucceed() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            null,
+            List.of("CW", "FD"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StandardUnitSearchResponseDto> result =
+        standardUnitService.standardsUnitSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Standard unit search preferred species list should never be null")
+  void standardUnitSearch_preferredSpeciesList_neverNull() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StandardUnitSearchResponseDto> result =
+        standardUnitService.standardsUnitSearch(filters, pageable);
+
+    result
+        .getContent()
+        .forEach(
+            dto ->
+                Assertions.assertNotNull(
+                    dto.preferredSpecies(), "preferredSpecies list must never be null"));
+  }
+
+  @Test
+  @DisplayName("Standard unit search with invalid date range should throw ResponseStatusException")
+  void standardUnitSearch_withInvalidDateRange_shouldThrowException() {
+    StandardUnitSearchFilterDto filters =
+        new StandardUnitSearchFilterDto(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "2025-12-31",
+            "2025-01-01");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Assertions.assertThrows(
+        org.springframework.web.server.ResponseStatusException.class,
+        () -> standardUnitService.standardsUnitSearch(filters, pageable),
+        "Should throw ResponseStatusException for end-before-start date range");
+  }
 }

@@ -80,11 +80,13 @@ export type { PagedModelOpeningDetailsActivitiesActivitiesDto } from './models/P
 export type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from './models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
 export type { PagedModelOpeningSearchResponseDto } from './models/PagedModelOpeningSearchResponseDto';
 export type { PagedModelStandardUnitSearchResponseDto } from './models/PagedModelStandardUnitSearchResponseDto';
+export type { PagedModelStockingStandardsSearchResponseDto } from './models/PagedModelStockingStandardsSearchResponseDto';
 export type { PageMetadata } from './models/PageMetadata';
 export type { Point } from './models/Point';
 export type { Polygon } from './models/Polygon';
 export type { SimplePageDto } from './models/SimplePageDto';
 export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchResponseDto';
+export type { StockingStandardsSearchResponseDto } from './models/StockingStandardsSearchResponseDto';
 export type { TenureDto } from './models/TenureDto';
 
 export { CodesEndpointService } from './services/CodesEndpointService';
