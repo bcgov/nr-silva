@@ -15,7 +15,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +52,27 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
       total = totalCount != null ? totalCount : 0;
     }
 
+    List<String> clientNumbers =
+        projections.stream()
+            .map(StockingStandardsSearchProjection::getClientNumbers)
+            .filter(s -> s != null && !s.isBlank())
+            .flatMap(s -> Arrays.stream(s.split(",")))
+            .map(String::trim)
+            .filter(s -> !s.isBlank())
+            .distinct()
+            .toList();
+
+    final Map<String, ForestClientDto> clientMap = buildClientMap(clientNumbers);
+
     List<StockingStandardsSearchResponseDto> responseDtos =
-        projections.stream().map(this::mapToSearchResponse).toList();
+        projections.stream().map(p -> mapToSearchResponse(p, clientMap)).toList();
 
     return new PageImpl<>(responseDtos, pagination, total);
   }
 
   private StockingStandardsSearchResponseDto mapToSearchResponse(
-      StockingStandardsSearchProjection projection) {
-    List<ForestClientDto> clients = buildClientList(projection.getClientNumbers());
+      StockingStandardsSearchProjection projection, Map<String, ForestClientDto> clientMap) {
+    List<ForestClientDto> clients = buildClientList(projection.getClientNumbers(), clientMap);
     List<CodeDescriptionDto> orgUnits =
         parseCodeDescriptionList(projection.getOrgUnitCodes(), projection.getOrgUnitNames());
     List<String> fspIds = parseFspIds(projection.getFspIds());
@@ -132,19 +147,26 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     return Arrays.stream(fspIds.split(",")).map(String::trim).filter(s -> !s.isBlank()).toList();
   }
 
-  private List<ForestClientDto> buildClientList(String clientNumbers) {
+  private List<ForestClientDto> buildClientList(
+      String clientNumbers, Map<String, ForestClientDto> clientMap) {
     if (clientNumbers == null || clientNumbers.isBlank()) {
       return List.of();
     }
-    List<String> numbers =
-        Arrays.stream(clientNumbers.split(","))
-            .map(String::trim)
-            .filter(s -> !s.isBlank())
-            .distinct()
-            .toList();
-    if (numbers.isEmpty()) {
-      return List.of();
+    return Arrays.stream(clientNumbers.split(","))
+        .map(String::trim)
+        .filter(s -> !s.isBlank())
+        .distinct()
+        .map(clientMap::get)
+        .filter(dto -> dto != null)
+        .toList();
+  }
+
+  private Map<String, ForestClientDto> buildClientMap(List<String> clientNumbers) {
+    if (clientNumbers.isEmpty()) {
+      return new HashMap<>();
     }
-    return forestClientService.searchByClientNumbers(0, numbers.size(), numbers);
+    List<ForestClientDto> clients =
+        forestClientService.searchByClientNumbers(0, clientNumbers.size(), clientNumbers);
+    return clients.stream().collect(Collectors.toMap(ForestClientDto::clientNumber, c -> c));
   }
 }
