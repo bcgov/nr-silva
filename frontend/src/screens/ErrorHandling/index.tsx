@@ -10,9 +10,31 @@ import { Information, Activity, WarningAlt } from "@carbon/icons-react";
 
 import './styles.scss';
 
+const CHUNK_RELOAD_KEY = 'silva_chunk_reload_attempted';
+
+function isChunkLoadError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  return (
+    err.message.includes('Failed to fetch dynamically imported module') ||
+    err.message.includes('Importing a module script failed') ||
+    err.name === 'ChunkLoadError'
+  );
+}
+
 const ErrorHandling: React.FC = () => {
   const error = useRouteError();
   const navigate = useNavigate();
+
+  // When a lazy-loaded chunk 404s after a new deployment, auto-reload once to
+  // pick up the fresh bundle. A sessionStorage flag prevents infinite loops if
+  // the reload itself doesn't resolve the error.
+  if (isChunkLoadError(error)) {
+    if (!sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+      sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+      window.location.reload();
+      return null;
+    }
+  }
 
   const GoHomeBtn = () => (
     <Button onClick={() => navigate("/")}>
