@@ -23,6 +23,9 @@ stocking_layer_species
 stocking_ecology_archive
 stocking_ecology
 stocking_comment_link
+standards_regime_org_unit
+standards_regime_layer_species
+standards_regime_client
 spar_request
 silv_project_comment_link
 opening_comment_link
@@ -30,9 +33,11 @@ opening_attachment
 open_viewable_category
 activity_tu_comment_link
 stocking_standard_unit_amd
+standards_regime_site_series
 results_audit_detail
 opening_land_status
 stocking_layer
+standards_regime_layer
 results_audit_event
 stocking_milestone
 forest_stewardship_plan
@@ -59,8 +64,8 @@ results_electronic_submission
 prov_forest_use
 client_location
 silv_comment_xref
-forest_client
 forest_mgmt_unit
+forest_client
 silv_admin_zone
 standards_regime
 unit_bid_code
@@ -97,10 +102,8 @@ cut_block_client_type_code
 crew_contract_hire_code
 block_status_code
 age_class_code
-tree_size_unit_code
 tree_cover_pattern_code
 tenure_file_status_code
-stocking_layer_code
 silv_technique_code
 silv_reserve_objective_code
 silv_reserve_code
@@ -122,6 +125,8 @@ forest_cover_layer_code
 file_client_type_code
 crown_lands_region_code
 cascade_split_code
+tree_size_unit_code
+stocking_layer_code
 stocking_class_code
 site_index_source_code
 site_class_code

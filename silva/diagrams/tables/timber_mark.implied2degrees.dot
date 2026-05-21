@@ -61,6 +61,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "silviculture_project":"elipses":w -> "silv_admin_zone":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "spar_request":"elipses":w -> "opening":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "spar_request":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "standards_regime_org_unit":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"cascade_split_code":w -> "cascade_split_code":"cascade_split_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"forest_district":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"forest_file_id":w -> "prov_forest_use":"forest_file_id":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -222,7 +223,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="74" HEIGHT="16"><B>forest_client</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
     </TABLE>>
     URL="forest_client.html"
     target="_top"
@@ -335,7 +336,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="49" HEIGHT="16"><B>org_unit</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">19 &gt;</TD></TR>
     </TABLE>>
     URL="org_unit.html"
     target="_top"
@@ -430,6 +431,17 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     URL="spar_request.html"
     target="_top"
     tooltip="spar_request"
+  ];
+  "standards_regime_org_unit" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="161" HEIGHT="16"><B>standards_regime_org_unit</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="standards_regime_org_unit.html"
+    target="_top"
+    tooltip="standards_regime_org_unit"
   ];
   "tenure_file_status_code" [
    label=<

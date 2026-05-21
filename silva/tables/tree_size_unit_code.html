@@ -118,6 +118,11 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
+                                                <td title="standards_regime_layer.tree_size_unit_code&#39;s name implies that it&#39;s a child of tree_size_unit_code.tree_size_unit_code, but it doesn&#39;t reference that column."><a href='standards_regime_layer.html'>standards_regime_layer</a><span class='relatedKey'>.tree_size_unit_code</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="stocking_layer.tree_size_unit_code references tree_size_unit_code.tree_size_unit_code via sl_tsuc_fk"><a href='stocking_layer.html'>stocking_layer</a><span class='relatedKey'>.tree_size_unit_code</span></td>
                                                 <td class="constraint detail">sl_tsuc_fk</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -258,6 +263,8 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
@@ -281,6 +288,32 @@
 <area shape="rect" id="node9" href="stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="884,289,1208,377">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/tree_size_unit_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="standards_regime_layer.html" target="_top" title="standards_regime_layer" alt="" coords="367,5,639,211">
+<area shape="rect" id="node2" href="tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="5,343,323,559">
+<area shape="rect" id="node3" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="367,228,639,463">
+<area shape="rect" id="node4" href="stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="367,480,639,715">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/tree_size_unit_code.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="standards_regime_layer.html" target="_top" title="standards_regime_layer" alt="" coords="645,257,917,463">
+<area shape="rect" id="node2" href="standards_regime.html" target="_top" title="standards_regime" alt="" coords="5,149,227,237">
+<area shape="rect" id="node3" href="stocking_layer_code.html" target="_top" title="stocking_layer_code" alt="" coords="317,223,555,311">
+<area shape="rect" id="node4" href="tree_size_unit_code.html" target="_top" title="tree_size_unit_code" alt="" coords="277,328,595,544">
+<area shape="rect" id="node5" href="standards_regime_layer_species.html" target="_top" title="standards_regime_layer_species" alt="" coords="961,260,1295,348">
+<area shape="rect" id="node6" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="645,512,917,747">
+<area shape="rect" id="node7" href="opening.html" target="_top" title="opening" alt="" coords="44,596,188,684">
+<area shape="rect" id="node8" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="303,561,569,649">
+<area shape="rect" id="node9" href="stocking_layer_archive.html" target="_top" title="stocking_layer_archive" alt="" coords="645,5,917,240">
+<area shape="rect" id="node10" href="stocking_standard_unit_archive.html" target="_top" title="stocking_standard_unit_archive" alt="" coords="271,67,601,155">
+<area shape="rect" id="node11" href="stocking_layer_species.html" target="_top" title="stocking_layer_species" alt="" coords="999,515,1257,603">
+<area shape="rect" id="node12" href="stocking_layer_species_archive.html" target="_top" title="stocking_layer_species_archive" alt="" coords="966,37,1290,125">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/tree_size_unit_code.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

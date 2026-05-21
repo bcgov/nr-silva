@@ -313,8 +313,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="forest_file_id" nullable="false" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="cutting_permit_id" nullable="true" remarks="Identifier for a cutting permit associated with a harvesting tenure." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12">
-            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
             <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
+            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cut_block_id" nullable="false" remarks="Identifier for a cut block of a harvesting tenure (within a cutting permit for tenures with cp&quot;s)." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="6" name="sp_exempt_ind" nullable="false" remarks="Only set to &quot;Y&quot; for &quot;Exemption for silviculture Prescriptions&quot; under sec. 30 of the Forest Practices Code of British Columbia Act, eg cut blocks under one hectare, or the use of the land will be incompatible with the establishment of a free growing stand." size="1" type="varchar" typeCode="12"/>
@@ -687,6 +687,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="client_number" nullable="false" remarks="Sequentially assigned number to identify a ministry client." size="8" type="varchar" typeCode="12">
             <child column="client_number" foreignKey="cl_fc_fk" implied="false" onDeleteCascade="false" schema="silva" table="client_location"/>
             <child column="client_number" foreignKey="proj_fc2_fk" implied="false" onDeleteCascade="false" schema="silva" table="silviculture_project"/>
+            <child column="client_number" foreignKey="srcli_fc_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_client"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="client_name" nullable="false" remarks="The name of the Ministry Client - Company or Individual. Entered as: the full corporate name if a Corporation; the full registered name if a Partnership; the legal surname if an Individual." size="60" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="legal_first_name" nullable="true" remarks="The client&quot;s legal first name" size="30" type="varchar" typeCode="12"/>
@@ -2034,6 +2035,7 @@
             <child column="org_unit_no" foreignKey="saz_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
             <child column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="silviculture_project"/>
             <child column="org_unit_no" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="spar_request"/>
+            <child column="org_unit_no" foreignKey="srorg_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_org_unit"/>
             <child column="forest_district" foreignKey="tm_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
             <child column="geographic_distrct" foreignKey="tfalling_geographically_wit_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
          </column>
@@ -2820,6 +2822,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="silv_tree_species_code" nullable="false" remarks="The secondary tree species of Crown timber that was cut, damaged, destroyed or removed without authority" size="8" type="varchar" typeCode="12">
             <child column="silv_tree_species_code" foreignKey="atu_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
             <child column="silv_tree_species_code" foreignKey="pr_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="planting_rslt"/>
+            <child column="silv_tree_species_code" foreignKey="srls_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_layer_species"/>
             <child column="silv_tree_species_code" foreignKey="sls_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer_species"/>
             <child column="silv_tree_species_code" foreignKey="slsarc_ssc1_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer_species_archive"/>
          </column>
@@ -2869,8 +2872,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="fiscal_year" nullable="false" remarks="The fiscal year in which the project commenced, or, in the case of a planned project, is expected to commence. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
-            <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
             <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
+            <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="project_sequence" nullable="false" remarks="A one to four character identifier that is meaningful to the user and assists in distinguishing one Project from another within the same SILV BASE CODE, FISCAL YEAR, ORG UNIT CODE. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="4" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="project_location" nullable="true" remarks="A comment regarding the general location of the project." size="30" type="varchar" typeCode="12"/>
@@ -3069,6 +3072,10 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standards_regime_id" nullable="false" remarks="Unique identifier for the STANDARD REGIME entry." size="19" type="int8" typeCode="-5">
             <child column="standards_regime_id" foreignKey="fspsrx_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="fsp_standards_regime_xref"/>
             <child column="standards_regime_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="results_audit_event"/>
+            <child column="standards_regime_id" foreignKey="srcli_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_client"/>
+            <child column="standards_regime_id" foreignKey="srl_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_layer"/>
+            <child column="standards_regime_id" foreignKey="srorg_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_org_unit"/>
+            <child column="standards_regime_id" foreignKey="srss_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_site_series"/>
             <child column="standards_regime_id" foreignKey="ssu_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_standard_unit"/>
             <child column="standards_regime_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="stocking_standard_unit_amd"/>
             <child column="standards_regime_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="stocking_standard_unit_archive"/>
@@ -3111,6 +3118,136 @@
          </index>
          <index name="sr_sstcd_fk_i" unique="false">
             <column ascending="true" name="silv_statute_code"/>
+         </index>
+      </table>
+      <table name="standards_regime_client" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standards_regime_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="standards_regime_id" foreignKey="srcli_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="client_number" nullable="false" remarks="" size="8" type="varchar" typeCode="12">
+            <parent column="client_number" foreignKey="srcli_fc_fk" implied="false" onDeleteCascade="false" schema="silva" table="forest_client"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="standards_regime_id" sequenceNumberInPK="1"/>
+         <primaryKey column="client_number" sequenceNumberInPK="2"/>
+         <index name="standards_regime_client_pkey" unique="true">
+            <column ascending="true" name="standards_regime_id"/>
+            <column ascending="true" name="client_number"/>
+         </index>
+         <index name="srcli_fc2_fk_i" unique="false">
+            <column ascending="true" name="client_number"/>
+         </index>
+      </table>
+      <table name="standards_regime_layer" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standards_regime_layer_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <child column="standards_regime_layer_id" foreignKey="srls_srl_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_layer_species"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="standards_regime_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="standards_regime_id" foreignKey="srl_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="stocking_layer_code" nullable="false" remarks="" size="2" type="varchar" typeCode="12">
+            <parent column="stocking_layer_code" foreignKey="srl_slc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="tree_size_unit_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12">
+            <parent column="tree_size_unit_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="tree_size_unit_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="residual_basal_area" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="1" id="5" name="min_horizontal_distance" nullable="true" remarks="" size="3" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="min_pref_stocking_standard" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="min_stocking_standard" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="target_stocking" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="min_post_spacing" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="max_post_spacing" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="max_conifer" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="hght_relative_to_comp" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="standards_regime_layer_id" sequenceNumberInPK="1"/>
+         <index name="standards_regime_layer_pkey" unique="true">
+            <column ascending="true" name="standards_regime_layer_id"/>
+         </index>
+         <index name="srl_slc_fk_i" unique="false">
+            <column ascending="true" name="stocking_layer_code"/>
+         </index>
+         <index name="srl_sr_fk_i" unique="false">
+            <column ascending="true" name="standards_regime_id"/>
+         </index>
+      </table>
+      <table name="standards_regime_layer_species" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standards_regime_layer_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="standards_regime_layer_id" foreignKey="srls_srl_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_layer"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="silv_tree_species_code" nullable="false" remarks="" size="8" type="varchar" typeCode="12">
+            <parent column="silv_tree_species_code" foreignKey="srls_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_tree_species_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="species_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="preferred_ind" nullable="false" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="1" id="4" name="min_height" nullable="true" remarks="" size="3" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="standards_regime_layer_id" sequenceNumberInPK="1"/>
+         <primaryKey column="silv_tree_species_code" sequenceNumberInPK="2"/>
+         <index name="standards_regime_layer_species_pkey" unique="true">
+            <column ascending="true" name="standards_regime_layer_id"/>
+            <column ascending="true" name="silv_tree_species_code"/>
+         </index>
+      </table>
+      <table name="standards_regime_org_unit" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standards_regime_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="standards_regime_id" foreignKey="srorg_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="org_unit_no" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="org_unit_no" foreignKey="srorg_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="standards_regime_id" sequenceNumberInPK="1"/>
+         <primaryKey column="org_unit_no" sequenceNumberInPK="2"/>
+         <index name="standards_regime_org_unit_pkey" unique="true">
+            <column ascending="true" name="standards_regime_id"/>
+            <column ascending="true" name="org_unit_no"/>
+         </index>
+         <index name="srorg_ou_fk_i" unique="false">
+            <column ascending="true" name="org_unit_no"/>
+         </index>
+      </table>
+      <table name="standards_regime_site_series" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="standard_regime_site_series_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="standards_regime_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="standards_regime_id" foreignKey="srss_sr_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="bec_region_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="bgc_zone_code" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="bgc_subzone_code" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="bgc_variant" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="bgc_phase" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="bec_site_series" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="bec_site_type" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="bec_seral" nullable="true" remarks="" size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="standard_regime_site_series_id" sequenceNumberInPK="1"/>
+         <index name="standards_regime_site_series_pkey" unique="true">
+            <column ascending="true" name="standard_regime_site_series_id"/>
+         </index>
+         <index name="srss_sr_fk_i" unique="false">
+            <column ascending="true" name="standards_regime_id"/>
          </index>
       </table>
       <table name="standards_regime_status_code" remarks="" schema="silva" type="TABLE">
@@ -3347,6 +3484,7 @@
       </table>
       <table name="stocking_layer_code" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="stocking_layer_code" nullable="false" remarks="A code that identifies the forested layer within the Standards Unit to which the preferred/acceptable species information relates." size="2" type="varchar" typeCode="12">
+            <child column="stocking_layer_code" foreignKey="srl_slc_fk" implied="false" onDeleteCascade="false" schema="silva" table="standards_regime_layer"/>
             <child column="stocking_layer_code" foreignKey="sl_slc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer"/>
             <child column="stocking_layer_code" foreignKey="slarc_slc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer_archive"/>
          </column>
@@ -3774,6 +3912,7 @@
       </table>
       <table name="tree_size_unit_code" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="tree_size_unit_code" nullable="false" remarks="The unit of measure used for height relative to competition. Expressed either in number of centimetres above vegetation (cm), or percentage above vegetation (%)." size="3" type="varchar" typeCode="12">
+            <child column="tree_size_unit_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="standards_regime_layer"/>
             <child column="tree_size_unit_code" foreignKey="sl_tsuc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer"/>
             <child column="tree_size_unit_code" foreignKey="slarc_tsuc_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_layer_archive"/>
          </column>

@@ -112,6 +112,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "prov_forest_use":"mgmt_unit_id":w -> "forest_mgmt_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "prov_forest_use":"mgmt_unit_type":w -> "forest_mgmt_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "results_audit_event":"elipses":w -> "silviculture_project":"silviculture_project_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "results_audit_event":"elipses":w -> "standards_regime":"elipses":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "results_electronic_submission":"client_locn_code":w -> "client_location":"client_locn_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "results_electronic_submission":"client_number":w -> "client_location":"client_number":e [arrowhead=none dir=back arrowtail=crowodot];
   "results_electronic_submission":"org_unit_no":w -> "org_unit":"org_unit_no.type":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -130,6 +131,10 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "silviculture_project":"unit_bid_code":w -> "unit_bid_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "spar_request":"opening_id":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "spar_request":"org_unit_no":w -> "org_unit":"org_unit_no.type":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "standards_regime_client":"elipses":w -> "forest_client":"client_number":e [arrowhead=none dir=back arrowtail=crowodot];
+  "standards_regime_client":"elipses":w -> "standards_regime":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "standards_regime_org_unit":"org_unit_no":w -> "org_unit":"org_unit_no.type":e [arrowhead=none dir=back arrowtail=crowodot];
+  "standards_regime_org_unit":"standards_regime_id":w -> "standards_regime":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_ecology":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_ecology":"elipses":w -> "stocking_standard_unit":"elipses":e [arrowhead=none dir=back arrowtail=teeodot];
   "stocking_event_history":"elipses":w -> "opening_amendment_history":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -141,6 +146,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "stocking_milestone":"elipses":w -> "results_electronic_submission":"results_submission_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_milestone":"elipses":w -> "stocking_standard_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_standard_unit":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "stocking_standard_unit":"elipses":w -> "standards_regime":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"cascade_split_code":w -> "cascade_split_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"forest_district":w -> "org_unit":"org_unit_no.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "timber_mark":"forest_file_id":w -> "prov_forest_use":"forest_file_id":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -300,7 +306,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="74" HEIGHT="16"><B>forest_client</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
     </TABLE>>
     URL="forest_client.html"
     target="_top"
@@ -600,7 +606,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
       <TR><TD PORT="effective_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="113" HEIGHT="16">effective_date</TD></TR></TABLE></TD><TD PORT="effective_date.type" ALIGN="LEFT">timestamp[22]</TD></TR>
       <TR><TD PORT="expiry_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="113" HEIGHT="16">expiry_date</TD></TR></TABLE></TD><TD PORT="expiry_date.type" ALIGN="LEFT">timestamp[22]</TD></TR>
       <TR><TD PORT="update_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="113" HEIGHT="16">update_timestamp</TD></TR></TABLE></TD><TD PORT="update_timestamp.type" ALIGN="LEFT">timestamp[22]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 0</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 0</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">19 &gt;</TD></TR>
     </TABLE>>
     URL="org_unit.html"
     target="_top"
@@ -864,7 +870,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="131" HEIGHT="16"><B>silv_tree_species_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 &gt;</TD></TR>
     </TABLE>>
     URL="silv_tree_species_code.html"
     target="_top"
@@ -913,6 +919,41 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     URL="spar_request.html"
     target="_top"
     tooltip="spar_request"
+  ];
+  "standards_regime" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="106" HEIGHT="16"><B>standards_regime</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">9 &gt;</TD></TR>
+    </TABLE>>
+    URL="standards_regime.html"
+    target="_top"
+    tooltip="standards_regime"
+  ];
+  "standards_regime_client" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="145" HEIGHT="16"><B>standards_regime_client</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="standards_regime_client.html"
+    target="_top"
+    tooltip="standards_regime_client"
+  ];
+  "standards_regime_org_unit" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="161" HEIGHT="16"><B>standards_regime_org_unit</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="standards_regime_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="161" HEIGHT="16">standards_regime_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="org_unit_no" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="161" HEIGHT="16">org_unit_no</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="standards_regime_org_unit.html"
+    target="_top"
+    tooltip="standards_regime_org_unit"
   ];
   "stocking_class_code" [
    label=<

@@ -1001,24 +1001,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>avcon_1148331360_crown_000</td>
+                                    <td>((crown_granted_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
                                     <td>hva_is_waste_assess_req_ck</td>
                                     <td>((is_waste_assessment_required)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
-                                    <td>avcon_1148331360_decid_000</td>
-                                    <td>((deciduous_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
-                                </tr>
-                                <tr>
                                     <td>avcon_1148331360_catas_000</td>
                                     <td>((catastrophic_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
-                                </tr>
-                                <tr>
-                                    <td>hva_is_cp_ext_appl_fee_pa_ck</td>
-                                    <td>((is_cp_extension_appl_fee_paid)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
-                                </tr>
-                                <tr>
-                                    <td>avcon_1148331360_crown_000</td>
-                                    <td>((crown_granted_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
                                     <td>avcon_1148331360_cruis_000</td>
@@ -1027,6 +1019,14 @@
                                 <tr>
                                     <td>hva_is_cp_ext_appl_fee_wa_ck</td>
                                     <td>((is_cp_extensn_appl_fee_waived)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>hva_is_cp_ext_appl_fee_pa_ck</td>
+                                    <td>((is_cp_extension_appl_fee_paid)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;U&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
+                                </tr>
+                                <tr>
+                                    <td>avcon_1148331360_decid_000</td>
+                                    <td>((deciduous_ind)::text &#61; ANY (ARRAY[(&#39;N&#39;::character varying)::text, (&#39;Y&#39;::character varying)::text]))</td>
                                 </tr>
                                 <tr>
                                     <td>hva_is_within_frz_ck</td>
@@ -1075,40 +1075,41 @@
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,2262,2677,2350">
-<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,2262,2365,2350">
-<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,2274,2019,2362">
-<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,2161,509,2249">
-<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,2198,1787,2286">
-<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,2379,2063,2467">
-<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,1461,1774,1871">
-<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,2358,1732,2446">
-<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,2162,1305,2250">
-<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,2327,869,2415">
-<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,1669,1319,1757">
-<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,1563,1327,1651">
-<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,1879,1360,1967">
-<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,34,1425,1335">
-<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,1774,1355,1862">
-<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,1458,1318,1546">
-<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,1353,1299,1441">
-<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,1706,881,1794">
-<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,919,259,1037">
-<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1343,893,1461">
-<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,994,919,1111">
-<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,705,945,822">
-<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,570,922,687">
-<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,435,893,553">
-<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,301,897,418">
-<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,846,886,963">
-<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1155,892,1273">
-<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1506,569,1594">
-<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,2117,2050,2205">
-<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,1935,1723,2023">
-<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,1651,546,1739">
-<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,1757,531,1845">
-<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,2041,1733,2129">
-<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,2057,1297,2145">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,171,2677,259">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,171,2365,259">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,156,2019,244">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,393,509,481">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,237,1787,325">
+<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,51,2063,139">
+<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,1860,1774,2271">
+<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,80,1732,168">
+<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,273,1305,361">
+<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,273,869,361">
+<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,2191,1319,2279">
+<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,2085,1327,2173">
+<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,2401,1360,2489">
+<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,661,1425,1963">
+<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,2296,1355,2384">
+<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,556,1318,644">
+<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,1980,1299,2068">
+<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,608,881,696">
+<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,668,259,785">
+<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1755,893,1872">
+<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,1467,919,1584">
+<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,1193,945,1311">
+<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,1059,922,1176">
+<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,924,893,1041">
+<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,789,897,907">
+<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,1329,886,1447">
+<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1608,892,1725">
+<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1384,569,1472">
+<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,313,2050,401">
+<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,500,1723,588">
+<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,627,546,715">
+<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,521,531,609">
+<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,395,1733,483">
+<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,379,1297,467">
+<area shape="rect" id="node35" href="standards_regime_org_unit.html" target="_top" title="standards_regime_org_unit" alt="" coords="632,431,927,519">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/harvesting_authority.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
@@ -1132,41 +1133,42 @@
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,193,2677,281">
-<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,302,2365,390">
-<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,212,2019,300">
-<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,410,509,498">
-<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,177,1787,265">
-<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,317,2063,405">
-<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,2024,1774,2434">
-<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,282,1732,370">
-<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,358,1305,446">
-<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,408,869,496">
-<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,2354,1319,2442">
-<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,2249,1327,2337">
-<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,2565,1360,2653">
-<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,542,1425,1844">
-<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,2460,1355,2548">
-<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,2144,1318,2232">
-<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,1861,1299,1949">
-<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,1866,881,1954">
-<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,1190,259,1308">
-<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1644,893,1761">
-<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,1374,919,1492">
-<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,1105,945,1222">
-<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,970,922,1088">
-<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,836,893,953">
-<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,701,897,818">
-<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,1240,886,1357">
-<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1509,892,1626">
-<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1960,569,2048">
-<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,422,2050,510">
-<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,545,1723,633">
-<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,1749,546,1837">
-<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,1854,531,1942">
-<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,440,1733,528">
-<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,1966,1297,2054">
-<area shape="rect" id="node35" href="spar_request.html" target="_top" title="spar_request" alt="" coords="2145,70,2327,158">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="2409,436,2677,524">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="2107,436,2365,524">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="1875,277,2019,365">
+<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="363,513,509,601">
+<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="1469,486,1787,574">
+<area shape="rect" id="node6" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="1831,136,2063,224">
+<area shape="rect" id="node9" href="cut_block.html" target="_top" title="cut_block" alt="" coords="1482,1989,1774,2400">
+<area shape="rect" id="node32" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="1524,136,1732,224">
+<area shape="rect" id="node7" href="client_location.html" target="_top" title="client_location" alt="" coords="1109,402,1305,490">
+<area shape="rect" id="node8" href="forest_client.html" target="_top" title="forest_client" alt="" coords="690,329,869,417">
+<area shape="rect" id="node10" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="1096,2320,1319,2408">
+<area shape="rect" id="node11" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="1088,2214,1327,2302">
+<area shape="rect" id="node12" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="1055,2530,1360,2618">
+<area shape="rect" id="node13" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="989,790,1425,2092">
+<area shape="rect" id="node14" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="1059,2425,1355,2513">
+<area shape="rect" id="node15" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="1097,685,1318,773">
+<area shape="rect" id="node16" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="1116,2109,1299,2197">
+<area shape="rect" id="node19" href="prov_forest_use.html" target="_top" title="prov_forest_use" alt="" coords="677,677,881,765">
+<area shape="rect" id="node22" href="mgmt_unit_type_code.html" target="_top" title="mgmt_unit_type_code" alt="" coords="5,789,259,906">
+<area shape="rect" id="node24" href="cascade_split_code.html" target="_top" title="cascade_split_code" alt="" coords="665,1884,893,2001">
+<area shape="rect" id="node25" href="crown_lands_region_code.html" target="_top" title="crown_lands_region_code" alt="" coords="639,1596,919,1713">
+<area shape="rect" id="node26" href="harvest_auth_extend_reas_code.html" target="_top" title="harvest_auth_extend_reas_code" alt="" coords="613,1322,945,1440">
+<area shape="rect" id="node27" href="harvest_auth_status_code.html" target="_top" title="harvest_auth_status_code" alt="" coords="637,1188,922,1305">
+<area shape="rect" id="node28" href="harvest_type_code.html" target="_top" title="harvest_type_code" alt="" coords="666,1053,893,1170">
+<area shape="rect" id="node29" href="licence_to_cut_code.html" target="_top" title="licence_to_cut_code" alt="" coords="662,918,897,1036">
+<area shape="rect" id="node30" href="quota_type_code.html" target="_top" title="quota_type_code" alt="" coords="673,1458,886,1576">
+<area shape="rect" id="node31" href="salvage_type_code.html" target="_top" title="salvage_type_code" alt="" coords="667,1737,892,1854">
+<area shape="rect" id="node33" href="tenure_file_status_code.html" target="_top" title="tenure_file_status_code" alt="" coords="303,1509,569,1597">
+<area shape="rect" id="node17" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="1843,405,2050,493">
+<area shape="rect" id="node18" href="for_client_link.html" target="_top" title="for_client_link" alt="" coords="1533,592,1723,680">
+<area shape="rect" id="node21" href="forest_mgmt_unit.html" target="_top" title="forest_mgmt_unit" alt="" coords="326,746,546,834">
+<area shape="rect" id="node34" href="file_type_code.html" target="_top" title="file_type_code" alt="" coords="341,641,531,729">
+<area shape="rect" id="node20" href="forest_file_client.html" target="_top" title="forest_file_client" alt="" coords="1523,329,1733,417">
+<area shape="rect" id="node23" href="harvest_sale.html" target="_top" title="harvest_sale" alt="" coords="1118,544,1297,632">
+<area shape="rect" id="node35" href="spar_request.html" target="_top" title="spar_request" alt="" coords="2145,244,2327,332">
+<area shape="rect" id="node36" href="standards_regime_org_unit.html" target="_top" title="standards_regime_org_unit" alt="" coords="632,434,927,522">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/harvesting_authority.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
