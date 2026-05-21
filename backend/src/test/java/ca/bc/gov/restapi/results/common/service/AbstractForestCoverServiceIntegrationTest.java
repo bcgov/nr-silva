@@ -243,4 +243,78 @@ public abstract class AbstractForestCoverServiceIntegrationTest
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
+
+  @Test
+  @DisplayName("Forest cover search with stocking type filter should succeed")
+  void forestCoverSearch_withStockingTypeFilter_shouldSucceed() {
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(
+            null, null, List.of("N"), null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<ForestCoverSearchResponseDto> result =
+        forestCoverService.forestCoverSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Forest cover search with stocking status filter should succeed")
+  void forestCoverSearch_withStockingStatusFilter_shouldSucceed() {
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(
+            null, List.of("S"), null, null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<ForestCoverSearchResponseDto> result =
+        forestCoverService.forestCoverSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Forest cover search with damage agent filter should succeed")
+  void forestCoverSearch_withDamageAgentFilter_shouldSucceed() {
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(
+            null, null, null, List.of("DG"), null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<ForestCoverSearchResponseDto> result =
+        forestCoverService.forestCoverSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Forest cover search with openingId filter should succeed")
+  void forestCoverSearch_withOpeningIdFilter_shouldSucceed() {
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(100L, null, null, null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<ForestCoverSearchResponseDto> result =
+        forestCoverService.forestCoverSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Forest cover search damage agents list should never be null")
+  void forestCoverSearch_damageAgentsList_neverNull() {
+    ForestCoverSearchFilterDto filters =
+        new ForestCoverSearchFilterDto(
+            null, null, null, null, null, "TFL47", null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<ForestCoverSearchResponseDto> result =
+        forestCoverService.forestCoverSearch(filters, pageable);
+
+    result
+        .getContent()
+        .forEach(
+            dto ->
+                Assertions.assertNotNull(
+                    dto.damageAgents(), "damageAgents list must never be null"));
+  }
 }

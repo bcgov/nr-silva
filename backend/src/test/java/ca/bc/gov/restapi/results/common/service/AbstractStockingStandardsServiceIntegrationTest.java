@@ -277,4 +277,106 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
+
+  @Test
+  @DisplayName("Stocking standards search with becSeral filter should succeed")
+  void stockingStandardsSearch_withBecSeralFilter_shouldSucceed() {
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            null, null, null, null, null, null, null, null, null, null, null, "CL", null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StockingStandardsSearchResponseDto> result =
+        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Stocking standards search with bgcSubZone filter should succeed")
+  void stockingStandardsSearch_withBgcSubZoneFilter_shouldSucceed() {
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            null, null, null, null, null, null, "wm", null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StockingStandardsSearchResponseDto> result =
+        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Stocking standards search with multiple preferred species should succeed")
+  void stockingStandardsSearch_withMultiplePreferredSpecies_shouldSucceed() {
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            null,
+            List.of("CW", "FD"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StockingStandardsSearchResponseDto> result =
+        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+
+    Assertions.assertNotNull(result, "Result should not be null");
+  }
+
+  @Test
+  @DisplayName("Stocking standards search response DTO preferred species list should never be null")
+  void stockingStandardsSearch_preferredSpeciesList_neverNull() {
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Page<StockingStandardsSearchResponseDto> result =
+        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+
+    result
+        .getContent()
+        .forEach(
+            dto ->
+                Assertions.assertNotNull(
+                    dto.preferredSpecies(), "preferredSpecies list must never be null"));
+  }
+
+  @Test
+  @DisplayName(
+      "Stocking standards search with invalid date range should throw ResponseStatusException")
+  void stockingStandardsSearch_withInvalidDateRange_shouldThrowException() {
+    StockingStandardsSearchFilterDto filters =
+        new StockingStandardsSearchFilterDto(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "2025-12-31",
+            "2025-01-01");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Assertions.assertThrows(
+        org.springframework.web.server.ResponseStatusException.class,
+        () -> stockingStandardsService.stockingStandardsSearch(filters, pageable),
+        "Should throw ResponseStatusException for end-before-start date range");
+  }
 }
