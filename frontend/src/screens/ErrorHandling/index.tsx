@@ -12,14 +12,14 @@ import './styles.scss';
 
 const CHUNK_RELOAD_KEY = 'silva_chunk_reload_attempted';
 
-function isChunkLoadError(err: unknown): boolean {
+const isChunkLoadError = (err: unknown): boolean => {
   if (!(err instanceof Error)) return false;
   return (
     err.message.includes('Failed to fetch dynamically imported module') ||
     err.message.includes('Importing a module script failed') ||
     err.name === 'ChunkLoadError'
   );
-}
+};
 
 const ErrorHandling: React.FC = () => {
   const error = useRouteError();
