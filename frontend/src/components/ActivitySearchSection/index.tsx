@@ -61,7 +61,7 @@ const ActivitiesSearchSection = () => {
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
     const urlParams = readActivitySearchUrlParams();
-    if (hasActivitySearchFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
+    if (hasActivitySearchFilters(urlParams)) {
       const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
       const nextSize = urlParams.size ?? PageSizesConfig[0]!;
       const paramsWithPagination = {

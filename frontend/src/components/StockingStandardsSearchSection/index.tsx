@@ -51,13 +51,13 @@ const StockingStandardsSearchSection = () => {
       queryParams?.size ?? 20,
       queryParams?.sort,
     ),
-    enabled: !!queryParams,
+    enabled: !!queryParams && hasStockingStandardsSearchFilters(queryParams),
   });
 
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
     const urlParams = readStockingStandardsSearchUrlParams();
-    if (hasStockingStandardsSearchFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
+    if (hasStockingStandardsSearchFilters(urlParams)) {
       const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
       const nextSize = urlParams.size ?? PageSizesConfig[0]!;
       const paramsWithPagination = {
