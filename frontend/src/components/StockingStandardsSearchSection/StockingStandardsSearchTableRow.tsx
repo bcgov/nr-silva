@@ -71,8 +71,8 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
           return (
             <div className="expandable-items--expanded">
               <div className="expandable-items__list">
-                {rowData.clients.map((c) => (
-                  <span key={c.clientNumber} className="expandable-items__item">
+                {rowData.clients.map((c, index) => (
+                  <span key={c.clientNumber ?? `client-${index}`} className="expandable-items__item">
                     {clientTooltip(c)}
                   </span>
                 ))}
@@ -170,8 +170,8 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
           return (
             <div className="expandable-items--expanded">
               <div className="expandable-items__list">
-                {rowData.orgUnits.map((ou) => (
-                  <span key={ou.code ?? ''} className="expandable-items__item">
+                {rowData.orgUnits.map((ou, index) => (
+                  <span key={ou.code ?? `org-unit-${index}`} className="expandable-items__item">
                     {orgUnitTooltip(ou)}
                   </span>
                 ))}
@@ -227,8 +227,9 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
         return formatLocalDate(rowData.updateTimestamp, true);
 
       default:
-        if (rowData[header as keyof StockingStandardsSearchResponseDto]) {
-          return String(rowData[header as keyof StockingStandardsSearchResponseDto]);
+        const value = rowData[header];
+        if (value !== undefined && value !== null) {
+          return String(value);
         }
         return PLACE_HOLDER;
     }
