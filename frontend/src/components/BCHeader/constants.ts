@@ -7,6 +7,7 @@ import {
   FOREST_COVER_SEARCH_PATH,
   STANDARDS_UNIT_SEARCH_PATH,
   COMMENT_SEARCH_PATH,
+  STOCKING_STANDARDS_SEARCH_PATH,
 } from '@/routes/paths';
 
 export type LeftMenuItem = {
@@ -70,6 +71,14 @@ export const getMainActivitiesItems = (): LeftMenu[] => [
         name: 'Standards units',
         icon: 'Development',
         link: STANDARDS_UNIT_SEARCH_PATH,
+        disabled: false,
+        breadcrumb: false
+      },
+      {
+        id: 'stocking-standards-search',
+        name: 'Stocking standards',
+        icon: 'CloudRegistry',
+        link: STOCKING_STANDARDS_SEARCH_PATH,
         disabled: false,
         breadcrumb: false
       },
