@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   isRouteErrorResponse,
   useRouteError,
@@ -10,9 +10,35 @@ import { Information, Activity, WarningAlt } from "@carbon/icons-react";
 
 import './styles.scss';
 
+const CHUNK_RELOAD_KEY = 'silva_chunk_reload_attempted';
+
+const isChunkLoadError = (err: unknown): boolean => {
+  if (!(err instanceof Error)) return false;
+  return (
+    err.message.includes('Failed to fetch dynamically imported module') ||
+    err.message.includes('Importing a module script failed') ||
+    err.name === 'ChunkLoadError'
+  );
+};
+
 const ErrorHandling: React.FC = () => {
   const error = useRouteError();
   const navigate = useNavigate();
+
+  const chunkError = isChunkLoadError(error);
+  const alreadyAttempted = sessionStorage.getItem(CHUNK_RELOAD_KEY) === '1';
+
+  // Keep render pure — side effects (sessionStorage write + reload) run after commit.
+  useEffect(() => {
+    if (chunkError && !alreadyAttempted) {
+      sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+      window.location.reload();
+    }
+  }, [chunkError, alreadyAttempted]);
+
+  if (chunkError && !alreadyAttempted) {
+    return null;
+  }
 
   const GoHomeBtn = () => (
     <Button onClick={() => navigate("/")}>
