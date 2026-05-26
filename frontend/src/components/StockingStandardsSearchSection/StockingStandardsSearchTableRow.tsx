@@ -1,8 +1,11 @@
-import { TableRow, TableCell, Stack, Tooltip } from "@carbon/react";
+import { useState } from 'react';
+import { TableRow, TableCell, Stack, Tooltip, Button, DefinitionTooltip } from "@carbon/react";
 import { Warning } from "@carbon/icons-react";
-import { PLACE_HOLDER } from "@/constants";
+import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { StockingStandardsHeaderKeyType, StockingStandardsHeaderType } from "@/types/TableHeader";
-import { StockingStandardsSearchResponseDto } from "@/services/OpenApi";
+import { CodeDescriptionDto, ForestClientDto, StockingStandardsSearchResponseDto } from "@/services/OpenApi";
+import { formatLocalDate } from "@/utils/DateUtils";
+import StackedTooltip from "../StackedTooltip";
 
 import "./styles.scss";
 
@@ -12,6 +15,9 @@ type props = {
 }
 
 const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
+  const [isClientsExpanded, setIsClientsExpanded] = useState(false);
+  const [isFspExpanded, setIsFspExpanded] = useState(false);
+  const [isOrgUnitsExpanded, setIsOrgUnitsExpanded] = useState(false);
 
   const renderCellContent = (header: StockingStandardsHeaderKeyType) => {
     switch (header) {
@@ -22,8 +28,8 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
             {
               rowData.isExpired
                 ? (
-                  <Tooltip definition="Expired stocking standard">
-                    <Warning size={16} className="expired-standard-warning-icon" />
+                  <Tooltip label="Expired stocking standard" align="right">
+                    <Warning size={16} className="default-warning-icon" />
                   </Tooltip>
                 )
                 : null
@@ -43,6 +49,182 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
         ]
           .map(val => val ?? '-')
           .join('.');
+
+      case "clients": {
+        if (!rowData.clients?.length) return PLACE_HOLDER;
+
+        const clientTooltip = (c: ForestClientDto) => {
+          const simpleLabel = c.acronym || c.clientName || c.clientNumber;
+          const fullLabel = [c.clientName, c.clientNumber, c.acronym].filter(Boolean).join(', ');
+          return (
+            <DefinitionTooltip openOnHover definition={fullLabel} align="left">
+              <span>{simpleLabel}</span>
+            </DefinitionTooltip>
+          );
+        };
+
+        if (rowData.clients.length === 1) {
+          return rowData.clients[0] ? clientTooltip(rowData.clients[0]) : PLACE_HOLDER;
+        }
+
+        if (isClientsExpanded) {
+          return (
+            <div className="expandable-items--expanded">
+              <div className="expandable-items__list">
+                {rowData.clients.map((c) => (
+                  <span key={c.clientNumber} className="expandable-items__item">
+                    {clientTooltip(c)}
+                  </span>
+                ))}
+              </div>
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsClientsExpanded(false)}
+              >
+                show fewer
+              </Button>
+            </div>
+          );
+        }
+
+        return (
+          <span className="expandable-items--collapsed">
+            {rowData.clients[0] ? clientTooltip(rowData.clients[0]) : null}
+            <span>and</span>
+            <Tooltip label="show more clients">
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsClientsExpanded(true)}
+              >
+                {rowData.clients.length - 1} more
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      }
+
+      case "fspIds": {
+        if (!rowData.fspIds?.length) return PLACE_HOLDER;
+        if (rowData.fspIds.length === 1) return rowData.fspIds[0];
+
+        if (isFspExpanded) {
+          return (
+            <div className="expandable-items--expanded">
+              <div className="expandable-items__list">
+                {rowData.fspIds.map((id) => (
+                  <span key={id} className="expandable-items__item">{id}</span>
+                ))}
+              </div>
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsFspExpanded(false)}
+              >
+                show fewer
+              </Button>
+            </div>
+          );
+        }
+
+        return (
+          <span className="expandable-items--collapsed">
+            <span>{rowData.fspIds[0]}</span>
+            <span>and</span>
+            <Tooltip label="show more FSP IDs">
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsFspExpanded(true)}
+              >
+                {rowData.fspIds.length - 1} more
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      }
+
+      case "orgUnits": {
+        if (!rowData.orgUnits?.length) return PLACE_HOLDER;
+
+        const orgUnitTooltip = (ou: CodeDescriptionDto) => (
+          <DefinitionTooltip openOnHover definition={ou.description ?? ''} align="left">
+            <span>{ou.code ?? PLACE_HOLDER}</span>
+          </DefinitionTooltip>
+        );
+
+        if (rowData.orgUnits.length === 1) {
+          return rowData.orgUnits[0] ? orgUnitTooltip(rowData.orgUnits[0]) : PLACE_HOLDER;
+        }
+
+        if (isOrgUnitsExpanded) {
+          return (
+            <div className="expandable-items--expanded">
+              <div className="expandable-items__list">
+                {rowData.orgUnits.map((ou) => (
+                  <span key={ou.code ?? ''} className="expandable-items__item">
+                    {orgUnitTooltip(ou)}
+                  </span>
+                ))}
+              </div>
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsOrgUnitsExpanded(false)}
+              >
+                show fewer
+              </Button>
+            </div>
+          );
+        }
+
+        return (
+          <span className="expandable-items--collapsed">
+            {rowData.orgUnits[0] ? orgUnitTooltip(rowData.orgUnits[0]) : null}
+            <span>and</span>
+            <Tooltip label="show more org units">
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsOrgUnitsExpanded(true)}
+              >
+                {rowData.orgUnits.length - 1} more
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      }
+
+      case "preferredSpecies":
+        if (!rowData.preferredSpecies || rowData.preferredSpecies.length === 0) {
+          return PLACE_HOLDER;
+        }
+
+        return (
+          <StackedTooltip
+            items={rowData.preferredSpecies}
+            unit="species"
+            displayLimit={PREFERRED_SPECIES_LIMIT}
+            align="left"
+          />
+        );
+
+
+      case "updateTimestamp":
+        return formatLocalDate(rowData.updateTimestamp, true);
 
       default:
         if (rowData[header as keyof StockingStandardsSearchResponseDto]) {

@@ -142,7 +142,7 @@ const StockingStandardsSearchSection = () => {
   return (
     <Grid className="default-grid stocking-standards-search-section">
       <Column sm={4} md={8} lg={16}>
-        <StockingStandardsSearchInput searchParams={searchParams} handleSearchFieldChange={handleSearchFieldChange} />
+        <StockingStandardsSearchInput searchParams={searchParams} queryParams={queryParams} handleSearchFieldChange={handleSearchFieldChange} />
       </Column>
 
       <Column sm={4} md={8} lg={16}>

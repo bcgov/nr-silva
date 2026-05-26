@@ -2,4 +2,36 @@
 
 .stocking-standards-search-section {
   padding-top: 0;
+
+  .expandable-items--collapsed {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .expandable-items--expanded {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    .expandable-items__list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+
+    .expandable-items__item:not(:last-child)::after {
+      content: ',';
+    }
+  }
+
+  .expand-button {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    text-decoration: underline;
+  }
 }

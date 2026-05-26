@@ -1,7 +1,5 @@
 import { StandardsUnitHeaderType } from "@/types/TableHeader";
 
-export const PREFERRED_SPECIES_LIMIT = 3 as const;
-
 export const defaultStandardsUnitSearchTableHeaders: StandardsUnitHeaderType[] = [
   { key: 'actions', header: 'Actions', selected: true },
   { key: 'openingId', header: 'Opening ID', selected: true },
