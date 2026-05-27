@@ -45,8 +45,8 @@ const StockingStandardsSearchSection = () => {
       queryParams?.becSiteSeries,
       queryParams?.becSiteType,
       undefined, // becSeral — no input
-      queryParams?.updateDateStart,
-      queryParams?.updateDateEnd,
+      queryParams?.approvedDateStart,
+      queryParams?.approvedDateEnd,
       queryParams?.page,
       queryParams?.size ?? 20,
       queryParams?.sort,

@@ -8,6 +8,7 @@ import { formatLocalDate } from "@/utils/DateUtils";
 import StackedTooltip from "../StackedTooltip";
 
 import "./styles.scss";
+import { getClientLabel, getClientSimpleLabel } from '../../utils/ForestClientUtils';
 
 type props = {
   headers: StockingStandardsHeaderType[];
@@ -53,15 +54,11 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
       case "clients": {
         if (!rowData.clients?.length) return PLACE_HOLDER;
 
-        const clientTooltip = (c: ForestClientDto) => {
-          const simpleLabel = c.acronym || c.clientName || c.clientNumber;
-          const fullLabel = [c.clientName, c.clientNumber, c.acronym].filter(Boolean).join(', ');
-          return (
-            <DefinitionTooltip openOnHover definition={fullLabel} align="left">
-              <span>{simpleLabel}</span>
-            </DefinitionTooltip>
-          );
-        };
+        const clientTooltip = (c: ForestClientDto) => (
+          <DefinitionTooltip openOnHover definition={getClientLabel(c)} align="left">
+            <span>{getClientSimpleLabel(c)}</span>
+          </DefinitionTooltip>
+        );
 
         if (rowData.clients.length === 1) {
           return rowData.clients[0] ? clientTooltip(rowData.clients[0]) : PLACE_HOLDER;
@@ -223,8 +220,8 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
         );
 
 
-      case "updateTimestamp":
-        return formatLocalDate(rowData.updateTimestamp, true);
+      case "approvedDate":
+        return formatLocalDate(rowData.approvedDate, true);
 
       default:
         const value = rowData[header];

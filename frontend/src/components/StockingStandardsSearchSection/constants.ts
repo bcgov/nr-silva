@@ -9,6 +9,5 @@ export const defaultStockingStandardsSearchTableHeaders: StockingStandardsHeader
   { key: 'fspIds', header: 'FSP ID', selected: true },
   { key: 'orgUnits', header: 'Org unit', selected: false },
   { key: 'preferredSpecies', header: 'Preferred species', selected: false },
-  { key: 'updateTimestamp', header: 'Last updated', selected: false },
-
+  { key: 'approvedDate', header: 'Approved date', selected: false },
 ];

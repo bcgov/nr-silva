@@ -97,7 +97,7 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
         : undefined;
 
     handleSearchFieldChange(
-      isStartDate ? "updateDateStart" : "updateDateEnd",
+      isStartDate ? "approvedDateStart" : "approvedDateEnd",
       formattedDate
     );
   };
@@ -113,8 +113,8 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
     queryParams?.bgcPhase ||
     queryParams?.becSiteSeries ||
     queryParams?.becSiteType ||
-    queryParams?.updateDateStart ||
-    queryParams?.updateDateEnd
+    queryParams?.approvedDateStart ||
+    queryParams?.approvedDateEnd
   ));
 
   return (
@@ -249,9 +249,9 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
         </Grid>
       </Column>
 
-      {/* Row 3: Last updated date range */}
+      {/* Row 3: Approved date range */}
       <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
+        <label className="date-label" htmlFor="approved-date-range">Approved date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
@@ -261,9 +261,9 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              maxDate={getStartMaxDate(searchParams?.updateDateEnd)}
+              maxDate={getStartMaxDate(searchParams?.approvedDateEnd)}
               onChange={handleDateChange(true)}
-              value={getDatePickerValue(searchParams?.updateDateStart)}
+              value={getDatePickerValue(searchParams?.approvedDateStart)}
             >
               <DatePickerInput
                 id="start-date-picker-input-id"
@@ -281,10 +281,10 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              minDate={getEndMinDate(searchParams?.updateDateStart)}
+              minDate={getEndMinDate(searchParams?.approvedDateStart)}
               maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
               onChange={handleDateChange(false)}
-              value={getDatePickerValue(searchParams?.updateDateEnd)}
+              value={getDatePickerValue(searchParams?.approvedDateEnd)}
             >
               <DatePickerInput
                 id="end-date-picker-input-id"
